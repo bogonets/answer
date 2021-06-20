@@ -1,0 +1,67 @@
+{
+    "info": {
+        "name": "numpy_zeros",
+        "version": "1.0.0",
+        "category": "numpy",
+        "keywords": ["numpy"],
+        "homepage": "https://answer.bogonets.com/",
+        "bugs": "https://answer.bogonets.com/",
+        "license": "Bogonet License",
+        "author": "zer0",
+        "dependencies": [
+            {"type": "pip", "src": "numpy"}
+        ],
+        "engines": ">=1.0.2",
+        "environment": {},
+        "titles": {
+            "en": "numpy.zeros",
+            "ko": "numpy.zeros"
+        },
+        "descriptions": {
+            "en": "Returns an array filled with zeros.",
+            "ko": "0으로 채워진 배열을 반환한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "meta": {}
+    },
+    "controls": {
+        "output": "result"
+    },
+    "props": [
+        {
+            "rule": "read_and_write",
+            "name": "shape",
+            "default_value": "",
+            "type": "csv",
+            "required": true,
+            "valid": {},
+            "title": {
+                "en": "shape",
+                "ko": "shape"
+            },
+            "help": {
+                "en": "Shape of the new array.",
+                "ko": "Shape of the new array."
+            }
+        },
+        {
+            "rule": "read_and_write",
+            "name": "dtype",
+            "default_value": "int32",
+            "type": "str",
+            "required": true,
+            "valid": {
+                "list": "int8;int16;int32;int64;uint8;uint16;uint32;uint64;float32;float64;"
+            },
+            "title": {
+                "en": "dtype",
+                "ko": "dtype"
+            },
+            "help": {
+                "en": "Numpy dtype.",
+                "ko": "Numpy dtype."
+            }
+        }
+    ]
+}

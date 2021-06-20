@@ -1,0 +1,50 @@
+{
+    "info": {
+        "name": "numpy_concatenate",
+        "version": "1.0.0",
+        "category": "numpy",
+        "keywords": ["numpy"],
+        "homepage": "https://answer.bogonets.com/",
+        "bugs": "https://answer.bogonets.com/",
+        "license": "Bogonet License",
+        "author": "zer0",
+        "dependencies": [
+            {"type": "pip", "src": "numpy"}
+        ],
+        "engines": ">=1.0.2",
+        "environment": {},
+        "titles": {
+            "en": "numpy.concatenate",
+            "ko": "numpy.concatenate"
+        },
+        "descriptions": {
+            "en": "Join a sequence of arrays along an existing axis.",
+            "ko": "기존 축을 따라 배열 시퀀스를 결합합니다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "meta": {}
+    },
+    "controls": {
+        "input": ["array1", "array2"],
+        "output": "result"
+    },
+    "props": [
+        {
+            "rule": "read_and_write",
+            "name": "axis",
+            "default_value": 0,
+            "type": "int",
+            "required": true,
+            "valid": {},
+            "title": {
+                "en": "axis",
+                "ko": "axis"
+            },
+            "help": {
+                "en": "The axis along which the arrays will be joined. If axis is negative, arrays are flattened before use. Default is 0.",
+                "ko": "배열이 결합되는 축입니다. 축이 음수이면 사용하기 전에 배열이 평면화됩니다. 기본값은 0입니다."
+            }
+        }
+    ]
+}

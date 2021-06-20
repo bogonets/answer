@@ -1,0 +1,310 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: answer-pg
+    image: timescale/timescaledb:2.1.0-pg13
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    labels:
+      - com.bogonets.answer.cluster=true
+      - com.bogonets.answer.cluster.category=db
+    environment:
+      - TZ=Asia/Seoul
+      - POSTGRES_USER=${POSTGRES_USER:-recc}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-recc1234}
+    networks:
+      - postgres_net
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-recc}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    container_name: answer-pgadmin
+    image: dpage/pgadmin4:latest
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - 9090:80
+    labels:
+      - com.bogonets.answer.cluster=true
+      - com.bogonets.answer.cluster.category=tool
+    environment:
+      - TZ=Asia/Seoul
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:-recc@localhost}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:-recc1234}
+      - PGADMIN_SERVER_JSON_FILE=/tmp/servers.json
+    networks:
+      - postgres_net
+    entrypoint:
+      - sh
+      - -c
+      - |
+        mkdir -p /var/lib/pgadmin/storage/recc_localhost &&
+        cat << EOF > /var/lib/pgadmin/storage/recc_localhost/pgpassfile &&
+        answer-pg:5432:*:${POSTGRES_USER:-recc}:${POSTGRES_PASSWORD:-recc1234}
+        EOF
+        chmod 600 /var/lib/pgadmin/storage/recc_localhost/pgpassfile &&
+        cat << EOF > /tmp/servers.json &&
+        {
+            "Servers": {
+                "1": {
+                    "Name": "answer-postgres",
+                    "Group": "Servers",
+                    "Host": "answer-pg",
+                    "Port": 5432,
+                    "MaintenanceDB": "postgres",
+                    "Username": "${POSTGRES_USER:-recc}",
+                    "PassFile": "/pgpassfile",
+                    "SSLMode": "prefer",
+                    "SSLCert": "<STORAGE_DIR>/.postgresql/postgresql.crt",
+                    "SSLKey": "<STORAGE_DIR>/.postgresql/postgresql.key",
+                    "SSLCompression": 0,
+                    "Timeout": 10,
+                    "UseSSHTunnel": 0,
+                    "TunnelPort": "22",
+                    "TunnelAuthentication": 0
+                }
+            }
+        }
+        EOF
+        /entrypoint.sh
+
+  es01:
+    container_name: answer-es01
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
+    restart: always
+    labels:
+      - com.bogonets.answer.cluster=true
+      - com.bogonets.answer.cluster.category=es
+    environment:
+      - TZ=Asia/Seoul
+      - node.name=answer-es01
+      - cluster.name=answer-es-cluster
+      - discovery.seed_hosts=answer-es02,answer-es03
+      - cluster.initial_master_nodes=answer-es01,answer-es02,answer-es03
+      - bootstrap.memory_lock=true
+      - xpack.monitoring.enabled=true
+      - xpack.monitoring.collection.enabled=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es01_data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elastic_net
+    healthcheck:
+      test: ["CMD", "curl", "-XGET", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  es02:
+    container_name: answer-es02
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
+    restart: always
+    labels:
+      - com.bogonets.answer.cluster=true
+      - com.bogonets.answer.cluster.category=es
+    environment:
+      - TZ=Asia/Seoul
+      - node.name=answer-es02
+      - cluster.name=answer-es-cluster
+      - discovery.seed_hosts=answer-es01,answer-es03
+      - cluster.initial_master_nodes=answer-es01,answer-es02,answer-es03
+      - bootstrap.memory_lock=true
+      - xpack.monitoring.enabled=true
+      - xpack.monitoring.collection.enabled=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es02_data:/usr/share/elasticsearch/data
+    networks:
+      - elastic_net
+    healthcheck:
+      test: ["CMD", "curl", "-XGET", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  es03:
+    container_name: answer-es03
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
+    restart: always
+    labels:
+      - com.bogonets.answer.cluster=true
+      - com.bogonets.answer.cluster.category=es
+    environment:
+      - TZ=Asia/Seoul
+      - node.name=answer-es03
+      - cluster.name=answer-es-cluster
+      - discovery.seed_hosts=answer-es01,answer-es02
+      - cluster.initial_master_nodes=answer-es01,answer-es02,answer-es03
+      - bootstrap.memory_lock=true
+      - xpack.monitoring.enabled=true
+      - xpack.monitoring.collection.enabled=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es03_data:/usr/share/elasticsearch/data
+    networks:
+      - elastic_net
+    healthcheck:
+      test: ["CMD", "curl", "-XGET", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  logstash:
+    container_name: answer-logstash
+    image: docker.elastic.co/logstash/logstash:7.11.1
+    restart: always
+    labels:
+      - com.bogonets.answer.cluster=true
+      - com.bogonets.answer.cluster.category=es
+    depends_on:
+      - es01
+      - es02
+      - es03
+    ports:
+      - 12201:12201/udp
+      - 9600:9600
+    networks:
+      - elastic_net
+    entrypoint:
+      - sh
+      - -c
+      - |
+        cat << EOF > /usr/share/logstash/pipeline/logstash.conf &&
+        input {
+            gelf {
+                host => "0.0.0.0"
+                port => 12201
+            }
+        }
+        output {
+            elasticsearch {
+                hosts => ["http://answer-es01:9200", "http://answer-es02:9200", "http://answer-es03:9200"]
+                index => "answer-logstash-%{+yyyy.MM.dd}"
+            }
+        }
+        EOF
+        cat << EOF > /usr/share/logstash/config/logstash.yml &&
+        http.host: "0.0.0.0"
+        xpack.monitoring.elasticsearch.hosts: ["http://answer-es01:9200", "http://answer-es02:9200", "http://answer-es03:9200"]
+        EOF
+        logstash -f /usr/share/logstash/pipeline/logstash.conf
+
+  kibana:
+    container_name: answer-kibana
+    image: docker.elastic.co/kibana/kibana:7.11.1
+    restart: always
+    labels:
+      - com.bogonets.answer.cluster=true
+      - com.bogonets.answer.cluster.category=tool
+    depends_on:
+      - es01
+      - es02
+      - es03
+    ports:
+      - 5601:5601
+    environment:
+      TZ: Asia/Seoul
+      ELASTICSEARCH_URL: http://answer-es01:9200
+      ELASTICSEARCH_HOSTS: '["http://answer-es01:9200","http://answer-es02:9200","http://answer-es03:9200"]'
+    networks:
+      - elastic_net
+
+  minio:
+    container_name: answer-minio
+    image: minio/minio:RELEASE.2020-12-18T03-27-42Z
+    restart: always
+    volumes:
+      - minio_data:/data
+    ports:
+      - 9000:9000
+    labels:
+      - com.bogonets.answer.cluster=true
+      - com.bogonets.answer.cluster.category=s3
+    environment:
+      - TZ=Asia/Seoul
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-recc}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-recc1234}
+    command: ["server", "/data"]
+    healthcheck:
+      test: ["CMD", "curl", "-XGET", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    container_name: answer-redis
+    image: redis:6
+    restart: always
+    volumes:
+      - redis_data:/data
+    ports:
+      - 6379:6379
+    labels:
+      - com.bogonets.answer.cluster=true
+      - com.bogonets.answer.cluster.category=cache
+    environment:
+      - TZ=Asia/Seoul
+    networks:
+      - redis_net
+    command: ["redis-server"]
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rediscommander:
+    container_name: answer-rediscmd
+    image: rediscommander/redis-commander:latest
+    restart: always
+    labels:
+      - com.bogonets.answer.cluster=true
+      - com.bogonets.answer.cluster.category=tool
+    depends_on:
+      - redis
+    environment:
+      - TZ=Asia/Seoul
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - 8081:8081
+    networks:
+      - redis_net
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  es01_data:
+  es02_data:
+  es03_data:
+  minio_data:
+  redis_data:
+
+networks:
+  postgres_net:
+  elastic_net:
+  redis_net:

@@ -1,0 +1,32 @@
+{
+    "info": {
+        "name": "numpy_shape",
+        "version": "1.0.0",
+        "category": "numpy",
+        "keywords": ["numpy"],
+        "homepage": "https://answer.bogonets.com/",
+        "bugs": "https://answer.bogonets.com/",
+        "license": "Bogonet License",
+        "author": "zer0",
+        "dependencies": [
+            {"type": "pip", "src": "numpy"}
+        ],
+        "engines": ">=1.0.2",
+        "environment": {},
+        "titles": {
+            "en": "numpy.shape",
+            "ko": "numpy.shape"
+        },
+        "descriptions": {
+            "en": "Tuple of array dimensions.",
+            "ko": "배열의 차원 수를 반환한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "meta": {}
+    },
+    "controls": {
+        "input": "array",
+        "output": "result"
+    }
+}

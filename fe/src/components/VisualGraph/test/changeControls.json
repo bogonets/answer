@@ -1,0 +1,2736 @@
+{
+  "obj": [
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "array" }],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "result" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "numpy",
+        "dependencies": [{ "dest": "", "src": "numpy", "type": "pip" }],
+        "descriptions": {
+          "en": "Slice the numpy array..",
+          "ko": "Numpy 배열을 슬라이스한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["numpy"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "numpy_slice",
+        "titles": { "en": "numpy.slice", "ko": "numpy.slice" },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "",
+          "help": { "en": "List of slices.", "ko": "슬라이스할 목록." },
+          "name": "slices",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "slices", "ko": "slices" },
+          "type": "csv",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": { "dynamic": false, "list": [], "method": "" },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "get_data" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "minio",
+        "dependencies": [
+          { "dest": "", "src": "numpy", "type": "pip" },
+          { "dest": "", "src": "minio", "type": "pip" }
+        ],
+        "descriptions": {
+          "en": "Downloads an object.",
+          "ko": "오브젝트를 다운로드 받는다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "minio", "type": "pyenv" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["minio"],
+        "license": "MIT License",
+        "meta": {},
+        "name": "minio_get_object",
+        "titles": { "en": "Get object", "ko": "Get object" },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "",
+          "help": {
+            "en": "Server-Side Encryption headers (optional, defaults to None).",
+            "ko": "서버 측 암호화 헤더 목록."
+          },
+          "name": "sse",
+          "required": false,
+          "rule": "read_and_write",
+          "title": {
+            "en": "Server-Side Encryption",
+            "ko": "Server-Side Encryption"
+          },
+          "type": "csv",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "Any additional headers (optional, defaults to None).",
+            "ko": "추가 헤더 목록."
+          },
+          "name": "request_headers",
+          "required": false,
+          "rule": "read_and_write",
+          "title": { "en": "Request Headers", "ko": "Request Headers" },
+          "type": "csv",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "Access key is like user ID that uniquely identifies your account.",
+            "ko": "액세스 키는 계정을 고유하게 식별하는 사용자 ID와 같습니다."
+          },
+          "name": "access_key",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Access KEY", "ko": "Access KEY" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "URL to object storage service.",
+            "ko": "오브젝트 스토리지 서버의 주소."
+          },
+          "name": "endpoint",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "URL", "ko": "URL" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "Secret key is the password to your account.",
+            "ko": "비밀 키는 계정의 비밀번호입니다."
+          },
+          "name": "secret_key",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Secret KEY", "ko": "Secret KEY" },
+          "type": "str",
+          "valid": { "password": "true" }
+        },
+        {
+          "default_value": "",
+          "help": { "en": "Name of the bucket.", "ko": "버킷 이름" },
+          "name": "bucket_name",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Bucket name", "ko": "Bucket name" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "false",
+          "help": {
+            "en": "Set this value to 'True' to enable secure (HTTPS) access.",
+            "ko": "'True'로 선택할 경우 HTTPS 보안 접속을 적용한다."
+          },
+          "name": "secure",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Secure", "ko": "Secure" },
+          "type": "bool",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": { "en": "Name of the object.", "ko": "오브젝트 이름" },
+          "name": "object_name",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Object name", "ko": "Object name" },
+          "type": "str",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "array" }],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "result" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "cv2",
+        "dependencies": [
+          { "dest": "", "src": "numpy", "type": "pip" },
+          { "dest": "", "src": "opencv-python", "type": "pip" }
+        ],
+        "descriptions": {
+          "en": "Converts an image from one color space to another.",
+          "ko": "한 색상 공간에서 다른 색상 공간으로 이미지를 변환한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["cv2"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "cv2_cvt_color",
+        "titles": { "en": "cv2.cvtColor", "ko": "cv2.cvtColor" },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "BGR2RGB",
+          "help": { "en": "Convert flag.", "ko": "변환 플래그." },
+          "name": "flag",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Flag", "ko": "Flag" },
+          "type": "str",
+          "valid": {
+            "list": "BGR2RGB;RGB2BGR;BGR2GRAY;GRAY2BGR;RGB2GRAY;GRAY2RGB;BGR2HSV;HSV2BGR;RGB2HSV;HSV2RGB"
+          }
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [{ "mimes": ["image/jpeg"], "name": "preview" }],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "roi" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "wooruang",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "image",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Select a roi at a image",
+          "ko": "이미지에서 관심 영역을 선택한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["image"],
+        "license": "Bogonet License",
+        "meta": {
+          "components": {
+            "body": [
+              { "name": "viewImage", "props": {}, "ref": "image", "style": "" },
+              {
+                "name": "drawCanvas",
+                "props": { "limitShape": 1, "useShapes": ["rectangle", "polygon"] },
+                "ref": "canvas",
+                "style": ""
+              }
+            ],
+            "top": [
+              {
+                "align": "left",
+                "name": "signal-button",
+                "props": {
+                  "color": "blue",
+                  "name": "signal",
+                  "propertyName": "roi",
+                  "signal": {
+                    "signalName": "${PROPS.signalName}.png",
+                    "input_queries": [],
+                    "name": "~${OWN}.preview",
+                    "output_queries": ["${OWN}.preview?mime=image/jpeg"]
+                  },
+                  "small": false
+                },
+                "ref": "signalButton",
+                "style": "",
+                "transData": "image.setSource"
+              },
+              {
+                "align": "right",
+                "name": "get-property-button",
+                "props": {
+                  "color": "teal",
+                  "name": "get-property",
+                  "propertyName": "roi",
+                  "small": true
+                },
+                "ref": "getPropertyButton",
+                "style": "",
+                "transData": "canvas.setRectangles"
+              },
+              {
+                "align": "right",
+                "name": "set-property-button",
+                "props": {
+                  "color": "teal",
+                  "name": "set-property",
+                  "propertyName": "roi",
+                  "small": true
+                },
+                "ref": "setPropertyButton",
+                "sendData": "canvas.getRectangles",
+                "style": ""
+              }
+            ]
+          },
+          "gui": { "name": "roi_setting" }
+        },
+        "name": "image_select_roi",
+        "titles": {
+          "en": "Image ROI Selection",
+          "ko": "이미지 관심 영역 선택"
+        },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "TestName",
+          "help": { "en": "TESTING...", "ko": "테스트 중..." },
+          "name": "signalName",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Signal Name", "ko": "신호 명" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "0.,0.,1.,1.",
+          "help": { "en": "Region of Interest", "ko": "관심 영역" },
+          "name": "roi",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "ROI", "ko": "관심 영역" },
+          "type": "csv",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [
+            { "mimes": ["image/jpeg"], "name": "image" },
+            { "mimes": [], "name": "roi" }
+          ],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "output_image" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "wooruang",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "image",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Crop a roi at a image",
+          "ko": "이미지에서 관심 영역을 잘라낸다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["image"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "image_crop_roi",
+        "titles": { "en": "Image ROI Crop", "ko": "이미지 관심 영역 잘라내기" },
+        "version": "1"
+      },
+      "props": []
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "array" }],
+          "method": ""
+        },
+        "output": { "dynamic": false, "list": [], "method": "" }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "cv2",
+        "dependencies": [
+          { "dest": "", "src": "numpy", "type": "pip" },
+          { "dest": "", "src": "opencv-python", "type": "pip" }
+        ],
+        "descriptions": {
+          "en": "Saves an image to a specified file.",
+          "ko": "이미지를 파일로 저장한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["cv2"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "cv2_imwrite",
+        "titles": { "en": "cv2.imwrite", "ko": "cv2.imwrite" },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "",
+          "help": { "en": "Name of the file.", "ko": "저장할 파일 이름." },
+          "name": "filename",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Filename", "ko": "Filename" },
+          "type": "str",
+          "valid": { "dyhint": "filename_list" }
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "image" }],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [
+            { "mimes": [], "name": "w" },
+            { "mimes": [], "name": "h" },
+            { "mimes": [], "name": "wh" }
+          ],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "wooruang",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "cv2-helper",
+        "dependencies": [
+          { "dest": "", "src": "numpy", "type": "pip" },
+          { "dest": "", "src": "opencv-python", "type": "pip" }
+        ],
+        "descriptions": {
+          "en": "Get image's size.",
+          "ko": "이미지 크기를 반환한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["cv2-helper"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "cv2_helper_get_size",
+        "titles": { "en": "GetSize", "ko": "이미지 크기" },
+        "version": "1"
+      },
+      "props": []
+    },
+    {
+      "controls": {
+        "input": { "dynamic": false, "list": [], "method": "" },
+        "output": { "dynamic": false, "list": [], "method": "" }
+      },
+      "info": {
+        "author": "cherish00331",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "tesseract",
+        "dependencies": [
+          { "dest": "", "src": "numpy", "type": "pip" },
+          { "dest": "", "src": "opencv-python", "type": "pip" },
+          { "dest": "", "src": "pytesserect", "type": "pip" },
+          { "dest": "", "src": "tesserect-ocr", "type": "apt" },
+          { "dest": "", "src": "libtesserect-dev", "type": "apt" }
+        ],
+        "descriptions": {
+          "en": "Recognize strings in a image",
+          "ko": "이미지에서 글자를 인식한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["tesseract"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "tesseract_image_to_string",
+        "titles": {
+          "en": "tesseract.image_to_string",
+          "ko": "tesseract.image_to_string"
+        },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "",
+          "help": { "en": "extra option", "ko": "추가 옵션" },
+          "name": "config",
+          "required": false,
+          "rule": "read_and_write",
+          "title": { "en": "extra option", "ko": "추가 옵션" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "Default, based on what is available.",
+          "help": {
+            "en": "Specify OCR Engine mode.",
+            "ko": "OCR 엔진 모드 지정한다."
+          },
+          "name": "oem",
+          "required": false,
+          "rule": "read_and_write",
+          "title": { "en": "OCR Engine mode", "ko": "OCR 엔진 모드" },
+          "type": "str",
+          "valid": {
+            "list": "Legacy engine only.;Neural nets LSTM engine only.;Legacy + LSTM engines.;Default, based on what is available.;"
+          }
+        },
+        {
+          "default_value": "eng-legacy",
+          "help": {
+            "en": "List available languages for extracting text.",
+            "ko": "텍스트 추출 언어"
+          },
+          "name": "lang",
+          "required": false,
+          "rule": "read_and_write",
+          "title": {
+            "en": "Recognized languages for OCR",
+            "ko": "OCR 인식 언어"
+          },
+          "type": "str",
+          "valid": { "list": "eng-legacy;kor;eng;osd" }
+        },
+        {
+          "default_value": "Fully automatic page segmentation, but no OSD. (Default)",
+          "help": {
+            "en": "Specify page segmentation mode.",
+            "ko": "페이지 분할 모드를 지정한다."
+          },
+          "name": "psm",
+          "required": false,
+          "rule": "read_and_write",
+          "title": { "en": "page segmentation mode", "ko": "페이지 분할 모드" },
+          "type": "str",
+          "valid": {
+            "list": "Orientation and script detection (OSD) only.;Automatic page segmentation with OSD.;Automatic page segmentation, but no OSD, or OCR.;Fully automatic page segmentation, but no OSD. (Default);Assume a single column of text of variable sizes.;Assume a single uniform block of vertically aligned text.;Assume a single uniform block of text.;Treat the image as a single text line.;Treat the image as a single word.;Treat the image as a single word in a circle.;Treat the image as a single character.;Sparse text. Find as much text as possible in no particular order.;Sparse text with OSD.;Raw line. Treat the image as a single text line,\nbypassing hacks that are Tesseract-specific.;"
+          }
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "array" }],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [
+            { "mimes": [], "name": "min_val" },
+            { "mimes": [], "name": "max_val" },
+            { "mimes": [], "name": "min_loc" },
+            { "mimes": [], "name": "max_loc" }
+          ],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "wooruang",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "cv2",
+        "dependencies": [
+          { "dest": "", "src": "numpy", "type": "pip" },
+          { "dest": "", "src": "opencv-python", "type": "pip" }
+        ],
+        "descriptions": {
+          "en": "Finds the global minimum and maximum in an array.",
+          "ko": "한 배열에서 최대와 최소의 위치와 Value를 찾는다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["cv2"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "cv2_min_max_loc",
+        "titles": { "en": "cv2.minMaxLoc", "ko": "cv2.minMaxLoc" },
+        "version": "1"
+      },
+      "props": []
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [
+            { "mimes": [], "name": "number1" },
+            { "mimes": [], "name": "number2" }
+          ],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "condition" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "wooruang",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "condition",
+        "dependencies": [{ "dest": "", "src": "numpy", "type": "pip" }],
+        "descriptions": {
+          "en": "Return 0 or 1 by comparing numbers.",
+          "ko": "숫자를 비교하여 0 또는 1을 반환한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["condition"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "condition_compare_numbers",
+        "titles": { "en": "Compare numbers", "ko": "숫자 비교" },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "==",
+          "help": { "en": "Symbol for comparsion.", "ko": "비교를 위한 기호." },
+          "name": "symbol",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Symbol", "ko": "기호" },
+          "type": "str",
+          "valid": { "list": "==;>;<;>=;<=;" }
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [
+            { "mimes": [], "name": "image" },
+            { "mimes": [], "name": "template" }
+          ],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "result" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "wooruang",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "cv2",
+        "dependencies": [
+          { "dest": "", "src": "numpy", "type": "pip" },
+          { "dest": "", "src": "opencv-python", "type": "pip" }
+        ],
+        "descriptions": {
+          "en": "Template matching is a technique for finding areas of an image that match (are similar) to a template image (patch).",
+          "ko": "템플릿 매칭은 한 이미지의 영역에서 템플릿 이미지(patch)와 유사한 이미지를 찾는 기술이다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["cv2"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "cv2_match_template",
+        "titles": { "en": "cv2.matchTemplate", "ko": "cv2.matchTemplate" },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "TM_CCOEFF_NORMED",
+          "help": {
+            "en": "Parameter specifying the comparison method.",
+            "ko": "특정 비교 방법"
+          },
+          "name": "method",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Matching Method", "ko": "매칭 방법" },
+          "type": "str",
+          "valid": {
+            "list": "TM_CCOEFF;TM_CCOEFF_NORMED;TM_CCORR;TM_CCORR_NORMED;TM_SQDIFF;TM_SQDIFF_NORMED;"
+          }
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [
+            { "mimes": [], "name": "source" },
+            { "mimes": [], "name": "lines" }
+          ],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "result" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "cv2",
+        "dependencies": [
+          { "dest": "", "src": "numpy", "type": "pip" },
+          { "dest": "", "src": "opencv-python", "type": "pip" }
+        ],
+        "descriptions": {
+          "en": "Draws a line segment connecting two points.",
+          "ko": "두 점을 연결하는 선분을 그린다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["cv2"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "cv2_line",
+        "titles": { "en": "cv2.line", "ko": "cv2.line" },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "0",
+          "help": {
+            "en": "Number of fractional bits in the point coordinates.",
+            "ko": "점 좌표의 소수 비트 수."
+          },
+          "name": "shift",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Shift", "ko": "Shift" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "8",
+          "help": { "en": "Type of the line.", "ko": "선분의 종류." },
+          "name": "line_type",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Line Type", "ko": "Line Type" },
+          "type": "str",
+          "valid": { "list": "4;8;AA" }
+        },
+        {
+          "default_value": "0,0,0",
+          "help": { "en": "Line color.", "ko": "선분의 색상." },
+          "name": "color",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Line color", "ko": "Line color" },
+          "type": "color",
+          "valid": {}
+        },
+        {
+          "default_value": "1",
+          "help": { "en": "Line thickness.", "ko": "선분의 두께." },
+          "name": "thickness",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Line thickness", "ko": "Line thickness" },
+          "type": "int",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": { "dynamic": false, "list": [], "method": "" },
+        "output": { "dynamic": false, "list": [], "method": "" }
+      },
+      "info": {
+        "author": "wooruang",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "string",
+        "dependencies": [{ "dest": "", "src": "numpy", "type": "pip" }],
+        "descriptions": {
+          "en": "Provide a current time's text",
+          "ko": "현재 시계 문자열을 제공한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["string"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "string_clock_text",
+        "titles": { "en": "Current Clock Text", "ko": "현재 시계 문자열" },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "%Y%m%dT%H%M%S",
+          "help": { "en": "Format for time", "ko": "시계 문자열을 위한 포맷" },
+          "name": "format",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Format", "ko": "형식" },
+          "type": "str",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": { "dynamic": false, "list": [], "method": "" },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "result" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "numpy",
+        "dependencies": [{ "dest": "", "src": "numpy", "type": "pip" }],
+        "descriptions": {
+          "en": "Returns an array filled with zeros.",
+          "ko": "0으로 채워진 배열을 반환한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["numpy"],
+        "license": "Bogonet License",
+        "meta": {
+          "components": {
+            "body": [
+              { "name": "viewImage", "props": {}, "ref": "image", "style": "" },
+              {
+                "name": "drawCanvas",
+                "props": { "limitShape": 1, "useShapes": ["rectangle"] },
+                "ref": "canvas",
+                "style": ""
+              }
+            ],
+            "top": [
+              {
+                "align": "left",
+                "name": "signal-button",
+                "props": {
+                  "color": "blue",
+                  "name": "signal",
+                  "propertyName": "shape",
+                  "signal": {
+                    "input_queries": [],
+                    "name": "~${OWN}.preview",
+                    "output_queries": ["${OWN}.preview?mime=image/jpeg"]
+                  },
+                  "small": false
+                },
+                "ref": "signalButton",
+                "style": "",
+                "transData": "image.setSource"
+              },
+              {
+                "align": "right",
+                "name": "get-property-button",
+                "props": {
+                  "color": "teal",
+                  "name": "get-property",
+                  "propertyName": "shape",
+                  "small": true
+                },
+                "ref": "getPropertyButton",
+                "style": "",
+                "transData": "canvas.setRectangles"
+              },
+              {
+                "align": "right",
+                "name": "set-property-button",
+                "props": {
+                  "color": "teal",
+                  "name": "set-property",
+                  "propertyName": "shape",
+                  "small": true
+                },
+                "ref": "setPropertyButton",
+                "sendData": "canvas.getRectangles",
+                "style": ""
+              }
+            ]
+          },
+          "gui": { "name": "roi_setting" }
+        },
+        "name": "numpy_zeros",
+        "titles": { "en": "numpy.zeros", "ko": "numpy.zeros" },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "int32",
+          "help": { "en": "Numpy dtype.", "ko": "Numpy dtype." },
+          "name": "dtype",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "dtype", "ko": "dtype" },
+          "type": "str",
+          "valid": {
+            "list": "int8;int16;int32;int64;uint8;uint16;uint32;uint64;float32;float64;"
+          }
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "Shape of the new array.",
+            "ko": "Shape of the new array."
+          },
+          "name": "shape",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "shape", "ko": "shape" },
+          "type": "csv",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": { "dynamic": true, "list": [], "method": "" },
+        "output": { "dynamic": true, "list": [], "method": "" }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Copies paired or grouped input and output boxes.",
+          "ko": "쌍을 이루거나 그룹진 입력과 출력 상자를 복사한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "bypass",
+        "titles": { "en": "Bypass", "ko": "복사/전달" },
+        "version": "1.0.2"
+      },
+      "props": [
+        {
+          "default_value": "",
+          "help": {
+            "en": "Enter 'IN-OUT' to form a pair.",
+            "ko": "쌍을 이루기 위해 'IN-OUT'과 같이 입력한다."
+          },
+          "name": "pairs",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Pairs", "ko": "쌍 목록" },
+          "type": "csv",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": { "dynamic": false, "list": [], "method": "" },
+        "output": {
+          "dynamic": false,
+          "list": [
+            { "mimes": ["image/jpeg", "image/png"], "name": "image" },
+            { "mimes": ["text/plain"], "name": "text" }
+          ],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Displays the current time as an image.",
+          "ko": "현재 시간을 이미지로 출력한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "clock_image",
+        "titles": { "en": "Clock Image", "ko": "시계 이미지" },
+        "version": "1.0.2"
+      },
+      "props": [
+        {
+          "default_value": "Time:",
+          "help": {
+            "en": "The prefix text to be printed statically.",
+            "ko": "고정적으로 출력될 접두사 문자열."
+          },
+          "name": "prefix_text",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Prefix text", "ko": "접두사" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "480",
+          "help": {
+            "en": "The width of the image to be printed.",
+            "ko": "출력할 이미지의 너비."
+          },
+          "name": "width",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Image width", "ko": "이미지 너비" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "%Y-%m-%dT%H:%M:%S",
+          "help": {
+            "en": "How to print the current time.",
+            "ko": "현재 시간을 출력할 방법."
+          },
+          "name": "time_format",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Time format", "ko": "시간 포맷" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "480",
+          "help": {
+            "en": "The height of the image to be printed.",
+            "ko": "출력할 이미지의 높이."
+          },
+          "name": "height",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Image height", "ko": "이미지 높이" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "3",
+          "help": {
+            "en": "The channels of the image to be printed.",
+            "ko": "출력할 이미지의 채널."
+          },
+          "name": "channels",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Image channels", "ko": "이미지 채널" },
+          "type": "int",
+          "valid": { "list": "1;3;4" }
+        },
+        {
+          "default_value": "#FFFFFFFF",
+          "help": {
+            "en": "The color of the text to display the time.",
+            "ko": "시간을 표시할 문자 색상."
+          },
+          "name": "fg_color",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Text color", "ko": "문자 색상" },
+          "type": "color",
+          "valid": {}
+        },
+        {
+          "default_value": "#000000FF",
+          "help": {
+            "en": "Background color of the image.",
+            "ko": "이미지의 배경 색상."
+          },
+          "name": "bg_color",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Background color", "ko": "배경 색상" },
+          "type": "color",
+          "valid": {}
+        },
+        {
+          "default_value": "20.0",
+          "help": {
+            "en": "The size of the font to display the time.",
+            "ko": "시간을 표시할 폰트의 크기."
+          },
+          "name": "font_size",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Font size", "ko": "폰트 크기" },
+          "type": "float",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [
+            { "mimes": [], "name": "source" },
+            { "mimes": [], "name": "rectangles" }
+          ],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "result" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "cv2",
+        "dependencies": [
+          { "dest": "", "src": "numpy", "type": "pip" },
+          { "dest": "", "src": "opencv-python", "type": "pip" }
+        ],
+        "descriptions": {
+          "en": "Draws a simple, thick, or filled up-right rectangle.",
+          "ko": "사각형을 그린다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["cv2"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "cv2_rectangle",
+        "titles": { "en": "cv2.rectangle", "ko": "cv2.rectangle" },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "0",
+          "help": {
+            "en": "Number of fractional bits in the point coordinates.",
+            "ko": "점 좌표의 소수 비트 수."
+          },
+          "name": "shift",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Shift", "ko": "Shift" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "8",
+          "help": { "en": "Type of the line.", "ko": "선분의 종류." },
+          "name": "line_type",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Line Type", "ko": "Line Type" },
+          "type": "str",
+          "valid": { "list": "4;8;AA" }
+        },
+        {
+          "default_value": "0,0,0",
+          "help": {
+            "en": "Rectangle color or brightness (grayscale image).",
+            "ko": "사각형의 색상."
+          },
+          "name": "color",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Rectangle color", "ko": "Rectangle color" },
+          "type": "color",
+          "valid": {}
+        },
+        {
+          "default_value": "1",
+          "help": {
+            "en": "Thickness of lines that make up the rectangle.",
+            "ko": "사각형을 구성하는 선분의 두께. 사각형의 내부를 채우고싶다면 음수를 전달하면 된다."
+          },
+          "name": "thickness",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Line thickness", "ko": "Line thickness" },
+          "type": "int",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "in" }],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "out" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Send a async signal to a task or node. Returned immediately after transmission.",
+          "ko": "태스크(Task)또는 노드(Node)에 비동기 신호를 보낸다. 전송후 바로 반환됩니다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "async_signal",
+        "titles": { "en": "Async signal", "ko": "비동기 신호 전송" },
+        "version": "1.0.2"
+      },
+      "props": [
+        {
+          "default_value": "",
+          "help": {
+            "en": "Check the last error code.",
+            "ko": "마지막 에러 코드를 확인한다."
+          },
+          "name": "last_code",
+          "required": false,
+          "rule": "read_only",
+          "title": { "en": "Last error code", "ko": "마지막 에러 코드" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "Check the last error code name.",
+            "ko": "마지막 에러 코드 이름을 확인한다."
+          },
+          "name": "last_code_name",
+          "required": false,
+          "rule": "read_only",
+          "title": { "en": "Last error name", "ko": "마지막 에러 코드 이름" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "Check the current state.",
+            "ko": "람다의 현재 상태를 확인한다."
+          },
+          "name": "state",
+          "required": false,
+          "rule": "read_only",
+          "title": { "en": "State", "ko": "상태" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "wait",
+          "help": {
+            "en": "Wait until it is ready or skip the current work.",
+            "ko": "준비 상태가 될 때 까지 기다리거나, 현재 작업을 건너뛴다."
+          },
+          "name": "working_rule",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Working rule", "ko": "작업 규칙" },
+          "type": "str",
+          "valid": { "list": "wait;skip" }
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "The size of the packet's send buffer.",
+            "ko": "패킷의 송신 버퍼 크기."
+          },
+          "name": "send_buffer_byte",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Send buffer byte", "ko": "Send buffer byte" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "This is the depth of the socket send buffer as a number of messages.",
+            "ko": "소켓의 송신 버퍼가 수용할 수 있는 메시지 개수."
+          },
+          "name": "send_number_of_messages",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Send messages", "ko": "Send messages" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "The size of the packet's receive buffer.",
+            "ko": "패킷의 수신 버퍼 크기."
+          },
+          "name": "recv_buffer_byte",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Receive buffer byte", "ko": "Receive buffer byte" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "This is the depth of the socket’s receive buffer as a number of messages.",
+            "ko": "소켓의 수신 버퍼가 수용할 수 있는 메시지 개수."
+          },
+          "name": "recv_number_of_messages",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Receive messages", "ko": "Receive messages" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "The address of the task or node. Wait until transmission is finished.",
+            "ko": "태스크(Task) 또는 노드(Node)의 주소."
+          },
+          "name": "url",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "URL", "ko": "URL" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "The location to set the input data.",
+            "ko": "입력된 데이터를 전달할 위치."
+          },
+          "name": "input_query",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Input query", "ko": "입력 쿼리" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "The location to get the output data.",
+            "ko": "출력할 데이터를 획득할 위치."
+          },
+          "name": "output_query",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Output query", "ko": "출력 쿼리" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "Signal name to be transmitted.",
+            "ko": "전송할 신호명."
+          },
+          "name": "signal_name",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Signal name", "ko": "신호명" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "This is the socket receive timeout.",
+            "ko": "소켓의 수신 제한시간."
+          },
+          "name": "recv_timeout",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Receive timeout", "ko": "Receive timeout" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "This is the socket send timeout.",
+            "ko": "소켓의 송신 제한시간."
+          },
+          "name": "send_timeout",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Send timeout", "ko": "Send timeout" },
+          "type": "int",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": { "dynamic": false, "list": [], "method": "" },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "result" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "cv2",
+        "dependencies": [
+          { "dest": "", "src": "numpy", "type": "pip" },
+          { "dest": "", "src": "opencv-python", "type": "pip" }
+        ],
+        "descriptions": {
+          "en": "Loads an image from a file.",
+          "ko": "이미지 파일을 읽는다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["cv2"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "cv2_imread",
+        "titles": { "en": "cv2.imread", "ko": "cv2.imread" },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "true",
+          "help": { "en": "Cache in memory.", "ko": "메모리에 저장한다." },
+          "name": "cache",
+          "required": false,
+          "rule": "read_and_write",
+          "title": { "en": "Enable cache", "ko": "Enable cache" },
+          "type": "bool",
+          "valid": {}
+        },
+        {
+          "default_value": "color",
+          "help": { "en": "How to read images.", "ko": "이미지를 읽는 방법." },
+          "name": "flag",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Flag", "ko": "Flag" },
+          "type": "str",
+          "valid": { "list": "color;grayscale;unchanged" }
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "Name of file to be loaded.",
+            "ko": "읽어올 파일 이름."
+          },
+          "name": "filename",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Filename", "ko": "Filename" },
+          "type": "str",
+          "valid": { "dyhint": "filename_list" }
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "List of filenames that can be read.",
+            "ko": "읽어올 수 있는 파일 이름 목록."
+          },
+          "name": "filename_list",
+          "required": false,
+          "rule": "read_only",
+          "title": { "en": "Filename List", "ko": "Filename List" },
+          "type": "csv",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "in" }],
+          "method": ""
+        },
+        "output": { "dynamic": false, "list": [], "method": "" }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Logging the box information.",
+          "ko": "박스(BOX) 정보를 로그로 출력한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "box_logging",
+        "titles": { "en": "Box Logging", "ko": "Box Logging" },
+        "version": "1.0.2"
+      },
+      "props": [
+        {
+          "default_value": "WARNING",
+          "help": {
+            "en": "Set the severity of the log to be printed.",
+            "ko": "출력할 로그의 심각도를 설정."
+          },
+          "name": "severity",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Severity", "ko": "심각도" },
+          "type": "str",
+          "valid": {
+            "list": "OFF;EMERGENCY;ALERT;CRITICAL;ERROR;WARNING;NOTICE;INFO;DEBUG"
+          }
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [
+            { "mimes": [], "name": "xy" },
+            { "mimes": [], "name": "wh" }
+          ],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "rectangle" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "wooruang",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "cv2-helper",
+        "dependencies": [
+          { "dest": "", "src": "numpy", "type": "pip" },
+          { "dest": "", "src": "opencv-python", "type": "pip" }
+        ],
+        "descriptions": {
+          "en": "Convert a rect by a loc.",
+          "ko": "Loc을 Rect로 변환한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["cv2-helper"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "cv2_helper_cvt_to_rect",
+        "titles": { "en": "Convert to rect", "ko": "Rect로 변환" },
+        "version": "1"
+      },
+      "props": []
+    },
+    {
+      "controls": {
+        "input": { "dynamic": false, "list": [], "method": "" },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": ["image/jpeg", "image/png"], "name": "out" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Output real-time video.",
+          "ko": "실시간 비디오를 출력한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "live_video",
+        "titles": { "en": "Live Video", "ko": "실시간 비디오 재생기" },
+        "version": "1.0.2"
+      },
+      "props": [
+        {
+          "default_value": "",
+          "help": {
+            "en": "If the connection is lost, reconnect automatically.",
+            "ko": "연결이 끊어지면, 자동으로 재연결 시도."
+          },
+          "name": "reconnect",
+          "required": false,
+          "rule": "initialize_only",
+          "title": { "en": "Auto reconnect", "ko": "자동 재연결" },
+          "type": "bool",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": { "en": "Source video address.", "ko": "원본 비디오 주소." },
+          "name": "url",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "URL", "ko": "URL" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "Extension options. (See FFmpeg Protocols)",
+            "ko": "확장 옵션. (FFmpeg Protocols 참조)"
+          },
+          "name": "options",
+          "required": false,
+          "rule": "initialize_only",
+          "title": { "en": "List of options", "ko": "옵션 목록" },
+          "type": "str",
+          "valid": { "hint": "rtsp_transport=udp;;rtsp_transport=tcp;" }
+        },
+        {
+          "default_value": "rgb24",
+          "help": {
+            "en": "The format of still images.",
+            "ko": "정지 영상의 포맷."
+          },
+          "name": "format",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Image Format", "ko": "이미지 포맷" },
+          "type": "str",
+          "valid": { "list": "rgba;rgb24;bgr24" }
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [
+            { "mimes": [], "name": "condition" },
+            { "mimes": [], "name": "data" }
+          ],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [
+            { "mimes": [], "name": "true" },
+            { "mimes": [], "name": "false" }
+          ],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Data is delivered according to the conditions.",
+          "ko": "조건에 맞춰 데이터를 전달한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "switch",
+        "titles": { "en": "Switch", "ko": "스위치" },
+        "version": "1.0.2"
+      },
+      "props": [
+        {
+          "default_value": "false",
+          "help": {
+            "en": "If the condition fails, it is treated as an error.",
+            "ko": "조건이 실패 일 경우 오류로 처리한다."
+          },
+          "name": "false_is_error",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "False is error", "ko": "False is error" },
+          "type": "bool",
+          "valid": {}
+        },
+        {
+          "default_value": "all",
+          "help": {
+            "en": "How to test the condition.",
+            "ko": "조건을 테스트할 방법."
+          },
+          "name": "test_type",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Test type", "ko": "테스트 종류" },
+          "type": "str",
+          "valid": { "list": "all;any" }
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": true,
+          "list": [{ "mimes": [], "name": "sink" }],
+          "method": ""
+        },
+        "output": { "dynamic": false, "list": [], "method": "" }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Does nothing.",
+          "ko": "어떤 작업도 하지 않는다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "null_sink",
+        "titles": { "en": "Null Sink", "ko": "휴지통" },
+        "version": "1.0.2"
+      },
+      "props": []
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [
+            { "mimes": [], "name": "video" },
+            { "mimes": [], "name": "audio" },
+            { "mimes": [], "name": "data" }
+          ],
+          "method": ""
+        },
+        "output": { "dynamic": false, "list": [], "method": "" }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Start the WebRTC server.",
+          "ko": "WebRTC 서버를 시작한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "rtc_server",
+        "titles": { "en": "RTC Server", "ko": "RTC Server" },
+        "version": "1.0.2"
+      },
+      "props": [
+        {
+          "default_value": "WARNING",
+          "help": {
+            "en": "Set the severity of the log to be printed.",
+            "ko": "출력할 로그의 심각도를 설정."
+          },
+          "name": "rtc_severity",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "RTC Log Severity", "ko": "RTC 로그 심각도" },
+          "type": "str",
+          "valid": {
+            "list": "OFF;EMERGENCY;ALERT;CRITICAL;ERROR;WARNING;NOTICE;INFO;DEBUG"
+          }
+        },
+        {
+          "default_value": "",
+          "help": { "en": "SSL Certificate", "ko": "SSL Certificate" },
+          "name": "ssl_certificate",
+          "required": false,
+          "rule": "initialize_only",
+          "title": { "en": "SSL Certificate", "ko": "SSL Certificate" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": { "en": "Access Control List", "ko": "Access Control List" },
+          "name": "access_control_list",
+          "required": false,
+          "rule": "initialize_only",
+          "title": { "en": "ACL", "ko": "ACL" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "*",
+          "help": {
+            "en": "Access-Control-Allow-Methods in HTTP",
+            "ko": "Access-Control-Allow-Methods in HTTP"
+          },
+          "name": "access_control_allow_methods",
+          "required": false,
+          "rule": "initialize_only",
+          "title": {
+            "en": "Access Control Allow Methods",
+            "ko": "Access Control Allow Methods"
+          },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "false",
+          "help": {
+            "en": "Make the JSON protocol easy for humans to read.",
+            "ko": "JSON 프로토콜이 사람이 쉽게 읽을 수 있도록 적용."
+          },
+          "name": "styled_json",
+          "required": false,
+          "rule": "initialize_only",
+          "title": { "en": "Styled JSON", "ko": "Styled JSON" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": { "en": "Global auth file", "ko": "Global auth file" },
+          "name": "global_auth_file",
+          "required": false,
+          "rule": "initialize_only",
+          "title": { "en": "Global auth file", "ko": "Global auth file" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "1000",
+          "help": {
+            "en": "Wait until running state.",
+            "ko": "실행 상태가 될 때 까지 대기한다."
+          },
+          "name": "wait_running",
+          "required": false,
+          "rule": "initialize_only",
+          "title": { "en": "Wait Running", "ko": "Wait Running" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "${STORAGE_WWW}/rtc",
+          "help": {
+            "en": "HTML document root directory.",
+            "ko": "HTML 문서가 포함된 루트 디렉토리."
+          },
+          "name": "document_root",
+          "required": false,
+          "rule": "initialize_only",
+          "title": { "en": "Document Root", "ko": "Document Root" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "stun://0.0.0.0:3478",
+          "help": { "en": "ICE Servers", "ko": "ICE Servers" },
+          "name": "ice_servers",
+          "required": false,
+          "rule": "initialize_only",
+          "title": { "en": "ICE Servers", "ko": "ICE Servers" },
+          "type": "str",
+          "valid": {
+            "hint": "stun.l.google.com:19302;stun1.l.google.com:19302;stun2.l.google.com:19302;stun3.l.google.com:19302;stun4.l.google.com:19302"
+          }
+        },
+        {
+          "default_value": "0.0.0.0:28080",
+          "help": {
+            "en": "HTTP server address for WebRTC communication.",
+            "ko": "WebRTC 통신을위한 HTTP 서버 주소."
+          },
+          "name": "bind_address",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Bind address", "ko": "Bind address" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "*",
+          "help": {
+            "en": "Access-Control-Allow-Headers in HTTP",
+            "ko": "Access-Control-Allow-Headers in HTTP"
+          },
+          "name": "access_control_allow_headers",
+          "required": false,
+          "rule": "initialize_only",
+          "title": {
+            "en": "Access Control Allow Headers",
+            "ko": "Access Control Allow Headers"
+          },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "*",
+          "help": {
+            "en": "Access-Control-Allow-Origin in HTTP",
+            "ko": "Access-Control-Allow-Origin in HTTP"
+          },
+          "name": "access_control_allow_origin",
+          "required": false,
+          "rule": "initialize_only",
+          "title": {
+            "en": "Access Control Allow Origin",
+            "ko": "Access Control Allow Origin"
+          },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "1024",
+          "help": {
+            "en": "Maximum buffer size for log messages.",
+            "ko": "로그 메시지의 최대 버퍼 크기."
+          },
+          "name": "max_messages",
+          "required": false,
+          "rule": "initialize_only",
+          "title": { "en": "Max messages", "ko": "Max messages" },
+          "type": "str",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "in" }],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "out" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Slice the box data.",
+          "ko": "박스(BOX) 데이터를 슬라이스한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "box_slice",
+        "titles": { "en": "Box Slice", "ko": "Box Slice" },
+        "version": "1.0.2"
+      },
+      "props": [
+        {
+          "default_value": "",
+          "help": {
+            "en": "Python slice format.",
+            "ko": "Python slice format."
+          },
+          "name": "slices",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Slices", "ko": "Slices" },
+          "type": "csv",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "in" }],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [
+            { "mimes": [], "name": "out" },
+            { "mimes": [], "name": "masks" }
+          ],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Find the object in the image.",
+          "ko": "영상에서 객체를 찾는다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "segmentation",
+        "titles": { "en": "Segmentation", "ko": "Segmentation" },
+        "version": "1.0.2"
+      },
+      "props": [
+        {
+          "default_value": "bogo",
+          "help": {
+            "en": "Configuration file or name.",
+            "ko": "설정 파일 또는 이름."
+          },
+          "name": "config",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Config", "ko": "Config" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": { "en": "Weight file path.", "ko": "Weight file path." },
+          "name": "weight",
+          "required": false,
+          "rule": "initialize_only",
+          "title": { "en": "Weight file", "ko": "Weight file" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "cpu",
+          "help": { "en": "Weight file path.", "ko": "Weight file path." },
+          "name": "device_type",
+          "required": false,
+          "rule": "initialize_only",
+          "title": { "en": "Weight file", "ko": "Weight file" },
+          "type": "str",
+          "valid": { "list": "cpu;gpu" }
+        },
+        {
+          "default_value": "0.7",
+          "help": { "en": "Confidence threshold.", "ko": "신뢰 임계 값." },
+          "name": "threshold",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Threshold", "ko": "Threshold" },
+          "type": "float",
+          "valid": {}
+        },
+        {
+          "default_value": "800",
+          "help": { "en": "Image size.", "ko": "이미지 크기." },
+          "name": "image_size",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Image size", "ko": "Image size" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "false",
+          "help": {
+            "en": "Calculate only the bounding box of the object.",
+            "ko": "객체의 바운딩 박스만 계산한다."
+          },
+          "name": "only_bbox",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Only BBOX", "ko": "Only BBOX" },
+          "type": "bool",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "List of additional settings to be modified.",
+            "ko": "수정할 추가 설정 목록."
+          },
+          "name": "args",
+          "required": false,
+          "rule": "initialize_only",
+          "title": { "en": "Extended arguments", "ko": "확장 인수" },
+          "type": "csv",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": { "dynamic": false, "list": [], "method": "" },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": ["image/jpeg", "image/png"], "name": "out" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Output fixed image data.",
+          "ko": "고정된 이미지 데이터를 출력한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "static_image",
+        "titles": { "en": "Static Image", "ko": "고정 이미지" },
+        "version": "1.0.2"
+      },
+      "props": [
+        {
+          "default_value": "",
+          "help": {
+            "en": "Path to the image file on the machine where the process exists.",
+            "ko": "프로세스가 존재하는 머신의 이미지 파일 경로."
+          },
+          "name": "path",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Image file path.", "ko": "이미지 파일 경로." },
+          "type": "str",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": { "dynamic": false, "list": [], "method": "" },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "number" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "wooruang",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "number",
+        "dependencies": [{ "dest": "", "src": "numpy", "type": "pip" }],
+        "descriptions": {
+          "en": "Provide a static number",
+          "ko": "고정 숫자를 제공한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "", "type": "" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["number"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "number_static_number",
+        "titles": { "en": "Static Number", "ko": "고정 숫자" },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "int32",
+          "help": { "en": "Type", "ko": "타입" },
+          "name": "type",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Type", "ko": "타입" },
+          "type": "str",
+          "valid": { "list": "int8;int16;int32;int64;float16;float32" }
+        },
+        {
+          "default_value": "0",
+          "help": { "en": "Value", "ko": "숫자" },
+          "name": "value",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Value", "ko": "숫자" },
+          "type": "double",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "in" }],
+          "method": ""
+        },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "out" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Send a signal to a task or node. Wait until transmission is finished.",
+          "ko": "태스크(Task)또는 노드(Node)에 신호를 보낸다. 전송이 완료될 때 까지 대기한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "signal",
+        "titles": { "en": "Signal", "ko": "신호 전송" },
+        "version": "1.0.2"
+      },
+      "props": [
+        {
+          "default_value": "",
+          "help": {
+            "en": "The size of the packet's send buffer.",
+            "ko": "패킷의 송신 버퍼 크기."
+          },
+          "name": "send_buffer_byte",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Send buffer byte", "ko": "Send buffer byte" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "This is the depth of the socket send buffer as a number of messages.",
+            "ko": "소켓의 송신 버퍼가 수용할 수 있는 메시지 개수."
+          },
+          "name": "send_number_of_messages",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Send messages", "ko": "Send messages" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "The size of the packet's receive buffer.",
+            "ko": "패킷의 수신 버퍼 크기."
+          },
+          "name": "recv_buffer_byte",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Receive buffer byte", "ko": "Receive buffer byte" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "This is the depth of the socket’s receive buffer as a number of messages.",
+            "ko": "소켓의 수신 버퍼가 수용할 수 있는 메시지 개수."
+          },
+          "name": "recv_number_of_messages",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Receive messages", "ko": "Receive messages" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "The address of the task or node. Wait until transmission is finished.",
+            "ko": "태스크(Task) 또는 노드(Node)의 주소."
+          },
+          "name": "url",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "URL", "ko": "URL" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "The location to set the input data.",
+            "ko": "입력된 데이터를 전달할 위치."
+          },
+          "name": "input_query",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Input query", "ko": "입력 쿼리" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "The location to get the output data.",
+            "ko": "출력할 데이터를 획득할 위치."
+          },
+          "name": "output_query",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Output query", "ko": "출력 쿼리" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "Signal name to be transmitted.",
+            "ko": "전송할 신호명."
+          },
+          "name": "signal_name",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Signal name", "ko": "신호명" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "This is the socket receive timeout.",
+            "ko": "소켓의 수신 제한시간."
+          },
+          "name": "recv_timeout",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Receive timeout", "ko": "Receive timeout" },
+          "type": "int",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "This is the socket send timeout.",
+            "ko": "소켓의 송신 제한시간."
+          },
+          "name": "send_timeout",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Send timeout", "ko": "Send timeout" },
+          "type": "int",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": { "dynamic": false, "list": [], "method": "" },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": ["image/jpeg", "image/png"], "name": "out" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Simply output the video.",
+          "ko": "비디오를 간단히 출력한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "simple_video",
+        "titles": { "en": "Simple Video", "ko": "비디오 재생기" },
+        "version": "1.0.2"
+      },
+      "props": [
+        {
+          "default_value": "",
+          "help": { "en": "Source video address.", "ko": "원본 비디오 주소." },
+          "name": "url",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "URL", "ko": "URL" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "Extension options. (See FFmpeg Protocols)",
+            "ko": "확장 옵션. (FFmpeg Protocols 참조)"
+          },
+          "name": "options",
+          "required": false,
+          "rule": "initialize_only",
+          "title": { "en": "List of options", "ko": "옵션 목록" },
+          "type": "str",
+          "valid": { "hint": "rtsp_transport=udp;;rtsp_transport=tcp;" }
+        },
+        {
+          "default_value": "rgb24",
+          "help": {
+            "en": "The format of still images.",
+            "ko": "정지 영상의 포맷."
+          },
+          "name": "format",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Image Format", "ko": "이미지 포맷" },
+          "type": "str",
+          "valid": { "list": "rgba;rgb24;bgr24" }
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "put_data" }],
+          "method": ""
+        },
+        "output": { "dynamic": false, "list": [], "method": "" }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "minio",
+        "dependencies": [
+          { "dest": "", "src": "numpy", "type": "pip" },
+          { "dest": "", "src": "minio", "type": "pip" }
+        ],
+        "descriptions": {
+          "en": "Add a new object to the object storage server.",
+          "ko": "오브젝트 스토리지 서버에 새로운 오브젝트를 추가한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": ">=1.0.2",
+        "environment": { "name": "minio", "type": "pyenv" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["minio"],
+        "license": "Bogonet License",
+        "meta": {},
+        "name": "minio_put_object",
+        "titles": { "en": "Put object", "ko": "Put object" },
+        "version": "1"
+      },
+      "props": [
+        {
+          "default_value": "",
+          "help": { "en": "Name of the object.", "ko": "오브젝트 이름" },
+          "name": "object_name",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Object name", "ko": "Object name" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "false",
+          "help": {
+            "en": "Set this value to 'True' to enable secure (HTTPS) access.",
+            "ko": "'True'로 선택할 경우 HTTPS 보안 접속을 적용한다."
+          },
+          "name": "secure",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Secure", "ko": "Secure" },
+          "type": "bool",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": { "en": "Name of the bucket.", "ko": "버킷 이름" },
+          "name": "bucket_name",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Bucket name", "ko": "Bucket name" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "Secret key is the password to your account.",
+            "ko": "비밀 키는 계정의 비밀번호입니다."
+          },
+          "name": "secret_key",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Secret KEY", "ko": "Secret KEY" },
+          "type": "str",
+          "valid": { "password": "true" }
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "URL to object storage service.",
+            "ko": "오브젝트 스토리지 서버의 주소."
+          },
+          "name": "endpoint",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "URL", "ko": "URL" },
+          "type": "str",
+          "valid": {}
+        },
+        {
+          "default_value": "",
+          "help": {
+            "en": "Access key is like user ID that uniquely identifies your account.",
+            "ko": "액세스 키는 계정을 고유하게 식별하는 사용자 ID와 같습니다."
+          },
+          "name": "access_key",
+          "required": true,
+          "rule": "initialize_only",
+          "title": { "en": "Access KEY", "ko": "Access KEY" },
+          "type": "str",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": { "dynamic": false, "list": [], "method": "" },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": [], "name": "out" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Output fixed BOX data.",
+          "ko": "고정된 박스(BOX) 데이터를 출력한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "static_box",
+        "titles": { "en": "Static Box", "ko": "고정 박스(BOX)" },
+        "version": "1.0.2"
+      },
+      "props": [
+        {
+          "default_value": "",
+          "help": {
+            "en": "JSON format of box to be output.",
+            "ko": "출력될 박스(BOX)의 JSON 포맷."
+          },
+          "name": "box",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Output Box", "ko": "출력 박스(BOX)" },
+          "type": "box_json",
+          "valid": {}
+        }
+      ]
+    },
+    {
+      "controls": {
+        "input": { "dynamic": false, "list": [], "method": "" },
+        "output": {
+          "dynamic": false,
+          "list": [{ "mimes": ["text/plain"], "name": "out" }],
+          "method": ""
+        }
+      },
+      "info": {
+        "author": "zer0",
+        "bugs": "https://answer.bogonets.com/",
+        "category": "builtin",
+        "dependencies": [],
+        "descriptions": {
+          "en": "Output fixed text.",
+          "ko": "고정된 문자열을 출력한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "engines": "1.0.2",
+        "environment": { "name": "", "type": "system" },
+        "homepage": "https://answer.bogonets.com/",
+        "keywords": ["builtin"],
+        "license": "Bogonet License",
+        "meta": null,
+        "name": "static_text",
+        "titles": { "en": "Static Text", "ko": "고정 문자" },
+        "version": "1.0.2"
+      },
+      "props": [
+        {
+          "default_value": "",
+          "help": {
+            "en": "Text to be entered in the one-dimensional box.",
+            "ko": "출력될 박스(BOX)에 적용할 텍스트."
+          },
+          "name": "text",
+          "required": true,
+          "rule": "read_and_write",
+          "title": { "en": "Output Text", "ko": "출력 문자열" },
+          "type": "str",
+          "valid": {}
+        }
+      ]
+    }
+  ],
+  "t": "graph-template"
+}

@@ -1,0 +1,69 @@
+{
+    "info": {
+        "name": "numpy_reshape",
+        "version": "1.0.0",
+        "category": "numpy",
+        "keywords": ["numpy"],
+        "homepage": "https://answer.bogonets.com/",
+        "bugs": "https://answer.bogonets.com/",
+        "license": "Bogonet License",
+        "author": "zer0",
+        "dependencies": [
+            {"type": "pip", "src": "numpy"}
+        ],
+        "engines": ">=1.0.2",
+        "environment": {},
+        "titles": {
+            "en": "numpy.reshape",
+            "ko": "numpy.reshape"
+        },
+        "descriptions": {
+            "en": "Gives a new shape to an array without changing its data.",
+            "ko": "데이터를 변경하지 않고 배열에 새 형태를 적용한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "meta": {}
+    },
+    "controls": {
+        "input": "array",
+        "output": "result"
+    },
+    "props": [
+        {
+            "rule": "read_and_write",
+            "name": "newshape",
+            "default_value": "",
+            "type": "csv",
+            "required": true,
+            "valid": {},
+            "title": {
+                "en": "newshape",
+                "ko": "newshape"
+            },
+            "help": {
+                "en": "The new shape should be compatible with the original shape.",
+                "ko": "새 형태는 원본 형태와 호환되어야 한다."
+            }
+        },
+        {
+            "rule": "read_and_write",
+            "name": "order",
+            "default_value": "K",
+            "type": "str",
+            "required": false,
+            "valid": {
+                "advance": true,
+                "list": "K;A;C;F"
+            },
+            "title": {
+                "en": "Order",
+                "ko": "Order"
+            },
+            "help": {
+                "en": "Specify the memory layout of the array.",
+                "ko": "Specify the memory layout of the array."
+            }
+        }
+    ]
+}

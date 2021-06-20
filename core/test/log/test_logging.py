@@ -1,0 +1,38 @@
+# -*- coding: utf-8 -*-
+
+import unittest
+from logging import DEBUG, INFO, WARNING
+from recc.log.logging import recc_logger, recc_http_logger, recc_rpc_logger
+
+
+class LoggingTestCase(unittest.TestCase):
+    def test_logging(self):
+        recc_logger.setLevel("DEBUG")
+        recc_http_logger.setLevel("INFO")
+        recc_rpc_logger.setLevel("WARNING")
+
+        self.assertEqual(DEBUG, recc_logger.level)
+        self.assertEqual(INFO, recc_http_logger.level)
+        self.assertEqual(WARNING, recc_rpc_logger.level)
+
+        recc_logger.debug("debug")
+        recc_logger.info("info")
+        recc_logger.warning("warning")
+        recc_logger.error("error")
+        recc_logger.critical("critical")
+
+        recc_http_logger.debug("debug")
+        recc_http_logger.info("info")
+        recc_http_logger.warning("warning")
+        recc_http_logger.error("error")
+        recc_http_logger.critical("critical")
+
+        recc_rpc_logger.debug("debug")
+        recc_rpc_logger.info("info")
+        recc_rpc_logger.warning("warning")
+        recc_rpc_logger.error("error")
+        recc_rpc_logger.critical("critical")
+
+
+if __name__ == "__main__":
+    unittest.main()

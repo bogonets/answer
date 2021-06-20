@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+SOURCE_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")"; pwd`
+PYTHONPATH=$SOURCE_DIR/core:$PYTHONPATH
+
+OPY_PATH=$(which opy 2> /dev/null)
+PYTHON3_PATH=$(which python3 2> /dev/null)
+PYTHON_PATH=$(which python 2> /dev/null)
+
+if [[ -x "$OPY_PATH" ]]; then
+    "$OPY_PATH" "$@"
+elif [[ -x "$PYTHON3_PATH" ]]; then
+    "$PYTHON3_PATH" "$@"
+elif [[ -x "$PYTHON_PATH" ]]; then
+    "$PYTHON_PATH" "$@"
+else
+    echo "The python executable could not be found."
+    exit 1
+fi

@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ko" >
+<head>
+  <meta charset="utf-8" />
+  <meta content="NUMPY" name="keywords" />
+<script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-162764112-2']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>numpy_array &mdash; answer  문서</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="색인" href="../../genindex.html" />
+    <link rel="search" title="검색" href="../../search.html" />
+    <link rel="next" title="numpy_concatenate" href="numpy_concatenate.html" />
+    <link rel="prev" title="numpy_cmp" href="numpy_cmp.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> answer
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">일반</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/intro.html">소개</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">자주 묻는 질문들 (FAQ)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/license.html">엔서(ANSWER) 라이선스</a></li>
+</ul>
+<p class="caption"><span class="caption-text">시작</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../start/install.html">설치방법</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/run.html">실행방법</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/login.html">로그인</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/project.html">프로젝트</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/dashboard.html">대시보드</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/storage.html">저장소</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/graph.html">그래프</a></li>
+</ul>
+<p class="caption"><span class="caption-text">플러그인</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../plugin/node/index.html">Node Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugin/lambda/index.html">Lambda Plugin</a></li>
+</ul>
+<p class="caption"><span class="caption-text">위젯</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../widgets/jupyter.html">Jupyter Widget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../widgets/plugin.html">Plugin Widget</a></li>
+</ul>
+<p class="caption"><span class="caption-text">람다</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../trigger/index.html">trigger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-av/index.html">answer-lambda-av</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-condition/index.html">answer-lambda-condition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-cv2/index.html">answer-lambda-cv2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-cv2-helper/index.html">answer-lambda-cv2-helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-detectron2/index.html">answer-lambda-detectron2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-falldown/index.html">answer-lambda-falldown</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-filter/index.html">answer-lambda-filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-fire/index.html">answer-lambda-fire</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-headpose/index.html">answer-lambda-headpose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-image/index.html">answer-lambda-image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-intersect/index.html">answer-lambda-intersect</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-logical/index.html">answer-lambda-logical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-measure/index.html">answer-lambda-measure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-minio/index.html">answer-lambda-minio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-net/index.html">answer-lambda-net</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-number/index.html">answer-lambda-number</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">answer-lambda-numpy</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="numpy_zeros.html">numpy_zeros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_any.html">numpy_any</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_reshape.html">numpy_reshape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_slice.html">numpy_slice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_cmp.html">numpy_cmp</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">numpy_array</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">출력 슬롯</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">속성 목록</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_concatenate.html">numpy_concatenate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_size.html">numpy_size</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_item.html">numpy_item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_shape.html">numpy_shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_print.html">numpy_print</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_all.html">numpy_all</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-ocr/index.html">answer-lambda-ocr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-pose/index.html">answer-lambda-pose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-preview/index.html">answer-lambda-preview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-pytorch/index.html">answer-lambda-pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-rtc/index.html">answer-lambda-rtc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-string/index.html">answer-lambda-string</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-tesseract/index.html">answer-lambda-tesseract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../answer-lambda-yolov4-tf/index.html">answer-lambda-yolov4-tf</a></li>
+</ul>
+<p class="caption"><span class="caption-text">지침서</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">OpenCV Tutorials</a></li>
+</ul>
+<p class="caption"><span class="caption-text">기타</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../etc/troubleshooting.html">문제 해결</a></li>
+</ul>
+<p class="caption"><span class="caption-text">개발자</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/index.html">ANSWER Developer Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">answer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">answer-lambda-numpy</a> &raquo;</li>
+        
+      <li>numpy_array</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/lambdas/answer-lambda-numpy/numpy_array.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="numpy-array">
+<h1>numpy_array<a class="headerlink" href="#numpy-array" title="제목 주소">¶</a></h1>
+<p>배열을 생성한다.</p>
+<div class="section" id="id1">
+<h2>출력 슬롯<a class="headerlink" href="#id1" title="제목 주소">¶</a></h2>
+<ul class="simple">
+<li><p><strong>result</strong></p></li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>속성 목록<a class="headerlink" href="#id2" title="제목 주소">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Elements</strong></p></li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 14%" />
+<col style="width: 20%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head" rowspan="2"><p>Rule</p></th>
+<th class="head" rowspan="2"><p>Type</p></th>
+<th class="head" rowspan="2"><p>Required</p></th>
+<th class="head" rowspan="2"><p>Default value</p></th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td rowspan="2"><p>read_and_write</p></td>
+<td rowspan="2"><p>csv</p></td>
+<td rowspan="2"><p>True</p></td>
+<td rowspan="2"></td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+<p>List of all elements.</p>
+<ul class="simple">
+<li><p><strong>shape</strong></p></li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 14%" />
+<col style="width: 20%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head" rowspan="2"><p>Rule</p></th>
+<th class="head" rowspan="2"><p>Type</p></th>
+<th class="head" rowspan="2"><p>Required</p></th>
+<th class="head" rowspan="2"><p>Default value</p></th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td rowspan="2"><p>read_and_write</p></td>
+<td rowspan="2"><p>csv</p></td>
+<td rowspan="2"><p>True</p></td>
+<td rowspan="2"></td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+<p>Shape of the new array.</p>
+<ul class="simple">
+<li><p><strong>dtype</strong></p></li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 14%" />
+<col style="width: 20%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head" rowspan="2"><p>Rule</p></th>
+<th class="head" rowspan="2"><p>Type</p></th>
+<th class="head" rowspan="2"><p>Required</p></th>
+<th class="head" rowspan="2"><p>Default value</p></th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td rowspan="2"><p>read_and_write</p></td>
+<td rowspan="2"><p>str</p></td>
+<td rowspan="2"><p>True</p></td>
+<td rowspan="2"><p>int32</p></td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+<p>Numpy dtype.</p>
+<ul class="simple">
+<li><p><strong>Order</strong></p></li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 14%" />
+<col style="width: 20%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head" rowspan="2"><p>Rule</p></th>
+<th class="head" rowspan="2"><p>Type</p></th>
+<th class="head" rowspan="2"><p>Required</p></th>
+<th class="head" rowspan="2"><p>Default value</p></th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td rowspan="2"><p>read_and_write</p></td>
+<td rowspan="2"><p>str</p></td>
+<td rowspan="2"><p>False</p></td>
+<td rowspan="2"><p>K</p></td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+<p>Specify the memory layout of the array.</p>
+<ul class="simple">
+<li><p><strong>Subok</strong></p></li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 14%" />
+<col style="width: 20%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head" rowspan="2"><p>Rule</p></th>
+<th class="head" rowspan="2"><p>Type</p></th>
+<th class="head" rowspan="2"><p>Required</p></th>
+<th class="head" rowspan="2"><p>Default value</p></th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td rowspan="2"><p>read_and_write</p></td>
+<td rowspan="2"><p>bool</p></td>
+<td rowspan="2"><p>False</p></td>
+<td rowspan="2"><p>True</p></td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+<p>If True, then sub-classes will be passed-through.</p>
+<ul class="simple">
+<li><p><strong>ndmin</strong></p></li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 14%" />
+<col style="width: 20%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head" rowspan="2"><p>Rule</p></th>
+<th class="head" rowspan="2"><p>Type</p></th>
+<th class="head" rowspan="2"><p>Required</p></th>
+<th class="head" rowspan="2"><p>Default value</p></th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td rowspan="2"><p>read_and_write</p></td>
+<td rowspan="2"><p>int</p></td>
+<td rowspan="2"><p>False</p></td>
+<td rowspan="2"><p>0</p></td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+<p>Specifies the minimum number of dimensions that the resulting array should have.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="numpy_concatenate.html" class="btn btn-neutral float-right" title="numpy_concatenate" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="numpy_cmp.html" class="btn btn-neutral float-left" title="numpy_cmp" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, zer0.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

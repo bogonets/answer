@@ -1,0 +1,702 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ko" >
+<head>
+  <meta charset="utf-8" />
+  <meta content="PLUGIN NODE JSON" name="keywords" />
+<script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-162764112-2']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>노드 플러그인 JSON &mdash; answer  문서</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="색인" href="../../genindex.html" />
+    <link rel="search" title="검색" href="../../search.html" />
+    <link rel="next" title="노드 플러그인 Python" href="python.html" />
+    <link rel="prev" title="노드 플러그인 소개" href="intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> answer
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">일반</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/intro.html">소개</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">자주 묻는 질문들 (FAQ)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/license.html">엔서(ANSWER) 라이선스</a></li>
+</ul>
+<p class="caption"><span class="caption-text">시작</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../start/install.html">설치방법</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/run.html">실행방법</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/login.html">로그인</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/project.html">프로젝트</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/dashboard.html">대시보드</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/storage.html">저장소</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/graph.html">그래프</a></li>
+</ul>
+<p class="caption"><span class="caption-text">플러그인</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Node Plugin</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro.html">노드 플러그인 소개</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">노드 플러그인 JSON</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">전체 구조</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logger">logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#socket">socket</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inits">inits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plugin">plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#models">models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#processes">processes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#immutable">immutable</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="python.html">노드 플러그인 Python</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lambda/index.html">Lambda Plugin</a></li>
+</ul>
+<p class="caption"><span class="caption-text">위젯</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../widgets/jupyter.html">Jupyter Widget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../widgets/plugin.html">Plugin Widget</a></li>
+</ul>
+<p class="caption"><span class="caption-text">람다</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/trigger/index.html">trigger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-av/index.html">answer-lambda-av</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-condition/index.html">answer-lambda-condition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/index.html">answer-lambda-cv2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-cv2-helper/index.html">answer-lambda-cv2-helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-detectron2/index.html">answer-lambda-detectron2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-falldown/index.html">answer-lambda-falldown</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-filter/index.html">answer-lambda-filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-fire/index.html">answer-lambda-fire</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-headpose/index.html">answer-lambda-headpose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-image/index.html">answer-lambda-image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-intersect/index.html">answer-lambda-intersect</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-logical/index.html">answer-lambda-logical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-measure/index.html">answer-lambda-measure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-minio/index.html">answer-lambda-minio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-net/index.html">answer-lambda-net</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-number/index.html">answer-lambda-number</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/index.html">answer-lambda-numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-ocr/index.html">answer-lambda-ocr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-pose/index.html">answer-lambda-pose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-preview/index.html">answer-lambda-preview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-pytorch/index.html">answer-lambda-pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-rtc/index.html">answer-lambda-rtc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-string/index.html">answer-lambda-string</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-tesseract/index.html">answer-lambda-tesseract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lambdas/answer-lambda-yolov4-tf/index.html">answer-lambda-yolov4-tf</a></li>
+</ul>
+<p class="caption"><span class="caption-text">지침서</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">OpenCV Tutorials</a></li>
+</ul>
+<p class="caption"><span class="caption-text">기타</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../etc/troubleshooting.html">문제 해결</a></li>
+</ul>
+<p class="caption"><span class="caption-text">개발자</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/index.html">ANSWER Developer Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">answer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Node Plugin</a> &raquo;</li>
+        
+      <li>노드 플러그인 JSON</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/plugin/node/json.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="json">
+<span id="doc-plugin-node-json"></span><h1>노드 플러그인 JSON<a class="headerlink" href="#json" title="제목 주소">¶</a></h1>
+<p>이 페이지는 노드의 설정정보를 변경할 수 있는 JSON 구성 가이드 입니다.</p>
+<div class="section" id="id1">
+<h2>전체 구조<a class="headerlink" href="#id1" title="제목 주소">¶</a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 30%" />
+<col style="width: 43%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>logger</p></td>
+<td><p>object</p></td>
+<td><p>로그 설정</p></td>
+</tr>
+<tr class="row-odd"><td><p>socket</p></td>
+<td><p>object</p></td>
+<td><p>관리용 소켓 설정</p></td>
+</tr>
+<tr class="row-even"><td><p>inits</p></td>
+<td><p>object array</p></td>
+<td><p>초기화 명령 모음</p></td>
+</tr>
+<tr class="row-odd"><td><p>plugin</p></td>
+<td><p>object</p></td>
+<td><p>플러그인 설정</p></td>
+</tr>
+<tr class="row-even"><td><p>models</p></td>
+<td><p>object array</p></td>
+<td><p>모델 설정 목록</p></td>
+</tr>
+<tr class="row-odd"><td><p>processes</p></td>
+<td><p>object array</p></td>
+<td><p>프로세스 설정 목록</p></td>
+</tr>
+<tr class="row-even"><td><p>immutable</p></td>
+<td><p>bool</p></td>
+<td><p>설정파일 변경 여부</p></td>
+</tr>
+</tbody>
+</table>
+<p>루트 JSON 구조는 다음과 같습니다.</p>
+<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;logger&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="p">...</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;socket&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="p">...</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;inits&quot;</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">...</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;plugin&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="p">...</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;models&quot;</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">...</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;processes&quot;</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">...</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;immutable&quot;</span><span class="o">:</span> <span class="kc">true</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="logger">
+<h2>logger<a class="headerlink" href="#logger" title="제목 주소">¶</a></h2>
+<p>로그 설정 입니다. 노드의 상세 정보를 확인할 수 있습니다.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 15%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>string</p></td>
+<td><p>로그 이름</p></td>
+</tr>
+<tr class="row-odd"><td><p>sink</p></td>
+<td><p>string</p></td>
+<td><p>로그 싱크</p></td>
+</tr>
+<tr class="row-even"><td><p>arguments</p></td>
+<td><p>string</p></td>
+<td><p>싱크의 인자</p></td>
+</tr>
+<tr class="row-odd"><td><p>generator</p></td>
+<td><p>string</p></td>
+<td><p>로그 메시지 생성기</p></td>
+</tr>
+<tr class="row-even"><td><p>line_feed</p></td>
+<td><p>string</p></td>
+<td><p>메시지별 개행 여부</p></td>
+</tr>
+<tr class="row-odd"><td><p>severity</p></td>
+<td><p>string</p></td>
+<td><p>적용될 로그 심각도</p></td>
+</tr>
+<tr class="row-even"><td><p>auto_flush</p></td>
+<td><p>bool</p></td>
+<td><p>로그 버퍼의 자동 플러시 여부</p></td>
+</tr>
+<tr class="row-odd"><td><p>thread</p></td>
+<td><p>bool</p></td>
+<td><p>멀티 스레드 모드 적용 여부</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>sink</strong> 는 로그 메시지의 마지막 종착지점 입니다.
+아래의 값 중 하나를 사용할 수 있습니다.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">console</span></code>: TTY 터미널에 로그를 출력합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">file</span></code>: 로그를 파일로 저장합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rotate_file</span></code>: 현재, 공식적으로 지원되지 않습니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">null</span></code>: 모든 메시지를 버립니다.</p></li>
+</ul>
+<p><strong>sink</strong> 의 값이 <code class="docutils literal notranslate"><span class="pre">console</span></code> 일 경우 아래의 값을 <strong>arguments</strong> 로 사용할 수 있습니다.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stdout</span></code>: 표준 출력을 사용합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stderr</span></code>: 표준 에러를 사용합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">auto</span></code>: 에러 보다 심각한 메시지는 <code class="docutils literal notranslate"><span class="pre">stderr</span></code> 로, 그 밖의 경우는 <code class="docutils literal notranslate"><span class="pre">stdout</span></code> 을 사용합니다.</p></li>
+</ul>
+<p><strong>sink</strong> 의 값이 <code class="docutils literal notranslate"><span class="pre">file</span></code> 일 경우 <strong>arguments</strong> 값은 파일 경로에 해당됩니다.</p>
+<p><strong>generator</strong> 는 로그 메시지를 생성할 규칙을 지정할 수 있습니다.
+아래의 값 중 하나를 사용할 수 있습니다.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">default</span></code>: 기본 포맷을 사용합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default_color</span></code>: 기본 포맷에, <em>Terminal Control Escape Sequences</em> 를 적용하여 색상을 적용합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">raw</span></code>: 원본 메시지를 그대로 사용합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">raw_color</span></code>: 원본 메시지에, <em>Terminal Control Escape Sequences</em> 를 적용하여 색상을 적용합니다.</p></li>
+</ul>
+<p><strong>line_feed</strong> 은 아래의 값 중 하나를 사용할 수 있습니다.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">auto</span></code>: 시스템에 맞는 개행을 적용합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unix</span></code>: LF(<code class="docutils literal notranslate"><span class="pre">\n</span></code>)를 사용합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">windows</span></code>: CRLF(<code class="docutils literal notranslate"><span class="pre">\r\n</span></code>)를 사용합니다.</p></li>
+</ul>
+<p><strong>severity</strong> 은 아래의 값 중 하나를 사용할 수 있습니다.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">off</span></code>: 출력을 끕니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">emergency</span></code>: 비상</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alert</span></code>: 경고</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">critical</span></code>: 중요</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">error</span></code>: 오류</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">warning</span></code>: 경고</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">notice</span></code>: 알림</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">info</span></code>: 정보</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">debug</span></code>: 디버깅</p></li>
+</ul>
+<p>예제 코드는 다음과 같습니다.</p>
+<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;default.logger&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sink&quot;</span><span class="o">:</span> <span class="s2">&quot;console&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;arguments&quot;</span><span class="o">:</span> <span class="s2">&quot;stdout&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;generator&quot;</span><span class="o">:</span> <span class="s2">&quot;default_color&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;line_feed&quot;</span><span class="o">:</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;severity&quot;</span><span class="o">:</span> <span class="s2">&quot;notice&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;auto_flush&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">&quot;thread&quot;</span><span class="o">:</span> <span class="kc">true</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="socket">
+<h2>socket<a class="headerlink" href="#socket" title="제목 주소">¶</a></h2>
+<p>관리용 소켓 설정. 노드와 통신할 소켓 설정 입니다.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 10%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>recv_timeout</p></td>
+<td><p>string</p></td>
+<td><p>소켓의 수신 제한시간</p></td>
+</tr>
+<tr class="row-odd"><td><p>send_timeout</p></td>
+<td><p>string</p></td>
+<td><p>소켓의 송신 제한시간</p></td>
+</tr>
+<tr class="row-even"><td><p>recv_number_of_messages</p></td>
+<td><p>unsigned</p></td>
+<td><p>소켓의 수신 버퍼가 수용할 수 있는 메시지 개수</p></td>
+</tr>
+<tr class="row-odd"><td><p>send_number_of_messages</p></td>
+<td><p>unsigned</p></td>
+<td><p>소켓의 송신 버퍼가 수용할 수 있는 메시지 개수</p></td>
+</tr>
+<tr class="row-even"><td><p>recv_buffer_byte</p></td>
+<td><p>string</p></td>
+<td><p>단일 패킷의 수신 버퍼의 크기</p></td>
+</tr>
+<tr class="row-odd"><td><p>send_buffer_byte</p></td>
+<td><p>string</p></td>
+<td><p>단일 패킷의 송신 버퍼 크기</p></td>
+</tr>
+<tr class="row-even"><td><p>reconnect_time_min</p></td>
+<td><p>unsigned</p></td>
+<td><p>이전 연결 시도가 실패한 후 재시도 까지 대기하는 최소 시간</p></td>
+</tr>
+<tr class="row-odd"><td><p>reconnect_time_max</p></td>
+<td><p>unsigned</p></td>
+<td><p>이전 연결 시도가 실패한 후 재시도 까지 대하기는 최대 시간</p></td>
+</tr>
+</tbody>
+</table>
+<p>예제 코드는 다음과 같습니다.</p>
+<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;recv_timeout&quot;</span><span class="o">:</span> <span class="s2">&quot;4sec&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;send_timeout&quot;</span><span class="o">:</span> <span class="s2">&quot;1sec&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;recv_number_of_messages&quot;</span><span class="o">:</span> <span class="mf">16</span><span class="p">,</span>
+    <span class="s2">&quot;send_number_of_messages&quot;</span><span class="o">:</span> <span class="mf">16</span><span class="p">,</span>
+    <span class="s2">&quot;recv_buffer_byte&quot;</span><span class="o">:</span> <span class="s2">&quot;32m&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;send_buffer_byte&quot;</span><span class="o">:</span> <span class="s2">&quot;32m&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;reconnect_time_min&quot;</span><span class="o">:</span> <span class="mf">10</span><span class="p">,</span>
+    <span class="s2">&quot;reconnect_time_max&quot;</span><span class="o">:</span> <span class="mf">10</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="inits">
+<h2>inits<a class="headerlink" href="#inits" title="제목 주소">¶</a></h2>
+<p>초기화 목록. 노드 실행시 실행됩니다.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 20%" />
+<col style="width: 51%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>type</p></td>
+<td><p>string</p></td>
+<td><p>초기화 타입</p></td>
+</tr>
+<tr class="row-odd"><td><p>arguments</p></td>
+<td><p>string</p></td>
+<td><p>초기화 타입에 따른 인자</p></td>
+</tr>
+<tr class="row-even"><td><p>branch</p></td>
+<td><p>string</p></td>
+<td><p>브렌치 이름</p></td>
+</tr>
+<tr class="row-odd"><td><p>auto_update</p></td>
+<td><p>bool</p></td>
+<td><p>자동 업데이트 여부</p></td>
+</tr>
+<tr class="row-even"><td><p>destination</p></td>
+<td><p>string</p></td>
+<td><p>결과 위치</p></td>
+</tr>
+</tbody>
+</table>
+<p>예제 코드는 다음과 같습니다.</p>
+<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;git&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;arguments&quot;</span><span class="o">:</span> <span class="s2">&quot;https://github.com/bogonets/answer-lambda-cv2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;branch&quot;</span><span class="o">:</span> <span class="s2">&quot;master&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;auto_update&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">&quot;destination&quot;</span><span class="o">:</span> <span class="s2">&quot;${STORAGE_PYTHON}/answer-lambda-cv2&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="plugin">
+<h2>plugin<a class="headerlink" href="#plugin" title="제목 주소">¶</a></h2>
+<p>플러그인 정보.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 14%" />
+<col style="width: 62%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>script</p></td>
+<td><p>string</p></td>
+<td><p>스크립트 위치</p></td>
+</tr>
+<tr class="row-odd"><td><p>event_create</p></td>
+<td><p>string</p></td>
+<td><p>노드가 생성될 때 호출할 함수</p></td>
+</tr>
+<tr class="row-even"><td><p>event_loop_begin</p></td>
+<td><p>string</p></td>
+<td><p>노드의 이벤트 루프 시작 함수</p></td>
+</tr>
+<tr class="row-odd"><td><p>event_loop_end</p></td>
+<td><p>string</p></td>
+<td><p>노드의 이벤트 루프 종료 함수</p></td>
+</tr>
+<tr class="row-even"><td><p>event_destroy</p></td>
+<td><p>string</p></td>
+<td><p>노드가 소멸될 때 호출할 함수</p></td>
+</tr>
+</tbody>
+</table>
+<p>예제 코드는 다음과 같습니다.</p>
+<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;script&quot;</span><span class="o">:</span> <span class="s2">&quot;${STORAGE_PYTHON}/npp.py&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;event_create&quot;</span><span class="o">:</span> <span class="s2">&quot;on_create&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;event_loop_begin&quot;</span><span class="o">:</span> <span class="s2">&quot;on_loop_begin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;event_loop_end&quot;</span><span class="o">:</span> <span class="s2">&quot;on_loop_end&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;event_destroy&quot;</span><span class="o">:</span> <span class="s2">&quot;on_destroy&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="models">
+<h2>models<a class="headerlink" href="#models" title="제목 주소">¶</a></h2>
+<p>노드 시작시 함께 실행할 모델 목록 입니다.</p>
+</div>
+<div class="section" id="processes">
+<h2>processes<a class="headerlink" href="#processes" title="제목 주소">¶</a></h2>
+<p>노드 시작시 함께 실행할 프로세스 목록 입니다.</p>
+</div>
+<div class="section" id="immutable">
+<h2>immutable<a class="headerlink" href="#immutable" title="제목 주소">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">true</span></code> 일 경우 Node 종료시 마지막 설정 정보로 변경 및 적용됩니다.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="python.html" class="btn btn-neutral float-right" title="노드 플러그인 Python" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="intro.html" class="btn btn-neutral float-left" title="노드 플러그인 소개" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, zer0.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

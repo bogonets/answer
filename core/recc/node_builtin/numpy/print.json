@@ -1,0 +1,103 @@
+{
+    "info": {
+        "name": "numpy_print",
+        "version": "1.0.0",
+        "category": "numpy",
+        "keywords": ["numpy"],
+        "homepage": "https://answer.bogonets.com/",
+        "bugs": "https://answer.bogonets.com/",
+        "license": "Bogonet License",
+        "author": "zer0",
+        "dependencies": [
+            {"type": "pip", "src": "numpy"}
+        ],
+        "engines": ">=1.0.2",
+        "environment": {},
+        "titles": {
+            "en": "numpy.print",
+            "ko": "numpy.print"
+        },
+        "descriptions": {
+            "en": "Print numpy array.",
+            "ko": "배열을 출력한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "meta": {}
+    },
+    "controls": {
+        "input": "array"
+    },
+    "props": [
+        {
+            "rule": "read_and_write",
+            "name": "file",
+            "default_value": "stdout",
+            "type": "str",
+            "required": true,
+            "valid": {
+                "list": "stdout;stderr"
+            },
+            "title": {
+                "en": "file",
+                "ko": "file"
+            },
+            "help": {
+                "en": "File to output.",
+                "ko": "출력할 파일."
+            }
+        },
+        {
+            "rule": "read_and_write",
+            "name": "flush",
+            "default_value": true,
+            "type": "bool",
+            "required": true,
+            "valid": {},
+            "title": {
+                "en": "flush",
+                "ko": "flush"
+            },
+            "help": {
+                "en": "If flush is true, the stream is forcibly flushed.",
+                "ko": "플러시가 참이면 스트림이 강제로 플러시 된다."
+            }
+        },
+        {
+            "rule": "read_and_write",
+            "name": "suffix",
+            "default_value": "",
+            "type": "str",
+            "required": true,
+            "valid": {
+                "advance": true
+            },
+            "title": {
+                "en": "suffix",
+                "ko": "suffix"
+            },
+            "help": {
+                "en": "Suffix string.",
+                "ko": "접미사 문자열."
+            }
+        },
+        {
+            "rule": "read_and_write",
+            "name": "prefix",
+            "default_value": "",
+            "type": "str",
+            "required": true,
+            "valid": {
+                "advance": true
+            },
+            "title": {
+                "en": "prefix",
+                "ko": "prefix"
+            },
+            "help": {
+                "en": "Prefix string.",
+                "ko": "접두사 문자열."
+            }
+        }
+    ]
+}

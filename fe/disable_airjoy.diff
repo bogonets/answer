@@ -1,0 +1,86 @@
+diff --git a/fe/src/components/Dashboard/adbDashboard.vue b/fe/src/components/Dashboard/adbDashboard.vue
+index 7d8fe7f..0e3e8e5 100644
+--- a/fe/src/components/Dashboard/adbDashboard.vue
++++ b/fe/src/components/Dashboard/adbDashboard.vue
+@@ -2,7 +2,6 @@
+   <v-card class="main" v-resize="onParentResize" id="dashboard">
+     <v-toolbar height="24px">
+       <v-btn
+-        v-if="operator"
+         small
+         text
+         icon
+@@ -14,7 +13,7 @@
+       &nbsp;
+       <!-- border -->
+       <v-tooltip bottom>
+-        <template v-if="operator" v-slot:activator="{ on }">
++        <template v-slot:activator="{ on }">
+           <v-btn small text icon @click="openComponentList" v-on="on">
+             <v-icon>list</v-icon>
+           </v-btn>
+@@ -24,7 +23,6 @@
+ 
+       <v-spacer></v-spacer>
+       <v-btn
+-        v-if="operator"
+         small
+         text
+         icon
+@@ -46,8 +44,6 @@
+               :w="panel.w"
+               :h="panel.h"
+               :z="panel.z"
+-              :draggable="operator"
+-              :resizable="operator"
+               :parent="true"
+               :drag-handle="panel.component ? '.v-toolbar' : undefined"
+               class="panel-class"
+@@ -79,7 +75,6 @@
+                     <div style="width: 100%; height: 100%;">
+                       <v-layout align-center justify-center fill-height>
+                         <v-btn
+-                          v-if="operator"
+                           small
+                           outlined
+                           icon
+@@ -294,7 +289,7 @@ export default {
+      * @public
+      */
+     onResizing: function(event) {
+-      if (this.operator) {
++      if (1) {
+         this.resizeTrigger = {};
+         this.resizeTrigger.w = event.w;
+         this.resizeTrigger.h = event.h;
+diff --git a/fe/src/store/modules/project.js b/fe/src/store/modules/project.js
+index 1d7a7d0..082b29c 100644
+--- a/fe/src/store/modules/project.js
++++ b/fe/src/store/modules/project.js
+@@ -19,26 +19,6 @@ const state = {
+       icon: "account_tree",
+       level: 10,
+     },
+-    {
+-      title: "airjoy_manage",
+-      icon: "fas fa-wind",
+-      level: 10,
+-    },
+-    {
+-      title: "airjoy_graph",
+-      icon: "fas fa-chart-bar",
+-      level: 10,
+-    },
+-    {
+-      title: "airjoy_monitor",
+-      icon: "fas fa-border-all",
+-      level: 10,
+-    },
+-    {
+-      title: "auth_management",
+-      icon: "fas fa-users-cog",
+-      level: 100,
+-    },
+   ],
+   select_project: "",
+   view_navi_list: [],

@@ -1,0 +1,16 @@
+### Python ###
+_build/
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+### IDE ###
+.idea
+.vscode
+.opvim
+
+### OS ###
+.DS_Store
+Thumbs.db
+

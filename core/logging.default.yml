@@ -1,0 +1,57 @@
+version: 1
+
+disable_existing_loggers: False
+
+formatters:
+  simple:
+    format: '{levelname[0]} {asctime} {name}: {message}'
+    style: '{'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: simple
+    stream: ext://sys.stdout
+
+loggers:
+  aiohttp.access:
+    level: DEBUG
+  aiohttp.client:
+    level: DEBUG
+  aiohttp.internal:
+    level: DEBUG
+  aiohttp.server:
+    level: DEBUG
+  aiohttp.web:
+    level: DEBUG
+  aiohttp.websocket:
+    level: DEBUG
+  asyncio:
+    level: DEBUG
+  docker:
+    level: DEBUG
+  elasticsearch:
+    level: DEBUG
+  recc:
+    level: DEBUG
+  recc.http:
+    level: DEBUG
+  recc.rpc:
+    level: DEBUG
+  recc.cm:
+    level: DEBUG
+  recc.cs:
+    level: DEBUG
+  recc.db:
+    level: DEBUG
+  docker.auth:
+    level: DEBUG
+  docker.utils.config:
+    level: DEBUG
+  urllib3.connectionpool:
+    level: DEBUG
+
+root:
+  level: DEBUG
+  handlers: [console]

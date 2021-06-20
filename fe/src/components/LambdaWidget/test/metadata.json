@@ -1,0 +1,85 @@
+{
+  "info": {
+    "author": "wooruang",
+    "bugs": "https://answer.bogonets.com/",
+    "category": "image",
+    "dependencies": [],
+    "descriptions": {
+      "en": "Select a roi at a image",
+      "ko": "이미지에서 관심 영역을 선택한다."
+    },
+    "documentation_mime": "text",
+    "documentations": {},
+    "engines": ">=1.0.2",
+    "environment": { "name": "", "type": "" },
+    "homepage": "https://answer.bogonets.com/",
+    "keywords": ["image"],
+    "license": "Bogonet License",
+    "meta": {
+      "components": {
+        "body": [
+          { "name": "viewImage", "props": {}, "ref": "image", "style": "" },
+          {
+            "name": "drawCanvas",
+            "props": { "limitShape": -1, "useShapes": ["line", "rectangle", "polygon"] },
+            "ref": "canvas",
+            "style": ""
+          }
+        ],
+        "top": [
+          {
+            "align": "left",
+            "name": "signal-button",
+            "props": {
+              "color": "blue",
+              "name": "signal",
+              "propertyName": "roi",
+              "signal": {
+                "input_queries": [],
+                "name": "~${OWN}.preview",
+                "output_queries": ["${OWN}.preview?mime=image/jpeg"]
+              },
+              "small": false
+            },
+            "ref": "signalButton",
+            "style": "",
+            "transData": "image.setSource"
+          },
+          {
+            "align": "right",
+            "name": "get-property-button",
+            "props": {
+              "color": "teal",
+              "name": "get-property",
+              "propertyName": "roi",
+              "small": true
+            },
+            "ref": "getPropertyButton",
+            "style": "",
+            "transData": "canvas.setRectangles"
+          },
+          {
+            "align": "right",
+            "name": "set-property-button",
+            "props": {
+              "color": "teal",
+              "name": "set-property",
+              "propertyName": "roi",
+              "small": true
+            },
+            "ref": "setPropertyButton",
+            "sendData": "canvas.getRectangles",
+            "style": ""
+          }
+        ]
+      },
+      "gui": { "name": "roi_setting" }
+    },
+    "name": "image_select_roi",
+    "titles": {
+      "en": "Image ROI Selection",
+      "ko": "이미지 관심 영역 선택"
+    },
+    "version": "1"
+  }
+}

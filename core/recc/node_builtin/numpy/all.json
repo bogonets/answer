@@ -1,0 +1,32 @@
+{
+    "info": {
+        "name": "numpy_all",
+        "version": "1.0.1",
+        "category": "numpy",
+        "keywords": ["numpy"],
+        "homepage": "https://answer.bogonets.com/",
+        "bugs": "https://answer.bogonets.com/",
+        "license": "Bogonet License",
+        "author": "zer0",
+        "dependencies": [
+            {"type": "pip", "src": "numpy"}
+        ],
+        "engines": [">=1.0.2"],
+        "environment": {},
+        "titles": {
+            "en": "numpy.all",
+            "ko": "numpy.all"
+        },
+        "descriptions": {
+            "en": "Test whether all array elements along a given axis evaluate to True.",
+            "ko": "주어진 축의 모든 배열 요소가 `True`로 평가되는지 테스트합니다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "meta": {}
+    },
+    "controls": {
+        "input": ["condition", "data"],
+        "output": "result"
+    }
+}

@@ -1,0 +1,8 @@
+# cython git-ignore patterns.
+
+# A .pyx file is compiled by Cython to a .c file.
+*.c
+
+# The .c file is compiled by a C compiler to a .so file (or a .pyd file on Windows)
+*.so
+*.pyd

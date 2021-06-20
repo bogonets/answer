@@ -1,0 +1,50 @@
+{
+    "info": {
+        "name": "numpy_slice",
+        "version": "1.0.0",
+        "category": "numpy",
+        "keywords": ["numpy"],
+        "homepage": "https://answer.bogonets.com/",
+        "bugs": "https://answer.bogonets.com/",
+        "license": "Bogonet License",
+        "author": "zer0",
+        "dependencies": [
+            {"type": "pip", "src": "numpy"}
+        ],
+        "engines": ">=1.0.2",
+        "environment": {},
+        "titles": {
+            "en": "numpy.slice",
+            "ko": "numpy.slice"
+        },
+        "descriptions": {
+            "en": "Slice the numpy array..",
+            "ko": "Numpy 배열을 슬라이스한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "meta": {}
+    },
+    "controls": {
+        "input": "array",
+        "output": "result"
+    },
+    "props": [
+        {
+            "rule": "read_and_write",
+            "name": "slices",
+            "default_value": "",
+            "type": "csv",
+            "required": true,
+            "valid": {},
+            "title": {
+                "en": "slices",
+                "ko": "slices"
+            },
+            "help": {
+                "en": "List of slices.",
+                "ko": "슬라이스할 목록."
+            }
+        }
+    ]
+}

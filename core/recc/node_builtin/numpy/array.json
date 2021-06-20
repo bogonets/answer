@@ -1,0 +1,138 @@
+{
+    "info": {
+        "name": "numpy_array",
+        "version": "1.0.0",
+        "category": "numpy",
+        "keywords": ["numpy"],
+        "homepage": "https://answer.bogonets.com/",
+        "bugs": "https://answer.bogonets.com/",
+        "license": "Bogonet License",
+        "author": "zer0",
+        "dependencies": [
+            {"type": "pip", "src": "numpy"}
+        ],
+        "engines": ">=1.0.2",
+        "environment": {},
+        "titles": {
+            "en": "numpy.array",
+            "ko": "numpy.array"
+        },
+        "descriptions": {
+            "en": "Create an array.",
+            "ko": "배열을 생성한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "meta": {}
+    },
+    "controls": {
+        "output": "result"
+    },
+    "props": [
+        {
+            "rule": "read_and_write",
+            "name": "elements",
+            "default_value": "",
+            "type": "csv",
+            "required": true,
+            "valid": {},
+            "title": {
+                "en": "Elements",
+                "ko": "Elements"
+            },
+            "help": {
+                "en": "List of all elements.",
+                "ko": "List of all elements."
+            }
+        },
+        {
+            "rule": "read_and_write",
+            "name": "shape",
+            "default_value": "",
+            "type": "csv",
+            "required": true,
+            "valid": {},
+            "title": {
+                "en": "shape",
+                "ko": "shape"
+            },
+            "help": {
+                "en": "Shape of the new array.",
+                "ko": "Shape of the new array."
+            }
+        },
+        {
+            "rule": "read_and_write",
+            "name": "dtype",
+            "default_value": "int32",
+            "type": "str",
+            "required": true,
+            "valid": {
+                "list": "int8;int16;int32;int64;uint8;uint16;uint32;uint64;float32;float64;"
+            },
+            "title": {
+                "en": "dtype",
+                "ko": "dtype"
+            },
+            "help": {
+                "en": "Numpy dtype.",
+                "ko": "Numpy dtype."
+            }
+        },
+        {
+            "rule": "read_and_write",
+            "name": "order",
+            "default_value": "K",
+            "type": "str",
+            "required": false,
+            "valid": {
+                "advance": true,
+                "list": "K;A;C;F"
+            },
+            "title": {
+                "en": "Order",
+                "ko": "Order"
+            },
+            "help": {
+                "en": "Specify the memory layout of the array.",
+                "ko": "Specify the memory layout of the array."
+            }
+        },
+        {
+            "rule": "read_and_write",
+            "name": "subok",
+            "default_value": true,
+            "type": "bool",
+            "required": false,
+            "valid": {
+                "advance": true
+            },
+            "title": {
+                "en": "Subok",
+                "ko": "Subok"
+            },
+            "help": {
+                "en": "If True, then sub-classes will be passed-through.",
+                "ko": "If True, then sub-classes will be passed-through."
+            }
+        },
+        {
+            "rule": "read_and_write",
+            "name": "ndmin",
+            "default_value": 0,
+            "type": "int",
+            "required": false,
+            "valid": {
+                "advance": true
+            },
+            "title": {
+                "en": "ndmin",
+                "ko": "ndmin"
+            },
+            "help": {
+                "en": "Specifies the minimum number of dimensions that the resulting array should have.",
+                "ko": "Specifies the minimum number of dimensions that the resulting array should have."
+            }
+        }
+    ]
+}

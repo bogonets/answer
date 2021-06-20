@@ -1,0 +1,52 @@
+{
+    "info": {
+        "name": "numpy_cmp",
+        "version": "1.0.1",
+        "category": "numpy",
+        "keywords": ["numpy"],
+        "homepage": "https://answer.bogonets.com/",
+        "bugs": "https://answer.bogonets.com/",
+        "license": "Bogonet License",
+        "author": "zer0",
+        "dependencies": [
+            {"type": "pip", "src": "numpy"}
+        ],
+        "engines": ">=1.0.2",
+        "environment": {},
+        "titles": {
+            "en": "numpy.cmp",
+            "ko": "numpy.cmp"
+        },
+        "descriptions": {
+            "en": "Compare arrays.",
+            "ko": "배열을 비교한다."
+        },
+        "documentation_mime": "text",
+        "documentations": {},
+        "meta": {}
+    },
+    "controls": {
+        "input": ["left", "right"],
+        "output": "result"
+    },
+    "props": [
+        {
+            "rule": "read_and_write",
+            "name": "method",
+            "default_value": "==",
+            "type": "str",
+            "required": true,
+            "valid": {
+                "list": "==;!=;>=;<=;<;>"
+            },
+            "title": {
+                "en": "Method",
+                "ko": "Method"
+            },
+            "help": {
+                "en": "Comparison method.",
+                "ko": "비교 방법."
+            }
+        }
+    ]
+}

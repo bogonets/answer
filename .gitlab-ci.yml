@@ -1,0 +1,101 @@
+image: python:3.8.9
+
+services:
+  - postgres:13
+  - redis:6
+
+variables:
+  POSTGRES_USER: recc
+  POSTGRES_PASSWORD: recc1234
+  POSTGRES_HOST_AUTH_METHOD: trust
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  YARN_CACHE_FOLDER: "$CI_PROJECT_DIR/.cache/yarn"
+
+cache:
+  paths:
+    - .cache/pip
+    - .cache/yarn
+
+stages:
+  - test
+  - deploy-python
+  - deploy-docker
+
+test-core:
+  stage: test
+  variables:
+    RECC_DATABASE_HOST: postgres
+    RECC_DATABASE_PORT: 5432
+    RECC_DATABASE_USER: recc
+    RECC_DATABASE_PW: recc1234
+    RECC_DATABASE_NAME: recc.test
+    RECC_DATABASE_TYPE: postgres
+    RECC_CACHE_HOST: redis
+    RECC_CACHE_PORT: 6379
+    RECC_CACHE_TYPE: redis
+    RECC_SUPPRESS_PRINT: 1
+  only:
+    - master
+    - '/^core-.*$/'
+  before_script:
+    - bash core/requirements.sh
+  script:
+    - cd core
+    - bash docker-tester.sh
+  coverage: '/\d+\%\s*$/'
+
+test-fe:
+  image: node:14.15
+  stage: test
+  only:
+    - master
+    - '/^fe-.*$/'
+  before_script:
+    - apt-get -qq update
+    - apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+  script:
+    - cd fe
+    - yarn
+    - yarn test:unit
+    - yarn test:e2e
+    - yarn lint
+
+deploy-core-python:
+  stage: deploy-python
+  only:
+    - '/^core-.*$/'
+  before_script:
+    - bash core/requirements.sh
+    - pip install devpi-client
+  script:
+    - cd core
+    - devpi use "${DEVPI_URL}"
+    - devpi login --password "${DEVPI_PW}" "${DEVPI_ID}"
+    - devpi upload --with-docs --formats bdist_wheel
+    - devpi logout
+
+deploy-core-docker:
+  stage: deploy-docker
+  only:
+    - '/^core-.*$/'
+  before_script:
+    - apt-get -qq update
+    - apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+    - curl -fsSL "https://download.docker.com/linux/debian/gpg" | apt-key add -
+    - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+    - apt-get -qq update
+    - apt-get install -y docker-ce-cli
+  script:
+    - cd core
+    - RECC_VERSION=$(python -c 'from recc.util.version import version_text; print(version_text);')
+    - RECC_IMAGE_CURRENT=${REGISTRY_HOST}/answer/recc:${RECC_VERSION}
+    - RECC_IMAGE_LATEST=${REGISTRY_HOST}/answer/recc:latest
+    - echo "Current recc version is ${RECC_IMAGE_CURRENT}"
+    - echo "${REGISTRY_PW}" | docker login --password-stdin -u "${REGISTRY_ID}" "${REGISTRY_HOST}"
+    - docker build --tag ${RECC_IMAGE_CURRENT} .
+    - docker tag "${RECC_IMAGE_CURRENT}" "${RECC_IMAGE_LATEST}"
+    - docker push "${RECC_IMAGE_CURRENT}"
+    - docker push "${RECC_IMAGE_LATEST}"
+    - docker rmi "${RECC_IMAGE_CURRENT}"
+    - docker rmi "${RECC_IMAGE_LATEST}"
+    - docker logout
