@@ -1,3 +1,51 @@
 # ROADMAP
 
-- [ ] Complete porting of Python version of "Answer" v1.0.
+- [ ] release v2.0
+  - [ ] Complete porting of Python version of "Answer" v1.0
+  - [ ] Subprocess for Task
+  - [ ] Unix Domain Socket for gRPC
+  - [ ] Socket File Sharing for Docker Volume
+  - [ ] Image Preview Widget
+  - [ ] Refactoring User/Group/Project
+- [ ] release v2.1
+  - [ ] User permission in the Project
+  - [ ] Project feature flags
+  - [ ] Lambda's plugin page
+  - [ ] Lambda API callback for Subprocess
+  - [ ] RTSP packet to WebRTC packet (bypass)
+  - [ ] Task Management Page
+- [ ] Refactoring Graph Editing Page
+  - [ ] Change base library
+  - [ ] Graph Wizard
+- [ ] JupyterLab
+- [ ] Object Storage (MinIO)
+- [ ] IoT support
+  - [ ] IoT Device <-> WebSocket <-> Lambda <-> Task <-> Core <-> TimescaleDB
+- [ ] Image/Video Processing feature
+  - [ ] NGINX WebDAV file access
+  - [ ] Like AirTable
+    - [ ] Export CSV
+    - [ ] Database creation per project.
+  - [ ] User's comment for event table
+  - [ ] Event detecting tools
+    - [ ] Light reflection
+    - [ ] Shake compensation
+    - [ ] Object tracking
+  - [ ] Export Video File (.mp4)
+  - [ ] Event popup theme
+  - [ ] Event alert sound (Timing/Sound)
+  - [ ] Event editing dialog
+- [ ] Refactoring Dashboard
+- [ ] Upload Pypi package
+  - [ ] setup.py, setup.cfg
+- [ ] CI/CD
+  - [ ] Github Actions
+- [ ] Documentation
+  - [ ] Localization
+    - [ ] Korean
+    - [ ] English
+  - [ ] Product introduction on a single page
+- [ ] Cloud support
+  - [ ] GPU
+  - [ ] LB (Reverse Proxy)
+
