@@ -1,0 +1,802 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta content="PLUGIN NODE JSON" name="keywords" />
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-162764112-2']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script');
+    ga.type = 'text/javascript';
+    ga.async = true;
+    if ('https:' == document.location.protocol) {
+      ga.src = 'https://ssl.google-analytics.com/ga.js'
+    } else {
+      ga.src = 'http://www.google-analytics.com/ga.js'
+    }
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="노드 플러그인 Python" href="python.html" /><link rel="prev" title="노드 플러그인 소개" href="intro.html" />
+
+    <meta name="generator" content="sphinx-4.0.2, furo 2021.06.18.beta36"/>
+        <title>노드 플러그인 JSON - answer documentation</title>
+      <link rel="stylesheet" href="../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
+    <link rel="stylesheet" href="../../_static/pygments.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+</style><link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css" />
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../_static/pygments_dark.css">
+    <link rel="stylesheet" href="../../_static/styles/furo-extensions.css?digest=ee12cdd73c4bbac24afec78d92c4afd7c2d8ea7f"></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">answer  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">answer  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption"><span class="caption-text">일반</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/intro.html">소개</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">자주 묻는 질문들 (FAQ)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/license.html">엔서(ANSWER) 라이선스</a></li>
+</ul>
+<p class="caption"><span class="caption-text">시작</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../start/install.html">설치방법</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/run.html">실행방법</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/login.html">로그인</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/project.html">프로젝트</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/dashboard.html">대시보드</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/storage.html">저장소</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/graph.html">그래프</a></li>
+</ul>
+<p class="caption"><span class="caption-text">플러그인</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Node Plugin</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro.html">노드 플러그인 소개</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">노드 플러그인 JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python.html">노드 플러그인 Python</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../lambda/index.html">Lambda Plugin</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../lambda/intro.html">람다 플러그인 소개</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lambda/json.html">람다 플러그인 JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lambda/python.html">람다 플러그인 Python</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">위젯</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../widgets/jupyter.html">Jupyter Widget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../widgets/plugin.html">Plugin Widget</a></li>
+</ul>
+<p class="caption"><span class="caption-text">람다</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/trigger/index.html">trigger</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/trigger/infinity_trigger.html">trigger</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-av/index.html">answer-lambda-av</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-av/av_stream_video.html">av_stream_video</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-condition/index.html">answer-lambda-condition</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label for="toctree-checkbox-5"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-condition/condition_number.html">condition_compare_numbers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/index.html">answer-lambda-cv2</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label for="toctree-checkbox-6"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_draw_matches_knn.html">cv2_draw_matches_knn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_puttext.html">cv2_puttext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_imencode.html">cv2_imencode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_orb_detect.html">cv2_orb_detect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_imwrite.html">cv2_imwrite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_gaussian_blur.html">cv2_gaussian_blur</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_minMaxLoc.html">cv2_min_max_loc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_rectangle.html">cv2_rectangle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_polylines.html">cv2_polylines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_cvt_color.html">cv2_cvt_color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_dilate.html">cv2_dilate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_match_distance_filter.html">cv2_match_distance_filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.html">cv2_adaptive_threshold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_erode.html">cv2_erode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.html">cv2_bf_knn_match</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_match_template.html">cv2_match_template</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_line.html">cv2_line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_bitwise_not.html">cv2_bitwise_not</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_imread.html">cv2_imread</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.html">cv2_videocapture_mp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_resize.html">cv2_resize</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-cv2-helper/index.html">answer-lambda-cv2-helper</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label for="toctree-checkbox-7"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2-helper/cv2_helper_cvt_to_rect.html">cv2_helper_cvt_to_rect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2-helper/cv2_helper_get_size.html">cv2_helper_get_size</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2-helper/cv2_helper_bounding_roi.html">cv2_helper_bounding_roi</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-detectron2/index.html">answer-lambda-detectron2</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label for="toctree-checkbox-8"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-detectron2/detectron2-detect.html">detectron2-detect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-detectron2/detectron2_filter_by_class.html">detectron2_filter_by_class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-detectron2/detectron2-count.html">detectron2-count</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-detectron2/detectron2-pose.html">detectron2-pose</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-falldown/index.html">answer-lambda-falldown</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label for="toctree-checkbox-9"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-falldown/fall_down.html">fall_down</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-filter/index.html">answer-lambda-filter</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label for="toctree-checkbox-10"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-filter/filter_rectangles_ratio.html">filter_rectangles_ratio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-filter/filter_rectangles_absolute.html">filter_rectangles_absolute</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-fire/index.html">answer-lambda-fire</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label for="toctree-checkbox-11"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-fire/fire_detect.html">fire_detect</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-headpose/index.html">answer-lambda-headpose</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label for="toctree-checkbox-12"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-headpose/head_pose_detect.html">head_pose_detect</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-image/index.html">answer-lambda-image</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label for="toctree-checkbox-13"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-image/manage_rois.html">manage_rois</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-image/image_snapshot.html">image_snapshot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-image/image_crop_ratio.html">image_crop_ratio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-image/select_roi.html">image_select_roi</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-intersect/index.html">answer-lambda-intersect</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label for="toctree-checkbox-14"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-intersect/intersect_polygon_box.html">intersect_polygon_box</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-intersect/intersect_polygon_point.html">intersect_polygon_point</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-logical/index.html">answer-lambda-logical</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label for="toctree-checkbox-15"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-logical/range_for_number.html">range_for_number</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-logical/check_empty.html">check_empty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-logical/check_empty_different_result.html">check_empty_different_result</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-logical/flow_controller.html">flow_controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-logical/check_empty_one.html">check_empty_one</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-logical/passing_data_if_not_empty.html">passing_data_if_not_empty</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-measure/index.html">answer-lambda-measure</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label for="toctree-checkbox-16"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-measure/measure_per_time_adaptive.html">measure_per_time_adaptive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-measure/measure_per_time.html">measure_per_time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-measure/measure_fps.html">measure_fps</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-minio/index.html">answer-lambda-minio</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label for="toctree-checkbox-17"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-minio/minio_put_object2.html">minio_put_object2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-minio/minio_get_object.html">minio_get_object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-minio/minio_put_object.html">minio_put_object</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-net/index.html">answer-lambda-net</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label for="toctree-checkbox-18"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-net/http-client.html">http-client</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-number/index.html">answer-lambda-number</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label for="toctree-checkbox-19"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-number/text_to_number.html">text_to_number</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-number/number_static_number.html">number_static_number</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/index.html">answer-lambda-numpy</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label for="toctree-checkbox-20"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_zeros.html">numpy_zeros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_any.html">numpy_any</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_reshape.html">numpy_reshape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_slice.html">numpy_slice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_cmp.html">numpy_cmp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_array.html">numpy_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_concatenate.html">numpy_concatenate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_size.html">numpy_size</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_item.html">numpy_item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_shape.html">numpy_shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_print.html">numpy_print</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_all.html">numpy_all</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-ocr/index.html">answer-lambda-ocr</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label for="toctree-checkbox-21"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-ocr/easyocr_recognize.html">easyocr_recognize</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-pose/index.html">answer-lambda-pose</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label for="toctree-checkbox-22"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-pose/pose-detect.html">pose-detect</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-preview/index.html">answer-lambda-preview</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" type="checkbox"/><label for="toctree-checkbox-23"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-preview/image_preview.html">preview_image_preview</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-pytorch/index.html">answer-lambda-pytorch</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label for="toctree-checkbox-24"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-pytorch/select_gpu.html">select_gpu</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-rtc/index.html">answer-lambda-rtc</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label for="toctree-checkbox-25"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-rtc/rtc_realtime_video.html">rtc_realtime_video</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-string/index.html">answer-lambda-string</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" type="checkbox"/><label for="toctree-checkbox-26"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-string/make_text.html">make_text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-string/number_to_text.html">number_to_text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-string/make_log_text.html">make_log_text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-string/concat_text.html">concat_text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-string/regex_search.html">regex_search.app</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-string/convert_numpy_to_text.html">convert_numpy_to_text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-string/string_clock_text.html">string_clock_text</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-tesseract/index.html">answer-lambda-tesseract</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" type="checkbox"/><label for="toctree-checkbox-27"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-tesseract/tesseract_image_to_string.html">tesseract_image_to_string</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-yolov4-tf/index.html">answer-lambda-yolov4-tf</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" type="checkbox"/><label for="toctree-checkbox-28"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-yolov4-tf/yolo_detect.html">yolo_detect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-yolov4-tf/select_gpu_for_tf.html">select_gpu_for_tf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-yolov4-tf/yolo_detect_v2.html">yolo_detect_v2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-yolov4-tf/yolov4_filter_by_class.html">yolo_fiter_by_class</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">지침서</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../tutorials/index.html">OpenCV Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" type="checkbox"/><label for="toctree-checkbox-29"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/opencv/helloworld.html">Hello World</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/opencv/image.html">이미지 읽기</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">기타</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../etc/troubleshooting.html">문제 해결</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Core Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/core/auth.html">recc.auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/core/elastic.html">recc.elastic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/core/file.html">recc.file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/core/session.html">recc.session</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/core/struct.html">recc.struct</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <main class="main">
+    <div class="content">
+      <article role="main">
+        <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        </label>
+        <div class="section" id="json">
+<span id="doc-plugin-node-json"></span><h1>노드 플러그인 JSON<a class="headerlink" href="#json" title="Permalink to this headline">¶</a></h1>
+<p>이 페이지는 노드의 설정정보를 변경할 수 있는 JSON 구성 가이드 입니다.</p>
+<div class="section" id="id1">
+<h2>전체 구조<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="table-wrapper"><table class="docutils align-default">
+<colgroup>
+<col style="width: 28%"/>
+<col style="width: 30%"/>
+<col style="width: 43%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>logger</p></td>
+<td><p>object</p></td>
+<td><p>로그 설정</p></td>
+</tr>
+<tr class="row-odd"><td><p>socket</p></td>
+<td><p>object</p></td>
+<td><p>관리용 소켓 설정</p></td>
+</tr>
+<tr class="row-even"><td><p>inits</p></td>
+<td><p>object array</p></td>
+<td><p>초기화 명령 모음</p></td>
+</tr>
+<tr class="row-odd"><td><p>plugin</p></td>
+<td><p>object</p></td>
+<td><p>플러그인 설정</p></td>
+</tr>
+<tr class="row-even"><td><p>models</p></td>
+<td><p>object array</p></td>
+<td><p>모델 설정 목록</p></td>
+</tr>
+<tr class="row-odd"><td><p>processes</p></td>
+<td><p>object array</p></td>
+<td><p>프로세스 설정 목록</p></td>
+</tr>
+<tr class="row-even"><td><p>immutable</p></td>
+<td><p>bool</p></td>
+<td><p>설정파일 변경 여부</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>루트 JSON 구조는 다음과 같습니다.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">{</span>
+<span class="linenos"> 2</span>    <span class="s2">"logger"</span><span class="o">:</span> <span class="p">{</span>
+<span class="linenos"> 3</span>        <span class="p">...</span>
+<span class="linenos"> 4</span>    <span class="p">},</span>
+<span class="linenos"> 5</span>    <span class="s2">"socket"</span><span class="o">:</span> <span class="p">{</span>
+<span class="linenos"> 6</span>        <span class="p">...</span>
+<span class="linenos"> 7</span>    <span class="p">},</span>
+<span class="linenos"> 8</span>    <span class="s2">"inits"</span><span class="o">:</span> <span class="p">[</span>
+<span class="linenos"> 9</span>        <span class="p">...</span>
+<span class="linenos">10</span>    <span class="p">],</span>
+<span class="linenos">11</span>    <span class="s2">"plugin"</span><span class="o">:</span> <span class="p">{</span>
+<span class="linenos">12</span>        <span class="p">...</span>
+<span class="linenos">13</span>    <span class="p">},</span>
+<span class="linenos">14</span>    <span class="s2">"models"</span><span class="o">:</span> <span class="p">[</span>
+<span class="linenos">15</span>      <span class="p">...</span>
+<span class="linenos">16</span>    <span class="p">],</span>
+<span class="linenos">17</span>    <span class="s2">"processes"</span><span class="o">:</span> <span class="p">[</span>
+<span class="linenos">18</span>      <span class="p">...</span>
+<span class="linenos">19</span>    <span class="p">],</span>
+<span class="linenos">20</span>    <span class="s2">"immutable"</span><span class="o">:</span> <span class="kc">true</span>
+<span class="linenos">21</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="logger">
+<h2>logger<a class="headerlink" href="#logger" title="Permalink to this headline">¶</a></h2>
+<p>로그 설정 입니다. 노드의 상세 정보를 확인할 수 있습니다.</p>
+<div class="table-wrapper"><table class="docutils align-default">
+<colgroup>
+<col style="width: 25%"/>
+<col style="width: 15%"/>
+<col style="width: 60%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>string</p></td>
+<td><p>로그 이름</p></td>
+</tr>
+<tr class="row-odd"><td><p>sink</p></td>
+<td><p>string</p></td>
+<td><p>로그 싱크</p></td>
+</tr>
+<tr class="row-even"><td><p>arguments</p></td>
+<td><p>string</p></td>
+<td><p>싱크의 인자</p></td>
+</tr>
+<tr class="row-odd"><td><p>generator</p></td>
+<td><p>string</p></td>
+<td><p>로그 메시지 생성기</p></td>
+</tr>
+<tr class="row-even"><td><p>line_feed</p></td>
+<td><p>string</p></td>
+<td><p>메시지별 개행 여부</p></td>
+</tr>
+<tr class="row-odd"><td><p>severity</p></td>
+<td><p>string</p></td>
+<td><p>적용될 로그 심각도</p></td>
+</tr>
+<tr class="row-even"><td><p>auto_flush</p></td>
+<td><p>bool</p></td>
+<td><p>로그 버퍼의 자동 플러시 여부</p></td>
+</tr>
+<tr class="row-odd"><td><p>thread</p></td>
+<td><p>bool</p></td>
+<td><p>멀티 스레드 모드 적용 여부</p></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>sink</strong> 는 로그 메시지의 마지막 종착지점 입니다.
+아래의 값 중 하나를 사용할 수 있습니다.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">console</span></code>: TTY 터미널에 로그를 출력합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">file</span></code>: 로그를 파일로 저장합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rotate_file</span></code>: 현재, 공식적으로 지원되지 않습니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">null</span></code>: 모든 메시지를 버립니다.</p></li>
+</ul>
+<p><strong>sink</strong> 의 값이 <code class="docutils literal notranslate"><span class="pre">console</span></code> 일 경우 아래의 값을 <strong>arguments</strong> 로 사용할 수 있습니다.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stdout</span></code>: 표준 출력을 사용합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stderr</span></code>: 표준 에러를 사용합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">auto</span></code>: 에러 보다 심각한 메시지는 <code class="docutils literal notranslate"><span class="pre">stderr</span></code> 로, 그 밖의 경우는 <code class="docutils literal notranslate"><span class="pre">stdout</span></code> 을 사용합니다.</p></li>
+</ul>
+<p><strong>sink</strong> 의 값이 <code class="docutils literal notranslate"><span class="pre">file</span></code> 일 경우 <strong>arguments</strong> 값은 파일 경로에 해당됩니다.</p>
+<p><strong>generator</strong> 는 로그 메시지를 생성할 규칙을 지정할 수 있습니다.
+아래의 값 중 하나를 사용할 수 있습니다.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">default</span></code>: 기본 포맷을 사용합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default_color</span></code>: 기본 포맷에, <em>Terminal Control Escape Sequences</em> 를 적용하여 색상을 적용합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">raw</span></code>: 원본 메시지를 그대로 사용합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">raw_color</span></code>: 원본 메시지에, <em>Terminal Control Escape Sequences</em> 를 적용하여 색상을 적용합니다.</p></li>
+</ul>
+<p><strong>line_feed</strong> 은 아래의 값 중 하나를 사용할 수 있습니다.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">auto</span></code>: 시스템에 맞는 개행을 적용합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unix</span></code>: LF(<code class="docutils literal notranslate"><span class="pre">\n</span></code>)를 사용합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">windows</span></code>: CRLF(<code class="docutils literal notranslate"><span class="pre">\r\n</span></code>)를 사용합니다.</p></li>
+</ul>
+<p><strong>severity</strong> 은 아래의 값 중 하나를 사용할 수 있습니다.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">off</span></code>: 출력을 끕니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">emergency</span></code>: 비상</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alert</span></code>: 경고</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">critical</span></code>: 중요</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">error</span></code>: 오류</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">warning</span></code>: 경고</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">notice</span></code>: 알림</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">info</span></code>: 정보</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">debug</span></code>: 디버깅</p></li>
+</ul>
+<p>예제 코드는 다음과 같습니다.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">{</span>
+<span class="linenos"> 2</span>    <span class="s2">"name"</span><span class="o">:</span> <span class="s2">"default.logger"</span><span class="p">,</span>
+<span class="linenos"> 3</span>    <span class="s2">"sink"</span><span class="o">:</span> <span class="s2">"console"</span><span class="p">,</span>
+<span class="linenos"> 4</span>    <span class="s2">"arguments"</span><span class="o">:</span> <span class="s2">"stdout"</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="s2">"generator"</span><span class="o">:</span> <span class="s2">"default_color"</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="s2">"line_feed"</span><span class="o">:</span> <span class="s2">"auto"</span><span class="p">,</span>
+<span class="linenos"> 7</span>    <span class="s2">"severity"</span><span class="o">:</span> <span class="s2">"notice"</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="s2">"auto_flush"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+<span class="linenos"> 9</span>    <span class="s2">"thread"</span><span class="o">:</span> <span class="kc">true</span>
+<span class="linenos">10</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="socket">
+<h2>socket<a class="headerlink" href="#socket" title="Permalink to this headline">¶</a></h2>
+<p>관리용 소켓 설정. 노드와 통신할 소켓 설정 입니다.</p>
+<div class="table-wrapper"><table class="docutils align-default">
+<colgroup>
+<col style="width: 26%"/>
+<col style="width: 10%"/>
+<col style="width: 64%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>recv_timeout</p></td>
+<td><p>string</p></td>
+<td><p>소켓의 수신 제한시간</p></td>
+</tr>
+<tr class="row-odd"><td><p>send_timeout</p></td>
+<td><p>string</p></td>
+<td><p>소켓의 송신 제한시간</p></td>
+</tr>
+<tr class="row-even"><td><p>recv_number_of_messages</p></td>
+<td><p>unsigned</p></td>
+<td><p>소켓의 수신 버퍼가 수용할 수 있는 메시지 개수</p></td>
+</tr>
+<tr class="row-odd"><td><p>send_number_of_messages</p></td>
+<td><p>unsigned</p></td>
+<td><p>소켓의 송신 버퍼가 수용할 수 있는 메시지 개수</p></td>
+</tr>
+<tr class="row-even"><td><p>recv_buffer_byte</p></td>
+<td><p>string</p></td>
+<td><p>단일 패킷의 수신 버퍼의 크기</p></td>
+</tr>
+<tr class="row-odd"><td><p>send_buffer_byte</p></td>
+<td><p>string</p></td>
+<td><p>단일 패킷의 송신 버퍼 크기</p></td>
+</tr>
+<tr class="row-even"><td><p>reconnect_time_min</p></td>
+<td><p>unsigned</p></td>
+<td><p>이전 연결 시도가 실패한 후 재시도 까지 대기하는 최소 시간</p></td>
+</tr>
+<tr class="row-odd"><td><p>reconnect_time_max</p></td>
+<td><p>unsigned</p></td>
+<td><p>이전 연결 시도가 실패한 후 재시도 까지 대하기는 최대 시간</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>예제 코드는 다음과 같습니다.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">{</span>
+<span class="linenos"> 2</span>    <span class="s2">"recv_timeout"</span><span class="o">:</span> <span class="s2">"4sec"</span><span class="p">,</span>
+<span class="linenos"> 3</span>    <span class="s2">"send_timeout"</span><span class="o">:</span> <span class="s2">"1sec"</span><span class="p">,</span>
+<span class="linenos"> 4</span>    <span class="s2">"recv_number_of_messages"</span><span class="o">:</span> <span class="mf">16</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="s2">"send_number_of_messages"</span><span class="o">:</span> <span class="mf">16</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="s2">"recv_buffer_byte"</span><span class="o">:</span> <span class="s2">"32m"</span><span class="p">,</span>
+<span class="linenos"> 7</span>    <span class="s2">"send_buffer_byte"</span><span class="o">:</span> <span class="s2">"32m"</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="s2">"reconnect_time_min"</span><span class="o">:</span> <span class="mf">10</span><span class="p">,</span>
+<span class="linenos"> 9</span>    <span class="s2">"reconnect_time_max"</span><span class="o">:</span> <span class="mf">10</span>
+<span class="linenos">10</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inits">
+<h2>inits<a class="headerlink" href="#inits" title="Permalink to this headline">¶</a></h2>
+<p>초기화 목록. 노드 실행시 실행됩니다.</p>
+<div class="table-wrapper"><table class="docutils align-default">
+<colgroup>
+<col style="width: 29%"/>
+<col style="width: 20%"/>
+<col style="width: 51%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>type</p></td>
+<td><p>string</p></td>
+<td><p>초기화 타입</p></td>
+</tr>
+<tr class="row-odd"><td><p>arguments</p></td>
+<td><p>string</p></td>
+<td><p>초기화 타입에 따른 인자</p></td>
+</tr>
+<tr class="row-even"><td><p>branch</p></td>
+<td><p>string</p></td>
+<td><p>브렌치 이름</p></td>
+</tr>
+<tr class="row-odd"><td><p>auto_update</p></td>
+<td><p>bool</p></td>
+<td><p>자동 업데이트 여부</p></td>
+</tr>
+<tr class="row-even"><td><p>destination</p></td>
+<td><p>string</p></td>
+<td><p>결과 위치</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>예제 코드는 다음과 같습니다.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="p">{</span>
+<span class="linenos">2</span>    <span class="s2">"type"</span><span class="o">:</span> <span class="s2">"git"</span><span class="p">,</span>
+<span class="linenos">3</span>    <span class="s2">"arguments"</span><span class="o">:</span> <span class="s2">"https://github.com/bogonets/answer-lambda-cv2"</span><span class="p">,</span>
+<span class="linenos">4</span>    <span class="s2">"branch"</span><span class="o">:</span> <span class="s2">"master"</span><span class="p">,</span>
+<span class="linenos">5</span>    <span class="s2">"auto_update"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+<span class="linenos">6</span>    <span class="s2">"destination"</span><span class="o">:</span> <span class="s2">"${STORAGE_PYTHON}/answer-lambda-cv2"</span>
+<span class="linenos">7</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="plugin">
+<h2>plugin<a class="headerlink" href="#plugin" title="Permalink to this headline">¶</a></h2>
+<p>플러그인 정보.</p>
+<div class="table-wrapper"><table class="docutils align-default">
+<colgroup>
+<col style="width: 25%"/>
+<col style="width: 14%"/>
+<col style="width: 62%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>script</p></td>
+<td><p>string</p></td>
+<td><p>스크립트 위치</p></td>
+</tr>
+<tr class="row-odd"><td><p>event_create</p></td>
+<td><p>string</p></td>
+<td><p>노드가 생성될 때 호출할 함수</p></td>
+</tr>
+<tr class="row-even"><td><p>event_loop_begin</p></td>
+<td><p>string</p></td>
+<td><p>노드의 이벤트 루프 시작 함수</p></td>
+</tr>
+<tr class="row-odd"><td><p>event_loop_end</p></td>
+<td><p>string</p></td>
+<td><p>노드의 이벤트 루프 종료 함수</p></td>
+</tr>
+<tr class="row-even"><td><p>event_destroy</p></td>
+<td><p>string</p></td>
+<td><p>노드가 소멸될 때 호출할 함수</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>예제 코드는 다음과 같습니다.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="p">{</span>
+<span class="linenos">2</span>    <span class="s2">"script"</span><span class="o">:</span> <span class="s2">"${STORAGE_PYTHON}/npp.py"</span><span class="p">,</span>
+<span class="linenos">3</span>    <span class="s2">"event_create"</span><span class="o">:</span> <span class="s2">"on_create"</span><span class="p">,</span>
+<span class="linenos">4</span>    <span class="s2">"event_loop_begin"</span><span class="o">:</span> <span class="s2">"on_loop_begin"</span><span class="p">,</span>
+<span class="linenos">5</span>    <span class="s2">"event_loop_end"</span><span class="o">:</span> <span class="s2">"on_loop_end"</span><span class="p">,</span>
+<span class="linenos">6</span>    <span class="s2">"event_destroy"</span><span class="o">:</span> <span class="s2">"on_destroy"</span>
+<span class="linenos">7</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="models">
+<h2>models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h2>
+<p>노드 시작시 함께 실행할 모델 목록 입니다.</p>
+</div>
+<div class="section" id="processes">
+<h2>processes<a class="headerlink" href="#processes" title="Permalink to this headline">¶</a></h2>
+<p>노드 시작시 함께 실행할 프로세스 목록 입니다.</p>
+</div>
+<div class="section" id="immutable">
+<h2>immutable<a class="headerlink" href="#immutable" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">true</span></code> 일 경우 Node 종료시 마지막 설정 정보로 변경 및 적용됩니다.</p>
+</div>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="python.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">노드 플러그인 Python</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="intro.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">노드 플러그인 소개</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, BOGONET
+            |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            |
+            <a class="muted-link" href="../../_sources/plugin/node/json.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">노드 플러그인 JSON</a><ul>
+<li><a class="reference internal" href="#id1">전체 구조</a></li>
+<li><a class="reference internal" href="#logger">logger</a></li>
+<li><a class="reference internal" href="#socket">socket</a></li>
+<li><a class="reference internal" href="#inits">inits</a></li>
+<li><a class="reference internal" href="#plugin">plugin</a></li>
+<li><a class="reference internal" href="#models">models</a></li>
+<li><a class="reference internal" href="#processes">processes</a></li>
+<li><a class="reference internal" href="#immutable">immutable</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </main>
+</div>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+</html>

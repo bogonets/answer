@@ -1,0 +1,600 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta content="PLUGIN LAMBDA PYTHON" name="keywords" />
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-162764112-2']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script');
+    ga.type = 'text/javascript';
+    ga.async = true;
+    if ('https:' == document.location.protocol) {
+      ga.src = 'https://ssl.google-analytics.com/ga.js'
+    } else {
+      ga.src = 'http://www.google-analytics.com/ga.js'
+    }
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<link rel="index" title="색인" href="../../genindex.html" /><link rel="search" title="검색" href="../../search.html" /><link rel="next" title="Jupyter Widget" href="../../widgets/jupyter.html" /><link rel="prev" title="람다 플러그인 JSON" href="json.html" />
+
+    <meta name="generator" content="sphinx-4.0.2, furo 2021.06.18.beta36"/>
+        <title>람다 플러그인 Python - answer 문서</title>
+      <link rel="stylesheet" href="../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
+    <link rel="stylesheet" href="../../_static/pygments.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+</style><link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css" />
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../_static/pygments_dark.css">
+    <link rel="stylesheet" href="../../_static/styles/furo-extensions.css?digest=ee12cdd73c4bbac24afec78d92c4afd7c2d8ea7f"></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">answer  문서</div></a>
+    </div>
+    <div class="header-right">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">answer  문서</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html">
+  <input class="sidebar-search" placeholder=검색 name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption"><span class="caption-text">일반</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/intro.html">소개</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/faq.html">자주 묻는 질문들 (FAQ)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/license.html">엔서(ANSWER) 라이선스</a></li>
+</ul>
+<p class="caption"><span class="caption-text">시작</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../start/install.html">설치방법</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/run.html">실행방법</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/login.html">로그인</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/project.html">프로젝트</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/dashboard.html">대시보드</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/storage.html">저장소</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/graph.html">그래프</a></li>
+</ul>
+<p class="caption"><span class="caption-text">플러그인</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../node/index.html">Node Plugin</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../node/intro.html">노드 플러그인 소개</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../node/json.html">노드 플러그인 JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../node/python.html">노드 플러그인 Python</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Lambda Plugin</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro.html">람다 플러그인 소개</a></li>
+<li class="toctree-l2"><a class="reference internal" href="json.html">람다 플러그인 JSON</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">람다 플러그인 Python</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">위젯</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../widgets/jupyter.html">Jupyter Widget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../widgets/plugin.html">Plugin Widget</a></li>
+</ul>
+<p class="caption"><span class="caption-text">람다</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/trigger/index.html">trigger</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/trigger/infinity_trigger.html">trigger</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-av/index.html">answer-lambda-av</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-av/av_stream_video.html">av_stream_video</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-condition/index.html">answer-lambda-condition</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label for="toctree-checkbox-5"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-condition/condition_number.html">condition_compare_numbers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/index.html">answer-lambda-cv2</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label for="toctree-checkbox-6"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_draw_matches_knn.html">cv2_draw_matches_knn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_puttext.html">cv2_puttext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_imencode.html">cv2_imencode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_orb_detect.html">cv2_orb_detect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_imwrite.html">cv2_imwrite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_gaussian_blur.html">cv2_gaussian_blur</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_minMaxLoc.html">cv2_min_max_loc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_rectangle.html">cv2_rectangle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_polylines.html">cv2_polylines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_cvt_color.html">cv2_cvt_color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_dilate.html">cv2_dilate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_match_distance_filter.html">cv2_match_distance_filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.html">cv2_adaptive_threshold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_erode.html">cv2_erode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.html">cv2_bf_knn_match</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_match_template.html">cv2_match_template</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_line.html">cv2_line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_bitwise_not.html">cv2_bitwise_not</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_imread.html">cv2_imread</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.html">cv2_videocapture_mp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2/cv2_resize.html">cv2_resize</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-cv2-helper/index.html">answer-lambda-cv2-helper</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label for="toctree-checkbox-7"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2-helper/cv2_helper_cvt_to_rect.html">cv2_helper_cvt_to_rect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2-helper/cv2_helper_get_size.html">cv2_helper_get_size</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-cv2-helper/cv2_helper_bounding_roi.html">cv2_helper_bounding_roi</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-detectron2/index.html">answer-lambda-detectron2</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label for="toctree-checkbox-8"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-detectron2/detectron2-detect.html">detectron2-detect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-detectron2/detectron2_filter_by_class.html">detectron2_filter_by_class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-detectron2/detectron2-count.html">detectron2-count</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-detectron2/detectron2-pose.html">detectron2-pose</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-falldown/index.html">answer-lambda-falldown</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label for="toctree-checkbox-9"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-falldown/fall_down.html">fall_down</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-filter/index.html">answer-lambda-filter</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label for="toctree-checkbox-10"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-filter/filter_rectangles_ratio.html">filter_rectangles_ratio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-filter/filter_rectangles_absolute.html">filter_rectangles_absolute</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-fire/index.html">answer-lambda-fire</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label for="toctree-checkbox-11"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-fire/fire_detect.html">fire_detect</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-headpose/index.html">answer-lambda-headpose</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label for="toctree-checkbox-12"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-headpose/head_pose_detect.html">head_pose_detect</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-image/index.html">answer-lambda-image</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label for="toctree-checkbox-13"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-image/manage_rois.html">manage_rois</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-image/image_snapshot.html">image_snapshot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-image/image_crop_ratio.html">image_crop_ratio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-image/select_roi.html">image_select_roi</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-intersect/index.html">answer-lambda-intersect</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label for="toctree-checkbox-14"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-intersect/intersect_polygon_box.html">intersect_polygon_box</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-intersect/intersect_polygon_point.html">intersect_polygon_point</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-logical/index.html">answer-lambda-logical</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label for="toctree-checkbox-15"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-logical/range_for_number.html">range_for_number</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-logical/check_empty.html">check_empty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-logical/check_empty_different_result.html">check_empty_different_result</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-logical/flow_controller.html">flow_controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-logical/check_empty_one.html">check_empty_one</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-logical/passing_data_if_not_empty.html">passing_data_if_not_empty</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-measure/index.html">answer-lambda-measure</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label for="toctree-checkbox-16"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-measure/measure_per_time_adaptive.html">measure_per_time_adaptive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-measure/measure_per_time.html">measure_per_time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-measure/measure_fps.html">measure_fps</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-minio/index.html">answer-lambda-minio</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label for="toctree-checkbox-17"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-minio/minio_put_object2.html">minio_put_object2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-minio/minio_get_object.html">minio_get_object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-minio/minio_put_object.html">minio_put_object</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-net/index.html">answer-lambda-net</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label for="toctree-checkbox-18"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-net/http-client.html">http-client</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-number/index.html">answer-lambda-number</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label for="toctree-checkbox-19"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-number/text_to_number.html">text_to_number</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-number/number_static_number.html">number_static_number</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/index.html">answer-lambda-numpy</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label for="toctree-checkbox-20"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_zeros.html">numpy_zeros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_any.html">numpy_any</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_reshape.html">numpy_reshape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_slice.html">numpy_slice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_cmp.html">numpy_cmp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_array.html">numpy_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_concatenate.html">numpy_concatenate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_size.html">numpy_size</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_item.html">numpy_item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_shape.html">numpy_shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_print.html">numpy_print</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-numpy/numpy_all.html">numpy_all</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-ocr/index.html">answer-lambda-ocr</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label for="toctree-checkbox-21"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-ocr/easyocr_recognize.html">easyocr_recognize</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-pose/index.html">answer-lambda-pose</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label for="toctree-checkbox-22"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-pose/pose-detect.html">pose-detect</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-preview/index.html">answer-lambda-preview</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" type="checkbox"/><label for="toctree-checkbox-23"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-preview/image_preview.html">preview_image_preview</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-pytorch/index.html">answer-lambda-pytorch</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label for="toctree-checkbox-24"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-pytorch/select_gpu.html">select_gpu</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-rtc/index.html">answer-lambda-rtc</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label for="toctree-checkbox-25"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-rtc/rtc_realtime_video.html">rtc_realtime_video</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-string/index.html">answer-lambda-string</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" type="checkbox"/><label for="toctree-checkbox-26"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-string/make_text.html">make_text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-string/number_to_text.html">number_to_text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-string/make_log_text.html">make_log_text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-string/concat_text.html">concat_text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-string/regex_search.html">regex_search.app</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-string/convert_numpy_to_text.html">convert_numpy_to_text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-string/string_clock_text.html">string_clock_text</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-tesseract/index.html">answer-lambda-tesseract</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" type="checkbox"/><label for="toctree-checkbox-27"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-tesseract/tesseract_image_to_string.html">tesseract_image_to_string</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../lambdas/answer-lambda-yolov4-tf/index.html">answer-lambda-yolov4-tf</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" type="checkbox"/><label for="toctree-checkbox-28"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-yolov4-tf/yolo_detect.html">yolo_detect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-yolov4-tf/select_gpu_for_tf.html">select_gpu_for_tf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-yolov4-tf/yolo_detect_v2.html">yolo_detect_v2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lambdas/answer-lambda-yolov4-tf/yolov4_filter_by_class.html">yolo_fiter_by_class</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">지침서</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../tutorials/index.html">OpenCV Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" type="checkbox"/><label for="toctree-checkbox-29"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/opencv/helloworld.html">Hello World</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/opencv/image.html">이미지 읽기</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">기타</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../etc/troubleshooting.html">문제 해결</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Core Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/core/auth.html">recc.auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/core/elastic.html">recc.elastic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/core/file.html">recc.file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/core/session.html">recc.session</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/core/struct.html">recc.struct</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <main class="main">
+    <div class="content">
+      <article role="main">
+        <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        </label>
+        <div class="section" id="python">
+<span id="doc-plugin-lambda-python"></span><h1>람다 플러그인 Python<a class="headerlink" href="#python" title="이 표제에 대한 퍼머링크">¶</a></h1>
+<div class="section" id="id1">
+<h2>모듈명<a class="headerlink" href="#id1" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<p>《Python Interpreter》 를 직접 실행 했을 경우 <code class="docutils literal notranslate"><span class="pre">__main__</span></code> 모듈로 으로 실행되는 루틴과 구분하기 위해
+《엔서》 의 람다는 《Answer Python Plugin》 의 약자인 <code class="docutils literal notranslate"><span class="pre">__app__</span></code> 을 사용합니다.
+다음과 같은 진입점을 추가할 수 있습니다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__app__'</span>
+<span class="linenos">2</span>    <span class="k">pass</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>이 기능은 <code class="docutils literal notranslate"><span class="pre">1.1.8</span></code> 버전 부터 작동 합니다.</p>
+</div>
+</div>
+<div class="section" id="on-set">
+<h2>on_set<a class="headerlink" href="#on-set" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span> <span class="nf">on_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="linenos">2</span>    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>속성 값을 변경 할 때 발생되는 이벤트 입니다.</p>
+</div>
+<div class="section" id="on-get">
+<h2>on_get<a class="headerlink" href="#on-get" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span> <span class="nf">on_get</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+<span class="linenos">2</span>    <span class="k">return</span> <span class="s1">''</span>
+</pre></div>
+</div>
+<p>속성 값을 획득 할 때 발생되는 이벤트 입니다.</p>
+</div>
+<div class="section" id="on-init">
+<h2>on_init<a class="headerlink" href="#on-init" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span> <span class="nf">on_init</span><span class="p">():</span>
+<span class="linenos">2</span>    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>람다가 생성된 후 초기화 할 때 호출됩니다.</p>
+<p>반환 값이 <code class="docutils literal notranslate"><span class="pre">True</span></code> 가 아닐 경우 람다 초기화를 종료합니다.</p>
+</div>
+<div class="section" id="on-valid">
+<h2>on_valid<a class="headerlink" href="#on-valid" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span> <span class="nf">on_valid</span><span class="p">():</span>
+<span class="linenos">2</span>    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>람다의 정합성을 확인합니다.</p>
+<p>반환 값이 <code class="docutils literal notranslate"><span class="pre">True</span></code> 가 아닐 경우 람다를 실행하지 못합니다.</p>
+</div>
+<div class="section" id="on-run">
+<h2>on_run<a class="headerlink" href="#on-run" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span> <span class="nf">on_run</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+<span class="linenos">2</span>    <span class="k">return</span> <span class="p">{</span>
+<span class="linenos">3</span>        <span class="s2">"result"</span><span class="p">:</span> <span class="n">array</span><span class="p">[</span><span class="n">slices</span><span class="p">]</span>
+<span class="linenos">4</span>    <span class="p">}</span>
+</pre></div>
+</div>
+<p>람다를 실행할 구현부 입니다. (위의 예제는 <code class="docutils literal notranslate"><span class="pre">array</span></code> 입력과 <code class="docutils literal notranslate"><span class="pre">result</span></code> 출력을 갖는 람다 입니다.)</p>
+<p><a class="reference internal" href="json.html#doc-plugin-lambda-json"><span class="std std-ref">JSON</span></a> 의 <strong>controls.input</strong> 슬롯 이름을 인자로 구현해야 합니다.</p>
+<p>또한 <a class="reference internal" href="json.html#doc-plugin-lambda-json"><span class="std std-ref">JSON</span></a> 의 <strong>controls.output</strong> 슬롯 이름을 키 값으로 <code class="docutils literal notranslate"><span class="pre">dict</span></code> 타입을 반환해야 합니다.</p>
+</div>
+<div class="section" id="on-destroy">
+<h2>on_destroy<a class="headerlink" href="#on-destroy" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span> <span class="nf">on_destroy</span><span class="p">():</span>
+<span class="linenos">2</span>    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>람다가 소멸될 때 호출됩니다.</p>
+</div>
+<div class="section" id="full-example">
+<h2>Full example<a class="headerlink" href="#full-example" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<p>다음은 numpy slice 예제 입니다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="n">slices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="k">def</span> <span class="nf">int_or_none</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+<span class="linenos"> 9</span>    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">if</span> <span class="n">val</span> <span class="k">else</span> <span class="kc">None</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span><span class="k">def</span> <span class="nf">str_to_slice</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+<span class="linenos">13</span>    <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="linenos">14</span>    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">):</span>
+<span class="linenos">15</span>        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">int_or_none</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+<span class="linenos">16</span>    <span class="k">return</span> <span class="n">result</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span><span class="k">def</span> <span class="nf">str_to_slices</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+<span class="linenos">20</span>    <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="linenos">21</span>    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">):</span>
+<span class="linenos">22</span>        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">str_to_slice</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+<span class="linenos">23</span>    <span class="k">return</span> <span class="n">result</span>
+<span class="linenos">24</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span><span class="k">def</span> <span class="nf">slice_to_str</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+<span class="linenos">27</span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<span class="linenos">28</span>        <span class="k">return</span> <span class="s1">'::'</span>
+<span class="linenos">29</span>    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+<span class="linenos">30</span>        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="linenos">31</span>    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+<span class="linenos">32</span>        <span class="k">return</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">'</span>
+<span class="linenos">33</span>    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+<span class="linenos">34</span>        <span class="k">return</span> <span class="s1">','</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<span class="linenos">35</span>    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">36</span>        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">'A slice must have 3 or fewer elements.'</span><span class="p">)</span>
+<span class="linenos">37</span>
+<span class="linenos">38</span>
+<span class="linenos">39</span><span class="k">def</span> <span class="nf">slices_to_str</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+<span class="linenos">40</span>    <span class="s1">','</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">slice_to_str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">))</span>
+<span class="linenos">41</span>
+<span class="linenos">42</span>
+<span class="linenos">43</span><span class="k">def</span> <span class="nf">on_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="linenos">44</span>    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'slices'</span><span class="p">:</span>
+<span class="linenos">45</span>        <span class="k">global</span> <span class="n">slices</span>
+<span class="linenos">46</span>        <span class="n">slices</span> <span class="o">=</span> <span class="n">str_to_slices</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<span class="linenos">47</span>
+<span class="linenos">48</span>
+<span class="linenos">49</span><span class="k">def</span> <span class="nf">on_get</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+<span class="linenos">50</span>    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'slices'</span><span class="p">:</span>
+<span class="linenos">51</span>        <span class="k">return</span> <span class="n">slices_to_str</span><span class="p">(</span><span class="n">slices</span><span class="p">)</span>
+<span class="linenos">52</span>
+<span class="linenos">53</span>
+<span class="linenos">54</span><span class="k">def</span> <span class="nf">on_init</span><span class="p">():</span>
+<span class="linenos">55</span>    <span class="k">return</span> <span class="kc">True</span>
+<span class="linenos">56</span>
+<span class="linenos">57</span>
+<span class="linenos">58</span><span class="k">def</span> <span class="nf">on_valid</span><span class="p">():</span>
+<span class="linenos">59</span>    <span class="k">return</span> <span class="kc">True</span>
+<span class="linenos">60</span>
+<span class="linenos">61</span>
+<span class="linenos">62</span><span class="k">def</span> <span class="nf">on_run</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+<span class="linenos">63</span>    <span class="k">return</span> <span class="p">{</span>
+<span class="linenos">64</span>        <span class="s2">"result"</span><span class="p">:</span> <span class="n">array</span><span class="p">[</span><span class="n">slices</span><span class="p">]</span>
+<span class="linenos">65</span>    <span class="p">}</span>
+<span class="linenos">66</span>
+<span class="linenos">67</span>
+<span class="linenos">68</span><span class="k">def</span> <span class="nf">on_destroy</span><span class="p">():</span>
+<span class="linenos">69</span>    <span class="k">pass</span>
+<span class="linenos">70</span>
+<span class="linenos">71</span>
+<span class="linenos">72</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__app__'</span><span class="p">:</span>
+<span class="linenos">73</span>    <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../../widgets/jupyter.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Jupyter Widget</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="json.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">람다 플러그인 JSON</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, BOGONET
+            |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            |
+            <a class="muted-link" href="../../_sources/plugin/lambda/python.rst.txt"
+               rel="nofollow">
+              소스 보기
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            내용
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">람다 플러그인 Python</a><ul>
+<li><a class="reference internal" href="#id1">모듈명</a></li>
+<li><a class="reference internal" href="#on-set">on_set</a></li>
+<li><a class="reference internal" href="#on-get">on_get</a></li>
+<li><a class="reference internal" href="#on-init">on_init</a></li>
+<li><a class="reference internal" href="#on-valid">on_valid</a></li>
+<li><a class="reference internal" href="#on-run">on_run</a></li>
+<li><a class="reference internal" href="#on-destroy">on_destroy</a></li>
+<li><a class="reference internal" href="#full-example">Full example</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </main>
+</div>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/translations.js"></script>
+    <script src="../../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+</html>

@@ -4,20 +4,39 @@ CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)
 RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
 
 BUILDER=html
-CACHED_ENVIRONMENT_DIR="$CORE_DIR/build/doc_trees"
 SOURCE_DIR="$CORE_DIR/doc"
-OUTPUT_DIR="$CORE_DIR/build/$BUILDER"
+OUTPUT_DIR="$RECC_DIR/docs"
 
-if [[ ! -d "$CACHED_ENVIRONMENT_DIR" ]]; then
-    mkdir -p "$CACHED_ENVIRONMENT_DIR"
+GETTEXT_DIR="$SOURCE_DIR/_gettext"
+LOCALE_DIR="$SOURCE_DIR/_locale"
+BUILD_DIR="$SOURCE_DIR/.build"
+CACHED_DIR="$BUILD_DIR/doc_trees"
+
+if [[ ! -d "$CACHED_DIR" ]]; then
+    mkdir -p "$CACHED_DIR"
 fi
 if [[ ! -d "$OUTPUT_DIR" ]]; then
     mkdir -p "$OUTPUT_DIR"
 fi
 
-"$RECC_DIR/python" -m sphinx \
-    -W \
-    -b html \
-    -d "$CACHED_ENVIRONMENT_DIR" \
-    "$SOURCE_DIR" \
-    "$OUTPUT_DIR"
+function run_sphinx
+{
+    local language=$1
+
+    "$RECC_DIR/python" -m sphinx_intl \
+        update \
+        -p "$GETTEXT_DIR/$language" \
+        -d "$LOCALE_DIR" \
+        -l $language
+
+    "$RECC_DIR/python" -m sphinx \
+        -W \
+        -b "$BUILDER" \
+        -d "$CACHED_DIR/$language" \
+        -D language=$language \
+        "$SOURCE_DIR" \
+        "$OUTPUT_DIR/$language"
+}
+
+run_sphinx en
+run_sphinx ko
