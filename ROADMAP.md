@@ -2,20 +2,22 @@
 
 - [ ] CI/CD
   - [ ] GitHub Actions
+    - [ ] Test Script
     - [ ] Add documentation
 - [ ] Documentation
-  - [ ] Update Build Script
+  - [x] Update Build Script
   - [ ] Core <-> Task Architecture
   - [ ] Localization
     - [ ] Korean
     - [ ] English
   - [ ] Product introduction on a single page
-- [ ] release v2.0
+- [x] Upload to PyPI
+- [ ] Release v2.0
   - [ ] Complete porting of Python version of "Answer" v1.0
   - [ ] Socket File Sharing for Docker Volume
   - [ ] Unix Domain Socket for gRPC
   - [ ] Infinity Lambda
-- [ ] release v2.1
+- [ ] Release v2.1
   - [ ] Image Preview Widget
   - [ ] Refactoring User/Group/Project
   - [ ] Subprocess for Task
@@ -30,8 +32,8 @@
 - [ ] Refactoring Graph Editing Page
   - [ ] Change base library
   - [ ] Graph Wizard
-- [ ] JupyterLab
-- [ ] Object Storage (MinIO)
+- [ ] Support JupyterLab
+- [ ] Support Object Storage (MinIO)
 - [ ] IoT support
   - [ ] IoT Device <-> WebSocket <-> Lambda <-> Task <-> Core <-> TimescaleDB
 - [ ] Image/Video Processing feature
