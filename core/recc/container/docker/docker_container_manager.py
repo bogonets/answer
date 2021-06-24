@@ -26,11 +26,11 @@ from recc.container.labels import (
     task_create_labels,
     task_find_labels,
 )
-from recc.container.async_cm_interface import (
+from recc.container.container_manager_interface import (
     ContainerInfo,
     VolumeInfo,
     NetworkInfo,
-    AsyncContainerManagerInterface,
+    ContainerManagerInterface,
 )
 from recc.variables.orchestration import (
     NODE_IMAGE_NAME,
@@ -39,10 +39,10 @@ from recc.variables.orchestration import (
     DEFAULT_TIME_ZONE,
 )
 from recc.container.docker.node_init import COMPRESS_NODE_INIT_TAR_BYTES
-from recc.container.docker.mixin.async_docker_container import AsyncDockerContainer
-from recc.container.docker.mixin.async_docker_image import AsyncDockerImage
-from recc.container.docker.mixin.async_docker_network import AsyncDockerNetwork
-from recc.container.docker.mixin.async_docker_volume import AsyncDockerVolume
+from recc.container.docker.mixin.docker_container import DockerContainer
+from recc.container.docker.mixin.docker_image import DockerImage
+from recc.container.docker.mixin.docker_network import DockerNetwork
+from recc.container.docker.mixin.docker_volume import DockerVolume
 
 SELF_CGROUP_PATH = "/proc/self/cgroup"
 DOCKER_CGROUP_REGEX = re.compile(r"\d+:[\w=]+:/docker(-[ce]e)?/(\w+)")
@@ -97,12 +97,12 @@ def _inside_container(host=BaseHostType.Unknown) -> bool:
         return True
 
 
-class AsyncDockerContainerManager(
-    AsyncDockerContainer,
-    AsyncDockerImage,
-    AsyncDockerNetwork,
-    AsyncDockerVolume,
-    AsyncContainerManagerInterface,
+class DockerContainerManager(
+    DockerContainer,
+    DockerImage,
+    DockerNetwork,
+    DockerVolume,
+    ContainerManagerInterface,
 ):
     def __init__(self, host=DOCKER_SOCK_LOCAL_BASE_URL, port: Optional[int] = None):
         self._host = host

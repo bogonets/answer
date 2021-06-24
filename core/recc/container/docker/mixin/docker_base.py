@@ -4,7 +4,7 @@ from typing import Optional
 from docker import DockerClient
 
 
-class AsyncDockerBase:
+class DockerBase:
 
     _host: str
     _port: Optional[int]

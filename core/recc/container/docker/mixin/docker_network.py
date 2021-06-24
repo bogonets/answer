@@ -2,8 +2,8 @@
 
 from typing import Optional, List, Dict, Any
 from docker.models.networks import Network
-from recc.container.async_cm_interface import NetworkInfo
-from recc.container.docker.mixin.async_docker_base import AsyncDockerBase
+from recc.container.container_manager_interface import NetworkInfo
+from recc.container.docker.mixin.docker_base import DockerBase
 
 
 def _create_network_info(network: Network) -> NetworkInfo:
@@ -31,7 +31,7 @@ def _create_network_info(network: Network) -> NetworkInfo:
     return NetworkInfo(key, name, labels)
 
 
-class AsyncDockerNetwork(AsyncDockerBase):
+class DockerNetwork(DockerBase):
     async def networks(
         self, filters: Optional[Dict[str, Any]] = None, **kwargs
     ) -> List[NetworkInfo]:

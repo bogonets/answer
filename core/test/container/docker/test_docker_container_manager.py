@@ -4,17 +4,17 @@ import unittest
 import tempfile
 from io import BytesIO
 from tarfile import open as tar_open
-from recc.container.async_cm_interface import ContainerStatus
-from recc.container.docker.async_docker import AsyncDockerContainerManager
+from recc.container.container_manager_interface import ContainerStatus
+from recc.container.docker.docker_container_manager import DockerContainerManager
 from recc.variables.orchestration import BASE_IMAGE_FULLNAME
 from recc.archive.tar_archive import file_info
 from recc.util.version import parse_semantic_version
 from tester import AsyncTestCase
 
 
-class AsyncDockerContainerManagerTestCase(AsyncTestCase):
+class DockerContainerManagerTestCase(AsyncTestCase):
     async def setUp(self):
-        self.cm = AsyncDockerContainerManager()
+        self.cm = DockerContainerManager()
         await self.cm.open()
         self.assertTrue(self.cm.is_open())
         if not await self.cm.exist_default_task_images():
@@ -27,7 +27,7 @@ class AsyncDockerContainerManagerTestCase(AsyncTestCase):
         await self.cm.close()
 
     async def test_inside_container(self):
-        result = AsyncDockerContainerManager.inside_container()
+        result = DockerContainerManager.inside_container()
         self.assertIsInstance(result, bool)
         print(f"Inside Container? {result}")
 

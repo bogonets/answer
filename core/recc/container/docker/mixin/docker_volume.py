@@ -2,8 +2,8 @@
 
 from typing import Optional, List, Dict, Any
 from docker.models.volumes import Volume
-from recc.container.async_cm_interface import VolumeInfo
-from recc.container.docker.mixin.async_docker_base import AsyncDockerBase
+from recc.container.container_manager_interface import VolumeInfo
+from recc.container.docker.mixin.docker_base import DockerBase
 
 
 def _create_volume_info(volume: Volume) -> VolumeInfo:
@@ -23,7 +23,7 @@ def _create_volume_info(volume: Volume) -> VolumeInfo:
     return VolumeInfo(key, name, labels)
 
 
-class AsyncDockerVolume(AsyncDockerBase):
+class DockerVolume(DockerBase):
     async def volumes(
         self, filters: Optional[Dict[str, Any]] = None, **kwargs
     ) -> List[VolumeInfo]:

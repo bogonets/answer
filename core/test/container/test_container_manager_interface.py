@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from recc.container.async_cm_interface import ContainerStatus
+from recc.container.container_manager_interface import ContainerStatus
 
 
 class ContainerStatusTestCase(TestCase):

@@ -8,7 +8,7 @@ from recc.core.mixin.context_base import ContextBase
 from recc.init.default import init_logger, init_json_driver, init_loop_driver
 from recc.argparse.config.core_config import CoreConfig
 from recc.argparse.default_namespace import get_default_core_config
-from recc.container.async_cm import create_container_manager
+from recc.container.container_manager import create_container_manager
 from recc.cache.async_cs import create_cache_store
 from recc.database.async_db import create_database
 from recc.storage.async_sm import AsyncStorageManager

@@ -3,10 +3,10 @@
 from typing import Optional, List, Dict, Any
 from io import BytesIO
 from recc.log.logging import recc_cm_logger as logger
-from recc.container.docker.mixin.async_docker_base import AsyncDockerBase
+from recc.container.docker.mixin.docker_base import DockerBase
 
 
-class AsyncDockerImage(AsyncDockerBase):
+class DockerImage(DockerBase):
     async def images(
         self,
         name: Optional[str] = None,

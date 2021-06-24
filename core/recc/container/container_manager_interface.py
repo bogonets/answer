@@ -93,7 +93,7 @@ class NetworkInfo:
         self.labels = labels
 
 
-class AsyncContainerManagerInterface(metaclass=ABCMeta):
+class ContainerManagerInterface(metaclass=ABCMeta):
     """
     Container Manager (OS-level virtualization) interface.
     """

@@ -6,8 +6,8 @@ from tarfile import TarFile
 from signal import SIGINT, SIGKILL
 from io import BytesIO
 from docker.models.containers import Container
-from recc.container.async_cm_interface import ContainerInfo
-from recc.container.docker.mixin.async_docker_base import AsyncDockerBase
+from recc.container.container_manager_interface import ContainerInfo
+from recc.container.docker.mixin.docker_base import DockerBase
 
 
 def _create_container_info(container: Container) -> ContainerInfo:
@@ -45,7 +45,7 @@ def _create_container_info(container: Container) -> ContainerInfo:
     return ContainerInfo(key, name, state, labels)
 
 
-class AsyncDockerContainer(AsyncDockerBase):
+class DockerContainer(DockerBase):
     async def containers(
         self,
         filters: Optional[Dict[str, Any]] = None,

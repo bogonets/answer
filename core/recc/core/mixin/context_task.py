@@ -5,7 +5,7 @@ from typing import Optional, List, Any, Dict
 from Crypto.PublicKey import RSA
 from recc.session.session import Session
 from recc.blueprint.v1.converter import bp_converter
-from recc.container.async_cm_interface import ContainerInfo
+from recc.container.container_manager_interface import ContainerInfo
 from recc.core.mixin.context_base import ContextBase
 from recc.exception.recc_error import (
     ReccAlreadyError,
