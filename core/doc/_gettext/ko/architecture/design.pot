@@ -1,0 +1,2 @@
+msgid "msg_title"
+msgstr "디자인 개요"

@@ -1,0 +1,2 @@
+msgid "msg_title"
+msgstr "Design overview"

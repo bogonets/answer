@@ -100,8 +100,8 @@ ANSWER 공식 문서화 사이트 입니다.
     :caption: Core Reference
     :name: section-reference-core
 
+    architecture/design
     reference/core/auth
-    reference/core/elastic
     reference/core/file
     reference/core/session
     reference/core/struct
