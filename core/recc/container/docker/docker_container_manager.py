@@ -275,7 +275,6 @@ class DockerContainerManager(
             },
             "labels": task_create_labels(group_name, project_name, task_name),
             "network": network_name,
-            "tmpfs": {TASK_GUEST_CACHE_DIR: ""},
             "entrypoint": ["python", "-m", "recc", "task"],
         }
 

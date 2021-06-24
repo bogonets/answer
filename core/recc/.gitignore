@@ -6,3 +6,7 @@
 # The .c file is compiled by a C compiler to a .so file (or a .pyd file on Windows)
 *.so
 *.pyd
+
+# Static files for front-end websites.
+www/*
+!www/__init__.py
