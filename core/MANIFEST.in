@@ -1,5 +1,6 @@
 include requirements.*.txt
 include README.md
 include doc/*
-recursive-include recc/www *
+recursive-include recc/container *.sh
 recursive-include recc/node_builtin *.json
+recursive-include recc/www *

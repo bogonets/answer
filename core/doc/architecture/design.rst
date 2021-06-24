@@ -3,5 +3,5 @@
 
 .. _doc-architecture-design:
 
-msg_title
-=========
+title
+=====

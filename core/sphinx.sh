@@ -19,6 +19,7 @@ if [[ ! -d "$OUTPUT_DIR" ]]; then
     mkdir -p "$OUTPUT_DIR"
 fi
 
+nature
 function run_sphinx
 {
     local language=$1
@@ -27,13 +28,13 @@ function run_sphinx
         update \
         -p "$GETTEXT_DIR/$language" \
         -d "$LOCALE_DIR" \
-        -l $language
+        -l "$language"
 
     "$RECC_DIR/python" -m sphinx \
         -W \
         -b "$BUILDER" \
         -d "$CACHED_DIR/$language" \
-        -D language=$language \
+        -D "language=$language" \
         "$SOURCE_DIR" \
         "$OUTPUT_DIR/$language"
 }
