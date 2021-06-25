@@ -1,0 +1,128 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:1
+msgid "MEASURE"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:8
+msgid "measure_per_time"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:10
+msgid "입력이 일정 단위 동안 들어오는지 측정한다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:15
+msgid "**input**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:18
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:20
+msgid "**result**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:22
+msgid "**labels**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:25
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:27
+msgid "**기준 초**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:30
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:40
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:50
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:60
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:30
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:40
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:50
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:60
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:30
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:40
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:50
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:60
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:30
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:40
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:50
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:60
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:32
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:42
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:52
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:62
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:32
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:42
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:52
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:62
+msgid "list"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:32
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:42
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:52
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:62
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:32
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:52
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:62
+msgid "1"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:37
+msgid "**측정 라벨**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:42
+msgid "Occur1"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:47
+msgid "**측정동안 입력 갯수**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_per_time.rst:57
+msgid "**결과 (초)**"
+msgstr ""

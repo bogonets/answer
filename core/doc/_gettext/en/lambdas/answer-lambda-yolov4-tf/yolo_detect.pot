@@ -1,0 +1,162 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:1
+msgid "DEEP YOLOV4 YOLOV3"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:8
+msgid "yolo_detect"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:10
+msgid "."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:15
+msgid "**image**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:18
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:20
+msgid "**bboxes**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:23
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:25
+msgid "**Yolo 버전**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:28
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:38
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:48
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:58
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:68
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:78
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:28
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:38
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:48
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:58
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:68
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:78
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:28
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:38
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:48
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:58
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:68
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:78
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:28
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:38
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:48
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:58
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:68
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:78
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:30
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:40
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:50
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:60
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:70
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:80
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:30
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:40
+msgid "str"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:30
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:40
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:50
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:60
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:70
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:80
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:30
+msgid "yolov4"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:35
+msgid "**Weights 파일 경로**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:45
+msgid "**입력 이미지 크기(N x N)**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:50
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:60
+msgid "int"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:50
+msgid "608"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:55
+msgid "**클래스의 갯수**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:60
+msgid "80"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:65
+msgid "**Confidence 임계치**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:70
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:80
+msgid "float"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:70
+msgid "0.5"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:75
+msgid "**IOU 임계치**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-yolov4-tf/yolo_detect.rst:80
+msgid "0.45"
+msgstr ""

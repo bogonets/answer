@@ -1,0 +1,168 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:1
+msgid "CV2"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:8
+msgid "cv2_adaptive_threshold"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:10
+msgid "cv2.adaptiveThreshold"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:15
+msgid "**source**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:18
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:20
+msgid "**result**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:23
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:25
+msgid "**maxValue**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:28
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:38
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:48
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:58
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:68
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:28
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:38
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:48
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:58
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:68
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:28
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:38
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:48
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:58
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:68
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:28
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:38
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:48
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:58
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:68
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:30
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:40
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:50
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:60
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:70
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:30
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:40
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:50
+msgid "int"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:30
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:40
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:50
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:60
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:70
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:30
+msgid "255"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:33
+msgid "maxValue"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:35
+msgid "**blockSize**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:40
+msgid "3"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:43
+msgid "blockSize."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:45
+msgid "**c**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:50
+msgid "5"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:53
+msgid "c"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:55
+msgid "**adaptiveThresh**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:60
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:70
+msgid "str"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:60
+msgid "gaussian_c"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:63
+msgid "adaptiveThresh"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:65
+msgid "**thresh**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:70
+msgid "binary"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_adaptive_threshold.rst:73
+msgid "thresh"
+msgstr ""

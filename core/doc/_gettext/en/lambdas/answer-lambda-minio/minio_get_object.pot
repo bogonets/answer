@@ -1,0 +1,198 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:1
+msgid "MINIO"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:8
+msgid "minio_get_object"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:10
+msgid "오브젝트를 다운로드 받는다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:13
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:15
+msgid "**get_data**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:18
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:20
+msgid "**URL**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:23
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:33
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:43
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:53
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:63
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:73
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:83
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:93
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:23
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:33
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:43
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:53
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:63
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:73
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:83
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:93
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:23
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:33
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:43
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:53
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:63
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:73
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:83
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:93
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:23
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:33
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:43
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:53
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:63
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:73
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:83
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:93
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:25
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:35
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:45
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:55
+msgid "initialize_only"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:25
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:35
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:45
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:65
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:75
+msgid "str"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:25
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:35
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:45
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:55
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:65
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:75
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:28
+msgid "오브젝트 스토리지 서버의 주소."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:30
+msgid "**Access KEY**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:38
+msgid "액세스 키는 계정을 고유하게 식별하는 사용자 ID와 같습니다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:40
+msgid "**Secret KEY**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:48
+msgid "비밀 키는 계정의 비밀번호입니다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:50
+msgid "**Secure**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:55
+msgid "bool"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:55
+msgid "false"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:58
+msgid "'True'로 선택할 경우 HTTPS 보안 접속을 적용한다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:60
+msgid "**Bucket name**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:65
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:75
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:85
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:95
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:68
+msgid "버킷 이름"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:70
+msgid "**Object name**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:78
+msgid "오브젝트 이름"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:80
+msgid "**Request Headers**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:85
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:95
+msgid "csv"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:85
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:95
+msgid "False"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:88
+msgid "추가 헤더 목록."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:90
+msgid "**Server-Side Encryption**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-minio/minio_get_object.rst:98
+msgid "서버 측 암호화 헤더 목록."
+msgstr ""

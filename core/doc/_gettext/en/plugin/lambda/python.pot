@@ -1,0 +1,109 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../plugin/lambda/python.rst:1
+msgid "PLUGIN LAMBDA PYTHON"
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:7
+msgid "람다 플러그인 Python"
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:10
+msgid "모듈명"
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:12
+msgid "\"Python Interpreter\" 를 직접 실행 했을 경우 ``__main__`` 모듈로 으로 실행되는 루틴과 구분하기 위해 \"엔서\" 의 람다는 \"Answer Python Plugin\" 의 약자인 ``__app__`` 을 사용합니다. 다음과 같은 진입점을 추가할 수 있습니다."
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:22
+msgid "이 기능은 ``1.1.8`` 버전 부터 작동 합니다."
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:25
+msgid "on_set"
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:33
+msgid "속성 값을 변경 할 때 발생되는 이벤트 입니다."
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:36
+msgid "on_get"
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:44
+msgid "속성 값을 획득 할 때 발생되는 이벤트 입니다."
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:47
+msgid "on_init"
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:55
+msgid "람다가 생성된 후 초기화 할 때 호출됩니다."
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:57
+msgid "반환 값이 ``True`` 가 아닐 경우 람다 초기화를 종료합니다."
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:60
+msgid "on_valid"
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:68
+msgid "람다의 정합성을 확인합니다."
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:70
+msgid "반환 값이 ``True`` 가 아닐 경우 람다를 실행하지 못합니다."
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:73
+msgid "on_run"
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:83
+msgid "람다를 실행할 구현부 입니다. (위의 예제는 ``array`` 입력과 ``result`` 출력을 갖는 람다 입니다.)"
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:85
+msgid ":ref:`JSON <doc-plugin-lambda-json>` 의 **controls.input** 슬롯 이름을 인자로 구현해야 합니다."
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:87
+msgid "또한 :ref:`JSON <doc-plugin-lambda-json>` 의 **controls.output** 슬롯 이름을 키 값으로 ``dict`` 타입을 반환해야 합니다."
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:90
+msgid "on_destroy"
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:98
+msgid "람다가 소멸될 때 호출됩니다."
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:101
+msgid "Full example"
+msgstr ""
+
+#: ../../plugin/lambda/python.rst:103
+msgid "다음은 numpy slice 예제 입니다."
+msgstr ""

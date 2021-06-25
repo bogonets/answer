@@ -1,0 +1,264 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/trigger/infinity_trigger.rst:1
+#: ../../lambdas/trigger/infinity_trigger.rst:7
+msgid "trigger"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:9
+msgid "신호를 무한정 전송한다."
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:12
+msgid "주의 사항"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:14
+msgid "이 람다는 유료 플랜에서만 제공됩니다."
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:17
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:19
+msgid "**신호명**"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:22
+#: ../../lambdas/trigger/infinity_trigger.rst:32
+#: ../../lambdas/trigger/infinity_trigger.rst:45
+#: ../../lambdas/trigger/infinity_trigger.rst:55
+#: ../../lambdas/trigger/infinity_trigger.rst:65
+#: ../../lambdas/trigger/infinity_trigger.rst:75
+#: ../../lambdas/trigger/infinity_trigger.rst:85
+#: ../../lambdas/trigger/infinity_trigger.rst:95
+#: ../../lambdas/trigger/infinity_trigger.rst:107
+#: ../../lambdas/trigger/infinity_trigger.rst:119
+#: ../../lambdas/trigger/infinity_trigger.rst:129
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:22
+#: ../../lambdas/trigger/infinity_trigger.rst:32
+#: ../../lambdas/trigger/infinity_trigger.rst:45
+#: ../../lambdas/trigger/infinity_trigger.rst:55
+#: ../../lambdas/trigger/infinity_trigger.rst:65
+#: ../../lambdas/trigger/infinity_trigger.rst:75
+#: ../../lambdas/trigger/infinity_trigger.rst:85
+#: ../../lambdas/trigger/infinity_trigger.rst:95
+#: ../../lambdas/trigger/infinity_trigger.rst:107
+#: ../../lambdas/trigger/infinity_trigger.rst:119
+#: ../../lambdas/trigger/infinity_trigger.rst:129
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:22
+#: ../../lambdas/trigger/infinity_trigger.rst:32
+#: ../../lambdas/trigger/infinity_trigger.rst:45
+#: ../../lambdas/trigger/infinity_trigger.rst:55
+#: ../../lambdas/trigger/infinity_trigger.rst:65
+#: ../../lambdas/trigger/infinity_trigger.rst:75
+#: ../../lambdas/trigger/infinity_trigger.rst:85
+#: ../../lambdas/trigger/infinity_trigger.rst:95
+#: ../../lambdas/trigger/infinity_trigger.rst:107
+#: ../../lambdas/trigger/infinity_trigger.rst:119
+#: ../../lambdas/trigger/infinity_trigger.rst:129
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:22
+#: ../../lambdas/trigger/infinity_trigger.rst:32
+#: ../../lambdas/trigger/infinity_trigger.rst:45
+#: ../../lambdas/trigger/infinity_trigger.rst:55
+#: ../../lambdas/trigger/infinity_trigger.rst:65
+#: ../../lambdas/trigger/infinity_trigger.rst:75
+#: ../../lambdas/trigger/infinity_trigger.rst:85
+#: ../../lambdas/trigger/infinity_trigger.rst:95
+#: ../../lambdas/trigger/infinity_trigger.rst:107
+#: ../../lambdas/trigger/infinity_trigger.rst:119
+#: ../../lambdas/trigger/infinity_trigger.rst:129
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:24
+#: ../../lambdas/trigger/infinity_trigger.rst:57
+#: ../../lambdas/trigger/infinity_trigger.rst:67
+#: ../../lambdas/trigger/infinity_trigger.rst:77
+#: ../../lambdas/trigger/infinity_trigger.rst:87
+#: ../../lambdas/trigger/infinity_trigger.rst:97
+#: ../../lambdas/trigger/infinity_trigger.rst:109
+#: ../../lambdas/trigger/infinity_trigger.rst:121
+#: ../../lambdas/trigger/infinity_trigger.rst:131
+msgid "initialize_only"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:24
+msgid "str"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:24
+#: ../../lambdas/trigger/infinity_trigger.rst:34
+#: ../../lambdas/trigger/infinity_trigger.rst:47
+#: ../../lambdas/trigger/infinity_trigger.rst:57
+#: ../../lambdas/trigger/infinity_trigger.rst:67
+#: ../../lambdas/trigger/infinity_trigger.rst:77
+#: ../../lambdas/trigger/infinity_trigger.rst:87
+#: ../../lambdas/trigger/infinity_trigger.rst:97
+#: ../../lambdas/trigger/infinity_trigger.rst:109
+#: ../../lambdas/trigger/infinity_trigger.rst:121
+#: ../../lambdas/trigger/infinity_trigger.rst:131
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:27
+msgid "전송할 신호명."
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:29
+msgid "**대기 시간**"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:34
+#: ../../lambdas/trigger/infinity_trigger.rst:47
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:34
+#: ../../lambdas/trigger/infinity_trigger.rst:47
+#: ../../lambdas/trigger/infinity_trigger.rst:57
+#: ../../lambdas/trigger/infinity_trigger.rst:67
+#: ../../lambdas/trigger/infinity_trigger.rst:77
+#: ../../lambdas/trigger/infinity_trigger.rst:87
+#: ../../lambdas/trigger/infinity_trigger.rst:97
+#: ../../lambdas/trigger/infinity_trigger.rst:109
+#: ../../lambdas/trigger/infinity_trigger.rst:121
+#: ../../lambdas/trigger/infinity_trigger.rst:131
+msgid "int"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:34
+#: ../../lambdas/trigger/infinity_trigger.rst:57
+#: ../../lambdas/trigger/infinity_trigger.rst:67
+msgid "4000"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:37
+msgid "다음 신호가 전송 될 때까지 유휴 시간. (밀리초)"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:40
+msgid "상세 속성 목록"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:42
+msgid "**재연결 대기 시간**"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:47
+msgid "1000"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:50
+msgid "재연결시 대기시간. (밀리초)"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:52
+msgid "**Receive timeout**"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:60
+msgid "소켓의 수신 제한시간. (밀리초)"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:62
+msgid "**Send timeout**"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:70
+msgid "소켓의 송신 제한시간. (밀리초)"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:72
+msgid "**Receive messages**"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:77
+#: ../../lambdas/trigger/infinity_trigger.rst:87
+msgid "256"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:80
+msgid "소켓의 수신 버퍼가 수용할 수 있는 메시지 개수."
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:82
+msgid "**Send messages**"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:90
+msgid "소켓의 송신 버퍼가 수용할 수 있는 메시지 개수."
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:92
+msgid "**Receive buffer byte**"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:97
+#: ../../lambdas/trigger/infinity_trigger.rst:109
+msgid "33554432"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:100
+msgid "단일 패킷의 수신 버퍼의 크기. (바이트)"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:102
+#: ../../lambdas/trigger/infinity_trigger.rst:114
+msgid "33554432 Byte == 32 MByte"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:104
+msgid "**Send buffer byte**"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:112
+msgid "단일 패킷의 송신 버퍼 크기. (바이트)"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:116
+msgid "**Reconnect min time**"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:121
+#: ../../lambdas/trigger/infinity_trigger.rst:131
+msgid "20"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:124
+msgid "이전 연결 시도가 실패한 후 재시도 까지 대기하는 최소 시간. (밀리초)"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:126
+msgid "**Reconnect max time**"
+msgstr ""
+
+#: ../../lambdas/trigger/infinity_trigger.rst:134
+msgid "이전 연결 시도가 실패한 후 재시도 까지 대하기는 최대 시간. (밀리초)"
+msgstr ""

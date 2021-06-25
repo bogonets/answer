@@ -1,0 +1,528 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../plugin/node/json.rst:1
+msgid "PLUGIN NODE JSON"
+msgstr ""
+
+#: ../../plugin/node/json.rst:7
+msgid "노드 플러그인 JSON"
+msgstr ""
+
+#: ../../plugin/node/json.rst:9
+msgid "이 페이지는 노드의 설정정보를 변경할 수 있는 JSON 구성 가이드 입니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:12
+msgid "전체 구조"
+msgstr ""
+
+#: ../../plugin/node/json.rst:15
+#: ../../plugin/node/json.rst:65
+#: ../../plugin/node/json.rst:149
+#: ../../plugin/node/json.rst:190
+#: ../../plugin/node/json.rst:222
+msgid "Name"
+msgstr ""
+
+#: ../../plugin/node/json.rst:15
+#: ../../plugin/node/json.rst:65
+#: ../../plugin/node/json.rst:149
+#: ../../plugin/node/json.rst:190
+#: ../../plugin/node/json.rst:222
+msgid "Type"
+msgstr ""
+
+#: ../../plugin/node/json.rst:15
+#: ../../plugin/node/json.rst:65
+#: ../../plugin/node/json.rst:149
+#: ../../plugin/node/json.rst:190
+#: ../../plugin/node/json.rst:222
+msgid "Description"
+msgstr ""
+
+#: ../../plugin/node/json.rst:17
+#: ../../plugin/node/json.rst:60
+msgid "logger"
+msgstr ""
+
+#: ../../plugin/node/json.rst:17
+#: ../../plugin/node/json.rst:19
+#: ../../plugin/node/json.rst:23
+msgid "object"
+msgstr ""
+
+#: ../../plugin/node/json.rst:17
+msgid "로그 설정"
+msgstr ""
+
+#: ../../plugin/node/json.rst:19
+#: ../../plugin/node/json.rst:144
+msgid "socket"
+msgstr ""
+
+#: ../../plugin/node/json.rst:19
+msgid "관리용 소켓 설정"
+msgstr ""
+
+#: ../../plugin/node/json.rst:21
+#: ../../plugin/node/json.rst:185
+msgid "inits"
+msgstr ""
+
+#: ../../plugin/node/json.rst:21
+#: ../../plugin/node/json.rst:25
+#: ../../plugin/node/json.rst:27
+msgid "object array"
+msgstr ""
+
+#: ../../plugin/node/json.rst:21
+msgid "초기화 명령 모음"
+msgstr ""
+
+#: ../../plugin/node/json.rst:23
+#: ../../plugin/node/json.rst:217
+msgid "plugin"
+msgstr ""
+
+#: ../../plugin/node/json.rst:23
+msgid "플러그인 설정"
+msgstr ""
+
+#: ../../plugin/node/json.rst:25
+#: ../../plugin/node/json.rst:249
+msgid "models"
+msgstr ""
+
+#: ../../plugin/node/json.rst:25
+msgid "모델 설정 목록"
+msgstr ""
+
+#: ../../plugin/node/json.rst:27
+#: ../../plugin/node/json.rst:254
+msgid "processes"
+msgstr ""
+
+#: ../../plugin/node/json.rst:27
+msgid "프로세스 설정 목록"
+msgstr ""
+
+#: ../../plugin/node/json.rst:29
+#: ../../plugin/node/json.rst:259
+msgid "immutable"
+msgstr ""
+
+#: ../../plugin/node/json.rst:29
+#: ../../plugin/node/json.rst:79
+#: ../../plugin/node/json.rst:81
+#: ../../plugin/node/json.rst:198
+msgid "bool"
+msgstr ""
+
+#: ../../plugin/node/json.rst:29
+msgid "설정파일 변경 여부"
+msgstr ""
+
+#: ../../plugin/node/json.rst:32
+msgid "루트 JSON 구조는 다음과 같습니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:62
+msgid "로그 설정 입니다. 노드의 상세 정보를 확인할 수 있습니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:67
+msgid "name"
+msgstr ""
+
+#: ../../plugin/node/json.rst:67
+#: ../../plugin/node/json.rst:69
+#: ../../plugin/node/json.rst:71
+#: ../../plugin/node/json.rst:73
+#: ../../plugin/node/json.rst:75
+#: ../../plugin/node/json.rst:77
+#: ../../plugin/node/json.rst:151
+#: ../../plugin/node/json.rst:153
+#: ../../plugin/node/json.rst:159
+#: ../../plugin/node/json.rst:161
+#: ../../plugin/node/json.rst:192
+#: ../../plugin/node/json.rst:194
+#: ../../plugin/node/json.rst:196
+#: ../../plugin/node/json.rst:200
+#: ../../plugin/node/json.rst:224
+#: ../../plugin/node/json.rst:226
+#: ../../plugin/node/json.rst:228
+#: ../../plugin/node/json.rst:230
+#: ../../plugin/node/json.rst:232
+msgid "string"
+msgstr ""
+
+#: ../../plugin/node/json.rst:67
+msgid "로그 이름"
+msgstr ""
+
+#: ../../plugin/node/json.rst:69
+msgid "sink"
+msgstr ""
+
+#: ../../plugin/node/json.rst:69
+msgid "로그 싱크"
+msgstr ""
+
+#: ../../plugin/node/json.rst:71
+#: ../../plugin/node/json.rst:194
+msgid "arguments"
+msgstr ""
+
+#: ../../plugin/node/json.rst:71
+msgid "싱크의 인자"
+msgstr ""
+
+#: ../../plugin/node/json.rst:73
+msgid "generator"
+msgstr ""
+
+#: ../../plugin/node/json.rst:73
+msgid "로그 메시지 생성기"
+msgstr ""
+
+#: ../../plugin/node/json.rst:75
+msgid "line_feed"
+msgstr ""
+
+#: ../../plugin/node/json.rst:75
+msgid "메시지별 개행 여부"
+msgstr ""
+
+#: ../../plugin/node/json.rst:77
+msgid "severity"
+msgstr ""
+
+#: ../../plugin/node/json.rst:77
+msgid "적용될 로그 심각도"
+msgstr ""
+
+#: ../../plugin/node/json.rst:79
+msgid "auto_flush"
+msgstr ""
+
+#: ../../plugin/node/json.rst:79
+msgid "로그 버퍼의 자동 플러시 여부"
+msgstr ""
+
+#: ../../plugin/node/json.rst:81
+msgid "thread"
+msgstr ""
+
+#: ../../plugin/node/json.rst:81
+msgid "멀티 스레드 모드 적용 여부"
+msgstr ""
+
+#: ../../plugin/node/json.rst:84
+msgid "**sink** 는 로그 메시지의 마지막 종착지점 입니다. 아래의 값 중 하나를 사용할 수 있습니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:87
+msgid "``console``: TTY 터미널에 로그를 출력합니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:88
+msgid "``file``: 로그를 파일로 저장합니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:89
+msgid "``rotate_file``: 현재, 공식적으로 지원되지 않습니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:90
+msgid "``null``: 모든 메시지를 버립니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:92
+msgid "**sink** 의 값이 ``console`` 일 경우 아래의 값을 **arguments** 로 사용할 수 있습니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:94
+msgid "``stdout``: 표준 출력을 사용합니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:95
+msgid "``stderr``: 표준 에러를 사용합니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:96
+msgid "``auto``: 에러 보다 심각한 메시지는 ``stderr`` 로, 그 밖의 경우는 ``stdout`` 을 사용합니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:98
+msgid "**sink** 의 값이 ``file`` 일 경우 **arguments** 값은 파일 경로에 해당됩니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:100
+msgid "**generator** 는 로그 메시지를 생성할 규칙을 지정할 수 있습니다. 아래의 값 중 하나를 사용할 수 있습니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:103
+msgid "``default``: 기본 포맷을 사용합니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:104
+msgid "``default_color``: 기본 포맷에, *Terminal Control Escape Sequences* 를 적용하여 색상을 적용합니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:105
+msgid "``raw``: 원본 메시지를 그대로 사용합니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:106
+msgid "``raw_color``: 원본 메시지에, *Terminal Control Escape Sequences* 를 적용하여 색상을 적용합니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:108
+msgid "**line_feed** 은 아래의 값 중 하나를 사용할 수 있습니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:110
+msgid "``auto``: 시스템에 맞는 개행을 적용합니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:111
+msgid "``unix``: LF(``\\n``)를 사용합니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:112
+msgid "``windows``: CRLF(``\\r\\n``)를 사용합니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:114
+msgid "**severity** 은 아래의 값 중 하나를 사용할 수 있습니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:116
+msgid "``off``: 출력을 끕니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:117
+msgid "``emergency``: 비상"
+msgstr ""
+
+#: ../../plugin/node/json.rst:118
+msgid "``alert``: 경고"
+msgstr ""
+
+#: ../../plugin/node/json.rst:119
+msgid "``critical``: 중요"
+msgstr ""
+
+#: ../../plugin/node/json.rst:120
+msgid "``error``: 오류"
+msgstr ""
+
+#: ../../plugin/node/json.rst:121
+msgid "``warning``: 경고"
+msgstr ""
+
+#: ../../plugin/node/json.rst:122
+msgid "``notice``: 알림"
+msgstr ""
+
+#: ../../plugin/node/json.rst:123
+msgid "``info``: 정보"
+msgstr ""
+
+#: ../../plugin/node/json.rst:124
+msgid "``debug``: 디버깅"
+msgstr ""
+
+#: ../../plugin/node/json.rst:126
+#: ../../plugin/node/json.rst:168
+#: ../../plugin/node/json.rst:203
+#: ../../plugin/node/json.rst:235
+msgid "예제 코드는 다음과 같습니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:146
+msgid "관리용 소켓 설정. 노드와 통신할 소켓 설정 입니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:151
+msgid "recv_timeout"
+msgstr ""
+
+#: ../../plugin/node/json.rst:151
+msgid "소켓의 수신 제한시간"
+msgstr ""
+
+#: ../../plugin/node/json.rst:153
+msgid "send_timeout"
+msgstr ""
+
+#: ../../plugin/node/json.rst:153
+msgid "소켓의 송신 제한시간"
+msgstr ""
+
+#: ../../plugin/node/json.rst:155
+msgid "recv_number_of_messages"
+msgstr ""
+
+#: ../../plugin/node/json.rst:155
+#: ../../plugin/node/json.rst:157
+#: ../../plugin/node/json.rst:163
+#: ../../plugin/node/json.rst:165
+msgid "unsigned"
+msgstr ""
+
+#: ../../plugin/node/json.rst:155
+msgid "소켓의 수신 버퍼가 수용할 수 있는 메시지 개수"
+msgstr ""
+
+#: ../../plugin/node/json.rst:157
+msgid "send_number_of_messages"
+msgstr ""
+
+#: ../../plugin/node/json.rst:157
+msgid "소켓의 송신 버퍼가 수용할 수 있는 메시지 개수"
+msgstr ""
+
+#: ../../plugin/node/json.rst:159
+msgid "recv_buffer_byte"
+msgstr ""
+
+#: ../../plugin/node/json.rst:159
+msgid "단일 패킷의 수신 버퍼의 크기"
+msgstr ""
+
+#: ../../plugin/node/json.rst:161
+msgid "send_buffer_byte"
+msgstr ""
+
+#: ../../plugin/node/json.rst:161
+msgid "단일 패킷의 송신 버퍼 크기"
+msgstr ""
+
+#: ../../plugin/node/json.rst:163
+msgid "reconnect_time_min"
+msgstr ""
+
+#: ../../plugin/node/json.rst:163
+msgid "이전 연결 시도가 실패한 후 재시도 까지 대기하는 최소 시간"
+msgstr ""
+
+#: ../../plugin/node/json.rst:165
+msgid "reconnect_time_max"
+msgstr ""
+
+#: ../../plugin/node/json.rst:165
+msgid "이전 연결 시도가 실패한 후 재시도 까지 대하기는 최대 시간"
+msgstr ""
+
+#: ../../plugin/node/json.rst:187
+msgid "초기화 목록. 노드 실행시 실행됩니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:192
+msgid "type"
+msgstr ""
+
+#: ../../plugin/node/json.rst:192
+msgid "초기화 타입"
+msgstr ""
+
+#: ../../plugin/node/json.rst:194
+msgid "초기화 타입에 따른 인자"
+msgstr ""
+
+#: ../../plugin/node/json.rst:196
+msgid "branch"
+msgstr ""
+
+#: ../../plugin/node/json.rst:196
+msgid "브렌치 이름"
+msgstr ""
+
+#: ../../plugin/node/json.rst:198
+msgid "auto_update"
+msgstr ""
+
+#: ../../plugin/node/json.rst:198
+msgid "자동 업데이트 여부"
+msgstr ""
+
+#: ../../plugin/node/json.rst:200
+msgid "destination"
+msgstr ""
+
+#: ../../plugin/node/json.rst:200
+msgid "결과 위치"
+msgstr ""
+
+#: ../../plugin/node/json.rst:219
+msgid "플러그인 정보."
+msgstr ""
+
+#: ../../plugin/node/json.rst:224
+msgid "script"
+msgstr ""
+
+#: ../../plugin/node/json.rst:224
+msgid "스크립트 위치"
+msgstr ""
+
+#: ../../plugin/node/json.rst:226
+msgid "event_create"
+msgstr ""
+
+#: ../../plugin/node/json.rst:226
+msgid "노드가 생성될 때 호출할 함수"
+msgstr ""
+
+#: ../../plugin/node/json.rst:228
+msgid "event_loop_begin"
+msgstr ""
+
+#: ../../plugin/node/json.rst:228
+msgid "노드의 이벤트 루프 시작 함수"
+msgstr ""
+
+#: ../../plugin/node/json.rst:230
+msgid "event_loop_end"
+msgstr ""
+
+#: ../../plugin/node/json.rst:230
+msgid "노드의 이벤트 루프 종료 함수"
+msgstr ""
+
+#: ../../plugin/node/json.rst:232
+msgid "event_destroy"
+msgstr ""
+
+#: ../../plugin/node/json.rst:232
+msgid "노드가 소멸될 때 호출할 함수"
+msgstr ""
+
+#: ../../plugin/node/json.rst:251
+msgid "노드 시작시 함께 실행할 모델 목록 입니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:256
+msgid "노드 시작시 함께 실행할 프로세스 목록 입니다."
+msgstr ""
+
+#: ../../plugin/node/json.rst:261
+msgid "``true`` 일 경우 Node 종료시 마지막 설정 정보로 변경 및 적용됩니다."
+msgstr ""

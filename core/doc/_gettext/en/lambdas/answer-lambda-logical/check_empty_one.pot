@@ -1,0 +1,97 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:1
+msgid "STRING CLOCK LOG"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:8
+msgid "check_empty_one"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:15
+msgid "**data**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:18
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:20
+msgid "**result**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:23
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:25
+msgid "**결과 반전**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:28
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:38
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:28
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:38
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:28
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:38
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:28
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:38
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:30
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:40
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:30
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:40
+msgid "bool"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:30
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:40
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:40
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:30
+msgid "False"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:35
+msgid "**데이터 전달 차단 여부**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-logical/check_empty_one.rst:43
+msgid "'data'가 None 일때, 데이터 전달을 차단한다."
+msgstr ""

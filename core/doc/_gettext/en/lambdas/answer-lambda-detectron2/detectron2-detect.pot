@@ -1,0 +1,172 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:1
+msgid "DEEP DETECTRON2 MASKRCNN FASTER-RCNN"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:8
+msgid "detectron2-detect"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:10
+msgid "."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:15
+msgid "**image**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:18
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:20
+msgid "**draw_image**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:22
+msgid "**boxes**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:25
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:27
+msgid "**Weights 파일 경로**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:30
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:40
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:50
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:60
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:70
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:80
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:90
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:30
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:40
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:50
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:60
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:70
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:80
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:90
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:30
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:40
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:50
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:60
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:70
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:80
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:90
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:30
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:40
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:50
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:60
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:70
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:80
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:90
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:32
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:42
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:52
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:62
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:72
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:82
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:92
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:32
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:42
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:82
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:92
+msgid "str"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:32
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:42
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:52
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:62
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:72
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:82
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:92
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:37
+msgid "**Config 파일 경로**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:47
+msgid "**Confidence 임계치**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:52
+msgid "float"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:52
+msgid "0.5"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:57
+msgid "**GPU 인덱스**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:62
+msgid "int"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:62
+msgid "0"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:67
+msgid "**draw image 사용**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:72
+msgid "bool"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:72
+msgid "False"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:77
+msgid "**Thing classes 파일**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-detectron2/detectron2-detect.rst:87
+msgid "**Thing color 파일**"
+msgstr ""

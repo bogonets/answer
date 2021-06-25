@@ -1,0 +1,181 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:1
+msgid "CV2"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:8
+msgid "cv2_videocapture_mp"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:10
+msgid "비디오 파일, 이미지 시퀀스 또는 카메라에서 비디오를 캡처한다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:13
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:15
+msgid "**frame**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:18
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:20
+msgid "**Filename**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:23
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:33
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:43
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:53
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:63
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:73
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:23
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:33
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:43
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:53
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:63
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:73
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:23
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:33
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:43
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:53
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:63
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:73
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:23
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:33
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:43
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:53
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:63
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:73
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:25
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:35
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:45
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:55
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:65
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:75
+msgid "initialize_only"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:25
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:35
+msgid "str"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:25
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:35
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:45
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:55
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:65
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:75
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:28
+msgid "읽어올 파일 이름."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:30
+msgid "**API Preference**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:35
+msgid "default"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:38
+msgid "사용할 백엔드 API."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:40
+msgid "**다음 반복을 위한 대기시간.**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:45
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:65
+msgid "int"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:45
+msgid "0"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:48
+msgid "프레임을 읽은 후 잠시 대기한다. (밀리초)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:50
+msgid "**재연결 플래그**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:55
+msgid "bool"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:55
+msgid "False"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:58
+msgid "비디오 프레임 획득에 실패하면 재연결한다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:60
+msgid "**Max queue size**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:65
+msgid "4"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:68
+msgid "대기열에 넣을 수있는 항목 수의 상한 값."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:70
+msgid "**종료 타임아웃**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:75
+msgid "float"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:75
+msgid "4.0"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_videocapture_mp.rst:78
+msgid "람다 파괴시 최대 대기 시간. (초)"
+msgstr ""

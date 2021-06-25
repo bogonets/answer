@@ -1,0 +1,262 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:1
+msgid "FILTER"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:8
+msgid "filter_rectangles_ratio"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:10
+msgid "BBOX 필터링 한다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:15
+msgid "**screen_shape**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:17
+msgid "**rectangles**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:20
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:22
+msgid "**result**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:25
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:27
+msgid "**min_w**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:30
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:40
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:50
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:60
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:70
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:80
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:90
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:100
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:110
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:120
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:130
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:30
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:40
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:50
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:60
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:70
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:80
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:90
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:100
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:110
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:120
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:130
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:30
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:40
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:50
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:60
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:70
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:80
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:90
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:100
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:110
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:120
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:130
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:30
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:40
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:50
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:60
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:70
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:80
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:90
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:100
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:110
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:120
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:130
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:32
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:42
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:52
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:62
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:72
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:82
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:92
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:102
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:112
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:122
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:32
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:42
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:52
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:62
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:72
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:82
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:92
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:102
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:112
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:122
+msgid "float"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:32
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:42
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:52
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:62
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:72
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:82
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:92
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:102
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:112
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:122
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:32
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:42
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:52
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:62
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:72
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:82
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:92
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:102
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:112
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:122
+msgid "0.0"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:35
+msgid "(w < min_w)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:37
+msgid "**min_h**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:45
+msgid "(h < min_h)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:47
+msgid "**max_w**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:55
+msgid "(w > max_w)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:57
+msgid "**max_h**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:65
+msgid "(h > max_h)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:67
+msgid "**min_x1**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:75
+msgid "(x1 < min_x1)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:77
+msgid "**min_y1**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:85
+msgid "(y1 < min_y1)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:87
+msgid "**max_x2**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:95
+msgid "(x2 > max_x2)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:97
+msgid "**max_y2**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:105
+msgid "(y2 > max_y2)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:107
+msgid "**fx**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:115
+msgid "(w/h < fx)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:117
+msgid "**fy**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:125
+msgid "(h/w < fy)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:127
+msgid "**상세한**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:132
+msgid "initialize_only"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:132
+msgid "bool"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:132
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:132
+msgid "False"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-filter/filter_rectangles_ratio.rst:135
+msgid "상세 로깅"
+msgstr ""

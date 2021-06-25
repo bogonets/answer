@@ -1,0 +1,229 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../start/run.rst:1
+msgid "RUN"
+msgstr ""
+
+#: ../../start/run.rst:7
+msgid "실행방법"
+msgstr ""
+
+#: ../../start/run.rst:9
+msgid "이 페이지는 \"엔서\" 설치후 실행하는 방법에 대하여 정리한 곳입니다."
+msgstr ""
+
+#: ../../start/run.rst:12
+msgid "Docker 실행"
+msgstr ""
+
+#: ../../start/run.rst:15
+msgid "유틸리티 스크립트 다운로드"
+msgstr ""
+
+#: ../../start/run.rst:17
+msgid "Docker를 사용하는데 익숙치 않다면 다음 명령으로 스크립트를 다운로드 받습니다."
+msgstr ""
+
+#: ../../start/run.rst:25
+msgid "스크립드 사용 방법은 다음과 같습니다."
+msgstr ""
+
+#: ../../start/run.rst:59
+msgid "answer-cli config"
+msgstr ""
+
+#: ../../start/run.rst:61
+msgid "``answer-cli`` 스크립트를 실행하면 ``$HOME/.answer/answer-cli.config`` 위치에 환경변수가 함께 저장됩니다."
+msgstr ""
+
+#: ../../start/run.rst:64
+msgid "ANSWER_DB_PORT"
+msgstr ""
+
+#: ../../start/run.rst:65
+msgid "ANSWER_DB_USER"
+msgstr ""
+
+#: ../../start/run.rst:66
+msgid "ANSWER_DB_PASSWORD"
+msgstr ""
+
+#: ../../start/run.rst:67
+msgid "ANSWER_S3_PORT"
+msgstr ""
+
+#: ../../start/run.rst:68
+msgid "ANSWER_S3_ID"
+msgstr ""
+
+#: ../../start/run.rst:69
+msgid "ANSWER_S3_PW"
+msgstr ""
+
+#: ../../start/run.rst:70
+msgid "ANSWER_CORE_NODE"
+msgstr ""
+
+#: ../../start/run.rst:71
+msgid "ANSWER_CORE_BIND"
+msgstr ""
+
+#: ../../start/run.rst:72
+msgid "ANSWER_CORE_PORT"
+msgstr ""
+
+#: ../../start/run.rst:73
+msgid "ANSWER_CORE_VERBOSE"
+msgstr ""
+
+#: ../../start/run.rst:74
+msgid "ANSWER_CORE_SYNC"
+msgstr ""
+
+#: ../../start/run.rst:75
+msgid "ANSWER_API_PORT"
+msgstr ""
+
+#: ../../start/run.rst:76
+msgid "ANSWER_API_DB_URL"
+msgstr ""
+
+#: ../../start/run.rst:77
+msgid "ANSWER_API_S3_URL"
+msgstr ""
+
+#: ../../start/run.rst:78
+msgid "ANSWER_API_CORE_URL"
+msgstr ""
+
+#: ../../start/run.rst:79
+msgid "ANSWER_WEB_HOST"
+msgstr ""
+
+#: ../../start/run.rst:80
+msgid "ANSWER_WEB_PORT"
+msgstr ""
+
+#: ../../start/run.rst:81
+msgid "ENABLE_GPU"
+msgstr ""
+
+#: ../../start/run.rst:82
+msgid "GPUS"
+msgstr ""
+
+#: ../../start/run.rst:83
+msgid "ENABLE_HOST_NETWORK"
+msgstr ""
+
+#: ../../start/run.rst:84
+msgid "DOCKER_LOGS_TAIL_NUMBER"
+msgstr ""
+
+#: ../../start/run.rst:86
+msgid "특별한 이유가 없다면 위의 값들은 변경하지 않는 것이 좋습니다."
+msgstr ""
+
+#: ../../start/run.rst:89
+msgid "default.json example"
+msgstr ""
+
+#: ../../start/run.rst:91
+msgid "``$HOME/.answer/core.storage/node/default.json`` 위치에 다음 내용을 저장해야 합니다."
+msgstr ""
+
+#: ../../start/run.rst:151
+msgid "엔서 이미지 다운로드"
+msgstr ""
+
+#: ../../start/run.rst:153
+msgid "다음과 같이 실행 하면 됩니다."
+msgstr ""
+
+#: ../../start/run.rst:160
+msgid "특정 모듈만 다운로드 받고 싶다면 다음과 같이 모듈명을 추가하면 됩니다."
+msgstr ""
+
+#: ../../start/run.rst:168
+msgid "엔서 실행"
+msgstr ""
+
+#: ../../start/run.rst:170
+msgid "다음과 같이 실행 하면 됩니다. 이 때 \"엔서\"는 서비스로 실행됩니다."
+msgstr ""
+
+#: ../../start/run.rst:178
+msgid "마찬가지로, 특정 모듈만 실행하고 싶다면 모듈명을 추가하면 됩니다."
+msgstr ""
+
+#: ../../start/run.rst:186
+msgid "엔서 중지"
+msgstr ""
+
+#: ../../start/run.rst:188
+msgid "이미 작동중인 서비스가 존재할 때 \"엔서\"를 중지시키고 싶다면 다음과 같이 실행하면 됩니다."
+msgstr ""
+
+#: ../../start/run.rst:195
+msgid "정지된 서비스를 재기동 시키고 싶다면 다음과 같이 실행하면 됩니다."
+msgstr ""
+
+#: ../../start/run.rst:202
+msgid "위의 ``stop`` 명령과 ``start`` 명령을 한 번에 실행하고 싶다면 다음과 같이 실행하면 됩니다."
+msgstr ""
+
+#: ../../start/run.rst:210
+msgid "엔서 제거"
+msgstr ""
+
+#: ../../start/run.rst:212
+msgid "엔서의 설정파일 및 컨테이너를 제거하고 싶다면 다음과 같이 실행하면 됩니다."
+msgstr ""
+
+#: ../../start/run.rst:219
+msgid "이렇게 제거할 경우 이미 저장된 설정 정보가 유실됩니다."
+msgstr ""
+
+#: ../../start/run.rst:222
+msgid "엔서 로그 확인"
+msgstr ""
+
+#: ../../start/run.rst:224
+msgid "엔서의 로그 메시지를 확인하고 싶다면 다음과 같이 실행하면 됩니다."
+msgstr ""
+
+#: ../../start/run.rst:231
+msgid "``logs`` 명령은 ``all`` 모듈명을 읽지 못합니다. ``core``, ``api``, ``web`` 중 하나를 사용해 주세요."
+msgstr ""
+
+#: ../../start/run.rst:235
+msgid "엔서 이미지 확인"
+msgstr ""
+
+#: ../../start/run.rst:237
+msgid "현재 다운받은 엔서 이미지를 확인하고 싶다면 다음과 같이 실행하면 됩니다."
+msgstr ""
+
+#: ../../start/run.rst:245
+msgid "서비스 기동 상태 확인"
+msgstr ""
+
+#: ../../start/run.rst:247
+msgid "엔서를 실행했다면 다음의 명령으로 상태정보를 확인할 수 있습니다."
+msgstr ""

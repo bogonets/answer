@@ -1,0 +1,93 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:1
+msgid "NUMPY"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:8
+msgid "numpy_cmp"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:10
+msgid "배열을 비교한다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:15
+msgid "**left**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:17
+msgid "**right**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:20
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:22
+msgid "**result**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:25
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:27
+msgid "**Method**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:30
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:30
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:30
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:30
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:32
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:32
+msgid "str"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:32
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:32
+msgid "=="
+msgstr ""
+
+#: ../../lambdas/answer-lambda-numpy/numpy_cmp.rst:35
+msgid "비교 방법."
+msgstr ""

@@ -1,0 +1,172 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:1
+msgid "CV2"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:8
+msgid "cv2_polylines"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:10
+msgid "다각형을 그린다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:15
+msgid "**source**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:17
+msgid "**points**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:20
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:22
+msgid "**result**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:25
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:27
+msgid "**Polylines color**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:30
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:40
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:50
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:60
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:70
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:30
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:40
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:50
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:60
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:70
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:30
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:40
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:50
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:60
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:70
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:30
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:40
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:50
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:60
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:70
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:32
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:42
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:52
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:62
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:72
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:32
+msgid "color"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:32
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:42
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:52
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:62
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:72
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:72
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:32
+msgid "#000000"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:35
+msgid "다각형을 구성하는 선의 색."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:37
+msgid "**Line thickness**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:42
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:62
+msgid "int"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:42
+msgid "1"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:45
+msgid "다각형을 구성하는 선분의 두께. 각형의 내부를 채우고싶다면 음수를 전달하면 된다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:47
+msgid "**Line Type**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:52
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:72
+msgid "str"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:52
+msgid "8"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:55
+msgid "선분의 종류."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:57
+msgid "**Shift**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:62
+msgid "0"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:65
+msgid "점 좌표의 소수 비트 수."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:67
+msgid "**Is Closed**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_polylines.rst:75
+msgid "그려진 폴리라인이 닫혔는지 여부 (True = 닫힌 도형, False = 열린 도형)."
+msgstr ""

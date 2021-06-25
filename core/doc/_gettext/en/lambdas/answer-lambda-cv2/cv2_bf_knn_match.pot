@@ -1,0 +1,144 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:1
+msgid "CV2 KNN MATCH"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:8
+msgid "cv2_bf_knn_match"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:10
+msgid "쿼리 집합에서 각 설명자에 대해 가장 일치하는 k 개의 항목을 찾습니다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:15
+msgid "**query**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:17
+msgid "**train**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:20
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:22
+msgid "**match1**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:24
+msgid "**match2**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:27
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:29
+msgid "**normType**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:32
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:42
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:52
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:32
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:42
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:52
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:32
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:42
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:52
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:32
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:42
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:52
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:34
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:44
+msgid "initialize_only"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:34
+msgid "str"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:34
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:44
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:54
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:34
+msgid "L2"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:37
+msgid "NORM 의 종류"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:39
+msgid "**crossCheck**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:44
+msgid "bool"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:44
+msgid "False"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:47
+msgid "false 인 경우 각 쿼리 설명자에 대해 k 개의 가장 가까운 이웃을 찾을 때 기본 BFMatcher 동작이됩니다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:49
+msgid "**k**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:54
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:54
+msgid "int"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:54
+msgid "2"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-cv2/cv2_bf_knn_match.rst:57
+msgid "각 쿼리 설명자당 발견 된 최상의 일치 수."
+msgstr ""

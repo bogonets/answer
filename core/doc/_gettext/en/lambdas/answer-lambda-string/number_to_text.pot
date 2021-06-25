@@ -1,0 +1,99 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:1
+msgid "NUMBER"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:8
+msgid "number_to_text"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:10
+msgid "숫자를 문자로 변환한다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:15
+msgid "**number**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:18
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:20
+msgid "**text**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:23
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:25
+msgid "**Default_value**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:28
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:38
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:28
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:38
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:28
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:38
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:28
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:38
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:30
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:40
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:30
+msgid "str"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:30
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:40
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:35
+msgid "**Enable_default**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:40
+msgid "bool"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/number_to_text.rst:40
+msgid "False"
+msgstr ""

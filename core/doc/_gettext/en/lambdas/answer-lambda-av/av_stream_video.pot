@@ -1,0 +1,363 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:1
+msgid "AV"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:8
+msgid "av_stream_video"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:10
+msgid "비디오 스트리밍."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:13
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:15
+msgid "**frame**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:18
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:20
+msgid "**원본 비디오**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:23
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:33
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:43
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:53
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:63
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:73
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:83
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:93
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:103
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:113
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:123
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:133
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:143
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:153
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:163
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:173
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:23
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:33
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:43
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:53
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:63
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:73
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:83
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:93
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:103
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:113
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:123
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:133
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:143
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:153
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:163
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:173
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:23
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:33
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:43
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:53
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:63
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:73
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:83
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:93
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:103
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:113
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:123
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:133
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:143
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:153
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:163
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:173
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:23
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:33
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:43
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:53
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:63
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:73
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:83
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:93
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:103
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:113
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:123
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:133
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:143
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:153
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:163
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:173
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:25
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:35
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:45
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:55
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:65
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:75
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:85
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:95
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:105
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:115
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:125
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:135
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:145
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:155
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:165
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:175
+msgid "initialize_only"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:25
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:45
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:75
+msgid "str"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:25
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:35
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:45
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:145
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:155
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:165
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:28
+msgid "원본 비디오 주소."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:30
+msgid "**비디오 색인 번호**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:35
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:55
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:65
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:155
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:175
+msgid "int"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:35
+msgid "0"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:38
+msgid "비디오 스트림의 색인 번호."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:40
+msgid "**프레임 포맷**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:45
+msgid "bgr24"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:48
+msgid "정지 영상의 포맷."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:50
+msgid "**프레임 너비**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:55
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:65
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:75
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:85
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:95
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:105
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:115
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:125
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:135
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:135
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:145
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:175
+msgid "False"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:55
+msgid "1280"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:58
+msgid "정지 영상의 너비."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:60
+msgid "**프레임 높이**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:65
+msgid "720"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:68
+msgid "정지 영상의 높이."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:70
+msgid "**프레임 보간법**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:75
+msgid "FAST_BILINEAR"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:78
+msgid "스케일러가 사용할 보간법."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:80
+msgid "**옵션**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:85
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:95
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:105
+msgid "csv"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:85
+msgid "rtsp_transport=tcp,fflags=nobuffer"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:88
+msgid "컨테이너 및 전체 스트림에 전달할 옵션 목록. (key=val,...)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:90
+msgid "**컨테이너 옵션**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:98
+msgid "컨테이너에 전달할 옵션 목록. (key=val,...)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:100
+msgid "**스트림 옵션**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:108
+msgid "각 스트림에 전달할 옵션 목록."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:110
+msgid "**재연결 지연시간**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:115
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:125
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:165
+msgid "float"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:115
+msgid "1.0"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:118
+msgid "비디오 재연결시 지연시간. (초)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:120
+msgid "**반복 지연시간**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:125
+msgid "0.001"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:128
+msgid "프레임 획득시 지연시간. (초)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:130
+msgid "**상세한**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:135
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:145
+msgid "bool"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:138
+msgid "상세 로깅"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:140
+msgid "**낮은 지연시간**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:148
+msgid "낮은 지연시간을 강제한다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:150
+msgid "**Max queue size**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:155
+msgid "2"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:158
+msgid "대기열에 넣을 수있는 항목 수의 상한 값."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:160
+msgid "**종료 타임아웃**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:165
+msgid "4.0"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:168
+msgid "람다 파괴시 최대 대기 시간. (초)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:170
+msgid "**새로고침 오류 임계값**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:175
+msgid "100"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-av/av_stream_video.rst:178
+msgid "연속 에러 카운트가 임계점을 초과하면 비디오를 재연결 한다."
+msgstr ""

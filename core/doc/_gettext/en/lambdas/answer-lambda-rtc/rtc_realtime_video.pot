@@ -1,0 +1,226 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:1
+msgid "RTC"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:8
+msgid "rtc_realtime_video"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:10
+msgid "WebRTC를 사용한 실시간 비디오."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:15
+msgid "**image**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:18
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:20
+msgid "**Host**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:23
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:33
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:43
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:53
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:63
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:73
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:83
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:93
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:23
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:33
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:43
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:53
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:63
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:73
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:83
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:93
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:23
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:33
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:43
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:53
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:63
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:73
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:83
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:93
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:23
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:33
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:43
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:53
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:63
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:73
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:83
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:93
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:25
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:35
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:45
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:55
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:65
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:75
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:85
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:95
+msgid "initialize_only"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:25
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:85
+msgid "str"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:25
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:35
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:45
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:55
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:65
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:75
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:85
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:25
+msgid "0.0.0.0"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:28
+msgid "Host for HTTP server."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:30
+msgid "**Port**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:35
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:45
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:75
+msgid "int"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:35
+msgid "9999"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:38
+msgid "Port number for HTTP server."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:40
+msgid "**Max queue size**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:45
+msgid "2"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:48
+msgid "대기열에 넣을 수있는 항목 수의 상한 값."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:50
+msgid "**종료 타임아웃**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:55
+msgid "float"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:55
+msgid "4.0"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:58
+msgid "람다 파괴시 최대 대기 시간. (초)"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:60
+msgid "**ICEs**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:65
+msgid "csv"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:65
+msgid "stun:stun.l.google.com:19302"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:68
+msgid "ICE 서버 목록."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:70
+msgid "**FPS**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:75
+msgid "12"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:78
+msgid "Frames Per Second"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:80
+msgid "**Frame Format**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:85
+msgid "bgr24"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:88
+msgid "Frame Format"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:90
+msgid "**상세한**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:95
+msgid "bool"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:95
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:95
+msgid "False"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-rtc/rtc_realtime_video.rst:98
+msgid "상세 로깅"
+msgstr ""

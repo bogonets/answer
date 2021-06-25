@@ -1,0 +1,93 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:1
+msgid "OCR EASYOCR"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:8
+msgid "easyocr_recognize"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:10
+msgid "이미지 안의 텍스트를 인식한다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:15
+msgid "**image**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:18
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:20
+msgid "**draw_image**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:22
+msgid "**text_list**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:24
+msgid "**text_locations**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:27
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:29
+msgid "**언어 선택**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:32
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:32
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:32
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:32
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:34
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:34
+msgid "list"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:34
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-ocr/easyocr_recognize.rst:34
+msgid "English"
+msgstr ""

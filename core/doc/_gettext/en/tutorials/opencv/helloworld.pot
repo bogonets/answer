@@ -1,0 +1,165 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../tutorials/opencv/helloworld.rst:1
+msgid "HELLOWORLD"
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:7
+msgid "Hello World"
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:9
+msgid "OpenCV(Open Source Computer Vision)은 실시간 컴퓨터 비전을 목적으로 한 프로그램 라이브러리입니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:11
+msgid "\"엔서\"에서 OpenCV를 사용하는 예시를 보여드립니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:13
+msgid "예시에서는 \"puttext\" 를 이용하여 이미지의 원하는 위치에 글자를 추가합니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:16
+msgid "시작 항목의 \"로그인\" ~ \"그래프\" 페이지를 먼저 읽어주세요."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:19
+msgid "시계 이미지 람다 생성"
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:21
+msgid "현재 시간을 알려주는 람다입니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:23
+msgid "현재 시간의 이미지나 텍스트를 연결된 다음 람다로 전달합니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:29
+msgid "태스크에서 마우스 우클릭을 한 뒤 \"Task에 람다 추가 // image // 시계 이미지\" 람다를 확인합니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:31
+msgid "\"시계 이미지\"를 선택해 람다를 추가합니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:34
+msgid "시계 이미지 람다 확인"
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:36
+msgid "생성된 \"시계 이미지\" 람다를 확인합니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:38
+msgid "위 방법처럼 다른 람다들도 순서대로 생성합니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:43
+msgid "고정 문자 람다 추가"
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:45
+msgid "\"고정 문자\" 람다를 추가합니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:47
+msgid "OpenCV 함수를 사용하기 위해 고정된 문자를 생성해주는 람다입니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:49
+msgid "속성의 \"출력 문자열\"에 \"Hello World\" 를 입력합니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:54
+msgid "cv2.puttext 람다 추가"
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:56
+msgid "OpenCV 의 \"putText\"함수 역할을 하는 람다입니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:58
+msgid "이미지의 원하는 위치에 정해진 문자열을 합쳐줍니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:62
+msgid "람다의 속성을 수정해 문자열의 두께, 출력위치, 폰트, 색상 등을 지정합니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:66
+msgid "이미지 뷰어 람다 추가"
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:68
+msgid "\"이미지 뷰어\" 람다를 추가합니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:70
+msgid "입력된 이미지를 웹페이지에서 출력할 수 있는 람다입니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:76
+msgid "각 람다들을 연결하기"
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:78
+msgid "그래프를 동작하기 위해서는 각 람다들을 연결해야 합니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:80
+msgid "람다들의 입출력에 맞게 연결합니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:85
+msgid "그래프 실행하기"
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:87
+msgid "완성된 그래프는 \"저장\" 버튼으로 저장하고 실행시킬 수 있습니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:89
+msgid "화면 우측 상단의 \"저장\" 버튼을 눌러 그래프를 실행합니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:93
+msgid "정상 실행 유무는 태스크를 선택한 뒤 우측 하단의 상태정보를 통해 확인할 수 있습니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:95
+msgid "\"Done // Initialize // Active // Error\" 로 확인 할 수 있습니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:98
+msgid "puttext 결과 확인하기"
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:100
+msgid "\"이미지 뷰어\" 람다를 선택한 뒤 \"VIEWER\" 를 클릭합니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:102
+msgid "연결된 \"cv2.puttext\" 람다의 결과를 보여주기 위한 새로운 창이 생성됩니다."
+msgstr ""
+
+#: ../../tutorials/opencv/helloworld.rst:104
+msgid "\"signal\" 버튼을 눌러 실행 결과를 확인할 수 있습니다."
+msgstr ""

@@ -1,0 +1,627 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../plugin/lambda/json.rst:1
+msgid "PLUGIN LAMBDA JSON"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:7
+msgid "람다 플러그인 JSON"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:10
+msgid "전체 구조"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:28
+msgid "info"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:30
+msgid "람다의 상세 정보를 포함합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:33
+#: ../../plugin/lambda/json.rst:75
+#: ../../plugin/lambda/json.rst:87
+#: ../../plugin/lambda/json.rst:137
+#: ../../plugin/lambda/json.rst:147
+#: ../../plugin/lambda/json.rst:167
+#: ../../plugin/lambda/json.rst:209
+#: ../../plugin/lambda/json.rst:254
+msgid "Name"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:33
+#: ../../plugin/lambda/json.rst:75
+#: ../../plugin/lambda/json.rst:87
+#: ../../plugin/lambda/json.rst:137
+#: ../../plugin/lambda/json.rst:147
+#: ../../plugin/lambda/json.rst:167
+#: ../../plugin/lambda/json.rst:209
+#: ../../plugin/lambda/json.rst:254
+msgid "Type"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:33
+#: ../../plugin/lambda/json.rst:75
+#: ../../plugin/lambda/json.rst:87
+#: ../../plugin/lambda/json.rst:137
+#: ../../plugin/lambda/json.rst:147
+#: ../../plugin/lambda/json.rst:167
+#: ../../plugin/lambda/json.rst:209
+#: ../../plugin/lambda/json.rst:254
+msgid "Description"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:35
+#: ../../plugin/lambda/json.rst:91
+#: ../../plugin/lambda/json.rst:169
+#: ../../plugin/lambda/json.rst:213
+msgid "name"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:35
+#: ../../plugin/lambda/json.rst:37
+#: ../../plugin/lambda/json.rst:39
+#: ../../plugin/lambda/json.rst:43
+#: ../../plugin/lambda/json.rst:45
+#: ../../plugin/lambda/json.rst:47
+#: ../../plugin/lambda/json.rst:49
+#: ../../plugin/lambda/json.rst:53
+#: ../../plugin/lambda/json.rst:61
+#: ../../plugin/lambda/json.rst:77
+#: ../../plugin/lambda/json.rst:79
+#: ../../plugin/lambda/json.rst:89
+#: ../../plugin/lambda/json.rst:91
+#: ../../plugin/lambda/json.rst:153
+#: ../../plugin/lambda/json.rst:169
+#: ../../plugin/lambda/json.rst:211
+#: ../../plugin/lambda/json.rst:213
+#: ../../plugin/lambda/json.rst:217
+#: ../../plugin/lambda/json.rst:256
+#: ../../plugin/lambda/json.rst:258
+#: ../../plugin/lambda/json.rst:260
+#: ../../plugin/lambda/json.rst:262
+#: ../../plugin/lambda/json.rst:264
+#: ../../plugin/lambda/json.rst:266
+#: ../../plugin/lambda/json.rst:268
+msgid "string"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:35
+msgid "**[필수]** 람다의 이름"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:37
+msgid "version"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:37
+msgid "람다의 버전 정보"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:39
+msgid "category"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:39
+msgid "람다의 상위 분류"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:41
+msgid "keywords"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:41
+#: ../../plugin/lambda/json.rst:81
+#: ../../plugin/lambda/json.rst:171
+msgid "string array"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:41
+msgid "키워드. 검색 및 분류에 사용"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:43
+msgid "homepage"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:43
+msgid "홈페이지 주소"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:45
+msgid "bugs"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:45
+msgid "버그 발생시 리포팅할 주소"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:47
+msgid "license"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:47
+msgid "라이선스 이름"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:49
+msgid "author"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:49
+msgid "작성자"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:51
+msgid "dependencies"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:51
+#: ../../plugin/lambda/json.rst:149
+msgid "object array"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:51
+msgid "종속성 목록"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:53
+msgid "engines"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:53
+msgid "실행가능한 CORE 엔진 버전"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:55
+msgid "environment"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:55
+#: ../../plugin/lambda/json.rst:57
+#: ../../plugin/lambda/json.rst:59
+#: ../../plugin/lambda/json.rst:63
+#: ../../plugin/lambda/json.rst:65
+#: ../../plugin/lambda/json.rst:139
+#: ../../plugin/lambda/json.rst:141
+#: ../../plugin/lambda/json.rst:221
+#: ../../plugin/lambda/json.rst:223
+#: ../../plugin/lambda/json.rst:225
+msgid "object"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:55
+msgid "람다를 작동시킬 구성 환경"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:57
+msgid "titles"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:57
+msgid "화면에 출력할 타이틀명"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:59
+msgid "descriptions"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:59
+msgid "화면에 출력할 람다의 간략한 정보"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:61
+msgid "documentation_mime"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:61
+msgid "문서에 적용될 ``MIME``"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:63
+msgid "documentations"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:63
+msgid "문서의 본문"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:65
+msgid "meta"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:65
+msgid "메타 데이터 정보"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:68
+msgid "**version** 문자열은 ``major.minor.patch`` 포맷으로 버전명을 기입해 주세요."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:70
+msgid "**meta** 객체는 \"API\" 또는 \"WEB\" 모듈과 상호작용하기 위한 정보를 포함합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:72
+msgid "**dependencies** 객체는 아래의 속성을 포함합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:77
+#: ../../plugin/lambda/json.rst:89
+#: ../../plugin/lambda/json.rst:217
+msgid "type"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:77
+msgid "종속성의 종류"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:79
+msgid "src"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:79
+msgid "패키지 이름"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:81
+msgid "extra"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:81
+msgid "확장 명령 목록"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:84
+msgid "**environment** 객체는 아래의 속성을 포함합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:89
+msgid "환경의 종류"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:91
+msgid "환경의 이름"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:94
+msgid "**titles**, **descriptions**, **documentations** 객체는 언어 코드에 해당하는 ``Key`` 와 내용에 해당하는 ``Value`` 를 내포합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:97
+#: ../../plugin/lambda/json.rst:174
+#: ../../plugin/lambda/json.rst:273
+msgid "예제 코드는 다음과 같습니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:130
+msgid "controls"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:132
+msgid "람다의 입출력 슬롯을 정의합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:134
+msgid "**controls** 객체는 아래의 속성을 포함합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:139
+msgid "input"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:139
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:141
+msgid "output"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:141
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:144
+msgid "**input** 과 **output** 객체는 아래의 속성을 포함합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:149
+#: ../../plugin/lambda/json.rst:256
+msgid "list"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:149
+msgid "슬롯 목록"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:151
+msgid "dynamic"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:151
+#: ../../plugin/lambda/json.rst:219
+msgid "bool"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:151
+msgid "동적 슬롯 지원 여부"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:153
+msgid "method"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:153
+msgid "슬롯의 데이터를 읽는 방법"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:156
+msgid "**dynamic** 가 ``true`` 일 경우 사용자가 임의로 슬롯을 조절할 수 있습니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:158
+msgid "**method** 는 아래의 값 중 하나를 사용할 수 있습니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:160
+msgid "``native``: \"CORE\"의 원본 형태로 읽습니다. ``Box`` 구조를 사용합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:161
+msgid "``numpy``: Python numpy 배열을 사용합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:162
+msgid "``string``: 문자열을 사용합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:164
+msgid "**list** 객체는 아래의 속성을 포함합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:169
+msgid "슬롯의 이름"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:171
+msgid "mimes"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:171
+msgid "``MIME`` 목록"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:202
+msgid "props"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:204
+msgid "람다의 속성 목록을 정의합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:206
+msgid "**props** 객체는 아래의 속성을 포함합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:211
+msgid "rule"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:211
+msgid "속성에 적용할 규칙"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:213
+msgid "속성 이름"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:215
+msgid "default_value"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:215
+msgid "any"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:215
+msgid "속성의 기본 값"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:217
+msgid "속성 타입"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:219
+msgid "required"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:219
+msgid "필수 여부"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:221
+msgid "valid"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:221
+msgid "Validation 목록"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:223
+msgid "title"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:223
+msgid "화면에 출력할 타이틀"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:225
+msgid "help"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:225
+msgid "화면에 출력할 도움말"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:228
+msgid "**rule** 은 아래의 값 중 하나를 사용할 수 있습니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:230
+msgid "``initialize_only``: 람다를 초기화 한 이후, 더이상 수정할 수 없습니다. ``init`` 으로 사용할 수 있습니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:231
+msgid "``read_only``: 읽기 전용 속성으로, 람다의 속성을 조회하기 위한 용도 입니다. ``r`` 으로 사용할 수 있습니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:232
+msgid "``read_and_write``: 읽기 및 쓰기 가능합니다. ``rw`` 으로 사용할 수 있습니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:234
+msgid "**type** 은 아래의 값 중 하나를 사용할 수 있습니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:236
+msgid "``str``: 문자열"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:237
+msgid "``bool``: Boolean, ``true`` 또는 ``false`` 값을 허용합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:238
+msgid "``int``: 정수형"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:239
+msgid "``unsigned``: 부호 없는 정수형"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:240
+msgid "``size``: 크기"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:241
+msgid "``float``: 단 정밀도 실수"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:242
+msgid "``double``: 배 정밀도 실수"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:243
+msgid "``json``: JSON 객체"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:244
+msgid "``csv``: CSV 문자열, ``,`` 를 사용하여 문자열을 분할합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:245
+msgid "``color``: 색상 값,  ``#RRGGBB`` 포맷의 문자열을 사용합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:246
+msgid "``duration``: 경과 시간. 문자열을 사용합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:247
+msgid "``byte``: 바이트 단위 크기. 문자열을 사용합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:248
+msgid "``time``: 절대 시간. 문자열을 사용합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:249
+msgid "``box_json``: ``Box`` 포맷의 JSON 객체"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:251
+msgid "**valid** 객체는 아래의 속성을 포함합니다."
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:254
+msgid "Version"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:256
+msgid "선택 목록"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:258
+msgid "hint"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:258
+msgid "힌트 목록"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:260
+msgid "min"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:260
+msgid "최소 값"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:262
+msgid "max"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:262
+msgid "최대 값"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:264
+msgid "dyhint"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:264
+msgid "유동적 힌트"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:266
+msgid "password"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:266
+msgid "암호문 처리"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:268
+msgid "advance"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:268
+msgid "상세 옵션"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:268
+msgid "``1.1.8``"
+msgstr ""
+
+#: ../../plugin/lambda/json.rst:271
+msgid "**list** 와 **hint** 는 ``;`` 으로 문자열을 분할 합니다."
+msgstr ""

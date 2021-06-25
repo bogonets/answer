@@ -1,0 +1,45 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-measure/measure_fps.rst:1
+msgid "MEASURE"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_fps.rst:8
+msgid "measure_fps"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_fps.rst:10
+msgid "FPS를 측정한다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_fps.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_fps.rst:15
+msgid "**input**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_fps.rst:18
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-measure/measure_fps.rst:20
+msgid "**fps**"
+msgstr ""

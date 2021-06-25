@@ -1,0 +1,85 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:1
+msgid "STRING REGEX"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:8
+msgid "regex_search.app"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:10
+msgid "Regex를 이용하여 문자열을 검색한다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:15
+msgid "**string**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:18
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:20
+msgid "**match**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:22
+msgid "**span**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:25
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:27
+msgid "**패턴**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:30
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:30
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:30
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:30
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:32
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:32
+msgid "str"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-string/regex_search.rst:32
+msgid "True"
+msgstr ""

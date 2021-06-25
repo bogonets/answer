@@ -1,0 +1,101 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../about/faq.rst:1
+msgid "FAQ"
+msgstr ""
+
+#: ../../about/faq.rst:7
+msgid "자주 묻는 질문들 (FAQ)"
+msgstr ""
+
+#: ../../about/faq.rst:10
+msgid "지원하는 플랫폼은 무엇인가요?"
+msgstr ""
+
+#: ../../about/faq.rst:12
+msgid "`도커(Docker) <https://www.docker.com/>`_ 를 설치할 수 있는 모든 플랫폼을 지원합니다."
+msgstr ""
+
+#: ../../about/faq.rst:14
+msgid "현재는 도커(Docker)를 사용한 배포만 지원합니다. 플랫폼별 배포는 차 후 지원 계획에 포함되어 있습니다."
+msgstr ""
+
+#: ../../about/faq.rst:18
+msgid "커뮤니티 버전은 무엇이 다른가요?"
+msgstr ""
+
+#: ../../about/faq.rst:20
+msgid "커뮤니티 버전은 무한 람다(Infinity Lambda)가 없습니다. 해당 람다를 사용하고 싶다면 유료 플랜을 확인해 주세요."
+msgstr ""
+
+#: ../../about/faq.rst:24
+msgid "유료 라이선스 구입"
+msgstr ""
+
+#: ../../about/faq.rst:26
+msgid "보고넷 홈페이지를 확인해 주세요."
+msgstr ""
+
+#: ../../about/faq.rst:29
+msgid "권장 요구 사항"
+msgstr ""
+
+#: ../../about/faq.rst:31
+msgid "원활한 사용을 위한 권장 사항은 다음과 같습니다."
+msgstr ""
+
+#: ../../about/faq.rst:34
+msgid "항목"
+msgstr ""
+
+#: ../../about/faq.rst:34
+msgid "설명"
+msgstr ""
+
+#: ../../about/faq.rst:36
+msgid "CPU"
+msgstr ""
+
+#: ../../about/faq.rst:36
+msgid "2.1 GHz 쿼드코어 이상"
+msgstr ""
+
+#: ../../about/faq.rst:38
+msgid "RAM"
+msgstr ""
+
+#: ../../about/faq.rst:38
+msgid "16GB 이상"
+msgstr ""
+
+#: ../../about/faq.rst:40
+msgid "용량"
+msgstr ""
+
+#: ../../about/faq.rst:40
+msgid "40GB 이상의 여유 공간"
+msgstr ""
+
+#: ../../about/faq.rst:42
+msgid "운영체제"
+msgstr ""
+
+#: ../../about/faq.rst:42
+msgid "우분투 18.04 이상"
+msgstr ""

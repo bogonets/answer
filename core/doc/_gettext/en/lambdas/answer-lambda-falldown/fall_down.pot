@@ -1,0 +1,133 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, BOGONET
+# This file is distributed under the same license as the answer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: answer 2.0.0-dev6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-25 11:00+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:1
+msgid "EVENTS FALL_DOWN"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:8
+msgid "fall_down"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:10
+msgid "쓰러진 사람을 탐지한다."
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:13
+msgid "입력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:15
+msgid "**bboxes**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:18
+msgid "출력 슬롯"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:20
+msgid "**result**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:23
+msgid "속성 목록"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:25
+msgid "**쓰러짐 탐지 프레임 수**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:28
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:38
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:48
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:58
+msgid "Rule"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:28
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:38
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:48
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:58
+msgid "Type"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:28
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:38
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:48
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:58
+msgid "Required"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:28
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:38
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:48
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:58
+msgid "Default value"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:30
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:40
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:50
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:60
+msgid "read_and_write"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:30
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:40
+msgid "int"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:30
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:40
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:50
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:60
+msgid "True"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:30
+msgid "60"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:35
+msgid "**최소 유지 프레임 수**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:40
+msgid "15"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:45
+msgid "**중앙 거리 임계치**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:50
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:60
+msgid "float"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:50
+msgid "0.9"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:55
+msgid "**크기 임계치**"
+msgstr ""
+
+#: ../../lambdas/answer-lambda-falldown/fall_down.rst:60
+msgid "0.95"
+msgstr ""
