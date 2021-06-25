@@ -18,7 +18,6 @@ from recc.rule.naming import (
 )
 from recc.variables.task_guest import (
     TASK_GUEST_WORKSPACE_DIR,
-    TASK_GUEST_CACHE_DIR,
     TASK_GUEST_PACKAGE_DIR,
 )
 from recc.variables.orchestration import DOCKER_SOCK_LOCAL_BASE_URL
