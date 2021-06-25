@@ -1,2 +1,0 @@
-msgid "msg_title"
-msgstr "엔서(ANSWER) 문서에 오신 것을 환영합니다!"

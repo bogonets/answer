@@ -96,6 +96,10 @@ share/python-wheels/
 MANIFEST
 
 # Unit test / coverage reports
+.mypy_cache/
+.pytest_cache/
+.sphinx_cache/
+.sphinx_locale/
 .tox/
 .coverage
 
@@ -115,4 +119,3 @@ MANIFEST
 
 ### asynctasks.vim ###
 .tasks
-
