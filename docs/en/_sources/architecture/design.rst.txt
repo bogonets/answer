@@ -3,5 +3,5 @@
 
 .. _doc-architecture-design:
 
-msg_title
-=========
+디자인 개요
+===========

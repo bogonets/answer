@@ -1,9 +1,9 @@
 .. recc documentation master file.
 
-msg_title
-=========
+엔서(Answer) 문서에 오신 것을 환영합니다!
+=========================================
 
-ANSWER 공식 문서화 사이트 입니다.
+엔서(Answer) 공식 문서화 사이트 입니다.
 
 ..  toctree::
     :maxdepth: 1
