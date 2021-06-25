@@ -16,11 +16,8 @@ from recc.rule.naming import (
     naming_task_volume,
     naming_task_network,
 )
-from recc.variables.task_guest import (
-    TASK_GUEST_WORKSPACE_DIR,
-    TASK_GUEST_PACKAGE_DIR,
-)
-from recc.variables.orchestration import DOCKER_SOCK_LOCAL_BASE_URL
+from recc.variables.storage import TASK_GUEST_WORKSPACE_DIR, TASK_GUEST_PACKAGE_DIR
+from recc.variables.container import DOCKER_SOCK_LOCAL_BASE_URL
 from recc.container.labels import (
     task_create_labels,
     task_find_labels,
@@ -31,13 +28,13 @@ from recc.container.container_manager_interface import (
     NetworkInfo,
     ContainerManagerInterface,
 )
-from recc.variables.orchestration import (
+from recc.variables.container import (
     NODE_IMAGE_NAME,
     NODE_IMAGE_LATEST_FULLNAME,
     DEFAULT_RESTART_COUNT,
     DEFAULT_TIME_ZONE,
 )
-from recc.container.docker.node_init import COMPRESS_NODE_INIT_TAR_BYTES
+from recc.container.docker.task_init import TASK_INIT_TAR_BYTES
 from recc.container.docker.mixin.docker_container import DockerContainer
 from recc.container.docker.mixin.docker_image import DockerImage
 from recc.container.docker.mixin.docker_network import DockerNetwork
@@ -45,7 +42,7 @@ from recc.container.docker.mixin.docker_volume import DockerVolume
 
 SELF_CGROUP_PATH = "/proc/self/cgroup"
 DOCKER_CGROUP_REGEX = re.compile(r"\d+:[\w=]+:/docker(-[ce]e)?/(\w+)")
-NODE_INIT_BYTES = COMPRESS_NODE_INIT_TAR_BYTES
+NODE_INIT_BYTES = TASK_INIT_TAR_BYTES
 
 
 def _get_current_container_key_from_common_host() -> str:

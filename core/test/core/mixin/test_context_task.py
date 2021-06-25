@@ -2,7 +2,7 @@
 
 from unittest import main
 from tester import AsyncContextTaskTestCase
-from recc.variables.storage_names import WORKING_NAME, PYTHON_NAME, VENV_NAME
+from recc.variables.storage import WORKING_NAME, PYTHON_NAME, VENV_NAME
 
 
 class ContextTaskTestCase(AsyncContextTaskTestCase):

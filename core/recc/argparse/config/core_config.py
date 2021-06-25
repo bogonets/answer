@@ -13,10 +13,10 @@ from recc.variables.database import (
     DB_TYPE_NAME_MYSQL,
     DB_TYPE_NAME_SQLITE,
 )
-from recc.variables.orchestration import (
-    CM_TYPE_NAME_DOCKER,
-    CM_TYPE_NAME_SWARM,
-    CM_TYPE_NAME_KUBERNETES,
+from recc.variables.container import (
+    CONTAINER_TYPE_DOCKER,
+    CONTAINER_TYPE_SWARM,
+    CONTAINER_TYPE_KUBERNETES,
     DOCKER_SOCK_LOCAL_BASE_URL,
 )
 
@@ -178,8 +178,8 @@ ARG_CONTAINER_PORT = Argument(
 )
 ARG_CONTAINER_TYPE = Argument(
     key="--container-type",
-    last_injection_value=CM_TYPE_NAME_DOCKER,
-    choices=(CM_TYPE_NAME_DOCKER, CM_TYPE_NAME_SWARM, CM_TYPE_NAME_KUBERNETES),
+    last_injection_value=CONTAINER_TYPE_DOCKER,
+    choices=(CONTAINER_TYPE_DOCKER, CONTAINER_TYPE_SWARM, CONTAINER_TYPE_KUBERNETES),
     help="Container manager type.",
 )
 ARG_CONTAINER_ID = Argument(

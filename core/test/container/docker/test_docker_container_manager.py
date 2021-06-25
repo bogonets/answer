@@ -6,7 +6,7 @@ from io import BytesIO
 from tarfile import open as tar_open
 from recc.container.container_manager_interface import ContainerStatus
 from recc.container.docker.docker_container_manager import DockerContainerManager
-from recc.variables.orchestration import BASE_IMAGE_FULLNAME
+from recc.variables.container import BASE_IMAGE_FULLNAME
 from recc.archive.tar_archive import file_info
 from recc.util.version import parse_semantic_version
 from tester import AsyncTestCase

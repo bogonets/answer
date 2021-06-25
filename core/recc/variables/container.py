@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-CM_TYPE_NAME_DOCKER = "docker"
-CM_TYPE_NAME_SWARM = "swarm"
-CM_TYPE_NAME_KUBERNETES = "kubernetes"
+CONTAINER_TYPE_DOCKER = "docker"
+CONTAINER_TYPE_SWARM = "swarm"
+CONTAINER_TYPE_KUBERNETES = "kubernetes"
 
 DOCKER_SOCK_LOCAL_BASE_URL = "unix://var/run/docker.sock"
 

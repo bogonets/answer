@@ -3,7 +3,7 @@
 import os
 from tempfile import mkdtemp
 from typing import List
-from recc.variables.storage_names import WORKING_NAME, PYTHON_NAME, VENV_NAME
+from recc.variables.storage import WORKING_NAME, PYTHON_NAME, VENV_NAME
 from recc.file.directory import prepare_writable_directory
 from recc.template.template_manager import TemplateManagerMixin
 

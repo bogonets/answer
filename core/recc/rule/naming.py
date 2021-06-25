@@ -2,7 +2,7 @@
 
 from re import compile as re_compile
 from functools import reduce
-from recc.variables.rule_naming import (
+from recc.variables.naming import (
     INVALID_NAMING_RULE_PATTERN,
     PREFIX_RECC,
     NAME_SEPARATOR,

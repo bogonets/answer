@@ -3,15 +3,15 @@
 from typing import Dict, List, Optional
 
 from recc.variables.labels import (
-    ANSWER_CLUSTER_KEY,
-    ANSWER_CLUSTER_VAL_TRUE,
-    ANSWER_CLUSTER_TRUE,
-    ANSWER_CLUSTER_CATEGORY_KEY,
-    ANSWER_CLUSTER_CATEGORY_VAL_NODE,
-    ANSWER_CLUSTER_CATEGORY_NODE,
-    ANSWER_CLUSTER_NODE_GROUP_KEY,
-    ANSWER_CLUSTER_NODE_PROJECT_KEY,
-    ANSWER_CLUSTER_NODE_TASK_KEY,
+    RECC_CLUSTER_KEY,
+    RECC_CLUSTER_VAL_TRUE,
+    RECC_CLUSTER_TRUE,
+    RECC_CATEGORY_KEY,
+    RECC_CATEGORY_VAL_TASK,
+    RECC_CATEGORY_TASK,
+    RECC_TASK_GROUP_KEY,
+    RECC_TASK_PROJECT_KEY,
+    RECC_TASK_TASK_KEY,
 )
 
 
@@ -21,15 +21,15 @@ def task_create_labels(
     task_name: Optional[str] = None,
 ) -> Dict[str, str]:
     result = {
-        ANSWER_CLUSTER_KEY: ANSWER_CLUSTER_VAL_TRUE,
-        ANSWER_CLUSTER_CATEGORY_KEY: ANSWER_CLUSTER_CATEGORY_VAL_NODE,
+        RECC_CLUSTER_KEY: RECC_CLUSTER_VAL_TRUE,
+        RECC_CATEGORY_KEY: RECC_CATEGORY_VAL_TASK,
     }
     if group_name is not None:
-        result[ANSWER_CLUSTER_NODE_GROUP_KEY] = group_name
+        result[RECC_TASK_GROUP_KEY] = group_name
     if project_name is not None:
-        result[ANSWER_CLUSTER_NODE_PROJECT_KEY] = project_name
+        result[RECC_TASK_PROJECT_KEY] = project_name
     if task_name is not None:
-        result[ANSWER_CLUSTER_NODE_TASK_KEY] = task_name
+        result[RECC_TASK_TASK_KEY] = task_name
     return result
 
 
@@ -39,13 +39,13 @@ def task_find_labels(
     task_name: Optional[str] = None,
 ) -> List[str]:
     result = [
-        ANSWER_CLUSTER_TRUE,
-        ANSWER_CLUSTER_CATEGORY_NODE,
+        RECC_CLUSTER_TRUE,
+        RECC_CATEGORY_TASK,
     ]
     if group_name is not None:
-        result.append(f"{ANSWER_CLUSTER_NODE_GROUP_KEY}={group_name}")
+        result.append(f"{RECC_TASK_GROUP_KEY}={group_name}")
     if project_name is not None:
-        result.append(f"{ANSWER_CLUSTER_NODE_PROJECT_KEY}={project_name}")
+        result.append(f"{RECC_TASK_PROJECT_KEY}={project_name}")
     if task_name is not None:
-        result.append(f"{ANSWER_CLUSTER_NODE_TASK_KEY}={task_name}")
+        result.append(f"{RECC_TASK_TASK_KEY}={task_name}")
     return result

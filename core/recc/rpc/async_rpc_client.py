@@ -10,7 +10,7 @@ from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_reg
 from recc.serializable.json import serialize_json_text
 from recc.blueprint.blueprint import BpTask
 from recc.proto.api_pb2_grpc import ReccApiStub
-from recc.variables.rpc_options import DEFAULT_GRPC_OPTIONS
+from recc.variables.rpc import DEFAULT_GRPC_OPTIONS
 from recc.vs.box import BoxData, BoxRequest
 from recc.rpc.rpc_converter import (
     cvt_box_datas,

@@ -8,7 +8,7 @@ from recc.log.logging import recc_rpc_logger as logger
 from recc.proto.api_pb2_grpc import add_ReccApiServicer_to_server
 from recc.rpc.async_rpc_client import try_connection
 from recc.rpc.async_rpc_server import TaskRpcServicer
-from recc.variables.rpc_options import DEFAULT_GRPC_OPTIONS
+from recc.variables.rpc import DEFAULT_GRPC_OPTIONS
 
 
 class _ServerInfo(object):

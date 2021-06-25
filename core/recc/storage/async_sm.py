@@ -7,7 +7,7 @@ from recc.file.permission import is_readable_dir
 from recc.file.path_utils import HOME_DIR
 from recc.file.directory import prepare_writable_directory
 from recc.template.template_manager import TemplateManagerMixin
-from recc.variables.storage_names import (
+from recc.variables.storage import (
     WORKSPACE_NAME,
     PYTHON_NAME,
     VENV_NAME,

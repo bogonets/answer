@@ -17,6 +17,7 @@
   - [ ] Socket File Sharing for Docker Volume
   - [ ] Unix Domain Socket for gRPC
   - [ ] Infinity Lambda
+  - [ ] New Docker Image for the task
 - [ ] Release v2.1
   - [ ] Image Preview Widget
   - [ ] Refactoring User/Group/Project
@@ -29,6 +30,7 @@
   - [ ] Task Management Page
   - [ ] Task RSA Handshake
   - [ ] Add Kubernetes Backend
+  - [ ] Add `RECC_*_FILE` env pattern
 - [ ] Refactoring Graph Editing Page
   - [ ] Change base library
   - [ ] Graph Wizard
