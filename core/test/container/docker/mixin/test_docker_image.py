@@ -7,35 +7,40 @@ from recc.variables.container import BASE_IMAGE_FULLNAME
 from recc.archive.tar_archive import file_info
 from tester import DockerTestCase
 
+TEST_CONTAINER_NAME = "recc-test-build-image:latest"
+TEST_DOCKERFILE_PATH = "/Dockerfile"
+DOCKERFILE_CONTENT = f"""
+From {BASE_IMAGE_FULLNAME}
+ENTRYPOINT ["python", "-V"]
+"""
+DOCKERFILE_CONTENT_BYTES = DOCKERFILE_CONTENT.encode("utf-8")
+
 
 class DockerImageTestCase(DockerTestCase):
     async def test_build_image(self):
-        container_name = "test-build-container:latest"
+        container_name = TEST_CONTAINER_NAME
+        dockerfile_path = TEST_DOCKERFILE_PATH
+        dockerfile_bytes = DOCKERFILE_CONTENT_BYTES
+        dockerfile_info = file_info(dockerfile_path, len(dockerfile_bytes), 0o544)
+        dockerfile_io = BytesIO(DOCKERFILE_CONTENT_BYTES)
+
         file_object = BytesIO()
-        dockerfile_path = "/Dockerfile"
-        dockerfile = f"""From {BASE_IMAGE_FULLNAME}\nENTRYPOINT ["python", "-V"]"""
-        dockerfile_bytes = dockerfile.encode("utf-8")
         with tar_open(fileobj=file_object, mode="w") as tar:
-            tar.addfile(
-                file_info(
-                    dockerfile_path,
-                    len(dockerfile_bytes),
-                    0o544,
-                ),
-                BytesIO(dockerfile_bytes),
-            )
+            tar.addfile(dockerfile_info, dockerfile_io)
             tar_bytes = file_object.getvalue()
 
         try:
-            print(f"Build the '{container_name}' image ...")
+            print(f"Building docker image: {container_name} ...")
             build_log = await self.container.build_image(
                 tar_bytes, container_name, "/", dockerfile_path
             )
-            print(build_log)
+            if build_log:
+                print(f"Build message: {build_log}")
+            else:
+                print("Empty build message")
         finally:
             if container_name in await self.container.images():
                 await self.container.remove_image(container_name)
-        self.assertTrue(len(build_log) >= 1)
 
 
 if __name__ == "__main__":

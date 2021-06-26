@@ -10,6 +10,8 @@ RECC_CATEGORY_KEY = "recc.category"
 RECC_CATEGORY_VAL_TASK = "task"
 RECC_CATEGORY_TASK = f"{RECC_CATEGORY_KEY}={RECC_CATEGORY_VAL_TASK}"
 
+RECC_VERSION_KEY = "recc.version"
+
 RECC_TASK_GROUP_KEY = "recc.task.group"
 RECC_TASK_PROJECT_KEY = "recc.task.project"
 RECC_TASK_TASK_KEY = "recc.task.task"

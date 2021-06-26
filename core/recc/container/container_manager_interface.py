@@ -359,6 +359,10 @@ class ContainerManagerInterface(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def create_task_image(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def create_task(
         self,
         group_name: str,

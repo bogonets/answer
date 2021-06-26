@@ -34,7 +34,6 @@ from recc.variables.container import (
     DEFAULT_RESTART_COUNT,
     DEFAULT_TIME_ZONE,
 )
-from recc.container.docker.task_init import TASK_INIT_TAR_BYTES
 from recc.container.docker.mixin.docker_container import DockerContainer
 from recc.container.docker.mixin.docker_image import DockerImage
 from recc.container.docker.mixin.docker_network import DockerNetwork
@@ -42,7 +41,6 @@ from recc.container.docker.mixin.docker_volume import DockerVolume
 
 SELF_CGROUP_PATH = "/proc/self/cgroup"
 DOCKER_CGROUP_REGEX = re.compile(r"\d+:[\w=]+:/docker(-[ce]e)?/(\w+)")
-NODE_INIT_BYTES = TASK_INIT_TAR_BYTES
 
 
 def _get_current_container_key_from_common_host() -> str:
@@ -236,6 +234,9 @@ class DockerContainerManager(
         labels = task_create_labels(group_name, project_name)
         return await self.create_network(name, labels=labels, check_duplicate=True)
 
+    async def create_task_image(self) -> None:
+        pass
+
     async def create_task(
         self,
         group_name: str,
@@ -310,13 +311,13 @@ class DockerContainerManager(
         assert container is not None
         assert container.key is not None
 
-        try:
-            put_result = await self.put_archive(container.key, "/", NODE_INIT_BYTES)
-            if not put_result:
-                raise RuntimeError("Failed to upload node-init archive.")
-        except BaseException as e:
-            logger.exception(e)
-            await self.remove_container(container.key, force=True)
-            raise
+        # try:
+        #     put_result = await self.put_archive(container.key, "/", NODE_INIT_BYTES)
+        #     if not put_result:
+        #         raise RuntimeError("Failed to upload node-init archive.")
+        # except BaseException as e:
+        #     logger.exception(e)
+        #     await self.remove_container(container.key, force=True)
+        #     raise
 
         return container
