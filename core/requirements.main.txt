@@ -1,5 +1,4 @@
 docker>=4.4.0
-aiodocker>=0.19.1
 aiohttp[speedups]>=3.7.3
 cchardet>=2.1.7
 aiodns>=2.0.0
