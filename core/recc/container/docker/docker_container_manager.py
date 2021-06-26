@@ -8,6 +8,7 @@ from docker import DockerClient
 from recc.exception.recc_error import (
     ReccNotFoundError,
     ReccArgumentError,
+    ReccAlreadyError,
 )
 from recc.log.logging import recc_cm_logger as logger
 from recc.rule.naming import (
@@ -16,24 +17,39 @@ from recc.rule.naming import (
     naming_task_volume,
     naming_task_network,
 )
-from recc.variables.storage import TASK_GUEST_WORKSPACE_DIR, TASK_GUEST_PACKAGE_DIR
 from recc.variables.container import DOCKER_SOCK_LOCAL_BASE_URL
 from recc.container.labels import (
     task_create_labels,
     task_find_labels,
+    task_image_find_labels,
 )
 from recc.container.container_manager_interface import (
     ContainerInfo,
     VolumeInfo,
     NetworkInfo,
+    ImageInfo,
     ContainerManagerInterface,
 )
+from recc.container.docker.task_init import (
+    BUILD_CONTEXT_BUILD_PATH,
+    BUILD_CONTEXT_DOCKERFILE_PATH,
+    RECC_MODULE_TAR_BYTES_SHA256,
+    TASK_GUEST_WORKSPACE_DIR,
+    TASK_GUEST_STORAGE_DIR,
+    TASK_GUEST_CACHE_DIR,
+    get_compressed_task_dockerfile_tar,
+)
 from recc.variables.container import (
-    NODE_IMAGE_NAME,
     NODE_IMAGE_LATEST_FULLNAME,
     DEFAULT_RESTART_COUNT,
     DEFAULT_TIME_ZONE,
 )
+from recc.variables.labels import (
+    RECC_IMAGE_VERSION_KEY,
+    RECC_IMAGE_SHA256_KEY,
+)
+
+from recc.util.version import version_text
 from recc.container.docker.mixin.docker_container import DockerContainer
 from recc.container.docker.mixin.docker_image import DockerImage
 from recc.container.docker.mixin.docker_network import DockerNetwork
@@ -128,14 +144,38 @@ class DockerContainerManager(
             return version["Version"]
         return version[key]
 
-    async def exist_default_task_images(self) -> bool:
-        available_images = await self.images(NODE_IMAGE_NAME)
+    async def exist_default_task_images(self, validate_labels=True) -> bool:
+        available_images = await self.get_task_images()
         if available_images is None:
             return False
-        return NODE_IMAGE_LATEST_FULLNAME in available_images
 
-    async def pull_default_task_images(self) -> None:
-        await self.pull_image(NODE_IMAGE_LATEST_FULLNAME)
+        found_image = None
+        for image in available_images:
+            if NODE_IMAGE_LATEST_FULLNAME in image.tags:
+                found_image = image
+                break
+
+        if found_image is None:
+            return False
+        if not validate_labels:
+            return True
+
+        labels = found_image.labels
+        if version_text != labels.get(RECC_IMAGE_VERSION_KEY):
+            return False
+        if RECC_MODULE_TAR_BYTES_SHA256 != labels.get(RECC_IMAGE_SHA256_KEY):
+            return False
+        return True
+
+    async def create_default_task_images(
+        self, remove_previous=True, force=False
+    ) -> None:
+        if remove_previous:
+            images = await self.get_task_images()
+            if images:
+                for image in images:
+                    await self.remove_image(image.key, force)
+        await self.create_task_image()
 
     async def get_tasks(
         self,
@@ -234,16 +274,56 @@ class DockerContainerManager(
         labels = task_create_labels(group_name, project_name)
         return await self.create_network(name, labels=labels, check_duplicate=True)
 
-    async def create_task_image(self) -> None:
-        pass
+    async def get_task_images(self) -> List[ImageInfo]:
+        labels = task_image_find_labels()
+        return await self.images(filters={"label": labels})
+
+    async def create_task_image(
+        self,
+        image_full_name: Optional[str] = None,
+        base_image: Optional[str] = None,
+        recc_version: Optional[str] = None,
+        group_name: Optional[str] = None,
+        user_name: Optional[str] = None,
+        extra_root_commands: Optional[str] = None,
+        extra_user_commands: Optional[str] = None,
+    ) -> None:
+        image_name = image_full_name if image_full_name else NODE_IMAGE_LATEST_FULLNAME
+        if image_name in await self.images():
+            raise ReccAlreadyError(f"Docker image already exists: {image_name}")
+
+        context_bytes = get_compressed_task_dockerfile_tar(
+            base_image=base_image,
+            recc_version=recc_version,
+            group_name=group_name,
+            user_name=user_name,
+            extra_root_commands=extra_root_commands,
+            extra_user_commands=extra_user_commands,
+        )
+
+        try:
+            logger.info(f"Building docker image: {image_name} ...")
+            build_log = await self.build_image(
+                context_bytes,
+                image_name,
+                BUILD_CONTEXT_BUILD_PATH,
+                BUILD_CONTEXT_DOCKERFILE_PATH,
+            )
+            if build_log:
+                logger.info(f"Build message: {build_log}")
+            else:
+                logger.info("Empty build message")
+        finally:
+            if image_name in await self.images():
+                await self.remove_image(image_name)
 
     async def create_task(
         self,
         group_name: str,
         project_name: str,
         task_name: str,
-        rpc_bind: str,
-        rpc_port: int,
+        rpc_bind: Optional[str] = None,
+        rpc_port: Optional[int] = None,
         register_key: Optional[str] = None,
         maximum_restart_count: Optional[int] = None,
         numa_memory_nodes: Optional[str] = None,
@@ -251,7 +331,9 @@ class DockerContainerManager(
         publish_ports: Optional[Dict[str, Any]] = None,
         container_name: Optional[str] = None,
         workspace_volume: Optional[str] = None,
+        task_storage_volume: Optional[str] = None,
         network_name: Optional[str] = None,
+        verbose_level=0,
     ) -> ContainerInfo:
         if not valid_naming(group_name):
             raise ReccArgumentError(f"Invalid group name: {group_name}")
@@ -262,18 +344,26 @@ class DockerContainerManager(
 
         kwargs = {
             "detach": True,
-            "environment": {
-                "TZ": DEFAULT_TIME_ZONE,
-                "PYTHONPATH": TASK_GUEST_PACKAGE_DIR,
-                "RECC_TASK_BIND": rpc_bind,
-                "RECC_TASK_PORT": rpc_port,
-                "RECC_TASK_REGISTER": register_key if register_key else "",
-                "RECC_TASK_WORKSPACE": TASK_GUEST_WORKSPACE_DIR,
-            },
             "labels": task_create_labels(group_name, project_name, task_name),
             "network": network_name,
-            "entrypoint": ["python", "-m", "recc", "task"],
+            "tmpfs": {TASK_GUEST_CACHE_DIR: ""},
         }
+
+        environment = {
+            "TZ": DEFAULT_TIME_ZONE,
+            "RECC_TASK_GROUP": group_name,
+            "RECC_TASK_PROJECT": project_name,
+            "RECC_TASK_TASK": task_name,
+        }
+        if rpc_bind:
+            environment["RECC_TASK_BIND"] = rpc_bind
+        if rpc_port:
+            environment["RECC_TASK_PORT"] = str(rpc_port)
+        if register_key:
+            environment["RECC_TASK_REGISTER"] = register_key
+        if verbose_level:
+            environment["RECC_VERBOSE"] = str(verbose_level)
+        kwargs["environment"] = environment
 
         if container_name:
             kwargs["name"] = container_name
@@ -284,6 +374,11 @@ class DockerContainerManager(
         if workspace_volume:
             volumes[workspace_volume] = {
                 "bind": TASK_GUEST_WORKSPACE_DIR,
+                "mode": "rw",
+            }
+        if task_storage_volume:
+            volumes[task_storage_volume] = {
+                "bind": TASK_GUEST_STORAGE_DIR,
                 "mode": "rw",
             }
         if volumes:
@@ -307,17 +402,7 @@ class DockerContainerManager(
             kwargs["ports"] = publish_ports
 
         image = base_image_name if base_image_name else NODE_IMAGE_LATEST_FULLNAME
-        container = await self.create_container(image, None, **kwargs)
+        container = await self.create_container(image, ["task"], **kwargs)
         assert container is not None
         assert container.key is not None
-
-        # try:
-        #     put_result = await self.put_archive(container.key, "/", NODE_INIT_BYTES)
-        #     if not put_result:
-        #         raise RuntimeError("Failed to upload node-init archive.")
-        # except BaseException as e:
-        #     logger.exception(e)
-        #     await self.remove_container(container.key, force=True)
-        #     raise
-
         return container

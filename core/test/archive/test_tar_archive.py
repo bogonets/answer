@@ -16,7 +16,7 @@ class TarArchiveTestCase(unittest.TestCase):
         prefix = "prefix/path/node"
         node_init_path = os.path.abspath(rpc.__file__)
         node_dir = os.path.abspath(os.path.dirname(node_init_path))
-        node_data = compress_tar(node_dir, mode="w", alternative_name=prefix)
+        node_data = compress_tar(node_dir, mode="w", archive_name=prefix)
         self.assertLess(0, len(node_data))
         self.assertIsInstance(node_data, bytes)
 

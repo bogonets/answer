@@ -2,8 +2,20 @@
 
 from typing import Optional, List, Dict, Any
 from io import BytesIO
+from docker.models.images import Image
 from recc.log.logging import recc_cm_logger as logger
 from recc.container.docker.mixin.docker_base import DockerBase
+from recc.container.container_manager_interface import ImageInfo
+
+DEFAULT_DOCKER_IMAGE_BUILD_PATH = "/"
+DEFAULT_DOCKERFILE_PATH = "/Dockerfile"
+
+
+def _create_image_info(image: Image) -> ImageInfo:
+    key = image.id
+    tags = image.tags
+    labels = image.labels if image.labels else dict()
+    return ImageInfo(key, tags, labels)
 
 
 class DockerImage(DockerBase):
@@ -12,20 +24,19 @@ class DockerImage(DockerBase):
         name: Optional[str] = None,
         filters: Optional[Dict[str, Any]] = None,
         show_all: bool = False,
-    ) -> List[str]:
+    ) -> List[ImageInfo]:
         result = list()
         logger.info(f"Listing the image: {name}")
         for image in self.docker.images.list(name, all=show_all, filters=filters):
-            for tag in image.tags:
-                result.append(str(tag))
+            result.append(_create_image_info(image))
         return result
 
     async def build_image(
         self,
         tarfile: bytes,
         name: str,
-        path: str,
-        script_path: str,
+        path=DEFAULT_DOCKER_IMAGE_BUILD_PATH,
+        script_path=DEFAULT_DOCKERFILE_PATH,
         **kwargs,
     ) -> List[Dict[str, Any]]:
         logger.info(f"Build the image: {name}")

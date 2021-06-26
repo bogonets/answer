@@ -93,6 +93,25 @@ class NetworkInfo:
         self.labels = labels
 
 
+class ImageInfo:
+
+    __slots__ = ("key", "tags", "labels")
+
+    key: str
+    tags: List[str]
+    labels: Dict[str, str]
+
+    def __init__(
+        self,
+        key: str,
+        tags: List[str],
+        labels: Dict[str, str],
+    ):
+        self.key = key
+        self.tags = tags
+        self.labels = labels
+
+
 class ContainerManagerInterface(metaclass=ABCMeta):
     """
     Container Manager (OS-level virtualization) interface.
@@ -134,7 +153,7 @@ class ContainerManagerInterface(metaclass=ABCMeta):
         name: Optional[str] = None,
         filters: Optional[Dict[str, Any]] = None,
         show_all: bool = False,
-    ) -> List[str]:
+    ) -> List[ImageInfo]:
         raise NotImplementedError
 
     @abstractmethod
@@ -270,7 +289,7 @@ class ContainerManagerInterface(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def logs_container(self, key: str, **kwargs) -> str:
+    async def logs_container(self, key: str, **kwargs) -> Any:
         raise NotImplementedError
 
     @abstractmethod
@@ -286,11 +305,13 @@ class ContainerManagerInterface(metaclass=ABCMeta):
     # ----
 
     @abstractmethod
-    async def exist_default_task_images(self) -> bool:
+    async def exist_default_task_images(self, validate_labels=True) -> bool:
         raise NotImplementedError
 
     @abstractmethod
-    async def pull_default_task_images(self) -> None:
+    async def create_default_task_images(
+        self, remove_previous=True, force=False
+    ) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -359,7 +380,20 @@ class ContainerManagerInterface(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def create_task_image(self) -> None:
+    async def get_task_images(self) -> List[ImageInfo]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def create_task_image(
+        self,
+        image_full_name: Optional[str] = None,
+        base_image: Optional[str] = None,
+        recc_version: Optional[str] = None,
+        group_name: Optional[str] = None,
+        user_name: Optional[str] = None,
+        extra_root_commands: Optional[str] = None,
+        extra_user_commands: Optional[str] = None,
+    ) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -368,8 +402,8 @@ class ContainerManagerInterface(metaclass=ABCMeta):
         group_name: str,
         project_name: str,
         task_name: str,
-        rpc_bind: str,
-        rpc_port: int,
+        rpc_bind: Optional[str] = None,
+        rpc_port: Optional[int] = None,
         register_key: Optional[str] = None,
         maximum_restart_count: Optional[int] = None,
         numa_memory_nodes: Optional[str] = None,
@@ -377,7 +411,9 @@ class ContainerManagerInterface(metaclass=ABCMeta):
         publish_ports: Optional[Dict[str, Any]] = None,
         container_name: Optional[str] = None,
         workspace_volume: Optional[str] = None,
+        task_storage_volume: Optional[str] = None,
         network_name: Optional[str] = None,
+        verbose_level=0,
     ) -> ContainerInfo:
         """Create a new task.
 
@@ -407,7 +443,11 @@ class ContainerManagerInterface(metaclass=ABCMeta):
             The container name is determined manually.
         :param workspace_volume:
             Volume name of workspace directory.
+        :param task_storage_volume:
+            Volume name of task storage directory.
         :param network_name:
             Network name.
+        :param verbose_level:
+            Verbose level.
         """
         raise NotImplementedError

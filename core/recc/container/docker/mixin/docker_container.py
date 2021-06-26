@@ -105,7 +105,7 @@ class DockerContainer(DockerBase):
             kwargs["timeout"] = int(timeout)
         self._get_container(key).wait(**kwargs)
 
-    async def logs_container(self, key: str, **kwargs) -> str:
+    async def logs_container(self, key: str, **kwargs) -> Any:
         return self._get_container(key).logs(**kwargs)
 
     async def get_archive(self, key: str, path: str) -> TarFile:

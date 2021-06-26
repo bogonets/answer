@@ -4,20 +4,22 @@ import unittest
 import tempfile
 from recc.container.container_manager_interface import ContainerStatus
 from recc.container.docker.docker_container_manager import DockerContainerManager
-from recc.util.version import parse_semantic_version
-from tester import AsyncTestCase
+from recc.util.version import version_text, parse_semantic_version
+from tester import DockerTestCase
+
+_WAIT_CONTAINER_TIMEOUT = 10
 
 
-class DockerContainerManagerTestCase(AsyncTestCase):
+class DockerContainerManagerTestCase(DockerTestCase):
     async def setUp(self):
         self.container = DockerContainerManager()
         await self.container.open()
         self.assertTrue(self.container.is_open())
-        if not await self.container.exist_default_task_images():
-            print("Pulling default node image ...")
-            await self.container.pull_default_task_images()
-            print("Pulling done.")
-        self.assertTrue(await self.container.exist_default_task_images())
+        if not await self.container.exist_default_task_images(False):
+            print("Create default node image ...")
+            await self.container.create_default_task_images()
+            print("Create done.")
+        self.assertTrue(await self.container.exist_default_task_images(False))
 
     async def tearDown(self):
         await self.container.close()
@@ -70,21 +72,48 @@ class DockerContainerManagerTestCase(AsyncTestCase):
             if await self.container.exist_network(network_key):
                 await self.container.remove_network(network_key)
 
+    async def test_create_task_image(self):
+        image_name = "test-recc-task-image-build:latest"
+        prev_images = await self.container.get_task_images()
+
+        container_key = ""
+        try:
+            await self.container.create_task_image(image_name)
+            next_images = await self.container.get_task_images()
+            self.assertEqual(len(prev_images) + 1, len(next_images))
+
+            container = await self.container.create_container(image_name, ["--version"])
+
+            container_key = container.key
+            self.assertTrue(await self.container.exist_container(container_key))
+            await self.container.start_container(container_key)
+            await self.container.wait_container(
+                container_key, timeout=_WAIT_CONTAINER_TIMEOUT
+            )
+            logs = await self.container.logs_container(container_key)
+            self.assertIsInstance(logs, bytes)
+            self.assertEqual(version_text, str(logs, encoding="utf-8").strip())
+            await self.container.remove_container(container_key)
+        finally:
+            if await self.container.exist_container(container_key):
+                await self.container.remove_container(container_key, force=True)
+
+            images = await self.container.images()
+            tags = [tag for img in images for tag in img.tags]
+            if image_name in tags:
+                await self.container.remove_image(image_name)
+
     async def test_create_task(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             container_key = ""
             group_name = "Tester"
             project_name = "MyProj"
             task_name = "recc-test-async-docker"
-            rpc_bind = "[::]"
-            rpc_port = 21000
             try:
                 container = await self.container.create_task(
                     group_name,
                     project_name,
                     task_name,
-                    rpc_bind,
-                    rpc_port,
                     workspace_volume=temp_dir,
                 )
                 container_key = container.key

@@ -2,7 +2,6 @@
 
 import os
 from io import BytesIO
-from typing import List
 from unittest import TestCase, main
 from tarfile import open as tar_open
 from recc.container.docker.task_init import (
@@ -30,9 +29,6 @@ class TaskInitTestCase(TestCase):
 
             recc = remove_first_slash(BUILD_CONTEXT_RECC_PATH)
             self.assertIn(recc, tar_names)
-
-            recc_main = os.path.join(recc, "__main__.py")
-            self.assertIn(recc_main, tar_names)
 
 
 if __name__ == "__main__":

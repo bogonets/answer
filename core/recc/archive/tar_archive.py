@@ -10,12 +10,12 @@ from io import BytesIO
 def compress_tar(
     path: str,
     mode="w",
-    alternative_name: Optional[str] = None,
+    archive_name: Optional[str] = None,
     recursive=True,
 ) -> bytes:
     file_object = BytesIO()
     with tar_open(fileobj=file_object, mode=mode) as tar:
-        tar.add(path, alternative_name, recursive)
+        tar.add(path, archive_name, recursive)
     return file_object.getvalue()
 
 
