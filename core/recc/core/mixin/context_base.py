@@ -7,7 +7,7 @@ from recc.storage.async_sm import AsyncStorageManager
 from recc.container.container_manager_interface import ContainerManagerInterface
 from recc.cache.async_cs_interface import AsyncCacheStoreInterface
 from recc.database.async_db_interface import AsyncDatabaseInterface
-from recc.rpc.async_rpc_client_manager import AsyncRpcClientManager
+from recc.rpc.rpc_client_manager import RpcClientManager
 
 
 class ContextBase:
@@ -21,7 +21,7 @@ class ContextBase:
     _container_key: str
     _cs: AsyncCacheStoreInterface
     _db: AsyncDatabaseInterface
-    _tm: AsyncRpcClientManager
+    _tm: RpcClientManager
 
     @property
     def config(self) -> CoreConfig:

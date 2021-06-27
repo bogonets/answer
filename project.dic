@@ -16,6 +16,7 @@ bucketname
 cchardet
 cgroup
 chown
+chttp
 cmdclass
 connectionpool
 coloredlogs
@@ -44,6 +45,7 @@ imread
 imwrite
 infos
 intl
+iomgr
 ipam
 jsonparse
 jsons

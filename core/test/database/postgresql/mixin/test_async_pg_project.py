@@ -2,11 +2,11 @@
 
 import unittest
 from datetime import datetime, timedelta
-from tester import AsyncPostgresqlDatabaseTestCase
+from tester import PostgresqlTestCase
 from recc.exception.recc_error import ReccNotFoundError
 
 
-class AsyncPgProjectTestCase(AsyncPostgresqlDatabaseTestCase):
+class PgProjectTestCase(PostgresqlTestCase):
     async def setUp(self):
         await super().setUp()
         self.group = await self.db.get_group_by_uid(self.anonymous_group_uid)

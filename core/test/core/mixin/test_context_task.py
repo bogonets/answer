@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from unittest import main
-from tester import AsyncContextTaskTestCase
+from tester import ContextTaskTestCase
 from recc.variables.storage import WORKING_NAME, PYTHON_NAME, VENV_NAME
 
 
-class ContextTaskTestCase(AsyncContextTaskTestCase):
+class ContextTaskTestCase(ContextTaskTestCase):
     async def test_echo(self):
         echo_message = "Hello, World!"
         self.assertEqual(echo_message, await self.client.echo(echo_message))

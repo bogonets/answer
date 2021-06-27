@@ -12,7 +12,7 @@ from recc.container.container_manager import create_container_manager
 from recc.cache.async_cs import create_cache_store
 from recc.database.async_db import create_database
 from recc.storage.async_sm import AsyncStorageManager
-from recc.rpc.async_rpc_client_manager import create_rpc_client_manager
+from recc.rpc.rpc_client_manager import create_rpc_client_manager
 from recc.log.logging import recc_logger as logger
 from recc.session.session import (
     DEFAULT_ISSUER_RECC_ACCESS,

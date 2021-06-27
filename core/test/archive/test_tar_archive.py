@@ -5,9 +5,9 @@ import unittest
 import tarfile
 import io
 from recc import rpc
-from recc.rpc import async_rpc_client
-from recc.rpc import async_rpc_client_manager
-from recc.rpc import async_rpc_server
+from recc.rpc import rpc_client
+from recc.rpc import rpc_client_manager
+from recc.rpc import rpc_servicer
 from recc.archive.tar_archive import compress_tar
 
 
@@ -21,9 +21,9 @@ class TarArchiveTestCase(unittest.TestCase):
         self.assertIsInstance(node_data, bytes)
 
         rpc_files = (
-            os.path.basename(async_rpc_client.__file__),
-            os.path.basename(async_rpc_client_manager.__file__),
-            os.path.basename(async_rpc_server.__file__),
+            os.path.basename(rpc_client.__file__),
+            os.path.basename(rpc_client_manager.__file__),
+            os.path.basename(rpc_servicer.__file__),
         )
 
         with tarfile.open(fileobj=io.BytesIO(node_data), mode="r") as tar:

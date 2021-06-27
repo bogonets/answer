@@ -5,7 +5,7 @@ from recc.argparse.default_parser import parse_arguments_to_core_config
 from tester._async.async_test_case import AsyncTestCase  # noqa
 
 
-class AsyncPostgresqlDatabaseTestCase(AsyncTestCase):
+class PostgresqlTestCase(AsyncTestCase):
     async def setUp(self):
         self.config = parse_arguments_to_core_config()
         self.host = self.config.database_host

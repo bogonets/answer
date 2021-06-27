@@ -2,10 +2,10 @@
 
 import unittest
 from datetime import datetime, timedelta
-from tester import AsyncPostgresqlDatabaseTestCase
+from tester import PostgresqlTestCase
 
 
-class AsyncPgUserTestCase(AsyncPostgresqlDatabaseTestCase):
+class PgUserTestCase(PostgresqlTestCase):
     async def test_create_and_get(self):
         username = "admin"
         password = "password"

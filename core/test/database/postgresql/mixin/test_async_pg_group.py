@@ -2,11 +2,11 @@
 
 import unittest
 from datetime import datetime, timedelta
-from tester import AsyncPostgresqlDatabaseTestCase
+from tester import PostgresqlTestCase
 from recc.variables.database import ANONYMOUS_GROUP_NAME, ANONYMOUS_GROUP_DESCRIPTION
 
 
-class AsyncPgGroupTestCase(AsyncPostgresqlDatabaseTestCase):
+class PgGroupTestCase(PostgresqlTestCase):
     async def test_anonymous_group(self):
         anonymous_group = await self.db.get_group_by_uid(self.anonymous_group_uid)
         self.assertEqual(ANONYMOUS_GROUP_NAME, anonymous_group.name)

@@ -2,10 +2,10 @@
 
 import unittest
 from datetime import datetime, timedelta
-from tester import AsyncPostgresqlDatabaseTestCase
+from tester import PostgresqlTestCase
 
 
-class AsyncPgLayoutTestCase(AsyncPostgresqlDatabaseTestCase):
+class PgLayoutTestCase(PostgresqlTestCase):
     async def setUp(self):
         await super().setUp()
 

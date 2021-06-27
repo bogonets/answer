@@ -145,7 +145,7 @@ def _check_result(result) -> None:
     _check_result_code(result.code, result.msg)
 
 
-class AsyncRpcClient:
+class RpcClient:
 
     _channel: Optional[Channel] = None
     _stub: Optional[ReccApiStub] = None
@@ -271,5 +271,5 @@ class AsyncRpcClient:
         return cvt_box_datas(response.extracted_slots, self._unpickling)
 
 
-def create_rpc_client(address: str, timeout: Optional[float] = None) -> AsyncRpcClient:
-    return AsyncRpcClient(address, timeout)
+def create_rpc_client(address: str, timeout: Optional[float] = None) -> RpcClient:
+    return RpcClient(address, timeout)

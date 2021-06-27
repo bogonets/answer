@@ -7,7 +7,7 @@ from recc.proto.api_pb2_grpc import ReccApiStub
 from tester import AsyncTestCase
 
 
-class NoServerTestCase(AsyncTestCase):
+class RpcNoServerTestCase(AsyncTestCase):
     async def setUp(self):
         self.host = "localhost"
         self.port = 19999

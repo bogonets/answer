@@ -47,19 +47,13 @@ from recc.proto.api_pb2 import (
 )
 
 
-class TaskRpcServicer(ReccApiServicer):
+class RpcServicer(ReccApiServicer):
     """
     RECC Task RPC Servicer.
     """
 
-    def __init__(
-        self,
-        config: TaskConfig,
-        really_port: int,
-    ):
+    def __init__(self, config: TaskConfig):
         self._config = config
-        self._bind = config.task_bind
-        self._port = really_port
         self._register = config.task_register
         self._workspace = AsyncWorkspace(config.task_workspace)
         self._pickling_protocol_version = 5

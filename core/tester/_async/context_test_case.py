@@ -7,7 +7,7 @@ from tester._async.async_test_case import AsyncTestCase  # noqa
 from tester.node.numpy_plugins import copy_builtin_numpy_nodes
 
 
-class AsyncContextTaskTestCase(AsyncTestCase):
+class ContextTaskTestCase(AsyncTestCase):
     async def _setup(self):
         self.temp_dir = TemporaryDirectory()
 

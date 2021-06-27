@@ -13,12 +13,12 @@ from recc.database.query_builder import UpdateBuilder, BuildResult
 INSERT_TASK = f"""
 INSERT INTO {TABLE_TASK} (
     project_uid, name, description, extra,
-    rpc_bind, rpc_port, rpc_address,
+    rpc_address,
     auth_algorithm, private_key, public_key,
     maximum_restart_count, numa_memory_nodes, base_image_name, publish_ports,
     created_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
 );
 """
 
@@ -68,8 +68,6 @@ def get_update_task_query_by_uid(
     name: Optional[str] = None,
     description: Optional[str] = None,
     extra: Optional[Any] = None,
-    rpc_bind: Optional[str] = None,
-    rpc_port: Optional[int] = None,
     rpc_address: Optional[str] = None,
     auth_algorithm: Optional[str] = None,
     private_key: Optional[str] = None,
@@ -86,8 +84,6 @@ def get_update_task_query_by_uid(
         name=name,
         description=description,
         extra=extra,
-        rpc_bind=rpc_bind,
-        rpc_port=rpc_port,
         rpc_address=rpc_address,
         auth_algorithm=auth_algorithm,
         private_key=private_key,

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from tester import AsyncPostgresqlDatabaseTestCase
+from tester import PostgresqlTestCase
 
 
-class AsyncPgGroupMemberTestCase(AsyncPostgresqlDatabaseTestCase):
+class PgGroupMemberTestCase(PostgresqlTestCase):
     async def setUp(self):
         await super().setUp()
 

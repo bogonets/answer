@@ -13,8 +13,6 @@ class Task(_Structure):
         name: Optional[str] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
-        rpc_bind: Optional[str] = None,
-        rpc_port: Optional[int] = None,
         rpc_address: Optional[str] = None,
         auth_algorithm: Optional[str] = None,
         private_key: Optional[str] = None,
@@ -32,8 +30,6 @@ class Task(_Structure):
         self.name = name
         self.description = description
         self.extra = extra
-        self.rpc_bind = rpc_bind
-        self.rpc_port = rpc_port
         self.rpc_address = rpc_address
         self.auth_algorithm = auth_algorithm
         self.private_key = private_key

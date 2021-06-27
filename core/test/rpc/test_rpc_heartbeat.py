@@ -9,7 +9,7 @@ from recc.rpc.task_server import create_task_server
 from tester import AsyncTestCase
 
 
-class HeartbeatCheckTestCase(AsyncTestCase):
+class RpcHeartbeatTestCase(AsyncTestCase):
     async def setUp(self):
         self.config = TaskConfig()
         self.config.task_bind = "[::]"

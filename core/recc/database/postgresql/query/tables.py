@@ -26,7 +26,6 @@ from recc.variables.database import (
     WIDGET_NAME_STR_SIZE,
     WIDGET_TYPE_STR_SIZE,
     TASK_NAME_STR_SIZE,
-    TASK_RPC_BIND_STR_SIZE,
     TASK_NUMA_MEMORY_NODES_STR_SIZE,
     TASK_BASE_IMAGE_STR_SIZE,
 )
@@ -136,8 +135,6 @@ CREATE TABLE IF NOT EXISTS {TABLE_TASK} (
     description TEXT,
     extra JSONB,
 
-    rpc_bind VARCHAR({TASK_RPC_BIND_STR_SIZE}),
-    rpc_port INTEGER,
     rpc_address VARCHAR({URL_STR_SIZE}),
 
     auth_algorithm TEXT,

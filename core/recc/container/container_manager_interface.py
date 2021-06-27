@@ -402,8 +402,7 @@ class ContainerManagerInterface(metaclass=ABCMeta):
         group_name: str,
         project_name: str,
         task_name: str,
-        rpc_bind: Optional[str] = None,
-        rpc_port: Optional[int] = None,
+        rpc_address: Optional[str] = None,
         register_key: Optional[str] = None,
         maximum_restart_count: Optional[int] = None,
         numa_memory_nodes: Optional[str] = None,
@@ -423,10 +422,8 @@ class ContainerManagerInterface(metaclass=ABCMeta):
             Project name.
         :param task_name:
             Task name.
-        :param rpc_bind:
+        :param rpc_address:
             RPC bind address.
-        :param rpc_port:
-            RPC port number.
         :param register_key:
             Register key. (RSA Public)
         :param maximum_restart_count:

@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, Dict, KeysView
-from recc.rpc.async_rpc_client import AsyncRpcClient
+from recc.rpc.rpc_client import RpcClient
 from recc.rule.naming import valid_naming, naming_task
 from recc.exception.recc_error import ReccArgumentError
 
 
-class AsyncRpcClientManager:
+class RpcClientManager:
 
-    _clients: Dict[str, AsyncRpcClient]
+    _clients: Dict[str, RpcClient]
 
     def __init__(self, timeout: Optional[float] = None):
         self._clients = dict()
@@ -17,10 +17,10 @@ class AsyncRpcClientManager:
     def keys(self) -> KeysView[str]:
         return self._clients.keys()
 
-    def get(self, key: str) -> AsyncRpcClient:
+    def get(self, key: str) -> RpcClient:
         return self._clients[key]
 
-    def set(self, key: str, item: AsyncRpcClient) -> None:
+    def set(self, key: str, item: RpcClient) -> None:
         self._clients[key] = item
 
     def remove(self, key: str) -> None:
@@ -49,11 +49,11 @@ class AsyncRpcClientManager:
 
     def get_fullpath(
         self, group_name: str, project_name: str, task_name: str
-    ) -> AsyncRpcClient:
+    ) -> RpcClient:
         return self.get(self.key(group_name, project_name, task_name))
 
     def set_fullpath(
-        self, group_name: str, project_name: str, task_name: str, item: AsyncRpcClient
+        self, group_name: str, project_name: str, task_name: str, item: RpcClient
     ) -> None:
         self.set(self.key(group_name, project_name, task_name), item)
 
@@ -68,5 +68,5 @@ class AsyncRpcClientManager:
         return self.exist(self.key(group_name, project_name, task_name))
 
 
-def create_rpc_client_manager(timeout: Optional[float] = None) -> AsyncRpcClientManager:
-    return AsyncRpcClientManager(timeout)
+def create_rpc_client_manager(timeout: Optional[float] = None) -> RpcClientManager:
+    return RpcClientManager(timeout)

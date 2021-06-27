@@ -322,8 +322,7 @@ class DockerContainerManager(
         group_name: str,
         project_name: str,
         task_name: str,
-        rpc_bind: Optional[str] = None,
-        rpc_port: Optional[int] = None,
+        rpc_address: Optional[str] = None,
         register_key: Optional[str] = None,
         maximum_restart_count: Optional[int] = None,
         numa_memory_nodes: Optional[str] = None,
@@ -355,10 +354,8 @@ class DockerContainerManager(
             "RECC_TASK_PROJECT": project_name,
             "RECC_TASK_TASK": task_name,
         }
-        if rpc_bind:
-            environment["RECC_TASK_BIND"] = rpc_bind
-        if rpc_port:
-            environment["RECC_TASK_PORT"] = str(rpc_port)
+        if rpc_address:
+            environment["RECC_TASK_ADDRESS"] = rpc_address
         if register_key:
             environment["RECC_TASK_REGISTER"] = register_key
         if verbose_level:

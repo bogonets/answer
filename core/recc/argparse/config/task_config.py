@@ -9,8 +9,7 @@ from recc.argparse.command import Command
 
 class TaskConfig(GlobalConfig):
 
-    task_bind: str
-    task_port: int
+    task_address: str
     task_register: str
     task_workspace: str
 
@@ -24,18 +23,11 @@ ARG_HELP = Argument(
     help=f"Print {Command.task.name} help message.",
 )
 
-ARG_BIND = Argument(
-    key="--task-bind",
+ARG_ADDRESS = Argument(
+    key="--task-address",
     last_injection_value="[::]",
     metavar="bind",
-    help="RPC server bind.",
-)
-ARG_PORT = Argument(
-    key="--task-port",
-    last_injection_value=20000,
-    type=int,
-    metavar="port",
-    help="RPC server port.",
+    help="RPC server bind address.",
 )
 ARG_REGISTER = Argument(
     key="--task-register",
@@ -45,15 +37,14 @@ ARG_REGISTER = Argument(
 )
 ARG_WORKSPACE = Argument(
     key="--task-workspace",
-    last_injection_value="/.answer/workspace",
+    last_injection_value="",
     metavar="dir",
     help="Workspace directory.",
 )
 
 TASK_ARGS = (
     ARG_HELP,
-    ARG_BIND,
-    ARG_PORT,
+    ARG_ADDRESS,
     ARG_REGISTER,
     ARG_WORKSPACE,
 )

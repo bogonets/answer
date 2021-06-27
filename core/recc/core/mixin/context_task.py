@@ -18,9 +18,9 @@ from recc.exception.recc_error import (
 from recc.struct.task import Task
 from recc.rule.naming import valid_naming, naming_task
 from recc.log.logging import recc_logger as logger
-from recc.rpc.async_rpc_client import (
+from recc.rpc.rpc_client import (
     try_connection,
-    AsyncRpcClient,
+    RpcClient,
     create_rpc_client,
 )
 
@@ -96,13 +96,10 @@ class ContextTask(ContextBase):
         task_name: str,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
-        rpc_bind=DEFAULT_RPC_BIND,
-        rpc_port=DEFAULT_RPC_PORT,
         maximum_restart_count: Optional[int] = None,
         numa_memory_nodes: Optional[str] = None,
         base_image_name: Optional[str] = None,
         publish_ports: Optional[Dict[str, Any]] = None,
-        publish_rpc_port: Optional[int] = None,
     ) -> str:
         if self.is_host_mode() and not os.path.isdir(self.sm.root):
             raise ReccNotReadyError("In Host mode, the storage path must be specified.")
@@ -125,32 +122,23 @@ class ContextTask(ContextBase):
         workspace_volume = await self.prepare_workspace_volume(group_name, project_name)
         network_name = await self.prepare_global_task_network()
 
-        rpc_address = f"{container_name}:{rpc_port}"
-        updated_publish_ports = publish_ports if publish_ports else {}
-        if publish_rpc_port is not None:
-            updated_publish_ports[f"{rpc_port}"] = publish_rpc_port
-            if self.is_host_mode():
-                rpc_address = f"localhost:{publish_rpc_port}"
-        else:
-            if self.is_host_mode():
-                error_msg = "In host mode, you need to publish the RPC port."
-                raise ReccArgumentError(error_msg)
-
         container = await self.cm.create_task(
             group_name=group_name,
             project_name=project_name,
             task_name=task_name,
-            rpc_bind=rpc_bind,
-            rpc_port=rpc_port,
+            rpc_address=None,
             register_key=public_key,
             maximum_restart_count=maximum_restart_count,
             numa_memory_nodes=numa_memory_nodes,
             base_image_name=base_image_name,
-            publish_ports=updated_publish_ports,
+            publish_ports=publish_ports,
             container_name=container_name,
             workspace_volume=workspace_volume,
             network_name=network_name,
         )
+
+        # TODO: create pipe in storage
+        rpc_address = ""
 
         try:
             await self.upsert_task_db(
@@ -160,8 +148,6 @@ class ContextTask(ContextBase):
                 name=task_name,
                 description=description,
                 extra=extra,
-                rpc_bind=rpc_bind,
-                rpc_port=rpc_port,
                 rpc_address=rpc_address,
                 auth_algorithm=auth_algorithm,
                 private_key=private_key,
@@ -169,7 +155,7 @@ class ContextTask(ContextBase):
                 maximum_restart_count=maximum_restart_count,
                 numa_memory_nodes=numa_memory_nodes,
                 base_image_name=base_image_name,
-                publish_ports=updated_publish_ports,
+                publish_ports=publish_ports,
             )
         except BaseException as e:
             logger.exception(e)
@@ -225,7 +211,7 @@ class ContextTask(ContextBase):
         group_name: str,
         project_name: str,
         task_name: str,
-    ) -> AsyncRpcClient:
+    ) -> RpcClient:
         task = await self.db.get_task_by_fullpath(group_name, project_name, task_name)
         key = self.tm.key(group_name, project_name, task_name)
         if self.tm.exist(key):
@@ -257,7 +243,7 @@ class ContextTask(ContextBase):
         group_name: str,
         project_name: str,
         task_name: str,
-    ) -> AsyncRpcClient:
+    ) -> RpcClient:
         key = self.tm.key(group_name, project_name, task_name)
         return self.tm.get(key)
 
