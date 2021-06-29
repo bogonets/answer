@@ -56,10 +56,8 @@ class PgTaskTestCase(PostgresqlTestCase):
         self.assertIsNone(task2.description)
         self.assertIsNone(task1.extra)
         self.assertIsNone(task2.extra)
-        self.assertIsNone(task1.rpc_bind)
-        self.assertIsNone(task2.rpc_bind)
-        self.assertIsNone(task1.rpc_port)
-        self.assertIsNone(task2.rpc_port)
+        self.assertIsNone(task1.rpc_address)
+        self.assertIsNone(task2.rpc_address)
         self.assertEqual(created_at1, task1.created_at)
         self.assertEqual(created_at2, task2.created_at)
         self.assertIsNone(task1.maximum_restart_count)
@@ -191,8 +189,7 @@ class PgTaskTestCase(PostgresqlTestCase):
         name_change = "task1_change"
         description = "description"
         extra = {"aa": 1, "bb": 2}
-        rpc_bind = "[::]"
-        rpc_port = 20000
+        rpc_address = "[::]:20000"
         auth_algorithm = "algorithm"
         private_key = "private"
         public_key = "public"
@@ -207,8 +204,7 @@ class PgTaskTestCase(PostgresqlTestCase):
             name=name_change,
             description=description,
             extra=extra,
-            rpc_bind=rpc_bind,
-            rpc_port=rpc_port,
+            rpc_address=rpc_address,
             auth_algorithm=auth_algorithm,
             private_key=private_key,
             public_key=public_key,
@@ -223,8 +219,7 @@ class PgTaskTestCase(PostgresqlTestCase):
         self.assertEqual(name_change, task.name)
         self.assertEqual(description, task.description)
         self.assertEqual(extra, task.extra)
-        self.assertEqual(rpc_bind, task.rpc_bind)
-        self.assertEqual(rpc_port, task.rpc_port)
+        self.assertEqual(rpc_address, task.rpc_address)
         self.assertEqual(updated_at, task.updated_at)
         self.assertEqual(maximum_restart_count, task.maximum_restart_count)
         self.assertEqual(numa_memory_nodes, task.numa_memory_nodes)

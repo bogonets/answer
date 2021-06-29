@@ -2,7 +2,7 @@
 
 import unittest
 import grpc
-from recc.argparse.config.task_config import TaskConfig
+from recc.argparse.default_namespace import get_default_task_config
 from recc.proto import api_pb2 as api
 from recc.proto.api_pb2_grpc import ReccApiStub
 from recc.rpc.task_server import create_task_server
@@ -11,15 +11,12 @@ from tester import AsyncTestCase
 
 class RpcHeartbeatTestCase(AsyncTestCase):
     async def setUp(self):
-        self.config = TaskConfig()
-        self.config.task_bind = "[::]"
-        self.config.task_port = 0
-        self.config.task_register = "__unknown_key__"
-        self.config.task_workspace = ""
+        self.config = get_default_task_config()
+        self.config.task_address = "[::]:0"
 
         server_info = create_task_server(self.config)
         self.server = server_info.server
-        self.port = server_info.port
+        self.port = server_info.accepted_port_number
 
         await self.server.start()
         self.client = grpc.aio.insecure_channel(f"localhost:{self.port}")

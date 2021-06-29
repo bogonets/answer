@@ -5,7 +5,7 @@ from recc.argparse.parser.env_parse import (
     get_namespace_by_envs,
     get_namespace_by_os_envs,
 )
-from recc.os.environ import exchange_env, get_env
+from recc.system.environ import exchange_env, get_env
 
 RECC_CONFIG = "RECC_CONFIG"
 RECC_HTTP_BIND = "RECC_HTTP_BIND"

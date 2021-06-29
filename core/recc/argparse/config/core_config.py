@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from argparse import ArgumentParser, Namespace
-from typing import Optional, Any
-from recc.argparse.config.global_config import GlobalConfig
+from typing import Optional, Any, List, get_type_hints
+from recc.argparse.config.global_config import GlobalConfig, get_global_config_members
 from recc.argparse.argument import Shortcut, Argument
 from recc.argparse.command import Command
 from recc.package.package_utils import get_module_directory
@@ -205,7 +205,7 @@ ARG_MANAGE_PORT_MAX = Argument(
 
 ARG_STORAGE_ROOT = Argument(
     key="--storage-root",
-    last_injection_value="/usr/local/recc/storage",
+    last_injection_value="",
     metavar="dir",
     help="Storage directory.",
 )
@@ -279,3 +279,11 @@ def get_core_config(
     namespace: Optional[Namespace] = None,
 ) -> CoreConfig:
     return cast_core_config(get_core_namespace(*cmdline, namespace))
+
+
+def get_core_config_members(ignore_global_members=False) -> List[str]:
+    members = [key for key, val in get_type_hints(CoreConfig).items()]
+    if not ignore_global_members:
+        return members
+    global_members = get_global_config_members()
+    return list(filter(lambda m: m not in global_members, members))

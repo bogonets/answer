@@ -2,7 +2,7 @@
 
 import sys
 from argparse import ArgumentParser, Namespace
-from typing import Iterable, Tuple, List, Optional, Any
+from typing import Iterable, Tuple, List, Optional, Any, get_type_hints
 from recc.argparse.argument import Shortcut, Argument
 from recc.log.logging import (
     SEVERITY_NAME_CRITICAL,
@@ -37,6 +37,9 @@ class GlobalConfig(Namespace):
     config: str
     version: bool
     help: bool
+
+    user: str
+    group: str
 
     log_config: str
     log_level: str
@@ -80,6 +83,17 @@ ARG_HELP = Argument(
     default=False,
     action="store_true",
     help="Print help message.",
+)
+
+ARG_USER = Argument(
+    key="--user",
+    last_injection_value="recc",
+    help="User name",
+)
+ARG_GROUP = Argument(
+    key="--group",
+    last_injection_value="recc",
+    help="Group name",
 )
 
 ARG_LOG_CONFIG = Argument(
@@ -142,6 +156,8 @@ GLOBAL_ARGS = (
     ARG_CONFIG,
     ARG_VERSION,
     ARG_HELP,
+    ARG_USER,
+    ARG_GROUP,
     ARG_LOG_CONFIG,
     ARG_LOG_LEVEL,
     ARG_LOOP_DRIVER,
@@ -218,3 +234,7 @@ def get_global_config_and_command_args(
 ) -> Tuple[GlobalConfig, List[str]]:
     obj, args = get_global_namespace_and_command_args(*cmdline, namespace)
     return cast_global_config(obj), args
+
+
+def get_global_config_members() -> List[str]:
+    return [key for key, val in get_type_hints(GlobalConfig).items()]

@@ -9,6 +9,7 @@ from recc.variables.naming import (
     NAME_CONTAINER,
     NAME_VOLUME,
     NAME_NETWORK,
+    SUFFIX_SOCKET,
 )
 
 _INVALID_NAMING_RULE_REGEX = re_compile(INVALID_NAMING_RULE_PATTERN)
@@ -34,3 +35,11 @@ def naming_task_volume(group_name: str, project_name: str) -> str:
 
 def naming_task_network(group_name: str, project_name: str) -> str:
     return naming_merge(PREFIX_RECC, NAME_NETWORK, group_name, project_name)
+
+
+def naming_socket(task_name: str, hidden=False) -> str:
+    result = naming_merge(PREFIX_RECC, task_name, SUFFIX_SOCKET)
+    if hidden:
+        return "." + result
+    else:
+        return result

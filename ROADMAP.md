@@ -31,6 +31,17 @@
   - [ ] Task RSA Handshake
   - [ ] Add Kubernetes Backend
   - [ ] Add `RECC_*_FILE` env pattern
+- [ ] Container/RPC Mode
+  - [ ] Single Core
+    - [ ] HostCore to HostTask
+    - [ ] HostCore to GuestTask  # 1st
+    - [ ] GuestCore to HostTask
+    - [ ] GuestCore to GuestTask
+  - [ ] Multi Core
+    - [ ] HostCore to HostTask
+    - [ ] HostCore to GuestTask
+    - [ ] GuestCore to HostTask
+    - [ ] GuestCore to GuestTask
 - [ ] Refactoring Graph Editing Page
   - [ ] Change base library
   - [ ] Graph Wizard

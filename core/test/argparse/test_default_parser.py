@@ -13,7 +13,7 @@ from recc.argparse.config.core_config import CoreConfig
 from recc.argparse.config.task_config import TaskConfig
 from recc.argparse.config.global_config import GlobalConfig
 from recc.argparse.command import Command
-from recc.os.environ import exchange_env
+from recc.system.environ import exchange_env
 
 RECC_HTTP_BIND = "RECC_HTTP_BIND"
 RECC_HTTP_PORT = "RECC_HTTP_PORT"

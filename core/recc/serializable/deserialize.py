@@ -21,7 +21,6 @@ from recc.serializable.serializable import (
     MAPPING_METHOD_ITEMS,
     MAPPING_METHOD_KEYS,
     SEQUENCE_METHOD_INSERT,
-    get_public_members,
     DeserializeError,
     NotImplementedDeserializeError,
     DESERIALIZE_METHOD_NAME,
@@ -29,6 +28,7 @@ from recc.serializable.serializable import (
     is_serializable_pod_cls,
     is_none,
 )
+from recc.inspect.member import get_public_members
 
 _T = TypeVar("_T")
 _K = TypeVar("_K")

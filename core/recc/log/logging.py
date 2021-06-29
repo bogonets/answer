@@ -8,18 +8,18 @@ from typing import Union
 LOGGER_NAME_RECC = "recc"
 LOGGER_NAME_RECC_HTTP = "recc.http"
 LOGGER_NAME_RECC_RPC = "recc.rpc"
-LOGGER_NAME_RECC_CM = "recc.cm"
-LOGGER_NAME_RECC_CS = "recc.cs"
-LOGGER_NAME_RECC_DB = "recc.db"
-LOGGER_NAME_RECC_STORAGE = "recc.storage"
+LOGGER_NAME_RECC_CONTAINER = "recc.container"
+LOGGER_NAME_RECC_CACHE = "recc.cache"
+LOGGER_NAME_RECC_DATABASE = "recc.database"
+LOGGER_NAME_RECC_COMMON = "recc.common"
 
 recc_logger = logging.getLogger(LOGGER_NAME_RECC)
 recc_http_logger = logging.getLogger(LOGGER_NAME_RECC_HTTP)
 recc_rpc_logger = logging.getLogger(LOGGER_NAME_RECC_RPC)
-recc_cm_logger = logging.getLogger(LOGGER_NAME_RECC_CM)
-recc_cs_logger = logging.getLogger(LOGGER_NAME_RECC_CS)
-recc_db_logger = logging.getLogger(LOGGER_NAME_RECC_DB)
-recc_storage_logger = logging.getLogger(LOGGER_NAME_RECC_STORAGE)
+recc_container_logger = logging.getLogger(LOGGER_NAME_RECC_CONTAINER)
+recc_cache_logger = logging.getLogger(LOGGER_NAME_RECC_CACHE)
+recc_database_logger = logging.getLogger(LOGGER_NAME_RECC_DATABASE)
+recc_common_logger = logging.getLogger(LOGGER_NAME_RECC_COMMON)
 
 SEVERITY_NAME_CRITICAL = "critical"
 SEVERITY_NAME_FATAL = "fatal"
@@ -121,7 +121,7 @@ def get_root_level() -> int:
     return logging.getLogger().level
 
 
-DEFAULT_LOGGING_CONFIG = {
+_DEFAULT_LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
@@ -170,6 +170,9 @@ DEFAULT_LOGGING_CONFIG = {
         "elasticsearch": {
             "level": "DEBUG",
         },
+        "grpc._cython.cygrpc": {
+            "level": "DEBUG",
+        },
         LOGGER_NAME_RECC: {
             "level": "DEBUG",
         },
@@ -179,13 +182,16 @@ DEFAULT_LOGGING_CONFIG = {
         LOGGER_NAME_RECC_RPC: {
             "level": "DEBUG",
         },
-        LOGGER_NAME_RECC_CM: {
+        LOGGER_NAME_RECC_CONTAINER: {
             "level": "DEBUG",
         },
-        LOGGER_NAME_RECC_CS: {
+        LOGGER_NAME_RECC_CACHE: {
             "level": "DEBUG",
         },
-        LOGGER_NAME_RECC_DB: {
+        LOGGER_NAME_RECC_DATABASE: {
+            "level": "DEBUG",
+        },
+        LOGGER_NAME_RECC_COMMON: {
             "level": "DEBUG",
         },
         "docker.auth": {
@@ -202,4 +208,4 @@ DEFAULT_LOGGING_CONFIG = {
 
 
 def set_default_logging_config() -> None:
-    logging_config.dictConfig(DEFAULT_LOGGING_CONFIG)
+    logging_config.dictConfig(_DEFAULT_LOGGING_CONFIG)

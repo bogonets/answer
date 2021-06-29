@@ -11,7 +11,7 @@ from recc.argparse.default_namespace import get_default_core_config
 from recc.container.container_manager import create_container_manager
 from recc.cache.async_cs import create_cache_store
 from recc.database.async_db import create_database
-from recc.storage.async_sm import AsyncStorageManager
+from recc.storage.core_storage import CoreStorage
 from recc.rpc.rpc_client_manager import create_rpc_client_manager
 from recc.log.logging import recc_logger as logger
 from recc.session.session import (
@@ -61,8 +61,8 @@ class ContextInit(ContextBase):
         logger.info(f"Signature: {self._signature}")
 
     def _init_storage(self) -> None:
-        self._sm = AsyncStorageManager(self._config.storage_root)
-        logger.info(f"Created storage-manager (root={self._sm.root})")
+        self._sm = CoreStorage(self._config.storage_root)
+        logger.info(f"Created storage-manager (root={self._sm.get_root_directory()})")
 
     def _init_session_factory(self) -> None:
         assert self._signature

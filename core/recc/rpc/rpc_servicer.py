@@ -3,22 +3,22 @@
 import os
 import asyncio
 import pickle
+from copy import deepcopy
+from typing import Any, Optional, Union
 from grpc.aio import ServicerContext
-from typing import Any
 from recc.exception.recc_error import ReccError
 from recc.argparse.config.task_config import TaskConfig
-
-# from recc.serializable.json import deserialize_json_text
-# from recc.blueprint.blueprint import BpTask
-
+from recc.argparse.injection_values import injection_task_default_values
 from recc.log.logging import recc_rpc_logger as logger
-from recc.storage.async_workspace import AsyncWorkspace
+from recc.storage.task_workspace import TaskWorkspace
+from recc.system.user import get_user_id
+from recc.system.group import get_group_id
 from recc.rpc.rpc_converter import (
     cvt_node_slot_data,
     cvt_box_data,
     cvt_box_request,
 )
-
+from recc.variables.rpc import DEFAULT_BIND_ADDRESS
 from recc.vs.task import Task
 from recc.proto.api_pb2_grpc import (
     ReccApiServicer,
@@ -47,22 +47,43 @@ from recc.proto.api_pb2 import (
 )
 
 
+def _chown(
+    path: str,
+    user: Optional[Union[str, int]] = None,
+    group: Optional[Union[str, int]] = None,
+) -> None:
+    user_id = -1
+    if user is not None:
+        user_id = get_user_id(user)
+
+    group_id = -1
+    if group is not None:
+        group_id = get_group_id(group)
+
+    os.chown(path, user_id, group_id)
+
+
 class RpcServicer(ReccApiServicer):
     """
     RECC Task RPC Servicer.
     """
 
     def __init__(self, config: TaskConfig):
-        self._config = config
-        self._register = config.task_register
-        self._workspace = AsyncWorkspace(config.task_workspace)
+        cloned_config = deepcopy(config)
+        injection_task_default_values(cloned_config)
+        workspace_dir = cloned_config.task_workspace_dir
+
+        # _chown(workspace_dir, config.user, config.group)
+        # if config.user:
+        #     set_user(config.user)
+
+        self._config = cloned_config
+        self._workspace = TaskWorkspace(workspace_dir)
+        self._workspace.change_working_directory()
+
         self._pickling_protocol_version = 5
         self._unpickling_encoding = "latin1"
         self._task = Task()
-        self._setup()
-
-    def _setup(self) -> None:
-        os.chdir(self._workspace.working_dir)
 
     def _pickling(self, data: Any) -> bytes:
         return pickle.dumps(data, protocol=self._pickling_protocol_version)
@@ -71,8 +92,21 @@ class RpcServicer(ReccApiServicer):
         return pickle.loads(data, encoding=self._unpickling_encoding)
 
     @property
-    def workspace(self) -> AsyncWorkspace:
+    def config(self) -> TaskConfig:
+        return self._config
+
+    @property
+    def storage(self) -> TaskWorkspace:
         return self._workspace
+
+    def get_rpc_address(self) -> str:
+        if self._config.task_address:
+            return self._config.task_address
+
+        if self._config.task_name:
+            return self._workspace.get_socket_url(self._config.task_name)
+
+        return DEFAULT_BIND_ADDRESS
 
     async def Heartbeat(self, request: Pit, context: ServicerContext) -> Pat:
         logger.info(f"Heartbeat(delay={request.delay})")
@@ -91,7 +125,7 @@ class RpcServicer(ReccApiServicer):
         self, request: Empty, context: ServicerContext
     ) -> Names:
         logger.info("GetWorkspaceDirs()")
-        subdir = self._workspace.get_workspace_subdir()
+        subdir = self._workspace.get_subdirectories()
         return Names(names=subdir)
 
     async def GetTemplateNames(self, request: Empty, context: ServicerContext) -> Names:

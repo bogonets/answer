@@ -10,7 +10,7 @@ from recc.exception.recc_error import (
     ReccArgumentError,
     ReccAlreadyError,
 )
-from recc.log.logging import recc_cm_logger as logger
+from recc.log.logging import recc_container_logger as logger
 from recc.rule.naming import (
     valid_naming,
     naming_task,
@@ -31,16 +31,15 @@ from recc.container.container_manager_interface import (
     ContainerManagerInterface,
 )
 from recc.container.docker.task_init import (
-    BUILD_CONTEXT_BUILD_PATH,
-    BUILD_CONTEXT_DOCKERFILE_PATH,
     RECC_MODULE_TAR_BYTES_SHA256,
-    TASK_GUEST_WORKSPACE_DIR,
-    TASK_GUEST_STORAGE_DIR,
-    TASK_GUEST_CACHE_DIR,
     get_compressed_task_dockerfile_tar,
 )
 from recc.variables.container import (
-    NODE_IMAGE_LATEST_FULLNAME,
+    BUILD_CONTEXT_BUILD_PATH,
+    BUILD_CONTEXT_DOCKERFILE_PATH,
+    TASK_IMAGE_LATEST_FULLNAME,
+    TASK_GUEST_WORKSPACE_DIR,
+    TASK_GUEST_CACHE_DIR,
     DEFAULT_RESTART_COUNT,
     DEFAULT_TIME_ZONE,
 )
@@ -151,7 +150,7 @@ class DockerContainerManager(
 
         found_image = None
         for image in available_images:
-            if NODE_IMAGE_LATEST_FULLNAME in image.tags:
+            if TASK_IMAGE_LATEST_FULLNAME in image.tags:
                 found_image = image
                 break
 
@@ -285,10 +284,9 @@ class DockerContainerManager(
         recc_version: Optional[str] = None,
         group_name: Optional[str] = None,
         user_name: Optional[str] = None,
-        extra_root_commands: Optional[str] = None,
-        extra_user_commands: Optional[str] = None,
+        extra_commands: Optional[str] = None,
     ) -> None:
-        image_name = image_full_name if image_full_name else NODE_IMAGE_LATEST_FULLNAME
+        image_name = image_full_name if image_full_name else TASK_IMAGE_LATEST_FULLNAME
         if image_name in await self.images():
             raise ReccAlreadyError(f"Docker image already exists: {image_name}")
 
@@ -297,8 +295,7 @@ class DockerContainerManager(
             recc_version=recc_version,
             group_name=group_name,
             user_name=user_name,
-            extra_root_commands=extra_root_commands,
-            extra_user_commands=extra_user_commands,
+            extra_commands=extra_commands,
         )
 
         try:
@@ -330,7 +327,6 @@ class DockerContainerManager(
         publish_ports: Optional[Dict[str, Any]] = None,
         container_name: Optional[str] = None,
         workspace_volume: Optional[str] = None,
-        task_storage_volume: Optional[str] = None,
         network_name: Optional[str] = None,
         verbose_level=0,
     ) -> ContainerInfo:
@@ -352,7 +348,7 @@ class DockerContainerManager(
             "TZ": DEFAULT_TIME_ZONE,
             "RECC_TASK_GROUP": group_name,
             "RECC_TASK_PROJECT": project_name,
-            "RECC_TASK_TASK": task_name,
+            "RECC_TASK_NAME": task_name,
         }
         if rpc_address:
             environment["RECC_TASK_ADDRESS"] = rpc_address
@@ -369,15 +365,7 @@ class DockerContainerManager(
 
         volumes = dict()
         if workspace_volume:
-            volumes[workspace_volume] = {
-                "bind": TASK_GUEST_WORKSPACE_DIR,
-                "mode": "rw",
-            }
-        if task_storage_volume:
-            volumes[task_storage_volume] = {
-                "bind": TASK_GUEST_STORAGE_DIR,
-                "mode": "rw",
-            }
+            volumes[workspace_volume] = {"bind": TASK_GUEST_WORKSPACE_DIR, "mode": "rw"}
         if volumes:
             kwargs["volumes"] = volumes
 
@@ -398,7 +386,7 @@ class DockerContainerManager(
         if publish_ports:
             kwargs["ports"] = publish_ports
 
-        image = base_image_name if base_image_name else NODE_IMAGE_LATEST_FULLNAME
+        image = base_image_name if base_image_name else TASK_IMAGE_LATEST_FULLNAME
         container = await self.create_container(image, ["task"], **kwargs)
         assert container is not None
         assert container.key is not None

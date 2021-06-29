@@ -246,9 +246,7 @@ class TemplateManager:
         self._templates: Dict[TemplateKey, Template] = dict()
         self._storage_compressed = bytes()
 
-        self._refresh()
-
-    def _refresh(self) -> None:
+    def refresh(self) -> None:
         builtin_dir = get_module_directory(recc_node_builtin_module)
         package_dir = get_module_directory(recc_node_module)
         storage_dir = self._template_directory
@@ -268,8 +266,13 @@ class TemplateManager:
         else:
             self._storage_compressed = bytes()
 
-    def refresh(self) -> None:
-        self._refresh()
+    @property
+    def root_dir(self) -> str:
+        return self._template_directory
+
+    @property
+    def venv_dir(self) -> str:
+        return self._venv_directory
 
     @property
     def builtin_category_to_names(self) -> Dict[str, List[str]]:
@@ -320,38 +323,3 @@ class TemplateManager:
             raise ReccNotFoundError(f"Not found template: {params_msg}")
 
         return self._templates[TemplateKey(position, category, name)]
-
-
-class TemplateManagerMixin:
-
-    _tm: TemplateManager
-
-    def init_template_manager(self, root: str, venv_directory: str) -> None:
-        self._tm = TemplateManager(root, venv_directory)
-
-    def refresh_templates(self) -> None:
-        assert self._tm is not None
-        self._tm.refresh()
-
-    def get_template_manager(self) -> TemplateManager:
-        return self._tm
-
-    def get_templates(self) -> Dict[TemplateKey, Template]:
-        assert self._tm is not None
-        return self._tm.templates
-
-    def get_template_keys(self) -> KeysView[TemplateKey]:
-        assert self._tm is not None
-        return self._tm.keys()
-
-    def get_template_values(self) -> ValuesView[Template]:
-        assert self._tm is not None
-        return self._tm.values()
-
-    def compress_templates(self) -> bytes:
-        assert self._tm is not None
-        return self._tm.storage_compressed
-
-    def decompress_templates(self, data: bytes) -> None:
-        assert self._tm is not None
-        self._tm.decompress_templates(data)

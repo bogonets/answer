@@ -33,17 +33,21 @@ loggers:
     level: DEBUG
   elasticsearch:
     level: DEBUG
+  grpc._cython.cygrpc:
+    level: DEBUG
   recc:
     level: DEBUG
   recc.http:
     level: DEBUG
   recc.rpc:
     level: DEBUG
-  recc.cm:
+  recc.container:
     level: DEBUG
-  recc.cs:
+  recc.cache:
     level: DEBUG
-  recc.db:
+  recc.database:
+    level: DEBUG
+  recc.common:
     level: DEBUG
   docker.auth:
     level: DEBUG

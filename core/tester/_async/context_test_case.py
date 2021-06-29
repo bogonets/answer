@@ -7,7 +7,7 @@ from tester._async.async_test_case import AsyncTestCase  # noqa
 from tester.node.numpy_plugins import copy_builtin_numpy_nodes
 
 
-class ContextTaskTestCase(AsyncTestCase):
+class ContextTestCase(AsyncTestCase):
     async def _setup(self):
         self.temp_dir = TemporaryDirectory()
 
@@ -21,7 +21,7 @@ class ContextTaskTestCase(AsyncTestCase):
         self.assertTrue(self.context.is_cm_open())
         self.assertTrue(self.context.is_cs_open())
 
-        template_dir = self.context.sm.template_dir
+        template_dir = self.context.sm.get_template_directory()
         self.numpy_template_jsons = copy_builtin_numpy_nodes(template_dir)
         self.assertLess(0, len(self.numpy_template_jsons))
         self.context.sm.refresh_templates()
@@ -34,7 +34,7 @@ class ContextTaskTestCase(AsyncTestCase):
         await self.context.db.create_project(group_uid, self.project_name)
 
         await self.context.create_task(
-            self.group_name, self.project_name, self.task_name, publish_rpc_port=30000
+            self.group_name, self.project_name, self.task_name,
         )
         await self.context.start_task(
             self.group_name, self.project_name, self.task_name

@@ -2,7 +2,7 @@
 
 from typing import Dict, Optional
 from argparse import Namespace
-from recc.os.environ import get_os_envs_dict
+from recc.system.environ import get_os_envs_dict
 
 
 def normalize_env_key(key: str, remove_prefix: Optional[str] = None) -> str:

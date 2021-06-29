@@ -7,12 +7,12 @@ import numpy as np
 import shutil
 from tempfile import TemporaryDirectory
 from datetime import datetime, timedelta
-from recc.argparse.config.task_config import TaskConfig
+from recc.argparse.default_namespace import get_default_task_config
 from recc.blueprint.blueprint import BpTask
 from recc.blueprint.v1.converter import bp_converter
 from recc.rpc.rpc_client import create_rpc_client
 from recc.rpc.task_server import create_task_server
-from recc.variables.storage import WORKING_NAME, PYTHON_NAME, VENV_NAME
+from recc.variables.storage import CORE_TEMPLATE_NAME, WORKSPACE_VENV_NAME
 from recc.vs.box import BoxRequest
 from tester import AsyncTestCase, read_sample_json
 from tester.node.numpy_plugins import copy_builtin_numpy_nodes
@@ -22,23 +22,22 @@ class RpcTestCase(AsyncTestCase):
     async def _setup(self):
         self.temp_dir = TemporaryDirectory()
 
-        self.config = TaskConfig()
-        self.config.task_bind = "[::]"
-        self.config.task_port = 0
+        self.config = get_default_task_config()
+        self.config.task_address = "[::]:0"
         self.config.task_register = "__unknown_key__"
-        self.config.task_workspace = self.temp_dir.name
+        self.config.task_workspace_dir = self.temp_dir.name
 
         server_info = create_task_server(self.config)
         self.servicer = server_info.servicer
         self.server = server_info.server
-        self.port = server_info.port
+        self.port = server_info.accepted_port_number
         self.address = f"localhost:{self.port}"
         self.client = create_rpc_client(self.address)
 
-        self.template_dir = self.servicer.workspace.template_dir
+        self.template_dir = self.servicer.storage.get_template_directory()
         self.numpy_template_jsons = copy_builtin_numpy_nodes(self.template_dir)
         self.assertLess(0, len(self.numpy_template_jsons))
-        self.servicer.workspace.refresh_templates()
+        self.servicer.storage.refresh_templates()
 
         await self.server.start()
         await self.client.open()
@@ -124,16 +123,15 @@ class RpcTestCase(AsyncTestCase):
     async def test_get_workspace_subdir(self):
         names = await self.client.get_workspace_subdir()
         self.assertLessEqual(3, len(names))
-        self.assertIn(WORKING_NAME, names)
-        self.assertIn(PYTHON_NAME, names)
-        self.assertIn(VENV_NAME, names)
+        self.assertIn(CORE_TEMPLATE_NAME, names)
+        self.assertIn(WORKSPACE_VENV_NAME, names)
 
     async def test_get_template_names(self):
         names = await self.client.get_template_names()
         self.assertLess(0, len(names))
 
     async def test_upload_templates(self):
-        data = self.servicer.workspace.compress_templates()
+        data = self.servicer.storage.compress_templates()
 
         # Remove templates.
         shutil.rmtree(self.template_dir)
@@ -141,7 +139,7 @@ class RpcTestCase(AsyncTestCase):
         self.assertTrue(os.path.isdir(self.template_dir))
         self.assertEqual(0, len(os.listdir(self.template_dir)))
 
-        self.servicer.workspace.refresh_templates()
+        self.servicer.storage.refresh_templates()
         save_template_count = len(await self.client.get_template_names())
 
         await self.client.upload_templates(data)

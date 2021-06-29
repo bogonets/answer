@@ -9,18 +9,19 @@ class TaskConfigTestCase(TestCase):
         config = get_task_config()
         self.assertIsInstance(config, TaskConfig)
         self.assertFalse(config.help)
-        self.assertIsNone(config.task_bind)
-        self.assertIsNone(config.task_port)
+        self.assertIsNone(config.task_address)
         self.assertIsNone(config.task_register)
-        self.assertIsNone(config.task_workspace)
+        self.assertIsNone(config.task_workspace_dir)
+        self.assertIsNone(config.task_package_dir)
+        self.assertIsNone(config.task_cache_dir)
         self.assertLess(0, len(config.help_message))
         self.assertEqual(0, len(config.unrecognized_arguments))
 
     def test_default(self):
-        bind_address = "192.168.0.2"
-        config = get_task_config("--task-bind", bind_address)
+        task_address = "192.168.0.2"
+        config = get_task_config("--task-address", task_address)
         self.assertIsInstance(config, TaskConfig)
-        self.assertEqual(bind_address, config.task_bind)
+        self.assertEqual(task_address, config.task_address)
 
     def test_help(self):
         config = get_task_config("-h")

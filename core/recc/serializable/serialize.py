@@ -14,13 +14,13 @@ from recc.exception.recc_error import ReccSerializeError
 from recc.serializable.serializable import (
     MAPPING_METHOD_ITEMS,
     MAPPING_METHOD_KEYS,
-    get_public_members,
     SerializeError,
     NotImplementedSerializeError,
     SERIALIZE_METHOD_NAME,
     is_serialize_obj,
     is_serializable_pod_obj,
 )
+from recc.inspect.member import get_public_members
 
 _K = TypeVar("_K")
 _V = TypeVar("_V")

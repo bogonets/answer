@@ -23,6 +23,7 @@ class TemplateManagerTestCase(TestCase):
 
     def test_default(self):
         mgr = TemplateManager()
+        mgr.refresh()
         self.assertLess(0, len(mgr.keys()))
 
 

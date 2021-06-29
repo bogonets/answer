@@ -3,12 +3,13 @@
 from typing import Optional, List, Dict, Any
 from io import BytesIO
 from docker.models.images import Image
-from recc.log.logging import recc_cm_logger as logger
+from recc.log.logging import recc_container_logger as logger
 from recc.container.docker.mixin.docker_base import DockerBase
 from recc.container.container_manager_interface import ImageInfo
-
-DEFAULT_DOCKER_IMAGE_BUILD_PATH = "/"
-DEFAULT_DOCKERFILE_PATH = "/Dockerfile"
+from recc.variables.container import (
+    BUILD_CONTEXT_BUILD_PATH,
+    BUILD_CONTEXT_DOCKERFILE_PATH,
+)
 
 
 def _create_image_info(image: Image) -> ImageInfo:
@@ -35,8 +36,8 @@ class DockerImage(DockerBase):
         self,
         tarfile: bytes,
         name: str,
-        path=DEFAULT_DOCKER_IMAGE_BUILD_PATH,
-        script_path=DEFAULT_DOCKERFILE_PATH,
+        path=BUILD_CONTEXT_BUILD_PATH,
+        script_path=BUILD_CONTEXT_DOCKERFILE_PATH,
         **kwargs,
     ) -> List[Dict[str, Any]]:
         logger.info(f"Build the image: {name}")

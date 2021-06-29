@@ -70,9 +70,18 @@ class ContextTask(ContextBase):
         await self.cm.disconnect_network(network_key, self.container_key)
         logger.info("The container and the global network are disconnected.")
 
-    async def prepare_workspace_volume(self, group_name: str, project_name: str) -> str:
+    async def prepare_project_volume(self, group_name: str, project_name: str) -> str:
         if self.is_host_mode():
-            return self.sm.prepare_workspace_dir(group_name, project_name)
+            return self.sm.prepare_project_dir(group_name, project_name)
+
+        volume = await self.cm.create_task_volume_if_not_exist(group_name, project_name)
+        return volume.key
+
+    async def prepare_substorage_volume(
+        self, group_name: str, project_name: str
+    ) -> str:
+        if self.is_host_mode():
+            return self.sm.prepare_substorage_dir(group_name, project_name)
 
         volume = await self.cm.create_task_volume_if_not_exist(group_name, project_name)
         return volume.key
@@ -101,7 +110,7 @@ class ContextTask(ContextBase):
         base_image_name: Optional[str] = None,
         publish_ports: Optional[Dict[str, Any]] = None,
     ) -> str:
-        if self.is_host_mode() and not os.path.isdir(self.sm.root):
+        if self.is_host_mode() and not os.path.isdir(self.sm.get_root_directory()):
             raise ReccNotReadyError("In Host mode, the storage path must be specified.")
 
         if not valid_naming(group_name):
@@ -119,7 +128,7 @@ class ContextTask(ContextBase):
         key = RSA.generate(RSA_KEY_SIZE)
         private_key = str(key.export_key(), "utf-8")
         public_key = str(key.publickey().export_key(), "utf-8")
-        workspace_volume = await self.prepare_workspace_volume(group_name, project_name)
+        workspace_volume = await self.prepare_project_volume(group_name, project_name)
         network_name = await self.prepare_global_task_network()
 
         container = await self.cm.create_task(
@@ -137,8 +146,7 @@ class ContextTask(ContextBase):
             network_name=network_name,
         )
 
-        # TODO: create pipe in storage
-        rpc_address = ""
+        rpc_address = self.sm.get_socket_url(group_name, project_name, task_name)
 
         try:
             await self.upsert_task_db(

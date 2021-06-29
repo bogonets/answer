@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from argparse import ArgumentParser, Namespace
-from typing import Optional, Any
-from recc.argparse.config.global_config import GlobalConfig
+from typing import Optional, Any, List, get_type_hints
+from recc.argparse.config.global_config import GlobalConfig, get_global_config_members
 from recc.argparse.argument import Shortcut, Argument
 from recc.argparse.command import Command
 
@@ -11,7 +11,14 @@ class TaskConfig(GlobalConfig):
 
     task_address: str
     task_register: str
-    task_workspace: str
+
+    task_group: str
+    task_project: str
+    task_name: str
+
+    task_workspace_dir: str
+    task_package_dir: str
+    task_cache_dir: str
 
 
 ARG_HELP = Argument(
@@ -23,30 +30,67 @@ ARG_HELP = Argument(
     help=f"Print {Command.task.name} help message.",
 )
 
-ARG_ADDRESS = Argument(
+ARG_TASK_ADDRESS = Argument(
     key="--task-address",
-    last_injection_value="[::]",
+    last_injection_value="",
     metavar="bind",
     help="RPC server bind address.",
 )
-ARG_REGISTER = Argument(
+ARG_TASK_REGISTER = Argument(
     key="--task-register",
     last_injection_value="",
     metavar="key",
     help="Register key.",  # RSA public key
 )
-ARG_WORKSPACE = Argument(
-    key="--task-workspace",
+
+ARG_TASK_GROUP = Argument(
+    key="--task-group",
+    last_injection_value="",
+    metavar="name",
+    help="Group name",
+)
+ARG_TASK_PROJECT = Argument(
+    key="--task-project",
+    last_injection_value="",
+    metavar="name",
+    help="Project name",
+)
+ARG_TASK_NAME = Argument(
+    key="--task-name",
+    last_injection_value="",
+    metavar="name",
+    help="Task name",
+)
+
+ARG_TASK_WORKSPACE_DIR = Argument(
+    key="--task-workspace-dir",
     last_injection_value="",
     metavar="dir",
-    help="Workspace directory.",
+    help="Task working directory.",
+)
+ARG_TASK_PACKAGE_DIR = Argument(
+    key="--task-package-dir",
+    last_injection_value="",
+    metavar="dir",
+    help="Task package directory.",
+)
+ARG_TASK_CACHE_DIR = Argument(
+    key="--task-cache-dir",
+    last_injection_value="",
+    metavar="dir",
+    help="Task cache directory.",
 )
 
 TASK_ARGS = (
     ARG_HELP,
-    ARG_ADDRESS,
-    ARG_REGISTER,
-    ARG_WORKSPACE,
+    ARG_TASK_ADDRESS,
+    ARG_TASK_REGISTER,
+    ARG_TASK_GROUP,
+    ARG_TASK_PROJECT,
+    ARG_TASK_NAME,
+    ARG_TASK_WORKSPACE_DIR,
+    ARG_TASK_PACKAGE_DIR,
+    ARG_TASK_CACHE_DIR,
 )
 
 
@@ -84,3 +128,11 @@ def get_task_config(
     namespace: Optional[Namespace] = None,
 ) -> TaskConfig:
     return cast_task_config(get_task_namespace(*cmdline, namespace))
+
+
+def get_task_config_members(ignore_global_members=False) -> List[str]:
+    members = [key for key, val in get_type_hints(TaskConfig).items()]
+    if not ignore_global_members:
+        return members
+    global_members = get_global_config_members()
+    return list(filter(lambda m: m not in global_members, members))

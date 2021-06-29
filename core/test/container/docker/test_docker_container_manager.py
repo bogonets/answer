@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import tempfile
+from tempfile import TemporaryDirectory
 from recc.container.container_manager_interface import ContainerStatus
 from recc.container.docker.docker_container_manager import DockerContainerManager
 from recc.util.version import version_text, parse_semantic_version
@@ -16,7 +16,7 @@ class DockerContainerManagerTestCase(DockerTestCase):
         await self.container.open()
         self.assertTrue(self.container.is_open())
         if not await self.container.exist_default_task_images(False):
-            print("Create default node image ...")
+            print("Create default task image ...")
             await self.container.create_default_task_images()
             print("Create done.")
         self.assertTrue(await self.container.exist_default_task_images(False))
@@ -74,14 +74,9 @@ class DockerContainerManagerTestCase(DockerTestCase):
 
     async def test_create_task_image(self):
         image_name = "test-recc-task-image-build:latest"
-        prev_images = await self.container.get_task_images()
-
         container_key = ""
         try:
             await self.container.create_task_image(image_name)
-            next_images = await self.container.get_task_images()
-            self.assertEqual(len(prev_images) + 1, len(next_images))
-
             container = await self.container.create_container(image_name, ["--version"])
 
             container_key = container.key
@@ -104,7 +99,7 @@ class DockerContainerManagerTestCase(DockerTestCase):
                 await self.container.remove_image(image_name)
 
     async def test_create_task(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
+        with TemporaryDirectory() as temp_dir:
             container_key = ""
             group_name = "Tester"
             project_name = "MyProj"

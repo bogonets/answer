@@ -38,7 +38,7 @@ from recc.database.postgresql.pg_utils import (
     drop_database,
 )
 from recc.variables.database import DEFAULT_TIMEOUT_SECONDS
-from recc.log.logging import recc_db_logger as logger
+from recc.log.logging import recc_database_logger as logger
 
 EX_KEY_TIMEOUT = "timeout"
 

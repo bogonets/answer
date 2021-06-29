@@ -391,8 +391,7 @@ class ContainerManagerInterface(metaclass=ABCMeta):
         recc_version: Optional[str] = None,
         group_name: Optional[str] = None,
         user_name: Optional[str] = None,
-        extra_root_commands: Optional[str] = None,
-        extra_user_commands: Optional[str] = None,
+        extra_commands: Optional[str] = None,
     ) -> None:
         raise NotImplementedError
 
@@ -410,7 +409,6 @@ class ContainerManagerInterface(metaclass=ABCMeta):
         publish_ports: Optional[Dict[str, Any]] = None,
         container_name: Optional[str] = None,
         workspace_volume: Optional[str] = None,
-        task_storage_volume: Optional[str] = None,
         network_name: Optional[str] = None,
         verbose_level=0,
     ) -> ContainerInfo:
@@ -440,8 +438,6 @@ class ContainerManagerInterface(metaclass=ABCMeta):
             The container name is determined manually.
         :param workspace_volume:
             Volume name of workspace directory.
-        :param task_storage_volume:
-            Volume name of task storage directory.
         :param network_name:
             Network name.
         :param verbose_level:

@@ -22,6 +22,7 @@ connectionpool
 coloredlogs
 cors
 cpuset
+cygrpc
 datalist
 datas
 dest
@@ -82,6 +83,7 @@ stdin
 stdout
 subapp
 subok
+substorage
 taskname
 testdb
 tzdata

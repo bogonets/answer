@@ -8,6 +8,7 @@ from recc.log.logging import (
     set_basic_config,
     set_root_level,
     convert_printable_level,
+    set_default_logging_config,
 )
 from recc.driver.loop import install_uvloop_driver
 from recc.driver.json import install_orjson_driver
@@ -17,6 +18,8 @@ def init_logger(config_path: str, log_level: Optional[str] = None) -> None:
     log_configurable = config_path and is_readable_file(config_path)
     if log_configurable:
         set_basic_config(config_path)
+    else:
+        set_default_logging_config()
     if log_level:
         set_root_level(log_level)
 

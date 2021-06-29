@@ -3,7 +3,7 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from recc.exception.recc_error import ReccNotFoundError
-from recc.log.logging import recc_db_logger as logger
+from recc.log.logging import recc_database_logger as logger
 from recc.struct.group import Group
 from recc.database.postgresql.mixin.async_pg_base import AsyncPgBase
 from recc.database.postgresql.query.group import (

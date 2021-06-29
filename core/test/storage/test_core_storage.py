@@ -6,20 +6,22 @@ from tarfile import open as tar_open
 from tempfile import TemporaryDirectory
 from unittest import main
 from tester import AsyncTestCase
-from recc.storage.async_sm import AsyncStorageManager
+from recc.storage.core_storage import CoreStorage
 from tester.node.numpy_plugins import copy_builtin_numpy_nodes
 
 
-class AsyncStorageManagerTestCase(AsyncTestCase):
+class CoreStorageTestCase(AsyncTestCase):
     async def setUp(self):
         self.temp_dir = TemporaryDirectory()
-        self.sm = AsyncStorageManager(self.temp_dir.name)
+        self.sm = CoreStorage(self.temp_dir.name)
 
-        self.assertTrue(os.path.isdir(self.sm.root))
-        self.assertTrue(os.path.isdir(self.sm.template_dir))
-        self.assertTrue(os.path.isdir(self.sm.workspace_dir))
+        self.assertTrue(os.path.isdir(self.sm.get_root_directory()))
+        self.assertTrue(os.path.isdir(self.sm.get_template_directory()))
+        self.assertTrue(os.path.isdir(self.sm.get_workspace_directory()))
+        self.assertTrue(os.path.isdir(self.sm.get_workspace_global_directory()))
 
-        self.numpy_json_files = copy_builtin_numpy_nodes(self.sm.template_dir)
+        template_dir = self.sm.get_template_directory()
+        self.numpy_json_files = copy_builtin_numpy_nodes(template_dir)
         self.assertLess(0, len(self.numpy_json_files))
         self.sm.refresh_templates()
 

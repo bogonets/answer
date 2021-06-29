@@ -54,6 +54,16 @@ class Context(
         await self._cm.open()
         logger.info("Opened container-manager")
 
+        assert self._cm.is_open()
+        if not await self._cm.exist_default_task_images(False):
+            logger.info("Create default-task-image ...")
+            try:
+                await self._cm.create_default_task_images()
+            except Exception as e:
+                logger.exception(e)
+            else:
+                logger.info("Default-task-image successfully created.")
+
         await self._cs.open()
         logger.info("Opened cache-store")
 
