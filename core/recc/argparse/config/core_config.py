@@ -6,18 +6,22 @@ from recc.argparse.config.global_config import GlobalConfig, get_global_config_m
 from recc.argparse.argument import Shortcut, Argument
 from recc.argparse.command import Command
 from recc.package.package_utils import get_module_directory
-from recc.variables.cache import CS_TYPE_NAME_REDIS
 from recc import www as recc_www_module
-from recc.variables.database import (
-    DB_TYPE_NAME_POSTGRES,
-    DB_TYPE_NAME_MYSQL,
-    DB_TYPE_NAME_SQLITE,
-)
+from recc.variables.cache import CS_TYPE_NAME_REDIS
 from recc.variables.container import (
     CONTAINER_TYPE_DOCKER,
     CONTAINER_TYPE_SWARM,
     CONTAINER_TYPE_KUBERNETES,
     DOCKER_SOCK_LOCAL_BASE_URL,
+)
+from recc.variables.database import (
+    DB_TYPE_NAME_POSTGRES,
+    DB_TYPE_NAME_MYSQL,
+    DB_TYPE_NAME_SQLITE,
+)
+from recc.variables.port import (
+    DEFAULT_MANAGEABLE_MINIMUM_PORT_NUMBER,
+    DEFAULT_MANAGEABLE_MAXIMUM_PORT_NUMBER,
 )
 
 
@@ -190,14 +194,14 @@ ARG_CONTAINER_ID = Argument(
 
 ARG_MANAGE_PORT_MIN = Argument(
     key="--manage-port-min",
-    last_injection_value=30000,
+    last_injection_value=DEFAULT_MANAGEABLE_MINIMUM_PORT_NUMBER,
     type=int,
     metavar="port",
     help="Manageable minimum port number.",
 )
 ARG_MANAGE_PORT_MAX = Argument(
     key="--manage-port-max",
-    last_injection_value=0,
+    last_injection_value=DEFAULT_MANAGEABLE_MAXIMUM_PORT_NUMBER,
     type=int,
     metavar="port",
     help="Manageable maximum port number.",

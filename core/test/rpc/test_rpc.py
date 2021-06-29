@@ -2,9 +2,9 @@
 
 import os
 import asyncio
-import unittest
 import numpy as np
 import shutil
+from unittest import main
 from tempfile import TemporaryDirectory
 from datetime import datetime, timedelta
 from recc.argparse.default_namespace import get_default_task_config
@@ -180,4 +180,4 @@ class RpcTestCase(AsyncTestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()
