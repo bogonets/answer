@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-from hashlib import pbkdf2_hmac
 from typing import Optional, List, Tuple, Any
 
+from recc.crypto.password import encrypt_password
 from recc.session.session import Session
 from recc.exception.recc_error import ReccArgumentError, ReccAuthError
 from recc.struct.user import User
@@ -13,18 +13,6 @@ from recc.variables.database import (
     SALT_BYTE,
     SALT_HEX_STR_SIZE,
 )
-
-PBKDF2_HMAC_HASH_NAME = "sha256"
-PBKDF2_HMAC_ITERATIONS = 100000
-
-
-def _encrypt_password(hashed_user_pw: str, salt: bytes) -> bytes:
-    return pbkdf2_hmac(
-        PBKDF2_HMAC_HASH_NAME,
-        bytes.fromhex(hashed_user_pw),
-        salt,
-        PBKDF2_HMAC_ITERATIONS,
-    )
 
 
 class ContextUser(ContextBase):
@@ -49,7 +37,7 @@ class ContextUser(ContextBase):
             raise ReccArgumentError(f"{msg1} {msg2}")
 
         salt = os.urandom(SALT_BYTE)
-        salted_password = _encrypt_password(hashed_user_pw, salt)
+        salted_password = encrypt_password(hashed_user_pw, salt)
 
         db_pw = salted_password.hex()
         assert len(db_pw) == PASSWORD_HEX_STR_SIZE
@@ -83,7 +71,7 @@ class ContextUser(ContextBase):
         saved_password = saved_pass.password
         saved_salt = saved_pass.salt
         salt = bytes.fromhex(saved_salt)
-        salted_password = _encrypt_password(hashed_user_pw, salt)
+        salted_password = encrypt_password(hashed_user_pw, salt)
 
         if saved_password != salted_password.hex():
             raise ReccAuthError("The password is incorrect.")
