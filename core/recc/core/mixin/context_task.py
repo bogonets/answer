@@ -23,13 +23,12 @@ from recc.rpc.rpc_client import (
     RpcClient,
     create_rpc_client,
 )
-
-DEFAULT_WAIT_NODE_INTERVAL = 1.0
-DEFAULT_WAIT_NODE_TIMEOUT = 1.0
-DEFAULT_WAIT_NODE_RETRIES = 5
-DEFAULT_RPC_BIND = "[::]"
-DEFAULT_RPC_PORT = 20000
-RSA_KEY_SIZE = 2048
+from recc.variables.rpc import (
+    DEFAULT_WAIT_TASK_INTERVAL,
+    DEFAULT_WAIT_TASK_TIMEOUT,
+    DEFAULT_WAIT_TASK_RETRIES,
+    REGISTER_KEY_RSA_SIZE,
+)
 
 
 class ContextTask(ContextBase):
@@ -124,8 +123,8 @@ class ContextTask(ContextBase):
             raise ReccAlreadyError("A container already created exists.")
 
         container_name = naming_task(group_name, project_name, task_name)
-        auth_algorithm = f"RSA({RSA_KEY_SIZE})"
-        key = RSA.generate(RSA_KEY_SIZE)
+        auth_algorithm = f"RSA({REGISTER_KEY_RSA_SIZE})"
+        key = RSA.generate(REGISTER_KEY_RSA_SIZE)
         private_key = str(key.export_key(), "utf-8")
         public_key = str(key.publickey().export_key(), "utf-8")
         workspace_volume = await self.prepare_project_volume(group_name, project_name)
@@ -177,9 +176,9 @@ class ContextTask(ContextBase):
         group_name: str,
         project_name: str,
         task_name: str,
-        interval=DEFAULT_WAIT_NODE_INTERVAL,
-        timeout=DEFAULT_WAIT_NODE_TIMEOUT,
-        retries=DEFAULT_WAIT_NODE_RETRIES,
+        interval=DEFAULT_WAIT_TASK_INTERVAL,
+        timeout=DEFAULT_WAIT_TASK_TIMEOUT,
+        retries=DEFAULT_WAIT_TASK_RETRIES,
     ) -> None:
         if interval <= 0:
             raise ReccArgumentError("'interval' must be greater than 0.")
@@ -211,6 +210,7 @@ class ContextTask(ContextBase):
                 success_cb=_success_cb,
                 failure_cb=_failure_cb,
             )
+
             if not connection_result:
                 raise ReccTimeoutError(f"Connection timeout: {task.rpc_address}")
 
