@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from recc.template.template_manager import json_to_py_extension, TemplateManager
+from recc.template.lambda_template_manager import (
+    json_to_py_extension,
+    LambdaTemplateManager,
+)
 
 
 class TemplateManagerTestCase(TestCase):
@@ -22,7 +25,7 @@ class TemplateManagerTestCase(TestCase):
         self.assertEqual(test03_expect, test03_actual)
 
     def test_default(self):
-        mgr = TemplateManager()
+        mgr = LambdaTemplateManager()
         mgr.refresh()
         self.assertLess(0, len(mgr.keys()))
 

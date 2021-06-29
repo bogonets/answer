@@ -15,7 +15,7 @@ DEFAULT_VERSION_TUPLE = (1, 0)
 DEFAULT_SERIALIZABLE_VERSION = DEFAULT_VERSION_TUPLE[0]
 
 
-class Template(Serializable):
+class LambdaTemplate(Serializable):
 
     version: Optional[str] = None
     """Template version.

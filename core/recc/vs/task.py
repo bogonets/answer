@@ -8,7 +8,7 @@ from recc.mime.mime_codec import MimeEncoder, MimeDecoder
 from recc.sequence.sequencer_interface import SequencerInterface
 from recc.sequence.default_sequencer import DefaultSequencer
 from recc.blueprint.blueprint import BpTask
-from recc.template.template_manager import TemplateManager
+from recc.template.lambda_template_manager import LambdaTemplateManager
 from recc.template.information import EDGE_BEGIN, EDGE_MIDDLE, EDGE_END
 from recc.serializable.json import deserialize_json_text
 from recc.vs.box import BoxState, BoxData, BoxRequest
@@ -388,7 +388,7 @@ class Task:
 
     # Blueprint
 
-    def set_blueprint(self, bp_task: BpTask, tm: TemplateManager) -> None:
+    def set_blueprint(self, bp_task: BpTask, tm: LambdaTemplateManager) -> None:
         if not bp_task.nodes:
             raise ReccArgumentError("Empty nodes")
 
@@ -463,7 +463,7 @@ class Task:
                 self.add_arc(self.get_slot(back_slot), self.get_slot(front_slot))
 
     def set_blueprint_json(
-        self, json_text: str, version: int, tm: TemplateManager
+        self, json_text: str, version: int, tm: LambdaTemplateManager
     ) -> None:
         blueprint = deserialize_json_text(version, json_text, BpTask)
         self.set_blueprint(blueprint, tm)

@@ -7,7 +7,7 @@ from recc.exception.recc_error import ReccNotFoundError, ReccInitError
 from recc.venv.pyvenv_cfg import read_site_packages_dir
 from recc.blueprint.blueprint import BpProperty
 from recc.vs.node_impl import REQUEST_METHOD_SET, REQUEST_METHOD_GET, NodeImpl
-from recc.template.template import Template
+from recc.template.lambda_template import LambdaTemplate
 from recc.template.property import Property
 
 DEFAULT_MODULE_NAME = "__answer__"
@@ -65,7 +65,7 @@ class PythonNode(NodeImpl):
     Python lambda plugin.
     """
 
-    _template: Template
+    _template: LambdaTemplate
     _app: Dict[str, Any]
     _global_variables: Dict[str, Any]
     _env_root: str
@@ -78,8 +78,8 @@ class PythonNode(NodeImpl):
     _on_destroy_ast: Any
     _on_run_ast: Any
 
-    def __init__(self, template: Optional[Template] = None):
-        self._template = template if template else Template()
+    def __init__(self, template: Optional[LambdaTemplate] = None):
+        self._template = template if template else LambdaTemplate()
         self._app = {
             # "template_path": TEMPLATE.info.config_path,
             # "workspace_name": parent._shared->workspace,
