@@ -17,7 +17,7 @@ from recc.variables.database import (
 
 class ContextUser(ContextBase):
     async def exist_admin_user(self) -> bool:
-        return await self.db.exist_admin_user()
+        return await self.database.exist_admin_user()
 
     async def signup(
         self,
@@ -45,7 +45,7 @@ class ContextUser(ContextBase):
         db_salt = salt.hex()
         assert len(db_salt) == SALT_HEX_STR_SIZE
 
-        return await self.db.create_user(
+        return await self.database.create_user(
             user_id,
             db_pw,
             db_salt,
@@ -67,7 +67,7 @@ class ContextUser(ContextBase):
             msg2 = f"length is not {PASSWORD_HEX_STR_SIZE} characters."
             raise ReccArgumentError(f"{msg1} {msg2}")
 
-        saved_pass = await self.db.get_user_password_and_salt(username)
+        saved_pass = await self.database.get_user_password_and_salt(username)
         saved_password = saved_pass.password
         saved_salt = saved_pass.salt
         salt = bytes.fromhex(saved_salt)
@@ -76,12 +76,12 @@ class ContextUser(ContextBase):
         if saved_password != salted_password.hex():
             raise ReccAuthError("The password is incorrect.")
 
-        await self.db.update_user_last_login_by_username(username)
+        await self.database.update_user_last_login_by_username(username)
         return self.session_factory.create_tokens(username)
 
     async def remove_user(self, username: str) -> None:
         # TODO: Remove related datas. e.g. group_member, project_member
-        await self.db.delete_user_by_name(username)
+        await self.database.delete_user_by_name(username)
 
     async def update_user(
         self,
@@ -91,7 +91,7 @@ class ContextUser(ContextBase):
         phone2: Optional[str] = None,
         extra: Optional[Any] = None,
     ) -> None:
-        await self.db.update_user_by_username(
+        await self.database.update_user_by_username(
             username, email=email, phone1=phone1, phone2=phone2, extra=extra
         )
 
@@ -102,21 +102,21 @@ class ContextUser(ContextBase):
         return self.session_factory.decode_access(token)
 
     async def get_user(self, session: Session, username: str) -> User:
-        user = await self.db.get_user_by_username(session.audience)
+        user = await self.database.get_user_by_username(session.audience)
         if session.audience == username:
             return user
         if not user.is_admin:
             raise PermissionError("Permission denied")
-        return await self.db.get_user_by_username(username)
+        return await self.database.get_user_by_username(username)
 
     async def get_users(self, session: Session) -> List[User]:
-        user = await self.db.get_user_by_username(session.audience)
+        user = await self.database.get_user_by_username(session.audience)
         if not user.is_admin:
             raise PermissionError("Permission denied")
-        return await self.db.get_users()
+        return await self.database.get_users()
 
     async def exist_user(self, session: Session, test_username: str) -> bool:
-        user = await self.db.get_user_by_username(session.audience)
+        user = await self.database.get_user_by_username(session.audience)
         if not user.is_admin:
             raise PermissionError("Permission denied")
-        return await self.db.exist_user(test_username)
+        return await self.database.exist_user(test_username)

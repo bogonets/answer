@@ -92,14 +92,14 @@ class ContextTask(ContextBase):
     async def upsert_task_db(
         self, group_name: str, project_name: str, task_name: str, **kwargs
     ) -> None:
-        project_uid = await self.db.get_project_uid_by_fullpath(
+        project_uid = await self.database.get_project_uid_by_fullpath(
             group_name, project_name
         )
         try:
-            task_uid = await self.db.get_task_uid_by_name(project_uid, task_name)
-            await self.db.update_task_by_uid(task_uid, **kwargs)  # UPDATE
+            task_uid = await self.database.get_task_uid_by_name(project_uid, task_name)
+            await self.database.update_task_by_uid(task_uid, **kwargs)  # UPDATE
         except ReccNotFoundError:
-            await self.db.create_task(project_uid, **kwargs)  # INSERT
+            await self.database.create_task(project_uid, **kwargs)  # INSERT
 
     async def create_task(
         self,
@@ -191,7 +191,9 @@ class ContextTask(ContextBase):
         if retries <= 0:
             raise ReccArgumentError("'retries' must be greater than 0.")
 
-        task = await self.db.get_task_by_fullpath(group_name, project_name, task_name)
+        task = await self.database.get_task_by_fullpath(
+            group_name, project_name, task_name
+        )
 
         for try_count in range(retries):
 
@@ -224,7 +226,9 @@ class ContextTask(ContextBase):
         project_name: str,
         task_name: str,
     ) -> RpcClient:
-        task = await self.db.get_task_by_fullpath(group_name, project_name, task_name)
+        task = await self.database.get_task_by_fullpath(
+            group_name, project_name, task_name
+        )
         key = self.tm.key(group_name, project_name, task_name)
         if self.tm.exist(key):
             client = self.tm.get(key)
@@ -307,23 +311,23 @@ class ContextTask(ContextBase):
     async def get_tasks(
         self, session: Session, group_name: str, project_name: str
     ) -> List[Task]:
-        user = await self.db.get_user_by_username(session.audience)
-        group = await self.db.get_group_by_name(group_name)
-        project = await self.db.get_project_by_name(group.uid, project_name)
+        user = await self.database.get_user_by_username(session.audience)
+        group = await self.database.get_group_by_name(group_name)
+        project = await self.database.get_project_by_name(group.uid, project_name)
         assert user.uid is not None
         assert group.uid is not None
         assert project.uid is not None
 
         # TODO: test permission
 
-        return await self.db.get_task_by_project_uid(project.uid)
+        return await self.database.get_task_by_project_uid(project.uid)
 
     async def get_task_status(
         self, session: Session, group_name: str, project_name: str
     ) -> List[ContainerInfo]:
-        user = await self.db.get_user_by_username(session.audience)
-        group = await self.db.get_group_by_name(group_name)
-        project = await self.db.get_project_by_name(group.uid, project_name)
+        user = await self.database.get_user_by_username(session.audience)
+        group = await self.database.get_group_by_name(group_name)
+        project = await self.database.get_project_by_name(group.uid, project_name)
         assert user.uid is not None
         assert group.uid is not None
         assert project.uid is not None
@@ -339,9 +343,9 @@ class ContextTask(ContextBase):
         project_name: str,
         extra: Any,
     ) -> None:
-        user = await self.db.get_user_by_username(session.audience)
-        group = await self.db.get_group_by_name(group_name)
-        project = await self.db.get_project_by_name(group.uid, project_name)
+        user = await self.database.get_user_by_username(session.audience)
+        group = await self.database.get_group_by_name(group_name)
+        project = await self.database.get_project_by_name(group.uid, project_name)
         assert user.uid is not None
         assert group.uid is not None
         assert project.uid is not None
@@ -362,8 +366,8 @@ class ContextTask(ContextBase):
             logger.info(f"Removed container: {c.name}")
 
         # Clear task data.
-        for t in await self.db.get_task_by_project_uid(project.uid):
-            await self.db.delete_task_by_uid(t.uid)
+        for t in await self.database.get_task_by_project_uid(project.uid):
+            await self.database.delete_task_by_uid(t.uid)
             logger.info(f"Removed task from database: {t.name}")
 
         for task_name, task in graph.tasks.items():
@@ -374,7 +378,7 @@ class ContextTask(ContextBase):
             await client.upload_templates(self.storage.compress_templates())
             await client.set_task_blueprint(self.storage.compress_templates())
 
-        await self.db.update_project_extra_by_uid(project.uid, extra)
+        await self.database.update_project_extra_by_uid(project.uid, extra)
 
     async def send_signal_v1(
         self,

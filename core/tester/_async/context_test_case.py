@@ -17,7 +17,7 @@ class ContextTestCase(AsyncTestCase):
         config.teardown = True
         self.context = Context(config, loop=self.loop)
         await self.context.open()
-        self.assertTrue(self.context.is_db_open())
+        self.assertTrue(self.context.is_database_open())
         self.assertTrue(self.context.is_cm_open())
         self.assertTrue(self.context.is_cache_open())
 
@@ -26,12 +26,12 @@ class ContextTestCase(AsyncTestCase):
         self.assertLess(0, len(self.numpy_template_jsons))
         self.context.storage.refresh_templates()
 
-        group_uid = self.context.db.get_anonymous_group_uid()
-        group = await self.context.db.get_group_by_uid(group_uid)
+        group_uid = self.context.database.get_anonymous_group_uid()
+        group = await self.context.database.get_group_by_uid(group_uid)
         self.group_name = group.name
         self.project_name = "test_project"
         self.task_name = "test_task"
-        await self.context.db.create_project(group_uid, self.project_name)
+        await self.context.database.create_project(group_uid, self.project_name)
 
         await self.context.create_task(
             self.group_name, self.project_name, self.task_name,

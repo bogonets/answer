@@ -21,7 +21,7 @@ class ContextBase:
     _container: ContainerManagerInterface
     _container_key: str
     _cache: AsyncCacheStoreInterface
-    _db: AsyncDatabaseInterface
+    _database: AsyncDatabaseInterface
     _tm: RpcClientManager
     _port_manager: PortManager
 
@@ -93,21 +93,21 @@ class ContextBase:
         return self._cache.is_open()
 
     @property
-    def db(self):
+    def database(self):
         """
         Database property.
         """
-        assert self._db is not None
-        if not self._db.is_open():
+        assert self._database is not None
+        if not self._database.is_open():
             raise ValueError("The database is not open")
-        return self._db
+        return self._database
 
-    def is_db_open(self) -> bool:
-        assert self._db is not None
-        return self._db.is_open()
+    def is_database_open(self) -> bool:
+        assert self._database is not None
+        return self._database.is_open()
 
     async def get_database_version(self) -> str:
-        return await self.db.get_database_version()
+        return await self.database.get_database_version()
 
     @property
     def tm(self):

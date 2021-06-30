@@ -14,10 +14,13 @@
 - [x] Upload to PyPI
 - [ ] Release v2.0
   - [ ] Complete porting of Python version of "Answer" v1.0
-  - [ ] Socket File Sharing for Docker Volume
-  - [ ] Unix Domain Socket for gRPC
+  - [x] <del>Socket File Sharing for Docker Volume</del>
+    - Socket file cannot be created if host and guest have different OS.
+  - [x] Unix Domain Socket for gRPC
   - [ ] Infinity Lambda
   - [ ] New Docker Image for the task
+  - [x] Create Port Manager
+    - [ ] Apply to `context`
 - [ ] Release v2.1
   - [ ] Image Preview Widget
   - [ ] Refactoring User/Group/Project
@@ -72,3 +75,5 @@
 - [ ] Trivial
   - [ ] Naming: RECC -> ANSWER
   - [ ] Remove `Async` prefix
+- [x] Integrates the `fe` build result into the `core`.
+- [ ] Change favicon

@@ -115,7 +115,7 @@ class ContextInit(ContextBase):
         logger.info(f"Created cache-store: {self._config.cache_type}")
 
     def _init_database(self) -> None:
-        self._db = create_database(
+        self._database = create_database(
             self._config.database_type,
             self._config.database_host,
             self._config.database_port,
@@ -157,4 +157,4 @@ class ContextInit(ContextBase):
         assert self._session_factory
         assert self._container
         assert self._cache
-        assert self._db
+        assert self._database

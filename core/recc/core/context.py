@@ -42,13 +42,13 @@ class Context(
             await self.disconnect_global_network()
 
     async def open(self) -> None:
-        await self._db.open()
+        await self._database.open()
         logger.info("Opened database")
 
-        await self._db.create_tables()
+        await self._database.create_tables()
         logger.info("Create tables (if not exists)")
 
-        await self._db.update_cache()
+        await self._database.update_cache()
         logger.info("Updated database cache")
 
         await self._container.open()
@@ -89,8 +89,8 @@ class Context(
         logger.info("Closed container-manager")
 
         if teardown:
-            await self._db.drop_tables()
+            await self._database.drop_tables()
             logger.info("Drop tables")
 
-        await self._db.close()
+        await self._database.close()
         logger.info("Closed database")
