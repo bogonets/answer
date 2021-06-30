@@ -6,6 +6,7 @@ from logging import config as logging_config
 from typing import Union
 
 LOGGER_NAME_RECC = "recc"
+LOGGER_NAME_CORE_RECC = "recc.core"
 LOGGER_NAME_RECC_HTTP = "recc.http"
 LOGGER_NAME_RECC_RPC = "recc.rpc"
 LOGGER_NAME_RECC_CONTAINER = "recc.container"
@@ -14,6 +15,7 @@ LOGGER_NAME_RECC_DATABASE = "recc.database"
 LOGGER_NAME_RECC_COMMON = "recc.common"
 
 recc_logger = logging.getLogger(LOGGER_NAME_RECC)
+recc_core_logger = logging.getLogger(LOGGER_NAME_CORE_RECC)
 recc_http_logger = logging.getLogger(LOGGER_NAME_RECC_HTTP)
 recc_rpc_logger = logging.getLogger(LOGGER_NAME_RECC_RPC)
 recc_container_logger = logging.getLogger(LOGGER_NAME_RECC_CONTAINER)
@@ -174,6 +176,9 @@ _DEFAULT_LOGGING_CONFIG = {
             "level": "DEBUG",
         },
         LOGGER_NAME_RECC: {
+            "level": "DEBUG",
+        },
+        LOGGER_NAME_CORE_RECC: {
             "level": "DEBUG",
         },
         LOGGER_NAME_RECC_HTTP: {

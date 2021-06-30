@@ -3,7 +3,7 @@
 from typing import Optional
 from recc.argparse.config.global_config import LOOP_DRIVER_UV, JSON_DRIVER_ORJSON
 from recc.file.permission import is_readable_file
-from recc.log.logging import recc_logger as logger
+from recc.log.logging import recc_common_logger as logger
 from recc.log.logging import (
     set_basic_config,
     set_root_level,

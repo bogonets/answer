@@ -17,7 +17,7 @@ from recc.exception.recc_error import (
 )
 from recc.struct.task import Task
 from recc.rule.naming import valid_naming, naming_task
-from recc.log.logging import recc_logger as logger
+from recc.log.logging import recc_core_logger as logger
 from recc.rpc.rpc_client import (
     try_connection,
     RpcClient,

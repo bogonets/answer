@@ -37,6 +37,7 @@ def _create_container_ports(
 
 
 def _create_container_info(container: Container) -> ContainerInfo:
+    # Reference: https://docs.docker.com/engine/api/v1.41/#operation/ContainerInspect
     key = container.id
     name = container.name
     state = container.attrs["State"]["Status"]

@@ -16,7 +16,7 @@ from recc.database.async_db import create_database
 from recc.storage.core_storage import CoreStorage
 from recc.rpc.rpc_client_manager import create_rpc_client_manager
 from recc.resource.port_manager import PortManager
-from recc.log.logging import recc_logger as logger
+from recc.log.logging import recc_core_logger as logger
 from recc.session.session import (
     DEFAULT_ISSUER_RECC_ACCESS,
     DEFAULT_ISSUER_RECC_REFRESH,

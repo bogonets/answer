@@ -37,6 +37,8 @@ loggers:
     level: DEBUG
   recc:
     level: DEBUG
+  recc.core:
+    level: DEBUG
   recc.http:
     level: DEBUG
   recc.rpc:
