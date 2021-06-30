@@ -64,7 +64,7 @@ class ContextBase:
             raise ValueError("The container-manager is not open")
         return self._container
 
-    def is_cm_open(self) -> bool:
+    def is_container_open(self) -> bool:
         assert self._container is not None
         return self._container.is_open()
 

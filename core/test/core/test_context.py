@@ -14,7 +14,7 @@ class ContextTestCase(AsyncTestCase):
         self.context = Context(config, loop=self.loop)
         await self.context.open()
         self.assertTrue(self.context.is_database_open())
-        self.assertTrue(self.context.is_cm_open())
+        self.assertTrue(self.context.is_container_open())
         self.assertTrue(self.context.is_cache_open())
 
     async def tearDown(self):
