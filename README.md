@@ -140,7 +140,6 @@ docker-compose -f docker-compose-mini.yml up -d
 
 - `bp` Blueprint
 - `bs` Blueprint Store
-- `cm` Container Manager
 - `cs` Cache Store
 - `db` DataBase
 - `es` ElasticSearch

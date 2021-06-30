@@ -33,7 +33,7 @@ from recc.variables.rpc import (
 
 class ContextTask(ContextBase):
     async def prepare_task_network(self, group_name: str, project_name: str) -> str:
-        network = await self.cm.create_task_network_if_not_exist(
+        network = await self.container.create_task_network_if_not_exist(
             group_name, project_name
         )
         return network.key
@@ -42,7 +42,7 @@ class ContextTask(ContextBase):
         return await self.prepare_task_network("", "")
 
     async def connect_global_network(self) -> None:
-        if not self.cm.is_open():
+        if not self.container.is_open():
             raise ReccNotReadyError("The container-manager is not ready.")
 
         if self.is_host_mode():
@@ -52,11 +52,11 @@ class ContextTask(ContextBase):
         assert self.container_key
         network_key = await self.prepare_global_task_network()
 
-        await self.cm.connect_network(network_key, self.container_key)
+        await self.container.connect_network(network_key, self.container_key)
         logger.info("The container and the global network are connected.")
 
     async def disconnect_global_network(self) -> None:
-        if not self.cm.is_open():
+        if not self.container.is_open():
             raise ReccNotReadyError("The container-manager is not ready.")
 
         if self.is_host_mode():
@@ -66,14 +66,16 @@ class ContextTask(ContextBase):
         assert self.container_key
         network_key = await self.prepare_global_task_network()
 
-        await self.cm.disconnect_network(network_key, self.container_key)
+        await self.container.disconnect_network(network_key, self.container_key)
         logger.info("The container and the global network are disconnected.")
 
     async def prepare_project_volume(self, group_name: str, project_name: str) -> str:
         if self.is_host_mode():
             return self.storage.prepare_project_dir(group_name, project_name)
 
-        volume = await self.cm.create_task_volume_if_not_exist(group_name, project_name)
+        volume = await self.container.create_task_volume_if_not_exist(
+            group_name, project_name
+        )
         return volume.key
 
     async def prepare_substorage_volume(
@@ -82,7 +84,9 @@ class ContextTask(ContextBase):
         if self.is_host_mode():
             return self.storage.prepare_substorage_dir(group_name, project_name)
 
-        volume = await self.cm.create_task_volume_if_not_exist(group_name, project_name)
+        volume = await self.container.create_task_volume_if_not_exist(
+            group_name, project_name
+        )
         return volume.key
 
     async def upsert_task_db(
@@ -119,7 +123,7 @@ class ContextTask(ContextBase):
         if not valid_naming(task_name):
             raise ReccArgumentError(f"Invalid task name: {task_name}")
 
-        if await self.cm.exist_task(group_name, project_name, task_name):
+        if await self.container.exist_task(group_name, project_name, task_name):
             raise ReccAlreadyError("A container already created exists.")
 
         container_name = naming_task(group_name, project_name, task_name)
@@ -130,7 +134,7 @@ class ContextTask(ContextBase):
         workspace_volume = await self.prepare_project_volume(group_name, project_name)
         network_name = await self.prepare_global_task_network()
 
-        container = await self.cm.create_task(
+        container = await self.container.create_task(
             group_name=group_name,
             project_name=project_name,
             task_name=task_name,
@@ -166,7 +170,7 @@ class ContextTask(ContextBase):
             )
         except BaseException as e:
             logger.exception(e)
-            await self.cm.remove_container(container.key, force=True)
+            await self.container.remove_container(container.key, force=True)
             raise
 
         return container
@@ -261,8 +265,8 @@ class ContextTask(ContextBase):
         project_name: str,
         task_name: str,
     ) -> str:
-        task = await self.cm.get_task(group_name, project_name, task_name)
-        return await self.cm.logs_container(task.key)
+        task = await self.container.get_task(group_name, project_name, task_name)
+        return await self.container.logs_container(task.key)
 
     async def remove_task(
         self,
@@ -270,8 +274,8 @@ class ContextTask(ContextBase):
         project_name: str,
         task_name: str,
     ) -> None:
-        for task in await self.cm.get_tasks(group_name, project_name, task_name):
-            await self.cm.remove_container(task.key, force=True)
+        for task in await self.container.get_tasks(group_name, project_name, task_name):
+            await self.container.remove_container(task.key, force=True)
 
     async def start_task(
         self,
@@ -279,8 +283,8 @@ class ContextTask(ContextBase):
         project_name: str,
         task_name: str,
     ) -> None:
-        task = await self.cm.get_task(group_name, project_name, task_name)
-        await self.cm.start_container(task.key)
+        task = await self.container.get_task(group_name, project_name, task_name)
+        await self.container.start_container(task.key)
 
     async def stop_task(
         self,
@@ -288,8 +292,8 @@ class ContextTask(ContextBase):
         project_name: str,
         task_name: str,
     ) -> None:
-        task = await self.cm.get_task(group_name, project_name, task_name)
-        await self.cm.stop_container(task.key)
+        task = await self.container.get_task(group_name, project_name, task_name)
+        await self.container.stop_container(task.key)
 
     async def restart_task(
         self,
@@ -297,8 +301,8 @@ class ContextTask(ContextBase):
         project_name: str,
         task_name: str,
     ) -> None:
-        task = await self.cm.get_task(group_name, project_name, task_name)
-        await self.cm.restart_container(task.key)
+        task = await self.container.get_task(group_name, project_name, task_name)
+        await self.container.restart_container(task.key)
 
     async def get_tasks(
         self, session: Session, group_name: str, project_name: str
@@ -326,7 +330,7 @@ class ContextTask(ContextBase):
 
         # TODO: test permission
 
-        return await self.cm.get_tasks(group_name, project_name)
+        return await self.container.get_tasks(group_name, project_name)
 
     async def set_graph_with_extra_v1(
         self,
@@ -353,8 +357,8 @@ class ContextTask(ContextBase):
             raise ReccArgumentError("Could not find `tasks` in `extra` argument.")
 
         # Clear containers.
-        for c in await self.cm.get_tasks(group_name, project_name):
-            await self.cm.remove_container(c.key, force=True)
+        for c in await self.container.get_tasks(group_name, project_name):
+            await self.container.remove_container(c.key, force=True)
             logger.info(f"Removed container: {c.name}")
 
         # Clear task data.

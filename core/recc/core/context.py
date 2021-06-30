@@ -34,11 +34,11 @@ class Context(
         self.init_all(config, loop, skip_assertion)
 
     async def _after_open(self) -> None:
-        if self.cm.is_open() and self.is_guest_mode():
+        if self.container.is_open() and self.is_guest_mode():
             await self.connect_global_network()
 
     async def _before_close(self) -> None:
-        if self.cm.is_open() and self.is_guest_mode():
+        if self.container.is_open() and self.is_guest_mode():
             await self.disconnect_global_network()
 
     async def open(self) -> None:
@@ -51,14 +51,14 @@ class Context(
         await self._db.update_cache()
         logger.info("Updated database cache")
 
-        await self._cm.open()
+        await self._container.open()
         logger.info("Opened container-manager")
 
-        assert self._cm.is_open()
-        if not await self._cm.exist_default_task_images(False):
+        assert self._container.is_open()
+        if not await self._container.exist_default_task_images(False):
             logger.info("Create default-task-image ...")
             try:
-                await self._cm.create_default_task_images()
+                await self._container.create_default_task_images()
             except Exception as e:
                 logger.exception(e)
             else:
@@ -85,7 +85,7 @@ class Context(
         await self._cs.close()
         logger.info("Closed cache-store")
 
-        await self._cm.close()
+        await self._container.close()
         logger.info("Closed container-manager")
 
         if teardown:

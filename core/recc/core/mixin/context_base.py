@@ -18,7 +18,7 @@ class ContextBase:
     _signature: str
     _storage: CoreStorage
     _session_factory: SessionPairFactory
-    _cm: ContainerManagerInterface
+    _container: ContainerManagerInterface
     _container_key: str
     _cs: AsyncCacheStoreInterface
     _db: AsyncDatabaseInterface
@@ -55,18 +55,18 @@ class ContextBase:
         return self._session_factory
 
     @property
-    def cm(self):
+    def container(self):
         """
         Container Manager property.
         """
-        assert self._cm is not None
-        if not self._cm.is_open():
+        assert self._container is not None
+        if not self._container.is_open():
             raise ValueError("The container-manager is not open")
-        return self._cm
+        return self._container
 
     def is_cm_open(self) -> bool:
-        assert self._cm is not None
-        return self._cm.is_open()
+        assert self._container is not None
+        return self._container.is_open()
 
     def is_host_mode(self) -> bool:
         return len(self._container_key) == 0

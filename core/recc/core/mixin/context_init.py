@@ -82,7 +82,7 @@ class ContextInit(ContextBase):
         logger.info("Using the default session factory.")
 
     def _init_container_manager(self) -> None:
-        self._cm = create_container_manager(
+        self._container = create_container_manager(
             self._config.container_type,
             self._config.container_host,
             self._config.container_port,
@@ -96,8 +96,8 @@ class ContextInit(ContextBase):
         if self._config.container_id:
             self._container_key = self._config.container_id
         else:
-            if self._cm.inside_container():
-                self._container_key = self._cm.get_current_container_key()
+            if self._container.inside_container():
+                self._container_key = self._container.get_current_container_key()
             else:
                 self._container_key = str()
             if self._container_key:
@@ -155,6 +155,6 @@ class ContextInit(ContextBase):
         assert self._signature
         assert self._storage
         assert self._session_factory
-        assert self._cm
+        assert self._container
         assert self._cs
         assert self._db
