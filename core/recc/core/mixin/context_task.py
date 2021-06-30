@@ -71,7 +71,7 @@ class ContextTask(ContextBase):
 
     async def prepare_project_volume(self, group_name: str, project_name: str) -> str:
         if self.is_host_mode():
-            return self.sm.prepare_project_dir(group_name, project_name)
+            return self.storage.prepare_project_dir(group_name, project_name)
 
         volume = await self.cm.create_task_volume_if_not_exist(group_name, project_name)
         return volume.key
@@ -80,7 +80,7 @@ class ContextTask(ContextBase):
         self, group_name: str, project_name: str
     ) -> str:
         if self.is_host_mode():
-            return self.sm.prepare_substorage_dir(group_name, project_name)
+            return self.storage.prepare_substorage_dir(group_name, project_name)
 
         volume = await self.cm.create_task_volume_if_not_exist(group_name, project_name)
         return volume.key
@@ -109,7 +109,7 @@ class ContextTask(ContextBase):
         base_image_name: Optional[str] = None,
         publish_ports: Optional[Dict[str, Any]] = None,
     ) -> str:
-        if self.is_host_mode() and not os.path.isdir(self.sm.get_root_directory()):
+        if self.is_host_mode() and not os.path.isdir(self.storage.get_root_directory()):
             raise ReccNotReadyError("In Host mode, the storage path must be specified.")
 
         if not valid_naming(group_name):
@@ -145,7 +145,7 @@ class ContextTask(ContextBase):
             network_name=network_name,
         )
 
-        rpc_address = self.sm.get_socket_url(group_name, project_name, task_name)
+        rpc_address = self.storage.get_socket_url(group_name, project_name, task_name)
 
         try:
             await self.upsert_task_db(
@@ -367,8 +367,8 @@ class ContextTask(ContextBase):
             await self.start_task(group_name, project_name, task_name)
             await self.wait_connectable_task_state(group_name, project_name, task_name)
             client = await self.create_task_client(group_name, project_name, task_name)
-            await client.upload_templates(self.sm.compress_templates())
-            await client.set_task_blueprint(self.sm.compress_templates())
+            await client.upload_templates(self.storage.compress_templates())
+            await client.set_task_blueprint(self.storage.compress_templates())
 
         await self.db.update_project_extra_by_uid(project.uid, extra)
 

@@ -16,7 +16,7 @@ class ContextBase:
     _loop: AbstractEventLoop
     _config: CoreConfig
     _signature: str
-    _sm: CoreStorage
+    _storage: CoreStorage
     _sf: SessionPairFactory
     _cm: ContainerManagerInterface
     _container_key: str
@@ -40,11 +40,11 @@ class ContextBase:
         return self._loop
 
     @property
-    def sm(self):
+    def storage(self):
         """
         Storage Manager property.
         """
-        return self._sm
+        return self._storage
 
     @property
     def sf(self):

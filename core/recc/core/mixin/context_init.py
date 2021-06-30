@@ -61,8 +61,9 @@ class ContextInit(ContextBase):
         logger.info(f"Signature: {self._signature}")
 
     def _init_storage(self) -> None:
-        self._sm = CoreStorage(self._config.storage_root)
-        logger.info(f"Created storage-manager (root={self._sm.get_root_directory()})")
+        self._storage = CoreStorage(self._config.storage_root)
+        root_dir = self._storage.get_root_directory()
+        logger.info(f"Created storage-manager (root={root_dir})")
 
     def _init_session_factory(self) -> None:
         assert self._signature
@@ -152,7 +153,7 @@ class ContextInit(ContextBase):
 
         assert self._config
         assert self._signature
-        assert self._sm
+        assert self._storage
         assert self._sf
         assert self._cm
         assert self._cs

@@ -21,10 +21,10 @@ class ContextTestCase(AsyncTestCase):
         self.assertTrue(self.context.is_cm_open())
         self.assertTrue(self.context.is_cs_open())
 
-        template_dir = self.context.sm.get_template_directory()
+        template_dir = self.context.storage.get_template_directory()
         self.numpy_template_jsons = copy_builtin_numpy_nodes(template_dir)
         self.assertLess(0, len(self.numpy_template_jsons))
-        self.context.sm.refresh_templates()
+        self.context.storage.refresh_templates()
 
         group_uid = self.context.db.get_anonymous_group_uid()
         group = await self.context.db.get_group_by_uid(group_uid)

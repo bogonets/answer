@@ -9,7 +9,7 @@ from recc.template.v1 import keys as v1k
 class ContextStorage(ContextBase):
     async def get_templates_v1(self, _: Session) -> List[Dict[str, Any]]:
         result = list()
-        for k, v in self.sm.get_templates().items():
+        for k, v in self.storage.get_templates().items():
             template_dict = v.serialize_v1()
             if v1k.k_info not in template_dict:
                 continue
