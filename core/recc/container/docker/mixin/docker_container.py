@@ -6,17 +6,48 @@ from tarfile import TarFile
 from signal import SIGINT, SIGKILL
 from io import BytesIO
 from docker.models.containers import Container
-from recc.container.container_manager_interface import ContainerInfo
+from recc.container.container_manager_interface import (
+    ContainerInfo,
+    PortBindingGuest,
+    PortBindingHost,
+)
 from recc.container.docker.mixin.docker_base import DockerBase
+
+
+def _create_container_ports(
+    ports: Dict[str, List[Dict[str, str]]],
+) -> Dict[PortBindingGuest, List[PortBindingHost]]:
+    result = dict()
+    for key, val in ports.items():
+        guest_port, guest_protocol = key.split("/", 1)
+        guest = PortBindingGuest(guest_port, guest_protocol)
+        port_binding_host = list()
+        assert isinstance(val, list)
+        for host_infos in val:
+            assert isinstance(host_infos, dict)
+            host_ip = host_infos.get("HostIp")
+            if not host_ip:
+                continue
+            host_port = host_infos.get("HostPort")
+            if not host_port:
+                continue
+            port_binding_host.append(PortBindingHost(host_ip, host_port))
+        result[guest] = port_binding_host
+    return result
 
 
 def _create_container_info(container: Container) -> ContainerInfo:
     key = container.id
     name = container.name
     state = container.attrs["State"]["Status"]
-    labels = container.labels
-    if labels is None:
+    if container.labels:
+        labels = container.labels
+    else:
         labels = dict()
+    if container.ports:
+        ports = _create_container_ports(container.ports)
+    else:
+        ports = dict()
     # created = container.attrs["Created"]
     # path = container.attrs["Path"]
     # args = container.attrs["Args"]
@@ -42,7 +73,8 @@ def _create_container_info(container: Container) -> ContainerInfo:
     assert name is not None
     assert state is not None
     assert labels is not None
-    return ContainerInfo(key, name, state, labels)
+    assert ports is not None
+    return ContainerInfo(key, name, state, labels, ports)
 
 
 class DockerContainer(DockerBase):

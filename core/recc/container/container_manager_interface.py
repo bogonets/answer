@@ -8,7 +8,62 @@ from signal import SIGKILL
 from recc.exception.recc_error import ReccArgumentError
 
 
+class PortBindingGuest:
+
+    __slots__ = ("port", "protocol")
+
+    port: int
+    protocol: str
+
+    def __init__(self, port: Union[int, str], protocol: str):
+        if isinstance(port, int):
+            self.port = port
+        else:
+            self.port = int(port)
+        self.protocol = protocol
+
+    def __str__(self) -> str:
+        return f"{self.port}/{self.protocol}"
+
+    def __repr__(self):
+        return f"PortBindingGuest<{self.__str__()}>"
+
+    def __hash__(self) -> int:
+        return hash(self.__str__())
+
+    def __eq__(self, other) -> bool:
+        return hash(self) == hash(other)
+
+
+class PortBindingHost:
+
+    __slots__ = ("ip", "port")
+
+    ip: str
+    port: int
+
+    def __init__(self, ip: str, port: Union[int, str]):
+        self.ip = ip
+        if isinstance(port, int):
+            self.port = port
+        else:
+            self.port = int(port)
+
+    def __str__(self) -> str:
+        return f"{self.ip}:{self.port}"
+
+    def __repr__(self):
+        return f"PortBindingHost<{self.__str__()}>"
+
+    def __hash__(self) -> int:
+        return hash(self.__str__())
+
+    def __eq__(self, other) -> bool:
+        return hash(self) == hash(other)
+
+
 class ContainerStatus(Enum):
+
     Created = 0
     Restarting = 1
     Running = 2
@@ -28,12 +83,13 @@ class ContainerStatus(Enum):
 
 class ContainerInfo:
 
-    __slots__ = ("key", "name", "status", "labels")
+    __slots__ = ("key", "name", "status", "labels", "ports")
 
     key: str
     name: str
     status: ContainerStatus
     labels: Dict[str, str]
+    ports: Dict[PortBindingGuest, List[PortBindingHost]]
 
     def __init__(
         self,
@@ -41,6 +97,7 @@ class ContainerInfo:
         name: str,
         status: ContainerStatus,
         labels: Dict[str, str],
+        ports: Dict[PortBindingGuest, List[PortBindingHost]],
     ):
         self.key = key
         self.name = name
@@ -53,6 +110,7 @@ class ContainerInfo:
         else:
             raise ReccArgumentError(f"Unsupported status type: {type(status)}")
         self.labels = labels
+        self.ports = ports
 
 
 class VolumeInfo:
