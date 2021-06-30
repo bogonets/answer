@@ -20,7 +20,7 @@ class ContextBase:
     _session_factory: SessionPairFactory
     _container: ContainerManagerInterface
     _container_key: str
-    _cs: AsyncCacheStoreInterface
+    _cache: AsyncCacheStoreInterface
     _db: AsyncDatabaseInterface
     _tm: RpcClientManager
     _port_manager: PortManager
@@ -79,18 +79,18 @@ class ContextBase:
         return self._container_key
 
     @property
-    def cs(self):
+    def cache(self):
         """
         Cache Store property.
         """
-        assert self._cs is not None
-        if not self._cs.is_open():
+        assert self._cache is not None
+        if not self._cache.is_open():
             raise ValueError("The cache-store is not open")
-        return self._cs
+        return self._cache
 
-    def is_cs_open(self) -> bool:
-        assert self._cs is not None
-        return self._cs.is_open()
+    def is_cache_open(self) -> bool:
+        assert self._cache is not None
+        return self._cache.is_open()
 
     @property
     def db(self):

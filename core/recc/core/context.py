@@ -64,7 +64,7 @@ class Context(
             else:
                 logger.info("Default-task-image successfully created.")
 
-        await self._cs.open()
+        await self._cache.open()
         logger.info("Opened cache-store")
 
         await self._tm.open()
@@ -82,7 +82,7 @@ class Context(
         await self._tm.close()
         logger.info("Closed task-manager")
 
-        await self._cs.close()
+        await self._cache.close()
         logger.info("Closed cache-store")
 
         await self._container.close()

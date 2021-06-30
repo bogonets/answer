@@ -106,7 +106,7 @@ class ContextInit(ContextBase):
                 logger.info("Containers operate on the host.")
 
     def _init_cache_store(self) -> None:
-        self._cs = create_cache_store(
+        self._cache = create_cache_store(
             self._config.cache_type,
             self._config.cache_host,
             self._config.cache_port,
@@ -156,5 +156,5 @@ class ContextInit(ContextBase):
         assert self._storage
         assert self._session_factory
         assert self._container
-        assert self._cs
+        assert self._cache
         assert self._db

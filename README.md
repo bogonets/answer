@@ -136,17 +136,6 @@ docker-compose -f docker-compose-mini.yml up -d
 
 ## Terms
 
-### Modules
-
-- `bp` Blueprint
-- `bs` Blueprint Store
-- `cs` Cache Store
-- `db` DataBase
-- `es` ElasticSearch
-- `tm` Task Manager
-- `ts` Template Store
-- `vs` Visual Scripting
-
 ### Architecture
 
 - `group`
