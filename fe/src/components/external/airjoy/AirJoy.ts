@@ -106,23 +106,23 @@ export class ManageHeader {
   constructor(width = 0) {
     this.width = width;
     this.pushHeader(this.firstHeader, new Header("Serial", "serial", "start", true));
-    this.pushHeader(this.firstHeader, new Header("Airjoy_wifi", "wifi"));
-    this.pushHeader(this.firstHeader, new Header("설치기관", "agency"), SIZE.xs);
-    this.pushHeader(this.firstHeader, new Header("설치날짜", "install_date"), SIZE.xs);
-    this.pushHeader(this.firstHeader, new Header("설치장소", "install_location"), SIZE.sm);
-    this.pushHeader(this.firstHeader, new Header("A/S 내역", "as"), SIZE.md);
-    this.pushHeader(this.firstHeader, new Header("펌웨어 버전", "firmware_version"), SIZE.md);
-    this.pushHeader(this.firstHeader, new Header("키오스크 연동", "kiosk"), SIZE.md);
-    this.pushHeader(this.firstHeader, new Header("설치 타입", "install_type"), SIZE.md);
-    this.pushHeader(this.firstHeader, new Header("필터 수명", "filter_life"), SIZE.md);
+    this.pushHeader(this.firstHeader, new Header("Wifi", "wifi"));
+    this.pushHeader(this.firstHeader, new Header("Agency", "agency"), SIZE.xs);
+    this.pushHeader(this.firstHeader, new Header("Date", "install_date"), SIZE.xs);
+    this.pushHeader(this.firstHeader, new Header("Location", "install_location"), SIZE.sm);
+    this.pushHeader(this.firstHeader, new Header("A/S", "as"), SIZE.md);
+    this.pushHeader(this.firstHeader, new Header("Firmware", "firmware_version"), SIZE.md);
+    this.pushHeader(this.firstHeader, new Header("Kiosk", "kiosk"), SIZE.md);
+    this.pushHeader(this.firstHeader, new Header("Type", "install_type"), SIZE.md);
+    this.pushHeader(this.firstHeader, new Header("Filter", "filter_life"), SIZE.md);
 
     this.pushHeader(this.secondHeader, new Header("Serial", "serial"));
     this.pushHeader(this.secondHeader, new Header("ON/OFF", "on_off"));
-    this.pushHeader(this.secondHeader, new Header("슬립 모드", "sleep"), SIZE.xs);
-    this.pushHeader(this.secondHeader, new Header("풍량 조절", "wind_control"), SIZE.xs);
-    this.pushHeader(this.secondHeader, new Header("Auto/수동", "auto"), SIZE.sm);
-    this.pushHeader(this.secondHeader, new Header("온도", "temperature"), SIZE.sm);
-    this.pushHeader(this.secondHeader, new Header("습도", "moisture"), SIZE.md);
+    this.pushHeader(this.secondHeader, new Header("Sleep", "sleep"), SIZE.xs);
+    this.pushHeader(this.secondHeader, new Header("Wind", "wind_control"), SIZE.xs);
+    this.pushHeader(this.secondHeader, new Header("Auto", "auto"), SIZE.sm);
+    this.pushHeader(this.secondHeader, new Header("Temp", "temperature"), SIZE.sm);
+    this.pushHeader(this.secondHeader, new Header("Humidity", "moisture"), SIZE.md);  // TODO moisture - > humidity
     this.pushHeader(this.secondHeader, new Header("PM10", "pm10"), SIZE.md);
     this.pushHeader(this.secondHeader, new Header("PM2.5", "pm25"), SIZE.md);
     this.pushHeader(this.secondHeader, new Header("CO2", "co2"), SIZE.md);
