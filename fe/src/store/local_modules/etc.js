@@ -1,5 +1,5 @@
 const state = {
-    api_url: "http://127.0.0.1:20001"
+    api_url: document.location.origin
 }
 
 const getters = {

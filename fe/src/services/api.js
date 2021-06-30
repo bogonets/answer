@@ -62,9 +62,12 @@ const ACCEPT = {
 }
 
 const AUTH_TYPE = { basic: 'basic ', bearer: 'bearer ' };
+const PROTOCOL = document.location.protocol;
+const HOST = document.location.host;
+const ORIGIN = document.location.origin;
 
 function API() {
-    this.url = 'http://127.0.0.1:20001';
+    this.url = ORIGIN;
 }
 
 API.prototype.setUrl = function(url) {
@@ -80,7 +83,7 @@ API.prototype.createAxios = function (accept, auth, timeout, access, contentType
     var authType   = auth   || AUTH_TYPE.bearer;
     var timeOut    = timeout || 15000;
     var config = {};
-    config.baseURL = this.url || "http://127.0.0.1:20001";
+    config.baseURL = this.url || ORIGIN;
     config.timeout = timeOut;
     config.headers = {};
     config.headers.Accept = acceptType;
@@ -160,7 +163,7 @@ API.prototype.upload_bearer = function(userToken, refreshToken, contentType) {
 // ################### ASYNC #######################
 API.prototype.checkAdmin = function () {
     var axo = axios.create({
-        baseURL: this.url || "http://127.0.0.1:20001",
+        baseURL: this.url || ORIGIN,
         // baseURL: "https://kr.vuejs.org/v2/guide/index.html",
         headers: {
             Accept: ACCEPT.JSON
@@ -171,7 +174,7 @@ API.prototype.checkAdmin = function () {
 
 API.prototype.signupAdmin = function (signupData) {
     var axo = axios.create({
-        baseURL: this.url || "http://127.0.0.1:20001",
+        baseURL: this.url || ORIGIN,
         headers: {
             Accept: ACCEPT.JSON
         }
