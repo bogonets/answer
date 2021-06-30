@@ -67,7 +67,7 @@ class ContextInit(ContextBase):
 
     def _init_session_factory(self) -> None:
         assert self._signature
-        self._sf = SessionPairFactory(
+        self._session_factory = SessionPairFactory(
             access_issuer=DEFAULT_ISSUER_RECC_ACCESS,
             refresh_issuer=DEFAULT_ISSUER_RECC_REFRESH,
             access_max_age_seconds=DEFAULT_ACCESS_MAX_AGE_SECONDS,
@@ -154,7 +154,7 @@ class ContextInit(ContextBase):
         assert self._config
         assert self._signature
         assert self._storage
-        assert self._sf
+        assert self._session_factory
         assert self._cm
         assert self._cs
         assert self._db

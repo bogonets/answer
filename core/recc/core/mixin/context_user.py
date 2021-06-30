@@ -77,7 +77,7 @@ class ContextUser(ContextBase):
             raise ReccAuthError("The password is incorrect.")
 
         await self.db.update_user_last_login_by_username(username)
-        return self.sf.create_tokens(username)
+        return self.session_factory.create_tokens(username)
 
     async def remove_user(self, username: str) -> None:
         # TODO: Remove related datas. e.g. group_member, project_member
@@ -96,10 +96,10 @@ class ContextUser(ContextBase):
         )
 
     async def renew_access_token(self, token: str) -> str:
-        return self.sf.renew_access_token(token)
+        return self.session_factory.renew_access_token(token)
 
     async def get_access_session(self, token: str) -> Session:
-        return self.sf.decode_access(token)
+        return self.session_factory.decode_access(token)
 
     async def get_user(self, session: Session, username: str) -> User:
         user = await self.db.get_user_by_username(session.audience)

@@ -144,7 +144,6 @@ docker-compose -f docker-compose-mini.yml up -d
 - `cs` Cache Store
 - `db` DataBase
 - `es` ElasticSearch
-- `sf` Session Factory
 - `tm` Task Manager
 - `ts` Template Store
 - `vs` Visual Scripting

@@ -17,7 +17,7 @@ class ContextBase:
     _config: CoreConfig
     _signature: str
     _storage: CoreStorage
-    _sf: SessionPairFactory
+    _session_factory: SessionPairFactory
     _cm: ContainerManagerInterface
     _container_key: str
     _cs: AsyncCacheStoreInterface
@@ -47,12 +47,12 @@ class ContextBase:
         return self._storage
 
     @property
-    def sf(self):
+    def session_factory(self):
         """
         Session Factory property.
         """
-        assert self._sf is not None
-        return self._sf
+        assert self._session_factory is not None
+        return self._session_factory
 
     @property
     def cm(self):
