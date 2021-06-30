@@ -22,8 +22,8 @@ class ContextBase:
     _container_key: str
     _cache: AsyncCacheStoreInterface
     _database: AsyncDatabaseInterface
-    _tm: RpcClientManager
-    _port_manager: PortManager
+    _tasks: RpcClientManager
+    _ports: PortManager
 
     @property
     def config(self) -> CoreConfig:
@@ -110,17 +110,17 @@ class ContextBase:
         return await self.database.get_database_version()
 
     @property
-    def tm(self):
+    def tasks(self):
         """
-        Task Manager
+        Task Manager.
         """
-        assert self._tm is not None
-        return self._tm
+        assert self._tasks is not None
+        return self._tasks
 
     @property
-    def port_manager(self):
+    def ports(self):
         """
-        Port Manager
+        Port Manager.
         """
-        assert self._port_manager is not None
-        return self._port_manager
+        assert self._ports is not None
+        return self._ports

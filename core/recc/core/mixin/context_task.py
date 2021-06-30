@@ -229,16 +229,16 @@ class ContextTask(ContextBase):
         task = await self.database.get_task_by_fullpath(
             group_name, project_name, task_name
         )
-        key = self.tm.key(group_name, project_name, task_name)
-        if self.tm.exist(key):
-            client = self.tm.get(key)
+        key = self.tasks.key(group_name, project_name, task_name)
+        if self.tasks.exist(key):
+            client = self.tasks.get(key)
             if client.is_open():
                 await client.close()
-            self.tm.remove(key)
+            self.tasks.remove(key)
 
         client = create_rpc_client(task.rpc_address)
         await client.open()
-        self.tm.set(key, client)
+        self.tasks.set(key, client)
         return client
 
     async def remove_task_client(
@@ -247,12 +247,12 @@ class ContextTask(ContextBase):
         project_name: str,
         task_name: str,
     ) -> None:
-        key = self.tm.key(group_name, project_name, task_name)
-        if self.tm.exist(key):
-            client = self.tm.get(key)
+        key = self.tasks.key(group_name, project_name, task_name)
+        if self.tasks.exist(key):
+            client = self.tasks.get(key)
             if client.is_open():
                 await client.close()
-            self.tm.remove(key)
+            self.tasks.remove(key)
 
     async def get_task_client(
         self,
@@ -260,8 +260,8 @@ class ContextTask(ContextBase):
         project_name: str,
         task_name: str,
     ) -> RpcClient:
-        key = self.tm.key(group_name, project_name, task_name)
-        return self.tm.get(key)
+        key = self.tasks.key(group_name, project_name, task_name)
+        return self.tasks.get(key)
 
     async def log_task(
         self,

@@ -67,7 +67,7 @@ class Context(
         await self._cache.open()
         logger.info("Opened cache-store")
 
-        await self._tm.open()
+        await self._tasks.open()
         logger.info("Opened task-manager")
 
         await self._after_open()
@@ -79,7 +79,7 @@ class Context(
 
         teardown = self._config.teardown
 
-        await self._tm.close()
+        await self._tasks.close()
         logger.info("Closed task-manager")
 
         await self._cache.close()

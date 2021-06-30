@@ -126,7 +126,7 @@ class ContextInit(ContextBase):
         logger.info(f"Created database: {self._config.database_type}")
 
     def _init_task_manager(self) -> None:
-        self._tm = create_rpc_client_manager()
+        self._tasks = create_rpc_client_manager()
         logger.info("Created task-manager.")
 
     def init_all(
