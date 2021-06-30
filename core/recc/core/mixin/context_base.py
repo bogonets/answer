@@ -8,6 +8,7 @@ from recc.container.container_manager_interface import ContainerManagerInterface
 from recc.cache.async_cs_interface import AsyncCacheStoreInterface
 from recc.database.async_db_interface import AsyncDatabaseInterface
 from recc.rpc.rpc_client_manager import RpcClientManager
+from recc.resource.port_manager import PortManager
 
 
 class ContextBase:
@@ -22,6 +23,7 @@ class ContextBase:
     _cs: AsyncCacheStoreInterface
     _db: AsyncDatabaseInterface
     _tm: RpcClientManager
+    _port_manager: PortManager
 
     @property
     def config(self) -> CoreConfig:
@@ -114,3 +116,11 @@ class ContextBase:
         """
         assert self._tm is not None
         return self._tm
+
+    @property
+    def port_manager(self):
+        """
+        Port Manager
+        """
+        assert self._port_manager is not None
+        return self._port_manager
