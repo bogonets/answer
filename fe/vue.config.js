@@ -5,5 +5,6 @@ module.exports = {
     if (process.env.NODE_ENV !== "production") {
       return { devtool: "source-map" };
     }
-  }
+  },
+  publicPath: process.env.NODE_ENV === "production" ? "/app/" : "/"
 };

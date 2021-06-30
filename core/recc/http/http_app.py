@@ -20,6 +20,7 @@ from typing import Optional, List
 import aiohttp_cors
 from aiohttp import web
 from aiohttp.log import access_logger
+from aiohttp.web import HTTPException
 from aiohttp.web import GracefulExit
 from aiohttp.web import _run_app  # noqa
 from aiohttp.web_log import AccessLogger
@@ -31,9 +32,14 @@ from recc.argparse.config.core_config import ARG_HTTP_ROOT
 from recc.core.context import Context
 from recc.http.http_interface import HttpAppCallback, EmptyHttpAppCallback
 from recc.http.http_vars import (
+    URL_ROOT,
     URL_APP,
     URL_API_VERSION,
     URL_API_HEARTBEAT,
+    URL_INDEX,
+    URL_APP_INDEX,
+    URL_FAVICON,
+    URL_APP_FAVICON,
 )
 from recc.http.v1.router_v1 import RouterV1
 from recc.file.permission import is_readable_dir, is_writable_dir
@@ -133,6 +139,7 @@ class HttpApp:
 
         self._routes = list()
         self._routes += self._get_http_root_routes()
+        self._routes += self._get_common_routes()
         self._routes += self._get_common_api_routes()
 
         self._app = web.Application(middlewares=[self._global_middleware])
@@ -163,6 +170,8 @@ class HttpApp:
         # header present in HTTP headers according to RFC 2616
         try:
             return await handler(request)
+        except HTTPException:
+            raise
         except HttpStatus as e:
             assert e.is_http_status()
             return self._error_response(e, e.code)
@@ -193,6 +202,13 @@ class HttpApp:
 
         return [web.static(URL_APP, http_root if http_root else DEFAULT_HTTP_ROOT)]
 
+    def _get_common_routes(self) -> List[AbstractRouteDef]:
+        return [
+            web.get(URL_ROOT, self.on_get_root),
+            web.get(URL_INDEX, self.on_get_index),
+            web.get(URL_FAVICON, self.on_get_favicon),
+        ]
+
     def _get_common_api_routes(self) -> List[AbstractRouteDef]:
         return [
             web.get(URL_API_HEARTBEAT, self.on_heartbeat),
@@ -205,6 +221,15 @@ class HttpApp:
 
     def _graceful_exit(self):
         raise GracefulExit()
+
+    async def on_get_root(self, request: Request) -> Response:
+        raise web.HTTPFound(URL_APP_INDEX)
+
+    async def on_get_index(self, request: Request) -> Response:
+        raise web.HTTPFound(URL_APP_INDEX)
+
+    async def on_get_favicon(self, request: Request) -> Response:
+        raise web.HTTPFound(URL_APP_FAVICON)
 
     async def on_heartbeat(self, _: Request) -> Response:
         assert self._context
