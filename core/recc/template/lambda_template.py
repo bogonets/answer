@@ -33,20 +33,24 @@ class LambdaTemplate(Serializable):
     """Properties section.
     """
 
-    # Do not remove the '_' prefix.
-    # This member variable is not subject to serialization.
     _runtime_information: Optional[RuntimeInformation] = None
+    """Runtime information section.
+
+    .. warning::
+        Do not remove the '_' prefix.
+        This member variable is not subject to serialization.
+    """
 
     # Don't use the `@property` decorator.
     # During serialization, errors may occur.
+
     def get_runtime_information(self) -> Optional[RuntimeInformation]:
         return self._runtime_information
 
     def set_runtime_information(self, info: RuntimeInformation) -> None:
         self._runtime_information = info
 
-    @property
-    def version_tuple(self) -> Tuple[int, int]:
+    def get_version_tuple(self) -> Tuple[int, int]:
         try:
             versions = [x for x in str(self.version).split(".")]
             if len(versions) == 0:
@@ -101,7 +105,7 @@ class LambdaTemplate(Serializable):
         return self.information.environment.is_pyenv()
 
     def get_edge(self) -> str:
-        if self.version_tuple >= (2, 0):
+        if self.get_version_tuple() >= (2, 0):
             if not self.information:
                 return EDGE_MIDDLE
             if not self.information.edge:

@@ -21,7 +21,7 @@ class TemplateJsonTestCase(TestCase):
         obj = LambdaTemplate()
         obj.deserialize(1, SAMPLE_DATA)
 
-        self.assertEqual(1, obj.version_tuple[0])
+        self.assertEqual(1, obj.get_version_tuple()[0])
         self.assertIsInstance(obj.information, Information)
         self.assertIsInstance(obj.controller, Controller)
         self.assertIsInstance(obj.properties, list)
@@ -46,7 +46,7 @@ class TemplateJsonTestCase(TestCase):
             serialize_json_file(1, serialize_data, json_path)
             obj2 = deserialize_json_file(1, json_path, LambdaTemplate)
 
-            self.assertEqual(1, obj2.version_tuple[0])
+            self.assertEqual(1, obj2.get_version_tuple()[0])
             self.assertIsInstance(obj2.information, Information)
             self.assertIsInstance(obj2.controller, Controller)
             self.assertIsInstance(obj2.properties, list)

@@ -168,7 +168,7 @@ class PythonNode(NodeImpl):
         assert VAR_NAME_RESULT in local_variables
         result = local_variables[VAR_NAME_RESULT]
 
-        if self._template.version_tuple >= (2, 0):
+        if self._template.get_version_tuple() >= (2, 0):
             return result
         else:
             # The "legacy" version can only accept strings.
@@ -178,7 +178,7 @@ class PythonNode(NodeImpl):
         if NAME_ON_SET not in self._global_variables:
             raise ReccNotFoundError(f"Not found `{NAME_ON_SET}` function.")
 
-        if self._template.version_tuple >= (2, 0):
+        if self._template.get_version_tuple() >= (2, 0):
             assign_value = value
         else:
             # The "legacy" version can only accept strings.
@@ -188,7 +188,7 @@ class PythonNode(NodeImpl):
         exec(self._on_set_ast, self._global_variables, local_variables)
 
     def request(self, method: str, key: str, value: Any = None, **options) -> Any:
-        if self._template.version_tuple < (2, 0):
+        if self._template.get_version_tuple() < (2, 0):
             if method == REQUEST_METHOD_GET:
                 return self._get(key)
             elif method == REQUEST_METHOD_SET:
@@ -204,7 +204,7 @@ class PythonNode(NodeImpl):
         local_variables: Dict[str, Any] = dict()
         exec(self._on_init_ast, self._global_variables, local_variables)
 
-        if self._template.version_tuple >= (2, 0):
+        if self._template.get_version_tuple() >= (2, 0):
             return
 
         assert VAR_NAME_RESULT in local_variables
