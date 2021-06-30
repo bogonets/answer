@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from copy import deepcopy
 from asyncio import get_event_loop_policy, set_event_loop
 from typing import Optional
 from asyncio import AbstractEventLoop
@@ -8,11 +9,13 @@ from recc.core.mixin.context_base import ContextBase
 from recc.init.default import init_logger, init_json_driver, init_loop_driver
 from recc.argparse.config.core_config import CoreConfig
 from recc.argparse.default_namespace import get_default_core_config
+from recc.argparse.injection_values import injection_core_default_values
 from recc.container.container_manager import create_container_manager
 from recc.cache.async_cs import create_cache_store
 from recc.database.async_db import create_database
 from recc.storage.core_storage import CoreStorage
 from recc.rpc.rpc_client_manager import create_rpc_client_manager
+from recc.resource.port_manager import PortManager
 from recc.log.logging import recc_logger as logger
 from recc.session.session import (
     DEFAULT_ISSUER_RECC_ACCESS,
@@ -129,13 +132,22 @@ class ContextInit(ContextBase):
         self._tasks = create_rpc_client_manager()
         logger.info("Created task-manager.")
 
+    def _init_port_manager(self) -> None:
+        min_port = self._config.manage_port_min
+        max_port = self._config.manage_port_max
+        self._ports = PortManager(min_port, max_port)
+        logger.info("Created port-manager.")
+
     def init_all(
         self,
         config: Optional[CoreConfig] = None,
         loop: Optional[AbstractEventLoop] = None,
-        skip_assertion: Optional[bool] = None,
+        skip_assertion=False,
     ) -> None:
-        self._config = config if config else get_default_core_config()
+        cloned_config = deepcopy(config if config else get_default_core_config())
+        injection_core_default_values(cloned_config)
+        self._config = cloned_config
+
         self._init_logger()
         self._init_json_driver()
         self._init_loop_driver()
@@ -147,6 +159,7 @@ class ContextInit(ContextBase):
         self._init_cache_store()
         self._init_database()
         self._init_task_manager()
+        self._init_port_manager()
 
         if skip_assertion:
             return
@@ -156,5 +169,8 @@ class ContextInit(ContextBase):
         assert self._storage
         assert self._session_factory
         assert self._container
+        assert self._container_key is not None
         assert self._cache
         assert self._database
+        assert self._tasks
+        assert self._ports

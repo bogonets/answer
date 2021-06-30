@@ -8,6 +8,7 @@ from typing import Any, Optional, Union
 from grpc.aio import ServicerContext
 from recc.exception.recc_error import ReccError
 from recc.argparse.config.task_config import TaskConfig
+from recc.argparse.default_namespace import get_default_task_config
 from recc.argparse.injection_values import injection_task_default_values
 from recc.log.logging import recc_rpc_logger as logger
 from recc.storage.task_workspace import TaskWorkspace
@@ -68,16 +69,16 @@ class RpcServicer(ReccApiServicer):
     RECC Task RPC Servicer.
     """
 
-    def __init__(self, config: TaskConfig):
-        cloned_config = deepcopy(config)
+    def __init__(self, config: Optional[TaskConfig] = None):
+        cloned_config = deepcopy(config if config else get_default_task_config())
         injection_task_default_values(cloned_config)
-        workspace_dir = cloned_config.task_workspace_dir
+        self._config = cloned_config
 
+        workspace_dir = cloned_config.task_workspace_dir
         # _chown(workspace_dir, config.user, config.group)
         # if config.user:
         #     set_user(config.user)
 
-        self._config = cloned_config
         self._workspace = TaskWorkspace(workspace_dir)
         self._workspace.change_working_directory()
 

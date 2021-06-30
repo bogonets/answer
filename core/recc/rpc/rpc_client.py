@@ -42,7 +42,6 @@ from recc.proto.api_pb2 import (
 
 _T = TypeVar("_T")
 
-DEFAULT_NODE_ADDRESS = "localhost:21000"
 DEFAULT_TIMEOUT = 32.0
 DEFAULT_RESTART_DURATION = 5.0
 DEFAULT_RESTART_COUNT = 5
@@ -78,7 +77,7 @@ DEFAULT_HEARTBEAT_TIMEOUT = 1.0
 
 
 async def heartbeat(
-    address=DEFAULT_NODE_ADDRESS,
+    address: str,
     delay: float = 0,
     timeout: Optional[float] = None,
 ) -> bool:
@@ -95,7 +94,7 @@ async def heartbeat(
 
 
 async def try_connection(
-    address=DEFAULT_NODE_ADDRESS,
+    address: str,
     heartbeat_timeout: Optional[float] = None,
     delay: Optional[float] = None,
     max_attempts: Optional[int] = None,
