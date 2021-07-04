@@ -36,7 +36,9 @@ Reference:
  - File: grpc/src/core/ext/transport/chttp2/server/chttp2_server.cc
 """
 
-DEFAULT_BIND_ADDRESS = "[::]:0"
+DEFAULT_RPC_BIND = "[::]"
+DEFAULT_RPC_PORT = 20000
+DEFAULT_RPC_ADDRESS = f"{DEFAULT_RPC_BIND}:{DEFAULT_RPC_PORT}"
 
 DEFAULT_WAIT_TASK_INTERVAL = 1.0
 DEFAULT_WAIT_TASK_TIMEOUT = 1.0

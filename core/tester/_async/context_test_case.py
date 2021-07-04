@@ -33,17 +33,8 @@ class ContextTestCase(AsyncTestCase):
         self.task_name = "test_task"
         await self.context.database.create_project(group_uid, self.project_name)
 
-        await self.context.create_task(
+        self.client = await self.context.run_task(
             self.group_name, self.project_name, self.task_name,
-        )
-        await self.context.start_task(
-            self.group_name, self.project_name, self.task_name
-        )
-        await self.context.wait_connectable_task_state(
-            self.group_name, self.project_name, self.task_name
-        )
-        self.client = await self.context.create_task_client(
-            self.group_name, self.project_name, self.task_name
         )
 
     async def setUp(self):

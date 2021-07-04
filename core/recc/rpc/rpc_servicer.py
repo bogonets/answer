@@ -19,7 +19,7 @@ from recc.rpc.rpc_converter import (
     cvt_box_data,
     cvt_box_request,
 )
-from recc.variables.rpc import DEFAULT_BIND_ADDRESS
+from recc.variables.rpc import DEFAULT_RPC_ADDRESS
 from recc.vs.task import Task
 from recc.proto.api_pb2_grpc import (
     ReccApiServicer,
@@ -107,7 +107,7 @@ class RpcServicer(ReccApiServicer):
         if self._config.task_name:
             return self._workspace.get_socket_url(self._config.task_name)
 
-        return DEFAULT_BIND_ADDRESS
+        return DEFAULT_RPC_ADDRESS
 
     async def Heartbeat(self, request: Pit, context: ServicerContext) -> Pat:
         logger.info(f"Heartbeat(delay={request.delay})")

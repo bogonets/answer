@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import os
+from copy import deepcopy
 from typing import Optional, List, Any, Dict
 from Crypto.PublicKey import RSA
 from recc.session.session import Session
 from recc.blueprint.v1.converter import bp_converter
-from recc.container.container_manager_interface import ContainerInfo
+from recc.container.container_manager_interface import (
+    ContainerStatus,
+    ContainerInfo,
+    PortBindingGuest,
+)
 from recc.core.mixin.context_base import ContextBase
 from recc.exception.recc_error import (
     ReccAlreadyError,
@@ -24,6 +29,8 @@ from recc.rpc.rpc_client import (
     create_rpc_client,
 )
 from recc.variables.rpc import (
+    DEFAULT_RPC_BIND,
+    DEFAULT_RPC_PORT,
     DEFAULT_WAIT_TASK_INTERVAL,
     DEFAULT_WAIT_TASK_TIMEOUT,
     DEFAULT_WAIT_TASK_RETRIES,
@@ -101,18 +108,24 @@ class ContextTask(ContextBase):
         except ReccNotFoundError:
             await self.database.create_task(project_uid, **kwargs)  # INSERT
 
-    async def create_task(
+    async def run_task(
         self,
         group_name: str,
         project_name: str,
         task_name: str,
+        rpc_bind: Optional[str] = None,
+        rpc_port: Optional[int] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
         maximum_restart_count: Optional[int] = None,
         numa_memory_nodes: Optional[str] = None,
         base_image_name: Optional[str] = None,
         publish_ports: Optional[Dict[str, Any]] = None,
-    ) -> str:
+        wait_interval=DEFAULT_WAIT_TASK_INTERVAL,
+        wait_timeout=DEFAULT_WAIT_TASK_TIMEOUT,
+        wait_retries=DEFAULT_WAIT_TASK_RETRIES,
+        verbose_level=0,
+    ) -> RpcClient:
         if self.is_host_mode() and not os.path.isdir(self.storage.get_root_directory()):
             raise ReccNotReadyError("In Host mode, the storage path must be specified.")
 
@@ -126,6 +139,21 @@ class ContextTask(ContextBase):
         if await self.container.exist_task(group_name, project_name, task_name):
             raise ReccAlreadyError("A container already created exists.")
 
+        if rpc_bind:
+            bind = rpc_bind
+        else:
+            bind = DEFAULT_RPC_BIND
+
+        if rpc_port:
+            port = rpc_port
+        else:
+            port = DEFAULT_RPC_PORT
+
+        if publish_ports:
+            ports = deepcopy(publish_ports)
+        else:
+            ports = dict()
+
         container_name = naming_task(group_name, project_name, task_name)
         auth_algorithm = f"RSA({REGISTER_KEY_RSA_SIZE})"
         key = RSA.generate(REGISTER_KEY_RSA_SIZE)
@@ -134,24 +162,61 @@ class ContextTask(ContextBase):
         workspace_volume = await self.prepare_project_volume(group_name, project_name)
         network_name = await self.prepare_global_task_network()
 
-        container = await self.container.create_task(
-            group_name=group_name,
-            project_name=project_name,
-            task_name=task_name,
-            rpc_address=None,
-            register_key=public_key,
-            maximum_restart_count=maximum_restart_count,
-            numa_memory_nodes=numa_memory_nodes,
-            base_image_name=base_image_name,
-            publish_ports=publish_ports,
-            container_name=container_name,
-            workspace_volume=workspace_volume,
-            network_name=network_name,
-        )
+        rpc_address = f"{bind}:{port}"
+        rpc_protocol = "tcp"
+        expose_port: Optional[int]
 
-        rpc_address = self.storage.get_socket_url(group_name, project_name, task_name)
+        if self.is_host_mode():
+            expose_port = self.ports.alloc()
+            ports[f"{port}/{rpc_protocol}"] = expose_port
+        else:
+            expose_port = None
 
         try:
+            container = await self.container.create_task(
+                group_name=group_name,
+                project_name=project_name,
+                task_name=task_name,
+                rpc_address=rpc_address,
+                register_key=public_key,
+                maximum_restart_count=maximum_restart_count,
+                numa_memory_nodes=numa_memory_nodes,
+                base_image_name=base_image_name,
+                publish_ports=ports,
+                container_name=container_name,
+                workspace_volume=workspace_volume,
+                network_name=network_name,
+                verbose_level=verbose_level,
+            )
+        except BaseException:
+            if expose_port is not None:
+                self.ports.free(expose_port)
+            raise
+
+        try:
+            await self.container.start_container(container.key)
+
+            container = await self.container.get_container(container.key)
+            if container.status != ContainerStatus.Running:
+                raise LookupError(f"Invalid status: {container.status}")
+
+            if self.is_host_mode():
+                host_binding = container.ports[PortBindingGuest(port, rpc_protocol)][0]
+                access_rpc_address = f"localhost:{host_binding.port}"
+            else:
+                access_rpc_address = f"{container_name}:{port}"
+
+            await self._wait_connectable_task_state(
+                access_rpc_address,
+                interval=wait_interval,
+                timeout=wait_timeout,
+                retries=wait_retries,
+            )
+
+            client = await self._create_task_client(
+                group_name, project_name, task_name, access_rpc_address
+            )
+
             await self.upsert_task_db(
                 group_name,
                 project_name,
@@ -159,7 +224,7 @@ class ContextTask(ContextBase):
                 name=task_name,
                 description=description,
                 extra=extra,
-                rpc_address=rpc_address,
+                rpc_address=access_rpc_address,
                 auth_algorithm=auth_algorithm,
                 private_key=private_key,
                 public_key=public_key,
@@ -173,13 +238,11 @@ class ContextTask(ContextBase):
             await self.container.remove_container(container.key, force=True)
             raise
 
-        return container
+        return client
 
-    async def wait_connectable_task_state(
-        self,
-        group_name: str,
-        project_name: str,
-        task_name: str,
+    @staticmethod
+    async def _wait_connectable_task_state(
+        rpc_address: str,
         interval=DEFAULT_WAIT_TASK_INTERVAL,
         timeout=DEFAULT_WAIT_TASK_TIMEOUT,
         retries=DEFAULT_WAIT_TASK_RETRIES,
@@ -190,10 +253,6 @@ class ContextTask(ContextBase):
             raise ReccArgumentError("'timeout' must be greater than 0.")
         if retries <= 0:
             raise ReccArgumentError("'retries' must be greater than 0.")
-
-        task = await self.database.get_task_by_fullpath(
-            group_name, project_name, task_name
-        )
 
         for try_count in range(retries):
 
@@ -210,7 +269,7 @@ class ContextTask(ContextBase):
                 logger.debug(f"Self connection failure. ({i + 1}/{max_attempts})")
 
             connection_result = await try_connection(
-                task.rpc_address,
+                rpc_address,
                 try_cb=_try_cb,
                 retry_cb=_retry_cb,
                 success_cb=_success_cb,
@@ -218,17 +277,15 @@ class ContextTask(ContextBase):
             )
 
             if not connection_result:
-                raise ReccTimeoutError(f"Connection timeout: {task.rpc_address}")
+                raise ReccTimeoutError(f"Connection timeout: {rpc_address}")
 
-    async def create_task_client(
+    async def _create_task_client(
         self,
         group_name: str,
         project_name: str,
         task_name: str,
+        rpc_address: str,
     ) -> RpcClient:
-        task = await self.database.get_task_by_fullpath(
-            group_name, project_name, task_name
-        )
         key = self.tasks.key(group_name, project_name, task_name)
         if self.tasks.exist(key):
             client = self.tasks.get(key)
@@ -236,7 +293,7 @@ class ContextTask(ContextBase):
                 await client.close()
             self.tasks.remove(key)
 
-        client = create_rpc_client(task.rpc_address)
+        client = create_rpc_client(rpc_address)
         await client.open()
         self.tasks.set(key, client)
         return client
@@ -371,10 +428,7 @@ class ContextTask(ContextBase):
             logger.info(f"Removed task from database: {t.name}")
 
         for task_name, task in graph.tasks.items():
-            await self.create_task(group_name, project_name, task_name)
-            await self.start_task(group_name, project_name, task_name)
-            await self.wait_connectable_task_state(group_name, project_name, task_name)
-            client = await self.create_task_client(group_name, project_name, task_name)
+            client = await self.run_task(group_name, project_name, task_name)
             await client.upload_templates(self.storage.compress_templates())
             await client.set_task_blueprint(self.storage.compress_templates())
 

@@ -301,6 +301,10 @@ class ContainerManagerInterface(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def get_container(self, key: str) -> ContainerInfo:
+        raise NotImplementedError
+
+    @abstractmethod
     async def create_container(
         self, image: str, command: Optional[Union[str, List[str]]] = None, **kwargs
     ) -> ContainerInfo:

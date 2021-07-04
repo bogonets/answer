@@ -90,6 +90,12 @@ class DockerContainer(DockerBase):
         )
         return [_create_container_info(c) for c in container_objects]
 
+    async def get_container(self, key: str) -> ContainerInfo:
+        for c in await self.containers(show_all=True):
+            if c.key == key:
+                return c
+        raise KeyError(f"Not found container: {key}")
+
     async def create_container(
         self, image: str, command: Optional[Union[str, List[str]]] = None, **kwargs
     ) -> ContainerInfo:
