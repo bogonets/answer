@@ -164,13 +164,13 @@ class ContextInit(ContextBase):
         if skip_assertion:
             return
 
-        assert self._config
-        assert self._signature
-        assert self._storage
-        assert self._session_factory
-        assert self._container
+        assert self._config is not None
+        assert self._signature is not None
+        assert self._storage is not None
+        assert self._session_factory is not None
+        assert self._container is not None
         assert self._container_key is not None
-        assert self._cache
-        assert self._database
-        assert self._tasks
-        assert self._ports
+        assert self._cache is not None
+        assert self._database is not None
+        assert self._tasks is not None
+        assert self._ports is not None

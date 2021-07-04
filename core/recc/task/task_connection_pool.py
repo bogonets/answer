@@ -2,32 +2,89 @@
 
 from typing import Optional, Dict, KeysView
 from recc.rpc.rpc_client import RpcClient
-from recc.rule.naming import valid_naming, naming_task
-from recc.exception.recc_error import ReccArgumentError
+from recc.task.task_key import TaskKey
 
 
 class TaskConnectionPool:
 
-    _clients: Dict[str, RpcClient]
+    _clients: Dict[TaskKey, RpcClient]
+    _timeout: float
 
     def __init__(self, timeout: Optional[float] = None):
         self._clients = dict()
-        self._timeout = timeout
+        self._timeout = timeout if timeout else 1.0
 
-    def keys(self) -> KeysView[str]:
+    @property
+    def clients(self) -> Dict[TaskKey, RpcClient]:
+        return self._clients
+
+    @property
+    def timeout(self) -> float:
+        return self._timeout
+
+    @staticmethod
+    def make_key(group: str, project: str, task: str) -> TaskKey:
+        return TaskKey(group, project, task)
+
+    @staticmethod
+    def make_key_by_fullpath(fullpath: str) -> TaskKey:
+        return TaskKey.from_fullpath(fullpath)
+
+    def keys(self) -> KeysView[TaskKey]:
         return self._clients.keys()
 
-    def get(self, key: str) -> RpcClient:
+    def get(self, key: TaskKey) -> RpcClient:
         return self._clients[key]
 
-    def set(self, key: str, item: RpcClient) -> None:
-        self._clients[key] = item
+    def get_by_fullpath(self, fullpath: str) -> RpcClient:
+        return self.get(TaskKey.from_fullpath(fullpath))
 
-    def remove(self, key: str) -> None:
+    def get_by_category(self, group: str, project: str, task: str) -> RpcClient:
+        return self.get(TaskKey(group, project, task))
+
+    def __getitem__(self, item):
+        return self.get(item)
+
+    def set(self, key: TaskKey, client: RpcClient) -> None:
+        self._clients[key] = client
+
+    def set_by_fullpath(self, fullpath: str, client: RpcClient) -> None:
+        return self.set(TaskKey.from_fullpath(fullpath), client)
+
+    def set_by_category(
+        self, group: str, project: str, task: str, client: RpcClient
+    ) -> None:
+        return self.set(TaskKey(group, project, task), client)
+
+    def __setitem__(self, key, value):
+        return self.set(key, value)
+
+    def remove(self, key: TaskKey) -> None:
         del self._clients[key]
 
-    def exist(self, key: str) -> bool:
+    def remove_by_fullpath(self, fullpath: str) -> None:
+        self.remove(TaskKey.from_fullpath(fullpath))
+
+    def remove_by_category(self, group: str, project: str, task: str) -> None:
+        self.remove(TaskKey(group, project, task))
+
+    def __delitem__(self, key):
+        return self.remove(key)
+
+    def exist(self, key: TaskKey) -> bool:
         return key in self.keys()
+
+    def exist_by_fullpath(self, fullpath: str) -> bool:
+        return self.exist(TaskKey.from_fullpath(fullpath))
+
+    def exist_by_category(self, group: str, project: str, task: str) -> bool:
+        return self.exist(TaskKey(group, project, task))
+
+    def __contains__(self, item):
+        return self.exist(item)
+
+    def __len__(self):
+        return len(self._clients)
 
     async def open(self) -> None:
         pass
@@ -36,36 +93,6 @@ class TaskConnectionPool:
         for key, client in self._clients.items():
             if client.is_open():
                 await client.close()
-
-    @staticmethod
-    def key(group_name: str, project_name: str, task_name: str) -> str:
-        if not valid_naming(group_name):
-            raise ReccArgumentError(f"Invalid group name: {group_name}")
-        if not valid_naming(project_name):
-            raise ReccArgumentError(f"Invalid project name: {project_name}")
-        if not valid_naming(task_name):
-            raise ReccArgumentError(f"Invalid task name: {task_name}")
-        return naming_task(group_name, project_name, task_name)
-
-    def get_fullpath(
-        self, group_name: str, project_name: str, task_name: str
-    ) -> RpcClient:
-        return self.get(self.key(group_name, project_name, task_name))
-
-    def set_fullpath(
-        self, group_name: str, project_name: str, task_name: str, item: RpcClient
-    ) -> None:
-        self.set(self.key(group_name, project_name, task_name), item)
-
-    def remove_fullpath(
-        self, group_name: str, project_name: str, task_name: str
-    ) -> None:
-        self.remove(self.key(group_name, project_name, task_name))
-
-    def exist_fullpath(
-        self, group_name: str, project_name: str, task_name: str
-    ) -> bool:
-        return self.exist(self.key(group_name, project_name, task_name))
 
 
 def create_task_connection_pool(timeout: Optional[float] = None) -> TaskConnectionPool:

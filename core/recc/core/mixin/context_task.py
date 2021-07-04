@@ -286,7 +286,7 @@ class ContextTask(ContextBase):
         task_name: str,
         rpc_address: str,
     ) -> RpcClient:
-        key = self.tasks.key(group_name, project_name, task_name)
+        key = self.tasks.make_key(group_name, project_name, task_name)
         if self.tasks.exist(key):
             client = self.tasks.get(key)
             if client.is_open():
@@ -304,7 +304,7 @@ class ContextTask(ContextBase):
         project_name: str,
         task_name: str,
     ) -> None:
-        key = self.tasks.key(group_name, project_name, task_name)
+        key = self.tasks.make_key(group_name, project_name, task_name)
         if self.tasks.exist(key):
             client = self.tasks.get(key)
             if client.is_open():
@@ -317,7 +317,7 @@ class ContextTask(ContextBase):
         project_name: str,
         task_name: str,
     ) -> RpcClient:
-        key = self.tasks.key(group_name, project_name, task_name)
+        key = self.tasks.make_key(group_name, project_name, task_name)
         return self.tasks.get(key)
 
     async def log_task(

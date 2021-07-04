@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from re import compile as re_compile
+from typing import List, Tuple
 from functools import reduce
 from recc.variables.naming import (
     INVALID_NAMING_RULE_PATTERN,
@@ -23,10 +24,22 @@ def naming_merge(*names) -> str:
     return reduce(lambda x, y: f"{x}{NAME_SEPARATOR}{y}", (n for n in names if n))
 
 
+def naming_split(name: str) -> List[str]:
+    return name.split(NAME_SEPARATOR)
+
+
 def naming_task(group_name: str, project_name: str, task_name: str) -> str:
     return naming_merge(
         PREFIX_RECC, NAME_CONTAINER, group_name, project_name, task_name
     )
+
+
+def split_task_name(name: str) -> Tuple[str, str, str]:
+    names = naming_split(name)
+    assert len(names) == 5
+    assert names[0] == PREFIX_RECC
+    assert names[1] == NAME_CONTAINER
+    return names[2], names[3], names[4]
 
 
 def naming_task_volume(group_name: str, project_name: str) -> str:
