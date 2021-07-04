@@ -11,7 +11,7 @@ from recc.argparse.default_namespace import get_default_task_config
 from recc.blueprint.blueprint import BpTask
 from recc.blueprint.v1.converter import bp_converter
 from recc.rpc.rpc_client import create_rpc_client
-from recc.rpc.task_server import create_task_server
+from recc.task.task_server import create_task_server
 from recc.variables.storage import CORE_TEMPLATE_NAME, WORKSPACE_VENV_NAME
 from recc.vs.box import BoxRequest
 from tester import AsyncTestCase, read_sample_json

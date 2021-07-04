@@ -5,7 +5,7 @@ from unittest import main
 from tempfile import TemporaryDirectory
 from recc.argparse.default_namespace import get_default_task_config
 from recc.rpc.rpc_client import create_rpc_client
-from recc.rpc.task_server import create_task_server
+from recc.task.task_server import create_task_server
 from tester import AsyncTestCase
 
 

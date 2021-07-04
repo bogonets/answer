@@ -5,7 +5,7 @@ import grpc
 from recc.argparse.default_namespace import get_default_task_config
 from recc.proto import api_pb2 as api
 from recc.proto.api_pb2_grpc import ReccApiStub
-from recc.rpc.task_server import create_task_server
+from recc.task.task_server import create_task_server
 from tester import AsyncTestCase
 
 

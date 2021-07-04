@@ -6,7 +6,7 @@ import tarfile
 import io
 from recc import rpc
 from recc.rpc import rpc_client
-from recc.rpc import rpc_client_manager
+from recc.rpc import rpc_converter
 from recc.rpc import rpc_servicer
 from recc.archive.tar_archive import compress_tar
 
@@ -22,7 +22,7 @@ class TarArchiveTestCase(unittest.TestCase):
 
         rpc_files = (
             os.path.basename(rpc_client.__file__),
-            os.path.basename(rpc_client_manager.__file__),
+            os.path.basename(rpc_converter.__file__),
             os.path.basename(rpc_servicer.__file__),
         )
 

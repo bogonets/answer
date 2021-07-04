@@ -14,7 +14,7 @@ from recc.container.container_manager import create_container_manager
 from recc.cache.async_cs import create_cache_store
 from recc.database.async_db import create_database
 from recc.storage.core_storage import CoreStorage
-from recc.rpc.rpc_client_manager import create_rpc_client_manager
+from recc.task.task_connection_pool import create_task_connection_pool
 from recc.resource.port_manager import PortManager
 from recc.log.logging import recc_core_logger as logger
 from recc.session.session import (
@@ -129,7 +129,7 @@ class ContextInit(ContextBase):
         logger.info(f"Created database: {self._config.database_type}")
 
     def _init_task_manager(self) -> None:
-        self._tasks = create_rpc_client_manager()
+        self._tasks = create_task_connection_pool()
         logger.info("Created task-manager.")
 
     def _init_port_manager(self) -> None:

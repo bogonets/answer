@@ -6,7 +6,7 @@ from recc.rule.naming import valid_naming, naming_task
 from recc.exception.recc_error import ReccArgumentError
 
 
-class RpcClientManager:
+class TaskConnectionPool:
 
     _clients: Dict[str, RpcClient]
 
@@ -68,5 +68,5 @@ class RpcClientManager:
         return self.exist(self.key(group_name, project_name, task_name))
 
 
-def create_rpc_client_manager(timeout: Optional[float] = None) -> RpcClientManager:
-    return RpcClientManager(timeout)
+def create_task_connection_pool(timeout: Optional[float] = None) -> TaskConnectionPool:
+    return TaskConnectionPool(timeout)
