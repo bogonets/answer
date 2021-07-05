@@ -3,14 +3,12 @@
 import os
 import asyncio
 import numpy as np
-import shutil
 from unittest import main
 from datetime import datetime, timedelta
-from recc.blueprint.blueprint import BpTask
-from recc.blueprint.v1.converter import bp_converter
 from recc.variables.storage import CORE_TEMPLATE_NAME, WORKSPACE_VENV_NAME
-from recc.vs.box import BoxRequest
-from tester import RpcTestCase, read_sample_json
+from recc.file.remove import remove_recursively
+from tester import RpcTestCase
+from tester.node.numpy_plugins import copy_builtin_numpy_nodes
 
 
 class RpcCommonTestCase(RpcTestCase):
@@ -86,13 +84,18 @@ class RpcCommonTestCase(RpcTestCase):
         self.assertLess(0, len(names))
 
     async def test_upload_templates(self):
+        template_dir = self.servicer.storage.get_template_directory()
+        numpy_template_jsons = copy_builtin_numpy_nodes(template_dir)
+        self.assertLess(0, len(numpy_template_jsons))
+        self.servicer.storage.refresh_templates()
+
         data = self.servicer.storage.compress_templates()
 
         # Remove templates.
-        shutil.rmtree(self.template_dir)
-        os.mkdir(self.template_dir)
-        self.assertTrue(os.path.isdir(self.template_dir))
-        self.assertEqual(0, len(os.listdir(self.template_dir)))
+        remove_recursively(template_dir)
+        os.mkdir(template_dir)
+        self.assertTrue(os.path.isdir(template_dir))
+        self.assertEqual(0, len(os.listdir(template_dir)))
 
         self.servicer.storage.refresh_templates()
         save_template_count = len(await self.client.get_template_names())
@@ -100,38 +103,6 @@ class RpcCommonTestCase(RpcTestCase):
         await self.client.upload_templates(data)
         next_template_count = len(await self.client.get_template_names())
         self.assertLess(save_template_count, next_template_count)
-
-    async def test_set_task_blueprint(self):
-        json = read_sample_json("set_graph.numpy1.json")
-        self.assertIsInstance(json, dict)
-
-        graph = bp_converter(json)
-        self.assertIsNotNone(graph.tasks)
-        self.assertEqual(1, len(graph.tasks))
-        task = next(iter(graph.tasks.values()))
-        self.assertIsInstance(task, BpTask)
-        await self.client.set_task_blueprint(task)
-
-        node1 = "numpy/numpy_array2"
-        node1_slot1 = "elements"
-        response_data = await self.client.get_node_property(node1, node1_slot1)
-        self.assertEqual("0,1,2,3", response_data)
-
-        update_data = "3,2,1,0"
-        await self.client.set_node_property(node1, node1_slot1, update_data)
-        response_data2 = await self.client.get_node_property(node1, node1_slot1)
-        self.assertEqual(update_data, response_data2)
-
-        node2 = "numpy/numpy_size3"
-        node2_slot1 = "result"
-        box_request = [BoxRequest(node2, node2_slot1)]
-        signal_result = await self.client.send_signal(None, None, box_request)
-        self.assertEqual(1, len(signal_result))
-        result_data = signal_result[0]
-        self.assertEqual(node2, result_data.node)
-        self.assertEqual(node2_slot1, result_data.slot)
-        self.assertIsInstance(result_data.data, np.ndarray)
-        self.assertEqual(4, int(result_data.data[0]))
 
 
 if __name__ == "__main__":
