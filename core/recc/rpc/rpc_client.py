@@ -45,7 +45,7 @@ _T = TypeVar("_T")
 DEFAULT_TIMEOUT = 32.0
 DEFAULT_RESTART_DURATION = 5.0
 DEFAULT_RESTART_COUNT = 5
-DEFAULT_HEARTBEAT_TIMEOUT = 1.0
+DEFAULT_HEARTBEAT_TIMEOUT = 5.0
 
 
 # def generate_test_q():
@@ -162,6 +162,12 @@ class RpcClient:
         self._pickling_protocol_version = 5
         self._unpickling_encoding = "latin1"
         self._mimes = mimes if mimes else get_global_mime_register()
+
+    def __repr__(self) -> str:
+        return f"RpcClient<{self._address}>"
+
+    def __str__(self) -> str:
+        return f"RpcClient<{self._address}>"
 
     def is_open(self) -> bool:
         return self._channel is not None

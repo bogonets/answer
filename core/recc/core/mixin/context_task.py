@@ -195,7 +195,9 @@ class ContextTask(ContextBase):
                 network_name=network_name,
                 verbose_level=verbose,
             )
-        except BaseException:
+        except BaseException as e:
+            logger.exception(e)
+
             if expose_port is not None:
                 self.ports.free(expose_port)
             raise
@@ -244,7 +246,9 @@ class ContextTask(ContextBase):
                 base_image_name=base_image_name,
                 publish_ports=publish_ports,
             )
-        except BaseException:
+        except BaseException as e:
+            logger.exception(e)
+
             if expose_port is not None:
                 self.ports.free(expose_port)
 
@@ -256,6 +260,8 @@ class ContextTask(ContextBase):
             await self.container.remove_container(container.key, force=True)
             raise
 
+        params = f"group={group_name},project={project_name},task={task_name}"
+        logger.info(f"run_task({params}) -> {client}")
         return client
 
     @staticmethod
@@ -281,7 +287,7 @@ class ContextTask(ContextBase):
                 logger.debug(f"Retry connection ({i + 1}/{max_attempts}) ...")
 
             def _success_cb(i: int, max_attempts: int) -> None:
-                logger.info(f"Self connection successful !! ({i + 1}/{max_attempts})")
+                logger.debug(f"Self connection successful !! ({i + 1}/{max_attempts})")
 
             def _failure_cb(i: int, max_attempts: int) -> None:
                 logger.debug(f"Self connection failure. ({i + 1}/{max_attempts})")
@@ -448,7 +454,7 @@ class ContextTask(ContextBase):
         for task_name, task in graph.tasks.items():
             client = await self.run_task(group_name, project_name, task_name)
             await client.upload_templates(self.storage.compress_templates())
-            await client.set_task_blueprint(self.storage.compress_templates())
+            await client.set_task_blueprint(task)
 
         await self.database.update_project_extra_by_uid(project.uid, extra)
 

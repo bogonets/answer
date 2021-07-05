@@ -26,6 +26,8 @@ class Context(
     Core context.
     """
 
+    _closed: bool
+
     def __init__(
         self,
         config: Optional[CoreConfig] = None,
@@ -33,6 +35,7 @@ class Context(
         loop: Optional[AbstractEventLoop] = None,
         skip_assertion: Optional[bool] = None,
     ):
+        self._closed = True
         self.init_all(config, loop, skip_assertion)
 
     async def open(self) -> None:

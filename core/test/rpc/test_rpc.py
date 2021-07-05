@@ -147,7 +147,7 @@ class RpcTestCase(AsyncTestCase):
         self.assertLess(save_template_count, next_template_count)
 
     async def test_set_task_blueprint(self):
-        json = read_sample_json("set_graph.numpy.v1.data.json")
+        json = read_sample_json("set_graph.numpy1.json")
         self.assertIsInstance(json, dict)
 
         graph = bp_converter(json)

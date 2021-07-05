@@ -35,8 +35,11 @@ class TaskWorkspace(
             prepare=prepare,
         )
 
-        template_dir = os.path.join(root_dir, WORKSPACE_TEMPLATE_NAME)
-        venv_dir = os.path.join(root_dir, WORKSPACE_VENV_NAME)
+        del root_dir
+        selected_root_dir = self.get_root_directory()
+
+        template_dir = os.path.join(selected_root_dir, WORKSPACE_TEMPLATE_NAME)
+        venv_dir = os.path.join(selected_root_dir, WORKSPACE_VENV_NAME)
         self.init_template_manager(template_dir, venv_dir)
 
         if refresh_templates:

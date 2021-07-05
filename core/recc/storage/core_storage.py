@@ -36,11 +36,14 @@ class CoreStorage(
             prepare=prepare,
         )
 
-        working_dir = os.path.join(root_dir, CORE_WORKSPACE_NAME)
-        working_global_dir = os.path.join(root_dir, CORE_WORKSPACE_GLOBAL_NAME)
+        del root_dir
+        selected_root_dir = self.get_root_directory()
+
+        working_dir = os.path.join(selected_root_dir, CORE_WORKSPACE_NAME)
+        working_global_dir = os.path.join(selected_root_dir, CORE_WORKSPACE_GLOBAL_NAME)
         self.init_workspace_manager(working_dir, working_global_dir)
 
-        template_dir = os.path.join(root_dir, CORE_TEMPLATE_NAME)
+        template_dir = os.path.join(selected_root_dir, CORE_TEMPLATE_NAME)
         self.init_template_manager(template_dir, venv_directory=None)
 
         if refresh_templates:

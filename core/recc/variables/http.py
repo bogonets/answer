@@ -1,0 +1,5 @@
+# -*- coding: utf-8 -*-
+
+DEFAULT_HTTP_BIND = "0.0.0.0"
+DEFAULT_HTTP_PORT = 20000
+DEFAULT_HTTP_TIMEOUT = 5 * 60.0

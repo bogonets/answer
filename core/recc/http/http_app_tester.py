@@ -3,7 +3,7 @@
 import json
 import hashlib
 from copy import deepcopy
-from typing import Optional, Any, Union
+from typing import Optional, Any, Union, Final
 from multidict import CIMultiDictProxy, CIMultiDict
 from http import HTTPStatus
 from asyncio import Task, Event, AbstractEventLoop, CancelledError
@@ -29,11 +29,8 @@ from recc.argparse.default_parser import parse_arguments_to_core_config
 from recc.http.http_app import HttpApp
 from recc.core.context import Context
 
-DEFAULT_ADMIN_USERNAME = "admin"
-DEFAULT_ADMIN_PASSWORD = "0000"
-INTERNAL_KEY_SIGNUP_ADMIN = "__signup_admin__"
-INTERNAL_KEY_LOGIN_ADMIN = "__login_admin__"
-INTERNAL_KEY_LOGIN_TEST = "__login_test__"
+DEFAULT_ADMIN_USERNAME: Final[str] = "admin"
+DEFAULT_ADMIN_PASSWORD: Final[str] = "0000"
 
 
 class RequestData:
@@ -78,6 +75,9 @@ class HttpAppTester(EmptyHttpAppCallback):
         loop: Optional[AbstractEventLoop] = None,
     ):
         self._config = parse_arguments_to_core_config()
+        self._config.developer = True
+        self._config.teardown = True
+        self._config.database_name = "http_app_tester"
         self._context = Context(self._config, loop=loop)
         self._app = HttpApp(context=self._context, callback=self)
 
@@ -109,6 +109,9 @@ class HttpAppTester(EmptyHttpAppCallback):
             pass
         finally:
             self._app.close_socket()
+
+    async def wait_startup(self) -> None:
+        await self._startup.wait()
 
     @staticmethod
     def get_method_caller(method: str, session: ClientSession):
@@ -203,11 +206,19 @@ class HttpAppTester(EmptyHttpAppCallback):
 
     async def run_v1_admin_login(
         self,
-        username: str = DEFAULT_ADMIN_USERNAME,
-        password: str = DEFAULT_ADMIN_PASSWORD,
+        username=DEFAULT_ADMIN_USERNAME,
+        password=DEFAULT_ADMIN_PASSWORD,
     ) -> None:
+        if not username:
+            raise ValueError("A `username` argument is required.")
+        if not password:
+            raise ValueError("A `password` argument is required.")
+
         self._username = username
         self._password = password
+        assert self._username
+        assert self._password
+
         hashed_pw = hashlib.sha256(self._password.encode(encoding="utf-8")).hexdigest()
         signup_response = await self.post_request(
             path=get_v1_path(pv1.signup_admin),

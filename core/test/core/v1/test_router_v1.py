@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import unittest
 import json
 import hashlib
@@ -8,19 +7,14 @@ from recc.http.http_app_tester import HttpAppTester
 from recc.http.v1 import path_v1 as pv1
 from recc.http.v1.common import k_user, get_v1_path
 from recc.util.version import version_text
-from tester import AsyncTestCase
-
-
-def _get_test_data(filename: str) -> str:
-    data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), filename))
-    with open(data_path, "r") as f:
-        return f.read()
+from tester import AsyncTestCase  # , read_sample
 
 
 class RouterV1TestCase(AsyncTestCase):
     async def setUp(self):
         self.tester = HttpAppTester(self.loop)
         await self.tester.setup()
+        await self.tester.wait_startup()
 
     async def tearDown(self):
         await self.tester.teardown()
@@ -116,27 +110,36 @@ class RouterV1TestCase(AsyncTestCase):
                 self.assertIn("valid", prop)
                 self.assertIsInstance(prop["valid"], dict)
 
-    # async def test_set_graph(self):
-    #     # Task: cv2.imread -> cv2.cvtColor -> cv2.imwrite
-    #     graph_json_v1_data = _get_test_data("set_graph.v1.data.json")
-    #     graph_json_v1_dict = json.loads(graph_json_v1_data)
-    #     self.assertIsInstance(graph_json_v1_dict, dict)
-    #     self.assertIn("links", graph_json_v1_dict)
-    #     self.assertIn("nodes", graph_json_v1_dict)
-    #     self.assertIn("tasks", graph_json_v1_dict)
-    #
-    #     project_name = "project1"
-    #     await self.tester.run_v1_admin_login()
-    #     await self.tester.post_request(
-    #         get_v1_path(pv1.create_project).format(proj=project_name)
-    #     )
-    #
-    #     set_graph = await self.tester.post_request(
-    #         get_v1_path(pv1.set_proj_graph).format(proj=project_name),
-    #         data=graph_json_v1_data,
-    #     )
-    #     self.assertEqual(200, set_graph.status)
-    #     self.assertEqual("OK", set_graph.data["status"])
+    async def test_create_project(self):
+        await self.tester.run_v1_admin_login()
+
+        proj0 = "demo"
+        proj0_path = pv1.create_project.format(proj=proj0)
+        proj0_result = await self.tester.post_request(get_v1_path(proj0_path))
+        self.assertEqual(200, proj0_result.status)
+
+        result = await self.tester.get_request(get_v1_path(pv1.get_projects))
+        self.assertEqual(200, result.status)
+        projects = result.data["result"]["obj"]
+        self.assertIsInstance(projects, list)
+        self.assertEqual(1, len(projects))
+        self.assertIsInstance(projects[0], dict)
+        self.assertEqual(proj0, projects[0]["name"])
+
+    async def test_set_graph(self):
+        await self.tester.run_v1_admin_login()
+
+        proj0 = "demo"
+        proj0_path = pv1.create_project.format(proj=proj0)
+        proj0_result = await self.tester.post_request(get_v1_path(proj0_path))
+        self.assertEqual(200, proj0_result.status)
+
+        # set_proj_graph_path = pv1.set_proj_graph.format(proj=proj0)
+        # set_proj_graph_request_data = read_sample("set_graph.numpy2.json")
+        # result = await self.tester.post_request(
+        #     get_v1_path(set_proj_graph_path), data=set_proj_graph_request_data
+        # )
+        # self.assertEqual(200, result.status)
 
 
 if __name__ == "__main__":

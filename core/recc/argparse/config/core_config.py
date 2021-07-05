@@ -7,6 +7,11 @@ from recc.argparse.argument import Shortcut, Argument
 from recc.argparse.command import Command
 from recc.package.package_utils import get_module_directory
 from recc import www as recc_www_module
+from recc.variables.http import (
+    DEFAULT_HTTP_BIND,
+    DEFAULT_HTTP_PORT,
+    DEFAULT_HTTP_TIMEOUT,
+)
 from recc.variables.cache import CS_TYPE_NAME_REDIS
 from recc.variables.container import (
     CONTAINER_TYPE_DOCKER,
@@ -76,14 +81,14 @@ ARG_EXTERNAL_HOST = Argument(
 
 ARG_HTTP_BIND = Argument(
     key="--http-bind",
-    last_injection_value="0.0.0.0",
+    last_injection_value=DEFAULT_HTTP_BIND,
     shortcut=Shortcut.b,
     metavar="bind",
     help="Binding address for HTTP server.",
 )
 ARG_HTTP_PORT = Argument(
     key="--http-port",
-    last_injection_value=20000,
+    last_injection_value=DEFAULT_HTTP_PORT,
     shortcut=Shortcut.p,
     type=int,
     metavar="port",
@@ -97,7 +102,7 @@ ARG_HTTP_ROOT = Argument(
 )
 ARG_HTTP_TIMEOUT = Argument(
     key="--http-timeout",
-    last_injection_value=8.0,
+    last_injection_value=DEFAULT_HTTP_TIMEOUT,
     type=float,
     metavar="sec",
     help="HTTP module's timeout",
