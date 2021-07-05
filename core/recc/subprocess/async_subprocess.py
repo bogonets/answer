@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from asyncio import Task, create_subprocess_shell, create_task, gather
+from enum import Enum
+from asyncio import (
+    Task,
+    create_task,
+    gather,
+    create_subprocess_exec,
+    create_subprocess_shell,
+)
 from asyncio.subprocess import Process, PIPE
 from asyncio.streams import StreamReader, StreamWriter
 from typing import Optional, Callable
@@ -14,6 +21,11 @@ from recc.exception.recc_error import (
 ReaderCallable = Callable[[bytes], None]
 
 
+class SubprocessMethod(Enum):
+    Exec = 0
+    Shell = 1
+
+
 class AsyncSubprocess:
     def __init__(
         self,
@@ -21,6 +33,7 @@ class AsyncSubprocess:
         stdout_callback: Optional[ReaderCallable] = None,
         stderr_callback: Optional[ReaderCallable] = None,
         writable=False,
+        method=SubprocessMethod.Exec,
     ):
         self._commands = commands
         self._stdout_callback = stdout_callback
@@ -30,6 +43,7 @@ class AsyncSubprocess:
         self._process: Optional[Process] = None
         self._stdout_task: Optional[Task] = None
         self._stderr_task: Optional[Task] = None
+        self._method = method
 
     def is_started(self) -> bool:
         return self._process is not None
@@ -40,37 +54,70 @@ class AsyncSubprocess:
             buffer = await reader.readline()
             callback(buffer)
 
-    async def start(self) -> None:
-        if self._process is not None:
-            raise ReccAlreadyError("Already started process.")
+    @property
+    def stdin_flag(self) -> Optional[int]:
+        return PIPE if self._writable else None
 
-        stdin_flag = PIPE if self._writable else None
-        stdout_flag = PIPE if self._stdout_callback else None
-        stderr_flag = PIPE if self._stderr_callback else None
+    @property
+    def stdout_flag(self) -> Optional[int]:
+        return PIPE if self._stdout_callback else None
 
+    @property
+    def stderr_flag(self) -> Optional[int]:
+        return PIPE if self._stderr_callback else None
+
+    async def _create_subprocess_exec(self):
+        """
+        DeprecationWarning:
+        The `loop` argument is deprecated since Python 3.8
+        and scheduled for removal in Python 3.10
+        """
+        return await create_subprocess_exec(
+            self._commands[0],
+            *self._commands[1:],
+            stdin=self.stdin_flag,
+            stdout=self.stdout_flag,
+            stderr=self.stderr_flag,
+        )
+
+    async def _create_subprocess_shell(self) -> Process:
         total_commands = [f"'{str(c).strip()}'" for c in self._commands]
-        merged_commands = reduce(lambda x, y: f"{x} {y}", total_commands)
+        merged_commands = reduce(lambda x, y: f"{x} {y}", total_commands[1:])
 
         """
         DeprecationWarning:
         The `loop` argument is deprecated since Python 3.8
         and scheduled for removal in Python 3.10
         """
-        self._process = await create_subprocess_shell(
+        return await create_subprocess_shell(
             merged_commands,
-            stdin=stdin_flag,
-            stdout=stdout_flag,
-            stderr=stderr_flag,
+            stdin=self.stdin_flag,
+            stdout=self.stdout_flag,
+            stderr=self.stderr_flag,
         )
 
-        if stdout_flag:
+    async def create_subprocess(self) -> Process:
+        if self._method == SubprocessMethod.Exec:
+            return await self._create_subprocess_exec()
+        elif self._method == SubprocessMethod.Shell:
+            return await self._create_subprocess_shell()
+        else:
+            raise NotImplementedError
+
+    async def start(self) -> None:
+        if self._process is not None:
+            raise ReccAlreadyError("Already started process.")
+
+        self._process = await self.create_subprocess()
+
+        if self.stdout_flag:
             assert self._process.stdout is not None
             assert self._stdout_callback is not None
             self._stdout_task = create_task(
                 self._reader(self._process.stdout, self._stdout_callback)
             )
 
-        if stderr_flag:
+        if self.stderr_flag:
             assert self._process.stderr is not None
             assert self._stderr_callback is not None
             self._stderr_task = create_task(

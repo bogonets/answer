@@ -8,4 +8,5 @@ RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
     --cov \
     --cov-report=term-missing \
     --cov-report=html \
-    --cov-config="${CORE_DIR}/pytest.ini"
+    --cov-config="${CORE_DIR}/pytest.ini" \
+    "$@"
