@@ -124,7 +124,7 @@ class ContextTask(ContextBase):
         wait_interval=DEFAULT_WAIT_TASK_INTERVAL,
         wait_timeout=DEFAULT_WAIT_TASK_TIMEOUT,
         wait_retries=DEFAULT_WAIT_TASK_RETRIES,
-        verbose_level=0,
+        verbose_level: Optional[int] = None,
     ) -> RpcClient:
         if self.is_host_mode() and not os.path.isdir(self.storage.get_root_directory()):
             raise ReccNotReadyError("In Host mode, the storage path must be specified.")
@@ -154,6 +154,11 @@ class ContextTask(ContextBase):
         else:
             ports = dict()
 
+        if verbose_level is not None:
+            verbose = verbose_level
+        else:
+            verbose = self.config.verbose
+
         container_name = naming_task(group_name, project_name, task_name)
         auth_algorithm = f"RSA({REGISTER_KEY_RSA_SIZE})"
         key = RSA.generate(REGISTER_KEY_RSA_SIZE)
@@ -164,13 +169,15 @@ class ContextTask(ContextBase):
 
         rpc_address = f"{bind}:{port}"
         rpc_protocol = "tcp"
-        expose_port: Optional[int]
+        rpc_guest_port = f"{port}/{rpc_protocol}"
+        expose_port: Optional[int] = None
 
         if self.is_host_mode():
+            if rpc_guest_port in ports:
+                raise ValueError("`publish_ports` must not contain RPC ports.")
+
             expose_port = self.ports.alloc()
-            ports[f"{port}/{rpc_protocol}"] = expose_port
-        else:
-            expose_port = None
+            ports[rpc_guest_port] = expose_port
 
         try:
             container = await self.container.create_task(
@@ -186,7 +193,7 @@ class ContextTask(ContextBase):
                 container_name=container_name,
                 workspace_volume=workspace_volume,
                 network_name=network_name,
-                verbose_level=verbose_level,
+                verbose_level=verbose,
             )
         except BaseException:
             if expose_port is not None:
@@ -201,8 +208,12 @@ class ContextTask(ContextBase):
                 raise LookupError(f"Invalid status: {container.status}")
 
             if self.is_host_mode():
-                host_binding = container.ports[PortBindingGuest(port, rpc_protocol)][0]
-                access_rpc_address = f"localhost:{host_binding.port}"
+                # [WARNING] When a port is assigned, it must be bound in the guest.
+                host_bindings = container.ports[PortBindingGuest(port, rpc_protocol)]
+                if not host_bindings:
+                    raise RuntimeError("No exposed ports.")
+                host_binding_port = host_bindings[0].port
+                access_rpc_address = f"localhost:{host_binding_port}"
             else:
                 access_rpc_address = f"{container_name}:{port}"
 
@@ -213,7 +224,7 @@ class ContextTask(ContextBase):
                 retries=wait_retries,
             )
 
-            client = await self._create_task_client(
+            client = await self.create_task_client(
                 group_name, project_name, task_name, access_rpc_address
             )
 
@@ -233,8 +244,15 @@ class ContextTask(ContextBase):
                 base_image_name=base_image_name,
                 publish_ports=publish_ports,
             )
-        except BaseException as e:
-            logger.exception(e)
+        except BaseException:
+            if expose_port is not None:
+                self.ports.free(expose_port)
+
+            logs = await self.container.logs_container(container.key)
+            assert isinstance(logs, bytes)
+            logs_text = str(logs, encoding="utf-8").strip()
+            logger.error("[Container Log]\n" + logs_text)
+
             await self.container.remove_container(container.key, force=True)
             raise
 
@@ -279,7 +297,7 @@ class ContextTask(ContextBase):
             if not connection_result:
                 raise ReccTimeoutError(f"Connection timeout: {rpc_address}")
 
-    async def _create_task_client(
+    async def create_task_client(
         self,
         group_name: str,
         project_name: str,
