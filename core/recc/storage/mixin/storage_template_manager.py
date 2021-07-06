@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, Dict, KeysView, ValuesView
-from recc.template.lambda_template import LambdaTemplate
-from recc.template.lambda_template_key import LambdaTemplateKey
-from recc.template.lambda_template_manager import LambdaTemplateManager
+from recc.template.lamda_template import LamdaTemplate
+from recc.template.manager.lamda_template_key import LamdaTemplateKey
+from recc.template.manager.lamda_template_manager import LamdaTemplateManager
 
 
 class StorageTemplateManagerMixin:
 
-    _tm: LambdaTemplateManager
+    _tm: LamdaTemplateManager
 
     def init_template_manager(
         self,
         root: Optional[str] = None,
         venv_directory: Optional[str] = None,
     ) -> None:
-        self._tm = LambdaTemplateManager(root, venv_directory)
+        self._tm = LamdaTemplateManager(root, venv_directory)
 
     def get_template_directory(self) -> str:
         return self._tm.root_dir
@@ -27,18 +27,18 @@ class StorageTemplateManagerMixin:
         assert self._tm is not None
         self._tm.refresh()
 
-    def get_template_manager(self) -> LambdaTemplateManager:
+    def get_template_manager(self) -> LamdaTemplateManager:
         return self._tm
 
-    def get_templates(self) -> Dict[LambdaTemplateKey, LambdaTemplate]:
+    def get_templates(self) -> Dict[LamdaTemplateKey, LamdaTemplate]:
         assert self._tm is not None
         return self._tm.templates
 
-    def get_template_keys(self) -> KeysView[LambdaTemplateKey]:
+    def get_template_keys(self) -> KeysView[LamdaTemplateKey]:
         assert self._tm is not None
         return self._tm.keys()
 
-    def get_template_values(self) -> ValuesView[LambdaTemplate]:
+    def get_template_values(self) -> ValuesView[LamdaTemplate]:
         assert self._tm is not None
         return self._tm.values()
 

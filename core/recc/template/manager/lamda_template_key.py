@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from typing import Tuple
-from recc.template.lambda_template_position import LambdaTemplatePosition
+from recc.template.manager.lamda_template_position import LamdaTemplatePosition
 from recc.variables.template import LAMBDA_TEMPLATE_KEY_DELIMITER
 
 
 def make_template_key(
-    position: LambdaTemplatePosition,
+    position: LamdaTemplatePosition,
     category: str,
     name: str,
     delimiter=LAMBDA_TEMPLATE_KEY_DELIMITER,
@@ -14,15 +14,15 @@ def make_template_key(
     return position.name + delimiter + category + delimiter + name
 
 
-class LambdaTemplateKey:
+class LamdaTemplateKey:
 
-    position: LambdaTemplatePosition
+    position: LamdaTemplatePosition
     category: str
     name: str
 
     def __init__(
         self,
-        position: LambdaTemplatePosition,
+        position: LamdaTemplatePosition,
         category: str,
         name: str,
     ):
@@ -30,7 +30,7 @@ class LambdaTemplateKey:
         self.category = category
         self.name = name
 
-    def to_tuple(self) -> Tuple[LambdaTemplatePosition, str, str]:
+    def to_tuple(self) -> Tuple[LamdaTemplatePosition, str, str]:
         return self.position, self.category, self.name
 
     def __str__(self) -> str:

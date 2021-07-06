@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from recc.template.lambda_template_manager import (
+from recc.template.manager.lamda_template_manager import (
     json_to_py_extension,
-    LambdaTemplateManager,
+    LamdaTemplateManager,
 )
 
 
-class TemplateManagerTestCase(TestCase):
+class LamdaTemplateManagerTestCase(TestCase):
     def test_json_to_py_extension(self):
         test01_origin = "/root/path.app.json/test.app.json"
         test01_actual = json_to_py_extension(test01_origin)
@@ -25,7 +25,7 @@ class TemplateManagerTestCase(TestCase):
         self.assertEqual(test03_expect, test03_actual)
 
     def test_default(self):
-        mgr = LambdaTemplateManager()
+        mgr = LamdaTemplateManager()
         mgr.refresh()
         self.assertLess(0, len(mgr.keys()))
 

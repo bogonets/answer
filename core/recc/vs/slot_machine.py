@@ -6,14 +6,14 @@ from recc.vs.slot import SlotDirection, SlotCategory, Slot, SlotKey
 
 class SlotMachine:
     def __init__(self):
-        self.fullnames: Dict[str, Slot] = {}
-        self.slots: Dict[int, Slot] = {}
-        self.inputs: Dict[int, Slot] = {}
-        self.outputs: Dict[int, Slot] = {}
-        self.in_flows: Dict[int, Slot] = {}
-        self.out_flows: Dict[int, Slot] = {}
-        self.in_datas: Dict[int, Slot] = {}
-        self.out_datas: Dict[int, Slot] = {}
+        self.fullnames: Dict[str, Slot] = dict()
+        self.slots: Dict[int, Slot] = dict()
+        self.inputs: Dict[int, Slot] = dict()
+        self.outputs: Dict[int, Slot] = dict()
+        self.in_flows: Dict[int, Slot] = dict()
+        self.out_flows: Dict[int, Slot] = dict()
+        self.in_datas: Dict[int, Slot] = dict()
+        self.out_datas: Dict[int, Slot] = dict()
 
     def clear(self) -> None:
         self.fullnames.clear()

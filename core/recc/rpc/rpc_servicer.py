@@ -20,7 +20,7 @@ from recc.rpc.rpc_converter import (
     cvt_box_request,
 )
 from recc.variables.rpc import DEFAULT_RPC_ADDRESS
-from recc.vs.task import Task
+from recc.vs.task_graph import TaskGraph
 from recc.proto.api_pb2_grpc import (
     ReccApiServicer,
 )
@@ -84,7 +84,7 @@ class RpcServicer(ReccApiServicer):
 
         self._pickling_protocol_version = 5
         self._unpickling_encoding = "latin1"
-        self._task = Task()
+        self._task = TaskGraph()
 
     def _pickling(self, data: Any) -> bytes:
         return pickle.dumps(data, protocol=self._pickling_protocol_version)
@@ -97,7 +97,7 @@ class RpcServicer(ReccApiServicer):
         return self._config
 
     @property
-    def storage(self) -> TaskWorkspace:
+    def workspace(self) -> TaskWorkspace:
         return self._workspace
 
     def get_rpc_address(self) -> str:

@@ -8,7 +8,7 @@ from recc.mime.mime_codec import MimeEncoder, MimeDecoder
 from recc.sequence.sequencer_interface import SequencerInterface
 from recc.sequence.default_sequencer import DefaultSequencer
 from recc.blueprint.blueprint import BpTask
-from recc.template.lambda_template_manager import LambdaTemplateManager
+from recc.template.manager.lamda_template_manager import LamdaTemplateManager
 from recc.template.information import EDGE_BEGIN, EDGE_MIDDLE, EDGE_END
 from recc.serializable.json import deserialize_json_text
 from recc.vs.box import BoxState, BoxData, BoxRequest
@@ -16,8 +16,8 @@ from recc.vs.arc import Arc, ArcKey
 from recc.vs.slot import SlotDirection, SlotCategory, Slot, SlotKey
 from recc.vs.slot_machine import SlotMachine
 from recc.vs.node import NodeEdge, Node, NodeKey
-from recc.vs.node_impl import REQUEST_METHOD_SET, REQUEST_METHOD_GET, NodeImpl
-from recc.vs.node_python import PythonNode
+from recc.vs.lamda_interface import REQUEST_METHOD_SET, REQUEST_METHOD_GET, Lamda
+from recc.vs.lamda_python import LamdaPython
 from recc.vs.signal import Signal, SignalResult
 
 _ERR_MSG_NO_IFC_NAME = "Some of the input flow controllers are unnamed."
@@ -33,7 +33,7 @@ _ERR_MSG_NO_FRONT_NODE_NAME = "No node name in 'front' arc."
 _ERR_MSG_NO_FRONT_SLOT_NAME = "No slot name in 'front' arc."
 
 
-class Task:
+class TaskGraph:
     def __init__(
         self,
         name: Optional[str] = None,
@@ -43,7 +43,7 @@ class Task:
         arc_sequencer: Optional[SequencerInterface] = None,
         mimes: Optional[MimeCodecRegister] = None,
     ):
-        self._name = name if name else ""
+        self._name = name if name else str()
 
         self._nodes: Dict[int, Node] = dict()
         self._middles: Dict[int, Node] = dict()
@@ -81,7 +81,7 @@ class Task:
         return self._name
 
     def __repr__(self) -> str:
-        return f"Task({self._name})[nodes={len(self._nodes)},arcs={len(self._arcs)}]"
+        return f"Task<name={self._name},nodes={len(self._nodes)}>"
 
     def set_name(self, name: str) -> None:
         self._name = name
@@ -172,7 +172,7 @@ class Task:
         self,
         name: str,
         edge: NodeEdge,
-        impl: Optional[NodeImpl] = None,
+        impl: Optional[Lamda] = None,
         data_output_as_flow_output=False,
     ) -> Node:
         if name in self._node_names:
@@ -199,7 +199,7 @@ class Task:
     def add_middle_node(
         self,
         name: str,
-        impl: Optional[NodeImpl] = None,
+        impl: Optional[Lamda] = None,
         data_output_as_flow_output=False,
     ) -> Node:
         return self.add_node(name, NodeEdge.Middle, impl, data_output_as_flow_output)
@@ -207,7 +207,7 @@ class Task:
     def add_begin_node(
         self,
         name: str,
-        impl: Optional[NodeImpl] = None,
+        impl: Optional[Lamda] = None,
         data_output_as_flow_output=False,
     ) -> Node:
         return self.add_node(name, NodeEdge.Begin, impl, data_output_as_flow_output)
@@ -215,7 +215,7 @@ class Task:
     def add_end_node(
         self,
         name: str,
-        impl: Optional[NodeImpl] = None,
+        impl: Optional[Lamda] = None,
         data_output_as_flow_output=False,
     ) -> Node:
         return self.add_node(name, NodeEdge.End, impl, data_output_as_flow_output)
@@ -388,7 +388,7 @@ class Task:
 
     # Blueprint
 
-    def set_blueprint(self, bp_task: BpTask, tm: LambdaTemplateManager) -> None:
+    def set_blueprint(self, bp_task: BpTask, tm: LamdaTemplateManager) -> None:
         if not bp_task.nodes:
             raise ReccArgumentError("Empty nodes")
 
@@ -412,7 +412,7 @@ class Task:
             else:
                 node_edge = NodeEdge.Middle
 
-            impl = PythonNode(template)
+            impl = LamdaPython(template)
             impl.init_properties(bp_node.properties)
             impl.init()
 
@@ -463,7 +463,7 @@ class Task:
                 self.add_arc(self.get_slot(back_slot), self.get_slot(front_slot))
 
     def set_blueprint_json(
-        self, json_text: str, version: int, tm: LambdaTemplateManager
+        self, json_text: str, version: int, tm: LamdaTemplateManager
     ) -> None:
         blueprint = deserialize_json_text(version, json_text, BpTask)
         self.set_blueprint(blueprint, tm)

@@ -3,7 +3,7 @@
 import os
 from unittest import TestCase, main
 import tempfile
-from recc.template.lambda_template import LambdaTemplate
+from recc.template.lamda_template import LamdaTemplate
 from recc.template.information import Information
 from recc.template.controller import Controller
 from recc.template.property import Property
@@ -16,9 +16,9 @@ SAMPLE_DATA = {
 }
 
 
-class TemplateJsonTestCase(TestCase):
+class LamdaTemplateJsonTestCase(TestCase):
     def test_default_v1(self):
-        obj = LambdaTemplate()
+        obj = LamdaTemplate()
         obj.deserialize(1, SAMPLE_DATA)
 
         self.assertEqual(1, obj.get_version_tuple()[0])
@@ -37,14 +37,14 @@ class TemplateJsonTestCase(TestCase):
         self.assertEqual("src", obj.properties[0].name)
 
     def test_json_file(self):
-        obj = LambdaTemplate()
+        obj = LamdaTemplate()
         obj.deserialize(1, SAMPLE_DATA)
         serialize_data = obj.serialize(1)
 
         with tempfile.TemporaryDirectory() as temp_dir:
             json_path = os.path.join(temp_dir, "temp.json")
             serialize_json_file(1, serialize_data, json_path)
-            obj2 = deserialize_json_file(1, json_path, LambdaTemplate)
+            obj2 = deserialize_json_file(1, json_path, LamdaTemplate)
 
             self.assertEqual(1, obj2.get_version_tuple()[0])
             self.assertIsInstance(obj2.information, Information)

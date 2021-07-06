@@ -84,12 +84,12 @@ class RpcCommonTestCase(RpcTestCase):
         self.assertLess(0, len(names))
 
     async def test_upload_templates(self):
-        template_dir = self.servicer.storage.get_template_directory()
+        template_dir = self.servicer.workspace.get_template_directory()
         numpy_template_jsons = copy_builtin_numpy_nodes(template_dir)
         self.assertLess(0, len(numpy_template_jsons))
-        self.servicer.storage.refresh_templates()
+        self.servicer.workspace.refresh_templates()
 
-        data = self.servicer.storage.compress_templates()
+        data = self.servicer.workspace.compress_templates()
 
         # Remove templates.
         remove_recursively(template_dir)
@@ -97,7 +97,7 @@ class RpcCommonTestCase(RpcTestCase):
         self.assertTrue(os.path.isdir(template_dir))
         self.assertEqual(0, len(os.listdir(template_dir)))
 
-        self.servicer.storage.refresh_templates()
+        self.servicer.workspace.refresh_templates()
         save_template_count = len(await self.client.get_template_names())
 
         await self.client.upload_templates(data)

@@ -11,9 +11,9 @@ from recc.exception.recc_error import ReccDeserializeError, ReccNotFoundError
 from recc.package.package_utils import get_module_directory
 from recc.file.permission import is_readable_dir
 from recc.serializable.json import deserialize_json_file
-from recc.template.lambda_template import LambdaTemplate, RuntimeInformation
-from recc.template.lambda_template_position import LambdaTemplatePosition
-from recc.template.lambda_template_key import LambdaTemplateKey
+from recc.template.lamda_template import LamdaTemplate, RuntimeInformation
+from recc.template.manager.lamda_template_position import LamdaTemplatePosition
+from recc.template.manager.lamda_template_key import LamdaTemplateKey
 from recc.venv.async_virtual_environment import AsyncVirtualEnvironment
 from recc.variables.template import (
     LAMBDA_TEMPLATE_APP_JSON_SUFFIX_REGEX,
@@ -21,8 +21,8 @@ from recc.variables.template import (
     JSON_SUFFIX_REGEX,
     COMPRESS_IGNORE_PATTERNS,
 )
-from recc import node as recc_node_module
-from recc import node_builtin as recc_node_builtin_module
+from recc import lamda as recc_lamda_module
+from recc import lamda_builtin as recc_lamda_builtin_module
 
 FIND_APP_JSON_REGEX = re.compile(LAMBDA_TEMPLATE_APP_JSON_SUFFIX_REGEX)
 FIND_JSON_REGEX = re.compile(LAMBDA_TEMPLATE_JSON_SUFFIX_REGEX)
@@ -58,8 +58,8 @@ def create_template(
     template_path: str,
     template_directory: Optional[str] = None,
     venv_directory: Optional[str] = None,
-) -> LambdaTemplate:
-    template = deserialize_json_file(1, template_path, LambdaTemplate)
+) -> LamdaTemplate:
+    template = deserialize_json_file(1, template_path, LamdaTemplate)
     if not template.information:
         error_msg = f"Empty template information section: {template_path}"
         raise ReccDeserializeError(error_msg)
@@ -109,19 +109,19 @@ def create_template(
 
 
 def create_template_key(
-    template: LambdaTemplate,
-    position: LambdaTemplatePosition,
-) -> LambdaTemplateKey:
+    template: LamdaTemplate,
+    position: LamdaTemplatePosition,
+) -> LamdaTemplateKey:
     assert template.information is not None
     category = template.information.get_category()
     name = template.information.get_name()
-    return LambdaTemplateKey(position, category, name)
+    return LamdaTemplateKey(position, category, name)
 
 
 def create_templates(
     template_directory: str,
     venv_directory: Optional[str] = None,
-) -> List[LambdaTemplate]:
+) -> List[LamdaTemplate]:
     result = list()
     for file in find_json_files(template_directory):
         result.append(create_template(file, template_directory, venv_directory))
@@ -129,7 +129,7 @@ def create_templates(
 
 
 def create_category_to_names(
-    templates: Iterable[LambdaTemplate],
+    templates: Iterable[LamdaTemplate],
 ) -> Dict[str, List[str]]:
     result: Dict[str, List[str]] = dict()
     for template in templates:
@@ -143,17 +143,17 @@ def create_category_to_names(
 
 
 def create_template_map(
-    builtin_templates: List[LambdaTemplate],
-    package_templates: List[LambdaTemplate],
-    storage_templates: List[LambdaTemplate],
-) -> Dict[LambdaTemplateKey, LambdaTemplate]:
+    builtin_templates: List[LamdaTemplate],
+    package_templates: List[LamdaTemplate],
+    storage_templates: List[LamdaTemplate],
+) -> Dict[LamdaTemplateKey, LamdaTemplate]:
     result = dict()
     for bt in builtin_templates:
-        result[create_template_key(bt, LambdaTemplatePosition.Builtin)] = bt
+        result[create_template_key(bt, LamdaTemplatePosition.Builtin)] = bt
     for pt in package_templates:
-        result[create_template_key(pt, LambdaTemplatePosition.Package)] = pt
+        result[create_template_key(pt, LamdaTemplatePosition.Package)] = pt
     for st in storage_templates:
-        result[create_template_key(st, LambdaTemplatePosition.Storage)] = st
+        result[create_template_key(st, LamdaTemplatePosition.Storage)] = st
     return result
 
 
@@ -191,7 +191,7 @@ def decompress_template_directory(extract_directory: str, data: bytes) -> None:
         tar.extractall(extract_directory)
 
 
-class LambdaTemplateManager:
+class LamdaTemplateManager:
     def __init__(
         self,
         template_directory: Optional[str] = None,
@@ -203,12 +203,12 @@ class LambdaTemplateManager:
         self._builtin_category_to_names: Dict[str, List[str]] = dict()
         self._package_category_to_names: Dict[str, List[str]] = dict()
         self._storage_category_to_names: Dict[str, List[str]] = dict()
-        self._templates: Dict[LambdaTemplateKey, LambdaTemplate] = dict()
+        self._templates: Dict[LamdaTemplateKey, LamdaTemplate] = dict()
         self._storage_compressed = bytes()
 
     def refresh(self) -> None:
-        builtin_dir = get_module_directory(recc_node_builtin_module)
-        package_dir = get_module_directory(recc_node_module)
+        builtin_dir = get_module_directory(recc_lamda_builtin_module)
+        package_dir = get_module_directory(recc_lamda_module)
         storage_dir = self._template_directory
         venv_dir = self._venv_directory
 
@@ -247,31 +247,31 @@ class LambdaTemplateManager:
         return self._storage_category_to_names
 
     @property
-    def templates(self) -> Dict[LambdaTemplateKey, LambdaTemplate]:
+    def templates(self) -> Dict[LamdaTemplateKey, LamdaTemplate]:
         return self._templates
 
     @property
     def storage_compressed(self) -> bytes:
         return self._storage_compressed
 
-    def keys(self) -> KeysView[LambdaTemplateKey]:
+    def keys(self) -> KeysView[LamdaTemplateKey]:
         return self._templates.keys()
 
-    def values(self) -> ValuesView[LambdaTemplate]:
+    def values(self) -> ValuesView[LamdaTemplate]:
         return self._templates.values()
 
     def decompress_templates(self, data: bytes) -> None:
         decompress_template_directory(self._template_directory, data)
 
-    def find_template(self, category: str, name: str) -> LambdaTemplate:
+    def find_template(self, category: str, name: str) -> LamdaTemplate:
         if category in self._storage_category_to_names.keys():
-            position = LambdaTemplatePosition.Storage
+            position = LamdaTemplatePosition.Storage
             category_to_names = self._storage_category_to_names
         elif category in self._package_category_to_names.keys():
-            position = LambdaTemplatePosition.Package
+            position = LamdaTemplatePosition.Package
             category_to_names = self._package_category_to_names
         elif category in self._builtin_category_to_names.keys():
-            position = LambdaTemplatePosition.Builtin
+            position = LamdaTemplatePosition.Builtin
             category_to_names = self._builtin_category_to_names
         else:
             params_msg = f"{category}"
@@ -282,4 +282,4 @@ class LambdaTemplateManager:
             params_msg = f"category={category},name={name}"
             raise ReccNotFoundError(f"Not found template: {params_msg}")
 
-        return self._templates[LambdaTemplateKey(position, category, name)]
+        return self._templates[LamdaTemplateKey(position, category, name)]

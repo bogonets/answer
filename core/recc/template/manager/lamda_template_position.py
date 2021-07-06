@@ -3,7 +3,7 @@
 from enum import Enum
 
 
-class LambdaTemplatePosition(Enum):
+class LamdaTemplatePosition(Enum):
     Builtin = 0
     Package = 1
     Storage = 2

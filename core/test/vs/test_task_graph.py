@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from recc.vs.task import Task
+from recc.vs.task_graph import TaskGraph
 
 
-class TaskTestCase(TestCase):
+class TaskGraphTestCase(TestCase):
     def test_add(self):
         task_name = "test"
-        task = Task(task_name)
+        task = TaskGraph(task_name)
 
         self.assertEqual(0, task.get_node_count())
         self.assertEqual(0, task.get_slot_count())

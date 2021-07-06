@@ -6,8 +6,8 @@ from importlib.machinery import BuiltinImporter
 from recc.exception.recc_error import ReccNotFoundError, ReccInitError
 from recc.venv.pyvenv_cfg import read_site_packages_dir
 from recc.blueprint.blueprint import BpProperty
-from recc.vs.node_impl import REQUEST_METHOD_SET, REQUEST_METHOD_GET, NodeImpl
-from recc.template.lambda_template import LambdaTemplate
+from recc.vs.lamda_interface import REQUEST_METHOD_SET, REQUEST_METHOD_GET, Lamda
+from recc.template.lamda_template import LamdaTemplate
 from recc.template.property import Property
 
 DEFAULT_MODULE_NAME = "__answer__"
@@ -60,12 +60,12 @@ CALL_FILENAME_ON_DESTROY = "<builtin_on_destroy_caller>"
 CALL_FILENAME_ON_RUN = "<builtin_on_run_caller>"
 
 
-class PythonNode(NodeImpl):
+class LamdaPython(Lamda):
     """
     Python lambda plugin.
     """
 
-    _template: LambdaTemplate
+    _template: LamdaTemplate
     _app: Dict[str, Any]
     _global_variables: Dict[str, Any]
     _env_root: str
@@ -78,8 +78,8 @@ class PythonNode(NodeImpl):
     _on_destroy_ast: Any
     _on_run_ast: Any
 
-    def __init__(self, template: Optional[LambdaTemplate] = None):
-        self._template = template if template else LambdaTemplate()
+    def __init__(self, template: Optional[LamdaTemplate] = None):
+        self._template = template if template else LamdaTemplate()
         self._app = {
             # "template_path": TEMPLATE.info.config_path,
             # "workspace_name": parent._shared->workspace,

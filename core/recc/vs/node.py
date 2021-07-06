@@ -2,9 +2,12 @@
 
 from enum import Enum
 from typing import Optional, Union, Any
-from recc.vs.node_impl import NodeImplInterface, NodeImpl
+from recc.vs.lamda_interface import LamdaInterface, Lamda
 from recc.vs.slot import Slot, SlotKey
 from recc.vs.slot_machine import SlotMachine
+
+_ASSERT_MSG_NOT_IN_BEGIN_NODE = "There are no in-flow-slot in begin-node"
+_ASSERT_MSG_NOT_IN_END_NODE = "There are no out-flow-slot in end-node"
 
 
 class NodeEdge(Enum):
@@ -32,14 +35,14 @@ class Node:
         key: int,
         name: str,
         edge: NodeEdge,
-        impl: Optional[NodeImplInterface] = None,
+        lamda: Optional[LamdaInterface] = None,
         data_output_as_flow_output=False,
     ):
         self._key = key
         self._name = name
         self._edge = edge
         self._sm = SlotMachine()
-        self._impl = impl if impl else NodeImpl()
+        self._lamda = lamda if lamda else Lamda()
         self._execution_result: Optional[Exception] = None
         self._data_output_as_flow_output = data_output_as_flow_output
 
@@ -119,11 +122,11 @@ class Node:
         return self.exist_slot(Slot.create_key(self.name, slot_name))
 
     def add_in_flow(self, slot: Slot) -> None:
-        assert self.edge != NodeEdge.Begin, "There are no in-flow-slot in begin-node"
+        assert self.edge != NodeEdge.Begin, _ASSERT_MSG_NOT_IN_BEGIN_NODE
         self._sm.add_in_flow(slot)
 
     def add_out_flow(self, slot: Slot) -> None:
-        assert self.edge != NodeEdge.End, "There are no out-flow-slot in end-node"
+        assert self.edge != NodeEdge.End, _ASSERT_MSG_NOT_IN_END_NODE
         self._sm.add_out_flow(slot)
 
     def add_in_data(self, slot: Slot) -> None:
@@ -138,19 +141,19 @@ class Node:
     # Runtime interfaces.
 
     def request(self, method: str, key: str, value: Any = None, **options) -> Any:
-        return self._impl.request(method, key, value, **options)
+        return self._lamda.request(method, key, value, **options)
 
     def init(self) -> None:
-        self._impl.init()
+        self._lamda.init()
 
     def valid(self) -> bool:
-        return self._impl.valid()
+        return self._lamda.valid()
 
     def destroy(self) -> None:
-        self._impl.destroy()
+        self._lamda.destroy()
 
     def run(self, **kwargs) -> Any:
-        return self._impl.run(**kwargs)
+        return self._lamda.run(**kwargs)
 
 
 NodeKey = Union[Node, int, str]

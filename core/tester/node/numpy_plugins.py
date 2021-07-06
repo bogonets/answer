@@ -5,7 +5,7 @@ import shutil
 from typing import List
 from recc.file.directory import prepare_directory
 from recc.package.package_utils import get_module_directory
-from recc.node_builtin import numpy as builtin_numpy
+from recc.lamda_builtin import numpy as builtin_numpy
 
 
 def _is_json(name: str) -> bool:

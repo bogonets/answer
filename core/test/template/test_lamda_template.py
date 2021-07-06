@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from recc.template.lambda_template import LambdaTemplate
+from recc.template.lamda_template import LamdaTemplate
 from recc.template.information import Information
 from recc.template.controller import Controller
 from recc.template.property import Property
@@ -62,9 +62,9 @@ SAMPLE_DATA = {
 }
 
 
-class TemplateTemplateTestCase(TestCase):
+class LamdaTemplateTestCase(TestCase):
     def test_default_v1(self):
-        obj = LambdaTemplate()
+        obj = LamdaTemplate()
         obj.deserialize(1, SAMPLE_DATA)
 
         self.assertEqual(1, obj.get_version_tuple()[0])

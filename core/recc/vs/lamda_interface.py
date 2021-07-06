@@ -7,9 +7,9 @@ REQUEST_METHOD_SET = "set"
 REQUEST_METHOD_GET = "get"
 
 
-class NodeImplInterface(metaclass=ABCMeta):
+class LamdaInterface(metaclass=ABCMeta):
     """
-    ANSWER Lambda interface.
+    Lamda interface.
     """
 
     @abstractmethod
@@ -33,9 +33,9 @@ class NodeImplInterface(metaclass=ABCMeta):
         raise NotImplementedError
 
 
-class NodeImpl(NodeImplInterface):
+class Lamda(LamdaInterface):
     """
-    Empty Lambda class.
+    Empty Lamda class.
     """
 
     def request(self, method: str, key: str, value: Any = None, **options) -> Any:
