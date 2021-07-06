@@ -145,22 +145,7 @@ _DEFAULT_LOGGING_CONFIG = {
             "handlers": ["console"],
             "level": "DEBUG",
         },
-        "aiohttp.access": {
-            "level": "DEBUG",
-        },
-        "aiohttp.client": {
-            "level": "DEBUG",
-        },
-        "aiohttp.internal": {
-            "level": "DEBUG",
-        },
-        "aiohttp.server": {
-            "level": "DEBUG",
-        },
-        "aiohttp.web": {
-            "level": "DEBUG",
-        },
-        "aiohttp.websocket": {
+        "aiohttp": {
             "level": "DEBUG",
         },
         "asyncio": {
@@ -172,40 +157,13 @@ _DEFAULT_LOGGING_CONFIG = {
         "elasticsearch": {
             "level": "DEBUG",
         },
-        "grpc._cython.cygrpc": {
+        "grpc": {
             "level": "DEBUG",
         },
         LOGGER_NAME_RECC: {
             "level": "DEBUG",
         },
-        LOGGER_NAME_CORE_RECC: {
-            "level": "DEBUG",
-        },
-        LOGGER_NAME_RECC_HTTP: {
-            "level": "DEBUG",
-        },
-        LOGGER_NAME_RECC_RPC: {
-            "level": "DEBUG",
-        },
-        LOGGER_NAME_RECC_CONTAINER: {
-            "level": "DEBUG",
-        },
-        LOGGER_NAME_RECC_CACHE: {
-            "level": "DEBUG",
-        },
-        LOGGER_NAME_RECC_DATABASE: {
-            "level": "DEBUG",
-        },
-        LOGGER_NAME_RECC_COMMON: {
-            "level": "DEBUG",
-        },
-        "docker.auth": {
-            "level": "DEBUG",
-        },
-        "docker.utils.config": {
-            "level": "DEBUG",
-        },
-        "urllib3.connectionpool": {
+        "urllib3": {
             "level": "DEBUG",
         },
     },

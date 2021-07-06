@@ -299,17 +299,12 @@ class DockerContainerManager(
         )
 
         try:
-            logger.info(f"Building docker image: {image_name} ...")
-            build_log = await self.build_image(
+            await self.build_image(
                 context_bytes,
                 image_name,
                 BUILD_CONTEXT_BUILD_PATH,
                 BUILD_CONTEXT_DOCKERFILE_PATH,
             )
-            if build_log:
-                logger.info(f"Build message: {build_log}")
-            else:
-                logger.info("Empty build message")
         finally:
             if image_name in await self.images():
                 await self.remove_image(image_name)

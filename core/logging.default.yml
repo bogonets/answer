@@ -15,17 +15,7 @@ handlers:
     stream: ext://sys.stdout
 
 loggers:
-  aiohttp.access:
-    level: DEBUG
-  aiohttp.client:
-    level: DEBUG
-  aiohttp.internal:
-    level: DEBUG
-  aiohttp.server:
-    level: DEBUG
-  aiohttp.web:
-    level: DEBUG
-  aiohttp.websocket:
+  aiohttp:
     level: DEBUG
   asyncio:
     level: DEBUG
@@ -33,29 +23,11 @@ loggers:
     level: DEBUG
   elasticsearch:
     level: DEBUG
-  grpc._cython.cygrpc:
+  grpc:
     level: DEBUG
   recc:
     level: DEBUG
-  recc.core:
-    level: DEBUG
-  recc.http:
-    level: DEBUG
-  recc.rpc:
-    level: DEBUG
-  recc.container:
-    level: DEBUG
-  recc.cache:
-    level: DEBUG
-  recc.database:
-    level: DEBUG
-  recc.common:
-    level: DEBUG
-  docker.auth:
-    level: DEBUG
-  docker.utils.config:
-    level: DEBUG
-  urllib3.connectionpool:
+  urllib3:
     level: DEBUG
 
 root:

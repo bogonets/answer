@@ -18,9 +18,13 @@
     - Socket file cannot be created if host and guest have different OS.
   - [x] Unix Domain Socket for gRPC
   - [ ] Infinity Lambda
-  - [ ] New Docker Image for the task
+  - [x] New Docker Image for the task
   - [x] Create Port Manager
-    - [ ] Apply to `context`
+    - [x] Apply to `context`
+  - [ ] Implement the Graph API.
+    - [x] SetGraph
+    - [ ] GetGraph
+  - [ ] Implement the Storage API.
 - [ ] Release v2.1
   - [ ] Image Preview Widget
   - [ ] Refactoring User/Group/Project
@@ -66,6 +70,8 @@
   - [ ] Event popup theme
   - [ ] Event alert sound (Timing/Sound)
   - [ ] Event editing dialog
+- [ ] Admin Page
+- [ ] Print Graph Logging Panel
 - [ ] Refactoring Dashboard
 - [ ] Upload Pypi package
   - [ ] setup.py, setup.cfg
@@ -77,3 +83,6 @@
   - [ ] Remove `Async` prefix
 - [x] Integrates the `fe` build result into the `core`.
 - [ ] Change favicon
+- [ ] Improve logging
+  - [ ] Color logging
+  - [ ] Rotation logging

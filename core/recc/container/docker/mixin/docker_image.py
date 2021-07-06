@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, List, Dict, Any
-from io import BytesIO
+from io import BytesIO, StringIO
 from docker.models.images import Image
 from recc.log.logging import recc_container_logger as logger
 from recc.container.docker.mixin.docker_base import DockerBase
@@ -40,7 +40,7 @@ class DockerImage(DockerBase):
         script_path=BUILD_CONTEXT_DOCKERFILE_PATH,
         **kwargs,
     ) -> List[Dict[str, Any]]:
-        logger.info(f"Build the image: {name}")
+        logger.info(f"Building `{name}` docker image ...")
         image_object, build_logs = self.docker.images.build(
             path=path,
             fileobj=BytesIO(tarfile),
@@ -51,7 +51,20 @@ class DockerImage(DockerBase):
             **kwargs,
         )
         assert image_object
-        return list(build_logs)
+        result = list(build_logs) if build_logs else list()
+        if result:
+            stream_buffer = StringIO()
+            for stream in result:
+                if "stream" in stream:
+                    stream_buffer.write(stream["stream"])
+                else:
+                    stream_buffer.write(str(stream))
+            build_message = stream_buffer.getvalue()
+            if build_message:
+                logger.debug("[BUILD LOG]\n" + build_message)
+            else:
+                logger.debug("[EMPTY BUILD LOG]")
+        return result
 
     async def pull_image(self, image: str, **kwargs) -> None:
         name, tag = image.split(":", 2)
