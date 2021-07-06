@@ -88,7 +88,7 @@ class RouterV1:
             web.get(pv1.exist_user, self.on_exist_user),
             web.get(pv1.get_user, self.on_get_user),
 
-            # graph
+            # template
             web.get(pv1.get_templates, self.on_get_templates),
 
             # project

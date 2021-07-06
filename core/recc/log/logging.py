@@ -123,26 +123,60 @@ def get_root_level() -> int:
     return logging.getLogger().level
 
 
+# fmt: off
+DEFAULT_FORMAT = "%(asctime)s.%(msecs)03d %(process)d/%(thread)s %(name)s %(levelname)s %(message)s"  # noqa
+DEFAULT_DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+DEFAULT_STYLE = "%"
+# fmt: on
+
+SIMPLE_FORMAT = "{levelname[0]} {asctime} {name} {message}"
+SIMPLE_DATEFMT = "%Y%m%d %H%M%S"
+SIMPLE_STYLE = "{"
+
 _DEFAULT_LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
+        "default": {
+            "format": DEFAULT_FORMAT,
+            "datefmt": DEFAULT_DATETIME_FORMAT,
+            "style": DEFAULT_STYLE,
+        },
         "simple": {
-            "format": "{levelname[0]} {asctime} {name}: {message}",
-            "style": "{",
+            "format": SIMPLE_FORMAT,
+            "datefmt": SIMPLE_DATEFMT,
+            "style": SIMPLE_STYLE,
+        },
+        "color": {
+            "class": "recc.log.colored_formatter.ColoredFormatter",
+            "format": DEFAULT_FORMAT,
+            "datefmt": DEFAULT_DATETIME_FORMAT,
+            "style": DEFAULT_STYLE,
         },
     },
     "handlers": {
-        "console": {
+        "console_default": {
+            "class": "logging.StreamHandler",
+            "level": "DEBUG",
+            "formatter": "default",
+            "stream": "ext://sys.stdout",
+        },
+        "console_simple": {
             "class": "logging.StreamHandler",
             "level": "DEBUG",
             "formatter": "simple",
             "stream": "ext://sys.stdout",
         },
+        "console_color": {
+            "class": "logging.StreamHandler",
+            "level": "DEBUG",
+            "formatter": "color",
+            "stream": "ext://sys.stdout",
+        },
     },
     "loggers": {
         "": {  # root logger
-            "handlers": ["console"],
+            "handlers": ["console_color"],
             "level": "DEBUG",
         },
         "aiohttp": {

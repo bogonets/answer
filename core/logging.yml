@@ -1,0 +1,56 @@
+version: 1
+
+disable_existing_loggers: False
+
+formatters:
+  default: &default_formatter
+    format: "%(asctime)s.%(msecs)03d %(process)d/%(thread)s %(name)s %(levelname)s %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+    style: "%"
+
+  simple:
+    format: "{levelname[0]} {asctime} {name} {message}"
+    datefmt: "%Y%m%d %H%M%S"
+    style: "{"
+
+  color:
+    <<: *default_formatter
+    class: recc.log.colored_formatter.ColoredFormatter
+
+handlers:
+  stream_default: &default_handler
+    class: logging.StreamHandler
+    level: DEBUG
+    stream: ext://sys.stdout
+
+  console_default:
+    <<: *default_handler
+    formatter: default
+
+  console_simple:
+    <<: *default_handler
+    formatter: simple
+
+  console_color:
+    <<: *default_handler
+    formatter: color
+
+loggers:
+  aiohttp:
+    level: DEBUG
+  asyncio:
+    level: DEBUG
+  docker:
+    level: DEBUG
+  elasticsearch:
+    level: DEBUG
+  grpc:
+    level: DEBUG
+  recc:
+    level: DEBUG
+  urllib3:
+    level: DEBUG
+
+root:
+  level: DEBUG
+  handlers: [console_color]

@@ -25,6 +25,7 @@ cpuset
 cygrpc
 datalist
 datas
+datefmt
 dest
 dirname
 dtype

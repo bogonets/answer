@@ -22,7 +22,7 @@ RECC_REQUIREMENTS_MAIN = (
     "protobuf>=3.15.6",
     "numpy>=1.20.2",
     "colorama>=0.4.4",
-    "coloredlogs>=15.0",
+    "coloredlogs>=15.0.1",
     "pycryptodome>=3.10.1",
 )
 
