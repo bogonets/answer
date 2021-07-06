@@ -68,7 +68,13 @@ Desktop.ini
 *.x86_64
 *.hex
 
+######################
+### Temporary file ###
+*.log
+
+##############
 ### Python ###
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -103,19 +109,24 @@ MANIFEST
 .tox/
 .coverage
 
+#############
 ### C/C++ ###
 *.so
 *.dll
 
+############
 ### IDEA ###
 .idea
 
+##########################
 ### Visual Studio Code ###
 .vscode
 
+#####################
 ### Visual Studio ###
 *.suo
 *.sln
 
+######################
 ### asynctasks.vim ###
 .tasks

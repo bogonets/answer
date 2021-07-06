@@ -18,22 +18,28 @@ formatters:
     class: recc.log.colored_formatter.ColoredFormatter
 
 handlers:
-  stream_default: &default_handler
+  stream_stdout: &stream_stdout_handler
     class: logging.StreamHandler
     level: DEBUG
     stream: ext://sys.stdout
 
   console_default:
-    <<: *default_handler
+    <<: *stream_stdout_handler
     formatter: default
 
   console_simple:
-    <<: *default_handler
+    <<: *stream_stdout_handler
     formatter: simple
 
   console_color:
-    <<: *default_handler
+    <<: *stream_stdout_handler
     formatter: color
+
+  file_simple:
+    class: logging.FileHandler
+    level: DEBUG
+    formatter: simple
+    filename: "recc.log"
 
 loggers:
   aiohttp:
