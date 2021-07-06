@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from recc.rule.naming import naming_socket
+from recc.rule.naming_socket import naming_socket
 from recc.variables.rpc import UNIX_URI_PREFIX
 
 _TASK_SOCKET_URL_PREFIX = f"{UNIX_URI_PREFIX}//"

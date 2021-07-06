@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from typing import Tuple
-from recc.rule.naming import valid_naming, naming_task, split_task_name
+from recc.rule.naming_base import valid_naming
+from recc.rule.naming_task import naming_task, split_task_name
 
 
 class TaskKey:
@@ -29,8 +30,8 @@ class TaskKey:
         return naming_task(self.group, self.project, self.task)
 
     @classmethod
-    def from_fullpath(cls, fullpath: str) -> "TaskKey":
-        group, project, task = split_task_name(fullpath)
+    def from_fullname(cls, fullname: str) -> "TaskKey":
+        group, project, task = split_task_name(fullname)
         return cls(group, project, task)
 
     def __str__(self) -> str:

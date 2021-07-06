@@ -28,7 +28,7 @@ class TaskConnectionPool:
 
     @staticmethod
     def make_key_by_fullpath(fullpath: str) -> TaskKey:
-        return TaskKey.from_fullpath(fullpath)
+        return TaskKey.from_fullname(fullpath)
 
     def keys(self) -> KeysView[TaskKey]:
         return self._clients.keys()
@@ -37,7 +37,7 @@ class TaskConnectionPool:
         return self._clients[key]
 
     def get_by_fullpath(self, fullpath: str) -> RpcClient:
-        return self.get(TaskKey.from_fullpath(fullpath))
+        return self.get(TaskKey.from_fullname(fullpath))
 
     def get_by_category(self, group: str, project: str, task: str) -> RpcClient:
         return self.get(TaskKey(group, project, task))
@@ -49,7 +49,7 @@ class TaskConnectionPool:
         self._clients[key] = client
 
     def set_by_fullpath(self, fullpath: str, client: RpcClient) -> None:
-        return self.set(TaskKey.from_fullpath(fullpath), client)
+        return self.set(TaskKey.from_fullname(fullpath), client)
 
     def set_by_category(
         self, group: str, project: str, task: str, client: RpcClient
@@ -63,7 +63,7 @@ class TaskConnectionPool:
         del self._clients[key]
 
     def remove_by_fullpath(self, fullpath: str) -> None:
-        self.remove(TaskKey.from_fullpath(fullpath))
+        self.remove(TaskKey.from_fullname(fullpath))
 
     def remove_by_category(self, group: str, project: str, task: str) -> None:
         self.remove(TaskKey(group, project, task))
@@ -75,7 +75,7 @@ class TaskConnectionPool:
         return key in self.keys()
 
     def exist_by_fullpath(self, fullpath: str) -> bool:
-        return self.exist(TaskKey.from_fullpath(fullpath))
+        return self.exist(TaskKey.from_fullname(fullpath))
 
     def exist_by_category(self, group: str, project: str, task: str) -> bool:
         return self.exist(TaskKey(group, project, task))

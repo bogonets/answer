@@ -263,7 +263,22 @@ class LamdaTemplateManager:
     def decompress_templates(self, data: bytes) -> None:
         decompress_template_directory(self._template_directory, data)
 
+    @staticmethod
+    def fullname_to_template_key(fullname: str) -> Optional[LamdaTemplateKey]:
+        try:
+            return LamdaTemplateKey.from_fullname(fullname)
+        except:  # noqa
+            return None
+
     def find_template(self, category: str, name: str) -> LamdaTemplate:
+        key = self.fullname_to_template_key(name)
+        if key:
+            if category and category != key.category:
+                msg1 = "If you use full names, the categories must match"
+                msg2 = f"{category} vs {key.category}"
+                raise ValueError(f"{msg1}: {msg2}")
+            return self._templates[key]
+
         if category in self._storage_category_to_names.keys():
             position = LamdaTemplatePosition.Storage
             category_to_names = self._storage_category_to_names
@@ -282,4 +297,5 @@ class LamdaTemplateManager:
             params_msg = f"category={category},name={name}"
             raise ReccNotFoundError(f"Not found template: {params_msg}")
 
-        return self._templates[LamdaTemplateKey(position, category, name)]
+        key = LamdaTemplateKey(position, category, name)
+        return self._templates[key]

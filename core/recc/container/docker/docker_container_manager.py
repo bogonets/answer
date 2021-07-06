@@ -11,8 +11,8 @@ from recc.exception.recc_error import (
     ReccAlreadyError,
 )
 from recc.log.logging import recc_container_logger as logger
-from recc.rule.naming import (
-    valid_naming,
+from recc.rule.naming_base import valid_naming
+from recc.rule.naming_task import (
     naming_task,
     naming_task_volume,
     naming_task_network,
