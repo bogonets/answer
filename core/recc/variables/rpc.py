@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from recc.variables.port import DEFAULT_TASK_RPC_PORT
+
 _1KB = 1024
 _1MB = _1KB * 1024
 _1GB = _1MB * 1024
@@ -37,7 +39,7 @@ Reference:
 """
 
 DEFAULT_RPC_BIND = "[::]"
-DEFAULT_RPC_PORT = 20000
+DEFAULT_RPC_PORT = DEFAULT_TASK_RPC_PORT
 DEFAULT_RPC_ADDRESS = f"{DEFAULT_RPC_BIND}:{DEFAULT_RPC_PORT}"
 
 DEFAULT_WAIT_TASK_INTERVAL = 1.0
