@@ -48,6 +48,7 @@ RUN groupadd {{group_name}} && \
              "{TASK_GUEST_PACKAGE_DIR}" \
              "{TASK_GUEST_CACHE_DIR}" && \
     chown -R {{user_name}}:{{group_name}} "{TASK_GUEST_WORKSPACE_DIR}" && \
+    pip3 install --upgrade pip && \
     pip3 install {RECC_REQUIREMENTS_MAIN_ARG}
 
 ADD "{BUILD_CONTEXT_RECC_PATH}" "{TASK_GUEST_PACKAGE_DIR}"

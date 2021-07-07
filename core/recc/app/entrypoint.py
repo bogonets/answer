@@ -39,6 +39,10 @@ def main(
         printer(version_text)
         return 0
 
+    if not config.command:
+        printer(f"Empty command.")
+        return 1
+
     cmd = get_command(config)
     if cmd == Command.core:
         assert isinstance(config, CoreConfig)
