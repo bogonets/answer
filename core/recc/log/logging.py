@@ -123,11 +123,12 @@ def get_root_level() -> int:
     return logging.getLogger().level
 
 
-# fmt: off
-DEFAULT_FORMAT = "%(asctime)s.%(msecs)03d %(process)d/%(thread)s %(name)s %(levelname)s %(message)s"  # noqa
-DEFAULT_DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+_FMT_TIME = "%(asctime)s.%(msecs)03d"
+_FMT_THREAD = "%(process)d/%(thread)s"
+
+DEFAULT_FORMAT = f"{_FMT_TIME} {_FMT_THREAD} %(name)s %(levelname)s %(message)s"
+DEFAULT_DATEFMT = "%Y-%m-%d %H:%M:%S"
 DEFAULT_STYLE = "%"
-# fmt: on
 
 SIMPLE_FORMAT = "{levelname[0]} {asctime} {name} {message}"
 SIMPLE_DATEFMT = "%Y%m%d %H%M%S"
@@ -139,7 +140,7 @@ _DEFAULT_LOGGING_CONFIG = {
     "formatters": {
         "default": {
             "format": DEFAULT_FORMAT,
-            "datefmt": DEFAULT_DATETIME_FORMAT,
+            "datefmt": DEFAULT_DATEFMT,
             "style": DEFAULT_STYLE,
         },
         "simple": {
@@ -150,7 +151,7 @@ _DEFAULT_LOGGING_CONFIG = {
         "color": {
             "class": "recc.log.colored_formatter.ColoredFormatter",
             "format": DEFAULT_FORMAT,
-            "datefmt": DEFAULT_DATETIME_FORMAT,
+            "datefmt": DEFAULT_DATEFMT,
             "style": DEFAULT_STYLE,
         },
     },

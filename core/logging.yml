@@ -35,11 +35,14 @@ handlers:
     <<: *stream_stdout_handler
     formatter: color
 
-  file_simple:
+  file_default:
     class: logging.FileHandler
     level: DEBUG
-    formatter: simple
-    filename: "recc.log"
+    formatter: default
+    filename: recc.log
+    mode: a
+    encoding: utf-8
+    delay: false
 
 loggers:
   aiohttp:
@@ -59,4 +62,4 @@ loggers:
 
 root:
   level: DEBUG
-  handlers: [console_color]
+  handlers: [console_color, file_default]
