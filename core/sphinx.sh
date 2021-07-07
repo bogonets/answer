@@ -90,7 +90,7 @@ function recc_sphinx_main
         esac
     done
 
-    local command=$1
+    local command=${1:-html}
     if [[ -z $command ]]; then
         echo "Empty command"
         return 1
