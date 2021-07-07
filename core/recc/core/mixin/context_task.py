@@ -390,20 +390,6 @@ class ContextTask(ContextBase):
         task = await self.container.get_task(group_name, project_name, task_name)
         await self.container.restart_container(task.key)
 
-    async def get_tasks(
-        self, session: Session, group_name: str, project_name: str
-    ) -> List[Task]:
-        user = await self.database.get_user_by_username(session.audience)
-        group = await self.database.get_group_by_name(group_name)
-        project = await self.database.get_project_by_name(group.uid, project_name)
-        assert user.uid is not None
-        assert group.uid is not None
-        assert project.uid is not None
-
-        # TODO: test permission
-
-        return await self.database.get_task_by_project_uid(project.uid)
-
     async def get_task_status(
         self, session: Session, group_name: str, project_name: str
     ) -> List[ContainerInfo]:

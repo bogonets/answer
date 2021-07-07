@@ -544,14 +544,6 @@ class RouterV1:
         result = await self.context.exists_layout(session, projname, layout_name)
         return response_ok_without_detail(name, {"check": result, "t": "layout-check"})
 
-    @staticmethod
-    def _graph_to_v1_dict() -> dict:
-        return {
-            "links": [],
-            "nodes": [],
-            "tasks": [],
-        }
-
     async def on_get_graph(self, request: Request):
         name = "graph"
         session = request[at_session]
@@ -559,9 +551,9 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_get_graph(session={username},project={projname})")
 
-        # graph = await self.context.get_tasks(session, projname)
-        result = self._graph_to_v1_dict()
-        return response_ok_without_detail(name, {"obj": result, "t": name})
+        group_name = ""
+        project = await self.context.get_project(session, group_name, projname)
+        return response_ok_without_detail(name, {"obj": project.extra, "t": name})
 
     async def on_set_graph(self, request: Request):
         name = "graph-modify"
