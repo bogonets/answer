@@ -6,43 +6,37 @@
   </v-app>
 </template>
 
-<script>
-/**
- * 앱 자체의 모듈입니다. main에서 생성되는 루트 vue에 사용됩니다.
- * @author zilhak, 2019-01-09
- *
- * @param {router-view} - 메인 라우터입니다.
- */
-export default {
-  name: "App",
-  components: {},
-  data() {
-    return {};
-  },
-  methods: {},
-  computed: {
-    dark() {
-      return this.$vuetify.theme.dark;
-    },
-  },
-  watch: {
-    dark() {
-      this.$vuetify.theme.dark = this.dark;
-    },
-  },
+<script lang="ts">
+import { Vue, Component, Watch } from "vue-property-decorator"
+
+@Component
+export default class App extends Vue {
   created() {
     // this.$api.setUrl(this.$local.getters['etc/getApiUrl']);
-  },
+  }
+
   mounted() {
     this.$vuetify.lang.current = "ko";
     this.$i18n.locale = this.$store.getters["language/getLanguage"];
     this.$api.setUrl(this.$localStore.getters["etc/getApiUrl"]);
-  },
-  beforeDestroy() {},
-};
+  }
+
+  beforeDestroy() {
+    // EMPTY.
+  }
+
+  get dark(): boolean {
+    return this.$vuetify.theme.dark;
+  }
+
+  @Watch("dark")
+  onChangedDark() {
+    this.$vuetify.theme.dark = this.dark;
+  }
+}
 </script>
 
-<style>
+<style lang="scss">
 .slide-leave-active {
   transition: opacity 0.1s, transform 0.1s;
   transform: translateX(-10%);
@@ -58,6 +52,7 @@ export default {
   opacity: 0;
   transform: translateX(10%);
 }
+
 /**
  * Overlay of Vuetify Dialog Opacity style.
  */
