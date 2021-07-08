@@ -1,5 +1,5 @@
 <template>
-  <v-main class="no-drag">
+  <v-main class="no-select">
     <v-container fluid fill-height class="container">
       <v-layout align-center justify-center>
         <v-flex xs12 sm6 md4 lg4 xl4>
@@ -198,25 +198,23 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "~@/styles/sass/no-select.scss";
+
 .container {
   display: inline-block;
   /* background-color: whitesmoke; */
 }
+
 .md-app {
-  border: 1px solid rgba(#000, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }
+
 .content-style {
   margin-top: 60px;
   margin-bottom: auto;
 }
-.no-drag {
-  -ms-user-select: none;
-  -moz-user-select: -moz-none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  user-select: none;
-}
+
 .settingButton {
   position: absolute;
   top: 15px;
