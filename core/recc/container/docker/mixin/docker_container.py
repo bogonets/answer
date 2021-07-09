@@ -13,6 +13,8 @@ from recc.container.container_manager_interface import (
 )
 from recc.container.docker.mixin.docker_base import DockerBase
 
+_ERR_FMT_HOST_PORT_TYPE = "The host port information is not a `list` type: %s"
+
 
 def _create_container_ports(
     ports: Dict[str, List[Dict[str, str]]],
@@ -21,18 +23,21 @@ def _create_container_ports(
     for key, val in ports.items():
         guest_port, guest_protocol = key.split("/", 1)
         guest = PortBindingGuest(guest_port, guest_protocol)
+
         port_binding_host = list()
-        assert isinstance(val, list)
-        for host_infos in val:
-            assert isinstance(host_infos, dict)
-            host_ip = host_infos.get("HostIp")
-            if not host_ip:
-                continue
-            host_port = host_infos.get("HostPort")
-            if not host_port:
-                continue
-            port_binding_host.append(PortBindingHost(host_ip, host_port))
+        if val:
+            assert isinstance(val, list), _ERR_FMT_HOST_PORT_TYPE % {type(val).__name__}
+            for host_infos in val:
+                assert isinstance(host_infos, dict)
+                host_ip = host_infos.get("HostIp")
+                if not host_ip:
+                    continue
+                host_port = host_infos.get("HostPort")
+                if not host_port:
+                    continue
+                port_binding_host.append(PortBindingHost(host_ip, host_port))
         result[guest] = port_binding_host
+
     return result
 
 
