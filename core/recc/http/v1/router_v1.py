@@ -9,7 +9,6 @@ from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 from recc.auth.basic_auth import BasicAuth
 from recc.auth.bearer_auth import BearerAuth
-from recc.variables.database import ANONYMOUS_GROUP_NAME
 from recc.core.context import Context
 from recc.http.v1 import path_v1 as pv1
 from recc.http.v1.extra.airjoy_v1 import AirjoyV1
@@ -38,6 +37,8 @@ from recc.struct.layout import Layout
 from recc.struct.user import User
 from recc.driver.json import global_json_encoder, global_json_decoder
 from recc.util.version import version_text
+from recc.variables.database import ANONYMOUS_GROUP_NAME
+from recc.variables.labels import RECC_TASK_TASK_KEY
 
 GLOBAL_GROUP = ANONYMOUS_GROUP_NAME
 
@@ -583,8 +584,14 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_get_graph_status(session={username},project={projname})")
 
-        status = await self.context.get_task_status(session, GLOBAL_GROUP, projname)
-        result = [{"name": s.name, "state": str(s.status)} for s in status]
+        tasks = await self.context.get_tasks(session, GLOBAL_GROUP, projname)
+
+        result = list()
+        for s in tasks:
+            task_name = s.labels[RECC_TASK_TASK_KEY]
+            task_status = str(s.status.name)
+            result.append({"name": task_name, "state": task_status})
+
         return response_ok_without_detail(name, {"obj": {"tasks": result}, "t": name})
 
     async def on_stop_task(self, request: Request):
@@ -596,7 +603,7 @@ class RouterV1:
         params = f"session={username},project={projname},task={taskname}"
         logger.info(f"on_stop_task({params})")
 
-        # await self.context.stop_task(session, projname, taskname)
+        await self.context.stop_task(session, projname, taskname)
         return response_ok_without_detail(name)
 
     async def on_get_task_property_value(self, request: Request):

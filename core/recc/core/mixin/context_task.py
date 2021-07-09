@@ -390,7 +390,7 @@ class ContextTask(ContextBase):
         task = await self.container.get_task(group_name, project_name, task_name)
         await self.container.restart_container(task.key)
 
-    async def get_task_status(
+    async def get_tasks(
         self, session: Session, group_name: str, project_name: str
     ) -> List[ContainerInfo]:
         user = await self.database.get_user_by_username(session.audience)
