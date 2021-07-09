@@ -7,7 +7,7 @@ from recc.http.http_app_tester import HttpAppTester
 from recc.http.v1 import path_v1 as pv1
 from recc.http.v1.common import k_user, get_v1_path
 from recc.util.version import version_text
-from tester import AsyncTestCase  # , read_sample
+from tester import AsyncTestCase, read_sample
 
 
 class RouterV1TestCase(AsyncTestCase):
@@ -126,20 +126,36 @@ class RouterV1TestCase(AsyncTestCase):
         self.assertIsInstance(projects[0], dict)
         self.assertEqual(proj0, projects[0]["name"])
 
-    async def test_set_graph(self):
+    async def test_create_task_and_validation(self):
         await self.tester.run_v1_admin_login()
 
-        proj0 = "demo"
+        proj0 = "__demo__"
         proj0_path = pv1.create_project.format(proj=proj0)
         proj0_result = await self.tester.post_request(get_v1_path(proj0_path))
         self.assertEqual(200, proj0_result.status)
 
-        # set_proj_graph_path = pv1.set_proj_graph.format(proj=proj0)
-        # set_proj_graph_request_data = read_sample("set_graph.numpy2.json")
-        # result = await self.tester.post_request(
-        #     get_v1_path(set_proj_graph_path), data=set_proj_graph_request_data
-        # )
-        # self.assertEqual(200, result.status)
+        set_proj_graph_path = pv1.set_proj_graph.format(proj=proj0)
+        set_proj_graph_request_data = read_sample("set_graph.numpy2.json")
+        set_proj_graph_result = await self.tester.post_request(
+            get_v1_path(set_proj_graph_path), data=set_proj_graph_request_data
+        )
+        self.assertEqual(200, set_proj_graph_result.status)
+
+        get_proj_graph_path = pv1.get_proj_graph.format(proj=proj0)
+        get_proj_graph_result = await self.tester.get_request(
+            get_v1_path(get_proj_graph_path)
+        )
+        self.assertEqual(200, get_proj_graph_result.status)
+
+        get_proj_graph_status_path = pv1.get_proj_graph_status.format(proj=proj0)
+        get_proj_graph_status_result = await self.tester.get_request(
+            get_v1_path(get_proj_graph_status_path)
+        )
+        self.assertEqual(200, get_proj_graph_status_result.status)
+
+        stop_proj_task_path = pv1.stop_proj_task.format(proj=proj0, task="Task")
+        result = await self.tester.post_request(get_v1_path(stop_proj_task_path))
+        self.assertEqual(200, result.status)
 
 
 if __name__ == "__main__":

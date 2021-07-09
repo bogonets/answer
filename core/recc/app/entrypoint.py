@@ -40,7 +40,7 @@ def main(
         return 0
 
     if not config.command:
-        printer(f"Empty command.")
+        printer("Empty command.")
         return 1
 
     cmd = get_command(config)

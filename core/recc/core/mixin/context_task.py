@@ -20,7 +20,6 @@ from recc.exception.recc_error import (
     ReccNotFoundError,
     ReccTimeoutError,
 )
-from recc.struct.task import Task
 from recc.rule.naming_base import valid_naming
 from recc.rule.naming_task import naming_task
 from recc.log.logging import recc_core_logger as logger

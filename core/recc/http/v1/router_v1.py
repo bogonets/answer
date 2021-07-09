@@ -603,7 +603,9 @@ class RouterV1:
         params = f"session={username},project={projname},task={taskname}"
         logger.info(f"on_stop_task({params})")
 
-        await self.context.stop_task(session, projname, taskname)
+        group_name = ""
+        await self.context.stop_task(group_name, projname, taskname)
+        await self.context.remove_task(group_name, projname, taskname)
         return response_ok_without_detail(name)
 
     async def on_get_task_property_value(self, request: Request):
