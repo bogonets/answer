@@ -31,7 +31,7 @@ def json_response(
     return Response(text=json.dumps(data), status=status, content_type=content_type)
 
 
-class Router:
+class RouterV2:
     """
     API version 2.0 - HTTP Router class.
     """
