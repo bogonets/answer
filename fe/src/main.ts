@@ -29,7 +29,6 @@ import aTextarea from "@/components/Input/aTextarea.vue";
 import aList from "@/components/List/aList.vue";
 import aConsole from "@/components/Console/aConsole.vue";
 import movePanel from "@/components/Dashboard/adbDashboardPanel.vue";
-import appTitle from "@/components/Text/appTitle.vue";
 Vue.component("vCsvField", vCsvField);
 Vue.component("aCsvInput", aCsvInput);
 Vue.component("aJsonField", aJsonField);
@@ -37,7 +36,6 @@ Vue.component("aTextarea", aTextarea);
 Vue.component("aList", aList);
 Vue.component("aConsole", aConsole);
 Vue.component("movePanel", movePanel);
-Vue.component("appTitle", appTitle);
 
 // Use open source component.
 import VueDragDrop from "vue-drag-drop";

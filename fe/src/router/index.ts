@@ -181,11 +181,6 @@ if (process.env.NODE_ENV !== "production") {
       .default
   });
   answerRoutes.push({
-    path: "/testapptitle",
-    name: "testapptitle",
-    component: require("@/components/Text/test/appTitleTest.vue").default
-  });
-  answerRoutes.push({
     path: "/testlambdawidget",
     name: "testlambdawidget",
     component: require("@/components/LambdaWidget/test/lambdaWidgetsTemplate.vue")

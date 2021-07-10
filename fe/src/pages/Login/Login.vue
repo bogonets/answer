@@ -6,12 +6,7 @@
           <v-card>
             <v-toolbar>
               <v-spacer></v-spacer>
-              <app-title
-                :title="'answer'"
-                :upperCase="true"
-                :fontSize="35"
-                :textShadow="'2px 2px grey'"
-              ></app-title>
+              <main-title></main-title>
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-expand-transition hide-on-leave>
@@ -78,13 +73,15 @@
 
 <script>
 import afLoginForm from "@/components/Form/afLoginForm";
-import vLoader from "@/components/Progress/processProgress.vue";
+import vLoader from "@/components/Progress/processProgress";
+import MainTitle from "@/components/Text/MainTitle";
 
 export default {
   name: "LoginPage",
   components: {
     "af-login-form": afLoginForm,
     "v-loader": vLoader,
+    "main-title": MainTitle,
   },
   data() {
     return {
@@ -189,7 +186,7 @@ export default {
 @import "~@/styles/sass/user-select-none.scss";
 
 .no-select {
-  @include user-select-none
+  @include user-select-none;
 }
 
 .container {
