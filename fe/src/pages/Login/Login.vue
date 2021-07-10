@@ -78,26 +78,13 @@
 
 <script>
 import afLoginForm from "@/components/Form/afLoginForm";
-// import acbLanguageChanger from "@/components/Combobox/acbLanguageChanger";
-// import acbThemeChanger from "@/components/Combobox/acbThemeChanger";
 import vLoader from "@/components/Progress/processProgress.vue";
 
-/**
- * 로그인 페이지입니다.
- *
- * @author zilhak, 2019-01-09
- *
- * @module Login/Login
- * @param {componenets/Login/LoginComponent} - 사용자의 요청을 받아 로그인에 관련된 동작을 하는 컴포넌트입니다.
- * @param {componenets/Language/LanguageChanger} - 사용자의 입력을 받아 vue-i18n의 설정을 변경하는 컴포넌트입니다.
- */
 export default {
   name: "LoginPage",
   components: {
-    afLoginForm,
-    // acbLanguageChanger,
-    // acbThemeChanger,
-    vLoader,
+    "af-login-form": afLoginForm,
+    "v-loader": vLoader,
   },
   data() {
     return {
@@ -199,7 +186,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/sass/no-select.scss";
+@import "~@/styles/sass/user-select-none.scss";
+
+.no-select {
+  @include user-select-none
+}
 
 .container {
   display: inline-block;

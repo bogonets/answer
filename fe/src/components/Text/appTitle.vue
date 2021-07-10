@@ -73,6 +73,7 @@
 .appTitleContainer {
   width: fit-content;
 }
+
 .appTitle {
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   -ms-user-select: none;

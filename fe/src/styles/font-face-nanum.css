@@ -1,0 +1,29 @@
+@charset "utf-8";
+
+@font-face {
+  font-family: NanumSquareRoundRegular, sans-serif;
+  src: url("~@/fonts/NanumSquareRoundR.woff2") format("woff2"),
+       url("~@/fonts/NanumSquareRoundR.woff") format("woff"),
+       url("~@/fonts/NanumSquareRoundR.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: NanumSquareRoundLight, sans-serif;
+  src: url("~@/fonts/NanumSquareRoundL.woff2") format("woff2"),
+       url("~@/fonts/NanumSquareRoundL.woff") format("woff"),
+       url("~@/fonts/NanumSquareRoundL.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: NanumSquareRoundBold, sans-serif;
+  src: url("~@/fonts/NanumSquareRoundB.woff2") format("woff2"),
+       url("~@/fonts/NanumSquareRoundB.woff") format("woff"),
+       url("~@/fonts/NanumSquareRoundB.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: NanumSquareRoundExtraBold, sans-serif;
+  src: url("~@/fonts/NanumSquareRoundEB.woff2") format("woff2"),
+       url("~@/fonts/NanumSquareRoundEB.woff") format("woff"),
+       url("~@/fonts/NanumSquareRoundEB.ttf") format("truetype");
+}
