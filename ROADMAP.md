@@ -86,3 +86,7 @@
 - [ ] Improve logging
   - [ ] Color logging
   - [ ] Rotation logging
+- [ ] Refactoring Frontend
+  - TypeScript, Airbnb Styleguide, SASS
+  - [x] App.vue
+  - [x] MainTitle.vue

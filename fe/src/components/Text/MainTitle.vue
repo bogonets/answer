@@ -7,11 +7,11 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
-const DEFAULT_TITLE = "ANSWER";
+const DEFAULT_TITLE = 'ANSWER';
 const DEFAULT_UPPERCASE = false;
 const DEFAULT_FONT_SIZE = 32;
-const DEFAULT_FONT_STYLE = ""; // e.g. "italic";
-const DEFAULT_FONT_SHADOW = "";  // e.g. "2px 2px gray";
+const DEFAULT_FONT_STYLE = ''; // e.g. 'italic';
+const DEFAULT_FONT_SHADOW = '';  // e.g. '2px 2px gray';
 
 @Component
 export default class MainTitle extends Vue {
@@ -48,20 +48,20 @@ export default class MainTitle extends Vue {
 
     if (this.fontSize) {
       let sizeText: string;
-      if (typeof(this.fontSize) == "string") {
+      if (typeof(this.fontSize) == 'string') {
         sizeText = this.fontSize;
       } else {
         sizeText = `${this.fontSize}px`;
       }
-      text.style["font-size"] = sizeText;
+      text.style['font-size'] = sizeText;
     }
 
     if (this.fontStyle) {
-      text.style["font-style"] = this.fontStyle;
+      text.style['font-style'] = this.fontStyle;
     }
 
     if (this.fontShadow) {
-      text.style["text-shadow"] = this.fontShadow;
+      text.style['text-shadow'] = this.fontShadow;
     }
   }
 }

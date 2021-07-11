@@ -55,8 +55,10 @@ import sha256 from "sha256";
 Vue.prototype.$sha256 = sha256;
 
 import { REST_API } from "./services/api";
+import ApiV2 from "@/api";
 const restApi = REST_API();
 Vue.prototype.$api = restApi;
+Vue.prototype.$api2 = ApiV2;
 
 import { ANSWER_UTIL } from "./services/answer_util";
 const answerUtil = ANSWER_UTIL();

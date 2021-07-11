@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from "vue-property-decorator"
+import { Vue, Component, Watch } from 'vue-property-decorator'
 
 @Component
 export default class App extends Vue {
@@ -16,9 +16,9 @@ export default class App extends Vue {
   }
 
   mounted() {
-    this.$vuetify.lang.current = "ko";
-    this.$i18n.locale = this.$store.getters["language/getLanguage"];
-    this.$api.setUrl(this.$localStore.getters["etc/getApiUrl"]);
+    this.$vuetify.lang.current = 'ko';
+    this.$i18n.locale = this.$store.getters['language/getLanguage'];
+    this.$api.setUrl(this.$localStore.getters['etc/getApiUrl']);
   }
 
   beforeDestroy() {
@@ -29,7 +29,7 @@ export default class App extends Vue {
     return this.$vuetify.theme.dark;
   }
 
-  @Watch("dark")
+  @Watch('dark')
   onChangedDark() {
     this.$vuetify.theme.dark = this.dark;
   }

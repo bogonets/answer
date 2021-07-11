@@ -42,6 +42,7 @@ from recc.http.http_vars import (
     URL_APP_FAVICON,
 )
 from recc.http.v1.router_v1 import RouterV1
+from recc.http.v2.router_v2 import RouterV2
 from recc.file.permission import is_readable_dir, is_writable_dir
 from recc.exception.recc_error import ReccBaseException
 from recc.exception.http_status import HttpStatus
@@ -148,6 +149,8 @@ class HttpApp:
 
         self._router_v1 = RouterV1(self._context)
         self._router_v1.add_parent_app(self._app)
+        self._router_v2 = RouterV2(self._context)
+        self._router_v2.add_parent_app(self._app)
         self._cors = _create_cors(self._app)
 
         self._app.on_startup.append(self.on_startup)

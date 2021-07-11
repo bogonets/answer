@@ -7,9 +7,11 @@ from aiohttp import web
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
+from recc.log.logging import recc_http_logger as logger
 from recc.auth.bearer_auth import BearerAuth
 from recc.core.context import Context
 from recc.session.session import Session
+from recc.util.version import version_text
 
 PATH_PREFIX_API_V2 = "/api/v2"
 
@@ -38,12 +40,17 @@ class RouterV2:
 
     def __init__(self, context: Context):
         self._context = context
-        self._api_v2_app = web.Application(middlewares=[self.middleware])
-        self._api_v2_app.add_routes(self._get_routes())
+        self._app = web.Application(middlewares=[self.middleware])
+        self._app.add_routes(self._get_routes())
+
+    def add_parent_app(self, parent_app: web.Application) -> None:
+        assert self._app is not None
+        assert parent_app is not None
+        parent_app.add_subapp(PATH_PREFIX_API_V2, self._app)
 
     @property
     def app(self) -> web.Application:
-        return self._api_v2_app
+        return self._app
 
     @web.middleware
     async def middleware(self, request: Request, handler):
@@ -56,7 +63,7 @@ class RouterV2:
     def _get_routes(self) -> List[AbstractRouteDef]:
         # fmt: off
         return [
-            web.get("/test", self.on_test),
+            web.get("/version", self.on_version),
         ]
         # fmt: on
 
@@ -69,6 +76,7 @@ class RouterV2:
     # API v2 handlers
     # ---------------
 
-    async def on_test(self, _: Request):
+    async def on_version(self, _: Request):
         assert self._context
-        return json_response({})
+        logger.info(f"on_version() -> {version_text}")
+        return Response(text=version_text)
