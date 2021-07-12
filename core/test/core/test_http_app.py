@@ -2,7 +2,7 @@
 
 import unittest
 from recc.http.http_app_tester import HttpAppTester
-from recc.http.http_vars import URL_API_HEARTBEAT, URL_API_VERSION
+from recc.http import http_urls as u
 from recc.util.version import version_text
 from tester import AsyncTestCase
 
@@ -16,11 +16,11 @@ class HttpAppTestCase(AsyncTestCase):
         await self.tester.teardown()
 
     async def test_heartbeat(self):
-        result = await self.tester.get_request(URL_API_HEARTBEAT)
+        result = await self.tester.get_request(u.api_heartbeat)
         self.assertEqual(200, result.status)
 
     async def test_version(self):
-        result = await self.tester.get_request(URL_API_VERSION)
+        result = await self.tester.get_request(u.api_version)
         self.assertEqual(200, result.status)
         self.assertEqual(version_text, result.data)
 

@@ -14,7 +14,6 @@ from recc.http.v1 import path_v1 as pv1
 from recc.http.v1.extra.airjoy_v1 import AirjoyV1
 from recc.http.v1.extra.posod_v1 import PosodV1
 from recc.http.v1.common import (
-    PATH_PREFIX_API_V1,
     no_name,
     at_session,
     k_project,
@@ -149,11 +148,6 @@ class RouterV1:
     @property
     def context(self) -> Context:
         return self._context
-
-    def add_parent_app(self, parent_app: web.Application) -> None:
-        assert self._app is not None
-        assert parent_app is not None
-        parent_app.add_subapp(PATH_PREFIX_API_V1, self._app)
 
     async def _get_access_session(self, request: Request) -> Session:
         authorization = request.headers["authorization"]
@@ -301,7 +295,7 @@ class RouterV1:
         username = session.audience
         logger.info(f"on_get_users(session={username})")
         users = await self.context.get_users(session)
-        result = [self._user_to_v1_dict(u) for u in users]
+        result = [self._user_to_v1_dict(user) for user in users]
         return response_ok_without_detail(name, {"obj": result, "t": "get-user"})
 
     async def on_add_user(self, request: Request):

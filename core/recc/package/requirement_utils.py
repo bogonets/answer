@@ -11,6 +11,7 @@ RECC_REQUIREMENTS_MAIN = (
     "aiodns>=2.0.0",
     "brotlipy>=0.7.0",
     "aiohttp_cors>=0.7.0",
+    "aiohttp-swagger>=1.0.15",
     "grpcio>=1.36.1",
     "asyncpg>=0.22.0",
     "pyyaml>=5.4.1",

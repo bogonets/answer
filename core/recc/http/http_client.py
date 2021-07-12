@@ -6,24 +6,22 @@ from typing import Optional, Tuple
 from recc.http.http_vars import (
     DEFAULT_SCHEME,
     DEFAULT_REQUEST_TIMEOUT_SECONDS,
-    URL_ROOT,
-    URL_API_VERSION,
-    URL_API_HEARTBEAT,
 )
+from recc.http import http_urls as u
 
 
 def normalize_url_path(path: str) -> str:
     if not path:
-        return URL_ROOT
-    if path[0] != URL_ROOT:
-        return URL_ROOT + path
+        return u.root
+    if path[0] != u.root:
+        return u.root + path
     return path
 
 
 def request(
     host: str,
     port: int,
-    path=URL_ROOT,
+    path=u.root,
     scheme=DEFAULT_SCHEME,
     timeout=DEFAULT_REQUEST_TIMEOUT_SECONDS,
 ) -> Tuple[int, Optional[str]]:
@@ -41,7 +39,7 @@ def request_heartbeat(
     timeout=DEFAULT_REQUEST_TIMEOUT_SECONDS,
 ) -> Tuple[int, Optional[str]]:
     return request(
-        host=host, port=port, path=URL_API_HEARTBEAT, scheme=scheme, timeout=timeout
+        host=host, port=port, path=u.api_heartbeat, scheme=scheme, timeout=timeout
     )
 
 
@@ -78,5 +76,5 @@ def request_version(
     timeout=DEFAULT_REQUEST_TIMEOUT_SECONDS,
 ) -> Tuple[int, Optional[str]]:
     return request(
-        host=host, port=port, path=URL_API_VERSION, scheme=scheme, timeout=timeout
+        host=host, port=port, path=u.api_version, scheme=scheme, timeout=timeout
     )

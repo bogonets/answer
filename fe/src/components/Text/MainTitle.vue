@@ -1,6 +1,6 @@
 <template>
   <div class="title-container" ref="container">
-    <span class="title-text" ref="text">{{getTitle}}</span>
+    <span class="title-text" ref="title">{{getTitle}}</span>
   </div>
 </template>
 
@@ -17,19 +17,19 @@ const DEFAULT_FONT_SHADOW = '';  // e.g. '2px 2px gray';
 export default class MainTitle extends Vue {
 
   @Prop({type: String, default: DEFAULT_TITLE})
-  readonly title: string;
+  readonly title!: string;
 
   @Prop({type: Boolean, default: DEFAULT_UPPERCASE})
-  readonly isUppercase: boolean;
+  readonly isUppercase!: boolean;
 
   @Prop({type: [String, Number], default: DEFAULT_FONT_SIZE})
-  readonly fontSize: string | number;
+  readonly fontSize!: string | number;
 
   @Prop({type: String, default: DEFAULT_FONT_STYLE})
-  readonly fontStyle: string;
+  readonly fontStyle!: string;
 
   @Prop({type: String, default: DEFAULT_FONT_SHADOW})
-  readonly fontShadow: string;
+  readonly fontShadow!: string;
 
   get getTitle(): string {
     if (this.isUppercase) {
@@ -44,7 +44,7 @@ export default class MainTitle extends Vue {
   }
 
   onUpdatedDom() {
-    let text = this.$refs.text
+    let title = this.$refs.text as HTMLFormElement;
 
     if (this.fontSize) {
       let sizeText: string;
@@ -53,22 +53,22 @@ export default class MainTitle extends Vue {
       } else {
         sizeText = `${this.fontSize}px`;
       }
-      text.style['font-size'] = sizeText;
+      title.style['font-size'] = sizeText;
     }
 
     if (this.fontStyle) {
-      text.style['font-style'] = this.fontStyle;
+      title.style['font-style'] = this.fontStyle;
     }
 
     if (this.fontShadow) {
-      text.style['text-shadow'] = this.fontShadow;
+      title.style['text-shadow'] = this.fontShadow;
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/sass/user-select-none.scss";
+@import '~@/styles/sass/user-select-none.scss';
 
 .title-container {
   width: fit-content;

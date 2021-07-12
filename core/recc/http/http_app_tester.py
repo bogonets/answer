@@ -21,13 +21,14 @@ from aiohttp.hdrs import (
 )
 from recc.auth.basic_auth import BasicAuth
 from recc.auth.bearer_auth import BearerAuth
+from recc.argparse.default_parser import parse_arguments_to_core_config
 from recc.http.v1 import path_v1 as pv1
 from recc.http.v1.common import get_v1_path
 from recc.http.http_interface import EmptyHttpAppCallback
 from recc.http.http_vars import DEFAULT_SCHEME
-from recc.argparse.default_parser import parse_arguments_to_core_config
 from recc.http.http_app import HttpApp
 from recc.core.context import Context
+from recc.variables.http import TEST_HTTP_PORT
 
 DEFAULT_ADMIN_USERNAME: Final[str] = "admin"
 DEFAULT_ADMIN_PASSWORD: Final[str] = "0000"
@@ -77,7 +78,8 @@ class HttpAppTester(EmptyHttpAppCallback):
         self._config = parse_arguments_to_core_config()
         self._config.developer = True
         self._config.teardown = True
-        self._config.database_name = "http_app_tester"
+        self._config.database_name = "recc.http.tester"
+        self._config.http_port = TEST_HTTP_PORT
         self._context = Context(self._config, loop=loop)
         self._app = HttpApp(context=self._context, callback=self)
 

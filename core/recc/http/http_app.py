@@ -31,16 +31,7 @@ from aiohttp.web_routedef import AbstractRouteDef
 from recc.argparse.config.core_config import ARG_HTTP_ROOT
 from recc.core.context import Context
 from recc.http.http_interface import HttpAppCallback, EmptyHttpAppCallback
-from recc.http.http_vars import (
-    URL_ROOT,
-    URL_APP,
-    URL_API_VERSION,
-    URL_API_HEARTBEAT,
-    URL_INDEX,
-    URL_APP_INDEX,
-    URL_FAVICON,
-    URL_APP_FAVICON,
-)
+from recc.http import http_urls as u
 from recc.http.v1.router_v1 import RouterV1
 from recc.http.v2.router_v2 import RouterV2
 from recc.file.permission import is_readable_dir, is_writable_dir
@@ -148,9 +139,11 @@ class HttpApp:
         self._app.router.add_routes(self._routes)
 
         self._router_v1 = RouterV1(self._context)
-        self._router_v1.add_parent_app(self._app)
+        self._app.add_subapp(u.api_v1, self._router_v1.app)
+
         self._router_v2 = RouterV2(self._context)
-        self._router_v2.add_parent_app(self._app)
+        self._app.add_subapp(u.api_v2, self._router_v2.app)
+
         self._cors = _create_cors(self._app)
 
         self._app.on_startup.append(self.on_startup)
@@ -203,19 +196,19 @@ class HttpApp:
                 f"Writable http root directory (There may be a security issue): {http_root}"  # noqa
             )
 
-        return [web.static(URL_APP, http_root if http_root else DEFAULT_HTTP_ROOT)]
+        return [web.static(u.app, http_root if http_root else DEFAULT_HTTP_ROOT)]
 
     def _get_common_routes(self) -> List[AbstractRouteDef]:
         return [
-            web.get(URL_ROOT, self.on_get_root),
-            web.get(URL_INDEX, self.on_get_index),
-            web.get(URL_FAVICON, self.on_get_favicon),
+            web.get(u.root, self.on_get_root),
+            web.get(u.index, self.on_get_index),
+            web.get(u.favicon, self.on_get_favicon),
         ]
 
     def _get_common_api_routes(self) -> List[AbstractRouteDef]:
         return [
-            web.get(URL_API_HEARTBEAT, self.on_heartbeat),
-            web.get(URL_API_VERSION, self.on_version),
+            web.get(u.api_heartbeat, self.on_heartbeat),
+            web.get(u.api_version, self.on_version),
         ]
 
     def _print(self, *args, **kwargs) -> None:
@@ -226,13 +219,13 @@ class HttpApp:
         raise GracefulExit()
 
     async def on_get_root(self, request: Request) -> Response:
-        raise web.HTTPFound(URL_APP_INDEX)
+        raise web.HTTPFound(u.app_index)
 
     async def on_get_index(self, request: Request) -> Response:
-        raise web.HTTPFound(URL_APP_INDEX)
+        raise web.HTTPFound(u.app_index)
 
     async def on_get_favicon(self, request: Request) -> Response:
-        raise web.HTTPFound(URL_APP_FAVICON)
+        raise web.HTTPFound(u.app_favicon)
 
     async def on_heartbeat(self, _: Request) -> Response:
         assert self._context

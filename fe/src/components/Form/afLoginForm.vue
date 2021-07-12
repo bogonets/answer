@@ -28,13 +28,17 @@
         }}</v-alert>
       </v-form>
     </v-card-text>
+
     <v-card-actions>
-      <!-- <v-switch v-model="d_debug" :label="'Debug'"></v-switch> -->
+      <a class="text-button" @click="onSignup">{{ $t("sign_up") }}</a>
       <v-spacer></v-spacer>
-      <v-btn @click="onSignup">{{ $t("sign_up") }}</v-btn>
-      <v-btn @click="onLogin" :loading="d_signal" :disabled="d_signal">{{
-        $t("sign_in")
-      }}</v-btn>
+      <v-btn
+          :loading="d_signal"
+          :disabled="d_signal"
+          @click="onLogin"
+      >
+        {{ $t("sign_in") }}
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>

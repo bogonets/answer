@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from recc.variables.port import DEFAULT_CORE_HTTP_PORT
+from recc.variables.port import DEFAULT_CORE_HTTP_PORT, TEST_CORE_HTTP_PORT
 
 DEFAULT_HTTP_BIND = "0.0.0.0"
 DEFAULT_HTTP_PORT = DEFAULT_CORE_HTTP_PORT
 DEFAULT_HTTP_TIMEOUT = 5 * 60.0
+
+TEST_HTTP_PORT = TEST_CORE_HTTP_PORT

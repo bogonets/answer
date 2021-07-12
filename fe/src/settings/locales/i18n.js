@@ -782,7 +782,7 @@ export default new VueI18n({
       group_list: "그룹 목록",
       select_authority: "권한 선택",
       sign_in: "로그인",
-      sign_up: "회원 가입",
+      sign_up: "가입",
       signup: {
         descriptions: "이 페이지는 회원가입 페이지입니다.",
         how_to:

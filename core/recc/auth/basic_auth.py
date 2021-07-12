@@ -23,6 +23,12 @@ class BasicAuth:
         self.password = password
         self.encoding = encoding
 
+    def __str__(self) -> str:
+        return self.user_id
+
+    def __repr__(self) -> str:
+        return f"BasicAuth<id={self.user_id},encoding={self.encoding}>"
+
     @classmethod
     def decode_from_authorization_header(cls, auth_header, encoding="latin1"):
         """

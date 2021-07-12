@@ -102,6 +102,10 @@ assert CODE_REDIRECTION == CODE_MULTIPLE_CHOICES
 assert CODE_CLIENT_ERROR == CODE_BAD_REQUEST
 assert CODE_SERVER_ERROR == CODE_INTERNAL_SERVER_ERROR
 
+CODE_RECC_SERVER_ERROR = 520
+CODE_RECC_NOT_INITIALIZED = 521
+CODE_RECC_ALREADY = 522
+
 
 class HttpStatus(ReccBaseException):
     def __init__(self, *args, code):
@@ -432,3 +436,18 @@ class HttpNotExtended(HttpServerError):
 class HttpNetworkAuthenticationRequired(HttpServerError):
     def __init__(self, *args):
         super().__init__(*args, code=CODE_NETWORK_AUTHENTICATION_REQUIRED)
+
+
+class HttpReccServerError(HttpServerError):
+    def __init__(self, *args):
+        super().__init__(*args, code=CODE_RECC_SERVER_ERROR)
+
+
+class HttpReccNotInitialized(HttpServerError):
+    def __init__(self, *args):
+        super().__init__(*args, code=CODE_RECC_NOT_INITIALIZED)
+
+
+class HttpReccAlready(HttpServerError):
+    def __init__(self, *args):
+        super().__init__(*args, code=CODE_RECC_ALREADY)
