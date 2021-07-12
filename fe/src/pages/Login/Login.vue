@@ -154,7 +154,7 @@ export default {
     },
     onOk: function() {
       this.$api.setUrl(this.api_url);
-      this.$localStore.commit("etc/setApiUrl", { url: this.api_url });
+      this.$ls.setItem("etc/setApiUrl", { url: this.api_url });
       this.openSetting = false;
       this.initComplete = false;
       this.$nextTick(() => {

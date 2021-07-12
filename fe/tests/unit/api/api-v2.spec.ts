@@ -1,4 +1,4 @@
-import ApiV2 from '@/api/api-v2';
+import ApiV2 from '@/apis/api-v2';
 
 
 describe('ApiV2', () => {
