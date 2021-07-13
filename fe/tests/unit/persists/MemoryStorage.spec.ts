@@ -1,5 +1,4 @@
-import MemoryStorage from '@/persists/memory-storage';
-
+import MemoryStorage from '@/persists/MemoryStorage';
 
 describe('MemoryStorage', () => {
     let storage = new MemoryStorage();

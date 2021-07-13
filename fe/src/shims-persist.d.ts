@@ -1,4 +1,4 @@
-import PersistBase from '@/persists/persist-base.ts';
+import PersistBase from '@/persists/PersistBase.ts';
 
 declare module 'vue/types/vue' {
   interface Vue {
