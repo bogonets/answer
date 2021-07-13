@@ -12,7 +12,7 @@ interface PersistOptions {
     prefix?: string;
 }
 
-export default class Persist {
+export default class PersistBase {
 
     private _storage: Storage;
     private _prefix: string;

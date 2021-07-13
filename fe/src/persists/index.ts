@@ -1,13 +1,13 @@
 import VueInterface from 'vue';
 import { PluginObject } from 'vue/types/plugin';
-import Persist from '@/persists/persist';
+import PersistBase from '@/persists/persist-base';
 
 const DEFAULT_PROPERTY_NAME = '$persist';
 
 
 class PersistPlugin implements PluginObject<any> {
     install(Vue: typeof VueInterface, options: any): void {
-        Vue[DEFAULT_PROPERTY_NAME] = new Persist(options);
+        Vue[DEFAULT_PROPERTY_NAME] = new PersistBase(options);
     }
 }
 

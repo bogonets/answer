@@ -1,7 +1,7 @@
-import Persist from '@/persists/persist';
+import PersistBase from '@/persists/persist-base';
 
-describe.each(['memory', 'local', 'session'])('Persist', (type) => {
-    let storage = new Persist({type: type, prefix: 'test.'});
+describe.each(['memory', 'local', 'session'])('PersistBase', (type) => {
+    let storage = new PersistBase({type: type, prefix: `test.${type}`});
 
     test(`${type}-default`, () => {
         const key0 = 'key0';

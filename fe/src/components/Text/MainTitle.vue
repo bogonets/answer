@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
 const DEFAULT_TITLE = 'ANSWER';
 const DEFAULT_UPPERCASE = false;
@@ -17,7 +17,7 @@ const DEFAULT_FONT_SHADOW = '';  // e.g. '2px 2px gray';
 export default class MainTitle extends Vue {
 
   @Prop({type: String, default: DEFAULT_TITLE})
-  readonly title!: string;
+  readonly titleText!: string;
 
   @Prop({type: Boolean, default: DEFAULT_UPPERCASE})
   readonly isUppercase!: boolean;
@@ -33,9 +33,9 @@ export default class MainTitle extends Vue {
 
   get getTitle(): string {
     if (this.isUppercase) {
-      return this.title.toUpperCase();
+      return this.titleText.toUpperCase();
     } else {
-      return this.title;
+      return this.titleText;
     }
   }
 
