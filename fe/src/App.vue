@@ -1,8 +1,6 @@
 <template>
   <v-app :dark="dark">
-    <transition name="slide" mode="out-in">
-      <router-view />
-    </transition>
+    <router-view />
   </v-app>
 </template>
 
@@ -12,13 +10,15 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 @Component
 export default class App extends Vue {
   created() {
-    // this.$api.setUrl(this.$local.getters['etc/getApiUrl']);
+    // EMPTY.
   }
 
   mounted() {
     this.$vuetify.lang.current = 'ko';
     this.$i18n.locale = this.$store.getters['language/getLanguage'];
+
     this.$api.setUrl(this.$localStore.getters['etc/getApiUrl']);
+    this.$api2.origin = this.$persist.apiOrigin;
   }
 
   beforeDestroy() {
@@ -37,6 +37,17 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
+
+html {
+  overflow: hidden !important;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 .slide-leave-active {
   transition: opacity 0.1s, transform 0.1s;
   transform: translateX(-10%);

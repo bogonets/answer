@@ -9,9 +9,6 @@ Vue.directive("v-resize", Resize);
 export default new Vuetify({
   theme: {
     light: true,
-    dark: true
-  },
-  icons: {
-    iconfont: "md"
+    dark: true,
   }
 });

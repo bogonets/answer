@@ -36,6 +36,7 @@ class RouterV2Public:
 
     def _get_routes(self) -> List[AbstractRouteDef]:
         return [
+            web.get(u.heartbeat, self.on_heartbeat),
             web.get(u.version, self.on_version),
             web.get(u.test_init, self.on_test_init),
             web.post(u.init, self.on_init),
@@ -46,6 +47,11 @@ class RouterV2Public:
     # ---------------
     # API v2 handlers
     # ---------------
+
+    async def on_heartbeat(self, _: Request):
+        assert self._context
+        logger.info(f"on_heartbeat()")
+        return Response()
 
     async def on_version(self, _: Request):
         assert self._context

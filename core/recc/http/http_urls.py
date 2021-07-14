@@ -3,8 +3,20 @@
 root = "/"
 app = "/app"
 api = "/api"
-api_version = api + "/version"
-api_heartbeat = api + "/heartbeat"
+
+public = "/public"
+version = "/version"
+heartbeat = "/heartbeat"
+init = "/init"
+test = "/test"
+test_init = test + init
+admin = "/admin"
+signup = "/signup"
+signup_admin = signup + admin
+login = "/login"
+
+api_version = api + version
+api_heartbeat = api + heartbeat
 
 index = "/index.html"
 app_index = app + index
@@ -17,12 +29,3 @@ v2 = "/v2"
 api_v1 = api + v1
 api_v2 = api + v2
 
-public = "/public"
-version = "/version"
-init = "/init"
-test = "/test"
-test_init = test + init
-admin = "/admin"
-signup = "/signup"
-signup_admin = signup + admin
-login = "/login"
