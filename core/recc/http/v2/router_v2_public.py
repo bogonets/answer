@@ -39,7 +39,7 @@ class RouterV2Public:
             web.get(u.heartbeat, self.on_heartbeat),
             web.get(u.version, self.on_version),
             web.get(u.test_init, self.on_test_init),
-            web.post(u.init, self.on_init),
+            web.post(u.signup_admin, self.on_signup_admin),
             web.post(u.signup, self.on_signup),
             web.post(u.login, self.on_login),
         ]
@@ -50,7 +50,7 @@ class RouterV2Public:
 
     async def on_heartbeat(self, _: Request):
         assert self._context
-        logger.info(f"on_heartbeat()")
+        logger.info("on_heartbeat()")
         return Response()
 
     async def on_version(self, _: Request):
@@ -64,13 +64,13 @@ class RouterV2Public:
             raise HttpReccNotInitialized("Not initialized yet.")
         return Response()
 
-    async def on_init(self, request: Request):
+    async def on_signup_admin(self, request: Request):
         data = await request.json(loads=global_json_decoder)
 
         assert isinstance(data, dict)
         admin_id = data[d.admin_id]
         admin_pwd = data[d.admin_pwd]  # Perhaps the client encoded it with SHA256.
-        logger.info(f"on_init({d.admin_id}={admin_id})")
+        logger.info(f"on_signup_admin({d.admin_id}={admin_id})")
 
         if await self.context.exist_admin_user():
             raise HttpReccAlready("It has already been initialized.")

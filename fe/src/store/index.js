@@ -33,19 +33,3 @@ export const templateStore = new Vuex.Store({
     },
   },
 });
-
-export const configDetailsStore = new Vuex.Store({
-  state: {
-    configDetails: {},
-  },
-  getters: {
-    getConfigDetails: function(state) {
-      return state.configDetails;
-    },
-  },
-  mutations: {
-    setConfigDetails(state, items) {
-      state.configDetails = items;
-    },
-  },
-});

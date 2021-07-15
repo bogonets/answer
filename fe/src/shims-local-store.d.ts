@@ -1,7 +1,7 @@
-import { localStore } from "./store/index";
+import { Store } from "vuex";
 
 declare module "vue/types/vue" {
   interface Vue {
-    $localStore: localStore;
+    $localStore: Store<any>;
   }
 }

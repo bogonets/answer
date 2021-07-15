@@ -9,20 +9,16 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 
 @Component
 export default class App extends Vue {
-  created() {
-    // EMPTY.
-  }
-
   mounted() {
-    this.$vuetify.lang.current = 'ko';
-    this.$i18n.locale = this.$store.getters['language/getLanguage'];
+    const storedLanguage = this.$store.getters['language/getLanguage']
+    const language = storedLanguage ? storedLanguage : 'ko';
+    this.$vuetify.lang.current = language;
+    this.$i18n.locale = language;
 
-    this.$api.setUrl(this.$localStore.getters['etc/getApiUrl']);
-    this.$api2.origin = this.$persist.apiOrigin;
-  }
-
-  beforeDestroy() {
-    // EMPTY.
+    const storedApiOrigin = this.$localStore.getters['etc/getApiUrl'];
+    const apiOrigin = storedApiOrigin ? storedApiOrigin : document.location.origin;
+    this.$api.setUrl(apiOrigin);
+    this.$api2.origin = apiOrigin;
   }
 
   get dark(): boolean {

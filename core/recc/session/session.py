@@ -34,10 +34,16 @@ DEFAULT_REFRESH_MAX_AGE_SECONDS = SECONDS_OF_DAY
 DEFAULT_LEEWAY_SECONDS = 1.0
 DEFAULT_SIGNATURE_BYTE = 32
 
-ISS_KEY = "iss"
-AUD_KEY = "aud"
-EXP_KEY = "exp"
-IAT_KEY = "iat"
+# JSON Web Token (JWT)
+# https://datatracker.ietf.org/doc/html/rfc7519
+
+ISS_KEY = "iss"  # Issuer, a.k.a. Server Name
+AUD_KEY = "aud"  # Audience, a.k.a. User Name
+EXP_KEY = "exp"  # Expiration Time, a.k.a. Expiration Time
+IAT_KEY = "iat"  # Issued At, a.k.a. Created Time
+SUB_KEY = "sub"  # Subject
+NBF_KEY = "nbf"  # Not Before
+JTI_KEY = "jti"  # JWT ID
 
 
 def _create_signature(size=DEFAULT_SIGNATURE_BYTE) -> str:
@@ -58,7 +64,7 @@ class Session:
         self.issued_at = issued_at
 
     @property
-    def user_id(self) -> str:
+    def username(self) -> str:
         return self.audience
 
     def to_claim_dict(self) -> dict:
@@ -97,10 +103,10 @@ class SessionFactory:
         self.algorithm = algorithm
         self.leeway_seconds = leeway_seconds
 
-    def create_session(self, user_id: str, issued_at=datetime.utcnow()) -> Session:
+    def create_session(self, username: str, issued_at=datetime.utcnow()) -> Session:
         return Session(
             issuer=self.issuer,
-            audience=user_id,
+            audience=username,
             expiration_time=issued_at + timedelta(self.max_age_seconds),
             issued_at=issued_at,
         )
@@ -164,11 +170,11 @@ class SessionPairFactory:
         )
 
     def create_sessions(
-        self, user_id: str, issued_at=datetime.utcnow()
+        self, username: str, issued_at=datetime.utcnow()
     ) -> Tuple[Session, Session]:
         return (
-            self.access.create_session(user_id, issued_at),
-            self.refresh.create_session(user_id, issued_at),
+            self.access.create_session(username, issued_at),
+            self.refresh.create_session(username, issued_at),
         )
 
     def encode_access(self, session: Session) -> str:
@@ -178,9 +184,9 @@ class SessionPairFactory:
         return self.refresh.encode(session)
 
     def create_tokens(
-        self, user_id: str, issued_at=datetime.utcnow()
+        self, username: str, issued_at=datetime.utcnow()
     ) -> Tuple[str, str]:
-        access_session, refresh_session = self.create_sessions(user_id, issued_at)
+        access_session, refresh_session = self.create_sessions(username, issued_at)
         return self.encode_access(access_session), self.encode_refresh(refresh_session)
 
     def decode_access(self, token: str) -> Session:

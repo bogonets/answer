@@ -21,13 +21,15 @@
             <v-card-text>
               <v-form v-if="isReady">
                 <v-text-field
-                    :label="$t('user_name')"
                     type="text"
+                    v-model="currentUserName"
+                    :label="$t('user_name')"
                 ></v-text-field>
                 <v-text-field
-                    :label="$t('password')"
                     type="password"
                     autocomplete="off"
+                    v-model="currentUserPassword"
+                    :label="$t('password')"
                 ></v-text-field>
               </v-form>
               <v-container v-else>
@@ -59,7 +61,6 @@
                       rounded
                       block
                       color="primary"
-                      :disabled="disabledSignin"
                       :loading="visibleLoading"
                       @click="onClickSignin"
                   >
@@ -171,7 +172,7 @@
       <v-dialog
           v-model="visibleApiSettingDialog"
           persistent
-          @keydown.esc="onClickChangeApiCancel"
+          @keydown.esc="onApiDialogCancel"
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -198,7 +199,7 @@
                 required
                 v-model="currentApiOrigin"
                 :label="$t('api_origin')"
-                @keypress.enter.stop="onClickChangeApiOk"
+                @keypress.enter.stop="onApiDialogOk"
             ></v-text-field>
           </v-card-text>
 
@@ -208,14 +209,14 @@
             <v-spacer></v-spacer>
             <v-btn
                 text
-                @click="onClickChangeApiCancel"
+                @click="onApiDialogCancel"
             >
               {{ $t('cancel') }}
             </v-btn>
             <v-btn
                 color="primary"
                 text
-                @click="onClickChangeApiOk"
+                @click="onApiDialogOk"
             >
               {{ $t('ok') }}
             </v-btn>
@@ -290,12 +291,14 @@ export default class Login extends Vue {
     theme: mdiThemeLightDark,
   };
 
+  private currentUserName = "";
+  private currentUserPassword = "";
   private currentState = LoginPageState.Initializing;
   private currentLangIndex = 0;
   private currentApiOrigin = "";
+
   private visibleApiSettingDialog = false;
-  private disabledSignin = true;
-  private visibleLoading = true;
+  private visibleLoading = false;
 
   // onShift =  false;
   // onEnter =  false;
@@ -325,15 +328,35 @@ export default class Login extends Vue {
     }
   }
 
+  private saveLanguage(lang: string) {
+    this.$store.commit('language/setLanguage', { language: lang });
+  }
+
+  private saveLoginToken(access: string, refresh: string) {
+    this.$store.commit("user/login", {
+      accessToken: access,
+      refreshToken: refresh,
+      id: "",
+      email: "",
+      phone: "",
+    });
+  }
+
+  private saveApiOrigin(origin: string) {
+    this.$localStore.commit('etc/setApiUrl', { url: origin });
+  }
+
+  private loadApiOrigin(): string {
+    return this.$localStore.getters['etc/getApiUrl'];
+  }
+
   mounted() {
     if (!this.$vuetify.lang.current) {
       this.$vuetify.lang.current = LANG_KO;
     }
 
     this.currentLangIndex = LANGUAGES.indexOf(this.$vuetify.lang.current);
-    this.currentApiOrigin = this.$persist.apiOrigin;
-    // this.$localStore.getters["etc/getApiUrl"];
-
+    this.currentApiOrigin = this.loadApiOrigin();
     this.$api.setUrl(this.currentApiOrigin);
     this.$api2.origin = this.currentApiOrigin;
 
@@ -355,7 +378,7 @@ export default class Login extends Vue {
             this.updateState(LoginPageState.Ready);
           } else {
             console.warn('A reachable but uninitialized API.');
-            this.$router.push("/signupadmin");
+            this.$router.push('/signupadmin');
           }
         })
         .catch(error => {
@@ -366,22 +389,6 @@ export default class Login extends Vue {
 
   private updateState(s: LoginPageState): void {
     this.currentState = s;
-    switch (s) {
-      case LoginPageState.Initializing:
-        this.disabledSignin = true;
-        this.visibleLoading = true;
-        break;
-
-      case LoginPageState.Unreachable:
-        this.disabledSignin = true;
-        this.visibleLoading = false;
-        break;
-
-      case LoginPageState.Ready:
-        this.disabledSignin = false;
-        this.visibleLoading = false;
-        break;
-    }
   }
 
   onClickTheme() {
@@ -392,18 +399,18 @@ export default class Login extends Vue {
     if (this.$vuetify.lang.current != lang) {
       this.$vuetify.lang.current = lang;
       this.$i18n.locale = lang;
-      this.$store.commit("language/setLanguage", { language: lang });
+      this.saveLanguage(lang);
     }
   }
 
-  onClickChangeApiCancel() {
+  onApiDialogCancel() {
     this.visibleApiSettingDialog = false;
-    this.currentApiOrigin = this.$persist.apiOrigin;
+    this.currentApiOrigin = this.loadApiOrigin();
   }
 
-  onClickChangeApiOk() {
+  onApiDialogOk() {
     this.visibleApiSettingDialog = false;
-    this.$persist.apiOrigin = this.currentApiOrigin
+    this.saveApiOrigin(this.currentApiOrigin);
     this.$api.setUrl(this.currentApiOrigin);
     this.$api2.origin = this.currentApiOrigin;
 
@@ -413,6 +420,21 @@ export default class Login extends Vue {
   }
 
   onClickSignin() {
+    this.visibleLoading = true;
+
+    this.$api2.login(this.currentUserName, this.currentUserPassword)
+        .then(response => {
+          this.visibleLoading = false;
+          const access = response.access ? response.access : "";
+          const refresh = response.refresh ? response.refresh : "";
+          console.info('Login successful !!');
+          this.saveLoginToken(access, refresh)
+          this.$router.push('/main');
+        })
+        .catch(error => {
+          this.visibleLoading = false;
+          console.error(error);
+        });
   }
 
   onClickSignup() {
@@ -422,117 +444,13 @@ export default class Login extends Vue {
   onClickFindPassword() {
     // EMPTY.
   }
-
-  //     initCheckLists: [
-  //       {
-  //         name: "checking_init_api",
-  //         i18n: true,
-  //         func: () => {
-  //           return new Promise((resolve, reject) => {
-  //             this.$api
-  //               .checkAdmin()
-  //               .then((res) => {
-  //                 if (res.data.status === "ERROR") {
-  //                   this.$info(
-  //                     this.$options.name,
-  //                     "API::checkAdmin",
-  //                     "Is not existed admin."
-  //                   );
-  //                   setTimeout(() => {
-  //                     reject({
-  //                       status: true,
-  //                       message:
-  //                         "&nbsp;" +
-  //                         this.$t("is_not_existed_admin_go_to_signup_admin"),
-  //                     });
-  //                   }, 1000);
-  //                 } else {
-  //                   setTimeout(() => {
-  //                     resolve(true);
-  //                   }, 1000);
-  //                 }
-  //               })
-  //               .catch((err) => {
-  //                 setTimeout(() => {
-  //                   reject({ status: false, message: err });
-  //                 }, 1000);
-  //               });
-  //           });
-  //         },
-  //         complete: false,
-  //         status: null,
-  //         onError: (e) => {
-  //           if (e.status) {
-  //             setTimeout(() => {
-  //               this.$router.push("/signupadmin");
-  //             }, 3000);
-  //           } else {
-  //             this.$error("API", "checkAdmin", e);
-  //           }
-  //         },
-  //       },
-  //     ],
-
-  // onOpenApiSettingDialog() {
-  //   this.api_url = this.$api.getUrl();
-  //   this.openSetting = true;
-  //   this.$nextTick().then(() => {
-  //     this.$refs.apiUrl.focus();
-  //   });
-  // }
-
-  // onCancel() {
-  //   this.openSetting = false;
-  // }
-
-  // onOk() {
-  //   this.$api.setUrl(this.api_url);
-  //   this.$ls.setItem("etc/setApiUrl", { url: this.api_url });
-  //   this.openSetting = false;
-  //   this.initComplete = false;
-  //   this.$nextTick(() => {
-  //     if (!this.$refs.loader) {
-  //       return;
-  //     }
-  //     this.$refs.loader.allRetry();
-  //   });
-  // }
-
-  // get ok_disabled() {
-  //   if (this.api_url === "") {
-  //     return false;
-  //   } else if (!this.api_url) {
-  //     return false;
-  //   }
-  //   return true;
-  // }
 }
 </script>
 
 <style lang="scss" scoped>
-//@import "~@/styles/sass/user-select-none.scss";
-
-//.no-select {
-//  @include user-select-none;
-//}
-
-//.container {
-//  display: inline-block;
-//  /* background-color: whitesmoke; */
-//}
-
-//.md-app {
-//  border: 1px solid rgba(0, 0, 0, 0.12);
-//}
-
-//.content-style {
-//  margin-top: 60px;
-//  margin-bottom: auto;
-//}
-
 .config-button-group-position {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 16px;
+  right: 16px;
 }
 </style>

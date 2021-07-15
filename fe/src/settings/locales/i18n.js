@@ -268,7 +268,7 @@ export default new VueI18n({
       select_authority: "Select Authority",
       sign_in: "Sign in",
       sign_up: "Sign up",
-      forgot_password: "Find password",
+      forgot_password: "Forgot password",
       signup: {
         descriptions: "This page is a sign-up page.",
         how_to:
