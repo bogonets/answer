@@ -18,41 +18,54 @@
               </v-container>
             </v-card-title>
 
-            <v-card-text>
-              <v-form v-if="isReady">
-                <v-text-field
-                    type="text"
-                    v-model="currentUserName"
-                    :label="$t('user_name')"
-                ></v-text-field>
-                <v-text-field
-                    type="password"
-                    autocomplete="off"
-                    v-model="currentUserPassword"
-                    :label="$t('password')"
-                ></v-text-field>
-              </v-form>
-              <v-container v-else>
-                <v-row class="my-12" align="center" justify="center">
-                  <v-progress-linear
-                      v-if="isInitializing"
-                      color="primary"
-                      height="6"
-                      rounded
-                      indeterminate
-                  ></v-progress-linear>
-                  <v-progress-linear
-                      v-else-if="isUnreachable"
-                      color="error"
-                      height="6"
-                      rounded
-                  ></v-progress-linear>
-                </v-row>
-                <v-row class="my-6" align="center" justify="center">
-                  {{ loadingText }}
-                </v-row>
-              </v-container>
-            </v-card-text>
+            <v-expand-transition>
+              <v-card-text v-if="isReady">
+                <v-form>
+                  <v-text-field
+                      type="text"
+                      v-model="currentUserName"
+                      :label="$t('user_name')"
+                  ></v-text-field>
+                  <v-text-field
+                      type="password"
+                      autocomplete="off"
+                      v-model="currentUserPassword"
+                      :label="$t('password')"
+                  ></v-text-field>
+                </v-form>
+              </v-card-text>
+            </v-expand-transition>
+
+            <v-fade-transition>
+              <v-card-text v-if="!isReady">
+                <v-container>
+                  <v-row class="my-12" align="center" justify="center">
+                    <v-progress-linear
+                        v-if="isConnecting"
+                        color="primary"
+                        height="6"
+                        rounded
+                        indeterminate
+                    ></v-progress-linear>
+                    <v-progress-linear
+                        v-if="isReadyForWait"
+                        color="primary"
+                        height="6"
+                        rounded
+                    ></v-progress-linear>
+                    <v-progress-linear
+                        v-else-if="isUnreachable"
+                        color="error"
+                        height="6"
+                        rounded
+                    ></v-progress-linear>
+                  </v-row>
+                  <v-row class="my-6" align="center" justify="center">
+                    {{ loadingText }}
+                  </v-row>
+                </v-container>
+              </v-card-text>
+            </v-fade-transition>
 
             <v-card-actions v-if="isReady" class="d-block">
               <v-list>
@@ -271,9 +284,13 @@ const LANG_KO = 'ko';
 const LANG_EN = 'en';
 const LANGUAGES = [LANG_KO, LANG_EN];
 
+const WAIT_MOMENT_MILLISECONDS = 1000;
+
 enum LoginPageState {
-  Initializing,
+  Connecting,
   Unreachable,
+  Uninitialized,
+  ReadyForWait,
   Ready,
 }
 
@@ -291,26 +308,31 @@ export default class Login extends Vue {
     theme: mdiThemeLightDark,
   };
 
+  private readonly waitMoment = WAIT_MOMENT_MILLISECONDS;
+
   private currentUserName = "";
   private currentUserPassword = "";
-  private currentState = LoginPageState.Initializing;
+  private currentState = LoginPageState.Connecting;
   private currentLangIndex = 0;
   private currentApiOrigin = "";
 
   private visibleApiSettingDialog = false;
   private visibleLoading = false;
 
-  // onShift =  false;
-  // onEnter =  false;
-  // openSetting = false;
-  // api_url = "";
-
-  get isInitializing(): boolean {
-    return this.currentState == LoginPageState.Initializing;
+  get isConnecting(): boolean {
+    return this.currentState == LoginPageState.Connecting;
   }
 
   get isUnreachable(): boolean {
     return this.currentState == LoginPageState.Unreachable;
+  }
+
+  get isUninitialized(): boolean {
+    return this.currentState == LoginPageState.Uninitialized;
+  }
+
+  get isReadyForWait(): boolean {
+    return this.currentState == LoginPageState.ReadyForWait;
   }
 
   get isReady(): boolean {
@@ -319,10 +341,16 @@ export default class Login extends Vue {
 
   get loadingText(): string {
     switch (this.currentState) {
-      case LoginPageState.Initializing:
+      case LoginPageState.Connecting:
         return this.$t('connecting_api').toString()
       case LoginPageState.Unreachable:
         return this.$t('unreachable_api').toString()
+      case LoginPageState.Uninitialized:
+        return this.$t('uninitialized_api').toString()
+      case LoginPageState.ReadyForWait:
+        return this.$t('connected_api').toString()
+      case LoginPageState.Ready:
+        return "";
       default:
         return "";
     }
@@ -368,21 +396,23 @@ export default class Login extends Vue {
   }
 
   private requestTestInit() {
-    console.debug('Testing API ...');
-    this.updateState(LoginPageState.Initializing);
+    this.updateState(LoginPageState.Connecting);
 
     this.$api2.testInit()
         .then(response => {
           if (response.status == 200) {
-            console.info('Initialized !!');
-            this.updateState(LoginPageState.Ready);
+            this.updateState(LoginPageState.ReadyForWait);
+            setTimeout(() => {
+              this.updateState(LoginPageState.Ready);
+            }, this.waitMoment);
           } else {
-            console.warn('A reachable but uninitialized API.');
-            this.$router.push('/signupadmin');
+            this.updateState(LoginPageState.Unreachable);
+            setTimeout(() => {
+              this.$router.push('/signupadmin');
+            }, this.waitMoment);
           }
         })
         .catch(error => {
-          console.warn('Unreachable API.');
           this.updateState(LoginPageState.Unreachable);
         });
   }
