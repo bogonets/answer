@@ -1,16 +1,16 @@
 const state = {
-    api_url: document.location.origin
+    api: document.location.origin
 }
 
 const getters = {
     getApiUrl: function(state) {
-        return state.api_url;
+        return state.api;
     }
 }
 
 const mutations = {
-    setApiUrl(state, { url }) {
-        state.api_url = url;
+    setApiUrl(state, url) {
+        state.api = url;
     }
 }
 

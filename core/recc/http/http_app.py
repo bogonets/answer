@@ -4,7 +4,6 @@ import asyncio
 import os
 import sys
 from asyncio import AbstractEventLoop, Task, CancelledError
-from http import HTTPStatus
 from ipaddress import ip_address, IPv4Address
 from socket import (
     socket,
@@ -20,7 +19,6 @@ from typing import Optional, List
 import aiohttp_cors
 from aiohttp import web
 from aiohttp.log import access_logger
-from aiohttp.web import HTTPException
 from aiohttp.web import GracefulExit
 from aiohttp.web import _run_app  # noqa
 from aiohttp.web_log import AccessLogger
@@ -35,8 +33,6 @@ from recc.http import http_urls as u
 from recc.http.v1.router_v1 import RouterV1
 from recc.http.v2.router_v2 import RouterV2
 from recc.file.permission import is_readable_dir, is_writable_dir
-from recc.exception.recc_error import ReccBaseException
-from recc.exception.http_status import HttpStatus
 from recc.log.logging import recc_http_logger as logger
 from recc.util.version import version_text
 
@@ -162,24 +158,7 @@ class HttpApp:
 
     @web.middleware
     async def _global_middleware(self, request: Request, handler) -> Response:
-        # Returns value is 'application/octet-stream' if no Content-Type
-        # header present in HTTP headers according to RFC 2616
-        try:
-            return await handler(request)
-        except HTTPException:
-            raise
-        except HttpStatus as e:
-            assert e.is_http_status()
-            return self._error_response(e, e.code)
-        except ReccBaseException as e:
-            logger.exception(e)
-            return self._error_response(e, HTTPStatus.INTERNAL_SERVER_ERROR, e.code)
-        except NotImplementedError as e:
-            logger.exception(e)
-            return self._error_response(e, HTTPStatus.NOT_IMPLEMENTED)
-        except BaseException as e:
-            logger.exception(e)
-            return self._error_response(e, HTTPStatus.INTERNAL_SERVER_ERROR)
+        return await handler(request)
 
     def _get_http_root_routes(self) -> List[AbstractRouteDef]:
         http_root = self._context.config.http_root

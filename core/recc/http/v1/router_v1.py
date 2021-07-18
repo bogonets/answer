@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from typing import List
+from typing import List, Optional
 from http import HTTPStatus
 from aiohttp import web
 from aiohttp.hdrs import METH_OPTIONS
+from aiohttp.web import HTTPException
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
@@ -171,14 +172,35 @@ class RouterV1:
                 no_name, str(e), status=HTTPStatus.INTERNAL_SERVER_ERROR
             )
 
+    def _error_response(
+        self, e: BaseException, status: int, code: Optional[int] = None
+    ) -> Response:
+        dev_mode = self._context.config.developer
+        msg = repr(e) if dev_mode else str(e)
+        return web.json_response(
+            {"code": code if code is not None else status, "msg": msg},
+            status=status,
+        )
+
     @web.middleware
     async def _middleware(self, request: Request, handler):
-        if request.path in self._no_auth_paths:
-            return await handler(request)
-        if request.method == METH_OPTIONS:
-            return await handler(request)
-        else:
-            return await self._auth_middleware(request, handler)
+        # Returns value is 'application/octet-stream' if no Content-Type
+        # header present in HTTP headers according to RFC 2616
+        try:
+            if request.path in self._no_auth_paths:
+                return await handler(request)
+            if request.method == METH_OPTIONS:
+                return await handler(request)
+            else:
+                return await self._auth_middleware(request, handler)
+        except HTTPException:
+            raise
+        except NotImplementedError as e:
+            logger.exception(e)
+            return self._error_response(e, HTTPStatus.NOT_IMPLEMENTED)
+        except BaseException as e:
+            logger.exception(e)
+            return self._error_response(e, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     # ---------------
     # API v1 handlers

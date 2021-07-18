@@ -1,39 +1,29 @@
 <template>
-  <v-app :dark="dark">
+  <v-app>
     <router-view />
   </v-app>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 
 @Component
 export default class App extends Vue {
-  mounted() {
-    const storedLanguage = this.$store.getters['language/getLanguage']
-    const language = storedLanguage ? storedLanguage : 'ko';
-    this.$vuetify.lang.current = language;
-    this.$i18n.locale = language;
+  beforeCreate() {
+    const dark = this.$localStore.getters['theme/getTheme'] as boolean;
+    const lang = this.$localStore.getters['language/getLanguage'] as string;
+    const api = this.$localStore.getters['etc/getApiUrl'] as string;
 
-    const storedApiOrigin = this.$localStore.getters['etc/getApiUrl'];
-    const apiOrigin = storedApiOrigin ? storedApiOrigin : document.location.origin;
-    this.$api.setUrl(apiOrigin);
-    this.$api2.origin = apiOrigin;
-  }
-
-  get dark(): boolean {
-    return this.$vuetify.theme.dark;
-  }
-
-  @Watch('dark')
-  onChangedDark() {
-    this.$vuetify.theme.dark = this.dark;
+    this.$vuetify.theme.dark = dark;
+    this.$vuetify.lang.current = lang;
+    this.$i18n.locale = lang;
+    this.$api.setUrl(api);
+    this.$api2.origin = api;
   }
 }
 </script>
 
 <style lang="scss">
-
 html {
   overflow: hidden !important;
   -ms-overflow-style: none;

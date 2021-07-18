@@ -1,17 +1,21 @@
 <template>
-  <span
-      v-if="isTextMode"
-      class="title-font"
-  >
-    {{ titleText }}
-  </span>
-  <v-img
-      v-else
-      src="@/assets/answer-logo.svg"
-      contain
-      :max-width="maxWidth"
-      :max-height="maxHeight"
-  ></v-img>
+  <v-container>
+    <v-row align="center" justify="center">
+      <span
+          v-if="isTextMode"
+          class="title-font"
+      >
+        {{ titleText }}
+      </span>
+      <v-img
+          v-else
+          src="@/assets/answer-logo.svg"
+          contain
+          :max-width="maxWidth"
+          :max-height="maxHeight"
+      ></v-img>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -20,13 +24,8 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 const DEFAULT_TEXT_MODE = false;
 const DEFAULT_IS_UPPERCASE = false;
 const DEFAULT_ALTERNATIVE_TEXT = 'Answer';
-const DEFAULT_IMAGE_SCALE_BREAKPOINTS = {
-  xs: {x: 160, y: 160},
-  sm: {x: 160, y: 160},
-  md: {x: 160, y: 160},
-  lg: {x: 160, y: 160},
-  xl: {x: 200, y: 200},
-};
+const DEFAULT_MAX_WIDTH = 160;
+const DEFAULT_MAX_HEIGHT = 160;
 
 @Component
 export default class TitleLogo extends Vue {
@@ -40,20 +39,18 @@ export default class TitleLogo extends Vue {
   @Prop({type: String, default: DEFAULT_ALTERNATIVE_TEXT})
   readonly text!: string;
 
+  @Prop({type: Number, default: DEFAULT_MAX_WIDTH})
+  readonly maxWidth!: string;
+
+  @Prop({type: Number, default: DEFAULT_MAX_HEIGHT})
+  readonly maxHeight!: string;
+
   get titleText(): string {
     if (this.isUppercase) {
       return this.text.toUpperCase();
     } else {
       return this.text;
     }
-  }
-
-  get maxWidth(): number {
-    return DEFAULT_IMAGE_SCALE_BREAKPOINTS[this.$vuetify.breakpoint.name].x;
-  }
-
-  get maxHeight(): number {
-    return DEFAULT_IMAGE_SCALE_BREAKPOINTS[this.$vuetify.breakpoint.name].y;
   }
 }
 </script>

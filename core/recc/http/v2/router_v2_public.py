@@ -7,7 +7,10 @@ from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 from recc.log.logging import recc_http_logger as logger
-from recc.exception.http_status import HttpReccNotInitialized, HttpReccAlready
+from recc.http.http_errors import (
+    HTTPReccNotInitializedError,
+    HTTPReccAlreadyInitializedError,
+)
 from recc.auth.basic_auth import BasicAuth
 from recc.core.context import Context
 from recc.driver.json import global_json_decoder
@@ -61,7 +64,7 @@ class RouterV2Public:
     async def on_test_init(self, _: Request):
         logger.info("on_test_init()")
         if not await self.context.exist_admin_user():
-            raise HttpReccNotInitialized("Not initialized yet.")
+            raise HTTPReccNotInitializedError()
         return Response()
 
     async def on_signup_admin(self, request: Request):
@@ -73,7 +76,7 @@ class RouterV2Public:
         logger.info(f"on_signup_admin({d.admin_id}={admin_id})")
 
         if await self.context.exist_admin_user():
-            raise HttpReccAlready("It has already been initialized.")
+            raise HTTPReccAlreadyInitializedError()
 
         await self.context.signup_admin(user_id=admin_id, hashed_user_pw=admin_pwd)
         return Response()

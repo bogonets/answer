@@ -1,22 +1,25 @@
 <template>
   <v-main>
+
+    <!-- The card in the center of the screen. -->
     <v-container fluid class="fill-height">
       <v-row align="center" justify="center">
-        <v-col cols="8" sm="6" md="6" lg="4" xl="2">
+        <v-col cols="8" sm="6" md="6" lg="6" xl="4">
           <v-card>
 
             <v-card-title>
-              <v-container>
-                <v-row align="center" justify="center">
-                  <title-logo
-                      class="align-self-center mx-auto my-6"
-                      :is-text-mode="false"
-                      :is-uppercase="false"
-                      :text="'answer'"
-                  ></title-logo>
-                </v-row>
-              </v-container>
+              <title-logo class="mt-4"></title-logo>
             </v-card-title>
+
+            <v-fade-transition hide-on-leave>
+              <v-card-text v-if="!isReady">
+                <linear-loading
+                    :progress-color="progressColor"
+                    :progress-indeterminate="isConnecting"
+                    :loading-text="loadingText"
+                ></linear-loading>
+              </v-card-text>
+            </v-fade-transition>
 
             <v-expand-transition>
               <v-card-text v-if="isReady">
@@ -36,37 +39,6 @@
               </v-card-text>
             </v-expand-transition>
 
-            <v-fade-transition>
-              <v-card-text v-if="!isReady">
-                <v-container>
-                  <v-row class="my-12" align="center" justify="center">
-                    <v-progress-linear
-                        v-if="isConnecting"
-                        color="primary"
-                        height="6"
-                        rounded
-                        indeterminate
-                    ></v-progress-linear>
-                    <v-progress-linear
-                        v-if="isReadyForWait"
-                        color="primary"
-                        height="6"
-                        rounded
-                    ></v-progress-linear>
-                    <v-progress-linear
-                        v-else-if="isUnreachable"
-                        color="error"
-                        height="6"
-                        rounded
-                    ></v-progress-linear>
-                  </v-row>
-                  <v-row class="my-6" align="center" justify="center">
-                    {{ loadingText }}
-                  </v-row>
-                </v-container>
-              </v-card-text>
-            </v-fade-transition>
-
             <v-card-actions v-if="isReady" class="d-block">
               <v-list>
                 <v-list-item>
@@ -74,7 +46,7 @@
                       rounded
                       block
                       color="primary"
-                      :loading="visibleLoading"
+                      :loading="showLoading"
                       @click="onClickSignin"
                   >
                     {{ $t('sign_in') }}
@@ -105,184 +77,24 @@
 
           </v-card>
         </v-col>
-
-<!--              <v-expand-transition hide-on-leave>-->
-<!--        <af-login-form v-if="initComplete"></af-login-form>-->
-<!--              </v-expand-transition>-->
-<!--              <v-fade-transition hide-on-leave>-->
-<!--                <v-card-text v-if="!initComplete">-->
-<!--                  <v-loader-->
-<!--                      :serialize="false"-->
-<!--                      :loadList="initCheckLists"-->
-<!--                      @allComplete="initComplete = $event"-->
-<!--                      ref="loader"-->
-<!--                  ></v-loader>-->
-<!--                </v-card-text>-->
-<!--              </v-fade-transition>-->
-<!--            </v-card>-->
-<!--          </v-flex>-->
       </v-row>
-
     </v-container>
 
-    <v-row class="config-button-group-position ma-0 pa-0" justify="space-around">
-      <v-btn
-          icon
-          small
-          @click="onClickTheme"
-      >
-        <v-icon
-            small
-            role="img"
-            aria-hidden="false"
-        >
-          {{ icons.theme }}
-        </v-icon>
-      </v-btn>
+    <local-config-buttons
+        class="config-button-group-position ma-0 pa-0"
+        @on-change-theme="onChangeTheme"
+        @on-change-language="onChangeLanguage"
+        @on-change-api="onChangeApi"
+    ></local-config-buttons>
 
-      <v-menu
-          open-on-hover
-          transition="slide-y-transition"
-          :offset-y="true"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-              icon
-              small
-              v-bind="attrs"
-              v-on="on"
-          >
-            <v-icon
-                small
-                role="img"
-                aria-hidden="false"
-            >
-              {{ icons.translate }}
-            </v-icon>
-          </v-btn>
-        </template>
-
-        <v-list dense>
-          <v-subheader>{{ $t('translations') }}</v-subheader>
-          <v-divider></v-divider>
-          <v-list-item-group
-              mandatory
-              v-model="currentLangIndex"
-              color="primary"
-          >
-            <v-list-item
-                v-for="lang in languages"
-                :key="lang"
-            >
-              <v-list-item-content @click="onClickTranslate(lang)">
-                <v-list-item-title v-text="$t(lang)"></v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-      </v-menu>
-
-      <v-dialog
-          v-model="visibleApiSettingDialog"
-          persistent
-          @keydown.esc="onApiDialogCancel"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-              icon
-              small
-              v-bind="attrs"
-              v-on="on"
-          >
-            <v-icon small role="img" aria-hidden="false">{{icons.api}}</v-icon>
-          </v-btn>
-        </template>
-
-        <v-card>
-          <v-card-title>
-            <span>{{ $t('api_settings') }}</span>
-          </v-card-title>
-
-          <v-card-subtitle class="mt-1">
-            <span>{{ $t('api_change_origin') }}</span>
-          </v-card-subtitle>
-
-          <v-card-text>
-            <v-text-field
-                required
-                v-model="currentApiOrigin"
-                :label="$t('api_origin')"
-                @keypress.enter.stop="onApiDialogOk"
-            ></v-text-field>
-          </v-card-text>
-
-          <v-divider></v-divider>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-                text
-                @click="onApiDialogCancel"
-            >
-              {{ $t('cancel') }}
-            </v-btn>
-            <v-btn
-                color="primary"
-                text
-                @click="onApiDialogOk"
-            >
-              {{ $t('ok') }}
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-    </v-row>
-
-<!--    <v-dialog-->
-<!--      v-model="openSetting"-->
-<!--      max-width="500px"-->
-<!--      scrollable-->
-<!--      transition="dialog-transition"-->
-<!--      :overlay="false"-->
-<!--      :dark="$vuetify.theme.dark"-->
-<!--    >-->
-<!--      <v-card outlined>-->
-<!--        <v-card-title>-->
-<!--          <span>API Configure</span>-->
-<!--        </v-card-title>-->
-<!--        <v-divider></v-divider>-->
-<!--        <v-card-text class="pa-4">-->
-<!--          <v-text-field-->
-<!--            dense-->
-<!--            outlined-->
-<!--            hide-details-->
-<!--            ref="apiUrl"-->
-<!--            label="API Address"-->
-<!--            v-model="api_url"-->
-<!--            clearable-->
-<!--            @keypress.enter.stop="onOk"-->
-<!--          ></v-text-field>-->
-<!--        </v-card-text>-->
-<!--        <v-divider></v-divider>-->
-<!--        <v-card-actions>-->
-<!--          <v-btn @click="onCancel">{{ $t("cancel") }}</v-btn>-->
-<!--          <v-spacer></v-spacer>-->
-<!--          <v-btn @click="onOk" :disabled="!ok_disabled">{{ $t("ok") }}</v-btn>-->
-<!--        </v-card-actions>-->
-<!--      </v-card>-->
-<!--    </v-dialog>-->
   </v-main>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { mdiApi, mdiTranslate, mdiThemeLightDark } from '@mdi/js';
 import TitleLogo from '@/components/Title/TitleLogo.vue';
-
-const LANG_KO = 'ko';
-const LANG_EN = 'en';
-const LANGUAGES = [LANG_KO, LANG_EN];
+import LinearLoading from '@/components/Progress/LinearLoading.vue';
+import LocalConfigButtons from '@/components/Config/LocalConfigButtons.vue';
 
 const WAIT_MOMENT_MILLISECONDS = 1000;
 
@@ -296,28 +108,19 @@ enum LoginPageState {
 
 @Component({
   components: {
+    LocalConfigButtons,
+    LinearLoading,
     TitleLogo,
   }
 })
 export default class Login extends Vue {
 
-  private readonly languages = LANGUAGES;
-  private readonly icons = {
-    api: mdiApi,
-    translate: mdiTranslate,
-    theme: mdiThemeLightDark,
-  };
-
   private readonly waitMoment = WAIT_MOMENT_MILLISECONDS;
 
-  private currentUserName = "";
-  private currentUserPassword = "";
+  private currentUserName = '';
+  private currentUserPassword = '';
   private currentState = LoginPageState.Connecting;
-  private currentLangIndex = 0;
-  private currentApiOrigin = "";
-
-  private visibleApiSettingDialog = false;
-  private visibleLoading = false;
+  private showLoading = false;
 
   get isConnecting(): boolean {
     return this.currentState == LoginPageState.Connecting;
@@ -350,119 +153,120 @@ export default class Login extends Vue {
       case LoginPageState.ReadyForWait:
         return this.$t('connected_api').toString()
       case LoginPageState.Ready:
-        return "";
+        return '';
       default:
-        return "";
+        return '';
     }
   }
 
-  private saveLanguage(lang: string) {
-    this.$store.commit('language/setLanguage', { language: lang });
+  get progressColor(): string {
+    switch (this.currentState) {
+      case LoginPageState.Connecting:
+        return 'primary';
+      case LoginPageState.Unreachable:
+        return 'error';
+      case LoginPageState.Uninitialized:
+        return 'error';
+      case LoginPageState.ReadyForWait:
+        return 'primary';
+      case LoginPageState.Ready:
+        return 'primary';
+      default:
+        return 'primary';
+    }
   }
 
   private saveLoginToken(access: string, refresh: string) {
-    this.$store.commit("user/login", {
+    this.$store.commit('user/login', {
       accessToken: access,
       refreshToken: refresh,
-      id: "",
-      email: "",
-      phone: "",
+      id: '',
+      email: '',
+      phone: '',
     });
   }
 
-  private saveApiOrigin(origin: string) {
-    this.$localStore.commit('etc/setApiUrl', { url: origin });
+  private saveLanguage(lang: string): void {
+    this.$localStore.commit('language/setLanguage', lang);
   }
 
-  private loadApiOrigin(): string {
-    return this.$localStore.getters['etc/getApiUrl'];
+  private saveDarkTheme(dark: boolean): void {
+    this.$localStore.commit('theme/setTheme', dark);
+  }
+
+  private saveApiOrigin(origin: string): void {
+    this.$localStore.commit('etc/setApiUrl', origin);
   }
 
   mounted() {
-    if (!this.$vuetify.lang.current) {
-      this.$vuetify.lang.current = LANG_KO;
-    }
-
-    this.currentLangIndex = LANGUAGES.indexOf(this.$vuetify.lang.current);
-    this.currentApiOrigin = this.loadApiOrigin();
-    this.$api.setUrl(this.currentApiOrigin);
-    this.$api2.origin = this.currentApiOrigin;
-
     if (this.isReady) {
       this.updateState(LoginPageState.Ready);
     } else {
-      this.requestTestInit();
+      this.testInit();
     }
   }
 
-  private requestTestInit() {
+  private testInit() {
     this.updateState(LoginPageState.Connecting);
 
     this.$api2.testInit()
         .then(response => {
-          if (response.status == 200) {
-            this.updateState(LoginPageState.ReadyForWait);
-            setTimeout(() => {
-              this.updateState(LoginPageState.Ready);
-            }, this.waitMoment);
-          } else {
-            this.updateState(LoginPageState.Unreachable);
-            setTimeout(() => {
-              this.$router.push('/signupadmin');
-            }, this.waitMoment);
-          }
+          this.updateState(LoginPageState.ReadyForWait);
+          setTimeout(() => {
+            this.updateState(LoginPageState.Ready);
+          }, this.waitMoment);
         })
         .catch(error => {
-          this.updateState(LoginPageState.Unreachable);
+          if (error.response) {
+            if (error.response.status && error.response.status == 520) {
+              this.$router.push('/signupadmin');
+            } else {
+              this.updateState(LoginPageState.Unreachable);
+            }
+          } else {
+            this.updateState(LoginPageState.Unreachable);
+          }
         });
   }
 
-  private updateState(s: LoginPageState): void {
-    this.currentState = s;
+  private updateState(state: LoginPageState): void {
+    const oldVal = LoginPageState[this.currentState];
+    const newVal = LoginPageState[state];
+    this.currentState = state;
+    console.debug(`Change login page state: ${oldVal} -> ${newVal}`);
   }
 
-  onClickTheme() {
-    this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+  onChangeTheme(dark: boolean) {
+    const themeText = dark ? 'Dark' : 'Light';
+    console.debug('Change Theme: ' + themeText);
+    this.saveDarkTheme(dark);
   }
 
-  onClickTranslate(lang: string) {
-    if (this.$vuetify.lang.current != lang) {
-      this.$vuetify.lang.current = lang;
-      this.$i18n.locale = lang;
-      this.saveLanguage(lang);
-    }
+  onChangeLanguage(lang: string) {
+    console.debug('Change Language: ' + lang);
+    this.saveLanguage(lang);
   }
 
-  onApiDialogCancel() {
-    this.visibleApiSettingDialog = false;
-    this.currentApiOrigin = this.loadApiOrigin();
-  }
-
-  onApiDialogOk() {
-    this.visibleApiSettingDialog = false;
-    this.saveApiOrigin(this.currentApiOrigin);
-    this.$api.setUrl(this.currentApiOrigin);
-    this.$api2.origin = this.currentApiOrigin;
-
-    this.$nextTick(() => {
-      this.requestTestInit();
-    });
+  onChangeApi(origin: string) {
+    console.debug('Change API origin: ' + origin);
+    this.saveApiOrigin(origin);
+    this.testInit();
   }
 
   onClickSignin() {
-    this.visibleLoading = true;
+    this.showLoading = true;
 
     this.$api2.login(this.currentUserName, this.currentUserPassword)
         .then(response => {
-          this.visibleLoading = false;
-          const access = response.access ? response.access : "";
-          const refresh = response.refresh ? response.refresh : "";
-          console.info('Login successful !!');
+          this.showLoading = false;
+          const access = response.access ? response.access : '';
+          const refresh = response.refresh ? response.refresh : '';
+          console.debug('Login successful !!');
           this.saveLoginToken(access, refresh)
           this.$router.push('/main');
         })
         .catch(error => {
-          this.visibleLoading = false;
+          this.showLoading = false;
           console.error(error);
         });
   }
