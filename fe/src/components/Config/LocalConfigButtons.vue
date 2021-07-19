@@ -33,6 +33,7 @@
 
     <!-- API Config Button & Dialog -->
     <v-dialog
+        v-if="!isProduction"
         v-model="showApiConfigDialog"
         persistent
         @keydown.esc="onApiDialogCancel"
@@ -104,9 +105,19 @@ export default class LocalConfigButtons extends Vue {
   private currentLangIndex = 0;
   private currentApiOrigin = '';
 
+  // Lifecycle
+
   mounted() {
     this.updateInternalState();
   }
+
+  // Computed
+
+  get isProduction(): boolean {
+    return process.env.NODE_ENV === 'production';
+  }
+
+  // Methods
 
   updateInternalState() {
     const lang = this.$vuetify.lang.current ? this.$vuetify.lang.current : LANG_KO;
@@ -114,6 +125,8 @@ export default class LocalConfigButtons extends Vue {
     this.currentLangIndex = LANGUAGES.indexOf(lang);
     this.currentApiOrigin = api;
   }
+
+  // Events
 
   onClickTheme() {
     // Flip light/dark theme.

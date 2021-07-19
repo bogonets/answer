@@ -90,3 +90,8 @@
   - TypeScript, Airbnb Styleguide, SASS
   - [x] App.vue
   - [x] MainTitle.vue
+  - [x] Login.vue
+    - [x] Login session sync
+    - [x] Mobile display
+    - [x] Hide vertical scrollbar
+    - [x] Field validation
