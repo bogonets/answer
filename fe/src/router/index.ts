@@ -93,7 +93,6 @@ const answerRoutes = [
           { path: "version", name: "Version", component: Version }
         ]
       }
-      // isnert GroupsMain Page.
     ]
   },
   {
@@ -102,120 +101,6 @@ const answerRoutes = [
     component: NotFound
   }
 ];
-
-if (process.env.NODE_ENV !== "production") {
-  answerRoutes.push({
-    path: "/testlist",
-    name: "testlist",
-    component: require("@/components/List/test/listTest.vue").default
-  });
-  answerRoutes.push({
-    path: "/testload",
-    name: "testload",
-    component: require("@/components/Progress/test/loadTest.vue").default
-  });
-  answerRoutes.push({
-    path: "/testsignupadmin",
-    name: "testsignupadmin",
-    component: require("@/components/Form/test/SignupAdminTest.vue").default
-  });
-  answerRoutes.push({
-    path: "/testjsonfield",
-    name: "testjsonfield",
-    component: require("@/components/Input/test/jsonFieldTest.vue").default
-  });
-  answerRoutes.push({
-    path: "/testjupyterselect",
-    name: "testjupyterselect",
-    component: require("@/components/Combobox/test/acbJupyterSelectTest.vue")
-      .default
-  });
-  answerRoutes.push({
-    path: "/testsimplevideo",
-    name: "testsimplevideo",
-    component: require("@/components/Video/Test/testSimpleVideoPlayer.vue")
-      .default
-  });
-  answerRoutes.push({
-    path: "/testusertable",
-    name: "testusertable",
-    component: require("@/components/Table/test/aUserTableTest.vue").default
-  });
-  answerRoutes.push({
-    path: "/testprojecttable",
-    name: "testprojecttable",
-    component: require("@/components/Table/test/aProjectTableTest.vue").default
-  });
-  answerRoutes.push({
-    path: "/testbuckettable",
-    name: "testbuckettable",
-    component: require("@/components/Table/test/aBucketTableTest.vue").default
-  });
-  answerRoutes.push({
-    path: "/testbucketobjecttable",
-    name: "testbucketobjecttable",
-    component: require("@/components/Table/test/aBucketsObjectTableTest.vue")
-      .default
-  });
-  answerRoutes.push({
-    path: "/teststoragemanager",
-    name: "teststoragemanager",
-    component: require("@/components/Storage/test/aStorageManagerTest.vue")
-      .default
-  });
-  answerRoutes.push({
-    path: "/testsignup",
-    name: "testsignup",
-    component: require("@/components/Form/test/afSignupFormTest.vue").default
-  });
-  answerRoutes.push({
-    path: "/testprojectmaker",
-    name: "testprojectmaker",
-    component: require("@/components/Form/test/afProjectMakerTest.vue").default
-  });
-  answerRoutes.push({
-    path: "/testconsole",
-    name: "testconsole",
-    component: require("@/components/Console/test/aConsoleTest.vue").default
-  });
-  answerRoutes.push({
-    path: "/testlambdainfos",
-    name: "testlambdainfos",
-    component: require("@/components/VisualGraph/test/vgLambdaInfoTest.vue")
-      .default
-  });
-  answerRoutes.push({
-    path: "/testlambdawidget",
-    name: "testlambdawidget",
-    component: require("@/components/LambdaWidget/test/lambdaWidgetsTemplate.vue")
-      .default
-  });
-  answerRoutes.push({
-    path: "/testvgsetting",
-    name: "testvgsetting",
-    component: require("@/components/VisualGraph/test/vgMainTest.vue").default
-  });
-  answerRoutes.push({
-    path: "/testcsvinput",
-    name: "testcsvinput",
-    component: require("@/components/Input/test/aCsvInputTest.vue").default
-  });
-  answerRoutes.push({
-    path: "/testcolorpicker",
-    name: "testcolorpicker",
-    component: require("@/components/Picker/test/apColorPickerTest.vue").default
-  });
-  answerRoutes.push({
-    path: "/testblobviewer",
-    name: "testblobviewer",
-    component: require("@/widgets/test/acpBlobsViewer.vue").default
-  });
-  answerRoutes.push({
-    path: "/testwhiteboard",
-    name: "testwhiteboard",
-    component: require("@/components/Canvas/WhiteBoard.vue").default
-  });
-}
 
 export default new Router({
   routes: answerRoutes

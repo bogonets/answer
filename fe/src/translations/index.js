@@ -5,11 +5,10 @@ import ko from '@/translations/lang/ko'
 
 Vue.use(VueI18n)
 
-const options = {
+export default new VueI18n({
+  locale: 'ko',
   messages: {
     en: en,
     ko: ko,
   },
-};
-
-export default new VueI18n(options);
+});
