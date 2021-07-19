@@ -128,7 +128,7 @@ enum LoginPageState {
     TitleLogo,
   }
 })
-export default class Login extends Vue {
+export default class LoginPage extends Vue {
 
   private readonly waitMoment = WAIT_MOMENT_MILLISECONDS;
   private readonly rules = {

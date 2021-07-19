@@ -2,11 +2,11 @@ import Vue from "vue";
 import Router from "vue-router";
 
 // import MainPage from '@/pages/Main/Main.vue'
-import Login from "@/pages/Login/Login.vue";
+import LoginPage from "@/pages/LoginPage.vue";
 import Signup from "@/pages/Login/SignUp.vue";
 import SignupAdmin from "@/pages/Login/SignUpAdmin.vue";
 
-import MainPage from "@/pages/Main/MainPage.vue";
+import MainPage from "@/pages/MainPage.vue";
 
 import ProjectsMain from "@/pages/Main/projects/ProjectsMain.vue";
 
@@ -29,7 +29,7 @@ const answerRoutes = [
   {
     path: "/",
     name: "Login",
-    component: Login,
+    component: LoginPage,
     props: {}
   },
   {
