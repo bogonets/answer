@@ -13,9 +13,7 @@ import { localStore } from '@/store';
 Vue.prototype.$store = sessionStore;
 Vue.prototype.$localStore = localStore;
 
-import VueI18n from 'vue-i18n';
-import i18n from './settings/locales/i18n';
-Vue.use(VueI18n);
+import i18n from '@/translations';
 
 import { Observable, Subscription, Subject } from 'rxjs';
 import VueRx from 'vue-rx';
