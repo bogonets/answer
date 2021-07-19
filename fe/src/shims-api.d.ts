@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { REST_API } from "@/services/api";
+import { REST_API } from "@/apis/api";
 import ApiV2 from "@/apis/api-v2";
 
 declare module 'vue/types/vue' {

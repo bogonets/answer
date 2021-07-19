@@ -52,7 +52,7 @@ Vue.component('vPane', Pane);
 import sha256 from 'sha256';
 Vue.prototype.$sha256 = sha256;
 
-import { REST_API } from './services/api';
+import { REST_API } from '@/apis/api';
 const restApi = REST_API();
 Vue.prototype.$api = restApi;
 

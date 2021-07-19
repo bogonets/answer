@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ANSWER_UTIL } from './answer_util'
+import { ANSWER_UTIL } from '@/services/answer_util'
 import { Observable } from 'rxjs'
 
 const verbose = process.env.NODE_ENV !== 'production';
