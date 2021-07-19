@@ -81,9 +81,6 @@ Vue.prototype.$page = {
 import { templateStore } from "@/store";
 Vue.prototype.$templateStore = templateStore;
 
-import VuePersist from "@/persists";
-Vue.use(VuePersist)
-
 // console logger.
 Vue.prototype.$debug = function (filename, methods, ...args) {
   console.debug(
