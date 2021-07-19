@@ -106,9 +106,9 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import TitleLogo from '@/components/Title/TitleLogo.vue';
-import LinearLoading from '@/components/Progress/LinearLoading.vue';
-import LocalConfigButtons from '@/components/Config/LocalConfigButtons.vue';
+import TitleLogo from '@/components/TitleLogo.vue';
+import LinearLoading from '@/components/LinearLoading.vue';
+import LocalConfigButtons from '@/components/LocalConfigButtons.vue';
 
 const WAIT_MOMENT_MILLISECONDS = 0;
 const V_TEXT_FIELD_VALIDATE_METHOD_NAME = 'validate';
