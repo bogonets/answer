@@ -48,7 +48,11 @@ const answerRoutes = [
     meta: { requiresAuth: true },
     component: MainPage,
     children: [
-      { path: "projects", name: "ProjectsMain", component: ProjectsMain },
+      {
+        path: "projects",
+        name: "ProjectsMain",
+        component: ProjectsMain
+      },
       {
         path: "project",
         name: "ProjectMain",

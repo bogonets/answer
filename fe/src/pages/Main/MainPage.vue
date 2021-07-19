@@ -1,27 +1,30 @@
 <template>
   <v-app>
+    <atb-title-bar>
+    </atb-title-bar>
+
     <adr-navigation>
     </adr-navigation>
 
     <adr-components>
     </adr-components>
 
-    <atb-title-bar>
-    </atb-title-bar>
-
     <v-main>
-      <adlg-add-layout />
-      <router-view />
+      <adlg-add-layout>
+      </adlg-add-layout>
+
+      <router-view>
+      </router-view>
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import adrNavigation from "@/components/Drawer/adrNavigation";
-import adrComponents from "@/components/Drawer/adrComponents";
-import atbTitleBar from "@/components/Titlebar/atbTitleBar";
-import adlgAddLayout from "@/components/Dialog/adlgAddLayout";
+import adrNavigation from '@/components/Drawer/adrNavigation.vue';
+import adrComponents from '@/components/Drawer/adrComponents.vue';
+import atbTitleBar from '@/components/Titlebar/atbTitleBar.vue';
+import adlgAddLayout from '@/components/Dialog/adlgAddLayout.vue';
 
 @Component({
   components: {
@@ -33,7 +36,7 @@ import adlgAddLayout from "@/components/Dialog/adlgAddLayout";
 })
 export default class MainPage extends Vue {
   mounted() {
-    this.$router.push(this.$page.projects);
+    this.$router.push('/main/projects');
   }
 }
 </script>

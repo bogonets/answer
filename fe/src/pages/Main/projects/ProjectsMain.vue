@@ -1,41 +1,17 @@
 <template>
-	<div class="projectsMain" :style="this.$backgroundColor()">
-		<!-- <a-project-table :showPrivate="true" :showDescription="true"></a-project-table> -->
-		<a-project-table></a-project-table>
-	</div>
+  <a-project-table></a-project-table>
 </template>
 
-<script>
-import aProjectTable from "@/components/Table/aProjectTable.vue";
-export default {
-	props:{
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator';
+import aProjectTable from '@/components/Table/aProjectTable.vue';
 
-	},
-	components:{
-		aProjectTable
-	},
-	data(){
-		return {
-
-		}
-	},
-	computed:{
-
-	},
-	methods:{
-
-	},
-	created(){
-
-	},
-	mounted(){
-
-	}
+@Component({
+  components: {
+    aProjectTable,
+  }
+})
+export default class ProjectsMain extends Vue {
+  // EMPTY.
 }
 </script>
-
-<style scoped>
-.projectsMain {
-	height: 100%;
-}
-</style>
