@@ -36,7 +36,7 @@
         v-if="!isProduction"
         v-model="showApiConfigDialog"
         persistent
-        @keydown.esc="onApiDialogCancel"
+        @keydown.esc.stop="onApiDialogCancel"
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn icon small v-bind="attrs" v-on="on">
