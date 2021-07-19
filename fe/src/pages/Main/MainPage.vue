@@ -31,7 +31,7 @@ import adlgAddLayout from "@/components/Dialog/adlgAddLayout";
     adlgAddLayout,
   }
 })
-export default class AnswerMainPage extends Vue {
+export default class MainPage extends Vue {
   mounted() {
     this.$router.push(this.$page.projects);
   }

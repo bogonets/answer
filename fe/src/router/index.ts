@@ -6,7 +6,7 @@ import Login from "@/pages/Login/Login.vue";
 import Signup from "@/pages/Login/SignUp.vue";
 import SignupAdmin from "@/pages/Login/SignUpAdmin.vue";
 
-import MainPage from "@/pages/Main/AnsMain.vue";
+import MainPage from "@/pages/Main/MainPage.vue";
 
 import ProjectsMain from "@/pages/Main/projects/ProjectsMain.vue";
 
