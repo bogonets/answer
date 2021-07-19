@@ -95,3 +95,4 @@
     - [x] Mobile display
     - [x] Hide vertical scrollbar
     - [x] Field validation
+  - [x] Main.vue

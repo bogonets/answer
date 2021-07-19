@@ -5,7 +5,7 @@
     <v-container fluid class="fill-height">
       <v-row align="center" justify="center">
         <v-col cols="8" sm="6" md="6" lg="6" xl="4">
-          <v-card elevation="10">
+          <v-card elevation="8">
 
             <v-card-title class="pt-8">
               <title-logo></title-logo>
