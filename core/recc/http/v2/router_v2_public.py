@@ -6,6 +6,7 @@ from aiohttp.hdrs import AUTHORIZATION
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
+from aiohttp.web_exceptions import HTTPBadRequest, HTTPUnauthorized
 from recc.log.logging import recc_http_logger as logger
 from recc.http.http_errors import (
     HTTPReccNotInitializedError,
@@ -96,6 +97,13 @@ class RouterV2Public:
         authorization = request.headers[AUTHORIZATION]
         auth = BasicAuth.decode_from_authorization_header(authorization)
         logger.info(f"on_login({auth})")
-        access, refresh = await self.context.login(auth.user_id, auth.password)
-        result = {d.access: access, d.refresh: refresh}
-        return web.json_response(result)
+        try:
+            access, refresh = await self.context.login(auth.user_id, auth.password)
+            result = {d.access: access, d.refresh: refresh}
+            return web.json_response(result)
+        except ValueError as e:
+            logger.exception(e)
+            raise HTTPBadRequest()
+        except PermissionError as e:
+            logger.exception(e)
+            raise HTTPUnauthorized()

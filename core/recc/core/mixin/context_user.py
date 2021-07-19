@@ -5,7 +5,6 @@ from typing import Optional, List, Tuple, Any
 
 from recc.crypto.password import encrypt_password
 from recc.session.session import Session
-from recc.exception.recc_error import ReccArgumentError, ReccAuthError
 from recc.struct.user import User
 from recc.core.mixin.context_base import ContextBase
 from recc.variables.database import (
@@ -29,12 +28,12 @@ class ContextUser(ContextBase):
         is_admin=False,
     ) -> None:
         if not user_id:
-            raise ReccArgumentError("User ID is required.")
+            raise ValueError("User ID is required.")
 
         if len(hashed_user_pw) != PASSWORD_HEX_STR_SIZE:
             msg1 = f"Password({hashed_user_pw})"
             msg2 = f"length is not {PASSWORD_HEX_STR_SIZE} characters."
-            raise ReccArgumentError(f"{msg1} {msg2}")
+            raise ValueError(f"{msg1} {msg2}")
 
         salt = os.urandom(SALT_BYTE)
         salted_password = encrypt_password(hashed_user_pw, salt)
@@ -60,12 +59,12 @@ class ContextUser(ContextBase):
 
     async def login(self, username: str, hashed_user_pw: str) -> Tuple[str, str]:
         if not username:
-            raise ReccArgumentError("User ID is required.")
+            raise ValueError("User ID is required.")
 
         if len(hashed_user_pw) != PASSWORD_HEX_STR_SIZE:
             msg1 = f"Password({hashed_user_pw})"
             msg2 = f"length is not {PASSWORD_HEX_STR_SIZE} characters."
-            raise ReccArgumentError(f"{msg1} {msg2}")
+            raise ValueError(f"{msg1} {msg2}")
 
         saved_pass = await self.database.get_user_password_and_salt(username)
         saved_password = saved_pass.password
@@ -74,7 +73,7 @@ class ContextUser(ContextBase):
         salted_password = encrypt_password(hashed_user_pw, salt)
 
         if saved_password != salted_password.hex():
-            raise ReccAuthError("The password is incorrect.")
+            raise PermissionError("The password is incorrect.")
 
         await self.database.update_user_last_login_by_username(username)
         return self.session_factory.create_tokens(username)

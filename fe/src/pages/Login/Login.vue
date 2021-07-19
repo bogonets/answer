@@ -7,9 +7,20 @@
         <v-col cols="8" sm="6" md="6" lg="6" xl="4">
           <v-card>
 
-            <v-card-title>
-              <title-logo class="mt-4"></title-logo>
+            <v-card-title class="pt-8">
+              <title-logo></title-logo>
             </v-card-title>
+
+            <v-expand-transition>
+              <v-row
+                  v-if="isErrorMessage"
+                  class="d-block mt-8 mb-4 mx-4"
+                  align="center"
+                  justify="center"
+              >
+                <v-alert dense outlined type="error">{{ errorMessage }}</v-alert>
+              </v-row>
+            </v-expand-transition>
 
             <v-fade-transition hide-on-leave>
               <v-card-text v-if="!isReady">
@@ -26,14 +37,19 @@
                 <v-form>
                   <v-text-field
                       type="text"
-                      v-model="currentUserName"
+                      ref="usernameField"
+                      v-model="currentUsername"
+                      :rules="[rules.username.required]"
                       :label="$t('user_name')"
                   ></v-text-field>
                   <v-text-field
                       type="password"
                       autocomplete="off"
-                      v-model="currentUserPassword"
+                      ref="passwordField"
+                      v-model="currentPassword"
+                      :rules="[rules.password.required]"
                       :label="$t('password')"
+                      @keypress.enter.stop="onClickSignin"
                   ></v-text-field>
                 </v-form>
               </v-card-text>
@@ -52,14 +68,12 @@
                     {{ $t('sign_in') }}
                   </v-btn>
                 </v-list-item>
+
                 <v-divider class="mt-4 pt-4"></v-divider>
                 <v-list-item>
                   <v-row align="center" justify="center">
                     <v-spacer></v-spacer>
-                    <a
-                        class="text-overline"
-                        @click="onClickSignup"
-                    >
+                    <a class="text-overline" @click="onClickSignup">
                       {{ $t('sign_up') }}
                     </a>
                     <span class="mx-3"></span>
@@ -96,7 +110,8 @@ import TitleLogo from '@/components/Title/TitleLogo.vue';
 import LinearLoading from '@/components/Progress/LinearLoading.vue';
 import LocalConfigButtons from '@/components/Config/LocalConfigButtons.vue';
 
-const WAIT_MOMENT_MILLISECONDS = 1000;
+const WAIT_MOMENT_MILLISECONDS = 0;
+const V_TEXT_FIELD_VALIDATE_METHOD_NAME = 'validate';
 
 enum LoginPageState {
   Connecting,
@@ -116,11 +131,42 @@ enum LoginPageState {
 export default class Login extends Vue {
 
   private readonly waitMoment = WAIT_MOMENT_MILLISECONDS;
+  private readonly rules = {
+    username: {
+      required: (value) => {
+        return !!value || this.$t('required_field');
+      },
+    },
+    password: {
+      required: (value) => {
+        return !!value || this.$t('required_field');
+      },
+    },
+  };
 
-  private currentUserName = '';
-  private currentUserPassword = '';
+  private currentUsername = '';
+  private currentPassword = '';
   private currentState = LoginPageState.Connecting;
   private showLoading = false;
+  private errorMessage = '';
+
+  // Lifecycle
+
+  mounted() {
+    if (this.isAlreadyLogin()) {
+      this.moveToMainPage();
+    }
+
+    if (!this.isReady) {
+      this.testInit();
+    }
+  }
+
+  // Computed
+
+  get isErrorMessage(): boolean {
+    return !!this.errorMessage;
+  }
 
   get isConnecting(): boolean {
     return this.currentState == LoginPageState.Connecting;
@@ -176,37 +222,55 @@ export default class Login extends Vue {
     }
   }
 
-  private saveLoginToken(access: string, refresh: string) {
+  // Methods
+
+  saveLoginToken(username: string, access: string, refresh: string) {
     this.$store.commit('user/login', {
       accessToken: access,
       refreshToken: refresh,
-      id: '',
+      id: username,
       email: '',
       phone: '',
     });
   }
 
-  private saveLanguage(lang: string): void {
+  isAlreadyLogin(): boolean {
+    const access = this.$store.getters['user/getAccessToken'] as string;
+    const refresh = this.$store.getters['user/getRefreshToken'] as string;
+    const username = this.$store.getters['user/getUserID'] as string;
+    const result = !!access && !!refresh && !!username;
+
+    if (result) {
+      console.debug(`Already login information: ${username}`);
+    }
+    return result;
+  }
+
+  saveLanguage(lang: string): void {
     this.$localStore.commit('language/setLanguage', lang);
   }
 
-  private saveDarkTheme(dark: boolean): void {
+  saveDarkTheme(dark: boolean): void {
     this.$localStore.commit('theme/setTheme', dark);
   }
 
-  private saveApiOrigin(origin: string): void {
+  saveApiOrigin(origin: string): void {
     this.$localStore.commit('etc/setApiUrl', origin);
   }
 
-  mounted() {
-    if (this.isReady) {
-      this.updateState(LoginPageState.Ready);
-    } else {
-      this.testInit();
-    }
+  moveToMainPage() {
+    this.$router.push('/main');
   }
 
-  private testInit() {
+  moveToSignUpPage() {
+    this.$router.push('/signup');
+  }
+
+  moveToSignUpAdminPage() {
+    this.$router.push('/signupadmin');
+  }
+
+  testInit() {
     this.updateState(LoginPageState.Connecting);
 
     this.$api2.testInit()
@@ -219,7 +283,7 @@ export default class Login extends Vue {
         .catch(error => {
           if (error.response) {
             if (error.response.status && error.response.status == 520) {
-              this.$router.push('/signupadmin');
+              this.moveToSignUpAdminPage();
             } else {
               this.updateState(LoginPageState.Unreachable);
             }
@@ -229,12 +293,38 @@ export default class Login extends Vue {
         });
   }
 
-  private updateState(state: LoginPageState): void {
+  updateState(state: LoginPageState): void {
     const oldVal = LoginPageState[this.currentState];
     const newVal = LoginPageState[state];
     this.currentState = state;
     console.debug(`Change login page state: ${oldVal} -> ${newVal}`);
   }
+
+  showErrorMessage(message: string) {
+    this.errorMessage = message;
+  }
+
+  hideErrorMessage() {
+    this.errorMessage = '';
+  }
+
+  validateForms(): boolean {
+    const validate = V_TEXT_FIELD_VALIDATE_METHOD_NAME;
+    const fields = [this.$refs.usernameField, this.$refs.passwordField];
+    let result = true;
+    for (const key in fields) {
+      const field = fields[key];
+      if (field.hasOwnProperty(validate)) {
+        // You need to repeat the validation function for every field.
+        if (!field[validate](true)) {
+          result = false;
+        }
+      }
+    }
+    return result;
+  }
+
+  // Events
 
   onChangeTheme(dark: boolean) {
     const themeText = dark ? 'Dark' : 'Light';
@@ -254,25 +344,38 @@ export default class Login extends Vue {
   }
 
   onClickSignin() {
+    if (!this.validateForms()) {
+      return;
+    }
+
+    const username = this.currentUsername;
+    const password = this.currentPassword;
+    console.debug(`User ${username} is trying to login ...`);
     this.showLoading = true;
 
-    this.$api2.login(this.currentUserName, this.currentUserPassword)
+    this.$api2.login(username, password)
         .then(response => {
+          console.debug(`Login for user ${username} was successful !!`);
+
           this.showLoading = false;
+          this.hideErrorMessage();
+
           const access = response.access ? response.access : '';
           const refresh = response.refresh ? response.refresh : '';
-          console.debug('Login successful !!');
-          this.saveLoginToken(access, refresh)
-          this.$router.push('/main');
+          this.saveLoginToken(username, access, refresh)
+
+          this.moveToMainPage();
         })
         .catch(error => {
-          this.showLoading = false;
           console.error(error);
+          this.showLoading = false;
+          const msg = this.$t('login_error_message.invalid_id_password').toString();
+          this.showErrorMessage(msg);
         });
   }
 
   onClickSignup() {
-    this.$router.push('/signup');
+    this.moveToSignUpPage();
   }
 
   onClickFindPassword() {
