@@ -1,7 +1,7 @@
 <template>
   <div class="answer-list">
     <v-toolbar v-if="header" dense class="transparent elevation-1">
-      <v-avatar class="header-avatar" size="35" style="margin-left: -5px;">
+      <v-avatar class="header-avatar" size="35" style="margin-left: -5px;" @click="onClickAvatar">
         <v-icon v-if="header.icon" v-text="header.icon" small></v-icon>
         <span v-else class="header-avatar-text">
           {{ header.title ? header.title.substring(0, 1).toUpperCase() : "" }}
@@ -195,6 +195,14 @@ export default {
      */
     initialize: function() {
       /** Empty */
+    },
+
+    onClickAvatar: function() {
+      if (this.$store.getters['drawer/getNaviWidth'] == 200) {
+        this.$store.commit('drawer/setNaviWidth', { width: 55 });
+      } else {
+        this.$store.commit('drawer/setNaviWidth', { width: 200 });
+      }
     },
 
     /**

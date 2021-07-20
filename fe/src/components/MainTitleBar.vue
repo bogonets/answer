@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app dense fixed clipped-left clipped-right>
-    <v-app-bar-nav-icon @click.stop="openMenu"></v-app-bar-nav-icon>
+    <!--<v-app-bar-nav-icon @click.stop="openMenu"></v-app-bar-nav-icon>-->
     <v-btn text color="primary" @click="moveProjects" >projects</v-btn>
     <v-spacer></v-spacer>
     <v-btn v-if="hasAdminPermission" icon @click="moveAdminArea">
@@ -30,13 +30,13 @@ export default class MainTitleBar extends Vue {
     return true;
   }
 
-  openMenu() {
-    if (this.$store.getters['drawer/getNaviWidth'] == 200) {
-      this.$store.commit('drawer/setNaviWidth', { width: 55 });
-    } else {
-      this.$store.commit('drawer/setNaviWidth', { width: 200 });
-    }
-  }
+  // openMenu() {
+  //   if (this.$store.getters['drawer/getNaviWidth'] == 200) {
+  //     this.$store.commit('drawer/setNaviWidth', { width: 55 });
+  //   } else {
+  //     this.$store.commit('drawer/setNaviWidth', { width: 200 });
+  //   }
+  // }
 
   moveProjects() {
     const location = '/main/projects';

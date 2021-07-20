@@ -63,8 +63,16 @@ const answerRoutes = [
             name: "guide_layout",
             component: GuideLayout
           },
-          { path: "layout/:name", name: "layout", component: LayoutMain },
-          { path: "storage", name: "storage", component: StorageMain },
+          {
+            path: "layout/:name",
+            name: "layout",
+            component: LayoutMain
+          },
+          {
+            path: "storage",
+            name: "storage",
+            component: StorageMain
+          },
           {
             path: "graph_setting",
             name: "graph_setting",
@@ -90,7 +98,11 @@ const answerRoutes = [
             name: "auth_management",
             component: AuthManagement
           },
-          { path: "version", name: "Version", component: Version }
+          {
+            path: "version",
+            name: "Version",
+            component: Version
+          }
         ]
       }
     ]

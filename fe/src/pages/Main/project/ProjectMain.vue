@@ -1,19 +1,32 @@
 <template>
-  <div class="project-main">
-    <router-view />
-  </div>
+  <v-container class="project-main">
+    <adr-navigation>
+    </adr-navigation>
+
+    <adr-components>
+    </adr-components>
+
+    <adlg-add-layout>
+    </adlg-add-layout>
+
+    <router-view>
+    </router-view>
+  </v-container>
 </template>
 
 <script>
+import adrNavigation from '@/components/Drawer/adrNavigation.vue';
+import adrComponents from '@/components/Drawer/adrComponents.vue';
+import adlgAddLayout from '@/components/Dialog/adlgAddLayout.vue';
 import { Observable } from "rxjs";
-// 프로젝트의 메뉴를 보여주며, 메뉴들의 페이지 이동을  관리한다.
-/**
- * Projects Main Page. this page have projects datas.
- * @author hadoo, 2019-06-13
- */
+
 export default {
   name: "ProjectPage",
-  components: {},
+  components: {
+    adrNavigation,
+    adrComponents,
+    adlgAddLayout,
+  },
   data() {
     return {
       project_signal: false,
