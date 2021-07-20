@@ -1,29 +1,29 @@
-@charset 'utf-8';
+@charset "utf-8";
 
 @font-face {
   font-family: NanumSquareRoundRegular;
-  src: url('~@/assets/fonts/NanumSquareRoundR.woff2') format('woff2'),
-       url('~@/assets/fonts/NanumSquareRoundR.woff') format('woff'),
-       url('~@/assets/fonts/NanumSquareRoundR.ttf') format('truetype');
+  src: url(~@/assets/fonts/NanumSquareRoundR.woff2) format('woff2'),
+       url(~@/assets/fonts/NanumSquareRoundR.woff) format('woff'),
+       url(~@/assets/fonts/NanumSquareRoundR.ttf) format('truetype');
 }
 
 @font-face {
   font-family: NanumSquareRoundLight;
-  src: url('~@/assets/fonts/NanumSquareRoundL.woff2') format('woff2'),
-       url('~@/assets/fonts/NanumSquareRoundL.woff') format('woff'),
-       url('~@/assets/fonts/NanumSquareRoundL.ttf') format('truetype');
+  src: url(~@/assets/fonts/NanumSquareRoundL.woff2) format('woff2'),
+       url(~@/assets/fonts/NanumSquareRoundL.woff) format('woff'),
+       url(~@/assets/fonts/NanumSquareRoundL.ttf) format('truetype');
 }
 
 @font-face {
   font-family: NanumSquareRoundBold;
-  src: url('~@/assets/fonts/NanumSquareRoundB.woff2') format('woff2'),
-       url('~@/assets/fonts/NanumSquareRoundB.woff') format('woff'),
-       url('~@/assets/fonts/NanumSquareRoundB.ttf') format('truetype');
+  src: url(~@/assets/fonts/NanumSquareRoundB.woff2) format('woff2'),
+       url(~@/assets/fonts/NanumSquareRoundB.woff) format('woff'),
+       url(~@/assets/fonts/NanumSquareRoundB.ttf) format('truetype');
 }
 
 @font-face {
   font-family: NanumSquareRoundExtraBold;
-  src: url('~@/assets/fonts/NanumSquareRoundEB.woff2') format('woff2'),
-       url('~@/assets/fonts/NanumSquareRoundEB.woff') format('woff'),
-       url('~@/assets/fonts/NanumSquareRoundEB.ttf') format('truetype');
+  src: url(~@/assets/fonts/NanumSquareRoundEB.woff2) format('woff2'),
+       url(~@/assets/fonts/NanumSquareRoundEB.woff) format('woff'),
+       url(~@/assets/fonts/NanumSquareRoundEB.ttf) format('truetype');
 }

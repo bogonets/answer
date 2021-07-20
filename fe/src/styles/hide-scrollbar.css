@@ -1,0 +1,13 @@
+@charset "utf-8";
+
+/*Hide vertical scrollbar*/
+
+html {
+  overflow: hidden !important;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}

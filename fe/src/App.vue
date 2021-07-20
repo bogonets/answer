@@ -24,16 +24,6 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
-html {
-  overflow: hidden !important;
-  -ms-overflow-style: none;
-}
-
-html::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
-
 .slide-leave-active {
   transition: opacity 0.1s, transform 0.1s;
   transform: translateX(-10%);
