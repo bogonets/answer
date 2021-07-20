@@ -22,28 +22,3 @@ export default class App extends Vue {
   }
 }
 </script>
-
-<style lang="scss">
-.slide-leave-active {
-  transition: opacity 0.1s, transform 0.1s;
-  transform: translateX(-10%);
-  opacity: 0;
-}
-
-.slide-enter-active {
-  transition: opacity 0.1s, transform 0.1s;
-  transform: translateX(0%);
-}
-
-.slide-enter {
-  opacity: 0;
-  transform: translateX(10%);
-}
-
-/**
- * Overlay of Vuetify Dialog Opacity style.
- */
-.v-dialog__content--active {
-  background-color: rgba(0, 0, 0, 0.7) !important;
-}
-</style>

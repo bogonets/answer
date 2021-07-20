@@ -3,7 +3,7 @@ const state = {
 }
 
 const getters = {
-    getApiUrl: function(state) {
+    getApiUrl: (state) => {
         return state.api;
     }
 }

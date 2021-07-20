@@ -1,9 +1,9 @@
-const files = require.context('.', false, /\.js$/)
-const local_modules = {}
+import etc from '@/store/local_modules/etc';
+import language from '@/store/local_modules/language';
+import theme from '@/store/local_modules/theme';
 
-files.keys().forEach(key => {
-    if (key === './index.js') return
-    local_modules[key.replace(/(\.\/|\.js)/g, '')] = files(key).default
-})
-
-export default local_modules
+export default {
+    etc,
+    language,
+    theme,
+}
