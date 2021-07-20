@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <atb-title-bar>
-    </atb-title-bar>
+    <main-title-bar>
+    </main-title-bar>
 
     <adr-navigation>
     </adr-navigation>
@@ -23,12 +23,12 @@
 import { Vue, Component } from 'vue-property-decorator';
 import adrNavigation from '@/components/Drawer/adrNavigation.vue';
 import adrComponents from '@/components/Drawer/adrComponents.vue';
-import atbTitleBar from '@/components/Titlebar/atbTitleBar.vue';
+import MainTitleBar from '@/components/MainTitleBar.vue';
 import adlgAddLayout from '@/components/Dialog/adlgAddLayout.vue';
 
 @Component({
   components: {
-    atbTitleBar,
+    MainTitleBar,
     adrNavigation,
     adrComponents,
     adlgAddLayout,
