@@ -40,7 +40,7 @@
                       ref="usernameField"
                       v-model="currentUsername"
                       :rules="[rules.username.required]"
-                      :label="$t('user_name')"
+                      :label="$t('login.username')"
                   ></v-text-field>
                   <v-text-field
                       type="password"
@@ -48,7 +48,7 @@
                       ref="passwordField"
                       v-model="currentPassword"
                       :rules="[rules.password.required]"
-                      :label="$t('password')"
+                      :label="$t('login.password')"
                       @keypress.enter.stop="onClickSignin"
                   ></v-text-field>
                 </v-form>
@@ -65,7 +65,7 @@
                       :loading="showLoading"
                       @click="onClickSignin"
                   >
-                    {{ $t('sign_in') }}
+                    {{ $t('login.signin') }}
                   </v-btn>
                 </v-list-item>
 
@@ -74,14 +74,14 @@
                   <v-row align="center" justify="center">
                     <v-spacer></v-spacer>
                     <a class="text-overline" @click="onClickSignup">
-                      {{ $t('sign_up') }}
+                      {{ $t('login.signup') }}
                     </a>
                     <span class="mx-3"></span>
                     <a
                         class="text-overline text--disabled text-decoration-line-through"
                         @click="onClickFindPassword"
                     >
-                      {{ $t('forgot_password') }}
+                      {{ $t('login.forgot_password') }}
                     </a>
                     <v-spacer></v-spacer>
                   </v-row>
@@ -134,12 +134,12 @@ export default class LoginPage extends Vue {
   private readonly rules = {
     username: {
       required: (value) => {
-        return !!value || this.$t('required_field');
+        return !!value || this.$t('login.msg.required_field');
       },
     },
     password: {
       required: (value) => {
-        return !!value || this.$t('required_field');
+        return !!value || this.$t('login.msg.required_field');
       },
     },
   };
@@ -191,13 +191,13 @@ export default class LoginPage extends Vue {
   get loadingText(): string {
     switch (this.currentState) {
       case LoginPageState.Connecting:
-        return this.$t('connecting_api').toString()
+        return this.$t('login.msg.connecting_api').toString()
       case LoginPageState.Unreachable:
-        return this.$t('unreachable_api').toString()
+        return this.$t('login.msg.unreachable_api').toString()
       case LoginPageState.Uninitialized:
-        return this.$t('uninitialized_api').toString()
+        return this.$t('login.msg.uninitialized_api').toString()
       case LoginPageState.ReadyForWait:
-        return this.$t('connected_api').toString()
+        return this.$t('login.msg.connected_api').toString()
       case LoginPageState.Ready:
         return '';
       default:
@@ -274,7 +274,7 @@ export default class LoginPage extends Vue {
     this.updateState(LoginPageState.Connecting);
 
     this.$api2.testInit()
-        .then(response => {
+        .then(_ => {
           this.updateState(LoginPageState.ReadyForWait);
           setTimeout(() => {
             this.updateState(LoginPageState.Ready);
@@ -369,7 +369,7 @@ export default class LoginPage extends Vue {
         .catch(error => {
           console.error(error);
           this.showLoading = false;
-          const msg = this.$t('login_error_message.invalid_id_password').toString();
+          const msg = this.$t('login.msg.invalid_fields').toString();
           this.showErrorMessage(msg);
         });
   }

@@ -67,6 +67,10 @@ export default class ApiV2 {
         this._api.defaults.baseURL = originToBaseUrl(origin);
     }
 
+    setDefaultBearerAuthorization(token: string) {
+        this._api.defaults.headers['Authorization'] = `Bearer ${token}`;
+    }
+
     async version(): Promise<string> {
         return await this._api.get('/public/version')
             .then(response => {
@@ -86,14 +90,7 @@ export default class ApiV2 {
         return this._api.get('/public/test/init');
     }
 
-    login(username: string, password: string) {
-        // const basicToken = btoa(username + ':' + sha256(password));
-        // const config = {
-        //     headers: {
-        //         Accept: 'application/json',
-        //         Authorization: 'Basic ' + basicToken,
-        //     },
-        // } as AxiosRequestConfig;
+    login(username: string, password: string, updateDefaultAuth = true) {
         const auth = {
             username: username,
             password: sha256(password),
@@ -107,7 +104,12 @@ export default class ApiV2 {
         return this._api.post('/public/login', undefined, config)
             .then((response: AxiosResponse) => {
                 if (response.status == 200) {
-                    return response.data as Login;
+                    const result = response.data as Login;
+                    if (updateDefaultAuth) {
+                        const access = result.access ? result.access : '';
+                        this.setDefaultBearerAuthorization(access);
+                    }
+                    return result;
                 } else {
                     throw new ApiV2ResponseError(response);
                 }

@@ -1,6 +1,26 @@
 'use strict'
 
+import lang from '@/translations/lang/lang';
+
 const messages = {
+    lang: lang,
+    login: {
+        username: "계정명",
+        password: "비밀번호",
+        signin: "로그인",
+        signup: "회원 가입",
+        forgot_password: "비밀번호 찾기",
+        msg: {
+            connecting_api: "API 서버 연결중 ...",
+            unreachable_api: "API 서버 연결에 실패하였습니다.",
+            uninitialized_api: "API 서버가 연결되었지만, 초기화되지 않았습니다.",
+            connected_api: "API 연결 설공.",
+            required_field: "공백을 허용하지 않습니다.",
+            more_than_4char: "4자 이상이여야 합니다.",
+            invalid_fields: "계정이름 또는 비밀번호가 잘못되었습니다.",
+        }
+    },
+
     checking_init_api: "API 초기화 체크중...",
     warn_alldata_clear: "모든 데이터가 삭제됩니다.",
     warn_olddata_clear: "이전 데이터가 삭제됩니다.",
@@ -257,7 +277,6 @@ const messages = {
     select_authority: "권한 선택",
     sign_in: "로그인",
     sign_up: "회원 가입",
-    forgot_password: "비밀번호 찾기",
     signup: {
         descriptions: "이 페이지는 회원가입 페이지입니다.",
         how_to:

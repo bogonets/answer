@@ -1,6 +1,26 @@
 'use strict'
 
+import lang from '@/translations/lang/lang';
+
 const messages = {
+    lang: lang,
+    login: {
+        username: "Username",
+        password: "Password",
+        signin: "Sign in",
+        signup: "Sign up",
+        forgot_password: "Forgot password",
+        msg: {
+            connecting_api: "Connecting to API server...",
+            unreachable_api: "Unreachable API server.",
+            uninitialized_api: "A reachable but uninitialized API.",
+            connected_api: "API connection successful.",
+            required_field: "Required field",
+            more_than_4char: "It must be at least 4 characters long.",
+            invalid_fields: "Invalid ID or password.",
+        }
+    },
+
     checking_init_api: "Checking API initialization...",
     warn_alldata_clear: "All data will be deleted.",
     warn_olddata_clear: "All old data will be deleted.",
@@ -256,7 +276,6 @@ const messages = {
     select_authority: "Select Authority",
     sign_in: "Sign in",
     sign_up: "Sign up",
-    forgot_password: "Forgot password",
     signup: {
         descriptions: "This page is a sign-up page.",
         how_to:
