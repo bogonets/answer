@@ -1,15 +1,12 @@
 <template>
   <v-container>
     <v-row align="center" justify="center">
-      <span
-          v-if="isTextMode"
-          class="title-font"
-      >
+      <span v-if="isTextMode" class="title-font">
         {{ titleText }}
       </span>
       <v-img
           v-else
-          src="@/assets/answer-logo.svg"
+          src="@/assets/logo/answer-logo.svg"
           contain
           :max-width="maxWidth"
           :max-height="maxHeight"
