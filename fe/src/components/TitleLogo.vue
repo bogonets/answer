@@ -8,6 +8,7 @@
           v-else
           src="@/assets/logo/answer-logo.svg"
           contain
+          :alt="titleText"
           :max-width="maxWidth"
           :max-height="maxHeight"
       ></v-img>

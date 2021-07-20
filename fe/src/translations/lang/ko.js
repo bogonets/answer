@@ -21,6 +21,11 @@ const messages = {
         }
     },
 
+    main: {
+        projects: "Projects",
+        groups: "Groups",
+    },
+
     checking_init_api: "API 초기화 체크중...",
     warn_alldata_clear: "모든 데이터가 삭제됩니다.",
     warn_olddata_clear: "이전 데이터가 삭제됩니다.",

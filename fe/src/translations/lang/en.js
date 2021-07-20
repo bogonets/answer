@@ -21,6 +21,11 @@ const messages = {
         }
     },
 
+    main: {
+        projects: "Projects",
+        groups: "Groups",
+    },
+
     checking_init_api: "Checking API initialization...",
     warn_alldata_clear: "All data will be deleted.",
     warn_olddata_clear: "All old data will be deleted.",
