@@ -39,7 +39,10 @@ export default class MainTitleBar extends Vue {
   }
 
   moveProjects() {
-    this.$router.push('/main/projects');
+    const location = '/main/projects';
+    if (this.$router.currentRoute.path !== location) {
+      this.$router.push(location);
+    }
   }
 
   moveAdminArea() {
