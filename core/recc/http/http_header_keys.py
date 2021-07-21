@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-INTERNAL_PREFIX = "@"
+_INTERNAL_PREFIX = "@"
 
 # Internal
 
-session = INTERNAL_PREFIX + "session"
+session = _INTERNAL_PREFIX + "session"

@@ -25,13 +25,13 @@
 
 <script>
 import { Observable } from "rxjs";
+import aList from '@/components/List/aList.vue';
 
-/**
- * Asnwer Main Navigation Drawer.
- * @author hadoo 2019-06-24
- */
 export default {
   name: "adrNavigation",
+  components: {
+    aList,
+  },
   props: {},
   data() {
     return {};

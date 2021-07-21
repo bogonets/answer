@@ -78,6 +78,13 @@ class ContextUser(ContextBase):
         await self.database.update_user_last_login_by_username(username)
         return self.session_factory.create_tokens(username)
 
+    async def login_and_obtain_userinfo(
+        self, username: str, hashed_user_pw: str
+    ) -> Tuple[str, str, User]:
+        access, refresh = await self.login(username, hashed_user_pw)
+        user = await self.database.get_user_by_username(username)
+        return access, refresh, user
+
     async def remove_user(self, username: str) -> None:
         # TODO: Remove related datas. e.g. group_member, project_member
         await self.database.delete_user_by_name(username)
@@ -105,17 +112,17 @@ class ContextUser(ContextBase):
         if session.audience == username:
             return user
         if not user.is_admin:
-            raise PermissionError("Permission denied")
+            raise PermissionError
         return await self.database.get_user_by_username(username)
 
     async def get_users(self, session: Session) -> List[User]:
         user = await self.database.get_user_by_username(session.audience)
         if not user.is_admin:
-            raise PermissionError("Permission denied")
+            raise PermissionError
         return await self.database.get_users()
 
     async def exist_user(self, session: Session, test_username: str) -> bool:
         user = await self.database.get_user_by_username(session.audience)
         if not user.is_admin:
-            raise PermissionError("Permission denied")
+            raise PermissionError
         return await self.database.exist_user(test_username)

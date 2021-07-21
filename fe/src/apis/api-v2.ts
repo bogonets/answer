@@ -29,9 +29,22 @@ export function originToBaseUrl(origin: string): string {
     }
 }
 
+export interface User {
+    username?: string;
+    email?: string;
+    phone1?: string;
+    phone2?: string;
+    is_admin?: boolean;
+    extra?: any;
+    created_at?: number;
+    updated_at?: number;
+    last_login?: number;
+}
+
 export interface Login {
     access?: string;
     refresh?: string;
+    user?: User;
 }
 
 export default class ApiV2 {

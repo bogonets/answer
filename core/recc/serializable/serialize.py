@@ -10,6 +10,7 @@ from typing import (
     Mapping,
     Optional,
 )
+from datetime import datetime
 from recc.exception.recc_error import ReccSerializeError
 from recc.serializable.serializable import (
     MAPPING_METHOD_ITEMS,
@@ -21,6 +22,7 @@ from recc.serializable.serializable import (
     is_serializable_pod_obj,
 )
 from recc.inspect.member import get_public_members
+from recc.util.version import version_info
 
 _K = TypeVar("_K")
 _V = TypeVar("_V")
@@ -82,6 +84,8 @@ def _serialize_any(version: int, obj: Any, key: Optional[str] = None) -> Any:
     try:
         if obj is None:
             return None
+        elif isinstance(obj, datetime):
+            return obj.isoformat()
         elif is_serialize_obj(obj):
             return _serialize_interface(version, obj)
         elif is_serializable_pod_obj(obj):
@@ -104,3 +108,7 @@ def serialize(version: int, obj: Any) -> Dict[str, Any]:
         return _serialize_any(version, obj)
     except SerializeError as e:
         raise ReccSerializeError(f"Key({e.key}) error: {e.msg}")
+
+
+def serialize_default(obj: Any) -> Dict[str, Any]:
+    return serialize(version_info[0], obj)

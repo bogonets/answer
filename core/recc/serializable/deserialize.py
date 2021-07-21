@@ -16,6 +16,7 @@ from typing import (
     MutableSequence,
     MutableMapping,
 )
+from datetime import datetime
 from recc.exception.recc_error import ReccDeserializeError
 from recc.serializable.serializable import (
     MAPPING_METHOD_ITEMS,
@@ -29,6 +30,7 @@ from recc.serializable.serializable import (
     is_none,
 )
 from recc.inspect.member import get_public_members
+from recc.util.version import version_info
 
 _T = TypeVar("_T")
 _K = TypeVar("_K")
@@ -270,6 +272,18 @@ def _deserialize_any(
                 return float(data)
             elif issubclass(cls, str):
                 return str(data)
+            elif issubclass(cls, datetime):
+                if isinstance(data, float):
+                    return datetime.fromtimestamp(data)
+                elif isinstance(data, int):
+                    return datetime.fromordinal(data)
+                elif isinstance(data, str):
+                    return datetime.fromisoformat(data)
+                else:
+                    src_type = f"`{type(data).__name__}` type"
+                    dest_type = "`datetime` type"
+                    msg = f"{src_type} cannot be converted to {dest_type}."
+                    raise DeserializeError(msg)
             elif is_deserialize_cls(cls):
                 return _deserialize_interface(version, data, cls)
             elif issubclass(cls, MutableMapping):
@@ -318,3 +332,11 @@ def deserialize(
         return _deserialize_any(version, data, cls, _ROOT_KEY, hint)
     except DeserializeError as e:
         raise ReccDeserializeError(f"Key(`{e.key}`) error: {e.msg}")
+
+
+def deserialize_default(
+    data: Any,
+    cls: Type[_T],
+    hint: Optional[Any] = None,
+) -> _T:
+    return deserialize(version_info[0], data, cls, hint)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any
+from typing import Optional, Dict, Any
 from datetime import datetime
 from recc.struct._structure import _Structure
 
@@ -47,4 +47,12 @@ class User(_Structure):
         self.created_at = created_at
         self.updated_at = updated_at
         self.last_login = last_login
-        self.kwargs = kwargs
+        self.kwargs: Optional[Dict[str, Any]] = kwargs
+
+    def remove_sensitive_infos(self):
+        self.uid = None
+        self.password = None
+        self.salt = None
+
+    def remove_unnecessary_infos(self):
+        self.kwargs = None

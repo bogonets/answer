@@ -15,6 +15,7 @@ from recc.http.http_errors import (
 from recc.auth.basic_auth import BasicAuth
 from recc.core.context import Context
 from recc.driver.json import global_json_decoder
+from recc.serializable.serialize import serialize_default
 from recc.http import http_dict_keys as d
 from recc.http import http_urls as u
 from recc.util.version import version_text
@@ -98,8 +99,14 @@ class RouterV2Public:
         auth = BasicAuth.decode_from_authorization_header(authorization)
         logger.info(f"on_login({auth})")
         try:
-            access, refresh = await self.context.login(auth.user_id, auth.password)
-            result = {d.access: access, d.refresh: refresh}
+            username = auth.user_id
+            password = auth.password
+            login = await self.context.login_and_obtain_userinfo(username, password)
+            access, refresh, user = login
+            user.remove_sensitive_infos()
+            user.remove_unnecessary_infos()
+            user_dict = serialize_default(user)
+            result = {d.access: access, d.refresh: refresh, d.user: user_dict}
             return web.json_response(result)
         except ValueError as e:
             logger.exception(e)

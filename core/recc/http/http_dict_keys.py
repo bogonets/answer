@@ -8,3 +8,4 @@ user_pwd = "user_pwd"
 
 access = "access"
 refresh = "refresh"
+user = "user"

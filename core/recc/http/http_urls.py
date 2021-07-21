@@ -1,30 +1,40 @@
 # -*- coding: utf-8 -*-
 
+# Depth root.
 root = "/"
+
+# Depth 1st.
 app = "/app"
 api = "/api"
 
-public = "/public"
-version = "/version"
-heartbeat = "/heartbeat"
-init = "/init"
-test = "/test"
-test_init = test + init
-admin = "/admin"
-signup = "/signup"
-signup_admin = signup + admin
-login = "/login"
-
-api_version = api + version
-api_heartbeat = api + heartbeat
-
+# Static files.
 index = "/index.html"
-app_index = app + index
-
 favicon = "/favicon.ico"
+app_index = app + index
 app_favicon = app + favicon
 
+# Depth 2nd.
 v1 = "/v1"
 v2 = "/v2"
+
+# Depth 3rd.
+admin = "/admin"
+heartbeat = "/heartbeat"
+init = "/init"
+login = "/login"
+public = "/public"
+signup = "/signup"
+test = "/test"
+user = "/user"
+version = "/version"
+
+# Mixin for ROOT
 api_v1 = api + v1
 api_v2 = api + v2
+api_v2_public = api + v2 + public
+
+# Mixin
+api_version = api + version
+api_heartbeat = api + heartbeat
+signup_admin = signup + admin
+test_init = test + init

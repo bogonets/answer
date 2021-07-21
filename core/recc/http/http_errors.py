@@ -5,6 +5,7 @@ from aiohttp.web_exceptions import HTTPServerError
 
 class HTTPReccError(HTTPServerError):
     """The status code is greater than or equal to 520."""
+
     pass
 
 

@@ -24,14 +24,12 @@ import vCsvField from '@/components/Input/aiCsvField.vue';
 import aCsvInput from '@/components/Input/aCsvInput.vue';
 import aJsonField from '@/components/Input/aJsonField.vue';
 import aTextarea from '@/components/Input/aTextarea.vue';
-import aList from '@/components/List/aList.vue';
 import aConsole from '@/components/Console/aConsole.vue';
 import movePanel from '@/components/Dashboard/adbDashboardPanel.vue';
 Vue.component('vCsvField', vCsvField);
 Vue.component('aCsvInput', aCsvInput);
 Vue.component('aJsonField', aJsonField);
 Vue.component('aTextarea', aTextarea);
-Vue.component('aList', aList);
 Vue.component('aConsole', aConsole);
 Vue.component('movePanel', movePanel);
 
