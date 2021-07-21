@@ -19,7 +19,7 @@
       </template>
 
       <v-list dense>
-        <v-subheader>{{ $t('translations') }}</v-subheader>
+        <v-subheader>{{ $t('config.translations.title') }}</v-subheader>
         <v-divider></v-divider>
         <v-list-item-group mandatory v-model="currentLangIndex" color="primary">
           <v-list-item v-for="lang in languages" :key="lang">
@@ -46,18 +46,18 @@
 
       <v-card>
         <v-card-title>
-          <span>{{ $t('api_settings') }}</span>
+          <span>{{ $t('config.api.title') }}</span>
         </v-card-title>
 
         <v-card-subtitle class="mt-1">
-          <span>{{ $t('api_change_origin') }}</span>
+          <span>{{ $t('config.api.subtitle') }}</span>
         </v-card-subtitle>
 
         <v-card-text>
           <v-text-field
               required
               v-model="currentApiOrigin"
-              :label="$t('api_origin')"
+              :label="$t('config.api.origin_address')"
               @keypress.enter.stop="onApiDialogOk"
           ></v-text-field>
         </v-card-text>
@@ -67,10 +67,10 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn text @click="onApiDialogCancel">
-            {{ $t('cancel') }}
+            {{ $t('basic.cancel') }}
           </v-btn>
           <v-btn color="primary" text @click="onApiDialogOk">
-            {{ $t('ok') }}
+            {{ $t('basic.ok') }}
           </v-btn>
         </v-card-actions>
       </v-card>
