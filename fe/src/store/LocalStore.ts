@@ -70,7 +70,7 @@ export class LocalStore {
     }
 
     private clear(key: string): void {
-        return this.store.commit(key, undefined, this.defaultCommitOptions)
+        return this.setter(key, undefined);
     }
 
     get origin(): string {

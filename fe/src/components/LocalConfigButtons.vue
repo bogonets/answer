@@ -21,6 +21,7 @@
       <v-list dense>
         <v-subheader>{{ $t('config.translations.title') }}</v-subheader>
         <v-divider></v-divider>
+
         <v-list-item-group mandatory v-model="currentLangIndex" color="primary">
           <v-list-item v-for="lang in languages" :key="lang">
             <v-list-item-content @click="onClickLanguage(lang)">

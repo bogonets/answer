@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app dense fixed clipped-left clipped-right>
-    <v-btn plain small @click="moveProjects">
+    <v-btn plain small @click="moveDashboard">
       <title-logo-small></title-logo-small>
     </v-btn>
     <v-btn plain small text color="primary" @click="moveProjects">
@@ -12,33 +12,25 @@
 
     <v-spacer></v-spacer>
 
-    <v-btn v-if="hasAdminPermission" icon @click="moveAdminArea">
-      <v-icon role="img">{{ icons.cogBox }}</v-icon>
-    </v-btn>
-    <adb-user-box></adb-user-box>
+    <menu-self></menu-self>
   </v-app-bar>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { mdiCogBox } from '@mdi/js';
-import adbUserBox from '@/components/Dropbox/adbUserBox.vue';
+import MenuSelf from '@/components/MenuSelf.vue';
 import TitleLogoSmall from "@/components/TitleLogoSmall.vue";
 
 @Component({
   components: {
     TitleLogoSmall,
-    adbUserBox,
+    MenuSelf,
   }
 })
 export default class MainTitleBar extends Vue {
 
-  private readonly icons = {
-    cogBox: mdiCogBox,
-  };
-
-  get hasAdminPermission(): boolean {
-    return true;
+  moveDashboard() {
+    // EMPTY.
   }
 
   moveProjects() {
@@ -50,10 +42,6 @@ export default class MainTitleBar extends Vue {
 
   moveGroups() {
     // EMPTY.
-  }
-
-  moveAdminArea() {
-    // this.$router.push('/main/admin');
   }
 }
 </script>

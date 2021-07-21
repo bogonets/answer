@@ -6,6 +6,7 @@ const messages = {
     lang: lang,
 
     basic: {
+        admin: "Admin",
         apply: "Apply",
         back: "Back",
         cancel: "Cancel",
@@ -18,6 +19,7 @@ const messages = {
         download: "Download",
         edit: "Edit",
         email: "Email",
+        guest: "Guest",
         left: "Left",
         load: "Load",
         next: "Next",
@@ -52,6 +54,16 @@ const messages = {
     main: {
         projects: "Projects",
         groups: "Groups",
+    },
+
+    menu: {
+        user: {
+            unknown_user: "Unknown",
+            user_setting: "Account setting",
+            admin_setting: "Setting",
+            development_tools: "DevTools",
+            signout: "Sign out",
+        }
     },
 
     config: {

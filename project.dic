@@ -83,6 +83,7 @@ recommonmark
 resolv
 servicer
 signin
+signout
 stderr
 stdin
 stdout

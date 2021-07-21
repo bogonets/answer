@@ -6,6 +6,7 @@ const messages = {
     lang: lang,
 
     basic: {
+        admin: "관리자",
         apply: "적용",
         back: "뒤로",
         cancel: "취소",
@@ -18,6 +19,7 @@ const messages = {
         download: "다운로드",
         edit: "수정",
         email: "이메일",
+        guest: "게스트",
         left: "왼쪽",
         load: "불러오기",
         next: "다음",
@@ -52,6 +54,16 @@ const messages = {
     main: {
         projects: "Projects",
         groups: "Groups",
+    },
+
+    menu: {
+        user: {
+            unknown_user: "알수없음",
+            user_setting: "계정 설정",
+            admin_setting: "관리자 설정",
+            development_tools: "개발 도구",
+            signout: "로그아웃",
+        }
     },
 
     config: {
