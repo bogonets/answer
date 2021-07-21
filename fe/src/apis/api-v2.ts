@@ -36,9 +36,9 @@ export interface User {
     phone2?: string;
     is_admin?: boolean;
     extra?: any;
-    created_at?: number;
-    updated_at?: number;
-    last_login?: number;
+    created_at?: string;
+    updated_at?: string;
+    last_login?: string;
 }
 
 export interface Login {

@@ -8,5 +8,5 @@ class ApiV2Plugin implements PluginObject<any> {
     }
 }
 
-const VueApiV2 = new ApiV2Plugin()
+const VueApiV2 = new ApiV2Plugin();
 export default VueApiV2;

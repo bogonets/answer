@@ -10,9 +10,9 @@ import { Vue, Component } from 'vue-property-decorator'
 @Component
 export default class App extends Vue {
   beforeCreate() {
-    const dark = this.$localStore.getters['theme/getTheme'] as boolean;
-    const lang = this.$localStore.getters['language/getLanguage'] as string;
-    const api = this.$localStore.getters['etc/getApiUrl'] as string;
+    const dark = this.$localStore.dark;
+    const lang = this.$localStore.lang;
+    const api = this.$localStore.origin;
 
     this.$vuetify.theme.dark = dark;
     this.$vuetify.lang.current = lang;

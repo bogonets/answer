@@ -247,15 +247,15 @@ export default class LoginPage extends Vue {
   }
 
   saveLanguage(lang: string): void {
-    this.$localStore.commit('language/setLanguage', lang);
+    this.$localStore.lang = lang;
   }
 
   saveDarkTheme(dark: boolean): void {
-    this.$localStore.commit('theme/setTheme', dark);
+    this.$localStore.dark = dark;
   }
 
   saveApiOrigin(origin: string): void {
-    this.$localStore.commit('etc/setApiUrl', origin);
+    this.$localStore.origin = origin;
   }
 
   moveToMainPage() {

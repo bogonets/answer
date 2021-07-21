@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { vuexSessionStorage, vuexLocalStorage } from './persist';
+import { vuexSessionStorage } from './persist';
 import modules from './modules';
-import local_modules from './local_modules';
+import VueLocalStore from'@/store/LocalStore';
 
 Vue.use(Vuex);
+Vue.use(VueLocalStore);
 
 const ENABLE_STRICT = process.env.NODE_ENV !== 'production';
 
@@ -12,12 +13,6 @@ export const sessionStore = new Vuex.Store({
   modules,
   strict: ENABLE_STRICT,
   plugins: [vuexSessionStorage.plugin],
-});
-
-export const localStore = new Vuex.Store({
-  modules: local_modules,
-  strict: ENABLE_STRICT,
-  plugins: [vuexLocalStorage.plugin],
 });
 
 export const templateStore = new Vuex.Store({

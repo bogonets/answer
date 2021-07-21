@@ -9,9 +9,7 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import '@/styles/font-face-nanum.css'
 
 import { sessionStore } from '@/store';
-import { localStore } from '@/store';
 Vue.prototype.$store = sessionStore;
-Vue.prototype.$localStore = localStore;
 
 import i18n from '@/translations';
 
