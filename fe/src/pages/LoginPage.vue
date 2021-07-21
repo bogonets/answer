@@ -40,7 +40,7 @@
                       ref="usernameField"
                       v-model="currentUsername"
                       :rules="[rules.username.required]"
-                      :label="$t('login.username')"
+                      :label="usernameFieldLabel"
                   ></v-text-field>
                   <v-text-field
                       type="password"
@@ -48,7 +48,7 @@
                       ref="passwordField"
                       v-model="currentPassword"
                       :rules="[rules.password.required]"
-                      :label="$t('login.password')"
+                      :label="passwordFieldLabel"
                       @keypress.enter.stop="onClickSignin"
                   ></v-text-field>
                 </v-form>
@@ -178,6 +178,14 @@ export default class LoginPage extends Vue {
 
   // Computed
 
+  get usernameFieldLabel(): string {
+    return this.$t('login.username').toString();
+  }
+
+  get passwordFieldLabel(): string {
+    return this.$t('login.password').toString();
+  }
+
   get isErrorMessage(): boolean {
     return !!this.errorMessage;
   }
@@ -279,7 +287,7 @@ export default class LoginPage extends Vue {
   }
 
   moveToSignUpAdminPage() {
-    this.$router.push('/signupadmin');
+    this.$router.push('/signup/admin');
   }
 
   testInit() {

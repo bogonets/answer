@@ -36,7 +36,9 @@
     <v-dialog
         v-if="!isProduction"
         v-model="showApiConfigDialog"
+        max-width="800px"
         persistent
+        no-click-animation
         @keydown.esc.stop="onApiDialogCancel"
     >
       <template v-slot:activator="{ on, attrs }">

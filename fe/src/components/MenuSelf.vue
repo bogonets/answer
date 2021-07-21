@@ -121,15 +121,15 @@ export default class MenuSelf extends Vue {
   // Method.
 
   onClickAccountConfig() {
-    // EMPTY.
+    this.$router.push('/main/config/account');
   }
 
   onClickAdminConfig() {
-    // EMPTY.
+    this.$router.push('/main/config/admin');
   }
 
   onClickDevelopmentTools() {
-    // EMPTY.
+    this.$router.push('/main/dev');
   }
 
   onClickLogout() {
