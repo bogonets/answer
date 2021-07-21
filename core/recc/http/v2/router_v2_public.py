@@ -41,41 +41,41 @@ class RouterV2Public:
 
     def _get_routes(self) -> List[AbstractRouteDef]:
         return [
-            web.get(u.heartbeat, self.on_heartbeat),
-            web.get(u.version, self.on_version),
-            web.get(u.test_init, self.on_test_init),
-            web.post(u.signup_admin, self.on_signup_admin),
-            web.post(u.signup, self.on_signup),
-            web.post(u.login, self.on_login),
+            web.get(u.heartbeat, self.get_heartbeat),
+            web.get(u.version, self.get_version),
+            web.get(u.test_init, self.get_test_init),
+            web.post(u.signup_admin, self.post_signup_admin),
+            web.post(u.signup, self.post_signup),
+            web.post(u.login, self.post_login),
         ]
 
     # ---------------
     # API v2 handlers
     # ---------------
 
-    async def on_heartbeat(self, _: Request):
+    async def get_heartbeat(self, _: Request):
         assert self._context
-        logger.info("on_heartbeat()")
+        logger.info("get_heartbeat()")
         return Response()
 
-    async def on_version(self, _: Request):
+    async def get_version(self, _: Request):
         assert self._context
-        logger.info(f"on_version() -> {version_text}")
+        logger.info(f"get_version() -> {version_text}")
         return Response(text=version_text)
 
-    async def on_test_init(self, _: Request):
-        logger.info("on_test_init()")
+    async def get_test_init(self, _: Request):
+        logger.info("get_test_init()")
         if not await self.context.exist_admin_user():
             raise HTTPReccNotInitializedError()
         return Response()
 
-    async def on_signup_admin(self, request: Request):
+    async def post_signup_admin(self, request: Request):
         data = await request.json(loads=global_json_decoder)
 
         assert isinstance(data, dict)
         admin_id = data[d.admin_id]
         admin_pwd = data[d.admin_pwd]  # Perhaps the client encoded it with SHA256.
-        logger.info(f"on_signup_admin({d.admin_id}={admin_id})")
+        logger.info(f"post_signup_admin({d.admin_id}={admin_id})")
 
         if await self.context.exist_admin_user():
             raise HTTPReccAlreadyInitializedError()
@@ -83,25 +83,27 @@ class RouterV2Public:
         await self.context.signup_admin(user_id=admin_id, hashed_user_pw=admin_pwd)
         return Response()
 
-    async def on_signup(self, request: Request):
+    async def post_signup(self, request: Request):
         data = await request.json(loads=global_json_decoder)
 
         assert isinstance(data, dict)
         user_id = data[d.user_id]
         user_pwd = data[d.user_pwd]  # Perhaps the client encoded it with SHA256.
-        logger.info(f"on_signup({d.user_id}={user_id})")
+        logger.info(f"post_signup({d.user_id}={user_id})")
 
         await self.context.signup(user_id=user_id, hashed_user_pw=user_pwd)
         return Response()
 
-    async def on_login(self, request: Request):
+    async def post_login(self, request: Request):
         authorization = request.headers[AUTHORIZATION]
         auth = BasicAuth.decode_from_authorization_header(authorization)
-        logger.info(f"on_login({auth})")
+        logger.info(f"post_login({auth})")
+
         try:
             username = auth.user_id
             password = auth.password
             login = await self.context.login_and_obtain_userinfo(username, password)
+
             access, refresh, user = login
             user.remove_sensitive_infos()
             user.remove_unnecessary_infos()

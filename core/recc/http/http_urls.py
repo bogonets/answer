@@ -19,10 +19,12 @@ v2 = "/v2"
 
 # Depth 3rd.
 admin = "/admin"
+extra = "/extra"
 heartbeat = "/heartbeat"
 init = "/init"
 login = "/login"
 public = "/public"
+self = "/self"
 signup = "/signup"
 test = "/test"
 user = "/user"
@@ -38,3 +40,4 @@ api_version = api + version
 api_heartbeat = api + heartbeat
 signup_admin = signup + admin
 test_init = test + init
+self_extra = self + extra

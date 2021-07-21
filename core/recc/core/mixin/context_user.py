@@ -107,6 +107,9 @@ class ContextUser(ContextBase):
     async def get_access_session(self, token: str) -> Session:
         return self.session_factory.decode_access(token)
 
+    async def get_self(self, session: Session) -> User:
+        return await self.database.get_user_by_username(session.audience)
+
     async def get_user(self, session: Session, username: str) -> User:
         user = await self.database.get_user_by_username(session.audience)
         if session.audience == username:

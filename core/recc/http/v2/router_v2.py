@@ -6,8 +6,9 @@ from aiohttp.hdrs import AUTHORIZATION
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
-from aiohttp.web_exceptions import HTTPBadRequest, HTTPUnauthorized
+from aiohttp.web_exceptions import HTTPUnauthorized
 from recc.log.logging import recc_http_logger as logger
+from recc.driver.json import global_json_decoder
 from recc.auth.bearer_auth import BearerAuth
 from recc.core.context import Context
 from recc.serializable.serialize import serialize_default
@@ -60,7 +61,9 @@ class RouterV2:
     def _get_routes(self) -> List[AbstractRouteDef]:
         # fmt: off
         return [
-            web.get(u.user, self.on_user),
+            web.get(u.self, self.get_self),
+            web.get(u.self_extra, self.get_self_extra),
+            web.put(u.self_extra, self.put_self_extra),
         ]
         # fmt: on
 
@@ -68,21 +71,30 @@ class RouterV2:
     # API v2 handlers
     # ---------------
 
-    async def on_user(self, request: Request) -> Response:
+    async def get_self(self, request: Request) -> Response:
         session = request[h.session]
         username = session.audience
-        logger.info(f"on_user(username={username})")
+        logger.info(f"get_self(username={username})")
 
-        try:
-            user = await self.context.get_user(session, username)
-        except ValueError as e:
-            logger.exception(e)
-            raise HTTPBadRequest()
-        except PermissionError as e:
-            logger.exception(e)
-            raise HTTPUnauthorized()
-
+        user = await self.context.get_self(session)
         user.remove_sensitive_infos()
         user.remove_unnecessary_infos()
         user_dict = serialize_default(user)
         return web.json_response(user_dict)
+
+    async def get_self_extra(self, request: Request) -> Response:
+        session = request[h.session]
+        username = session.audience
+        logger.info(f"get_self_extra(username={username})")
+
+        user = await self.context.get_self(session)
+        return web.json_response(user.extra)
+
+    async def put_self_extra(self, request: Request) -> Response:
+        session = request[h.session]
+        username = session.audience
+        extra = await request.json(loads=global_json_decoder)
+        logger.info(f"put_self_extra(username={username})")
+
+        await self.context.update_user(username, extra=extra)
+        return Response()
