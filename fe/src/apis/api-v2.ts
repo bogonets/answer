@@ -1,23 +1,41 @@
 import AxiosLib, {
     AxiosInstance,
-    AxiosPromise,
     AxiosResponse,
     AxiosRequestConfig,
     AxiosBasicCredentials,
 } from 'axios'
 import sha256 from 'sha256'
 
-const DEFAULT_PROTOCOL = document.location.protocol;
-const DEFAULT_HOST = document.location.host;
 const DEFAULT_ORIGIN = document.location.origin;
-
 const DEFAULT_TIMEOUT = 30 * 1000;
 
-export class ApiV2ResponseError extends Error {
-    constructor(response: AxiosResponse) {
-        const code = response.status;
-        const text = response.statusText;
-        super(`Error: Status(${code}) ${text}`);
+export class ApiV2StatusError extends Error {
+    constructor(code: number, reason: string) {
+        super(`Error: Status(${code}) ${reason}`);
+    }
+}
+
+export class ApiV2TokenError extends Error {
+    constructor(token?: string) {
+        let message;
+        if (token) {
+            message = `Invalid token error: ${token}`;
+        } else {
+            message = 'Empty token error';
+        }
+        super(message);
+    }
+}
+
+export class ApiV2AccessTokenError extends ApiV2TokenError {
+    constructor(token?: string) {
+        super(token);
+    }
+}
+
+export class ApiV2RefreshTokenError extends ApiV2TokenError {
+    constructor(token?: string) {
+        super(token);
     }
 }
 
@@ -35,7 +53,7 @@ export interface User {
     phone1?: string;
     phone2?: string;
     is_admin?: boolean;
-    extra?: any;
+    extra?: object;
     created_at?: string;
     updated_at?: string;
     last_login?: string;
@@ -47,45 +65,74 @@ export interface Login {
     user?: User;
 }
 
+function newEmptySession(): Login {
+    return {
+        access: '',
+        refresh: '',
+        user: {
+            username: '',
+            email: '',
+            phone1: '',
+            phone2: '',
+            is_admin: false,
+            extra: {},
+            created_at: '',
+            updated_at: '',
+            last_login: '',
+        } as User,
+    } as Login;
+}
+
 export default class ApiV2 {
 
-    private _origin: string;
-    private _api: AxiosInstance;
+    private originAddress: string;
+    private api: AxiosInstance;
+    private session: Login;
 
     constructor(
         origin: string = DEFAULT_ORIGIN,
         timeout: number = DEFAULT_TIMEOUT,
     ) {
-        this._origin = origin;
-        this._api = AxiosLib.create({
+        this.originAddress = origin;
+        this.api = AxiosLib.create({
             baseURL: originToBaseUrl(origin),
             timeout: timeout,
+            headers: {
+                Accept: 'application/json',
+            },
         });
+        this.session = newEmptySession();
     }
 
     get baseURL(): string {
-        if (this._api.defaults.baseURL) {
-            return this._api.defaults.baseURL;
+        if (this.api.defaults.baseURL) {
+            return this.api.defaults.baseURL;
         } else {
             return '';
         }
     }
 
     get origin(): string {
-        return this._origin;
+        return this.originAddress;
     }
 
     set origin(origin: string) {
-        this._origin = origin;
-        this._api.defaults.baseURL = originToBaseUrl(origin);
+        this.originAddress = origin;
+        this.api.defaults.baseURL = originToBaseUrl(origin);
+    }
+
+    setDefaultSession(access: string, refresh: string, user: User) {
+        this.session.access = access;
+        this.session.refresh = refresh;
+        this.session.user = user;
     }
 
     setDefaultBearerAuthorization(token: string) {
-        this._api.defaults.headers['Authorization'] = `Bearer ${token}`;
+        this.api.defaults.headers['Authorization'] = `Bearer ${token}`;
     }
 
     async version(): Promise<string> {
-        return await this._api.get('/public/version')
+        return await this.api.get('/public/version')
             .then(response => {
                 return response.data;
             })
@@ -96,11 +143,11 @@ export default class ApiV2 {
     }
 
     heartbeat() {
-        return this._api.get('/public/heartbeat');
+        return this.api.get('/public/heartbeat');
     }
 
     testInit() {
-        return this._api.get('/public/test/init');
+        return this.api.get('/public/test/init');
     }
 
     login(username: string, password: string, updateDefaultAuth = true) {
@@ -110,21 +157,29 @@ export default class ApiV2 {
         } as AxiosBasicCredentials;
         const config = {
             auth: auth,
-            headers: {
-                Accept: 'application/json',
-            },
         } as AxiosRequestConfig;
-        return this._api.post('/public/login', undefined, config)
+        return this.api.post('/public/login', undefined, config)
             .then((response: AxiosResponse) => {
                 if (response.status == 200) {
                     const result = response.data as Login;
+                    const access = result.access;
+                    const refresh = result.refresh;
+                    if (!access) {
+                        throw new ApiV2AccessTokenError(access);
+                    }
+                    if (!refresh) {
+                        throw new ApiV2RefreshTokenError(refresh);
+                    }
                     if (updateDefaultAuth) {
-                        const access = result.access ? result.access : '';
+                        const user = result.user || {};
+                        this.setDefaultSession(access, refresh, user);
                         this.setDefaultBearerAuthorization(access);
                     }
                     return result;
                 } else {
-                    throw new ApiV2ResponseError(response);
+                    const code = response.status;
+                    const reason = response.statusText;
+                    throw new ApiV2StatusError(code, reason);
                 }
             });
     }

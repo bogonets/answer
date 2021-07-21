@@ -8,6 +8,7 @@ import api from '@/store/modules/api';
 import appearance from '@/store/modules/appearance';
 import session from '@/store/modules/session';
 import translation from '@/store/modules/translation';
+import { User } from '@/apis/api-v2';
 
 const DEFAULT_PERSIST_KEY = 'answer.store.local';
 const DEFAULT_STRICT = process.env.NODE_ENV !== 'production';
@@ -68,6 +69,10 @@ export class LocalStore {
         return this.store.commit(key, val, this.defaultCommitOptions)
     }
 
+    private clear(key: string): void {
+        return this.store.commit(key, undefined, this.defaultCommitOptions)
+    }
+
     get origin(): string {
         return this.getter(API_ORIGIN) as string;
     }
@@ -108,12 +113,18 @@ export class LocalStore {
         this.setter(SESSION_REFRESH, val);
     }
 
-    get user(): string {
-        return this.getter(SESSION_USER) as string;
+    get user(): User {
+        return this.getter(SESSION_USER) as User;
     }
 
-    set user(val: string) {
+    set user(val: User) {
         this.setter(SESSION_USER, val);
+    }
+
+    clearSession() {
+        this.clear(SESSION_ACCESS);
+        this.clear(SESSION_REFRESH);
+        this.clear(SESSION_USER);
     }
 }
 

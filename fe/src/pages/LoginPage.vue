@@ -106,6 +106,7 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
+import { User } from '@/apis/api-v2';
 import TitleLogo from '@/components/TitleLogo.vue';
 import LinearLoading from '@/components/LinearLoading.vue';
 import LocalConfigButtons from '@/components/LocalConfigButtons.vue';
@@ -153,8 +154,21 @@ export default class LoginPage extends Vue {
   // Lifecycle
 
   mounted() {
-    if (this.isAlreadyLogin()) {
+    const access = this.$localStore.access;
+    const refresh = this.$localStore.refresh;
+    const user = this.$localStore.user;
+
+    // Already session information?
+    if (!!access && !!refresh && !!user) {
+      console.info(`Already session information: ${user.username}`)
+
+      this.saveUserToSession(access, refresh, user);
       this.moveToMainPage();
+
+      this.$api.setDefaultSession(access, refresh, user);
+      this.$api.setDefaultBearerAuthorization(access);
+
+      return;
     }
 
     if (!this.isReady) {
@@ -224,26 +238,24 @@ export default class LoginPage extends Vue {
 
   // Methods
 
-  saveLoginToken(username: string, access: string, refresh: string) {
+  saveUserToLocal(access: string, refresh: string, user: User) {
+    this.$localStore.access = access;
+    this.$localStore.refresh = refresh;
+    this.$localStore.user = user;
+  }
+
+  saveUserToSession(access: string, refresh: string, user: User) {
+    const username = user.username || '';
+    const email = user.email || '';
+    const phone = user.phone1 || '';
+
     this.$store.commit('user/login', {
       accessToken: access,
       refreshToken: refresh,
       id: username,
-      email: '',
-      phone: '',
+      email: email,
+      phone: phone,
     });
-  }
-
-  isAlreadyLogin(): boolean {
-    const access = this.$store.getters['user/getAccessToken'] as string;
-    const refresh = this.$store.getters['user/getRefreshToken'] as string;
-    const username = this.$store.getters['user/getUserID'] as string;
-    const result = !!access && !!refresh && !!username;
-
-    if (result) {
-      console.debug(`Already login information: ${username}`);
-    }
-    return result;
   }
 
   saveLanguage(lang: string): void {
@@ -360,9 +372,11 @@ export default class LoginPage extends Vue {
           this.showLoading = false;
           this.hideErrorMessage();
 
-          const access = response.access ? response.access : '';
-          const refresh = response.refresh ? response.refresh : '';
-          this.saveLoginToken(username, access, refresh)
+          const access = response.access || '';
+          const refresh = response.refresh || '';
+          const user = response.user || {} as User;
+          this.saveUserToLocal(access, refresh, user);
+          this.saveUserToSession(access, refresh, user);
 
           this.moveToMainPage();
         })

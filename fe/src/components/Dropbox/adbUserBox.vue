@@ -92,6 +92,7 @@ export default {
      * @public
      */
     onClickLogout: function() {
+      this.$localStore.clearSession();
       this.$store.commit("user/logout");
       this.$router.push("/");
       this.$debug(this.$options.name, "onLogout", "LOGOUT!");
