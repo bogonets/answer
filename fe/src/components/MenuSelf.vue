@@ -63,6 +63,17 @@
         </v-list-item-content>
       </v-list-item>
 
+      <v-list-item @click="onClickAboutAnswer">
+        <v-list-item-icon>
+          <v-icon role="img" aria-hidden="false">
+            {{ icons.informationOutline }}
+          </v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('menu.user.about_answer') }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
       <v-divider></v-divider>
 
       <v-list-item @click="onClickLogout">
@@ -87,6 +98,7 @@ import {
   mdiCogOutline,
   mdiDevTo,
   mdiLogout,
+  mdiInformationOutline,
 } from '@mdi/js';
 
 @Component
@@ -97,6 +109,7 @@ export default class MenuSelf extends Vue {
     accountCogOutline: mdiAccountCogOutline,
     cogOutline: mdiCogOutline,
     devTo: mdiDevTo,
+    informationOutline: mdiInformationOutline,
     logout: mdiLogout,
   };
 
@@ -130,6 +143,10 @@ export default class MenuSelf extends Vue {
 
   onClickDevelopmentTools() {
     this.$router.push('/main/dev');
+  }
+
+  onClickAboutAnswer() {
+    this.$router.push('/main/about');
   }
 
   onClickLogout() {

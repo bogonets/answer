@@ -62,6 +62,7 @@ const messages = {
             user_setting: "Account setting",
             admin_setting: "Setting",
             development_tools: "DevTools",
+            about_answer: "About Answer",
             signout: "Sign out",
         }
     },

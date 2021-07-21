@@ -62,6 +62,7 @@ const messages = {
             user_setting: "계정 설정",
             admin_setting: "관리자 설정",
             development_tools: "개발 도구",
+            about_answer: "엔서에 대해",
             signout: "로그아웃",
         }
     },

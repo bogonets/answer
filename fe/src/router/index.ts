@@ -16,6 +16,7 @@ import AuthManagement from '@/components/external/airjoy/AuthManagement.vue'
 import Version from '@/pages/Info/Version.vue';
 import NotFound from '@/pages/Error/NotFound.vue';
 
+import AboutPage from '@/pages/AboutPage.vue';
 import ConfigAccountPage from '@/pages/ConfigAccountPage.vue';
 import ConfigAdminPage from '@/pages/ConfigAdminPage.vue';
 import DashboardPage from '@/pages/DashboardPage.vue';
@@ -60,6 +61,10 @@ const answerRoutes = [
       {
         path: 'dev',
         component: DevelopmentToolsPage,
+      },
+      {
+        path: 'about',
+        component: AboutPage,
       },
       {
         path: 'projects',
