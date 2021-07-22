@@ -53,7 +53,7 @@ export default class MenuTranslate extends Vue {
   };
 
   @Prop({type: String, default: ''})
-  readonly select!: string;
+  readonly initLang!: string;
 
   @Prop({type: Boolean, default: false})
   readonly initVuetify!: boolean;
@@ -67,12 +67,12 @@ export default class MenuTranslate extends Vue {
   private currentLangIndex = 0;
 
   created() {
-    this.currentLangIndex = LANGUAGES.indexOf(this.selectLanguage);
+    this.currentLangIndex = LANGUAGES.indexOf(this.getInitLanguage());
   }
 
-  get selectLanguage(): string {
-    if (this.select) {
-      return this.select;
+  getInitLanguage(): string {
+    if (this.initLang) {
+      return this.initLang;
     } else if (this.initVuetify) {
       return this.$vuetify.lang.current;
     } else if (this.initLocalStore) {

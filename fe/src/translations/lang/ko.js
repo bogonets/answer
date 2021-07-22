@@ -47,11 +47,6 @@ export default {
     },
 
     config: {
-        api: {
-            title: "API 설정",
-            subtitle: "서버 주소를 변경할 수 있습니다.",
-            origin_address: "API 서버 주소",
-        },
         translations: {
             title: "언어선택",
         },

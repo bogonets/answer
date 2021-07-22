@@ -47,11 +47,6 @@ export default {
     },
 
     config: {
-        api: {
-            title: "API Settings",
-            subtitle: "You can change the API origin address.",
-            origin_address: "API origin address",
-        },
         translations: {
             title: "Translations",
         },
