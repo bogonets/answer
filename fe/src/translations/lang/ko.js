@@ -76,7 +76,13 @@ const messages = {
         },
         translations: {
             title: "언어선택",
-        }
+        },
+        account: {
+            unknown_user: "알수없음",
+            appearance: "외관",
+        },
+        admin: {
+        },
     },
 
     about: {

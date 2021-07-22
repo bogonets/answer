@@ -76,7 +76,13 @@ const messages = {
         },
         translations: {
             title: "Translations",
-        }
+        },
+        account: {
+            unknown_user: "Unknown",
+            appearance: "Appearance",
+        },
+        admin: {
+        },
     },
 
     about: {

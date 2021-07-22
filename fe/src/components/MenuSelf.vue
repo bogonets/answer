@@ -18,11 +18,9 @@
     <v-list dense>
 
       <v-list-item>
-        <v-list-item-icon>
-          <v-icon role="img" aria-hidden="false">
-            {{ icons.accountCircle }}
-          </v-icon>
-        </v-list-item-icon>
+        <v-list-item-avatar>
+          <v-avatar color="accent" size="24">{{ usernameAvatar }}</v-avatar>
+        </v-list-item-avatar>
         <v-list-item-title>
           {{ username }}
         </v-list-item-title>
@@ -121,6 +119,14 @@ export default class MenuSelf extends Vue {
 
   get isDeveloperMode(): boolean {
     return process.env.NODE_ENV !== 'production';
+  }
+
+  get usernameAvatar(): string {
+    const username = this.$localStore.user.username;
+    if (username) {
+      return username[0].toUpperCase();
+    }
+    return '';
   }
 
   get username(): string {
