@@ -31,7 +31,7 @@
             <v-icon>{{ icons.eye }}</v-icon>
           </v-list-item-icon>
           <v-list-item-title>
-            {{ $t('config.account.appearance') }}
+            {{ $t('config.account.appearance.title') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -56,6 +56,10 @@ export default class ConfigAccountPage extends Vue {
   };
 
   miniNavigation = false;
+
+  mounted() {
+    this.$router.push('/main/config/account/appearance');
+  }
 
   get username(): string {
     const username = this.$localStore.user.username;

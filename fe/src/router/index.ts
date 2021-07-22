@@ -23,6 +23,7 @@ import DashboardPage from '@/pages/main/DashboardPage.vue';
 import DevelopmentToolsPage from '@/pages/main/DevelopmentToolsPage.vue';
 import LoginPage from '@/pages/LoginPage.vue';
 import MainPage from '@/pages/main/MainPage.vue';
+import AppearancePage from "@/pages/main/config/account/AppearancePage.vue";
 
 Vue.use(Router);
 
@@ -53,6 +54,12 @@ const answerRoutes = [
       {
         path: 'config/account',
         component: ConfigAccountPage,
+        children: [
+          {
+            path: 'appearance',
+            component: AppearancePage,
+          },
+        ]
       },
       {
         path: 'config/admin',
