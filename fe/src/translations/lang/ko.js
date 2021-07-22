@@ -35,23 +35,6 @@ const messages = {
         yes: "예",
     },
 
-    login: {
-        username: "계정명",
-        password: "비밀번호",
-        signin: "로그인",
-        signup: "회원 가입",
-        forgot_password: "비밀번호 찾기",
-        msg: {
-            connecting_api: "API 서버 연결중 ...",
-            unreachable_api: "API 서버 연결에 실패하였습니다.",
-            uninitialized_api: "API 서버가 연결되었지만, 초기화되지 않았습니다.",
-            connected_api: "API 연결 설공.",
-            required_field: "공백을 허용하지 않습니다.",
-            more_than_4char: "4자 이상이여야 합니다.",
-            invalid_fields: "계정이름 또는 비밀번호가 잘못되었습니다.",
-        }
-    },
-
     main: {
         projects: "Projects",
         groups: "Groups",

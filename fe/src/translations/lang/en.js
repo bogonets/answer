@@ -35,23 +35,6 @@ const messages = {
         yes: "Yes",
     },
 
-    login: {
-        username: "Username",
-        password: "Password",
-        signin: "Sign in",
-        signup: "Sign up",
-        forgot_password: "Forgot password",
-        msg: {
-            connecting_api: "Connecting to API server...",
-            unreachable_api: "Unreachable API server.",
-            uninitialized_api: "A reachable but uninitialized API.",
-            connected_api: "API connection successful.",
-            required_field: "Required field",
-            more_than_4char: "It must be at least 4 characters long.",
-            invalid_fields: "Invalid ID or password.",
-        }
-    },
-
     main: {
         projects: "Projects",
         groups: "Groups",

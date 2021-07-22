@@ -1,3 +1,35 @@
+<i18n lang="yaml">
+en:
+  username: "Username"
+  password: "Password"
+  signin: "Sign in"
+  signup: "Sign up"
+  forgot_password: "Forgot password"
+  msg:
+    connecting_api: "Connecting to API server..."
+    unreachable_api: "Unreachable API server."
+    uninitialized_api: "A reachable but uninitialized API."
+    connected_api: "API connection successful."
+    required_field: "Required field"
+    more_than_4char: "It must be at least 4 characters long."
+    invalid_fields: "Invalid ID or password."
+
+ko:
+  username: "계정명"
+  password: "비밀번호"
+  signin: "로그인"
+  signup: "회원 가입"
+  forgot_password: "비밀번호 찾기"
+  msg:
+    connecting_api: "API 서버 연결중 ..."
+    unreachable_api: "API 서버 연결에 실패하였습니다."
+    uninitialized_api: "API 서버가 연결되었지만, 초기화되지 않았습니다."
+    connected_api: "API 연결 설공."
+    required_field: "공백을 허용하지 않습니다."
+    more_than_4char: "4자 이상이여야 합니다."
+    invalid_fields: "계정이름 또는 비밀번호가 잘못되었습니다."
+</i18n>
+
 <template>
   <v-main>
 
@@ -65,7 +97,7 @@
                       :loading="showLoading"
                       @click="onClickSignin"
                   >
-                    {{ $t('hello') }}
+                    {{ $t('signin') }}
                   </v-btn>
                 </v-list-item>
 
@@ -74,14 +106,14 @@
                   <v-row align="center" justify="center">
                     <v-spacer></v-spacer>
                     <a class="text-overline" @click="onClickSignup">
-                      {{ $t('login.signup') }}
+                      {{ $t('signup') }}
                     </a>
                     <span class="mx-3"></span>
                     <a
                         class="text-overline text--disabled text-decoration-line-through"
                         @click="onClickFindPassword"
                     >
-                      {{ $t('login.forgot_password') }}
+                      {{ $t('forgot_password') }}
                     </a>
                     <v-spacer></v-spacer>
                   </v-row>
@@ -135,12 +167,12 @@ export default class LoginPage extends Vue {
   private readonly rules = {
     username: {
       required: (value) => {
-        return !!value || this.$t('login.msg.required_field');
+        return !!value || this.$t('msg.required_field');
       },
     },
     password: {
       required: (value) => {
-        return !!value || this.$t('login.msg.required_field');
+        return !!value || this.$t('msg.required_field');
       },
     },
   };
@@ -179,11 +211,11 @@ export default class LoginPage extends Vue {
   // Computed
 
   get usernameFieldLabel(): string {
-    return this.$t('login.username').toString();
+    return this.$t('username').toString();
   }
 
   get passwordFieldLabel(): string {
-    return this.$t('login.password').toString();
+    return this.$t('password').toString();
   }
 
   get isErrorMessage(): boolean {
@@ -213,13 +245,13 @@ export default class LoginPage extends Vue {
   get loadingText(): string {
     switch (this.currentState) {
       case LoginPageState.Connecting:
-        return this.$t('login.msg.connecting_api').toString()
+        return this.$t('msg.connecting_api').toString()
       case LoginPageState.Unreachable:
-        return this.$t('login.msg.unreachable_api').toString()
+        return this.$t('msg.unreachable_api').toString()
       case LoginPageState.Uninitialized:
-        return this.$t('login.msg.uninitialized_api').toString()
+        return this.$t('msg.uninitialized_api').toString()
       case LoginPageState.ReadyForWait:
-        return this.$t('login.msg.connected_api').toString()
+        return this.$t('msg.connected_api').toString()
       case LoginPageState.Ready:
         return '';
       default:
@@ -391,7 +423,7 @@ export default class LoginPage extends Vue {
         .catch(error => {
           console.error(error);
           this.showLoading = false;
-          const msg = this.$t('login.msg.invalid_fields').toString();
+          const msg = this.$t('msg.invalid_fields').toString();
           this.showErrorMessage(msg);
         });
   }
@@ -413,14 +445,3 @@ export default class LoginPage extends Vue {
   right: 16px;
 }
 </style>
-
-<i18n>
-{
-  "en": {
-    "hello": "Hello i18n in SFC!"
-  },
-  "ko": {
-    "hello": "안녕!"
-  }
-}
-</i18n>
