@@ -65,7 +65,7 @@
                       :loading="showLoading"
                       @click="onClickSignin"
                   >
-                    {{ $t('login.signin') }}
+                    {{ $t('hello') }}
                   </v-btn>
                 </v-list-item>
 
@@ -413,3 +413,14 @@ export default class LoginPage extends Vue {
   right: 16px;
 }
 </style>
+
+<i18n>
+{
+  "en": {
+    "hello": "Hello i18n in SFC!"
+  },
+  "ko": {
+    "hello": "안녕!"
+  }
+}
+</i18n>
