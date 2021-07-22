@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import Signup from '@/pages/Login/SignUp.vue';
-import SignupAdmin from '@/pages/Login/SignUpAdmin.vue';
+import Signup from '@/pages/signup/SignUp.vue';
+import SignupAdmin from '@/pages/signup/SignUpAdmin.vue';
 import ProjectsMain from '@/pages/ProjectsMain.vue';
 import Project from '@/pages/_main/project/ProjectMain.vue';
 import GuideLayout from '@/pages/_main/project/layout/LayoutGuide.vue';
@@ -16,13 +16,13 @@ import AuthManagement from '@/components/external/airjoy/AuthManagement.vue'
 import Version from '@/pages/Info/Version.vue';
 import NotFound from '@/pages/Error/NotFound.vue';
 
-import AboutPage from '@/pages/AboutPage.vue';
-import ConfigAccountPage from '@/pages/ConfigAccountPage.vue';
-import ConfigAdminPage from '@/pages/ConfigAdminPage.vue';
-import DashboardPage from '@/pages/DashboardPage.vue';
-import DevelopmentToolsPage from '@/pages/DevelopmentToolsPage.vue';
+import AboutPage from '@/pages/main/AboutPage.vue';
+import ConfigAccountPage from '@/pages/main/config/ConfigAccountPage.vue';
+import ConfigAdminPage from '@/pages/main/config/ConfigAdminPage.vue';
+import DashboardPage from '@/pages/main/DashboardPage.vue';
+import DevelopmentToolsPage from '@/pages/main/DevelopmentToolsPage.vue';
 import LoginPage from '@/pages/LoginPage.vue';
-import MainPage from '@/pages/MainPage.vue';
+import MainPage from '@/pages/main/MainPage.vue';
 
 Vue.use(Router);
 
