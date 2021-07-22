@@ -1,9 +1,4 @@
-'use strict'
-
-import lang from '@/translations/lang/lang';
-
-const messages = {
-    lang: lang,
+export default {
     title: 'Answer',
 
     basic: {
@@ -61,11 +56,7 @@ const messages = {
             title: "언어선택",
         },
         account: {
-            unknown_user: "알수없음",
-            appearance: {
-                title: "외관",
-                subtitle: "Anaswer의 모양과 느낌을 사용자 정의할 수 있습니다.",
-            },
+            unknown_user: "알수없음"
         },
         admin: {
         },
@@ -606,6 +597,4 @@ const messages = {
     initialize: "초기화",
     change_property: "속성변경",
     wind_control: "풍량조절",
-};
-
-export default messages;
+}

@@ -9,28 +9,7 @@
     </v-btn>
 
     <!-- Language Config Button -->
-    <v-menu open-on-hover transition="slide-y-transition" :offset-y="true">
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn icon small v-bind="attrs" v-on="on">
-          <v-icon small role="img" aria-hidden="false">
-            {{ icons.translate }}
-          </v-icon>
-        </v-btn>
-      </template>
-
-      <v-list dense>
-        <v-subheader>{{ $t('config.translations.title') }}</v-subheader>
-        <v-divider></v-divider>
-
-        <v-list-item-group mandatory v-model="currentLangIndex" color="primary">
-          <v-list-item v-for="lang in languages" :key="lang">
-            <v-list-item-content @click="onClickLanguage(lang)">
-              <v-list-item-title v-text="$t(lang)"></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-menu>
+    <menu-translate init-vuetify @select-lang="onClickLanguage"></menu-translate>
 
     <!-- API Config Button & Dialog -->
     <v-dialog
@@ -84,28 +63,26 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { mdiThemeLightDark, mdiTranslate, mdiApi } from '@mdi/js';
-
-export const LANG_KO = 'ko';
-export const LANG_EN = 'en';
-export const LANGUAGES = [LANG_KO, LANG_EN];
+import MenuTranslate from '@/components/MenuTranslate.vue';
+import { mdiThemeLightDark, mdiApi } from '@mdi/js';
 
 export const EVENT_ON_CHANGE_THEME = 'on-change-theme';
 export const EVENT_ON_CHANGE_LANGUAGE = 'on-change-language';
 export const EVENT_ON_CHANGE_API = 'on-change-api';
 
-@Component
+@Component({
+  components: {
+    MenuTranslate
+  }
+})
 export default class LocalConfigButtons extends Vue {
 
-  readonly languages = LANGUAGES;
   readonly icons = {
     theme: mdiThemeLightDark,
-    translate: mdiTranslate,
     api: mdiApi,
   };
 
   private showApiConfigDialog = false;
-  private currentLangIndex = 0;
   private currentApiOrigin = '';
 
   // Lifecycle
@@ -123,10 +100,7 @@ export default class LocalConfigButtons extends Vue {
   // Methods
 
   updateInternalState() {
-    const lang = this.$vuetify.lang.current ? this.$vuetify.lang.current : LANG_KO;
-    const api = this.$api2.origin;
-    this.currentLangIndex = LANGUAGES.indexOf(lang);
-    this.currentApiOrigin = api;
+    this.currentApiOrigin = this.$api2.origin;
   }
 
   // Events

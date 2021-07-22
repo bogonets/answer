@@ -1,9 +1,4 @@
-'use strict'
-
-import lang from '@/translations/lang/lang';
-
-const messages = {
-    lang: lang,
+export default {
     title: 'Answer',
 
     basic: {
@@ -61,11 +56,7 @@ const messages = {
             title: "Translations",
         },
         account: {
-            unknown_user: "Unknown",
-            appearance: {
-                title: "Appearance",
-                subtitle: "Customize the look and feel of your Answer.",
-            },
+            unknown_user: "Unknown"
         },
         admin: {
         },
@@ -607,5 +598,3 @@ const messages = {
     change_property: "Change Prop",
     wind_control: "Wind Control",
 }
-
-export default messages;

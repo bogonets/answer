@@ -47,13 +47,18 @@ export function originToBaseUrl(origin: string): string {
     }
 }
 
+export interface Extra {
+    dark?: boolean;
+    lang?: string;
+}
+
 export interface User {
     username?: string;
     email?: string;
     phone1?: string;
     phone2?: string;
     is_admin?: boolean;
-    extra?: object;
+    extra?: Extra;
     created_at?: string;
     updated_at?: string;
     last_login?: string;
@@ -75,7 +80,10 @@ function newEmptySession(): Login {
             phone1: '',
             phone2: '',
             is_admin: false,
-            extra: {},
+            extra: {
+                dark: false,
+                lang: '',
+            } as Extra,
             created_at: '',
             updated_at: '',
             last_login: '',
