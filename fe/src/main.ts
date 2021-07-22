@@ -61,7 +61,11 @@ Vue.prototype.$util = answerUtil;
 
 Vue.config.productionTip = false;
 
+import VueVersions from "@/versions";
+Vue.use(VueVersions);
+
 Vue.prototype.$version = require('../package.json')['version'];
+
 Vue.prototype.$page = {
   main: '/main',
   project: '/main/project',

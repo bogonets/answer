@@ -4,6 +4,7 @@ import lang from '@/translations/lang/lang';
 
 const messages = {
     lang: lang,
+    title: 'Answer',
 
     basic: {
         admin: "Admin",
@@ -76,6 +77,12 @@ const messages = {
         translations: {
             title: "Translations",
         }
+    },
+
+    about: {
+        version: "Version",
+        documentation: "Official documentation",
+        vender: "Bogonet Homepage",
     },
 
     version: "Version",

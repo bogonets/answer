@@ -10,7 +10,9 @@
           ></title-logo>
         </div>
 
-        <v-btn block text rounded disabled class="d-block my-4 secondary">
+        <v-divider></v-divider>
+
+        <v-btn block text rounded disabled class="d-block my-8">
           {{ versionText }}
         </v-btn>
 
@@ -21,7 +23,7 @@
             class="d-block my-4 secondary"
             @click="onClickDocumentation"
         >
-          {{ 'Show document' }}
+          {{ $t('about.documentation') }}
         </v-btn>
 
         <v-btn
@@ -30,7 +32,7 @@
             rounded
             class="d-block my-4 secondary" @click="onClickVender"
         >
-          {{ 'GoTo bogonets' }}
+          {{ $t('about.vender') }}
         </v-btn>
 
       </v-col>
@@ -42,6 +44,9 @@
 import { Vue, Component } from 'vue-property-decorator';
 import TitleLogo from '@/components/TitleLogo.vue';
 
+const DOCUMENTATION_HREF = 'https://answerdoc.bogonets.com';
+const VENDER_HREF = 'https://www.bogonets.com';
+
 @Component({
   components: {
     TitleLogo,
@@ -49,13 +54,18 @@ import TitleLogo from '@/components/TitleLogo.vue';
 })
 export default class AboutPage extends Vue {
   get versionText(): string {
-    return 'Version: 2.0.0';
+    const title = this.$t('title').toString();
+    const version = this.$t('about.version').toString();
+    const number = this.$versions.answer;
+    return `${title} ${version} ${number}`;
   }
 
   onClickDocumentation() {
+    window.open(DOCUMENTATION_HREF);
   }
 
   onClickVender() {
+    window.open(VENDER_HREF);
   }
 }
 </script>

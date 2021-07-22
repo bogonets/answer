@@ -4,6 +4,7 @@ import lang from '@/translations/lang/lang';
 
 const messages = {
     lang: lang,
+    title: 'Answer',
 
     basic: {
         admin: "관리자",
@@ -59,7 +60,7 @@ const messages = {
     menu: {
         user: {
             unknown_user: "알수없음",
-            user_setting: "계정 설정",
+            user_setting: "개인 설정",
             admin_setting: "관리자 설정",
             development_tools: "개발 도구",
             about_answer: "엔서에 대해",
@@ -76,6 +77,12 @@ const messages = {
         translations: {
             title: "언어선택",
         }
+    },
+
+    about: {
+        version: "버전",
+        documentation: "공식 문서 페이지",
+        vender: "보고넷 홈페이지",
     },
 
     version: "버전",
