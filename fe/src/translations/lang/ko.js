@@ -79,7 +79,10 @@ const messages = {
         },
         account: {
             unknown_user: "알수없음",
-            appearance: "외관",
+            appearance: {
+                title: "외관",
+                subtitle: "Anaswer의 모양과 느낌을 사용자 정의할 수 있습니다.",
+            },
         },
         admin: {
         },

@@ -79,7 +79,10 @@ const messages = {
         },
         account: {
             unknown_user: "Unknown",
-            appearance: "Appearance",
+            appearance: {
+                title: "Appearance",
+                subtitle: "Customize the look and feel of your Answer.",
+            },
         },
         admin: {
         },
