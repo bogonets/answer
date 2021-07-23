@@ -9,7 +9,7 @@
     </v-btn>
 
     <!-- Language Config Button -->
-    <menu-translate init-vuetify @select-lang="onClickLanguage"></menu-translate>
+    <menu-translate init-vuetify @input="onClickLanguage"></menu-translate>
 
     <!-- API Config Button & Dialog -->
     <v-dialog
@@ -113,6 +113,7 @@ export default class LocalConfigButtons extends Vue {
   }
 
   onClickLanguage(lang: string) {
+    console.debug(`[LocalConfigButtons] onClickLanguage(lang=${lang})`);
     if (this.$vuetify.lang.current == lang) {
       return;
     }
@@ -123,11 +124,13 @@ export default class LocalConfigButtons extends Vue {
   }
 
   onApiDialogCancel() {
+    console.debug(`[LocalConfigButtons] onApiDialogCancel()`);
     this.showApiConfigDialog = false;
     this.currentApiOrigin = this.$api2.origin;
   }
 
   onApiDialogOk() {
+    console.debug(`[LocalConfigButtons] onApiDialogOk()`);
     this.showApiConfigDialog = false;
     if (this.currentApiOrigin == this.$api2.origin) {
       return;

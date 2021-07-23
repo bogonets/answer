@@ -22,9 +22,14 @@ ko:
       <v-subheader>{{ $t('header') }}</v-subheader>
       <v-divider></v-divider>
 
-      <v-list-item-group mandatory v-model="currentLangIndex" color="primary">
+      <v-list-item-group
+          mandatory
+          color="primary"
+          :value="currentLangIndex"
+          @change="changeLangIndex"
+      >
         <v-list-item v-for="lang in languages" :key="lang">
-          <v-list-item-content @click="onClickLanguage(lang)">
+          <v-list-item-content>
             <v-list-item-title v-text="$t('name', lang)"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -35,14 +40,14 @@ ko:
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, VModel } from 'vue-property-decorator';
 import { mdiTranslate } from "@mdi/js";
+
+const LOG_PREFIX = '[MenuTranslate]';
 
 export const LANG_KO = 'ko';
 export const LANG_EN = 'en';
 export const LANGUAGES = [LANG_KO, LANG_EN];
-
-export const EVENT_SELECT_LANG = 'select-lang';
 
 @Component
 export default class MenuTranslate extends Vue {
@@ -52,8 +57,8 @@ export default class MenuTranslate extends Vue {
     translate: mdiTranslate,
   };
 
-  @Prop({type: String, default: ''})
-  readonly initLang!: string;
+  @VModel({ type: String })
+  lang!: string;
 
   @Prop({type: Boolean, default: false})
   readonly initVuetify!: boolean;
@@ -67,12 +72,15 @@ export default class MenuTranslate extends Vue {
   private currentLangIndex = 0;
 
   created() {
-    this.currentLangIndex = LANGUAGES.indexOf(this.getInitLanguage());
+    const initValue = this.initLang;
+    console.debug(`${LOG_PREFIX} created() -> initValue=${initValue}`);
+    this.lang = initValue;
+    this.currentLangIndex = LANGUAGES.indexOf(initValue);
   }
 
-  getInitLanguage(): string {
-    if (this.initLang) {
-      return this.initLang;
+  get initLang(): string {
+    if (this.lang) {
+      return this.lang;
     } else if (this.initVuetify) {
       return this.$vuetify.lang.current;
     } else if (this.initLocalStore) {
@@ -82,11 +90,18 @@ export default class MenuTranslate extends Vue {
         return this.$localStore.user.extra.lang;
       }
     }
-    return LANG_KO;
+
+    if (this.$vuetify.lang.current) {
+      return this.$vuetify.lang.current;
+    } else {
+      return LANG_KO;
+    }
   }
 
-  onClickLanguage(lang: string) {
-    this.$emit(EVENT_SELECT_LANG, lang);
+  changeLangIndex(index) {
+    console.debug(`${LOG_PREFIX} changeLangIndex(event=${index})`);
+    this.currentLangIndex = index;
+    this.lang = LANGUAGES[index];
   }
 }
 </script>
