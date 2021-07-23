@@ -100,7 +100,7 @@ import {
 } from '@mdi/js';
 
 @Component
-export default class MenuSelf extends Vue {
+export default class MenuAccount extends Vue {
 
   readonly icons = {
     accountCircle: mdiAccountCircle,

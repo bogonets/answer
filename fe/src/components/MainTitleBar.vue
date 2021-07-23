@@ -12,19 +12,19 @@
 
     <v-spacer></v-spacer>
 
-    <menu-self></menu-self>
+    <menu-account></menu-account>
   </v-app-bar>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import MenuSelf from '@/components/MenuSelf.vue';
+import MenuAccount from '@/components/MenuAccount.vue';
 import TitleLogoSmall from "@/components/TitleLogoSmall.vue";
 
 @Component({
   components: {
     TitleLogoSmall,
-    MenuSelf,
+    MenuAccount,
   }
 })
 export default class MainTitleBar extends Vue {
