@@ -107,7 +107,8 @@ ko:
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import VueI18n from '@/translations/VueI18n';
+import { Component } from 'vue-property-decorator';
 import {
   mdiAccountCircle,
   mdiAccountCogOutline,
@@ -118,7 +119,7 @@ import {
 } from '@mdi/js';
 
 @Component
-export default class MenuAccount extends Vue {
+export default class MenuAccount extends VueI18n {
 
   readonly icons = {
     accountCircle: mdiAccountCircle,

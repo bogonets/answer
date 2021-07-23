@@ -36,9 +36,10 @@ ko:
     <!-- The card in the center of the screen. -->
     <v-container fluid class="fill-height">
       <v-row align="center" justify="center">
-        <v-col cols="8" sm="6" md="6" lg="6" xl="4">
-          <v-card elevation="8">
+        <v-col class="max-content-width">
 
+          <!-- Main Content -->
+          <v-card elevation="8">
             <v-card-title class="pt-8">
               <title-logo></title-logo>
             </v-card-title>
@@ -120,18 +121,18 @@ ko:
                 </v-list-item>
               </v-list>
             </v-card-actions>
-
           </v-card>
+
         </v-col>
       </v-row>
     </v-container>
 
-    <local-config-buttons
-        class="config-button-group-position ma-0 pa-0"
+    <buttons-config-public
+        class="config-buttons-position ma-0 pa-0"
         @change-theme="changeTheme"
         @change-language="changeLanguage"
         @change-origin="changeOrigin"
-    ></local-config-buttons>
+    ></buttons-config-public>
 
   </v-main>
 </template>
@@ -141,7 +142,7 @@ import { Vue, Component } from 'vue-property-decorator';
 import { User } from '@/apis/api-v2';
 import TitleLogo from '@/components/TitleLogo.vue';
 import LinearLoading from '@/components/LinearLoading.vue';
-import LocalConfigButtons from '@/components/LocalConfigButtons.vue';
+import ButtonsConfigPublic from '@/components/ButtonsConfigPublic.vue';
 
 const WAIT_MOMENT_MILLISECONDS = 0;
 const V_TEXT_FIELD_VALIDATE_METHOD_NAME = 'validate';
@@ -156,7 +157,7 @@ enum LoginPageState {
 
 @Component({
   components: {
-    LocalConfigButtons,
+    ButtonsConfigPublic,
     LinearLoading,
     TitleLogo,
   }
@@ -349,14 +350,13 @@ export default class LoginPage extends Vue {
   }
 
   validateForms(): boolean {
-    const validate = V_TEXT_FIELD_VALIDATE_METHOD_NAME;
     const fields = [this.$refs.usernameField, this.$refs.passwordField];
     let result = true;
     for (const key in fields) {
       const field = fields[key];
-      if (field.hasOwnProperty(validate)) {
+      if (field.hasOwnProperty(V_TEXT_FIELD_VALIDATE_METHOD_NAME)) {
         // You need to repeat the validation function for every field.
-        if (!field[validate](true)) {
+        if (!field[V_TEXT_FIELD_VALIDATE_METHOD_NAME](true)) {
           result = false;
         }
       }
@@ -376,8 +376,8 @@ export default class LoginPage extends Vue {
     console.debug('Change Language: ' + lang);
 
     this.$localStore.lang = lang;
-    this.$vuetify.lang.current = lang;
     this.$i18n.locale = lang;
+    this.$vuetify.lang.current = lang;
   }
 
   changeOrigin(origin: string) {
@@ -432,9 +432,13 @@ export default class LoginPage extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.config-button-group-position {
+.config-buttons-position {
   position: absolute;
   top: 16px;
   right: 16px;
+}
+
+.max-content-width {
+  max-width: 480px;
 }
 </style>

@@ -40,7 +40,8 @@ ko:
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, VModel } from 'vue-property-decorator';
+import VueI18n from '@/translations/VueI18n';
+import { Component, Prop, VModel } from 'vue-property-decorator';
 import { mdiTranslate } from "@mdi/js";
 
 export const LANG_KO = 'ko';
@@ -48,7 +49,7 @@ export const LANG_EN = 'en';
 export const LANGUAGES = [LANG_KO, LANG_EN];
 
 @Component
-export default class MenuTranslate extends Vue {
+export default class MenuTranslate extends VueI18n {
 
   readonly languages = LANGUAGES;
   readonly icons = {

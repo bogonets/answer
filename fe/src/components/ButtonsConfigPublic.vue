@@ -84,7 +84,8 @@ ko:
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Emit } from 'vue-property-decorator';
+import VueI18n from '@/translations/VueI18n';
+import { Component, Prop, Emit } from 'vue-property-decorator';
 import MenuTranslate from '@/components/MenuTranslate.vue';
 import { mdiThemeLightDark, mdiApi } from '@mdi/js';
 
@@ -93,7 +94,7 @@ import { mdiThemeLightDark, mdiApi } from '@mdi/js';
     MenuTranslate
   }
 })
-export default class LocalConfigButtons extends Vue {
+export default class ButtonsConfigPublic extends VueI18n {
 
   readonly icons = {
     theme: mdiThemeLightDark,
