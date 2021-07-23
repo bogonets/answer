@@ -81,7 +81,7 @@ ko:
                       v-model="currentPassword"
                       :rules="[rules.password.required]"
                       :label="passwordFieldLabel"
-                      @keypress.enter.stop="onClickSignin"
+                      @keypress.enter.stop="signin"
                   ></v-text-field>
                 </v-form>
               </v-card-text>
@@ -95,7 +95,7 @@ ko:
                       block
                       color="primary"
                       :loading="showLoading"
-                      @click="onClickSignin"
+                      @click="signin"
                   >
                     {{ $t('signin') }}
                   </v-btn>
@@ -105,13 +105,13 @@ ko:
                 <v-list-item>
                   <v-row align="center" justify="center">
                     <v-spacer></v-spacer>
-                    <a class="text-overline" @click="onClickSignup">
+                    <a class="text-overline" @click="signup">
                       {{ $t('signup') }}
                     </a>
                     <span class="mx-3"></span>
                     <a
                         class="text-overline text--disabled text-decoration-line-through"
-                        @click="onClickFindPassword"
+                        @click="forgetPassword"
                     >
                       {{ $t('forgot_password') }}
                     </a>
@@ -128,9 +128,9 @@ ko:
 
     <local-config-buttons
         class="config-button-group-position ma-0 pa-0"
-        @on-change-theme="onChangeTheme"
-        @on-change-language="onChangeLanguage"
-        @on-change-api="onChangeApi"
+        @change-theme="changeTheme"
+        @change-language="changeLanguage"
+        @change-origin="changeOrigin"
     ></local-config-buttons>
 
   </v-main>
@@ -298,18 +298,6 @@ export default class LoginPage extends Vue {
     });
   }
 
-  saveLanguage(lang: string): void {
-    this.$localStore.lang = lang;
-  }
-
-  saveDarkTheme(dark: boolean): void {
-    this.$localStore.dark = dark;
-  }
-
-  saveApiOrigin(origin: string): void {
-    this.$localStore.origin = origin;
-  }
-
   moveToMainPage() {
     this.$router.push('/main');
   }
@@ -352,8 +340,8 @@ export default class LoginPage extends Vue {
     console.debug(`Change login page state: ${oldVal} -> ${newVal}`);
   }
 
-  showErrorMessage(message: string) {
-    this.errorMessage = message;
+  showErrorMessage(msg: string) {
+    this.errorMessage = msg;
   }
 
   hideErrorMessage() {
@@ -376,26 +364,31 @@ export default class LoginPage extends Vue {
     return result;
   }
 
-  // Events
-
-  onChangeTheme(dark: boolean) {
+  changeTheme(dark: boolean) {
     const themeText = dark ? 'Dark' : 'Light';
     console.debug('Change Theme: ' + themeText);
-    this.saveDarkTheme(dark);
+
+    this.$localStore.dark = dark;
+    this.$vuetify.theme.dark = dark;
   }
 
-  onChangeLanguage(lang: string) {
+  changeLanguage(lang: string) {
     console.debug('Change Language: ' + lang);
-    this.saveLanguage(lang);
+
+    this.$localStore.lang = lang;
+    this.$vuetify.lang.current = lang;
+    this.$i18n.locale = lang;
   }
 
-  onChangeApi(origin: string) {
+  changeOrigin(origin: string) {
     console.debug('Change API origin: ' + origin);
-    this.saveApiOrigin(origin);
+    this.$localStore.origin = origin;
+    this.$api.setUrl(origin);
+    this.$api2.origin = origin;
     this.testInit();
   }
 
-  onClickSignin() {
+  signin() {
     if (!this.validateForms()) {
       return;
     }
@@ -428,11 +421,11 @@ export default class LoginPage extends Vue {
         });
   }
 
-  onClickSignup() {
+  signup() {
     this.moveToSignUpPage();
   }
 
-  onClickFindPassword() {
+  forgetPassword() {
     // EMPTY.
   }
 }

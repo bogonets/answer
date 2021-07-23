@@ -43,8 +43,6 @@ ko:
 import { Vue, Component, Prop, VModel } from 'vue-property-decorator';
 import { mdiTranslate } from "@mdi/js";
 
-const LOG_PREFIX = '[MenuTranslate]';
-
 export const LANG_KO = 'ko';
 export const LANG_EN = 'en';
 export const LANGUAGES = [LANG_KO, LANG_EN];
@@ -72,13 +70,14 @@ export default class MenuTranslate extends Vue {
   private currentLangIndex = 0;
 
   created() {
-    const initValue = this.initLang;
-    console.debug(`${LOG_PREFIX} created() -> initValue=${initValue}`);
-    this.lang = initValue;
+    const initValue = this.getInitLang();
+    if (this.lang !== initValue) {
+      this.lang = initValue;
+    }
     this.currentLangIndex = LANGUAGES.indexOf(initValue);
   }
 
-  get initLang(): string {
+  private getInitLang(): string {
     if (this.lang) {
       return this.lang;
     } else if (this.initVuetify) {
@@ -91,6 +90,7 @@ export default class MenuTranslate extends Vue {
       }
     }
 
+    // Default settings.
     if (this.$vuetify.lang.current) {
       return this.$vuetify.lang.current;
     } else {
@@ -99,7 +99,6 @@ export default class MenuTranslate extends Vue {
   }
 
   changeLangIndex(index) {
-    console.debug(`${LOG_PREFIX} changeLangIndex(event=${index})`);
     this.currentLangIndex = index;
     this.lang = LANGUAGES[index];
   }

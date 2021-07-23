@@ -1,15 +1,37 @@
+<i18n lang="yaml">
+en:
+  dialog:
+    api_config:
+      title: "API Settings"
+      subtitle: "You can change the API origin address."
+      origin_label: "API origin address"
+      cancel: "Cancel"
+      ok: "Ok"
+
+ko:
+  dialog:
+    api_config:
+      title: "API 설정"
+      subtitle: "서버 주소를 변경할 수 있습니다."
+      origin_label: "API 서버 주소"
+      cancel: "취소"
+      ok: "확인"
+</i18n>
+
 <template>
   <v-row justify="space-around">
 
     <!-- Theme Config Button -->
-    <v-btn icon small @click="onClickTheme">
+    <v-btn icon small @click="changeTheme">
       <v-icon small role="img" aria-hidden="false">
         {{ icons.theme }}
       </v-icon>
     </v-btn>
 
     <!-- Language Config Button -->
-    <menu-translate init-vuetify @input="onClickLanguage"></menu-translate>
+    <menu-translate
+        init-vuetify @input="changeLanguage"
+    ></menu-translate>
 
     <!-- API Config Button & Dialog -->
     <v-dialog
@@ -18,7 +40,7 @@
         max-width="800px"
         persistent
         no-click-animation
-        @keydown.esc.stop="onApiDialogCancel"
+        @keydown.esc.stop="cancelOrigin"
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn icon small v-bind="attrs" v-on="on">
@@ -28,19 +50,19 @@
 
       <v-card>
         <v-card-title>
-          <span>{{ $t('config.api.title') }}</span>
+          <span>{{ $t('dialog.api_config.title') }}</span>
         </v-card-title>
 
         <v-card-subtitle class="mt-1">
-          <span>{{ $t('config.api.subtitle') }}</span>
+          <span>{{ $t('dialog.api_config.subtitle') }}</span>
         </v-card-subtitle>
 
         <v-card-text>
           <v-text-field
               required
               v-model="currentApiOrigin"
-              :label="$t('config.api.origin_address')"
-              @keypress.enter.stop="onApiDialogOk"
+              :label="$t('dialog.api_config.origin_label')"
+              @keypress.enter.stop="changeOrigin"
           ></v-text-field>
         </v-card-text>
 
@@ -48,11 +70,11 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text @click="onApiDialogCancel">
-            {{ $t('basic.cancel') }}
+          <v-btn text @click="cancelOrigin">
+            {{ $t('dialog.api_config.cancel') }}
           </v-btn>
-          <v-btn color="primary" text @click="onApiDialogOk">
-            {{ $t('basic.ok') }}
+          <v-btn color="primary" text @click="changeOrigin">
+            {{ $t('dialog.api_config.ok') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -62,13 +84,9 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Prop, Emit } from 'vue-property-decorator';
 import MenuTranslate from '@/components/MenuTranslate.vue';
 import { mdiThemeLightDark, mdiApi } from '@mdi/js';
-
-export const EVENT_ON_CHANGE_THEME = 'on-change-theme';
-export const EVENT_ON_CHANGE_LANGUAGE = 'on-change-language';
-export const EVENT_ON_CHANGE_API = 'on-change-api';
 
 @Component({
   components: {
@@ -82,64 +100,73 @@ export default class LocalConfigButtons extends Vue {
     api: mdiApi,
   };
 
+  @Prop({type: String, default: ''})
+  readonly origin!: string;
+
+  @Prop({type: Boolean, default: false})
+  readonly localStoreOrigin!: boolean;
+
+  @Prop({type: Boolean, default: false})
+  readonly apiOrigin!: boolean;
+
+  @Prop({type: Boolean, default: false})
+  readonly locationOrigin!: boolean;
+
   private showApiConfigDialog = false;
+  private savedApiOrigin = '';
   private currentApiOrigin = '';
 
-  // Lifecycle
-
-  mounted() {
-    this.updateInternalState();
+  created() {
+    this.savedApiOrigin = this.getInitApiOrigin();
+    this.currentApiOrigin = this.savedApiOrigin;
   }
-
-  // Computed
 
   get isProduction(): boolean {
     return process.env.NODE_ENV === 'production';
   }
 
-  // Methods
-
-  updateInternalState() {
-    this.currentApiOrigin = this.$api2.origin;
-  }
-
-  // Events
-
-  onClickTheme() {
-    // Flip light/dark theme.
-    const dark = !this.$vuetify.theme.dark;
-    this.$vuetify.theme.dark = dark;
-    this.$emit(EVENT_ON_CHANGE_THEME, dark);
-  }
-
-  onClickLanguage(lang: string) {
-    console.debug(`[LocalConfigButtons] onClickLanguage(lang=${lang})`);
-    if (this.$vuetify.lang.current == lang) {
-      return;
+  private getInitApiOrigin(): string {
+    if (this.origin) {
+      return this.origin;
+    } else if (this.localStoreOrigin) {
+      return this.$localStore.origin;  // Perhaps the default is location origin.
+    } else if (this.apiOrigin) {
+      return this.$api2.origin;
+    } else if (this.locationOrigin) {
+      return document.location.origin;
     }
 
-    this.$vuetify.lang.current = lang;
-    this.$i18n.locale = lang;
-    this.$emit(EVENT_ON_CHANGE_LANGUAGE, lang);
-  }
-
-  onApiDialogCancel() {
-    console.debug(`[LocalConfigButtons] onApiDialogCancel()`);
-    this.showApiConfigDialog = false;
-    this.currentApiOrigin = this.$api2.origin;
-  }
-
-  onApiDialogOk() {
-    console.debug(`[LocalConfigButtons] onApiDialogOk()`);
-    this.showApiConfigDialog = false;
-    if (this.currentApiOrigin == this.$api2.origin) {
-      return;
+    // Default settings.
+    const localStoreOrigin = this.$localStore.origin;
+    if (localStoreOrigin) {
+      return localStoreOrigin;
+    } else {
+      return document.location.origin;
     }
+  }
 
-    const api = this.currentApiOrigin;
-    this.$api.setUrl(api);
-    this.$api2.origin = api;
-    this.$emit(EVENT_ON_CHANGE_API, api);
+  @Emit()
+  changeTheme() {
+    return !this.$vuetify.theme.dark;
+  }
+
+  @Emit()
+  changeLanguage(lang: string) {
+    return lang;
+  }
+
+  @Emit()
+  cancelOrigin() {
+    this.showApiConfigDialog = false;
+    this.currentApiOrigin = this.savedApiOrigin;
+    return this.savedApiOrigin;
+  }
+
+  @Emit()
+  changeOrigin() {
+    this.showApiConfigDialog = false;
+    this.savedApiOrigin = this.currentApiOrigin;
+    return this.currentApiOrigin;
   }
 }
 </script>
