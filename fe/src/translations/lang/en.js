@@ -35,17 +35,6 @@ export default {
         groups: "Groups",
     },
 
-    menu: {
-        user: {
-            unknown_user: "Unknown",
-            user_setting: "Account setting",
-            admin_setting: "Setting",
-            development_tools: "DevTools",
-            about_answer: "About Answer",
-            signout: "Sign out",
-        }
-    },
-
     config: {
         translations: {
             title: "Translations",

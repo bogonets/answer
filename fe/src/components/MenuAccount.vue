@@ -1,3 +1,21 @@
+<i18n lang="yaml">
+en:
+  unknown_user: "Unknown"
+  user_setting: "Account setting"
+  admin_setting: "Setting"
+  development_tools: "DevTools"
+  about_answer: "About Answer"
+  signout: "Sign out"
+
+ko:
+  unknown_user: "알수없음"
+  user_setting: "개인 설정"
+  admin_setting: "관리자 설정"
+  development_tools: "개발 도구"
+  about_answer: "엔서에 대해"
+  signout: "로그아웃"
+</i18n>
+
 <template>
   <v-menu
       left
@@ -35,7 +53,7 @@
           </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('menu.user.user_setting') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('user_setting') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -46,7 +64,7 @@
           </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('menu.user.admin_setting') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('admin_setting') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -57,7 +75,7 @@
           </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('menu.user.development_tools') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('development_tools') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -68,7 +86,7 @@
           </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('menu.user.about_answer') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('about_answer') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -81,7 +99,7 @@
           </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('menu.user.signout') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('signout') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -134,7 +152,7 @@ export default class MenuAccount extends Vue {
     if (username) {
       return username;
     }
-    return this.$t('menu.user.unknown_user').toString();
+    return this.$t('unknown_user').toString();
   }
 
   // Method.

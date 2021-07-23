@@ -35,17 +35,6 @@ export default {
         groups: "Groups",
     },
 
-    menu: {
-        user: {
-            unknown_user: "알수없음",
-            user_setting: "개인 설정",
-            admin_setting: "관리자 설정",
-            development_tools: "개발 도구",
-            about_answer: "엔서에 대해",
-            signout: "로그아웃",
-        }
-    },
-
     config: {
         translations: {
             title: "언어선택",
