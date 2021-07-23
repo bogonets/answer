@@ -145,7 +145,8 @@ import LinearLoading from '@/components/LinearLoading.vue';
 import ButtonsConfigPublic from '@/components/ButtonsConfigPublic.vue';
 
 const WAIT_MOMENT_MILLISECONDS = 0;
-const V_TEXT_FIELD_VALIDATE_METHOD_NAME = 'validate';
+const V_TEXT_FIELD_VALIDATE = 'validate';
+const V_TEXT_FIELD_VALIDATIONS = 'validations';
 
 enum LoginPageState {
   Connecting,
@@ -198,8 +199,8 @@ export default class LoginPage extends Vue {
       this.saveUserToSession(access, refresh, user);
       this.moveToMainPage();
 
-      this.$api.setDefaultSession(access, refresh, user);
-      this.$api.setDefaultBearerAuthorization(access);
+      this.$api2.setDefaultSession(access, refresh, user);
+      this.$api2.setDefaultBearerAuthorization(access);
 
       return;
     }
@@ -354,11 +355,40 @@ export default class LoginPage extends Vue {
     let result = true;
     for (const key in fields) {
       const field = fields[key];
-      if (field.hasOwnProperty(V_TEXT_FIELD_VALIDATE_METHOD_NAME)) {
-        // You need to repeat the validation function for every field.
-        if (!field[V_TEXT_FIELD_VALIDATE_METHOD_NAME](true)) {
-          result = false;
-        }
+      if (!field) {
+        continue;
+      }
+
+      const validate = field[V_TEXT_FIELD_VALIDATE];
+      if (validate === undefined) {
+        continue;
+      }
+
+      // You need to repeat the validation function for every field.
+      if (!validate(true)) {
+        result = false;
+      }
+    }
+    return result;
+  }
+
+  updateValidations() {
+    const fields = [this.$refs.usernameField, this.$refs.passwordField];
+    let result = true;
+    for (const key in fields) {
+      const field = fields[key];
+      if (!field) {
+        continue;
+      }
+
+      const validate = field[V_TEXT_FIELD_VALIDATE];
+      const validations = field[V_TEXT_FIELD_VALIDATIONS];
+      if (validate === undefined || validations === undefined) {
+        continue;
+      }
+
+      if (validations.length >= 1) {
+        validate(true);
       }
     }
     return result;
@@ -378,6 +408,7 @@ export default class LoginPage extends Vue {
     this.$localStore.lang = lang;
     this.$i18n.locale = lang;
     this.$vuetify.lang.current = lang;
+    this.updateValidations();
   }
 
   changeOrigin(origin: string) {
