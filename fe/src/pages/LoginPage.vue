@@ -143,6 +143,7 @@ import { User } from '@/apis/api-v2';
 import TitleLogo from '@/components/TitleLogo.vue';
 import LinearLoading from '@/components/LinearLoading.vue';
 import ButtonsConfigPublic from '@/components/ButtonsConfigPublic.vue';
+import VueBase from "@/base/VueBase";
 
 const WAIT_MOMENT_MILLISECONDS = 0;
 const V_TEXT_FIELD_VALIDATE = 'validate';
@@ -163,7 +164,7 @@ enum LoginPageState {
     TitleLogo,
   }
 })
-export default class LoginPage extends Vue {
+export default class LoginPage extends VueBase {
 
   private readonly waitMoment = WAIT_MOMENT_MILLISECONDS;
   private readonly rules = {
@@ -423,27 +424,16 @@ export default class LoginPage extends Vue {
   }
 
   changeDark(dark: boolean) {
-    const themeText = dark ? 'Dark' : 'Light';
-    console.debug('Change Dark: ' + themeText);
-
-    this.$localStore.dark = dark;
-    this.$vuetify.theme.dark = dark;
+    this.$$dark = dark;
   }
 
   changeLang(lang: string) {
-    console.debug('Change Lang: ' + lang);
-
-    this.$localStore.lang = lang;
-    this.$i18n.locale = lang;
-    this.$vuetify.lang.current = lang;
+    this.$$lang = lang;
     this.updateValidations();
   }
 
   changeOrigin(origin: string) {
-    console.debug('Change Origin: ' + origin);
-    this.$localStore.origin = origin;
-    this.$api.setUrl(origin);
-    this.$api2.origin = origin;
+    this.$$origin = origin;
     this.testInit();
   }
 
