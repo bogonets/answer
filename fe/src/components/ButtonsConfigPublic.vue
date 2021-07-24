@@ -22,7 +22,7 @@ ko:
   <v-row justify="space-around">
 
     <!-- Theme Config Button -->
-    <v-btn icon small @click="changeTheme">
+    <v-btn icon small @click="changeDark">
       <v-icon small role="img" aria-hidden="false">
         {{ icons.theme }}
       </v-icon>
@@ -30,7 +30,8 @@ ko:
 
     <!-- Language Config Button -->
     <menu-translate
-        init-vuetify @input="changeLanguage"
+        init-vuetify
+        @change-lang="changeLang"
     ></menu-translate>
 
     <!-- API Config Button & Dialog -->
@@ -147,12 +148,12 @@ export default class ButtonsConfigPublic extends VueI18n {
   }
 
   @Emit()
-  changeTheme() {
+  changeDark() {
     return !this.$vuetify.theme.dark;
   }
 
   @Emit()
-  changeLanguage(lang: string) {
+  changeLang(lang: string) {
     return lang;
   }
 

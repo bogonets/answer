@@ -1,3 +1,13 @@
+<i18n lang="yaml">
+en:
+  appearance: "Appearance"
+  unknown_user: "[Unknown User]"
+
+ko:
+  appearance: "외관"
+  unknown_user: "[알수없는 사용자]"
+</i18n>
+
 <template>
   <v-container>
 
@@ -11,6 +21,7 @@
     >
       <v-list nav dense>
 
+        <!-- User Profile -->
         <v-list-item link @click.stop="onClickFoldNavigation">
           <v-list-item-avatar>
             <v-avatar color="accent" size="24">{{ usernameAvatar }}</v-avatar>
@@ -18,7 +29,6 @@
           <v-list-item-title>
             {{ username }}
           </v-list-item-title>
-
           <v-btn icon @click.stop="onClickFoldNavigation">
             <v-icon>{{ icons.chevronLeft }}</v-icon>
           </v-btn>
@@ -26,15 +36,22 @@
 
         <v-divider></v-divider>
 
-        <v-list-item link @click.stop="onClickAppearance">
-          <v-list-item-icon>
-            <v-icon>{{ icons.eye }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('config.account.appearance.title') }}
-          </v-list-item-title>
-        </v-list-item>
+        <v-list-item-group
+            mandatory
+            color="primary"
+            :value="currentSubpageIndex"
+        >
 
+          <v-list-item link @click.stop="onClickAppearance">
+            <v-list-item-icon>
+              <v-icon>{{ icons.eye }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('appearance') }}
+            </v-list-item-title>
+          </v-list-item>
+
+        </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
 
@@ -45,16 +62,18 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import VueI18n from '@/translations/VueI18n';
+import { Component } from 'vue-property-decorator';
 import { mdiChevronLeft, mdiEye } from '@mdi/js';
 
 @Component
-export default class ConfigAccountPage extends Vue {
+export default class ConfigAccountPage extends VueI18n {
   readonly icons = {
     chevronLeft: mdiChevronLeft,
     eye: mdiEye,
   };
 
+  currentSubpageIndex = 0;
   miniNavigation = false;
 
   mounted() {
@@ -66,7 +85,7 @@ export default class ConfigAccountPage extends Vue {
     if (username) {
       return username;
     }
-    return this.$t('config.account.unknown_user').toString();
+    return this.$t('unknown_user').toString();
   }
 
   get usernameAvatar(): string {

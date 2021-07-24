@@ -2,7 +2,7 @@
 
 from typing import List
 from aiohttp import web
-from aiohttp.hdrs import AUTHORIZATION
+from aiohttp.hdrs import METH_OPTIONS, AUTHORIZATION
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
@@ -41,8 +41,10 @@ class RouterV2:
     @web.middleware
     async def middleware(self, request: Request, handler):
         if not request.path.startswith(u.api_v2_public):
-            await self._assign_session(request)
-
+            if request.method == METH_OPTIONS:
+                return await handler(request)
+            else:
+                await self._assign_session(request)
         try:
             return await handler(request)
         except PermissionError as e:

@@ -129,8 +129,8 @@ ko:
 
     <buttons-config-public
         class="config-buttons-position ma-0 pa-0"
-        @change-theme="changeTheme"
-        @change-language="changeLanguage"
+        @change-dark="changeDark"
+        @change-lang="changeLang"
         @change-origin="changeOrigin"
     ></buttons-config-public>
 
@@ -286,6 +286,9 @@ export default class LoginPage extends Vue {
     this.$localStore.user = user;
   }
 
+  /**
+   * @deprecated
+   */
   saveUserToSession(access: string, refresh: string, user: User) {
     const username = user.username || '';
     const email = user.email || '';
@@ -298,6 +301,31 @@ export default class LoginPage extends Vue {
       email: email,
       phone: phone,
     });
+  }
+
+  updateSettingsFromUserExtra(user: User) {
+    if (!user.extra) {
+      console.warn('Not exists user\'s extra information.');
+      return;
+    }
+
+    if (user.extra.dark !== undefined) {
+      console.debug(`User's extra.dark is ${user.extra.dark}`);
+      if (this.$vuetify.theme.dark != user.extra.dark) {
+        this.changeDark(user.extra.dark);
+      }
+    } else {
+      console.warn('Not exists user\'s extra.dark information.');
+    }
+
+    if (user.extra.lang !== undefined) {
+      console.debug(`User's extra.lang is ${user.extra.lang}`);
+      if (this.$i18n.locale != user.extra.lang) {
+        this.changeLang(user.extra.lang);
+      }
+    } else {
+      console.warn('Not exists user\'s extra.lang information.');
+    }
   }
 
   moveToMainPage() {
@@ -394,16 +422,16 @@ export default class LoginPage extends Vue {
     return result;
   }
 
-  changeTheme(dark: boolean) {
+  changeDark(dark: boolean) {
     const themeText = dark ? 'Dark' : 'Light';
-    console.debug('Change Theme: ' + themeText);
+    console.debug('Change Dark: ' + themeText);
 
     this.$localStore.dark = dark;
     this.$vuetify.theme.dark = dark;
   }
 
-  changeLanguage(lang: string) {
-    console.debug('Change Language: ' + lang);
+  changeLang(lang: string) {
+    console.debug('Change Lang: ' + lang);
 
     this.$localStore.lang = lang;
     this.$i18n.locale = lang;
@@ -412,7 +440,7 @@ export default class LoginPage extends Vue {
   }
 
   changeOrigin(origin: string) {
-    console.debug('Change API origin: ' + origin);
+    console.debug('Change Origin: ' + origin);
     this.$localStore.origin = origin;
     this.$api.setUrl(origin);
     this.$api2.origin = origin;
@@ -441,6 +469,8 @@ export default class LoginPage extends Vue {
           const user = response.user || {} as User;
           this.saveUserToLocal(access, refresh, user);
           this.saveUserToSession(access, refresh, user);
+
+          this.updateSettingsFromUserExtra(user);
 
           this.moveToMainPage();
         })

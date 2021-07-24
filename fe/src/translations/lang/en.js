@@ -1,4 +1,7 @@
 export default {
+    global: {
+        lang_name: "English",
+    },
     title: 'Answer',
 
     basic: {

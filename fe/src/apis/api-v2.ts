@@ -10,10 +10,24 @@ const DEFAULT_ORIGIN = document.location.origin;
 const DEFAULT_TIMEOUT = 30 * 1000;
 
 export class ApiV2StatusError extends Error {
-    constructor(code: number, reason: string) {
+
+    code: number;
+    reason: string;
+    data: any;
+
+    constructor(response: AxiosResponse) {
+        const code = response.status;
+        const reason = response.statusText;
+        const data = response.data;
+
         super(`Error: Status(${code}) ${reason}`);
+
+        this.code = code;
+        this.reason = reason;
+        this.data = data;
     }
 }
+
 
 export class ApiV2TokenError extends Error {
     constructor(token?: string) {
@@ -168,26 +182,44 @@ export default class ApiV2 {
         } as AxiosRequestConfig;
         return this.api.post('/public/login', undefined, config)
             .then((response: AxiosResponse) => {
-                if (response.status == 200) {
-                    const result = response.data as Login;
-                    const access = result.access;
-                    const refresh = result.refresh;
-                    if (!access) {
-                        throw new ApiV2AccessTokenError(access);
-                    }
-                    if (!refresh) {
-                        throw new ApiV2RefreshTokenError(refresh);
-                    }
-                    if (updateDefaultAuth) {
-                        const user = result.user || {};
-                        this.setDefaultSession(access, refresh, user);
-                        this.setDefaultBearerAuthorization(access);
-                    }
-                    return result;
-                } else {
-                    const code = response.status;
-                    const reason = response.statusText;
-                    throw new ApiV2StatusError(code, reason);
+                if (response.status !== 200) {
+                    throw new ApiV2StatusError(response);
+                }
+
+                const result = response.data as Login;
+                const access = result.access;
+                const refresh = result.refresh;
+                if (!access) {
+                    throw new ApiV2AccessTokenError(access);
+                }
+                if (!refresh) {
+                    throw new ApiV2RefreshTokenError(refresh);
+                }
+                if (updateDefaultAuth) {
+                    const user = result.user || {};
+                    this.setDefaultSession(access, refresh, user);
+                    this.setDefaultBearerAuthorization(access);
+                }
+                return result;
+            });
+    }
+
+    getSelfExtra() {
+        return this.api.get('/self/extra')
+            .then((response: AxiosResponse) => {
+                if (response.status !== 200) {
+                    throw new ApiV2StatusError(response);
+                }
+
+                return response.data as Extra;
+            });
+    }
+
+    putSelfExtra(extra: Extra) {
+        return this.api.put('/self/extra', extra)
+            .then((response: AxiosResponse) => {
+                if (response.status !== 200) {
+                    throw new ApiV2StatusError(response);
                 }
             });
     }

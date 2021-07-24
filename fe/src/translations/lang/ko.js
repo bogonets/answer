@@ -1,4 +1,7 @@
 export default {
+    global: {
+        lang_name: "한글",
+    },
     title: 'Answer',
 
     basic: {
