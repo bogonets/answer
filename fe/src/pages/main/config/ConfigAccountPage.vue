@@ -68,6 +68,7 @@ import { mdiChevronLeft, mdiEye } from '@mdi/js';
 
 @Component
 export default class ConfigAccountPage extends VueI18n {
+
   readonly icons = {
     chevronLeft: mdiChevronLeft,
     eye: mdiEye,
@@ -95,7 +96,7 @@ export default class ConfigAccountPage extends VueI18n {
   moveAppearance() {
     const movePath = '/main/config/account/appearance';
     if (this.$router.currentRoute.path !== movePath) {
-      this.$router.push('/main/config/account/appearance');
+      this.$router.push(movePath);
     }
   }
 

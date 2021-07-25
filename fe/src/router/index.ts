@@ -19,6 +19,7 @@ import NotFound from '@/pages/Error/NotFound.vue';
 import AboutPage from '@/pages/main/AboutPage.vue';
 import ConfigAccountPage from '@/pages/main/config/ConfigAccountPage.vue';
 import ConfigAdminPage from '@/pages/main/config/ConfigAdminPage.vue';
+import OverviewPage from '@/pages/main/config/admin/OverviewPage.vue';
 import DashboardPage from '@/pages/main/DashboardPage.vue';
 import DevelopmentToolsPage from '@/pages/main/DevelopmentToolsPage.vue';
 import LoginPage from '@/pages/LoginPage.vue';
@@ -64,6 +65,12 @@ const answerRoutes = [
       {
         path: 'config/admin',
         component: ConfigAdminPage,
+        children: [
+          {
+            path: 'overview',
+            component: OverviewPage,
+          },
+        ]
       },
       {
         path: 'dev',
