@@ -138,8 +138,8 @@ ko:
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
-import { User } from '@/apis/api-v2';
+import { Component } from 'vue-property-decorator';
+import {Extra, User} from '@/apis/api-v2';
 import TitleLogo from '@/components/TitleLogo.vue';
 import LinearLoading from '@/components/LinearLoading.vue';
 import ButtonsConfigPublic from '@/components/ButtonsConfigPublic.vue';
@@ -189,20 +189,8 @@ export default class LoginPage extends VueBase {
   // Lifecycle
 
   mounted() {
-    const access = this.$localStore.access;
-    const refresh = this.$localStore.refresh;
-    const user = this.$localStore.user;
-
-    // Already session information?
-    if (!!access && !!refresh && !!user) {
-      console.info(`Already session information: ${user.username}`)
-
-      this.saveUserToSession(access, refresh, user);
+    if (this.$localStore.alreadySession) {
       this.moveToMainPage();
-
-      this.$api2.setDefaultSession(access, refresh, user);
-      this.$api2.setDefaultBearerAuthorization(access);
-
       return;
     }
 
@@ -304,28 +292,26 @@ export default class LoginPage extends VueBase {
     });
   }
 
-  updateSettingsFromUserExtra(user: User) {
-    if (!user.extra) {
-      console.warn('Not exists user\'s extra information.');
-      return;
+  updateCurrentSettingsFromUserExtra(extra: Extra) {
+    if (extra.dark === undefined) {
+      console.warn('[LoginPage] Not exists user\'s extra.dark information.');
+    } else {
+      const dark = extra.dark;
+      console.debug(`[LoginPage] User's extra.dark is ${dark}`);
+      if (this.$vuetify.theme.dark != dark) {
+        this.$vuetify.theme.dark = dark
+      }
     }
 
-    if (user.extra.dark !== undefined) {
-      console.debug(`User's extra.dark is ${user.extra.dark}`);
-      if (this.$vuetify.theme.dark != user.extra.dark) {
-        this.changeDark(user.extra.dark);
-      }
+    if (extra.lang === undefined) {
+      console.warn('[LoginPage] Not exists user\'s extra.lang information.');
     } else {
-      console.warn('Not exists user\'s extra.dark information.');
-    }
-
-    if (user.extra.lang !== undefined) {
-      console.debug(`User's extra.lang is ${user.extra.lang}`);
-      if (this.$i18n.locale != user.extra.lang) {
-        this.changeLang(user.extra.lang);
+      const lang = extra.lang;
+      console.debug(`[LoginPage] User's extra.lang is ${lang}`);
+      if (this.$vuetify.lang.current != lang) {
+        this.$vuetify.lang.current = lang;
+        this.$i18n.locale = lang;
       }
-    } else {
-      console.warn('Not exists user\'s extra.lang information.');
     }
   }
 
@@ -424,16 +410,29 @@ export default class LoginPage extends VueBase {
   }
 
   changeDark(dark: boolean) {
-    this.$$dark = dark;
+    // Changes only public local settings.
+    this.$localStore.dark = dark;
+
+    this.$vuetify.theme.dark = dark;
   }
 
   changeLang(lang: string) {
-    this.$$lang = lang;
+    // Changes only public local settings.
+    this.$localStore.lang = lang;
+
+    this.$vuetify.lang.current = lang;
+    this.$i18n.locale = lang;
+
     this.updateValidations();
   }
 
   changeOrigin(origin: string) {
-    this.$$origin = origin;
+    // Changes only public local settings.
+    this.$localStore.origin = origin;
+
+    this.$api.setUrl(origin);
+    this.$api2.origin = origin;
+
     this.testInit();
   }
 
@@ -460,7 +459,11 @@ export default class LoginPage extends VueBase {
           this.saveUserToLocal(access, refresh, user);
           this.saveUserToSession(access, refresh, user);
 
-          this.updateSettingsFromUserExtra(user);
+          if (user.extra) {
+            this.updateCurrentSettingsFromUserExtra(user.extra);
+          } else {
+            console.warn('[LoginPage] Not exists user\'s extra information.');
+          }
 
           this.moveToMainPage();
         })

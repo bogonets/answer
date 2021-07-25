@@ -2,13 +2,13 @@ import VueInterface from 'vue';
 import { PluginObject } from 'vue/types/plugin';
 import { Store, CommitOptions } from 'vuex';
 import VuexPersist from 'vuex-persist'
+import { User, Extra } from '@/apis/api-v2';
 
 // Modules
 import api from '@/store/modules/api';
 import appearance from '@/store/modules/appearance';
 import session from '@/store/modules/session';
 import translation from '@/store/modules/translation';
-import { User } from '@/apis/api-v2';
 
 const DEFAULT_PERSIST_KEY = 'answer.store.local';
 const DEFAULT_STRICT = process.env.NODE_ENV !== 'production';
@@ -16,9 +16,13 @@ const DEFAULT_STRICT = process.env.NODE_ENV !== 'production';
 const API_ORIGIN = 'api/origin';
 const TRANSLATION_LANG = 'translation/lang';
 const APPEARANCE_DARK = 'appearance/dark';
+const SESSION_ALREADY = 'session/already';
 const SESSION_ACCESS = 'session/access';
 const SESSION_REFRESH = 'session/refresh';
 const SESSION_USER = 'session/user';
+const SESSION_USER_EXTRA = 'session/userExtra';
+const SESSION_USER_EXTRA_DARK = 'session/userExtraDark';
+const SESSION_USER_EXTRA_LANG = 'session/userExtraLang';
 
 export interface LocalStoreOptions {
     key?: string;
@@ -97,6 +101,10 @@ export class LocalStore {
         this.setter(APPEARANCE_DARK, val);
     }
 
+    get alreadySession(): boolean {
+        return this.getter(SESSION_ALREADY) as boolean;
+    }
+
     get access(): string {
         return this.getter(SESSION_ACCESS) as string;
     }
@@ -119,6 +127,30 @@ export class LocalStore {
 
     set user(val: User) {
         this.setter(SESSION_USER, val);
+    }
+
+    get userExtra(): Extra {
+        return this.getter(SESSION_USER_EXTRA) as Extra;
+    }
+
+    set userExtra(val: Extra) {
+        this.setter(SESSION_USER_EXTRA, val);
+    }
+
+    get userExtraDark(): boolean {
+        return this.getter(SESSION_USER_EXTRA_DARK) as boolean;
+    }
+
+    set userExtraDark(val: boolean) {
+        this.setter(SESSION_USER_EXTRA_DARK, val);
+    }
+
+    get userExtraLang(): string {
+        return this.getter(SESSION_USER_EXTRA_LANG) as string;
+    }
+
+    set userExtraLang(val: string) {
+        this.setter(SESSION_USER_EXTRA_LANG, val);
     }
 
     clearSession() {

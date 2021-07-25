@@ -77,7 +77,7 @@ export default class ConfigAccountPage extends VueI18n {
   miniNavigation = false;
 
   mounted() {
-    this.$router.push('/main/config/account/appearance');
+    this.moveAppearance();
   }
 
   get username(): string {
@@ -92,12 +92,19 @@ export default class ConfigAccountPage extends VueI18n {
     return this.username[0].toUpperCase();
   }
 
+  moveAppearance() {
+    const movePath = '/main/config/account/appearance';
+    if (this.$router.currentRoute.path !== movePath) {
+      this.$router.push('/main/config/account/appearance');
+    }
+  }
+
   onClickFoldNavigation() {
     this.miniNavigation = !this.miniNavigation;
   }
 
   onClickAppearance() {
-    this.$router.push('/main/config/account/appearance');
+    this.moveAppearance();
   }
 }
 </script>
