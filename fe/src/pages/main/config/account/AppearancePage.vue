@@ -1,6 +1,5 @@
 <i18n lang="yaml">
 en:
-  lang_name: "English"
   title: "Appearance"
   subtitle: "Customize the look and feel of your Answer."
   theme:
@@ -15,8 +14,7 @@ en:
       subtitle: "It will be translated into your preferred language."
 
 ko:
-  lang_name: "한글"
-  title: "외관"
+  title: "외관 설정"
   subtitle: "Answer의 모양과 느낌을 설정할 수 있습니다."
   theme:
     header: "테마"
@@ -32,20 +30,11 @@ ko:
 
 <template>
   <v-container>
-    <v-list three-line>
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>
-            {{ $t('title') }}
-          </v-list-item-title>
-          <v-list-item-subtitle>
-            {{ $t('subtitle') }}
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
-
-    <v-divider></v-divider>
+    <app-bar-title
+        flat
+        :title="$t('title')"
+        :subtitle="$t('subtitle')"
+    ></app-bar-title>
 
     <v-list flat subheader three-line>
       <v-subheader>{{ $t('theme.header') }}</v-subheader>
@@ -63,6 +52,7 @@ ko:
         ></v-switch>
       </v-list-item>
 
+      <v-divider></v-divider>
       <v-subheader>{{ $t('i18n.header') }}</v-subheader>
 
       <v-list-item>
@@ -80,14 +70,11 @@ ko:
               </v-icon>
             </v-btn>
           </template>
-
           <list-languages
               :init-lang="extra.lang"
               @change-lang="changeLang"
           ></list-languages>
-
         </v-menu>
-
       </v-list-item>
 
     </v-list>
@@ -98,11 +85,13 @@ ko:
 import { Component } from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ListLanguages, { LANGUAGES } from '@/components/ListLanguages.vue';
+import AppBarTitle from "@/components/AppBarTitle.vue";
 import { Extra } from '@/apis/api-v2';
 import { mdiChevronDown } from '@mdi/js';
 
 @Component({
   components: {
+    AppBarTitle,
     ListLanguages
   }
 })
