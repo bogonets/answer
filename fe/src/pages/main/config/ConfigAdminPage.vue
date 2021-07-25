@@ -2,10 +2,12 @@
 en:
   title: "Admin Preference"
   overview: "Overview"
+  users: "Users"
 
 ko:
   title: "관리자 설정"
   overview: "개요"
+  users: "사용자"
 </i18n>
 
 <template>
@@ -50,6 +52,15 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
+          <v-list-item link @click.stop="onClickUsers">
+            <v-list-item-icon>
+              <v-icon>{{ icons.account }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('users') }}
+            </v-list-item-title>
+          </v-list-item>
+
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -63,7 +74,7 @@ ko:
 <script lang="ts">
 import VueI18n from '@/translations/VueI18n';
 import { Component } from 'vue-property-decorator';
-import { mdiCogOutline, mdiChevronLeft, mdiViewList } from '@mdi/js';
+import { mdiCogOutline, mdiChevronLeft, mdiViewList, mdiAccount } from '@mdi/js';
 
 @Component
 export default class ConfigAdminPage extends VueI18n {
@@ -72,6 +83,7 @@ export default class ConfigAdminPage extends VueI18n {
     cogOutline: mdiCogOutline,
     chevronLeft: mdiChevronLeft,
     viewList: mdiViewList,
+    account: mdiAccount,
   };
 
   currentSubpageIndex = 0;
@@ -81,11 +93,14 @@ export default class ConfigAdminPage extends VueI18n {
     this.moveOverview();
   }
 
-  moveOverview() {
-    const movePath = '/main/config/admin/overview';
-    if (this.$router.currentRoute.path !== movePath) {
-      this.$router.push(movePath);
+  private movePage(path: string) {
+    if (this.$router.currentRoute.path !== path) {
+      this.$router.push(path);
     }
+  }
+
+  moveOverview() {
+    this.movePage('/main/config/admin/overview');
   }
 
   onClickFoldNavigation() {
@@ -94,6 +109,10 @@ export default class ConfigAdminPage extends VueI18n {
 
   onClickOverview() {
     this.moveOverview();
+  }
+
+  onClickUsers() {
+    this.movePage('/main/config/admin/users');
   }
 }
 </script>

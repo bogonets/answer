@@ -25,6 +25,7 @@ import DevelopmentToolsPage from '@/pages/main/DevelopmentToolsPage.vue';
 import LoginPage from '@/pages/LoginPage.vue';
 import MainPage from '@/pages/main/MainPage.vue';
 import AppearancePage from "@/pages/main/config/account/AppearancePage.vue";
+import UsersPage from "@/pages/main/config/admin/UsersPage.vue";
 
 Vue.use(Router);
 
@@ -69,6 +70,10 @@ const answerRoutes = [
           {
             path: 'overview',
             component: OverviewPage,
+          },
+          {
+            path: 'users',
+            component: UsersPage,
           },
         ]
       },
