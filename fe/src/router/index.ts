@@ -27,6 +27,9 @@ import MainPage from '@/pages/main/MainPage.vue';
 import AppearancePage from "@/pages/main/config/account/AppearancePage.vue";
 import UsersPage from "@/pages/main/config/admin/UsersPage.vue";
 import GroupsPage from "@/pages/main/config/admin/GroupsPage.vue";
+import FeaturesPage from "@/pages/main/config/admin/FeaturesPage.vue";
+import SettingsPage from "@/pages/main/config/admin/SettingsPage.vue";
+import LambdasPage from "@/pages/main/config/admin/LambdasPage.vue";
 
 Vue.use(Router);
 
@@ -79,6 +82,18 @@ const answerRoutes = [
           {
             path: 'groups',
             component: GroupsPage,
+          },
+          {
+            path: 'features',
+            component: FeaturesPage,
+          },
+          {
+            path: 'settings',
+            component: SettingsPage,
+          },
+          {
+            path: 'lambdas',
+            component: LambdasPage,
           },
         ]
       },

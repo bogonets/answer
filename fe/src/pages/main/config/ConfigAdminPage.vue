@@ -4,12 +4,18 @@ en:
   overview: "Overview"
   users: "Users"
   groups: "Groups"
+  lambdas: "Lambdas"
+  features: "Features"
+  settings: "Settings"
 
 ko:
   title: "관리자 설정"
   overview: "개요"
   users: "사용자"
   groups: "그룹"
+  lambdas: "람다 관리"
+  features: "기능 설정"
+  settings: "환경 설정"
 </i18n>
 
 <template>
@@ -47,7 +53,7 @@ ko:
 
           <v-list-item link @click.stop="onClickOverview">
             <v-list-item-icon>
-              <v-icon>{{ icons.viewList }}</v-icon>
+              <v-icon>{{ icons.developerBoard }}</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('overview') }}
@@ -72,6 +78,33 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
+          <v-list-item link @click.stop="onClickLambdas">
+            <v-list-item-icon>
+              <v-icon>{{ icons.lambda }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('lambdas') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click.stop="onClickFeatures">
+            <v-list-item-icon>
+              <v-icon>{{ icons.formatListChecks }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('features') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click.stop="onClickSettings">
+            <v-list-item-icon>
+              <v-icon>{{ icons.cogs }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('settings') }}
+            </v-list-item-title>
+          </v-list-item>
+
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -88,9 +121,12 @@ import { Component } from 'vue-property-decorator';
 import {
   mdiCogOutline,
   mdiChevronLeft,
-  mdiViewList,
+  mdiDeveloperBoard,
   mdiAccount,
   mdiAccountGroup,
+  mdiLambda,
+  mdiFormatListChecks,
+  mdiCogs,
 } from '@mdi/js';
 
 @Component
@@ -99,9 +135,12 @@ export default class ConfigAdminPage extends VueI18n {
   readonly icons = {
     cogOutline: mdiCogOutline,
     chevronLeft: mdiChevronLeft,
-    viewList: mdiViewList,
+    developerBoard: mdiDeveloperBoard,
     account: mdiAccount,
     accountGroup: mdiAccountGroup,
+    lambda: mdiLambda,
+    formatListChecks: mdiFormatListChecks,
+    cogs: mdiCogs,
   };
 
   currentSubpageIndex = 0;
@@ -135,6 +174,18 @@ export default class ConfigAdminPage extends VueI18n {
 
   onClickGroups() {
     this.movePage('/main/config/admin/groups');
+  }
+
+  onClickLambdas() {
+    this.movePage('/main/config/admin/lambdas');
+  }
+
+  onClickFeatures() {
+    this.movePage('/main/config/admin/features');
+  }
+
+  onClickSettings() {
+    this.movePage('/main/config/admin/settings');
   }
 }
 </script>
