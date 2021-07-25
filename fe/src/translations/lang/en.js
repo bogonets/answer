@@ -1,5 +1,6 @@
 export default {
     global: {
+        title: 'Answer',
         lang_name: "English",
     },
     title: 'Answer',
@@ -47,12 +48,6 @@ export default {
         },
         admin: {
         },
-    },
-
-    about: {
-        version: "Version",
-        documentation: "Official documentation",
-        vender: "Bogonet Homepage",
     },
 
     version: "Version",

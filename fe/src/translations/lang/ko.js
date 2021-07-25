@@ -1,5 +1,6 @@
 export default {
     global: {
+        title: 'Answer',
         lang_name: "한글",
     },
     title: 'Answer',
@@ -47,12 +48,6 @@ export default {
         },
         admin: {
         },
-    },
-
-    about: {
-        version: "버전",
-        documentation: "공식 문서 페이지",
-        vender: "보고넷 홈페이지",
     },
 
     version: "버전",

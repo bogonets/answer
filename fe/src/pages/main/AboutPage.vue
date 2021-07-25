@@ -1,3 +1,15 @@
+<i18n lang="yaml">
+en:
+  version: "Version"
+  documentation: "Official documentation"
+  vender: "Bogonet Homepage"
+
+ko:
+  version: "버전"
+  documentation: "공식 문서 페이지"
+  vender: "보고넷 홈페이지"
+</i18n>
+
 <template>
   <v-container class="fill-height">
     <v-row align="center" justify="center">
@@ -23,7 +35,7 @@
             class="d-block my-4 secondary"
             @click="onClickDocumentation"
         >
-          {{ $t('about.documentation') }}
+          {{ $t('documentation') }}
         </v-btn>
 
         <v-btn
@@ -32,7 +44,7 @@
             rounded
             class="d-block my-4 secondary" @click="onClickVender"
         >
-          {{ $t('about.vender') }}
+          {{ $t('vender') }}
         </v-btn>
 
       </v-col>
@@ -41,7 +53,8 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
+import VueBase from '@/base/VueBase';
 import TitleLogo from '@/components/TitleLogo.vue';
 
 const DOCUMENTATION_HREF = 'https://answerdoc.bogonets.com';
@@ -52,10 +65,10 @@ const VENDER_HREF = 'https://www.bogonets.com';
     TitleLogo,
   }
 })
-export default class AboutPage extends Vue {
+export default class AboutPage extends VueBase {
   get versionText(): string {
-    const title = this.$t('title').toString();
-    const version = this.$t('about.version').toString();
+    const title = this.$t('global.title').toString();
+    const version = this.$t('version').toString();
     const number = this.$versions.answer;
     return `${title} ${version} ${number}`;
   }
