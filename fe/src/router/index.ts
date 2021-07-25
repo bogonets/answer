@@ -26,6 +26,7 @@ import LoginPage from '@/pages/LoginPage.vue';
 import MainPage from '@/pages/main/MainPage.vue';
 import AppearancePage from "@/pages/main/config/account/AppearancePage.vue";
 import UsersPage from "@/pages/main/config/admin/UsersPage.vue";
+import GroupsPage from "@/pages/main/config/admin/GroupsPage.vue";
 
 Vue.use(Router);
 
@@ -74,6 +75,10 @@ const answerRoutes = [
           {
             path: 'users',
             component: UsersPage,
+          },
+          {
+            path: 'groups',
+            component: GroupsPage,
           },
         ]
       },

@@ -3,11 +3,13 @@ en:
   title: "Admin Preference"
   overview: "Overview"
   users: "Users"
+  groups: "Groups"
 
 ko:
   title: "관리자 설정"
   overview: "개요"
   users: "사용자"
+  groups: "그룹"
 </i18n>
 
 <template>
@@ -61,6 +63,15 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
+          <v-list-item link @click.stop="onClickGroups">
+            <v-list-item-icon>
+              <v-icon>{{ icons.accountGroup }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('groups') }}
+            </v-list-item-title>
+          </v-list-item>
+
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -74,7 +85,13 @@ ko:
 <script lang="ts">
 import VueI18n from '@/translations/VueI18n';
 import { Component } from 'vue-property-decorator';
-import { mdiCogOutline, mdiChevronLeft, mdiViewList, mdiAccount } from '@mdi/js';
+import {
+  mdiCogOutline,
+  mdiChevronLeft,
+  mdiViewList,
+  mdiAccount,
+  mdiAccountGroup,
+} from '@mdi/js';
 
 @Component
 export default class ConfigAdminPage extends VueI18n {
@@ -84,6 +101,7 @@ export default class ConfigAdminPage extends VueI18n {
     chevronLeft: mdiChevronLeft,
     viewList: mdiViewList,
     account: mdiAccount,
+    accountGroup: mdiAccountGroup,
   };
 
   currentSubpageIndex = 0;
@@ -113,6 +131,10 @@ export default class ConfigAdminPage extends VueI18n {
 
   onClickUsers() {
     this.movePage('/main/config/admin/users');
+  }
+
+  onClickGroups() {
+    this.movePage('/main/config/admin/groups');
   }
 }
 </script>
