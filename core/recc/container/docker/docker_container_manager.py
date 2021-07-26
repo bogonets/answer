@@ -5,6 +5,7 @@ import re
 from typing import Optional, List, Dict, Any
 from enum import Enum
 from docker import DockerClient
+from overrides import overrides
 from recc.exception.recc_error import (
     ReccNotFoundError,
     ReccArgumentError,
@@ -23,13 +24,10 @@ from recc.container.labels import (
     task_find_labels,
     task_image_find_labels,
 )
-from recc.container.container_manager_interface import (
-    ContainerInfo,
-    VolumeInfo,
-    NetworkInfo,
-    ImageInfo,
-    ContainerManagerInterface,
-)
+from recc.container.struct.container_info import ContainerInfo
+from recc.container.struct.volume_info import VolumeInfo
+from recc.container.struct.network_info import NetworkInfo
+from recc.container.struct.image_info import ImageInfo
 from recc.container.docker.task_init import (
     RECC_MODULE_TAR_BYTES_SHA256,
     get_compressed_task_dockerfile_tar,
@@ -49,6 +47,7 @@ from recc.variables.labels import (
 )
 
 from recc.util.version import version_text
+from recc.container.interfaces.container_interface import ContainerInterface
 from recc.container.docker.mixin.docker_container import DockerContainer
 from recc.container.docker.mixin.docker_image import DockerImage
 from recc.container.docker.mixin.docker_network import DockerNetwork
@@ -107,11 +106,11 @@ def _inside_container(host=BaseHostType.Unknown) -> bool:
 
 
 class DockerContainerManager(
+    ContainerInterface,
     DockerContainer,
     DockerImage,
     DockerNetwork,
     DockerVolume,
-    ContainerManagerInterface,
 ):
     def __init__(self, host=DOCKER_SOCK_LOCAL_BASE_URL, port: Optional[int] = None):
         self._host = host
@@ -119,30 +118,37 @@ class DockerContainerManager(
         self._docker = None
 
     @staticmethod
+    @overrides
     def inside_container() -> bool:
         return _inside_container()
 
     @staticmethod
+    @overrides
     def get_current_container_key() -> str:
         return _get_current_container_key()
 
+    @overrides
     def is_open(self) -> bool:
         return self._docker is not None
 
+    @overrides
     async def open(self) -> None:
         self._docker = DockerClient(self.base_url)
 
+    @overrides
     async def close(self) -> None:
         assert self._docker
         self._docker.close()
         self._docker = None
 
+    @overrides
     async def version(self, key: Optional[str] = None) -> str:
         version = self.docker.version()
         if key is None:
             return version["Version"]
         return version[key]
 
+    @overrides
     async def exist_default_task_images(self, validate_labels=True) -> bool:
         available_images = await self.get_task_images()
         if available_images is None:
@@ -166,6 +172,7 @@ class DockerContainerManager(
             return False
         return True
 
+    @overrides
     async def create_default_task_images(
         self, remove_previous=True, force=False
     ) -> None:
@@ -176,6 +183,7 @@ class DockerContainerManager(
                     await self.remove_image(image.key, force)
         await self.create_task_image()
 
+    @overrides
     async def get_tasks(
         self,
         group_name: Optional[str] = None,
@@ -185,6 +193,7 @@ class DockerContainerManager(
         labels = task_find_labels(group_name, project_name, task_name)
         return await self.containers(filters={"label": labels})
 
+    @overrides
     async def get_task(
         self, group_name: str, project_name: str, task_name: str
     ) -> ContainerInfo:
@@ -194,6 +203,7 @@ class DockerContainerManager(
             raise ReccNotFoundError(f"Not found node: {params}")
         return nodes[0]
 
+    @overrides
     async def exist_task(
         self, group_name: str, project_name: str, task_name: str
     ) -> bool:
@@ -205,6 +215,7 @@ class DockerContainerManager(
             logger.warning(f"Multiple containers have been detected: {nodes}")
         return True
 
+    @overrides
     async def get_task_volumes(
         self,
         group_name: Optional[str] = None,
@@ -213,6 +224,7 @@ class DockerContainerManager(
         labels = task_find_labels(group_name, project_name)
         return await self.volumes(filters={"label": labels})
 
+    @overrides
     async def get_task_volume(self, group_name: str, project_name: str) -> VolumeInfo:
         volumes = await self.get_task_volumes(group_name, project_name)
         if not volumes:
@@ -220,6 +232,7 @@ class DockerContainerManager(
             raise ReccNotFoundError(f"Not found volume: {params}")
         return volumes[0]
 
+    @overrides
     async def exist_task_volume(self, group_name: str, project_name: str) -> bool:
         volumes = await self.get_task_volumes(group_name, project_name)
         if volumes is None or len(volumes) == 0:
@@ -229,6 +242,7 @@ class DockerContainerManager(
             logger.warning(f"Multiple volumes have been detected: {volumes}")
         return True
 
+    @overrides
     async def get_task_networks(
         self,
         group_name: Optional[str] = None,
@@ -237,6 +251,7 @@ class DockerContainerManager(
         labels = task_find_labels(group_name, project_name)
         return await self.networks(filters={"label": labels})
 
+    @overrides
     async def get_task_network(self, group_name: str, project_name: str) -> NetworkInfo:
         networks = await self.get_task_networks(group_name, project_name)
         if not networks:
@@ -244,6 +259,7 @@ class DockerContainerManager(
             raise ReccNotFoundError(f"Not found network: {params}")
         return networks[0]
 
+    @overrides
     async def exist_task_network(self, group_name: str, project_name: str) -> bool:
         networks = await self.get_task_networks(group_name, project_name)
         if networks is None or len(networks) == 0:
@@ -253,6 +269,7 @@ class DockerContainerManager(
             logger.warning(f"Multiple networks have been detected: {networks}")
         return True
 
+    @overrides
     async def create_task_volume_if_not_exist(
         self, group_name: str, project_name: str
     ) -> VolumeInfo:
@@ -263,6 +280,7 @@ class DockerContainerManager(
         labels = task_create_labels(group_name, project_name)
         return await self.create_volume(name, labels=labels)
 
+    @overrides
     async def create_task_network_if_not_exist(
         self, group_name: str, project_name: str
     ) -> NetworkInfo:
@@ -273,10 +291,12 @@ class DockerContainerManager(
         labels = task_create_labels(group_name, project_name)
         return await self.create_network(name, labels=labels, check_duplicate=True)
 
+    @overrides
     async def get_task_images(self) -> List[ImageInfo]:
         labels = task_image_find_labels()
         return await self.images(filters={"label": labels})
 
+    @overrides
     async def create_task_image(
         self,
         image_full_name: Optional[str] = None,
@@ -309,6 +329,7 @@ class DockerContainerManager(
             if image_name in await self.images():
                 await self.remove_image(image_name)
 
+    @overrides
     async def create_task(
         self,
         group_name: str,

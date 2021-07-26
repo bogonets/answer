@@ -4,7 +4,7 @@ from asyncio import AbstractEventLoop
 from recc.argparse.config.core_config import CoreConfig
 from recc.session.session import SessionPairFactory
 from recc.storage.core_storage import CoreStorage
-from recc.container.container_manager_interface import ContainerManagerInterface
+from recc.container.interfaces.container_interface import ContainerInterface
 from recc.cache.async_cs_interface import AsyncCacheStoreInterface
 from recc.database.interfaces.db_interface import DbInterface
 from recc.task.task_connection_pool import TaskConnectionPool
@@ -18,7 +18,7 @@ class ContextBase:
     _signature: str
     _storage: CoreStorage
     _session_factory: SessionPairFactory
-    _container: ContainerManagerInterface
+    _container: ContainerInterface
     _container_key: str
     _cache: AsyncCacheStoreInterface
     _database: DbInterface

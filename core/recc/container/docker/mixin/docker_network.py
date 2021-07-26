@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, List, Dict, Any
+from overrides import overrides
 from docker.models.networks import Network
-from recc.container.container_manager_interface import NetworkInfo
+from recc.container.interfaces.container_network import ContainerNetwork
+from recc.container.struct.network_info import NetworkInfo
 from recc.container.docker.mixin.docker_base import DockerBase
 
 
@@ -31,7 +33,8 @@ def _create_network_info(network: Network) -> NetworkInfo:
     return NetworkInfo(key, name, labels)
 
 
-class DockerNetwork(DockerBase):
+class DockerNetwork(ContainerNetwork, DockerBase):
+    @overrides
     async def networks(
         self, filters: Optional[Dict[str, Any]] = None, **kwargs
     ) -> List[NetworkInfo]:
@@ -45,22 +48,27 @@ class DockerNetwork(DockerBase):
     def _get_network(self, key: str) -> Network:
         return self.docker.networks.get(key)
 
+    @overrides
     async def exist_network(self, key: str) -> bool:
         try:
             return self._get_network(key) is not None
         except:  # noqa
             return False
 
+    @overrides
     async def create_network(self, name: str, **kwargs) -> NetworkInfo:
         network = self.docker.networks.create(name, **kwargs)
         return _create_network_info(network)
 
+    @overrides
     async def remove_network(self, key: str) -> None:
         self._get_network(key).remove()
 
+    @overrides
     async def connect_network(self, key: str, container_key: str) -> None:
         self._get_network(key).connect(container_key)
 
+    @overrides
     async def disconnect_network(
         self, key: str, container_key: str, force=False
     ) -> None:

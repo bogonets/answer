@@ -2,10 +2,12 @@
 
 from typing import Optional, List, Dict, Any
 from io import BytesIO, StringIO
+from overrides import overrides
 from docker.models.images import Image
 from recc.log.logging import recc_container_logger as logger
+from recc.container.interfaces.container_image import ContainerImage
 from recc.container.docker.mixin.docker_base import DockerBase
-from recc.container.container_manager_interface import ImageInfo
+from recc.container.struct.image_info import ImageInfo
 from recc.variables.container import (
     BUILD_CONTEXT_BUILD_PATH,
     BUILD_CONTEXT_DOCKERFILE_PATH,
@@ -19,7 +21,8 @@ def _create_image_info(image: Image) -> ImageInfo:
     return ImageInfo(key, tags, labels)
 
 
-class DockerImage(DockerBase):
+class DockerImage(ContainerImage, DockerBase):
+    @overrides
     async def images(
         self,
         name: Optional[str] = None,
@@ -32,6 +35,7 @@ class DockerImage(DockerBase):
             result.append(_create_image_info(image))
         return result
 
+    @overrides
     async def build_image(
         self,
         tarfile: bytes,
@@ -66,9 +70,11 @@ class DockerImage(DockerBase):
                 logger.debug("[EMPTY BUILD LOG]")
         return result
 
+    @overrides
     async def pull_image(self, image: str, **kwargs) -> None:
         name, tag = image.split(":", 2)
         self.docker.images.pull(name, tag if tag else None, all_tags=False, **kwargs)
 
+    @overrides
     async def remove_image(self, image: str, force=False, no_prune=False) -> None:
         self.docker.images.remove(image, force, no_prune)

@@ -6,11 +6,9 @@ from typing import Optional, List, Any, Dict
 from Crypto.PublicKey import RSA
 from recc.session.session import Session
 from recc.blueprint.v1.converter import bp_converter
-from recc.container.container_manager_interface import (
-    ContainerStatus,
-    ContainerInfo,
-    PortBindingGuest,
-)
+from recc.container.struct.container_status import ContainerStatus
+from recc.container.struct.container_info import ContainerInfo
+from recc.container.struct.port_binding_guest import PortBindingGuest
 from recc.core.mixin.context_base import ContextBase
 from recc.exception.recc_error import (
     ReccAlreadyError,

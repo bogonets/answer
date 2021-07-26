@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, List, Dict, Any
+from overrides import overrides
 from docker.models.volumes import Volume
-from recc.container.container_manager_interface import VolumeInfo
+from recc.container.interfaces.container_volume import ContainerVolume
+from recc.container.struct.volume_info import VolumeInfo
 from recc.container.docker.mixin.docker_base import DockerBase
 
 
@@ -23,7 +25,8 @@ def _create_volume_info(volume: Volume) -> VolumeInfo:
     return VolumeInfo(key, name, labels)
 
 
-class DockerVolume(DockerBase):
+class DockerVolume(ContainerVolume, DockerBase):
+    @overrides
     async def volumes(
         self, filters: Optional[Dict[str, Any]] = None, **kwargs
     ) -> List[VolumeInfo]:
@@ -37,15 +40,18 @@ class DockerVolume(DockerBase):
     def _get_volume(self, key: str) -> Volume:
         return self.docker.volumes.get(key)
 
+    @overrides
     async def exist_volume(self, key: str) -> bool:
         try:
             return self._get_volume(key) is not None
         except:  # noqa
             return False
 
+    @overrides
     async def create_volume(self, name: str, **kwargs) -> VolumeInfo:
         volume = self.docker.volumes.create(name, **kwargs)
         return _create_volume_info(volume)
 
+    @overrides
     async def remove_volume(self, key: str, force=False) -> None:
         self._get_volume(key).remove(force)
