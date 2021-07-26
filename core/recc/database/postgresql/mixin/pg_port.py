@@ -2,10 +2,12 @@
 
 from typing import Optional, Any, List
 from datetime import datetime
+from overrides import overrides
 from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.struct.port import Port
-from recc.database.postgresql.mixin.async_pg_base import AsyncPgBase
+from recc.database.interfaces.db_port import DbPort
+from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.port import (
     INSERT_PORT,
     UPDATE_PORT_DESCRIPTION_BY_NUMBER,
@@ -20,7 +22,8 @@ from recc.database.postgresql.query.port import (
 )
 
 
-class AsyncPgPort(AsyncPgBase):
+class PgPort(DbPort, PgBase):
+    @overrides
     async def create_port(
         self,
         number: int,
@@ -45,6 +48,7 @@ class AsyncPgPort(AsyncPgBase):
         params_msg = f"number={number}"
         logger.info(f"create_port({params_msg}) ok.")
 
+    @overrides
     async def update_port_description_by_number(
         self, number: int, description: str, updated_at=datetime.utcnow()
     ) -> None:
@@ -53,6 +57,7 @@ class AsyncPgPort(AsyncPgBase):
         params_msg = f"number={number}"
         logger.info(f"update_port_description_by_number({params_msg}) ok.")
 
+    @overrides
     async def update_port_extra_by_number(
         self, number: int, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -61,6 +66,7 @@ class AsyncPgPort(AsyncPgBase):
         params_msg = f"number={number}"
         logger.info(f"update_port_extra_by_number({params_msg}) ok.")
 
+    @overrides
     async def update_port_by_number(
         self,
         number: int,
@@ -84,12 +90,14 @@ class AsyncPgPort(AsyncPgBase):
         params_msg = f"number={number}"
         logger.info(f"update_port_by_number({params_msg}) ok.")
 
+    @overrides
     async def delete_port_by_number(self, number: int) -> None:
         query = DELETE_PORT_BY_NUMBER
         await self.execute(query, number)
         params_msg = f"number={number}"
         logger.info(f"delete_port_by_number({params_msg}) ok.")
 
+    @overrides
     async def get_port_by_number(self, number: int) -> Port:
         query = SELECT_PORT_BY_NUMBER
         row = await self.fetch_row(query, number)
@@ -102,6 +110,7 @@ class AsyncPgPort(AsyncPgBase):
         logger.info(f"get_port_by_number({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_port_by_group_uid(self, group_uid: int) -> List[Port]:
         result: List[Port] = list()
         async with self.conn() as conn:
@@ -116,6 +125,7 @@ class AsyncPgPort(AsyncPgBase):
         logger.info(f"get_port_by_group_uid({params_msg}) -> {result_msg}")
         return result
 
+    @overrides
     async def get_port_by_project_uid(self, project_uid: int) -> List[Port]:
         result: List[Port] = list()
         async with self.conn() as conn:
@@ -130,6 +140,7 @@ class AsyncPgPort(AsyncPgBase):
         logger.info(f"get_port_by_project_uid({params_msg}) -> {result_msg}")
         return result
 
+    @overrides
     async def get_port_by_task_uid(self, task_uid: int) -> List[Port]:
         result: List[Port] = list()
         async with self.conn() as conn:
@@ -144,6 +155,7 @@ class AsyncPgPort(AsyncPgBase):
         logger.info(f"get_port_by_task_uid({params_msg}) -> {result_msg}")
         return result
 
+    @overrides
     async def get_ports(self) -> List[Port]:
         result: List[Port] = list()
         async with self.conn() as conn:

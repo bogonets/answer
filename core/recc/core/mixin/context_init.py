@@ -12,7 +12,7 @@ from recc.argparse.default_namespace import get_default_core_config
 from recc.argparse.injection_values import injection_core_default_values
 from recc.container.container_manager import create_container_manager
 from recc.cache.async_cs import create_cache_store
-from recc.database.async_db import create_database
+from recc.database.database import create_database
 from recc.storage.core_storage import CoreStorage
 from recc.task.task_connection_pool import create_task_connection_pool
 from recc.resource.port_manager import PortManager

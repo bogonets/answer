@@ -2,10 +2,12 @@
 
 from typing import Optional, Any, List
 from datetime import datetime
+from overrides import overrides
 from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.struct.group import Group
-from recc.database.postgresql.mixin.async_pg_base import AsyncPgBase
+from recc.database.interfaces.db_group import DbGroup
+from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.group import (
     INSERT_GROUP,
     UPDATE_GROUP_DESCRIPTION_BY_UID,
@@ -20,7 +22,8 @@ from recc.database.postgresql.query.group import (
 )
 
 
-class AsyncPgGroup(AsyncPgBase):
+class PgGroup(DbGroup, PgBase):
+    @overrides
     async def create_group(
         self,
         name: str,
@@ -33,6 +36,7 @@ class AsyncPgGroup(AsyncPgBase):
         params_msg = f"name={name}"
         logger.info(f"create_group({params_msg}) ok.")
 
+    @overrides
     async def update_group_description_by_uid(
         self, uid: int, description: str, updated_at=datetime.utcnow()
     ) -> None:
@@ -41,6 +45,7 @@ class AsyncPgGroup(AsyncPgBase):
         params_msg = f"uid={uid}"
         logger.info(f"update_group_description_by_uid({params_msg}) ok.")
 
+    @overrides
     async def update_group_description_by_name(
         self, name: str, description: str, updated_at=datetime.utcnow()
     ) -> None:
@@ -49,6 +54,7 @@ class AsyncPgGroup(AsyncPgBase):
         params_msg = f"name={name}"
         logger.info(f"update_group_description_by_name({params_msg}) ok.")
 
+    @overrides
     async def update_group_extra_by_uid(
         self, uid: int, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -57,6 +63,7 @@ class AsyncPgGroup(AsyncPgBase):
         params_msg = f"uid={uid}"
         logger.info(f"update_group_extra_by_uid({params_msg}) ok.")
 
+    @overrides
     async def update_group_extra_by_name(
         self, name: str, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -65,18 +72,21 @@ class AsyncPgGroup(AsyncPgBase):
         params_msg = f"name={name}"
         logger.info(f"update_group_extra_by_name({params_msg}) ok.")
 
+    @overrides
     async def delete_group_by_uid(self, uid: int) -> None:
         query = DELETE_GROUP_BY_UID
         await self.execute(query, uid)
         params_msg = f"uid={uid}"
         logger.info(f"delete_group_by_uid({params_msg}) ok.")
 
+    @overrides
     async def delete_group_by_name(self, name: str) -> None:
         query = DELETE_GROUP_BY_NAME
         await self.execute(query, name)
         params_msg = f"name={name}"
         logger.info(f"delete_group_by_name({params_msg}) ok.")
 
+    @overrides
     async def get_group_by_uid(self, uid: int) -> Group:
         query = SELECT_GROUP_BY_UID
         row = await self.fetch_row(query, uid)
@@ -89,6 +99,7 @@ class AsyncPgGroup(AsyncPgBase):
         logger.info(f"get_group_by_uid({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_group_by_name(self, name: str) -> Group:
         query = SELECT_GROUP_BY_NAME
         row = await self.fetch_row(query, name)
@@ -101,6 +112,7 @@ class AsyncPgGroup(AsyncPgBase):
         logger.info(f"get_group_by_name({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_groups(self) -> List[Group]:
         result: List[Group] = list()
         async with self.conn() as conn:

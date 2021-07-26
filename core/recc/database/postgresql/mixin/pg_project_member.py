@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from typing import List
+from overrides import overrides
 from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.struct.project_member import ProjectMember
-from recc.database.postgresql.mixin.async_pg_base import AsyncPgBase
+from recc.database.interfaces.db_project_member import DbProjectMember
+from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.project_member import (
     INSERT_PROJECT_MEMBER,
     UPDATE_PROJECT_MEMBER_PERMISSION,
@@ -16,7 +18,8 @@ from recc.database.postgresql.query.project_member import (
 )
 
 
-class AsyncPgProjectMember(AsyncPgBase):
+class PgProjectMember(DbProjectMember, PgBase):
+    @overrides
     async def create_project_member(
         self, project_uid: int, user_uid: int, permission_uid: int
     ) -> None:
@@ -27,6 +30,7 @@ class AsyncPgProjectMember(AsyncPgBase):
         params_msg = f"{params_msg1},{params_msg2}"
         logger.info(f"create_project_member({params_msg}) ok.")
 
+    @overrides
     async def update_project_member_permission(
         self, project_uid: int, user_uid: int, permission_uid: int
     ) -> None:
@@ -37,12 +41,14 @@ class AsyncPgProjectMember(AsyncPgBase):
         params_msg = f"{params_msg1},{params_msg2}"
         logger.info(f"update_project_member_permission({params_msg}) ok.")
 
+    @overrides
     async def delete_project_member(self, project_uid: int, user_uid: int) -> None:
         query = DELETE_PROJECT_MEMBER
         await self.execute(query, project_uid, user_uid)
         params_msg = f"project_uid={project_uid},user_uid={user_uid}"
         logger.info(f"delete_project_member({params_msg}) ok.")
 
+    @overrides
     async def get_project_member(
         self, project_uid: int, user_uid: int
     ) -> ProjectMember:
@@ -58,6 +64,7 @@ class AsyncPgProjectMember(AsyncPgBase):
         logger.info(f"get_project_member({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_project_member_by_project_uid(
         self, project_uid: int
     ) -> List[ProjectMember]:
@@ -73,6 +80,7 @@ class AsyncPgProjectMember(AsyncPgBase):
         logger.info(f"get_project_member_by_project_uid() -> {result_msg}")
         return result
 
+    @overrides
     async def get_project_member_by_user_uid(
         self, user_uid: int
     ) -> List[ProjectMember]:
@@ -88,6 +96,7 @@ class AsyncPgProjectMember(AsyncPgBase):
         logger.info(f"get_project_member_by_user_uid() -> {result_msg}")
         return result
 
+    @overrides
     async def get_project_members(self) -> List[ProjectMember]:
         result: List[ProjectMember] = list()
         async with self.conn() as conn:

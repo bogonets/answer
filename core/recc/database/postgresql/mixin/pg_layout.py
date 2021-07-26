@@ -2,10 +2,12 @@
 
 from typing import Optional, Any, List
 from datetime import datetime
+from overrides import overrides
 from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.struct.layout import Layout
-from recc.database.postgresql.mixin.async_pg_base import AsyncPgBase
+from recc.database.interfaces.db_layout import DbLayout
+from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.layout import (
     INSERT_LAYOUT,
     UPDATE_LAYOUT_DESCRIPTION_BY_UID,
@@ -20,7 +22,8 @@ from recc.database.postgresql.query.layout import (
 )
 
 
-class AsyncPgLayout(AsyncPgBase):
+class PgLayout(DbLayout, PgBase):
+    @overrides
     async def create_layout(
         self,
         project_uid: int,
@@ -34,6 +37,7 @@ class AsyncPgLayout(AsyncPgBase):
         params_msg = f"project_uid={project_uid},name={name}"
         logger.info(f"create_layout({params_msg}) ok.")
 
+    @overrides
     async def update_layout_description_by_uid(
         self, uid: int, description: str, updated_at=datetime.utcnow()
     ) -> None:
@@ -41,6 +45,7 @@ class AsyncPgLayout(AsyncPgBase):
         await self.execute(query, uid, description, updated_at)
         logger.info(f"update_layout_description_by_uid(uid={uid}) ok.")
 
+    @overrides
     async def update_layout_description_by_name(
         self,
         project_uid: int,
@@ -53,6 +58,7 @@ class AsyncPgLayout(AsyncPgBase):
         params_msg = f"project_uid={project_uid},name={name}"
         logger.info(f"update_layout_description_by_name({params_msg}) ok.")
 
+    @overrides
     async def update_layout_extra_by_uid(
         self, uid: int, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -60,6 +66,7 @@ class AsyncPgLayout(AsyncPgBase):
         await self.execute(query, uid, extra, updated_at)
         logger.info(f"update_layout_extra_by_uid(uid={uid}) ok.")
 
+    @overrides
     async def update_layout_extra_by_name(
         self, project_uid: int, name: str, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -68,17 +75,20 @@ class AsyncPgLayout(AsyncPgBase):
         params_msg = f"project_uid={project_uid},name={name}"
         logger.info(f"update_layout_extra_by_name({params_msg}) ok.")
 
+    @overrides
     async def delete_layout_by_uid(self, uid: int) -> None:
         query = DELETE_LAYOUT_BY_UID
         await self.execute(query, uid)
         logger.info(f"delete_layout_by_uid(uid={uid}) ok.")
 
+    @overrides
     async def delete_layout_by_name(self, project_uid: int, name: str) -> None:
         query = DELETE_LAYOUT_BY_PROJECT_UID_AND_NAME
         await self.execute(query, project_uid, name)
         params_msg = f"project_uid={project_uid},name={name}"
         logger.info(f"delete_layout_by_name({params_msg}) ok.")
 
+    @overrides
     async def get_layout_by_uid(self, uid: int) -> Layout:
         query = SELECT_LAYOUT_BY_UID
         row = await self.fetch_row(query, uid)
@@ -91,6 +101,7 @@ class AsyncPgLayout(AsyncPgBase):
         logger.info(f"get_layout_by_uid({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_layout_by_name(self, project_uid: int, name: str) -> Layout:
         query = SELECT_LAYOUT_BY_PROJECT_ID_AND_NAME
         row = await self.fetch_row(query, project_uid, name)
@@ -104,6 +115,7 @@ class AsyncPgLayout(AsyncPgBase):
         logger.info(f"get_layout_by_name({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_layout_by_project_uid(self, project_uid: int) -> List[Layout]:
         result: List[Layout] = list()
         async with self.conn() as conn:

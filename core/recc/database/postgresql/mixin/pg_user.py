@@ -2,10 +2,12 @@
 
 from typing import Optional, Any, List
 from datetime import datetime
+from overrides import overrides
 from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.struct.user import User, PassInfo
-from recc.database.postgresql.mixin.async_pg_base import AsyncPgBase
+from recc.database.interfaces.db_user import DbUser
+from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.user import (
     INSERT_USER,
     UPDATE_USER_LAST_LOGIN_BY_USERNAME,
@@ -26,7 +28,8 @@ from recc.database.postgresql.query.user import (
 )
 
 
-class AsyncPgUser(AsyncPgBase):
+class PgUser(DbUser, PgBase):
+    @overrides
     async def create_user(
         self,
         username: str,
@@ -57,6 +60,7 @@ class AsyncPgUser(AsyncPgBase):
             params_msg += ",admin"
         logger.info(f"create_user({params_msg}) ok.")
 
+    @overrides
     async def update_user_last_login_by_username(
         self, username: str, last_login=datetime.utcnow()
     ) -> None:
@@ -65,6 +69,7 @@ class AsyncPgUser(AsyncPgBase):
         params_msg = f"username={username},last_login={last_login}"
         logger.info(f"update_user_last_login_by_username({params_msg}) ok.")
 
+    @overrides
     async def update_user_username_by_uid(
         self, uid: int, username: str, updated_at=datetime.utcnow()
     ) -> None:
@@ -73,6 +78,7 @@ class AsyncPgUser(AsyncPgBase):
         params_msg = f"uid={uid},username={username}"
         logger.info(f"update_user_username_by_uid({params_msg}) ok.")
 
+    @overrides
     async def update_user_password_and_salt_by_uid(
         self, uid: int, password: str, salt: str, updated_at=datetime.utcnow()
     ) -> None:
@@ -81,6 +87,7 @@ class AsyncPgUser(AsyncPgBase):
         params_msg = f"uid={uid}"
         logger.info(f"update_user_password_and_salt_by_uid({params_msg}) ok.")
 
+    @overrides
     async def update_user_password_and_salt_by_username(
         self, username: str, password: str, salt: str, updated_at=datetime.utcnow()
     ) -> None:
@@ -89,6 +96,7 @@ class AsyncPgUser(AsyncPgBase):
         params_msg = f"username={username}"
         logger.info(f"update_user_password_and_salt_by_username({params_msg}) ok.")
 
+    @overrides
     async def update_user_extra_by_uid(
         self, uid: int, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -97,6 +105,7 @@ class AsyncPgUser(AsyncPgBase):
         params_msg = f"uid={uid}"
         logger.info(f"update_user_extra_by_uid({params_msg}) ok.")
 
+    @overrides
     async def update_user_extra_by_username(
         self, username: str, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -105,6 +114,7 @@ class AsyncPgUser(AsyncPgBase):
         params_msg = f"username={username}"
         logger.info(f"update_user_extra_by_username({params_msg}) ok.")
 
+    @overrides
     async def update_user_by_username(
         self,
         username: str,
@@ -128,18 +138,21 @@ class AsyncPgUser(AsyncPgBase):
         params_msg = f"username={username}"
         logger.info(f"update_user_by_username({params_msg}) ok.")
 
+    @overrides
     async def delete_user_by_uid(self, uid: int) -> None:
         query = DELETE_USER_BY_UID
         await self.execute(query, uid)
         params_msg = f"uid={uid}"
         logger.info(f"delete_user_by_uid({params_msg}) ok.")
 
+    @overrides
     async def delete_user_by_name(self, username: str) -> None:
         query = DELETE_USER_BY_USERNAME
         await self.execute(query, username)
         params_msg = f"username={username}"
         logger.info(f"delete_user_by_name({params_msg}) ok.")
 
+    @overrides
     async def get_user_uid_by_username(self, username: str) -> int:
         query = SELECT_USER_UID_BY_USERNAME
         row = await self.fetch_row(query, username)
@@ -149,6 +162,7 @@ class AsyncPgUser(AsyncPgBase):
         logger.info(f"get_user_uid_by_username({params_msg}) -> {result_msg}")
         return result
 
+    @overrides
     async def exist_user(self, username: str) -> bool:
         query = SELECT_USER_UID_BY_USERNAME
         row = await self.fetch_row(query, username)
@@ -157,6 +171,7 @@ class AsyncPgUser(AsyncPgBase):
         logger.info(f"exist_user({params_msg}) -> {result}")
         return result
 
+    @overrides
     async def get_user_password_and_salt(self, username: str) -> PassInfo:
         query = SELECT_USER_PASSWORD_AND_SALT_BY_USERNAME
         row = await self.fetch_row(query, username)
@@ -167,6 +182,7 @@ class AsyncPgUser(AsyncPgBase):
         logger.info(f"get_user_password_and_salt({params_msg}) ok.")
         return PassInfo(**dict(row))
 
+    @overrides
     async def get_user_extra(self, username: str) -> Any:
         query = SELECT_USER_EXTRA_BY_USERNAME
         row = await self.fetch_row(query, username)
@@ -178,6 +194,7 @@ class AsyncPgUser(AsyncPgBase):
         logger.info(f"get_user_extra({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_user_by_username(self, username: str) -> User:
         query = SELECT_USER_BY_USERNAME
         row = await self.fetch_row(query, username)
@@ -190,6 +207,7 @@ class AsyncPgUser(AsyncPgBase):
         logger.info(f"get_user_by_username({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_users(self) -> List[User]:
         result: List[User] = list()
         async with self.conn() as conn:
@@ -201,6 +219,7 @@ class AsyncPgUser(AsyncPgBase):
         logger.info(f"get_users() -> {result_msg}")
         return result
 
+    @overrides
     async def exist_admin_user(self) -> bool:
         query = SELECT_USER_ADMIN_COUNT
         row = await self.fetch_row(query)

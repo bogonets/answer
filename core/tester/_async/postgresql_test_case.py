@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from recc.database.postgresql.async_pg import AsyncPostgresqlDatabase
+from recc.database.postgresql.pg_db import PgDb
 from recc.argparse.default_parser import parse_arguments_to_core_config
 from tester._async.async_test_case import AsyncTestCase  # noqa
 
@@ -14,7 +14,7 @@ class PostgresqlTestCase(AsyncTestCase):
         self.pw = self.config.database_pw
         self.name = "recc.test"
 
-        self.db = AsyncPostgresqlDatabase(
+        self.db = PgDb(
             db_host=self.host,
             db_port=self.port,
             db_user=self.user,

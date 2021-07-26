@@ -2,10 +2,12 @@
 
 from typing import Optional, Any, List
 from datetime import datetime
+from overrides import overrides
 from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.struct.widget import Widget
-from recc.database.postgresql.mixin.async_pg_base import AsyncPgBase
+from recc.database.interfaces.db_widget import DbWidget
+from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.widget import (
     INSERT_WIDGET,
     UPDATE_WIDGET_DESCRIPTION_BY_UID,
@@ -20,7 +22,8 @@ from recc.database.postgresql.query.widget import (
 )
 
 
-class AsyncPgWidget(AsyncPgBase):
+class PgWidget(DbWidget, PgBase):
+    @overrides
     async def create_widget(
         self,
         layout_uid: int,
@@ -34,6 +37,7 @@ class AsyncPgWidget(AsyncPgBase):
         params_msg = f"layout_uid={layout_uid},name={name}"
         logger.info(f"create_widget({params_msg}) ok.")
 
+    @overrides
     async def update_widget_description_by_uid(
         self, uid: int, description: str, updated_at=datetime.utcnow()
     ) -> None:
@@ -42,6 +46,7 @@ class AsyncPgWidget(AsyncPgBase):
         params_msg = f"uid={uid}"
         logger.info(f"update_widget_description_by_uid({params_msg}) ok.")
 
+    @overrides
     async def update_widget_description_by_name(
         self, layout_uid: int, name: str, description: str, updated_at=datetime.utcnow()
     ) -> None:
@@ -50,6 +55,7 @@ class AsyncPgWidget(AsyncPgBase):
         params_msg = f"layout_uid={layout_uid},name={name}"
         logger.info(f"update_widget_description_by_name({params_msg}) ok.")
 
+    @overrides
     async def update_widget_extra_by_uid(
         self, uid: int, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -58,6 +64,7 @@ class AsyncPgWidget(AsyncPgBase):
         params_msg = f"uid={uid}"
         logger.info(f"update_widget_extra_by_uid({params_msg}) ok.")
 
+    @overrides
     async def update_widget_extra_by_name(
         self, layout_uid: int, name: str, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -66,18 +73,21 @@ class AsyncPgWidget(AsyncPgBase):
         params_msg = f"layout_uid={layout_uid},name={name}"
         logger.info(f"update_widget_extra_by_name({params_msg}) ok.")
 
+    @overrides
     async def delete_widget_by_uid(self, uid: int) -> None:
         query = DELETE_WIDGET_BY_UID
         await self.execute(query, uid)
         params_msg = f"uid={uid}"
         logger.info(f"delete_widget_by_uid({params_msg}) ok.")
 
+    @overrides
     async def delete_widget_by_name(self, layout_uid: int, name: str) -> None:
         query = DELETE_WIDGET_BY_LAYOUT_UID_AND_NAME
         await self.execute(query, layout_uid, name)
         params_msg = f"layout_uid={layout_uid},name={name}"
         logger.info(f"delete_widget_by_name({params_msg}) ok.")
 
+    @overrides
     async def get_widget_by_uid(self, uid: int) -> Widget:
         query = SELECT_WIDGET_BY_UID
         row = await self.fetch_row(query, uid)
@@ -90,6 +100,7 @@ class AsyncPgWidget(AsyncPgBase):
         logger.info(f"get_widget_by_uid({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_widget_by_name(self, layout_uid: int, name: str) -> Widget:
         query = SELECT_WIDGET_BY_LAYOUT_ID_AND_NAME
         row = await self.fetch_row(query, layout_uid, name)
@@ -103,6 +114,7 @@ class AsyncPgWidget(AsyncPgBase):
         logger.info(f"get_widget_by_name({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_widget_by_layout_uid(self, layout_uid: int) -> List[Widget]:
         result: List[Widget] = list()
         async with self.conn() as conn:

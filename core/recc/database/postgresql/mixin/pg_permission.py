@@ -2,10 +2,12 @@
 
 from typing import Optional, Any, List
 from datetime import datetime
+from overrides import overrides
 from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.struct.permission import Permission
-from recc.database.postgresql.mixin.async_pg_base import AsyncPgBase
+from recc.database.interfaces.db_permission import DbPermission
+from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.permission import (
     INSERT_PERMISSION,
     UPDATE_PERMISSION_DESCRIPTION_BY_UID,
@@ -22,7 +24,8 @@ from recc.database.postgresql.query.permission import (
 )
 
 
-class AsyncPgPermission(AsyncPgBase):
+class PgPermission(DbPermission, PgBase):
+    @overrides
     async def create_permission(
         self,
         name: str,
@@ -63,6 +66,7 @@ class AsyncPgPermission(AsyncPgBase):
         )
         logger.info(f"create_permission(name={name}) ok.")
 
+    @overrides
     async def update_permission_by_uid(
         self,
         uid: int,
@@ -106,6 +110,7 @@ class AsyncPgPermission(AsyncPgBase):
         params_msg = f"name={name}"
         logger.info(f"update_permission_by_uid({params_msg}) ok.")
 
+    @overrides
     async def update_permission_description_by_uid(
         self, uid: int, description: str, updated_at=datetime.utcnow()
     ) -> None:
@@ -114,6 +119,7 @@ class AsyncPgPermission(AsyncPgBase):
         params_msg = f"uid={uid}"
         logger.info(f"update_permission_description_by_uid({params_msg}) ok.")
 
+    @overrides
     async def update_permission_description_by_name(
         self, name: str, description: str, updated_at=datetime.utcnow()
     ) -> None:
@@ -122,6 +128,7 @@ class AsyncPgPermission(AsyncPgBase):
         params_msg = f"name={name}"
         logger.info(f"update_permission_description_by_name({params_msg}) ok.")
 
+    @overrides
     async def update_permission_extra_by_uid(
         self, uid: int, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -130,6 +137,7 @@ class AsyncPgPermission(AsyncPgBase):
         params_msg = f"uid={uid}"
         logger.info(f"update_permission_extra_by_uid({params_msg}) ok.")
 
+    @overrides
     async def update_permission_extra_by_name(
         self, name: str, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -138,18 +146,21 @@ class AsyncPgPermission(AsyncPgBase):
         params_msg = f"name={name}"
         logger.info(f"update_permission_extra_by_name({params_msg}) ok.")
 
+    @overrides
     async def delete_permission_by_uid(self, uid: int) -> None:
         query = DELETE_PERMISSION_BY_UID
         await self.execute(query, uid)
         params_msg = f"uid={uid}"
         logger.info(f"delete_permission_by_uid({params_msg}) ok.")
 
+    @overrides
     async def delete_permission_by_name(self, name: str) -> None:
         query = DELETE_PERMISSION_BY_NAME
         await self.execute(query, name)
         params_msg = f"name={name}"
         logger.info(f"delete_permission_by_name({params_msg}) ok.")
 
+    @overrides
     async def get_permission_by_uid(self, uid: int) -> Permission:
         query = SELECT_PERMISSION_BY_UID
         row = await self.fetch_row(query, uid)
@@ -162,6 +173,7 @@ class AsyncPgPermission(AsyncPgBase):
         logger.info(f"get_permission_by_uid({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_permission_by_name(self, name: str) -> Permission:
         query = SELECT_PERMISSION_BY_NAME
         row = await self.fetch_row(query, name)
@@ -174,6 +186,7 @@ class AsyncPgPermission(AsyncPgBase):
         logger.info(f"get_permission_by_name({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_permissions(self) -> List[Permission]:
         result: List[Permission] = list()
         async with self.conn() as conn:
@@ -185,6 +198,7 @@ class AsyncPgPermission(AsyncPgBase):
         logger.info(f"get_permissions() -> {result_msg}")
         return result
 
+    @overrides
     async def get_project_permission_by_uid(
         self, user_uid: int, project_uid: int
     ) -> Permission:

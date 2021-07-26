@@ -6,7 +6,7 @@ from asyncpg.connection import Connection
 from asyncpg.pool import Pool, PoolAcquireContext
 
 
-class AsyncPgBase:
+class PgBase:
     """
     Connection helper.
     """

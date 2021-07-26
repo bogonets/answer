@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from typing import List
+from overrides import overrides
 from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.struct.group_member import GroupMember
-from recc.database.postgresql.mixin.async_pg_base import AsyncPgBase
+from recc.database.interfaces.db_group_member import DbGroupMember
+from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.group_member import (
     INSERT_GROUP_MEMBER,
     UPDATE_GROUP_MEMBER_PERMISSION,
@@ -16,7 +18,8 @@ from recc.database.postgresql.query.group_member import (
 )
 
 
-class AsyncPgGroupMember(AsyncPgBase):
+class PgGroupMember(DbGroupMember, PgBase):
+    @overrides
     async def create_group_member(
         self, group_uid: int, user_uid: int, permission_uid: int
     ) -> None:
@@ -27,6 +30,7 @@ class AsyncPgGroupMember(AsyncPgBase):
         params_msg = f"{params_msg1},{params_msg2}"
         logger.info(f"create_group_member({params_msg}) ok.")
 
+    @overrides
     async def update_group_member_permission(
         self, group_uid: int, user_uid: int, permission_uid: int
     ) -> None:
@@ -37,12 +41,14 @@ class AsyncPgGroupMember(AsyncPgBase):
         params_msg = f"{params_msg1},{params_msg2}"
         logger.info(f"update_group_member_permission({params_msg}) ok.")
 
+    @overrides
     async def delete_group_member(self, group_uid: int, user_uid: int) -> None:
         query = DELETE_GROUP_MEMBER
         await self.execute(query, group_uid, user_uid)
         params_msg = f"group_uid={group_uid},user_uid={user_uid}"
         logger.info(f"delete_group_member({params_msg}) ok.")
 
+    @overrides
     async def get_group_member(self, group_uid: int, user_uid: int) -> GroupMember:
         query = SELECT_GROUP_MEMBER_BY_GROUP_UID_AND_USER_UID
         row = await self.fetch_row(query, group_uid, user_uid)
@@ -56,6 +62,7 @@ class AsyncPgGroupMember(AsyncPgBase):
         logger.info(f"get_group_member({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_group_member_by_group_uid(self, group_uid: int) -> List[GroupMember]:
         result: List[GroupMember] = list()
         async with self.conn() as conn:
@@ -69,6 +76,7 @@ class AsyncPgGroupMember(AsyncPgBase):
         logger.info(f"get_group_member_by_group_uid() -> {result_msg}")
         return result
 
+    @overrides
     async def get_group_member_by_user_uid(self, user_uid: int) -> List[GroupMember]:
         result: List[GroupMember] = list()
         async with self.conn() as conn:
@@ -82,6 +90,7 @@ class AsyncPgGroupMember(AsyncPgBase):
         logger.info(f"get_group_member_by_user_uid() -> {result_msg}")
         return result
 
+    @overrides
     async def get_group_members(self) -> List[GroupMember]:
         result: List[GroupMember] = list()
         async with self.conn() as conn:

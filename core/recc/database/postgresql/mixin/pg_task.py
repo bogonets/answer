@@ -2,10 +2,12 @@
 
 from typing import Optional, Any, List, Dict
 from datetime import datetime
+from overrides import overrides
 from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.struct.task import Task
-from recc.database.postgresql.mixin.async_pg_base import AsyncPgBase
+from recc.database.interfaces.db_task import DbTask
+from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.task import (
     INSERT_TASK,
     UPDATE_TASK_DESCRIPTION_BY_UID,
@@ -26,7 +28,8 @@ from recc.database.postgresql.query.task import (
 )
 
 
-class AsyncPgTask(AsyncPgBase):
+class PgTask(DbTask, PgBase):
+    @overrides
     async def create_task(
         self,
         project_uid: int,
@@ -63,6 +66,7 @@ class AsyncPgTask(AsyncPgBase):
         params_msg = f"project_uid={project_uid},name={name}"
         logger.info(f"create_task({params_msg}) ok.")
 
+    @overrides
     async def update_task_description_by_uid(
         self, uid: int, description: str, updated_at=datetime.utcnow()
     ) -> None:
@@ -71,6 +75,7 @@ class AsyncPgTask(AsyncPgBase):
         params_msg = f"uid={uid}"
         logger.info(f"update_task_description_by_uid({params_msg}) ok.")
 
+    @overrides
     async def update_task_description_by_name(
         self,
         project_uid: int,
@@ -83,6 +88,7 @@ class AsyncPgTask(AsyncPgBase):
         params_msg = f"project_uid={project_uid},name={name}"
         logger.info(f"update_task_description_by_name({params_msg}) ok.")
 
+    @overrides
     async def update_task_extra_by_uid(
         self, uid: int, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -91,6 +97,7 @@ class AsyncPgTask(AsyncPgBase):
         params_msg = f"uid={uid}"
         logger.info(f"update_task_extra_by_uid({params_msg}) ok.")
 
+    @overrides
     async def update_task_extra_by_name(
         self, project_uid: int, name: str, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -99,6 +106,7 @@ class AsyncPgTask(AsyncPgBase):
         params_msg = f"project_uid={project_uid},name={name}"
         logger.info(f"update_task_extra_by_name({params_msg}) ok.")
 
+    @overrides
     async def update_task_keys_by_uid(
         self,
         uid: int,
@@ -114,6 +122,7 @@ class AsyncPgTask(AsyncPgBase):
         params_msg = f"uid={uid}"
         logger.info(f"update_task_keys_by_uid({params_msg}) ok.")
 
+    @overrides
     async def update_task_keys_by_name(
         self,
         project_uid: int,
@@ -136,6 +145,7 @@ class AsyncPgTask(AsyncPgBase):
         params_msg = f"project_uid={project_uid},name={name}"
         logger.info(f"update_task_keys_by_name({params_msg}) ok.")
 
+    @overrides
     async def update_task_by_uid(
         self,
         uid: int,
@@ -171,18 +181,21 @@ class AsyncPgTask(AsyncPgBase):
         params_msg = f"uid={uid}"
         logger.info(f"update_task_by_uid({params_msg}) ok.")
 
+    @overrides
     async def delete_task_by_uid(self, uid: int) -> None:
         query = DELETE_TASK_BY_UID
         await self.execute(query, uid)
         params_msg = f"uid={uid}"
         logger.info(f"delete_task_by_uid({params_msg}) ok.")
 
+    @overrides
     async def delete_task_by_name(self, project_uid: int, name: str) -> None:
         query = DELETE_TASK_BY_PROJECT_UID_AND_NAME
         await self.execute(query, project_uid, name)
         params_msg = f"project_uid={project_uid},name={name}"
         logger.info(f"delete_task_by_name({params_msg}) ok.")
 
+    @overrides
     async def get_task_by_uid(self, uid: int) -> Task:
         query = SELECT_TASK_BY_UID
         row = await self.fetch_row(query, uid)
@@ -194,6 +207,7 @@ class AsyncPgTask(AsyncPgBase):
         logger.info(f"get_task_by_uid({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_task_by_name(self, project_uid: int, name: str) -> Task:
         query = SELECT_TASK_BY_PROJECT_ID_AND_NAME
         row = await self.fetch_row(query, project_uid, name)
@@ -206,6 +220,7 @@ class AsyncPgTask(AsyncPgBase):
         logger.info(f"get_task_by_name({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_task_uid_by_name(self, project_uid: int, name: str) -> int:
         query = SELECT_TASK_UID_BY_PROJECT_ID_AND_NAME
         row = await self.fetch_row(query, project_uid, name)
@@ -218,6 +233,7 @@ class AsyncPgTask(AsyncPgBase):
         logger.info(f"get_task_uid_by_name({params_msg}) -> {result}")
         return result
 
+    @overrides
     async def get_task_by_project_uid(self, project_uid: int) -> List[Task]:
         result: List[Task] = list()
         async with self.conn() as conn:
@@ -232,6 +248,7 @@ class AsyncPgTask(AsyncPgBase):
         logger.info(f"get_task_by_project_uid({params_msg}) -> {result_msg}")
         return result
 
+    @overrides
     async def get_task_by_fullpath(
         self, group_name: str, project_name: str, task_name: str
     ) -> Task:
@@ -247,6 +264,7 @@ class AsyncPgTask(AsyncPgBase):
         logger.info(f"get_task_by_fullpath({params_msg}) ok.")
         return result
 
+    @overrides
     async def get_task_uid_by_fullpath(
         self, group_name: str, project_name: str, task_name: str
     ) -> int:
