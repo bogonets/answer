@@ -3,7 +3,7 @@
 from tempfile import TemporaryDirectory
 from recc.argparse.default_parser import parse_arguments_to_core_config
 from recc.core.context import Context
-from tester._async.async_test_case import AsyncTestCase  # noqa
+from tester.unittest.async_test_case import AsyncTestCase
 from tester.node.numpy_plugins import copy_builtin_numpy_nodes
 
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tester._samples.read_samples import DEFAULT_ENCODING, read_sample_json  # noqa
+from tester.samples.read_samples import DEFAULT_ENCODING, read_sample_json  # noqa
 from recc.vs.task_graph import TaskGraph
 from recc.blueprint.v1.converter import bp_converter
 from recc.serializable.json import serialize_json_text

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tester._async.async_test_case import AsyncTestCase  # noqa
+from tester.unittest.async_test_case import AsyncTestCase
 from recc.container.docker.docker_container_manager import DockerContainerManager
 
 

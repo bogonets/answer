@@ -78,7 +78,7 @@ class HttpAppTester(EmptyHttpAppCallback):
         self._config = parse_arguments_to_core_config()
         self._config.developer = True
         self._config.teardown = True
-        self._config.database_name = "recc.http.tester"
+        self._config.database_name = "recc.test.http"
         self._config.http_port = TEST_HTTP_PORT
         self._context = Context(self._config, loop=loop)
         self._app = HttpApp(context=self._context, callback=self)

@@ -2,7 +2,7 @@
 
 from recc.database.postgresql.pg_db import PgDb
 from recc.argparse.default_parser import parse_arguments_to_core_config
-from tester._async.async_test_case import AsyncTestCase  # noqa
+from tester.unittest.async_test_case import AsyncTestCase
 
 
 class PostgresqlTestCase(AsyncTestCase):
