@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+from tester.unittest.postgresql_test_case import PostgresqlTestCase
 from datetime import datetime, timedelta
-from tester import PostgresqlTestCase
 
 
 class PgUserTestCase(PostgresqlTestCase):

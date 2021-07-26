@@ -5,9 +5,9 @@ from io import BytesIO
 from tarfile import open as tar_open
 from tempfile import TemporaryDirectory
 from unittest import main
-from tester import AsyncTestCase
-from recc.storage.core_storage import CoreStorage
+from tester.unittest.async_test_case import AsyncTestCase
 from tester.node.numpy_plugins import copy_builtin_numpy_nodes
+from recc.storage.core_storage import CoreStorage
 
 
 class CoreStorageTestCase(AsyncTestCase):

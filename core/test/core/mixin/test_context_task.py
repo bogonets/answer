@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import main
-
-from tester import ContextTestCase
+from tester.unittest.context_test_case import ContextTestCase
 from recc.variables.storage import CORE_TEMPLATE_NAME, WORKSPACE_VENV_NAME
 
 

@@ -3,9 +3,9 @@
 from unittest import main
 from io import BytesIO
 from tarfile import open as tar_open
+from tester.unittest.docker_test_case import DockerTestCase
 from recc.variables.container import BASE_IMAGE_FULLNAME
 from recc.archive.tar_archive import file_info
-from tester import DockerTestCase
 
 TEST_IMAGE_NAME = "test-recc-image-build:latest"
 TEST_DOCKERFILE_PATH = "/Dockerfile"

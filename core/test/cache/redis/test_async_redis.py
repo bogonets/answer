@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from tester import AsyncTestCase
+from tester.unittest.async_test_case import AsyncTestCase
 from recc.argparse.default_parser import parse_arguments_to_core_config
 from recc.cache.redis.async_redis import AsyncRedisCacheStore
 

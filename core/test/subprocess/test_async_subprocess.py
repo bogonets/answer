@@ -2,8 +2,8 @@
 
 from sys import executable, version_info
 from unittest import main
-from tester import AsyncTestCase
 from collections import deque
+from tester.unittest.async_test_case import AsyncTestCase
 from recc.subprocess.async_subprocess import start_async_subprocess
 
 

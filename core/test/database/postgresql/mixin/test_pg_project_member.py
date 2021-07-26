@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from tester import PostgresqlTestCase
+from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
 class PgProjectMemberTestCase(PostgresqlTestCase):

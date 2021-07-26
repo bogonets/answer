@@ -2,7 +2,7 @@
 
 import unittest
 from datetime import datetime, timedelta
-from tester import PostgresqlTestCase
+from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
 class PgPermissionTestCase(PostgresqlTestCase):

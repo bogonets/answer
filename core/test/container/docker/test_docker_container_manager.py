@@ -2,10 +2,10 @@
 
 import unittest
 from tempfile import TemporaryDirectory
+from tester.unittest.docker_test_case import DockerTestCase
 from recc.container.struct.container_status import ContainerStatus
 from recc.container.docker.docker_container_manager import DockerContainerManager
 from recc.util.version import version_text, parse_semantic_version
-from tester import DockerTestCase
 
 _WAIT_CONTAINER_TIMEOUT = 10
 

@@ -3,10 +3,10 @@
 import os
 from unittest import main
 from tempfile import TemporaryDirectory
+from tester.unittest.async_test_case import AsyncTestCase
 from recc.argparse.default_namespace import get_default_task_config
 from recc.rpc.rpc_client import create_rpc_client
 from recc.task.task_server import create_task_server
-from tester import AsyncTestCase
 
 
 if os.name == "posix":

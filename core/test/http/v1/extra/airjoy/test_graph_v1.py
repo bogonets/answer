@@ -2,6 +2,7 @@
 
 import json
 import unittest
+from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
 from recc.http.v1.common import get_airjoy_v1_path
 from recc.http.v1.extra.airjoy_v1 import (
@@ -10,7 +11,6 @@ from recc.http.v1.extra.airjoy_v1 import (
     path_get_graph_live,
     path_post_manage_device_signal,
 )
-from tester import AsyncTestCase
 
 
 class AirjoyV1TestGraphCase(AsyncTestCase):

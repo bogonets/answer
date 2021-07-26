@@ -2,8 +2,8 @@
 
 from sys import version_info
 from unittest import main
-from tester import AsyncTestCase
 from tempfile import TemporaryDirectory
+from tester.unittest.async_test_case import AsyncTestCase
 from recc.venv.async_virtual_environment import AsyncVirtualEnvironment
 
 

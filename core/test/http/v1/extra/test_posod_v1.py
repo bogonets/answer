@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
 from recc.http.v1.common import get_posod_v1_path
-from tester import AsyncTestCase
 
 
 class PosodV1TestCase(AsyncTestCase):

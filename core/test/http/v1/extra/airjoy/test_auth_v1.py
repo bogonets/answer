@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
 from recc.http.v1.common import get_airjoy_v1_path
 from recc.http.v1.extra.airjoy_v1 import (
@@ -10,7 +11,6 @@ from recc.http.v1.extra.airjoy_v1 import (
     path_edit_project_member_auth,
     path_delete_project_member,
 )
-from tester import AsyncTestCase
 
 
 class AirjoyV1TestAuthCase(AsyncTestCase):

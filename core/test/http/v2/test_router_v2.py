@@ -3,7 +3,6 @@
 import unittest
 import json
 import hashlib
-from tester.samples.read_samples import read_sample
 from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
 from recc.http.v1 import path_v1 as pv1
@@ -91,72 +90,6 @@ class RouterV1TestCase(AsyncTestCase):
         user_exist_no_2 = await self.tester.get_request(get_v1_path(path_exist_user_my))
         self.assertEqual(200, user_exist_no_2.status)
         self.assertFalse(user_exist_no_2.data["result"]["obj"]["findId"])
-
-    async def test_get_templates(self):
-        await self.tester.run_v1_admin_login()
-
-        templates = await self.tester.get_request(get_v1_path(pv1.get_templates))
-        self.assertEqual(200, templates.status)
-        obj = templates.data["result"]["obj"]
-        self.assertIsInstance(obj, list)
-        for template in obj:
-            self.assertIn("info", template)
-            self.assertIn("controls", template)
-            self.assertIn("props", template)
-            self.assertIsInstance(template["info"], dict)
-            self.assertIsInstance(template["controls"], dict)
-            self.assertIsInstance(template["props"], list)
-            for prop in template["props"]:
-                self.assertIsInstance(prop, dict)
-                self.assertIn("valid", prop)
-                self.assertIsInstance(prop["valid"], dict)
-
-    async def test_create_project(self):
-        await self.tester.run_v1_admin_login()
-
-        proj0 = "demo"
-        proj0_path = pv1.create_project.format(proj=proj0)
-        proj0_result = await self.tester.post_request(get_v1_path(proj0_path))
-        self.assertEqual(200, proj0_result.status)
-
-        result = await self.tester.get_request(get_v1_path(pv1.get_projects))
-        self.assertEqual(200, result.status)
-        projects = result.data["result"]["obj"]
-        self.assertIsInstance(projects, list)
-        self.assertEqual(1, len(projects))
-        self.assertIsInstance(projects[0], dict)
-        self.assertEqual(proj0, projects[0]["name"])
-
-    async def test_create_task_and_validation(self):
-        await self.tester.run_v1_admin_login()
-
-        proj0 = "__demo__"
-        proj0_path = pv1.create_project.format(proj=proj0)
-        proj0_result = await self.tester.post_request(get_v1_path(proj0_path))
-        self.assertEqual(200, proj0_result.status)
-
-        set_proj_graph_path = pv1.set_proj_graph.format(proj=proj0)
-        set_proj_graph_request_data = read_sample("set_graph.numpy2.json")
-        set_proj_graph_result = await self.tester.post_request(
-            get_v1_path(set_proj_graph_path), data=set_proj_graph_request_data
-        )
-        self.assertEqual(200, set_proj_graph_result.status)
-
-        get_proj_graph_path = pv1.get_proj_graph.format(proj=proj0)
-        get_proj_graph_result = await self.tester.get_request(
-            get_v1_path(get_proj_graph_path)
-        )
-        self.assertEqual(200, get_proj_graph_result.status)
-
-        get_proj_graph_status_path = pv1.get_proj_graph_status.format(proj=proj0)
-        get_proj_graph_status_result = await self.tester.get_request(
-            get_v1_path(get_proj_graph_status_path)
-        )
-        self.assertEqual(200, get_proj_graph_status_result.status)
-
-        stop_proj_task_path = pv1.stop_proj_task.format(proj=proj0, task="Task")
-        result = await self.tester.post_request(get_v1_path(stop_proj_task_path))
-        self.assertEqual(200, result.status)
 
 
 if __name__ == "__main__":

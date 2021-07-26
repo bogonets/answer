@@ -4,11 +4,11 @@ import os
 import asyncio
 import numpy as np
 from unittest import main
+from tester.unittest.rpc_test_case import RpcTestCase
+from tester.node.numpy_plugins import copy_builtin_numpy_nodes
 from datetime import datetime, timedelta
 from recc.variables.storage import CORE_TEMPLATE_NAME, WORKSPACE_VENV_NAME
 from recc.file.remove import remove_recursively
-from tester import RpcTestCase
-from tester.node.numpy_plugins import copy_builtin_numpy_nodes
 
 
 class RpcCommonTestCase(RpcTestCase):

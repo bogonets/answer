@@ -2,10 +2,11 @@
 
 import numpy as np
 from unittest import main
+from tester.samples.read_samples import read_sample_json
+from tester.unittest.rpc_test_case import RpcTestCase
 from recc.blueprint.blueprint import BpTask
 from recc.blueprint.v1.converter import bp_converter
 from recc.vs.box import BoxRequest
-from tester import RpcTestCase, read_sample_json
 
 
 class SetGraphNumpy1TestCase(RpcTestCase):
