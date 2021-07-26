@@ -13,7 +13,9 @@ from recc.auth.bearer_auth import BearerAuth
 from recc.core.context import Context
 from recc.serializable.serialize import serialize_default
 from recc.http.v2.router_v2_public import RouterV2Public
+
 from recc.http import http_header_keys as h
+from recc.http import http_path_keys as p
 from recc.http import http_urls as u
 
 
@@ -63,9 +65,14 @@ class RouterV2:
     def _get_routes(self) -> List[AbstractRouteDef]:
         # fmt: off
         return [
+            # self
             web.get(u.self, self.get_self),
             web.get(u.self_extra, self.get_self_extra),
             web.put(u.self_extra, self.put_self_extra),
+
+            # config
+            web.get(u.config, self.get_config),
+            web.put(u.config_pkey, self.put_config_pkey),
         ]
         # fmt: on
 
@@ -99,4 +106,31 @@ class RouterV2:
         logger.info(f"put_self_extra(username={username})")
 
         await self.context.update_user(username, extra=extra)
+        return Response()
+
+    async def get_config(self, request: Request) -> Response:
+        session = request[h.session]
+        username = session.audience
+        logger.info(f"get_config(username={username})")
+
+        user = await self.context.get_self(session)
+        if not user.is_admin:
+            raise HTTPUnauthorized()
+
+        configs = await self.context.get_configs()
+        configs_dict = serialize_default(configs)
+        return web.json_response(configs_dict)
+
+    async def put_config_pkey(self, request: Request) -> Response:
+        session = request[h.session]
+        username = session.audience
+        key = request.match_info[p.key]
+        val = await request.json(loads=global_json_decoder)
+        logger.info(f"put_config_pkey(username={username},key={key})")
+
+        user = await self.context.get_self(session)
+        if not user.is_admin:
+            raise PermissionError("Administrator privileges are required")
+
+        await self.context.set_config(key, val)
         return Response()
