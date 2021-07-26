@@ -6,7 +6,12 @@ from asyncio import get_event_loop_policy, set_event_loop
 from typing import Optional
 from asyncio import AbstractEventLoop
 from recc.core.mixin.context_base import ContextBase
-from recc.init.default import init_logger, init_json_driver, init_loop_driver
+from recc.init.default import (
+    init_logger,
+    init_json_driver,
+    init_loop_driver,
+    init_xml_driver,
+)
 from recc.argparse.config.core_config import CoreConfig
 from recc.argparse.default_namespace import get_default_core_config
 from recc.argparse.injection_values import injection_core_default_values
@@ -36,6 +41,9 @@ class ContextInit(ContextBase):
 
     def _init_json_driver(self) -> None:
         init_json_driver(self._config.json_driver)
+
+    def _init_xml_driver(self) -> None:
+        init_xml_driver(self._config.xml_driver)
 
     def _init_loop_driver(self) -> None:
         init_loop_driver(self._config.loop_driver)
@@ -150,6 +158,7 @@ class ContextInit(ContextBase):
 
         self._init_logger()
         self._init_json_driver()
+        self._init_xml_driver()
         self._init_loop_driver()
         self._init_loop(loop)
         self._init_signature()

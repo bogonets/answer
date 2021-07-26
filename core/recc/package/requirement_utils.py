@@ -26,6 +26,7 @@ RECC_REQUIREMENTS_MAIN = (
     "coloredlogs>=15.0.1",
     "pycryptodome>=3.10.1",
     "overrides>=6.1.0",
+    "xmltodict>=0.12.0",
 )
 
 _SCRIPT_PATH = os.path.abspath(__file__)

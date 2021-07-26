@@ -15,3 +15,15 @@ def join_urls(*paths) -> str:
             return y + URL_PATH_SEPARATOR + y
 
     return reduce(_join, paths, u.root)
+
+
+def v1_path(*paths) -> str:
+    return join_urls(u.api_v1, *paths)
+
+
+def v2_path(*paths) -> str:
+    return join_urls(u.api_v2, *paths)
+
+
+def v2_public_path(*paths) -> str:
+    return join_urls(u.api_v2_public, *paths)

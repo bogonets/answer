@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional
-from recc.argparse.config.global_config import LOOP_DRIVER_UV, JSON_DRIVER_ORJSON
+from recc.argparse.config.global_config import (
+    LOOP_DRIVER_UV,
+    JSON_DRIVER_ORJSON,
+    XML_DRIVER_XMLTODICT,
+)
 from recc.file.permission import is_readable_file
 from recc.log.logging import recc_common_logger as logger
 from recc.log.logging import (
@@ -12,6 +16,7 @@ from recc.log.logging import (
 )
 from recc.driver.loop import install_uvloop_driver
 from recc.driver.json import install_orjson_driver
+from recc.driver.xml import install_xmltodict_driver
 
 
 def init_logger(config_path: str, log_level: Optional[str] = None) -> None:
@@ -37,7 +42,17 @@ def init_json_driver(json_type=JSON_DRIVER_ORJSON) -> None:
         else:
             logger.warning("The orjson module doesn't exist.")
     else:
-        logger.info("Using the default python loop.")
+        logger.info("Using the default json parser.")
+
+
+def init_xml_driver(xml_type=XML_DRIVER_XMLTODICT) -> None:
+    if xml_type == XML_DRIVER_XMLTODICT:
+        if install_xmltodict_driver():
+            logger.info("Installed xmltodict xml parser.")
+        else:
+            logger.warning("The xmltodict module doesn't exist.")
+    else:
+        logger.info("Using the default xml parser.")
 
 
 def init_loop_driver(loop_type=LOOP_DRIVER_UV) -> None:

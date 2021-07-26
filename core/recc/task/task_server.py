@@ -5,7 +5,12 @@ import grpc
 from typing import Optional
 from ipaddress import ip_address
 from recc.argparse.config.task_config import TaskConfig, get_task_config_members
-from recc.init.default import init_logger, init_json_driver, init_loop_driver
+from recc.init.default import (
+    init_logger,
+    init_json_driver,
+    init_xml_driver,
+    init_loop_driver,
+)
 from recc.log.logging import recc_rpc_logger as logger
 from recc.proto.api_pb2_grpc import add_ReccApiServicer_to_server
 from recc.rpc.rpc_client import try_connection
@@ -161,6 +166,7 @@ def run_task_until_complete(config: TaskConfig) -> int:
     try:
         init_logger(config.log_config, config.log_level)
         init_json_driver(config.json_driver)
+        init_xml_driver(config.xml_driver)
         init_loop_driver(config.loop_driver)
 
         asyncio.run(run_task_server(config))
