@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from recc.http.http_app_tester import HttpAppTester
+from tester.http.http_app_tester import HttpAppTester
 from recc.http import http_urls as u
 from recc.util.version import version_text
 from tester import AsyncTestCase

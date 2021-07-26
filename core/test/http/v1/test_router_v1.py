@@ -3,7 +3,7 @@
 import unittest
 import json
 import hashlib
-from recc.http.http_app_tester import HttpAppTester
+from tester.http.http_app_tester import HttpAppTester
 from recc.http.v1 import path_v1 as pv1
 from recc.http.v1.common import k_user, get_v1_path
 from recc.util.version import version_text

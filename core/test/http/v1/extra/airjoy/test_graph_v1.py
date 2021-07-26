@@ -2,7 +2,7 @@
 
 import json
 import unittest
-from recc.http.http_app_tester import HttpAppTester
+from tester.http.http_app_tester import HttpAppTester
 from recc.http.v1.common import get_airjoy_v1_path
 from recc.http.v1.extra.airjoy_v1 import (
     path_get_agency_list,
