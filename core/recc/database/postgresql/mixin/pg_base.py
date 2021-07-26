@@ -13,6 +13,20 @@ class PgBase:
 
     _pool: Optional[Pool]
 
+    _db_host: Optional[str]
+    _db_port: Optional[int]
+    _db_user: Optional[str]
+    _db_pw: Optional[str]
+    _db_name: Optional[str]
+
+    _timeout: float
+
+    _anonymous_group_uid: Optional[int]
+    _guest_permission_uid: Optional[int]
+    _reporter_permission_uid: Optional[int]
+    _operator_permission_uid: Optional[int]
+    _maintainer_permission_uid: Optional[int]
+
     class _Connection:
         """
         Implementation for Type Hinting.
