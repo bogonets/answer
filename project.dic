@@ -71,7 +71,9 @@ objs
 orjson
 osom
 outname
+pkey
 posod
+pproject
 proj
 projname
 pycache

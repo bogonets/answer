@@ -21,5 +21,9 @@ class ContextConfig(ContextBase):
         infos = await self.database.get_infos()
         return [Config(i.key, i.value) for i in infos]
 
+    async def get_config(self, key: str) -> Config:
+        info = await self.database.get_info_by_key(key)
+        return Config(info.key, info.value)
+
     async def set_config(self, key: str, val: Any) -> None:
-        await self.database.update_info_value_by_key(key, val)
+        await self.database.upsert_info(key, val)

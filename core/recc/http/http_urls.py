@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from recc.http import http_path_keys as p
+
 # Depth root.
 root = "/"
 
@@ -31,8 +33,14 @@ test = "/test"
 user = "/user"
 version = "/version"
 
+
+def _param_path(key: str) -> str:
+    return "/{" + key + "}"
+
+
 # Params (Use the prefix 'p')
-pkey = "/{key}"
+pkey = _param_path(p.key)
+pproject = _param_path(p.project)
 
 # Mixin for ROOT
 api_v1 = api + v1

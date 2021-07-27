@@ -11,6 +11,7 @@ from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.info import (
     INSERT_INFO,
     UPDATE_INFO_VALUE_BY_KEY,
+    UPSERT_INFO,
     DELETE_INFO_BY_KEY,
     SELECT_INFO_BY_KEY,
     SELECT_INFO_ALL,
@@ -39,6 +40,15 @@ class PgInfo(DbInfo, PgBase):
         await self.execute(query, key, value, updated_at)
         params_msg = f"key={key},value={value}"
         logger.info(f"update_info_value_by_key({params_msg}) ok.")
+
+    @overrides
+    async def upsert_info(
+        self, key: str, value: str, created_or_updated_at=datetime.utcnow()
+    ) -> None:
+        query = UPSERT_INFO
+        await self.execute(query, key, value, created_or_updated_at)
+        params_msg = f"key={key},value={value}"
+        logger.info(f"upsert_info({params_msg}) ok.")
 
     @overrides
     async def delete_info_by_key(self, key: str) -> None:

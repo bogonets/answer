@@ -6,13 +6,14 @@ from aiohttp.hdrs import METH_OPTIONS, AUTHORIZATION
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
-from aiohttp.web_exceptions import HTTPUnauthorized
+from aiohttp.web_exceptions import HTTPUnauthorized, HTTPNotFound
 from recc.log.logging import recc_http_logger as logger
 from recc.driver.json import global_json_decoder
-from recc.http.header.bearer_auth import BearerAuth
 from recc.core.context import Context
 from recc.serializable.serialize import serialize_default
 from recc.http.v2.router_v2_public import RouterV2Public
+from recc.http.header.bearer_auth import BearerAuth
+from recc.http.http_response import auto_response
 
 from recc.http import http_header_keys as h
 from recc.http import http_path_keys as p
@@ -72,6 +73,7 @@ class RouterV2:
 
             # config
             web.get(u.config, self.get_config),
+            web.get(u.config_pkey, self.get_config_pkey),
             web.put(u.config_pkey, self.put_config_pkey),
         ]
         # fmt: on
@@ -115,22 +117,39 @@ class RouterV2:
 
         user = await self.context.get_self(session)
         if not user.is_admin:
-            raise HTTPUnauthorized()
+            raise HTTPUnauthorized(reason="Administrator privileges are required")
 
         configs = await self.context.get_configs()
-        configs_dict = serialize_default(configs)
-        return web.json_response(configs_dict)
+        result = {config.key: config.val for config in configs}
+        return web.json_response(result)
+
+    async def get_config_pkey(self, request: Request) -> Response:
+        session = request[h.session]
+        username = session.audience
+        key = request.match_info[p.key]
+        logger.info(f"get_config_pkey(username={username},key={key})")
+
+        user = await self.context.get_self(session)
+        if not user.is_admin:
+            raise HTTPUnauthorized(reason="Administrator privileges are required")
+
+        try:
+            config = await self.context.get_config(key)
+            return auto_response(request, config.val)
+        except BaseException as e:  # noqa
+            logger.exception(e)
+            raise HTTPNotFound(reason=f"Not found config: {key}")
 
     async def put_config_pkey(self, request: Request) -> Response:
         session = request[h.session]
         username = session.audience
         key = request.match_info[p.key]
-        val = await request.json(loads=global_json_decoder)
+        val = await request.text()
         logger.info(f"put_config_pkey(username={username},key={key})")
 
         user = await self.context.get_self(session)
         if not user.is_admin:
-            raise PermissionError("Administrator privileges are required")
+            raise HTTPUnauthorized(reason="Administrator privileges are required")
 
         await self.context.set_config(key, val)
         return Response()

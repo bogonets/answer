@@ -143,9 +143,7 @@ class RouterV1TestCase(AsyncTestCase):
         self.assertEqual(200, set_proj_graph_result.status)
 
         get_proj_graph_path = pv1.get_proj_graph.format(proj=proj0)
-        get_proj_graph_result = await self.tester.get(
-            get_v1_path(get_proj_graph_path)
-        )
+        get_proj_graph_result = await self.tester.get(get_v1_path(get_proj_graph_path))
         self.assertEqual(200, get_proj_graph_result.status)
 
         get_proj_graph_status_path = pv1.get_proj_graph_status.format(proj=proj0)

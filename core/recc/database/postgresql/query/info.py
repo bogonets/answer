@@ -30,6 +30,16 @@ VALUES
     ($1, $2, $3);
 """
 
+UPSERT_INFO = f"""
+INSERT INTO {TABLE_INFO}
+    (key, value, created_at)
+VALUES
+    ($1, $2, $3)
+ON CONFLICT (key) DO
+UPDATE SET
+    value=$2, updated_at=$3;
+"""
+
 ##########
 # UPDATE #
 ##########

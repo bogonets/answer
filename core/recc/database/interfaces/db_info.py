@@ -27,6 +27,12 @@ class DbInfo(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def upsert_info(
+        self, key: str, value: str, created_or_updated_at=datetime.utcnow()
+    ) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def delete_info_by_key(self, key: str) -> None:
         raise NotImplementedError
 
