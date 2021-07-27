@@ -8,14 +8,15 @@ from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 from aiohttp.web_exceptions import HTTPBadRequest, HTTPUnauthorized
 from recc.log.logging import recc_http_logger as logger
+from recc.core.context import Context
+from recc.driver.json import global_json_decoder
+from recc.serializable.serialize import serialize_default
+from recc.http.http_response import auto_response
 from recc.http.http_errors import (
     HTTPReccNotInitializedError,
     HTTPReccAlreadyInitializedError,
 )
-from recc.auth.basic_auth import BasicAuth
-from recc.core.context import Context
-from recc.driver.json import global_json_decoder
-from recc.serializable.serialize import serialize_default
+from recc.http.header.basic_auth import BasicAuth
 from recc.http import http_dict_keys as d
 from recc.http import http_urls as u
 from recc.util.version import version_text
@@ -28,7 +29,7 @@ class RouterV2Public:
 
     def __init__(self, context: Context):
         self._context = context
-        self._app = web.Application()
+        self._app = web.Application(middlewares=[self.middleware])
         self._app.add_routes(self._get_routes())
 
     @property
@@ -38,6 +39,10 @@ class RouterV2Public:
     @property
     def context(self) -> Context:
         return self._context
+
+    @web.middleware
+    async def middleware(self, request: Request, handler):
+        return await handler(request)
 
     def _get_routes(self) -> List[AbstractRouteDef]:
         return [
@@ -58,10 +63,10 @@ class RouterV2Public:
         logger.info("get_heartbeat()")
         return Response()
 
-    async def get_version(self, _: Request):
+    async def get_version(self, request: Request):
         assert self._context
         logger.info(f"get_version() -> {version_text}")
-        return Response(text=version_text)
+        return auto_response(request, version_text)
 
     async def get_test_init(self, _: Request):
         logger.info("get_test_init()")

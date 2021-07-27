@@ -50,3 +50,6 @@ def global_xml_encoder(data: Any) -> str:
 
 def global_xml_decoder(data: str) -> Any:
     return _global_xml_decoder(data)
+
+
+install_xmltodict_driver()

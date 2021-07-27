@@ -22,7 +22,7 @@ class MimeTypeTestCase(TestCase):
         self.assertEqual("text", MIME_TEXT_PLAIN.family)
         self.assertEqual("plain", MIME_TEXT_PLAIN.subtype)
 
-    def test_test_accept(self):
+    def test_accept(self):
         text_any = MimeType.parse("text/*")
         any_plain = MimeType.parse("*/plain")
         self.assertTrue(MIME_TEXT_PLAIN.test_from_accepts([text_any]))
@@ -39,6 +39,13 @@ class MimeTypeTestCase(TestCase):
 
         mixed_mimes = [text_unknown, text_unknown, MIME_ANY]
         self.assertTrue(MIME_TEXT_PLAIN.test_from_accepts(mixed_mimes))
+
+    def test_parameters(self):
+        xml_mime = MimeType.parse("application/xml;q=0.9")
+        self.assertEqual("q=0.9", xml_mime.parameter)
+
+        any_mime = MimeType.parse("*/*;q=0.8")
+        self.assertEqual("q=0.8", any_mime.parameter)
 
 
 if __name__ == "__main__":

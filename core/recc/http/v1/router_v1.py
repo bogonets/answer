@@ -8,8 +8,8 @@ from aiohttp.web import HTTPException
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
-from recc.auth.basic_auth import BasicAuth
-from recc.auth.bearer_auth import BearerAuth
+from recc.http.header.basic_auth import BasicAuth
+from recc.http.header.bearer_auth import BearerAuth
 from recc.core.context import Context
 from recc.http.v1 import path_v1 as pv1
 from recc.http.v1.extra.airjoy_v1 import AirjoyV1

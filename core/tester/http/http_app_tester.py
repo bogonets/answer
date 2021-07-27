@@ -8,6 +8,7 @@ from multidict import CIMultiDictProxy, CIMultiDict
 from http import HTTPStatus
 from asyncio import Task, Event, AbstractEventLoop, CancelledError
 from aiohttp import ClientSession
+from aiohttp.hdrs import AUTHORIZATION
 from aiohttp.web import Application
 from aiohttp.typedefs import LooseHeaders
 from aiohttp.hdrs import (
@@ -19,14 +20,17 @@ from aiohttp.hdrs import (
     METH_POST,
     METH_PUT,
 )
-from recc.auth.basic_auth import BasicAuth
-from recc.auth.bearer_auth import BearerAuth
+from recc.http.header.basic_auth import BasicAuth
+from recc.http.header.bearer_auth import BearerAuth
 from recc.argparse.default_parser import parse_arguments_to_core_config
 from recc.http.v1 import path_v1 as pv1
 from recc.http.v1.common import get_v1_path
 from recc.http.http_interface import EmptyHttpAppCallback
-from recc.http.http_vars import DEFAULT_SCHEME
+from recc.http.http_vars import DEFAULT_SCHEME, URL_PATH_SEPARATOR
 from recc.http.http_app import HttpApp
+from recc.http.http_utils import v2_public_path
+from recc.http import http_dict_keys as d
+from recc.http import http_urls as u
 from recc.core.context import Context
 from recc.variables.http import TEST_HTTP_PORT
 
@@ -142,7 +146,14 @@ class HttpAppTester(EmptyHttpAppCallback):
         data: Optional[Any] = None,
     ) -> ResponseData:
 
-        url = f"{self._scheme}://{self._bind}:{self._port}{path}"
+        prefix = f"{self._scheme}://{self._bind}:{self._port}"
+        if path:
+            if path[0] == URL_PATH_SEPARATOR:
+                url = prefix + path
+            else:
+                url = prefix + URL_PATH_SEPARATOR + path
+        else:
+            url = prefix
         updated_headers = deepcopy(headers) if headers else CIMultiDict()
 
         if self._access_token is not None:
@@ -232,9 +243,7 @@ class HttpAppTester(EmptyHttpAppCallback):
         auth = BasicAuth(self._username, hashed_pw)
         login_response = await self.post_request(
             path=get_v1_path(pv1.login),
-            headers={
-                "authorization": auth.encode(),
-            },
+            headers={AUTHORIZATION: auth.encode()},
             data=json.dumps({"id": self._username, "password": hashed_pw}),
         )
         if login_response.status != HTTPStatus.OK:
@@ -250,3 +259,42 @@ class HttpAppTester(EmptyHttpAppCallback):
         assert "refreshToken" in login_data
         self._access_token = login_data["accessToken"]
         self._refresh_token = login_data["refreshToken"]
+
+    async def run_v2_admin_login(
+        self,
+        username=DEFAULT_ADMIN_USERNAME,
+        password=DEFAULT_ADMIN_PASSWORD,
+    ) -> None:
+        if not username:
+            raise ValueError("A `username` argument is required.")
+        if not password:
+            raise ValueError("A `password` argument is required.")
+
+        self._username = username
+        self._password = password
+        assert self._username
+        assert self._password
+
+        hashed_pw = hashlib.sha256(self._password.encode(encoding="utf-8")).hexdigest()
+        signup_response = await self.post_request(
+            path=v2_public_path(u.signup_admin),
+            data=json.dumps({d.admin_id: self._username, d.admin_pwd: hashed_pw}),
+        )
+        if signup_response.status != HTTPStatus.OK:
+            raise RuntimeError(f"Signup status error: {signup_response.status}")
+
+        auth = BasicAuth(self._username, hashed_pw)
+        login_response = await self.post_request(
+            path=v2_public_path(pv1.login),
+            headers={AUTHORIZATION: auth.encode()},
+        )
+        if login_response.status != HTTPStatus.OK:
+            raise RuntimeError(f"Login status error: {login_response.status}")
+
+        assert login_response.data
+        login_data = login_response.data
+        assert self._username == login_data[d.user]["username"]
+        assert d.access in login_data
+        assert d.refresh in login_data
+        self._access_token = login_data[d.access]
+        self._refresh_token = login_data[d.refresh]

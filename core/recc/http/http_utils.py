@@ -9,10 +9,16 @@ def join_urls(*paths) -> str:
     assert paths
 
     def _join(x: str, y: str) -> str:
-        if y[0] == URL_PATH_SEPARATOR:
-            return x + y
+        if x[-1] == URL_PATH_SEPARATOR:
+            if y[0] == URL_PATH_SEPARATOR:
+                return x + y[1:]
+            else:
+                return x + y
         else:
-            return y + URL_PATH_SEPARATOR + y
+            if y[0] == URL_PATH_SEPARATOR:
+                return x + y
+            else:
+                return x + URL_PATH_SEPARATOR + y
 
     return reduce(_join, paths, u.root)
 

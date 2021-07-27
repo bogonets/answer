@@ -2,7 +2,7 @@
 
 import unittest
 from hashlib import sha256
-from recc.auth.basic_auth import BasicAuth
+from recc.http.header.basic_auth import BasicAuth
 
 
 class ArgsTestCase(unittest.TestCase):

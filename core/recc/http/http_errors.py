@@ -12,12 +12,12 @@ class HTTPReccError(HTTPServerError):
 class HTTPReccNotInitializedError(HTTPReccError):
     status_code = 520
 
-    def __init__(self):
-        super().__init__(reason="Not initialized")
+    def __init__(self, reason="Not initialized"):
+        super().__init__(reason=reason)
 
 
 class HTTPReccAlreadyInitializedError(HTTPReccError):
     status_code = 521
 
-    def __init__(self):
-        super().__init__(reason="Already initialized")
+    def __init__(self, reason="Already initialized"):
+        super().__init__(reason=reason)

@@ -9,7 +9,7 @@ from aiohttp.web_response import Response
 from aiohttp.web_exceptions import HTTPUnauthorized
 from recc.log.logging import recc_http_logger as logger
 from recc.driver.json import global_json_decoder
-from recc.auth.bearer_auth import BearerAuth
+from recc.http.header.bearer_auth import BearerAuth
 from recc.core.context import Context
 from recc.serializable.serialize import serialize_default
 from recc.http.v2.router_v2_public import RouterV2Public

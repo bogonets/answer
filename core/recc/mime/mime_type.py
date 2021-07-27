@@ -4,6 +4,7 @@ from typing import Optional, Final, List
 
 TYPE_SEPARATOR: Final[str] = "/"
 PARAMETER_SEPARATOR: Final[str] = ";"
+PARAM_SEP: Final[str] = PARAMETER_SEPARATOR
 ANY_WILDCARD: Final[str] = "*"
 
 
@@ -47,7 +48,7 @@ class MimeType:
     def mime(self) -> str:
         prefix = f"{self.family}{TYPE_SEPARATOR}{self.subtype}"
         if self.parameter:
-            return f"{prefix}{PARAMETER_SEPARATOR}{self.parameter}"
+            return f"{prefix}{PARAM_SEP}{self.parameter}"
         else:
             return prefix
 
@@ -58,7 +59,7 @@ class MimeType:
         name: Optional[str] = None,
         reference: Optional[str] = None,
     ) -> "MimeType":
-        types_and_param = text.split(PARAMETER_SEPARATOR, 1)
+        types_and_param = text.split(PARAM_SEP, 1)
         assert 1 <= len(types_and_param) <= 2
 
         parameter: Optional[str] = None
@@ -116,10 +117,21 @@ BOTH_ANY: Final[str] = "*/*"
 
 APPLICATION_OCTET_STREAM: Final[str] = "application/octet-stream"
 APPLICATION_JSON: Final[str] = "application/json"
+APPLICATION_XML: Final[str] = "application/xml"
+APPLICATION_YAML: Final[str] = "application/x-yaml"
 TEXT_PLAIN: Final[str] = "text/plain"
+
+CHARSET_UTF8: Final[str] = "charset=utf-8"
 
 MIME_ANY = MimeType.parse(SINGLE_ANY)
 MIME_ANY_BOTH = MimeType.parse(BOTH_ANY)
 MIME_APPLICATION_OCTET_STREAM = MimeType.parse(APPLICATION_OCTET_STREAM)
 MIME_APPLICATION_JSON = MimeType.parse(APPLICATION_JSON)
+MIME_APPLICATION_XML = MimeType.parse(APPLICATION_XML)
+MIME_APPLICATION_YAML = MimeType.parse(APPLICATION_YAML)
 MIME_TEXT_PLAIN = MimeType.parse(TEXT_PLAIN)
+
+MIME_APPLICATION_JSON_UTF8 = MimeType.parse(APPLICATION_JSON + PARAM_SEP + CHARSET_UTF8)
+MIME_APPLICATION_XML_UTF8 = MimeType.parse(APPLICATION_XML + PARAM_SEP + CHARSET_UTF8)
+MIME_APPLICATION_YAML_UTF8 = MimeType.parse(APPLICATION_YAML + PARAM_SEP + CHARSET_UTF8)
+MIME_TEXT_PLAIN_UTF8 = MimeType.parse(TEXT_PLAIN + PARAM_SEP + CHARSET_UTF8)
