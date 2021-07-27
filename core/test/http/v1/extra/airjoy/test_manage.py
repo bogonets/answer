@@ -23,7 +23,7 @@ class AirjoyV1TestManageCase(AsyncTestCase):
         await self.tester.teardown()
 
     async def test_default(self):
-        result = await self.tester.get_request(get_airjoy_v1_path("/test"))
+        result = await self.tester.get(get_airjoy_v1_path("/test"))
         self.assertEqual(200, result.status)
         self.assertEqual("OK", result.data["status"])
 
@@ -35,13 +35,13 @@ class AirjoyV1TestManageCase(AsyncTestCase):
         # self.assertEqual(200, create_project.status)
         # self.assertEqual("OK", create_project.data["status"])
 
-        metric = await self.tester.get_request(
+        metric = await self.tester.get(
             get_airjoy_v1_path(path_get_manage_data_metric.format(proj="test"))
         )
         self.assertEqual(200, metric.status)
         self.assertEqual("OK", metric.data["status"])
 
-        non_metric = await self.tester.get_request(
+        non_metric = await self.tester.get(
             get_airjoy_v1_path(path_get_manage_data_non_metric.format(proj="test")),
         )
         self.assertEqual(200, non_metric.status)
@@ -51,7 +51,7 @@ class AirjoyV1TestManageCase(AsyncTestCase):
             "serial": "serial1",
             "editData": ["install_date", "0406"],
         }
-        non_metric_post = await self.tester.post_request(
+        non_metric_post = await self.tester.post(
             get_airjoy_v1_path(path_post_manage_data_non_metric.format(proj="test")),
             data=json.dumps(non_metric_post_data),
         )
@@ -59,7 +59,7 @@ class AirjoyV1TestManageCase(AsyncTestCase):
         self.assertEqual("OK", non_metric_post.data["status"])
 
         metric_post_data = {"serial": "serial1", "editData": ["firmware_version", "v3"]}
-        metric_post = await self.tester.post_request(
+        metric_post = await self.tester.post(
             get_airjoy_v1_path(path_post_manage_data_metric.format(proj="test")),
             data=json.dumps(metric_post_data),
         )

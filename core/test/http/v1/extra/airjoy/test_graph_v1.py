@@ -23,7 +23,7 @@ class AirjoyV1TestGraphCase(AsyncTestCase):
         await self.tester.teardown()
 
     async def test_default(self):
-        result = await self.tester.get_request(get_airjoy_v1_path("/test"))
+        result = await self.tester.get(get_airjoy_v1_path("/test"))
         self.assertEqual(200, result.status)
         self.assertEqual("OK", result.data["status"])
 
@@ -35,7 +35,7 @@ class AirjoyV1TestGraphCase(AsyncTestCase):
         # self.assertEqual(200, create_project.status)
         # self.assertEqual("OK", create_project.data["status"])
 
-        agency_list = await self.tester.get_request(
+        agency_list = await self.tester.get(
             get_airjoy_v1_path(path_get_agency_list.format(proj="test")),
         )
         self.assertEqual(200, agency_list.status)
@@ -48,14 +48,14 @@ class AirjoyV1TestGraphCase(AsyncTestCase):
         self.assertEqual(expected_agency_list, agency_list.data["result"])
 
         graph_term_data = {"agency": "agency1", "start": "", "end": ""}
-        graph_term = await self.tester.post_request(
+        graph_term = await self.tester.post(
             get_airjoy_v1_path(path_get_graph_term.format(proj="test")),
             data=json.dumps(graph_term_data),
         )
         self.assertEqual(200, graph_term.status)
         self.assertEqual("OK", graph_term.data["status"])
 
-        graph_live = await self.tester.get_request(
+        graph_live = await self.tester.get(
             get_airjoy_v1_path(
                 path_get_graph_live.format(proj="test", agency="agency1")
             ),
@@ -64,7 +64,7 @@ class AirjoyV1TestGraphCase(AsyncTestCase):
         self.assertEqual("OK", graph_live.data["status"])
 
         device_signal_data = {"serial": "serial1", "device": "on_off"}
-        device_signal = await self.tester.post_request(
+        device_signal = await self.tester.post(
             get_airjoy_v1_path(path_post_manage_device_signal.format(proj="test")),
             data=json.dumps(device_signal_data),
         )

@@ -185,7 +185,7 @@ class HttpAppTester(EmptyHttpAppCallback):
                     headers=response.headers,
                 )
 
-    async def get_request(
+    async def get(
         self,
         path: str,
         headers: Optional[LooseHeaders] = None,
@@ -193,7 +193,7 @@ class HttpAppTester(EmptyHttpAppCallback):
     ) -> ResponseData:
         return await self.request(METH_GET, path, headers, data)
 
-    async def post_request(
+    async def post(
         self,
         path: str,
         headers: Optional[LooseHeaders] = None,
@@ -201,7 +201,7 @@ class HttpAppTester(EmptyHttpAppCallback):
     ) -> ResponseData:
         return await self.request(METH_POST, path, headers, data)
 
-    async def put_request(
+    async def put(
         self,
         path: str,
         headers: Optional[LooseHeaders] = None,
@@ -209,7 +209,7 @@ class HttpAppTester(EmptyHttpAppCallback):
     ) -> ResponseData:
         return await self.request(METH_PUT, path, headers, data)
 
-    async def delete_request(
+    async def delete(
         self,
         path: str,
         headers: Optional[LooseHeaders] = None,
@@ -233,7 +233,7 @@ class HttpAppTester(EmptyHttpAppCallback):
         assert self._password
 
         hashed_pw = hashlib.sha256(self._password.encode(encoding="utf-8")).hexdigest()
-        signup_response = await self.post_request(
+        signup_response = await self.post(
             path=get_v1_path(pv1.signup_admin),
             data=json.dumps({"id": self._username, "password": hashed_pw}),
         )
@@ -241,7 +241,7 @@ class HttpAppTester(EmptyHttpAppCallback):
             raise RuntimeError(f"Signup status error: {signup_response.status}")
 
         auth = BasicAuth(self._username, hashed_pw)
-        login_response = await self.post_request(
+        login_response = await self.post(
             path=get_v1_path(pv1.login),
             headers={AUTHORIZATION: auth.encode()},
             data=json.dumps({"id": self._username, "password": hashed_pw}),
@@ -276,7 +276,7 @@ class HttpAppTester(EmptyHttpAppCallback):
         assert self._password
 
         hashed_pw = hashlib.sha256(self._password.encode(encoding="utf-8")).hexdigest()
-        signup_response = await self.post_request(
+        signup_response = await self.post(
             path=v2_public_path(u.signup_admin),
             data=json.dumps({d.admin_id: self._username, d.admin_pwd: hashed_pw}),
         )
@@ -284,7 +284,7 @@ class HttpAppTester(EmptyHttpAppCallback):
             raise RuntimeError(f"Signup status error: {signup_response.status}")
 
         auth = BasicAuth(self._username, hashed_pw)
-        login_response = await self.post_request(
+        login_response = await self.post(
             path=v2_public_path(pv1.login),
             headers={AUTHORIZATION: auth.encode()},
         )

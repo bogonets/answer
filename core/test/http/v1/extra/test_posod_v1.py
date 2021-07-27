@@ -16,7 +16,7 @@ class PosodV1TestCase(AsyncTestCase):
         await self.tester.teardown()
 
     async def test_posod(self):
-        result = await self.tester.get_request(get_posod_v1_path("/test"))
+        result = await self.tester.get(get_posod_v1_path("/test"))
         self.assertEqual(200, result.status)
         self.assertEqual("OK", result.data["status"])
 

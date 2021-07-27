@@ -17,8 +17,8 @@ class RouterV1TestCase(AsyncTestCase):
         await self.tester.teardown()
 
     async def test_admin_login(self):
-        await self.tester.run_v1_admin_login()
-        self_response = await self.tester.get_request(v2_path(u.self))
+        await self.tester.run_v2_admin_login()
+        self_response = await self.tester.get(v2_path(u.self))
         self.assertEqual(200, self_response.status)
         self.assertIn("username", self_response.data)
 

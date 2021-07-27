@@ -21,19 +21,19 @@ class RouterV1TestCase(AsyncTestCase):
         await self.tester.teardown()
 
     async def test_ver(self):
-        core_response = await self.tester.get_request(get_v1_path(pv1.get_core_version))
+        core_response = await self.tester.get(get_v1_path(pv1.get_core_version))
         self.assertEqual(200, core_response.status)
         core_version = core_response.data["result"]["obj"]["info"]
         self.assertEqual(version_text, core_version)
 
-        api_response = await self.tester.get_request(get_v1_path(pv1.get_api_version))
+        api_response = await self.tester.get(get_v1_path(pv1.get_api_version))
         self.assertEqual(200, api_response.status)
         api_version = api_response.data["result"]["obj"]["info"]
         self.assertEqual(version_text, api_version)
 
     async def test_admin_login(self):
         await self.tester.run_v1_admin_login()
-        test_login_response = await self.tester.get_request(get_v1_path(pv1.test_login))
+        test_login_response = await self.tester.get(get_v1_path(pv1.test_login))
         self.assertEqual(200, test_login_response.status)
 
     async def test_user(self):
@@ -48,54 +48,54 @@ class RouterV1TestCase(AsyncTestCase):
 
         await self.tester.run_v1_admin_login()
 
-        user_exist_no = await self.tester.get_request(get_v1_path(path_exist_user_my))
+        user_exist_no = await self.tester.get(get_v1_path(path_exist_user_my))
         self.assertEqual(200, user_exist_no.status)
         self.assertFalse(user_exist_no.data["result"]["obj"]["findId"])
 
-        users = await self.tester.get_request(get_v1_path(pv1.get_users))
+        users = await self.tester.get(get_v1_path(pv1.get_users))
         self.assertEqual(200, users.status)
         self.assertEqual(1, len(users.data["result"]["obj"]))
         self.assertEqual("admin", users.data["result"]["obj"][0]["id"])
 
-        user_add = await self.tester.post_request(
+        user_add = await self.tester.post(
             get_v1_path(pv1.add_user),
             data=json.dumps({"id": username, "password": hashed_pw}),
         )
         self.assertEqual(200, user_add.status)
         self.assertEqual("OK", user_add.data["status"])
 
-        user_exist_yes = await self.tester.get_request(get_v1_path(path_exist_user_my))
+        user_exist_yes = await self.tester.get(get_v1_path(path_exist_user_my))
         self.assertEqual(200, user_exist_yes.status)
         self.assertTrue(user_exist_yes.data["result"]["obj"]["findId"])
 
         user_set_data = {"id": username, "email": email, "telephone": phone}
-        user_set = await self.tester.put_request(
+        user_set = await self.tester.put(
             get_v1_path(pv1.set_user),
             data=json.dumps(user_set_data),
         )
         self.assertEqual(200, user_set.status)
         self.assertEqual("OK", user_set.data["status"])
 
-        user_get = await self.tester.get_request(get_v1_path(path_get_user_my))
+        user_get = await self.tester.get(get_v1_path(path_get_user_my))
         self.assertEqual(200, user_get.status)
         self.assertEqual(email, user_get.data["result"]["obj"]["email"])
         self.assertEqual(phone, user_get.data["result"]["obj"]["telephone"])
 
-        user_del = await self.tester.delete_request(
+        user_del = await self.tester.delete(
             get_v1_path(pv1.delete_user),
             data=json.dumps({"id": username}),
         )
         self.assertEqual(200, user_del.status)
         self.assertEqual("OK", user_del.data["status"])
 
-        user_exist_no_2 = await self.tester.get_request(get_v1_path(path_exist_user_my))
+        user_exist_no_2 = await self.tester.get(get_v1_path(path_exist_user_my))
         self.assertEqual(200, user_exist_no_2.status)
         self.assertFalse(user_exist_no_2.data["result"]["obj"]["findId"])
 
     async def test_get_templates(self):
         await self.tester.run_v1_admin_login()
 
-        templates = await self.tester.get_request(get_v1_path(pv1.get_templates))
+        templates = await self.tester.get(get_v1_path(pv1.get_templates))
         self.assertEqual(200, templates.status)
         obj = templates.data["result"]["obj"]
         self.assertIsInstance(obj, list)
@@ -116,10 +116,10 @@ class RouterV1TestCase(AsyncTestCase):
 
         proj0 = "demo"
         proj0_path = pv1.create_project.format(proj=proj0)
-        proj0_result = await self.tester.post_request(get_v1_path(proj0_path))
+        proj0_result = await self.tester.post(get_v1_path(proj0_path))
         self.assertEqual(200, proj0_result.status)
 
-        result = await self.tester.get_request(get_v1_path(pv1.get_projects))
+        result = await self.tester.get(get_v1_path(pv1.get_projects))
         self.assertEqual(200, result.status)
         projects = result.data["result"]["obj"]
         self.assertIsInstance(projects, list)
@@ -132,30 +132,30 @@ class RouterV1TestCase(AsyncTestCase):
 
         proj0 = "__demo__"
         proj0_path = pv1.create_project.format(proj=proj0)
-        proj0_result = await self.tester.post_request(get_v1_path(proj0_path))
+        proj0_result = await self.tester.post(get_v1_path(proj0_path))
         self.assertEqual(200, proj0_result.status)
 
         set_proj_graph_path = pv1.set_proj_graph.format(proj=proj0)
         set_proj_graph_request_data = read_sample("set_graph.numpy2.json")
-        set_proj_graph_result = await self.tester.post_request(
+        set_proj_graph_result = await self.tester.post(
             get_v1_path(set_proj_graph_path), data=set_proj_graph_request_data
         )
         self.assertEqual(200, set_proj_graph_result.status)
 
         get_proj_graph_path = pv1.get_proj_graph.format(proj=proj0)
-        get_proj_graph_result = await self.tester.get_request(
+        get_proj_graph_result = await self.tester.get(
             get_v1_path(get_proj_graph_path)
         )
         self.assertEqual(200, get_proj_graph_result.status)
 
         get_proj_graph_status_path = pv1.get_proj_graph_status.format(proj=proj0)
-        get_proj_graph_status_result = await self.tester.get_request(
+        get_proj_graph_status_result = await self.tester.get(
             get_v1_path(get_proj_graph_status_path)
         )
         self.assertEqual(200, get_proj_graph_status_result.status)
 
         stop_proj_task_path = pv1.stop_proj_task.format(proj=proj0, task="Task")
-        result = await self.tester.post_request(get_v1_path(stop_proj_task_path))
+        result = await self.tester.post(get_v1_path(stop_proj_task_path))
         self.assertEqual(200, result.status)
 
 

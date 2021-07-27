@@ -18,16 +18,16 @@ class RouterV1TestCase(AsyncTestCase):
         await self.tester.teardown()
 
     async def test_heartbeat(self):
-        response = await self.tester.get_request(v2_public_path(u.heartbeat))
+        response = await self.tester.get(v2_public_path(u.heartbeat))
         self.assertEqual(200, response.status)
 
     async def test_version(self):
-        response = await self.tester.get_request(v2_public_path(u.version))
+        response = await self.tester.get(v2_public_path(u.version))
         self.assertEqual(200, response.status)
         self.assertEqual(version_text, response.data)
 
     async def test_test_init(self):
-        response = await self.tester.get_request(v2_public_path(u.test_init))
+        response = await self.tester.get(v2_public_path(u.test_init))
         self.assertEqual(520, response.status)
 
 

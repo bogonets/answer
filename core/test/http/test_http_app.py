@@ -16,11 +16,11 @@ class HttpAppTestCase(AsyncTestCase):
         await self.tester.teardown()
 
     async def test_heartbeat(self):
-        result = await self.tester.get_request(u.api_heartbeat)
+        result = await self.tester.get(u.api_heartbeat)
         self.assertEqual(200, result.status)
 
     async def test_version(self):
-        result = await self.tester.get_request(u.api_version)
+        result = await self.tester.get(u.api_version)
         self.assertEqual(200, result.status)
         self.assertEqual(version_text, result.data)
 
