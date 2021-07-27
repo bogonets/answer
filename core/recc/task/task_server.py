@@ -9,6 +9,7 @@ from recc.init.default import (
     init_logger,
     init_json_driver,
     init_xml_driver,
+    init_yaml_driver,
     init_loop_driver,
 )
 from recc.log.logging import recc_rpc_logger as logger
@@ -167,6 +168,7 @@ def run_task_until_complete(config: TaskConfig) -> int:
         init_logger(config.log_config, config.log_level)
         init_json_driver(config.json_driver)
         init_xml_driver(config.xml_driver)
+        init_yaml_driver(config.yaml_driver)
         init_loop_driver(config.loop_driver)
 
         asyncio.run(run_task_server(config))

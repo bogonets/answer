@@ -19,9 +19,9 @@ _global_yaml_encoder: YamlEncoder = recc_yaml_encoder
 _global_yaml_decoder: YamlDecoder = recc_yaml_decoder
 
 
-def install_yaml_driver() -> bool:
+def install_pyyaml_driver() -> bool:
     """
-    Install yaml driver.
+    Install PyYaml driver.
     """
 
     try:
@@ -31,7 +31,7 @@ def install_yaml_driver() -> bool:
         global _global_yaml_decoder
 
         def yaml_encoder(data: Any) -> str:
-            return yaml.dump_all(data)
+            return yaml.dump(data)
 
         def yaml_decoder(data: str) -> Any:
             return yaml.full_load(data)
@@ -52,4 +52,4 @@ def global_yaml_decoder(data: str) -> Any:
     return _global_yaml_decoder(data)
 
 
-install_yaml_driver()
+install_pyyaml_driver()

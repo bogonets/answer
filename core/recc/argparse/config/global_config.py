@@ -20,8 +20,9 @@ LOOP_DRIVER_UV = "uv"
 JSON_DRIVER_JSON = "json"
 JSON_DRIVER_ORJSON = "orjson"
 
-XML_DRIVER_RECC = "recc"
 XML_DRIVER_XMLTODICT = "xmltodict"
+
+YAML_DRIVER_PYYAML = "pyyaml"
 
 LOG_LEVELS = (
     SEVERITY_NAME_CRITICAL,
@@ -50,6 +51,7 @@ class GlobalConfig(Namespace):
     loop_driver: str
     json_driver: str
     xml_driver: str
+    yaml_driver: str
 
     suppress_print: bool
     verbose: int
@@ -127,9 +129,16 @@ ARG_JSON_DRIVER = Argument(
 ARG_XML_DRIVER = Argument(
     key="--xml-driver",
     last_injection_value=XML_DRIVER_XMLTODICT,
-    choices=(XML_DRIVER_RECC, XML_DRIVER_XMLTODICT),
+    choices=(XML_DRIVER_XMLTODICT,),
     help="XML encoder/decoder driver.",
 )
+ARG_YAML_DRIVER = Argument(
+    key="--yaml-driver",
+    last_injection_value=YAML_DRIVER_PYYAML,
+    choices=(YAML_DRIVER_PYYAML,),
+    help="YAML encoder/decoder driver.",
+)
+
 
 ARG_SUPPRESS_PRINT = Argument(
     key="--suppress-print",
@@ -171,6 +180,7 @@ GLOBAL_ARGS = (
     ARG_LOOP_DRIVER,
     ARG_JSON_DRIVER,
     ARG_XML_DRIVER,
+    ARG_YAML_DRIVER,
     ARG_SUPPRESS_PRINT,
     ARG_VERBOSE,
     ARG_TEARDOWN,
