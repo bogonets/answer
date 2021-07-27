@@ -32,9 +32,9 @@ from recc.http.v1.common import (
 )
 from recc.log.logging import recc_http_logger as logger
 from recc.session.session import Session
-from recc.struct.project import Project
-from recc.struct.layout import Layout
-from recc.struct.user import User
+from recc.database.struct.project import Project
+from recc.database.struct.layout import Layout
+from recc.database.struct.user import User
 from recc.driver.json import global_json_encoder, global_json_decoder
 from recc.util.version import version_text
 from recc.variables.database import ANONYMOUS_GROUP_NAME

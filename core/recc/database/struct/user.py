@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Dict, Any
+from typing import Optional, Any
 from datetime import datetime
-from recc.struct._structure import _Structure
+from recc.struct.structure_base import StructureBase
 
 
 class PassInfo:
@@ -18,7 +18,7 @@ class PassInfo:
             self.salt = salt
 
 
-class User(_Structure):
+class User(StructureBase):
     def __init__(
         self,
         uid: Optional[int] = None,
@@ -33,7 +33,6 @@ class User(_Structure):
         created_at: Optional[datetime] = None,
         updated_at: Optional[datetime] = None,
         last_login: Optional[datetime] = None,
-        **kwargs,
     ):
         self.uid = uid
         self.username = username
@@ -47,12 +46,8 @@ class User(_Structure):
         self.created_at = created_at
         self.updated_at = updated_at
         self.last_login = last_login
-        self.kwargs: Optional[Dict[str, Any]] = kwargs
 
     def remove_sensitive_infos(self):
         self.uid = None
         self.password = None
         self.salt = None
-
-    def remove_unnecessary_infos(self):
-        self.kwargs = None

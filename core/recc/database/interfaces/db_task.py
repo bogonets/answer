@@ -3,7 +3,7 @@
 from typing import Any, Optional, List, Dict
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from recc.struct.task import Task
+from recc.database.struct.task import Task
 
 
 class DbTask(metaclass=ABCMeta):

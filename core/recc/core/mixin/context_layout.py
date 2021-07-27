@@ -3,7 +3,7 @@
 from typing import List, Optional, Any
 from recc.session.session import Session
 from recc.core.mixin.context_base import ContextBase
-from recc.struct.layout import Layout
+from recc.database.struct.layout import Layout
 
 
 class ContextLayout(ContextBase):

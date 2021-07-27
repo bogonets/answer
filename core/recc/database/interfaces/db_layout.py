@@ -3,7 +3,7 @@
 from typing import Any, Optional, List
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from recc.struct.layout import Layout
+from recc.database.struct.layout import Layout
 
 
 class DbLayout(metaclass=ABCMeta):

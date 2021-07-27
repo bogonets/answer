@@ -3,7 +3,7 @@
 from typing import Any, Optional, List
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from recc.struct.widget import Widget
+from recc.database.struct.widget import Widget
 
 
 class DbWidget(metaclass=ABCMeta):

@@ -3,7 +3,7 @@
 from typing import List
 from recc.session.session import Session
 from recc.core.mixin.context_base import ContextBase
-from recc.struct.project import Project
+from recc.database.struct.project import Project
 
 
 class ContextProject(ContextBase):

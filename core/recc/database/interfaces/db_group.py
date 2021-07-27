@@ -3,7 +3,7 @@
 from typing import Any, Optional, List
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from recc.struct.group import Group
+from recc.database.struct.group import Group
 
 
 class DbGroup(metaclass=ABCMeta):

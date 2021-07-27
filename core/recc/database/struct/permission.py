@@ -2,10 +2,10 @@
 
 from typing import Optional, Any
 from datetime import datetime
-from recc.struct._structure import _Structure
+from recc.struct.structure_base import StructureBase
 
 
-class Permission(_Structure):
+class Permission(StructureBase):
     def __init__(
         self,
         uid: Optional[int] = None,
@@ -26,7 +26,6 @@ class Permission(_Structure):
         w_setting: Optional[bool] = None,
         created_at: Optional[datetime] = None,
         updated_at: Optional[datetime] = None,
-        **kwargs,
     ):
         self.uid = uid
         self.name = name
@@ -46,4 +45,3 @@ class Permission(_Structure):
         self.w_setting = w_setting
         self.created_at = created_at
         self.updated_at = updated_at
-        self.kwargs = kwargs

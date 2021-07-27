@@ -2,7 +2,7 @@
 
 from typing import List
 from abc import ABCMeta, abstractmethod
-from recc.struct.group_member import GroupMember
+from recc.database.struct.group_member import GroupMember
 
 
 class DbGroupMember(metaclass=ABCMeta):

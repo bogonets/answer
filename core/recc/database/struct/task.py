@@ -2,10 +2,10 @@
 
 from typing import Optional, Dict, Any
 from datetime import datetime
-from recc.struct._structure import _Structure
+from recc.struct.structure_base import StructureBase
 
 
-class Task(_Structure):
+class Task(StructureBase):
     def __init__(
         self,
         uid: Optional[int] = None,
@@ -23,7 +23,6 @@ class Task(_Structure):
         publish_ports: Optional[Dict[str, Any]] = None,
         created_at: Optional[datetime] = None,
         updated_at: Optional[datetime] = None,
-        **kwargs,
     ):
         self.uid = uid
         self.project_uid = project_uid
@@ -40,4 +39,3 @@ class Task(_Structure):
         self.publish_ports = publish_ports
         self.created_at = created_at
         self.updated_at = updated_at
-        self.kwargs = kwargs

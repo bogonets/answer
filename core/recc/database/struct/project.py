@@ -2,10 +2,10 @@
 
 from typing import Optional, Any
 from datetime import datetime
-from recc.struct._structure import _Structure
+from recc.struct.structure_base import StructureBase
 
 
-class Project(_Structure):
+class Project(StructureBase):
     def __init__(
         self,
         uid: Optional[int] = None,
@@ -15,7 +15,6 @@ class Project(_Structure):
         extra: Optional[Any] = None,
         created_at: Optional[datetime] = None,
         updated_at: Optional[datetime] = None,
-        **kwargs,
     ):
         self.uid = uid
         self.group_uid = group_uid
@@ -24,4 +23,3 @@ class Project(_Structure):
         self.extra = extra
         self.created_at = created_at
         self.updated_at = updated_at
-        self.kwargs = kwargs

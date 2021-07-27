@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 
-class _Structure:
+class StructureBase:
     """
-    Common structure.
+    Base of Structure.
     """
 
     def __eq__(self, other) -> bool:

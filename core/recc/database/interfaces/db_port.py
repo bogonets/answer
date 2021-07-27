@@ -3,7 +3,7 @@
 from typing import Any, Optional, List
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from recc.struct.port import Port
+from recc.database.struct.port import Port
 
 
 class DbPort(metaclass=ABCMeta):

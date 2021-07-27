@@ -3,7 +3,7 @@
 from typing import Any, Optional, List
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from recc.struct.project import Project
+from recc.database.struct.project import Project
 
 
 class DbProject(metaclass=ABCMeta):

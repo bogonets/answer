@@ -3,7 +3,7 @@
 from typing import Any, Optional, List
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from recc.struct.permission import Permission
+from recc.database.struct.permission import Permission
 
 
 class DbPermission(metaclass=ABCMeta):

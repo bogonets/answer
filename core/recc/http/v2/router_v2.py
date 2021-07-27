@@ -89,7 +89,6 @@ class RouterV2:
 
         user = await self.context.get_self(session)
         user.remove_sensitive_infos()
-        user.remove_unnecessary_infos()
         user_dict = serialize_default(user)
         return web.json_response(user_dict)
 

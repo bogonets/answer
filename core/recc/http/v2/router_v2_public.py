@@ -111,7 +111,6 @@ class RouterV2Public:
 
             access, refresh, user = login
             user.remove_sensitive_infos()
-            user.remove_unnecessary_infos()
             user_dict = serialize_default(user)
             result = {d.access: access, d.refresh: refresh, d.user: user_dict}
             return web.json_response(result)

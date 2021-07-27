@@ -2,10 +2,9 @@
 
 import os
 from typing import Optional, List, Tuple, Any
-
 from recc.crypto.password import encrypt_password
 from recc.session.session import Session
-from recc.struct.user import User
+from recc.database.struct.user import User
 from recc.core.mixin.context_base import ContextBase
 from recc.variables.database import (
     PASSWORD_HEX_STR_SIZE,

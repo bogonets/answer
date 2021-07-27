@@ -4,7 +4,7 @@ from typing import List
 from overrides import overrides
 from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
-from recc.struct.group_member import GroupMember
+from recc.database.struct.group_member import GroupMember
 from recc.database.interfaces.db_group_member import DbGroupMember
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.group_member import (

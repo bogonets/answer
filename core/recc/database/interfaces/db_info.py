@@ -3,7 +3,7 @@
 from typing import List
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from recc.struct.info import Info
+from recc.database.struct.info import Info
 
 
 class DbInfo(metaclass=ABCMeta):

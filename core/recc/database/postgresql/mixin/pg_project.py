@@ -5,7 +5,7 @@ from datetime import datetime
 from overrides import overrides
 from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
-from recc.struct.project import Project
+from recc.database.struct.project import Project
 from recc.database.interfaces.db_project import DbProject
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.project import (

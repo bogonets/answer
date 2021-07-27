@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import Optional, Any
 from datetime import datetime
-from recc.struct._structure import _Structure
+from recc.struct.structure_base import StructureBase
 
 
 class WidgetState(Enum):
@@ -11,7 +11,7 @@ class WidgetState(Enum):
     ENABLE = 1
 
 
-class Widget(_Structure):
+class Widget(StructureBase):
     def __init__(
         self,
         uid: Optional[int] = None,
@@ -27,7 +27,6 @@ class Widget(_Structure):
         z_order: Optional[int] = None,
         created_at: Optional[datetime] = None,
         updated_at: Optional[datetime] = None,
-        **kwargs,
     ):
         self.uid = uid
         self.layout_uid = layout_uid
@@ -42,14 +41,3 @@ class Widget(_Structure):
         self.z_order = z_order
         self.created_at = created_at
         self.updated_at = updated_at
-        self.kwargs = kwargs
-
-    # def is_disable_state(self) -> bool:
-    #     if self.state is None:
-    #         return True
-    #     return self.state == WidgetState.DISABLE
-    #
-    # def is_enable_state(self) -> bool:
-    #     if self.state is None:
-    #         return False
-    #     return self.state == WidgetState.ENABLE
