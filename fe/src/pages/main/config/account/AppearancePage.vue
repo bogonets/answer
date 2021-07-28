@@ -135,7 +135,7 @@ export default class AppearancePage extends VueBase {
   }
 
   saveUserExtra() {
-    this.$api2.putSelfExtra(this.extra)
+    this.$api2.postSelfExtra(this.extra)
         .then(() => {
           console.debug('Upload user information to a remote server.');
         })

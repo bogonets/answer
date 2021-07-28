@@ -29,7 +29,7 @@ from recc.http.http_interface import EmptyHttpAppCallback
 from recc.http.http_vars import DEFAULT_SCHEME, URL_PATH_SEPARATOR
 from recc.http.http_app import HttpApp
 from recc.http.http_utils import v2_public_path
-from recc.http import http_dict_keys as d
+from recc.http import http_data_keys as d
 from recc.http import http_urls as u
 from recc.core.context import Context
 from recc.variables.http import TEST_HTTP_PORT

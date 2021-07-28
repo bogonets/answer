@@ -21,7 +21,7 @@ v2 = "/v2"
 
 # Depth 3rd.
 admin = "/admin"
-config = "/config"
+configs = "/configs"
 extra = "/extra"
 heartbeat = "/heartbeat"
 init = "/init"
@@ -30,7 +30,7 @@ public = "/public"
 self = "/self"
 signup = "/signup"
 test = "/test"
-user = "/user"
+users = "/users"
 version = "/version"
 
 
@@ -41,6 +41,7 @@ def _param_path(key: str) -> str:
 # Params (Use the prefix 'p')
 pkey = _param_path(p.key)
 pproject = _param_path(p.project)
+puser = _param_path(p.user)
 
 # Mixin for ROOT
 api_v1 = api + v1
@@ -50,7 +51,8 @@ api_v2_public = api + v2 + public
 # Mixin
 api_version = api + version
 api_heartbeat = api + heartbeat
-config_pkey = config + pkey
+configs_pkey = configs + pkey
 self_extra = self + extra
 signup_admin = signup + admin
+users_puser = users + puser
 test_init = test + init

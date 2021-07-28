@@ -71,9 +71,7 @@ objs
 orjson
 osom
 outname
-pkey
 posod
-pproject
 proj
 projname
 pycache
@@ -105,6 +103,12 @@ websocket
 xmltodict
 yamlparse
 zoneinfo
+
+# Parameter prefix ('p')
+
+pkey
+pproject
+puser
 
 # Display resolution
 

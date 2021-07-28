@@ -215,8 +215,8 @@ export default class ApiV2 {
             });
     }
 
-    putSelfExtra(extra: Extra) {
-        return this.api.put('/self/extra', extra)
+    postSelfExtra(extra: Extra) {
+        return this.api.post('/self/extra', extra)
             .then((response: AxiosResponse) => {
                 if (response.status !== 200) {
                     throw new ApiV2StatusError(response);

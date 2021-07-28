@@ -17,7 +17,7 @@ from recc.http.http_errors import (
     HTTPReccAlreadyInitializedError,
 )
 from recc.http.header.basic_auth import BasicAuth
-from recc.http import http_dict_keys as d
+from recc.http import http_data_keys as d
 from recc.http import http_urls as u
 from recc.util.version import version_text
 
