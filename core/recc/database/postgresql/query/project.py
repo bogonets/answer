@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
+from typing import Any, List, Optional
 from recc.variables.database import TABLE_GROUP, TABLE_PROJECT
+from recc.database.query_builder import UpdateBuilder, BuildResult
 
 
 ##########
@@ -53,6 +56,28 @@ UPDATE {TABLE_PROJECT}
 SET features=$3, updated_at=$4
 WHERE group_uid=$1 AND name LIKE $2;
 """
+
+
+def get_update_project_query_by_uid(
+    uid: Optional[int] = None,
+    name: Optional[str] = None,
+    description: Optional[str] = None,
+    features: Optional[List[str]] = None,
+    extra: Optional[Any] = None,
+    updated_at: Optional[datetime] = None,
+) -> BuildResult:
+    assert updated_at is not None
+    builder = UpdateBuilder(
+        if_none_skip=True,
+        name=name,
+        description=description,
+        features=features,
+        extra=extra,
+        updated_at=updated_at,
+    )
+    builder.where().eq(uid=uid)
+    return builder.build(TABLE_PROJECT)
+
 
 ##########
 # DELETE #

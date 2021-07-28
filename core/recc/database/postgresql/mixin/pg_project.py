@@ -23,6 +23,7 @@ from recc.database.postgresql.query.project import (
     SELECT_PROJECT_BY_GROUP_ID,
     SELECT_PROJECT_BY_FULLPATH,
     SELECT_PROJECT_UID_BY_FULLPATH,
+    get_update_project_query_by_uid,
 )
 
 
@@ -105,6 +106,28 @@ class PgProject(DbProject, PgBase):
         await self.execute(query, group_uid, name, features, updated_at)
         params_msg = f"group_uid={group_uid},name={name}"
         logger.info(f"update_project_features_by_name({params_msg}) ok.")
+
+    @overrides
+    async def update_project_by_uid(
+        self,
+        uid: Optional[int] = None,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        features: Optional[List[str]] = None,
+        extra: Optional[Any] = None,
+        updated_at: Optional[datetime] = None,
+    ) -> None:
+        query, args = get_update_project_query_by_uid(
+            uid=uid,
+            name=name,
+            description=description,
+            features=features,
+            extra=extra,
+            updated_at=updated_at,
+        )
+        await self.execute(query, *args)
+        params_msg = f"uid={uid}"
+        logger.info(f"update_project_by_uid({params_msg}) ok.")
 
     @overrides
     async def delete_project_by_uid(self, uid: int) -> None:

@@ -64,6 +64,18 @@ class DbProject(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def update_project_by_uid(
+        self,
+        uid: Optional[int] = None,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        features: Optional[List[str]] = None,
+        extra: Optional[Any] = None,
+        updated_at: Optional[datetime] = None,
+    ) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def delete_project_by_uid(self, uid: int) -> None:
         raise NotImplementedError
 
