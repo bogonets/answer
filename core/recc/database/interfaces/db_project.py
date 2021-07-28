@@ -17,6 +17,7 @@ class DbProject(metaclass=ABCMeta):
         group_uid: int,
         name: str,
         description: Optional[str] = None,
+        features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
     ) -> None:
@@ -43,6 +44,22 @@ class DbProject(metaclass=ABCMeta):
     @abstractmethod
     async def update_project_extra_by_name(
         self, group_uid: int, name: str, extra: Any, updated_at=datetime.utcnow()
+    ) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def update_project_features_by_uid(
+        self, uid: int, features: Any, updated_at=datetime.utcnow()
+    ) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def update_project_features_by_name(
+        self,
+        group_uid: int,
+        name: str,
+        features: List[str],
+        updated_at=datetime.utcnow(),
     ) -> None:
         raise NotImplementedError
 

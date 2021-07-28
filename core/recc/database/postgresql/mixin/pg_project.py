@@ -14,6 +14,8 @@ from recc.database.postgresql.query.project import (
     UPDATE_PROJECT_DESCRIPTION_BY_GROUP_UID_AND_NAME,
     UPDATE_PROJECT_EXTRA_BY_UID,
     UPDATE_PROJECT_EXTRA_BY_GROUP_UID_AND_NAME,
+    UPDATE_PROJECT_FEATURES_BY_UID,
+    UPDATE_PROJECT_FEATURES_BY_GROUP_UID_AND_NAME,
     DELETE_PROJECT_BY_UID,
     DELETE_PROJECT_BY_GROUP_UID_AND_NAME,
     SELECT_PROJECT_BY_UID,
@@ -31,11 +33,20 @@ class PgProject(DbProject, PgBase):
         group_uid: int,
         name: str,
         description: Optional[str] = None,
+        features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
     ) -> None:
         query = INSERT_PROJECT
-        await self.execute(query, group_uid, name, description, extra, created_at)
+        await self.execute(
+            query,
+            group_uid,
+            name,
+            description,
+            features,
+            extra,
+            created_at,
+        )
         params_msg = f"group_uid={group_uid},name={name}"
         logger.info(f"create_project({params_msg}) ok.")
 
@@ -73,6 +84,27 @@ class PgProject(DbProject, PgBase):
         await self.execute(query, group_uid, name, extra, updated_at)
         params_msg = f"group_uid={group_uid},name={name}"
         logger.info(f"update_project_extra_by_name({params_msg}) ok.")
+
+    @overrides
+    async def update_project_features_by_uid(
+        self, uid: int, features: Any, updated_at=datetime.utcnow()
+    ) -> None:
+        query = UPDATE_PROJECT_FEATURES_BY_UID
+        await self.execute(query, uid, features, updated_at)
+        logger.info(f"update_project_features_by_uid(uid={uid}) ok.")
+
+    @overrides
+    async def update_project_features_by_name(
+        self,
+        group_uid: int,
+        name: str,
+        features: List[str],
+        updated_at=datetime.utcnow(),
+    ) -> None:
+        query = UPDATE_PROJECT_FEATURES_BY_GROUP_UID_AND_NAME
+        await self.execute(query, group_uid, name, features, updated_at)
+        params_msg = f"group_uid={group_uid},name={name}"
+        logger.info(f"update_project_features_by_name({params_msg}) ok.")
 
     @overrides
     async def delete_project_by_uid(self, uid: int) -> None:

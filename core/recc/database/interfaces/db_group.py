@@ -16,6 +16,7 @@ class DbGroup(metaclass=ABCMeta):
         self,
         name: str,
         description: Optional[str] = None,
+        features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
     ) -> None:
@@ -42,6 +43,18 @@ class DbGroup(metaclass=ABCMeta):
     @abstractmethod
     async def update_group_extra_by_name(
         self, name: str, extra: Any, updated_at=datetime.utcnow()
+    ) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def update_group_features_by_uid(
+        self, uid: int, features: List[str], updated_at=datetime.utcnow()
+    ) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def update_group_features_by_name(
+        self, name: str, features: List[str], updated_at=datetime.utcnow()
     ) -> None:
         raise NotImplementedError
 

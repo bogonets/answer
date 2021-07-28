@@ -44,6 +44,8 @@ class PgProjectTestCase(PostgresqlTestCase):
         self.assertEqual(name2, project2.name)
         self.assertIsNone(project1.description)
         self.assertIsNone(project2.description)
+        self.assertIsNone(project1.features)
+        self.assertIsNone(project2.features)
         self.assertIsNone(project1.extra)
         self.assertIsNone(project2.extra)
         self.assertEqual(created_at1, project1.created_at)
@@ -130,6 +132,26 @@ class PgProjectTestCase(PostgresqlTestCase):
 
         projects2 = await self.db.get_project_by_group_uid(self.group.uid)
         self.assertEqual(0, len(projects2))
+
+    async def test_features(self):
+        name = "project1"
+        features1 = ["a", "b"]
+        await self.db.create_project(self.group.uid, name, features=features1)
+        project1 = await self.db.get_project_by_name(self.group.uid, name)
+
+        self.assertEqual(self.group.uid, project1.group_uid)
+        self.assertEqual(name, project1.name)
+        self.assertEqual(features1, project1.features)
+
+        features2 = ["c", "d", "e"]
+        await self.db.update_project_features_by_uid(project1.uid, features2)
+        project2 = await self.db.get_project_by_name(self.group.uid, name)
+        self.assertEqual(features2, project2.features)
+
+        features3 = ["f"]
+        await self.db.update_project_features_by_name(self.group.uid, name, features3)
+        project3 = await self.db.get_project_by_name(self.group.uid, name)
+        self.assertEqual(features3, project3.features)
 
 
 if __name__ == "__main__":

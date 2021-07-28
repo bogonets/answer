@@ -9,9 +9,9 @@ from recc.variables.database import TABLE_GROUP, TABLE_PROJECT
 
 INSERT_PROJECT = f"""
 INSERT INTO {TABLE_PROJECT}
-    (group_uid, name, description, extra, created_at)
+    (group_uid, name, description, features, extra, created_at)
 VALUES
-    ($1, $2, $3, $4, $5);
+    ($1, $2, $3, $4, $5, $6);
 """
 
 ##########
@@ -39,6 +39,18 @@ WHERE uid=$1;
 UPDATE_PROJECT_EXTRA_BY_GROUP_UID_AND_NAME = f"""
 UPDATE {TABLE_PROJECT}
 SET extra=$3, updated_at=$4
+WHERE group_uid=$1 AND name LIKE $2;
+"""
+
+UPDATE_PROJECT_FEATURES_BY_UID = f"""
+UPDATE {TABLE_PROJECT}
+SET features=$2, updated_at=$3
+WHERE uid=$1;
+"""
+
+UPDATE_PROJECT_FEATURES_BY_GROUP_UID_AND_NAME = f"""
+UPDATE {TABLE_PROJECT}
+SET features=$3, updated_at=$4
 WHERE group_uid=$1 AND name LIKE $2;
 """
 

@@ -27,6 +27,8 @@ class PgGroupTestCase(PostgresqlTestCase):
         self.assertEqual(name2, group2.name)
         self.assertEqual(desc1, group1.description)
         self.assertEqual(desc2, group2.description)
+        self.assertIsNone(group1.features)
+        self.assertIsNone(group2.features)
         self.assertEqual(created_at1, group1.created_at)
         self.assertEqual(created_at2, group2.created_at)
         self.assertIsNone(group1.extra)
@@ -107,6 +109,24 @@ class PgGroupTestCase(PostgresqlTestCase):
         groups2_ids = [g.uid for g in groups2]
         self.assertEqual(1, len(groups2_ids))
         self.assertIn(self.anonymous_group_uid, groups2_ids)
+
+    async def test_features(self):
+        name1 = "group1"
+        features1 = ["a", "b"]
+        await self.db.create_group(name1, features=features1)
+        group1 = await self.db.get_group_by_name(name1)
+        self.assertEqual(name1, group1.name)
+        self.assertEqual(features1, group1.features)
+
+        features2 = ["c", "d", "e"]
+        await self.db.update_group_features_by_uid(group1.uid, features2)
+        group2 = await self.db.get_group_by_name(name1)
+        self.assertEqual(features2, group2.features)
+
+        features3 = ["f"]
+        await self.db.update_group_features_by_name(name1, features3)
+        group3 = await self.db.get_group_by_name(name1)
+        self.assertEqual(features3, group3.features)
 
 
 if __name__ == "__main__":

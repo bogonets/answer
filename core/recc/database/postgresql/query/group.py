@@ -25,9 +25,9 @@ WHERE
 
 INSERT_GROUP = f"""
 INSERT INTO {TABLE_GROUP}
-    (name, description, extra, created_at)
+    (name, description, features, extra, created_at)
 VALUES
-    ($1, $2, $3, $4);
+    ($1, $2, $3, $4, $5);
 """
 
 ##########
@@ -58,6 +58,18 @@ SET extra=$2, updated_at=$3
 WHERE name LIKE $1;
 """
 
+UPDATE_GROUP_FEATURES_BY_UID = f"""
+UPDATE {TABLE_GROUP}
+SET features=$2, updated_at=$3
+WHERE uid=$1;
+"""
+
+UPDATE_GROUP_FEATURES_BY_NAME = f"""
+UPDATE {TABLE_GROUP}
+SET features=$2, updated_at=$3
+WHERE name LIKE $1;
+"""
+
 ##########
 # DELETE #
 ##########
@@ -83,18 +95,18 @@ WHERE name LIKE '{ANONYMOUS_GROUP_NAME}';
 """
 
 SELECT_GROUP_BY_UID = f"""
-SELECT name, description, extra, created_at, updated_at
+SELECT *
 FROM {TABLE_GROUP}
 WHERE uid=$1;
 """
 
 SELECT_GROUP_BY_NAME = f"""
-SELECT uid, description, extra, created_at, updated_at
+SELECT *
 FROM {TABLE_GROUP}
 WHERE name LIKE $1;
 """
 
 SELECT_GROUP_ALL = f"""
-SELECT uid, name, description, extra, created_at, updated_at
+SELECT *
 FROM {TABLE_GROUP};
 """

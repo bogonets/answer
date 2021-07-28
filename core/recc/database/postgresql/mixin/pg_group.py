@@ -14,6 +14,8 @@ from recc.database.postgresql.query.group import (
     UPDATE_GROUP_DESCRIPTION_BY_NAME,
     UPDATE_GROUP_EXTRA_BY_UID,
     UPDATE_GROUP_EXTRA_BY_NAME,
+    UPDATE_GROUP_FEATURES_BY_UID,
+    UPDATE_GROUP_FEATURES_BY_NAME,
     DELETE_GROUP_BY_UID,
     DELETE_GROUP_BY_NAME,
     SELECT_GROUP_BY_UID,
@@ -28,11 +30,12 @@ class PgGroup(DbGroup, PgBase):
         self,
         name: str,
         description: Optional[str] = None,
+        features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
     ) -> None:
         query = INSERT_GROUP
-        await self.execute(query, name, description, extra, created_at)
+        await self.execute(query, name, description, features, extra, created_at)
         params_msg = f"name={name}"
         logger.info(f"create_group({params_msg}) ok.")
 
@@ -73,6 +76,24 @@ class PgGroup(DbGroup, PgBase):
         logger.info(f"update_group_extra_by_name({params_msg}) ok.")
 
     @overrides
+    async def update_group_features_by_uid(
+        self, uid: int, features: List[str], updated_at=datetime.utcnow()
+    ) -> None:
+        query = UPDATE_GROUP_FEATURES_BY_UID
+        await self.execute(query, uid, features, updated_at)
+        params_msg = f"uid={uid}"
+        logger.info(f"update_group_features_by_uid({params_msg}) ok.")
+
+    @overrides
+    async def update_group_features_by_name(
+        self, name: str, features: List[str], updated_at=datetime.utcnow()
+    ) -> None:
+        query = UPDATE_GROUP_FEATURES_BY_NAME
+        await self.execute(query, name, features, updated_at)
+        params_msg = f"name={name}"
+        logger.info(f"update_group_features_by_name({params_msg}) ok.")
+
+    @overrides
     async def delete_group_by_uid(self, uid: int) -> None:
         query = DELETE_GROUP_BY_UID
         await self.execute(query, uid)
@@ -93,7 +114,6 @@ class PgGroup(DbGroup, PgBase):
         params_msg = f"uid={uid}"
         if not row:
             raise ReccNotFoundError(f"Not found group: {params_msg}")
-        assert len(row) == 5
         result = Group(**dict(row))
         result.uid = uid
         logger.info(f"get_group_by_uid({params_msg}) ok.")
@@ -106,7 +126,6 @@ class PgGroup(DbGroup, PgBase):
         params_msg = f"name={name}"
         if not row:
             raise ReccNotFoundError(f"Not found group: {params_msg}")
-        assert len(row) == 5
         result = Group(**dict(row))
         result.name = name
         logger.info(f"get_group_by_name({params_msg}) ok.")
