@@ -26,7 +26,7 @@ class ContextProject(ContextBase):
             project.uid, user.uid, maintainer_permission_uid
         )
 
-    async def delete_global_project(
+    async def delete_project(
         self, session: Session, group_name: str, project_name: str
     ) -> None:
         user = await self.database.get_user_by_username(session.audience)

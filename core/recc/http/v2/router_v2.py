@@ -20,6 +20,8 @@ from recc.http import http_header_keys as h
 from recc.http import http_path_keys as p
 from recc.http import http_urls as u
 
+from recc.variables.database import ANONYMOUS_GROUP_NAME
+
 
 class RouterV2:
     """
@@ -83,12 +85,20 @@ class RouterV2:
             web.get(u.users_puser, self.get_users_puser),
             web.patch(u.users_puser, self.patch_users_puser),
             web.delete(u.users_puser, self.delete_users_puser),
+
+            # projects
+            web.get(u.projects, self.get_projects),
+            web.post(u.projects, self.post_projects),
+            # anonymous projects
+            web.get(u.projects_pproject, self.get_projects_pproject),
+            web.patch(u.projects_pproject, self.patch_projects_pproject),
+            web.delete(u.projects_pproject, self.delete_projects_pproject),
         ]
         # fmt: on
 
-    # ---------------
-    # API v2 handlers
-    # ---------------
+    # ----
+    # Self
+    # ----
 
     async def get_self(self, request: Request) -> Response:
         session = request[h.session]
@@ -117,6 +127,10 @@ class RouterV2:
         await self.context.update_user(audience, extra=extra)
         return Response()
 
+    # -------
+    # Configs
+    # -------
+
     async def get_configs(self, request: Request) -> Response:
         session = request[h.session]
         audience = session.audience
@@ -144,7 +158,8 @@ class RouterV2:
         if val is None:
             raise HTTPBadRequest(reason=f"Not exists `{d.val}`")
 
-        logger.info(f"post_configs(session={audience}) config(key={key},val={val})")
+        logging_msg = f"{{{d.key}={key},{d.val}={val}}}"
+        logger.info(f"post_configs(session={audience}) {logging_msg}")
 
         session_user = await self.context.get_self(session)
         if not session_user.is_admin:
@@ -170,6 +185,10 @@ class RouterV2:
             logger.exception(e)
             raise HTTPNotFound(reason=f"Not found config: {key}")
 
+    # -----
+    # Users
+    # -----
+
     async def get_users(self, request: Request) -> Response:
         session = request[h.session]
         audience = session.audience
@@ -189,7 +208,7 @@ class RouterV2:
         session = request[h.session]
         audience = session.audience
         username = request.match_info[p.user]
-        logger.info(f"get_users_puser(session={audience},username={username})")
+        logger.info(f"get_users_puser(session={audience},{p.user}={username})")
 
         user = await self.context.get_user(session, username)
         user_dict = serialize_default(user)
@@ -199,13 +218,89 @@ class RouterV2:
         session = request[h.session]
         audience = session.audience
         username = request.match_info[p.user]
-        logger.info(f"patch_users_puser(session={audience},key={username})")
+        logger.info(f"patch_users_puser(session={audience},{p.user}={username})")
         return Response(status=501)
 
     async def delete_users_puser(self, request: Request) -> Response:
         session = request[h.session]
         audience = session.audience
         username = request.match_info[p.user]
-        logger.info(f"delete_users_puser(session={audience},key={username})")
+        logger.info(f"delete_users_puser(session={audience},{p.user}={username})")
         await self.context.remove_user(username)
+        return Response()
+
+    # --------
+    # Projects
+    # --------
+
+    async def get_projects(self, request: Request) -> Response:
+        session = request[h.session]
+        audience = session.audience
+        group_name = ANONYMOUS_GROUP_NAME
+        logger.info(f"get_projects(session={audience})")
+
+        projects = await self.context.get_projects(session, group_name)
+        projects_dict = serialize_default(projects)
+        return auto_response(request, projects_dict)
+
+    async def post_projects(self, request: Request) -> Response:
+        session = request[h.session]
+        audience = session.audience
+
+        data = await request.json(loads=global_json_decoder)
+        if not isinstance(data, dict):
+            raise HTTPBadRequest(reason="Only dictionary-type requests are accepted")
+
+        group_name = data.get(d.group, ANONYMOUS_GROUP_NAME)
+        project_name = data.get(d.project)
+        if project_name is None:
+            raise HTTPBadRequest(reason=f"Not exists `{d.project}`")
+
+        logging_msg = f"{{{d.group}={group_name},{d.project}={project_name}}}"
+        logger.info(f"post_projects(session={audience}) {logging_msg}")
+
+        await self.context.create_project(session, group_name, project_name)
+        return Response()
+
+    # ------------------
+    # Anonymous projects
+    # ------------------
+
+    async def get_projects_pproject(self, request: Request) -> Response:
+        session = request[h.session]
+        audience = session.audience
+        project_name = request.match_info[p.project]
+        params_msg = f"session={audience},{p.project}={project_name}"
+        logger.info(f"get_projects_pproject({params_msg})")
+
+        project = await self.context.get_project(
+            session,
+            ANONYMOUS_GROUP_NAME,
+            project_name,
+        )
+        return auto_response(request, serialize_default(project))
+
+    async def patch_projects_pproject(self, request: Request) -> Response:
+        session = request[h.session]
+        audience = session.audience
+        project_name = request.match_info[p.project]
+
+        data = await request.json(loads=global_json_decoder)
+        if not isinstance(data, dict):
+            raise HTTPBadRequest(reason="Only dictionary-type requests are accepted")
+
+        params_msg = f"session={audience},{p.project}={project_name}"
+        logger.info(f"patch_projects_pproject({params_msg})")
+
+        # await self.context.update_project_by_dict(session, **data)
+        return Response(status=501)
+
+    async def delete_projects_pproject(self, request: Request) -> Response:
+        session = request[h.session]
+        audience = session.audience
+        project_name = request.match_info[p.project]
+        params_msg = f"session={audience},{p.project}={project_name}"
+        logger.info(f"delete_projects_pproject({params_msg})")
+
+        await self.context.delete_project(session, ANONYMOUS_GROUP_NAME, project_name)
         return Response()

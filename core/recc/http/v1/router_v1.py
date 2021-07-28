@@ -459,7 +459,7 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_delete_project(session={username},project={projname})")
 
-        await self.context.delete_global_project(session, GLOBAL_GROUP, projname)
+        await self.context.delete_project(session, GLOBAL_GROUP, projname)
         return response_ok_without_detail(name)
 
     async def on_create_layout(self, request: Request):
