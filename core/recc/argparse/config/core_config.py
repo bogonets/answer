@@ -28,6 +28,11 @@ from recc.variables.port import (
     DEFAULT_MANAGEABLE_MINIMUM_PORT_NUMBER,
     DEFAULT_MANAGEABLE_MAXIMUM_PORT_NUMBER,
 )
+from recc.variables.user import ENABLE_PUBLIC_SIGNUP
+from recc.variables.session import (
+    SESSION_ACCESS_TOKEN_DURATION,
+    SESSION_REFRESH_TOKEN_DURATION,
+)
 
 
 class CoreConfig(GlobalConfig):
@@ -61,6 +66,10 @@ class CoreConfig(GlobalConfig):
 
     storage_root: str
     signature: str
+
+    public_signup: bool
+    access_token_duration: str
+    refresh_token_duration: str
 
 
 ARG_HELP = Argument(
@@ -226,6 +235,27 @@ ARG_SIGNATURE = Argument(
     help="Specify the signing key.",
 )
 
+ARG_PUBLIC_SIGNUP = Argument(
+    key="--public-signup",
+    last_injection_value=ENABLE_PUBLIC_SIGNUP,
+    action="store_true",
+    help="Anyone can sign up.",
+)
+ARG_ACCESS_TOKEN_DURATION = Argument(
+    key="--access-token-duration",
+    last_injection_value=SESSION_ACCESS_TOKEN_DURATION,
+    type=str,
+    metavar="duration",
+    help="Expiration period for the access token.",
+)
+ARG_REFRESH_TOKEN_DURATION = Argument(
+    key="--refresh-token-duration",
+    last_injection_value=SESSION_REFRESH_TOKEN_DURATION,
+    type=str,
+    metavar="duration",
+    help="Expiration period for the refresh token.",
+)
+
 CORE_ARGS = (
     ARG_HELP,
     ARG_EXTERNAL_HOST,
@@ -251,6 +281,9 @@ CORE_ARGS = (
     ARG_MANAGE_PORT_MAX,
     ARG_STORAGE_ROOT,
     ARG_SIGNATURE,
+    ARG_PUBLIC_SIGNUP,
+    ARG_ACCESS_TOKEN_DURATION,
+    ARG_REFRESH_TOKEN_DURATION,
 )
 
 

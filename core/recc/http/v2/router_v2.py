@@ -75,6 +75,10 @@ class RouterV2:
             web.get(u.config, self.get_config),
             web.get(u.config_pkey, self.get_config_pkey),
             web.put(u.config_pkey, self.put_config_pkey),
+
+            # users
+            web.get(u.user, self.get_config),
+            web.put(u.user, self.get_config),
         ]
         # fmt: on
 
