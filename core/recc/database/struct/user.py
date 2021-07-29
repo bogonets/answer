@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any
+from typing import Optional, Any, Final
 from datetime import datetime
 from recc.struct.structure_base import StructureBase
+from recc.algorithm.lexicographical import lexicographical_equals
 
 
 class PassInfo:
@@ -51,3 +52,22 @@ class User(StructureBase):
         self.uid = None
         self.password = None
         self.salt = None
+
+
+class UserKeys:
+    uid = "uid"
+    username = "username"
+    password = "password"
+    salt = "salt"
+    email = "email"
+    phone1 = "phone1"
+    phone2 = "phone2"
+    is_admin = "is_admin"
+    extra = "extra"
+    created_at = "created_at"
+    updated_at = "updated_at"
+    last_login = "last_login"
+
+
+keys: Final[UserKeys] = UserKeys()
+assert lexicographical_equals(keys, User())

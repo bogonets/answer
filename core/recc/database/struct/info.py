@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
+from typing import Optional, Final
 from datetime import datetime
 from recc.struct.structure_base import StructureBase
+from recc.algorithm.lexicographical import lexicographical_equals
 
 
 class Info(StructureBase):
@@ -17,3 +18,14 @@ class Info(StructureBase):
         self.value = value
         self.created_at = created_at
         self.updated_at = updated_at
+
+
+class InfoKeys:
+    key = "key"
+    value = "value"
+    created_at = "created_at"
+    updated_at = "updated_at"
+
+
+keys: Final[InfoKeys] = InfoKeys()
+assert lexicographical_equals(keys, Info())

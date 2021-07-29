@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from enum import Enum
-from typing import Optional, Any
+from typing import Optional, Any, Final
 from datetime import datetime
 from recc.struct.structure_base import StructureBase
+from recc.algorithm.lexicographical import lexicographical_equals
 
 
 class LayoutState(Enum):
@@ -29,3 +30,17 @@ class Layout(StructureBase):
         self.extra = extra
         self.created_at = created_at
         self.updated_at = updated_at
+
+
+class LayoutKeys:
+    uid = "uid"
+    project_uid = "project_uid"
+    name = "name"
+    description = "description"
+    extra = "extra"
+    created_at = "created_at"
+    updated_at = "updated_at"
+
+
+keys: Final[LayoutKeys] = LayoutKeys()
+assert lexicographical_equals(keys, Layout())

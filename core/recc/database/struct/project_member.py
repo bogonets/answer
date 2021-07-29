@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
+from typing import Optional, Final
 from recc.struct.structure_base import StructureBase
+from recc.algorithm.lexicographical import lexicographical_equals
 
 
 class ProjectMember(StructureBase):
@@ -14,3 +15,13 @@ class ProjectMember(StructureBase):
         self.project_uid = project_uid
         self.user_uid = user_uid
         self.permission_uid = permission_uid
+
+
+class ProjectMemberKeys:
+    project_uid = "project_uid"
+    user_uid = "user_uid"
+    permission_uid = "permission_uid"
+
+
+keys: Final[ProjectMemberKeys] = ProjectMemberKeys()
+assert lexicographical_equals(keys, ProjectMember())

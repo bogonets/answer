@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List
+from typing import Optional, Any, List, Final
 from datetime import datetime
 from recc.struct.structure_base import StructureBase
+from recc.algorithm.lexicographical import lexicographical_equals
 
 
 class Group(StructureBase):
@@ -23,3 +24,17 @@ class Group(StructureBase):
         self.extra = extra
         self.created_at = created_at
         self.updated_at = updated_at
+
+
+class GroupKeys:
+    uid = "uid"
+    name = "name"
+    description = "description"
+    features = "features"
+    extra = "extra"
+    created_at = "created_at"
+    updated_at = "updated_at"
+
+
+keys: Final[GroupKeys] = GroupKeys()
+assert lexicographical_equals(keys, Group())

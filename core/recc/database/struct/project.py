@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List
+from typing import Optional, Any, List, Final
 from datetime import datetime
 from recc.struct.structure_base import StructureBase
+from recc.algorithm.lexicographical import lexicographical_equals
 
 
 class Project(StructureBase):
@@ -25,3 +26,18 @@ class Project(StructureBase):
         self.extra = extra
         self.created_at = created_at
         self.updated_at = updated_at
+
+
+class ProjectKeys:
+    uid = "uid"
+    group_uid = "group_uid"
+    name = "name"
+    description = "description"
+    features = "features"
+    extra = "extra"
+    created_at = "created_at"
+    updated_at = "updated_at"
+
+
+keys: Final[ProjectKeys] = ProjectKeys()
+assert lexicographical_equals(keys, Project())

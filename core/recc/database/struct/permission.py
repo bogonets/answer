@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any
+from typing import Optional, Any, Final
 from datetime import datetime
 from recc.struct.structure_base import StructureBase
+from recc.algorithm.lexicographical import lexicographical_equals
 
 
 class Permission(StructureBase):
@@ -45,3 +46,28 @@ class Permission(StructureBase):
         self.w_setting = w_setting
         self.created_at = created_at
         self.updated_at = updated_at
+
+
+class PermissionKeys:
+    uid = "uid"
+    name = "name"
+    description = "description"
+    extra = "extra"
+    r_layout = "r_layout"
+    w_layout = "w_layout"
+    r_storage = "r_storage"
+    w_storage = "w_storage"
+    r_manager = "r_manager"
+    w_manager = "w_manager"
+    r_graph = "r_graph"
+    w_graph = "w_graph"
+    r_member = "r_member"
+    w_member = "w_member"
+    r_setting = "r_setting"
+    w_setting = "w_setting"
+    created_at = "created_at"
+    updated_at = "updated_at"
+
+
+keys: Final[PermissionKeys] = PermissionKeys()
+assert lexicographical_equals(keys, Permission())

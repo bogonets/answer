@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Final
 from datetime import datetime
 from recc.struct.structure_base import StructureBase
+from recc.algorithm.lexicographical import lexicographical_equals
 
 
 class Task(StructureBase):
@@ -39,3 +40,25 @@ class Task(StructureBase):
         self.publish_ports = publish_ports
         self.created_at = created_at
         self.updated_at = updated_at
+
+
+class TaskKeys:
+    uid = "uid"
+    project_uid = "project_uid"
+    name = "name"
+    description = "description"
+    extra = "extra"
+    rpc_address = "rpc_address"
+    auth_algorithm = "auth_algorithm"
+    private_key = "private_key"
+    public_key = "public_key"
+    maximum_restart_count = "maximum_restart_count"
+    numa_memory_nodes = "numa_memory_nodes"
+    base_image_name = "base_image_name"
+    publish_ports = "publish_ports"
+    created_at = "created_at"
+    updated_at = "updated_at"
+
+
+keys: Final[TaskKeys] = TaskKeys()
+assert lexicographical_equals(keys, Task())
