@@ -14,6 +14,7 @@ from recc.serializable.serialize import serialize_default
 from recc.http.v2.router_v2_public import RouterV2Public
 from recc.http.header.bearer_auth import BearerAuth
 from recc.http.http_response import auto_response
+from recc.http.http_request import read_content
 
 from recc.http import http_data_keys as d
 from recc.http import http_header_keys as h
@@ -148,15 +149,14 @@ class RouterV2:
         session = request[h.session]
         audience = session.audience
 
-        data = await request.json(loads=global_json_decoder)
-        if not isinstance(data, dict):
-            raise HTTPBadRequest(reason="Only dictionary-type requests are accepted")
-        key = data.get(d.key)
-        if key is None:
-            raise HTTPBadRequest(reason=f"Not exists `{d.key}`")
-        val = data.get(d.val)
-        if val is None:
-            raise HTTPBadRequest(reason=f"Not exists `{d.val}`")
+        class _Data:
+            __slots__ = (d.key, d.val)
+            key: str
+            val: str
+
+        data = await read_content(request, _Data)
+        key = data.key
+        val = data.val
 
         logging_msg = f"{{{d.key}={key},{d.val}={val}}}"
         logger.info(f"post_configs(session={audience}) {logging_msg}")

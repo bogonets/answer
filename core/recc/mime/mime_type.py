@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Final, List
+from typing import Optional, Final, List, Tuple
 
 TYPE_SEPARATOR: Final[str] = "/"
 PARAMETER_SEPARATOR: Final[str] = ";"
@@ -51,6 +51,45 @@ class MimeType:
             return f"{prefix}{PARAM_SEP}{self.parameter}"
         else:
             return prefix
+
+    @property
+    def parameter_tuple(self) -> Tuple[Optional[str], Optional[str]]:
+        if not self.parameter:
+            return None, None
+        kv = self.parameter.split("=", 1)
+        key = kv[0].strip()
+        if len(kv) == 1:
+            return key, None
+        assert len(kv) == 2
+        return key, kv[1].strip()
+
+    def get_parameter_value(
+        self,
+        key: str,
+        default_value: Optional[str] = None,
+        lower_key=True,
+    ) -> Optional[str]:
+        pkey, pval = self.parameter_tuple
+        if pkey is None or pval is None:
+            return default_value
+        pkey = pkey.lower() if lower_key else pkey
+        if pkey != key:
+            return default_value
+        return pval
+
+    @property
+    def charset(self) -> Optional[str]:
+        return self.get_parameter_value("charset", lower_key=True)
+
+    @property
+    def q(self) -> Optional[float]:
+        val = self.get_parameter_value("q", lower_key=True)
+        if val is None:
+            return None
+        try:
+            return float(val)
+        except ValueError:
+            return None
 
     @classmethod
     def parse(
