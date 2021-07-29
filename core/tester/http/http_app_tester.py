@@ -201,6 +201,14 @@ class HttpAppTester(EmptyHttpAppCallback):
     ) -> ResponseData:
         return await self.request(METH_POST, path, headers, data)
 
+    async def patch(
+        self,
+        path: str,
+        headers: Optional[LooseHeaders] = None,
+        data: Optional[Any] = None,
+    ) -> ResponseData:
+        return await self.request(METH_PATCH, path, headers, data)
+
     async def put(
         self,
         path: str,
@@ -278,7 +286,7 @@ class HttpAppTester(EmptyHttpAppCallback):
         hashed_pw = hashlib.sha256(self._password.encode(encoding="utf-8")).hexdigest()
         signup_response = await self.post(
             path=v2_public_path(u.signup_admin),
-            data=json.dumps({d.admin_id: self._username, d.admin_pwd: hashed_pw}),
+            data=json.dumps({d.username: self._username, d.password: hashed_pw}),
         )
         if signup_response.status != HTTPStatus.OK:
             raise RuntimeError(f"Signup status error: {signup_response.status}")

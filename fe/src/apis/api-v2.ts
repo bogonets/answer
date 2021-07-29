@@ -214,8 +214,8 @@ export default class ApiV2 {
             });
     }
 
-    postSelfExtra(extra: Extra) {
-        return this.api.post('/self/extra', extra)
+    patchSelfExtra(extra: Extra) {
+        return this.api.patch('/self/extra', extra)
             .then((response: AxiosResponse) => {
                 if (response.status !== 200) {
                     throw new ApiV2StatusError(response);
@@ -232,10 +232,4 @@ export default class ApiV2 {
                 return response.data as Array<User>;
             });
     }
-
-    // web.get(u.users, self.get_users),
-    // web.post(u.users, self.post_users),
-    // web.get(u.users_puser, self.get_users_puser),
-    // web.patch(u.users_puser, self.patch_users_puser),
-    // web.delete(u.users_puser, self.delete_users_puser),
 }

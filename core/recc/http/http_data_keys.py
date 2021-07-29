@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
 
-admin_id = "admin_id"
-admin_pwd = "admin_pwd"
-
-user_id = "user_id"
-user_pwd = "user_pwd"
-
 access = "access"
 refresh = "refresh"
 user = "user"
+
+username = "username"
+password = "password"
+email = "email"
+phone1 = "phone1"
+phone2 = "phone2"
+is_admin = "is_admin"
+extra = "extra"
+
+name = "name"
+description = "description"
+features = "features"
 
 key = "key"
 val = "val"

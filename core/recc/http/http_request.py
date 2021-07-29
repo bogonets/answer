@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, TypeVar, Type
+from typing import Any, TypeVar, List, Optional, Dict
 from io import StringIO
 from aiohttp.web_request import Request
 from aiohttp.hdrs import (
@@ -8,14 +8,8 @@ from aiohttp.hdrs import (
     CONTENT_ENCODING,
     CONTENT_LENGTH,
 )
-from aiohttp.web_exceptions import (
-    HTTPBadRequest,
-    HTTPLengthRequired,
-    HTTPInternalServerError,
-)
-from recc.exception.recc_error import ReccDeserializeError
+from aiohttp.web_exceptions import HTTPBadRequest, HTTPLengthRequired
 from recc.log.logging import recc_http_logger as logger
-from recc.serializable.deserialize import deserialize_default
 from recc.mime.mime_type import (
     MimeType,
     MIME_APPLICATION_JSON,
@@ -37,7 +31,7 @@ TEXT = MIME_TEXT_PLAIN.family
 PLAIN = MIME_TEXT_PLAIN.subtype
 
 
-async def read_content(request: Request, cls: Type[_T]) -> _T:
+async def read_data(request: Request) -> Any:
     content_type = request.headers.get(CONTENT_TYPE)
     content_encoding = request.headers.get(CONTENT_ENCODING)
     content_length = request.headers.get(CONTENT_LENGTH)
@@ -63,17 +57,25 @@ async def read_content(request: Request, cls: Type[_T]) -> _T:
     content_mime = MimeType.parse(content_type)
     data: Any
     if content_mime.test_from_accepts([MIME_APPLICATION_JSON, MIME_TEXT_PLAIN]):
-        data = global_json_decoder(await request.text())
+        return global_json_decoder(await request.text())
     elif content_mime.test_from_accept(MIME_APPLICATION_YAML):
-        data = global_yaml_decoder(await request.text())
+        return global_yaml_decoder(await request.text())
     elif content_mime.test_from_accept(MIME_APPLICATION_XML):
-        data = global_xml_decoder(await request.text())
-    else:
-        raise HTTPBadRequest(reason=f"Unsupported content-type: {content_type}")
+        return global_xml_decoder(await request.text())
+    raise HTTPBadRequest(reason=f"Unsupported content-type: {content_type}")
 
-    assert data is not None
-    try:
-        return deserialize_default(data, cls)
-    except ReccDeserializeError as e:
-        logger.exception(e)
-        raise HTTPInternalServerError(reason="Content deserialize error")
+
+async def read_dict(
+    request: Request,
+    assert_keys: Optional[List[str]] = None,
+) -> Dict[str, Any]:
+    data = await read_data(request)
+    if not isinstance(data, dict):
+        raise HTTPBadRequest(reason="Only dictionary-type requests are accepted")
+
+    if assert_keys:
+        for key in assert_keys:
+            if key not in data:
+                raise HTTPBadRequest(reason=f"Not exists key: {key}")
+
+    return data

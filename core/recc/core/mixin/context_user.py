@@ -19,23 +19,24 @@ class ContextUser(ContextBase):
 
     async def signup(
         self,
-        user_id: str,
-        hashed_user_pw: str,
+        username: str,
+        hashed_password: str,
         email: Optional[str] = None,
         phone1: Optional[str] = None,
         phone2: Optional[str] = None,
         is_admin=False,
+        extra: Optional[Any] = None,
     ) -> None:
-        if not user_id:
+        if not username:
             raise ValueError("User ID is required.")
 
-        if len(hashed_user_pw) != PASSWORD_HEX_STR_SIZE:
-            msg1 = f"Password({hashed_user_pw})"
+        if len(hashed_password) != PASSWORD_HEX_STR_SIZE:
+            msg1 = f"Password({hashed_password})"
             msg2 = f"length is not {PASSWORD_HEX_STR_SIZE} characters."
             raise ValueError(f"{msg1} {msg2}")
 
         salt = os.urandom(SALT_BYTE)
-        salted_password = encrypt_password(hashed_user_pw, salt)
+        salted_password = encrypt_password(hashed_password, salt)
 
         db_pw = salted_password.hex()
         assert len(db_pw) == PASSWORD_HEX_STR_SIZE
@@ -44,17 +45,18 @@ class ContextUser(ContextBase):
         assert len(db_salt) == SALT_HEX_STR_SIZE
 
         return await self.database.create_user(
-            user_id,
+            username,
             db_pw,
             db_salt,
             email=email,
             phone1=phone1,
             phone2=phone2,
             is_admin=is_admin,
+            extra=extra,
         )
 
-    async def signup_admin(self, user_id: str, hashed_user_pw: str) -> None:
-        await self.signup(user_id, hashed_user_pw, is_admin=True)
+    async def signup_admin(self, username: str, hashed_password: str) -> None:
+        await self.signup(username, hashed_password, is_admin=True)
 
     async def login(self, username: str, hashed_user_pw: str) -> Tuple[str, str]:
         if not username:
@@ -94,10 +96,16 @@ class ContextUser(ContextBase):
         email: Optional[str] = None,
         phone1: Optional[str] = None,
         phone2: Optional[str] = None,
+        is_admin: Optional[bool] = None,
         extra: Optional[Any] = None,
     ) -> None:
         await self.database.update_user_by_username(
-            username, email=email, phone1=phone1, phone2=phone2, extra=extra
+            username,
+            email=email,
+            phone1=phone1,
+            phone2=phone2,
+            is_admin=is_admin,
+            extra=extra,
         )
 
     async def renew_access_token(self, token: str) -> str:

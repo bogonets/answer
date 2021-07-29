@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List
+from typing import List, Optional, Any
 from recc.session.session import Session
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.project import Project
@@ -24,6 +24,33 @@ class ContextProject(ContextBase):
 
         await self.database.create_project_member(
             project.uid, user.uid, maintainer_permission_uid
+        )
+
+    async def update_project(
+        self,
+        session: Session,
+        group_name: str,
+        project_name: str,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        features: Optional[List[str]] = None,
+        extra: Optional[Any] = None,
+    ) -> None:
+        user = await self.database.get_user_by_username(session.audience)
+        group = await self.database.get_group_by_name(group_name)
+        project = await self.database.get_project_by_name(group.uid, project_name)
+        assert user.uid is not None
+        assert group.uid is not None
+        assert project.uid is not None
+
+        # TODO: test permission
+
+        await self.database.update_project_by_uid(
+            project.uid,
+            name=name,
+            description=description,
+            features=features,
+            extra=extra,
         )
 
     async def delete_project(

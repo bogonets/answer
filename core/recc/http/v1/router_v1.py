@@ -228,7 +228,7 @@ class RouterV1:
             if await self.context.exist_admin_user():
                 return response_error(name, "Root user already exists.")
 
-            await self.context.signup_admin(user_id=user_id, hashed_user_pw=password)
+            await self.context.signup_admin(username=user_id, hashed_password=password)
             return response_ok(name)
         except Exception as e:
             logger.exception(e)
@@ -323,15 +323,15 @@ class RouterV1:
     async def on_add_user(self, request: Request):
         name = "create"
         session = request[at_session]
-        username = session.audience
+        audience = session.audience
         json: dict = await request.json(loads=global_json_decoder)
-        user_id = json["id"]
+        username = json["id"]
         password = json["password"]  # Perhaps the client encoded it with SHA256.
         email = json.get("email")
         phone1 = json.get("telephone")
-        logger.info(f"on_add_user(session={username},new_user={user_id})")
+        logger.info(f"on_add_user(session={audience},new_user={username})")
         await self.context.signup(
-            user_id,
+            username,
             password,
             email=email,
             phone1=phone1,

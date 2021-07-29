@@ -36,7 +36,7 @@ class RouterV2TestCase(AsyncTestCase):
 
         # First Handshake.
         data = {"unknown": 0, "test": "aaa"}
-        response = await self.tester.post(
+        response = await self.tester.patch(
             v2_path(u.self_extra),
             data=json.dumps(data),
         )
@@ -48,7 +48,7 @@ class RouterV2TestCase(AsyncTestCase):
 
         # Second Handshake.
         data2 = {"bbb": "ccc", "ddd": "eee"}
-        response3 = await self.tester.post(
+        response3 = await self.tester.patch(
             v2_path(u.self_extra),
             data=json.dumps(data2),
         )

@@ -78,25 +78,25 @@ class RouterV2Public:
         data = await request.json(loads=global_json_decoder)
 
         assert isinstance(data, dict)
-        admin_id = data[d.admin_id]
-        admin_pwd = data[d.admin_pwd]  # Perhaps the client encoded it with SHA256.
-        logger.info(f"post_signup_admin({d.admin_id}={admin_id})")
+        username = data[d.username]
+        password = data[d.password]  # Perhaps the client encoded it with SHA256.
+        logger.info(f"post_signup_admin({d.username}={username})")
 
         if await self.context.exist_admin_user():
             raise HTTPReccAlreadyInitializedError()
 
-        await self.context.signup_admin(user_id=admin_id, hashed_user_pw=admin_pwd)
+        await self.context.signup_admin(username=username, hashed_password=password)
         return Response()
 
     async def post_signup(self, request: Request):
         data = await request.json(loads=global_json_decoder)
 
         assert isinstance(data, dict)
-        user_id = data[d.user_id]
-        user_pwd = data[d.user_pwd]  # Perhaps the client encoded it with SHA256.
-        logger.info(f"post_signup({d.user_id}={user_id})")
+        username = data[d.username]
+        password = data[d.password]  # Perhaps the client encoded it with SHA256.
+        logger.info(f"post_signup({d.username}={username})")
 
-        await self.context.signup(user_id=user_id, hashed_user_pw=user_pwd)
+        await self.context.signup(username=username, hashed_password=password)
         return Response()
 
     async def post_login(self, request: Request):

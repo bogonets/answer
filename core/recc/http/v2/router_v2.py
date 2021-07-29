@@ -6,15 +6,14 @@ from aiohttp.hdrs import METH_OPTIONS, AUTHORIZATION
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
-from aiohttp.web_exceptions import HTTPUnauthorized, HTTPNotFound, HTTPBadRequest
+from aiohttp.web_exceptions import HTTPUnauthorized, HTTPNotFound
 from recc.log.logging import recc_http_logger as logger
-from recc.driver.json import global_json_decoder
 from recc.core.context import Context
 from recc.serializable.serialize import serialize_default
 from recc.http.v2.router_v2_public import RouterV2Public
 from recc.http.header.bearer_auth import BearerAuth
 from recc.http.http_response import auto_response
-from recc.http.http_request import read_content
+from recc.http.http_request import read_dict
 
 from recc.http import http_data_keys as d
 from recc.http import http_header_keys as h
@@ -73,7 +72,7 @@ class RouterV2:
             # self
             web.get(u.self, self.get_self),
             web.get(u.self_extra, self.get_self_extra),
-            web.post(u.self_extra, self.post_self_extra),
+            web.patch(u.self_extra, self.patch_self_extra),
 
             # configs
             web.get(u.configs, self.get_configs),
@@ -119,11 +118,11 @@ class RouterV2:
         session_user = await self.context.get_self(session)
         return web.json_response(session_user.extra)
 
-    async def post_self_extra(self, request: Request) -> Response:
+    async def patch_self_extra(self, request: Request) -> Response:
         session = request[h.session]
         audience = session.audience
-        extra = await request.json(loads=global_json_decoder)
-        logger.info(f"post_self_extra(session={audience})")
+        extra = await read_dict(request)
+        logger.info(f"patch_self_extra(session={audience})")
 
         await self.context.update_user(audience, extra=extra)
         return Response()
@@ -148,16 +147,9 @@ class RouterV2:
     async def post_configs(self, request: Request) -> Response:
         session = request[h.session]
         audience = session.audience
-
-        class _Data:
-            __slots__ = (d.key, d.val)
-            key: str
-            val: str
-
-        data = await read_content(request, _Data)
-        key = data.key
-        val = data.val
-
+        data = await read_dict(request, [d.key, d.val])
+        key = data[d.key]
+        val = data[d.val]
         logging_msg = f"{{{d.key}={key},{d.val}={val}}}"
         logger.info(f"post_configs(session={audience}) {logging_msg}")
 
@@ -201,8 +193,21 @@ class RouterV2:
     async def post_users(self, request: Request) -> Response:
         session = request[h.session]
         audience = session.audience
+        data = await read_dict(request, [d.username, d.password])
+        username = data[d.username]
+        password = data[d.password]
         logger.info(f"post_users(session={audience})")
-        return Response(status=501)
+
+        await self.context.signup(
+            username=username,
+            hashed_password=password,
+            email=data.get(d.email),
+            phone1=data.get(d.phone1),
+            phone2=data.get(d.phone2),
+            is_admin=data.get(d.is_admin),
+            extra=data.get(d.extra),
+        )
+        return Response()
 
     async def get_users_puser(self, request: Request) -> Response:
         session = request[h.session]
@@ -218,8 +223,18 @@ class RouterV2:
         session = request[h.session]
         audience = session.audience
         username = request.match_info[p.user]
+        data = await read_dict(request)
         logger.info(f"patch_users_puser(session={audience},{p.user}={username})")
-        return Response(status=501)
+
+        await self.context.update_user(
+            username,
+            email=data.get(d.email),
+            phone1=data.get(d.phone1),
+            phone2=data.get(d.phone2),
+            is_admin=data.get(d.is_admin),
+            extra=data.get(d.extra),
+        )
+        return Response()
 
     async def delete_users_puser(self, request: Request) -> Response:
         session = request[h.session]
@@ -247,14 +262,9 @@ class RouterV2:
         session = request[h.session]
         audience = session.audience
 
-        data = await request.json(loads=global_json_decoder)
-        if not isinstance(data, dict):
-            raise HTTPBadRequest(reason="Only dictionary-type requests are accepted")
-
+        data = await read_dict(request, [d.project])
         group_name = data.get(d.group, ANONYMOUS_GROUP_NAME)
-        project_name = data.get(d.project)
-        if project_name is None:
-            raise HTTPBadRequest(reason=f"Not exists `{d.project}`")
+        project_name = data[d.project]
 
         logging_msg = f"{{{d.group}={group_name},{d.project}={project_name}}}"
         logger.info(f"post_projects(session={audience}) {logging_msg}")
@@ -273,26 +283,28 @@ class RouterV2:
         params_msg = f"session={audience},{p.project}={project_name}"
         logger.info(f"get_projects_pproject({params_msg})")
 
-        project = await self.context.get_project(
-            session,
-            ANONYMOUS_GROUP_NAME,
-            project_name,
-        )
+        group = ANONYMOUS_GROUP_NAME
+        project = await self.context.get_project(session, group, project_name)
         return auto_response(request, serialize_default(project))
 
     async def patch_projects_pproject(self, request: Request) -> Response:
         session = request[h.session]
         audience = session.audience
         project_name = request.match_info[p.project]
-
-        data = await request.json(loads=global_json_decoder)
-        if not isinstance(data, dict):
-            raise HTTPBadRequest(reason="Only dictionary-type requests are accepted")
-
+        data = await read_dict(request)
         params_msg = f"session={audience},{p.project}={project_name}"
         logger.info(f"patch_projects_pproject({params_msg})")
 
-        # await self.context.update_project_by_dict(session, **data)
+        group = ANONYMOUS_GROUP_NAME
+        await self.context.update_project(
+            session,
+            group,
+            project_name,
+            name=data.get(d.name),
+            description=data.get(d.description),
+            features=data.get(d.features),
+            extra=data.get(d.extra),
+        )
         return Response(status=501)
 
     async def delete_projects_pproject(self, request: Request) -> Response:
@@ -302,5 +314,6 @@ class RouterV2:
         params_msg = f"session={audience},{p.project}={project_name}"
         logger.info(f"delete_projects_pproject({params_msg})")
 
-        await self.context.delete_project(session, ANONYMOUS_GROUP_NAME, project_name)
+        group = ANONYMOUS_GROUP_NAME
+        await self.context.delete_project(session, group, project_name)
         return Response()
