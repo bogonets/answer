@@ -27,6 +27,10 @@ class Project(StructureBase):
         self.created_at = created_at
         self.updated_at = updated_at
 
+    def remove_sensitive_fields(self):
+        self.uid = None
+        self.group_uid = None
+
 
 class ProjectKeys:
     uid = "uid"

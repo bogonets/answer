@@ -255,6 +255,8 @@ class RouterV2:
         logger.info(f"get_projects(session={audience})")
 
         projects = await self.context.get_projects(session, group_name)
+        for project in projects:
+            project.remove_sensitive_fields()
         projects_dict = serialize_default(projects)
         return auto_response(request, projects_dict)
 

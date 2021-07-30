@@ -84,6 +84,16 @@ export interface Login {
     user?: User;
 }
 
+export interface Project {
+    name?: string;
+    description?: string;
+    features?: object;
+    extra?: object;
+    created_at?: string;
+    updated_at?: string;
+}
+
+
 function newEmptySession(): Login {
     return {
         access: '',
@@ -230,6 +240,16 @@ export default class ApiV2 {
                     throw new ApiV2StatusError(response);
                 }
                 return response.data as Array<User>;
+            });
+    }
+
+    getProjects() {
+        return this.api.get('/projects')
+            .then((response: AxiosResponse) => {
+                if (response.status !== 200) {
+                    throw new ApiV2StatusError(response);
+                }
+                return response.data as Array<Project>;
             });
     }
 }

@@ -1,17 +1,183 @@
+<i18n lang="yaml">
+en:
+  title: "Project Management"
+  subtitle: "You can add, edit and remove projects."
+  new_project: "New Project"
+  headers:
+    name: "Project"
+    description: "Description"
+    features: "Features"
+    created_at: "Created at"
+    updated_at: "Updated at"
+    actions: "Actions"
+  loading: "Loading... Please wait"
+  empty_project: "Empty Project"
+
+ko:
+  title: "프로젝트 관리"
+  subtitle: "프로젝트를 추가하거나 편집 및 제거할 수 있습니다."
+  new_project: "새로운 프로젝트"
+  headers:
+    name: "프로젝트명"
+    description: "상세"
+    features: "기능"
+    created_at: "생성일"
+    updated_at: "갱신일"
+    actions: "관리"
+  loading: "불러오는중 입니다... 잠시만 기다려 주세요."
+  empty_project: "프로젝트가 존재하지 않습니다."
+</i18n>
+
 <template>
-  <a-project-table></a-project-table>
+  <!--<a-project-table></a-project-table>-->
+  <v-container>
+    <app-bar-title
+        flat
+        :title="$t('title')"
+        :subtitle="$t('subtitle')"
+    ></app-bar-title>
+
+    <v-data-table
+        :headers="headers"
+        :items="users"
+        :search="filterText"
+        :loading="showLoading"
+        :loading-text="$t('loading')"
+        @click:row="onClickRow"
+    >
+
+      <template v-slot:top>
+        <v-toolbar flat>
+
+          <v-text-field
+              class="mr-4"
+              v-model="filterText"
+              append-icon="mdi-magnify"
+              label="Search"
+              single-line
+              hide-details
+          ></v-text-field>
+
+          <v-btn color="primary" @click="onClickNewProject">
+            {{ $t('new_project') }}
+          </v-btn>
+
+        </v-toolbar>
+      </template>
+
+      <template v-slot:item.created_at="{ item }">
+        {{ utcToDate(item.created_at) }}
+      </template>
+
+      <template v-slot:item.updated_at="{ item }">
+        {{ utcToDate(item.updated_at) }}
+      </template>
+
+      <template v-slot:item.actions="{ item }">
+        <v-icon small @click="editProject(item)">
+          mdi-pencil
+        </v-icon>
+      </template>
+
+      <template v-slot:no-data>
+        {{ $t('empty_project') }}
+      </template>
+
+    </v-data-table>
+  </v-container>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import aProjectTable from '@/components/Table/aProjectTable.vue';
+// import aProjectTable from '@/components/Table/aProjectTable.vue';
+import AppBarTitle from '@/components/AppBarTitle.vue';
 
 @Component({
   components: {
-    aProjectTable,
+    AppBarTitle,
+    // aProjectTable,
   }
 })
 export default class ProjectsPage extends Vue {
-  // EMPTY.
+
+  filterText = "";
+  headers: object = [];
+  users: object = [];
+  showLoading = true;
+
+  created() {
+    this.headers = [
+      {
+        text: this.$t('headers.name').toString(),
+        align: 'start',
+        filterable: true,
+        value: 'name',
+      },
+      {
+        text: this.$t('headers.description').toString(),
+        align: 'center',
+        filterable: true,
+        value: 'description',
+      },
+      {
+        text: this.$t('headers.features').toString(),
+        align: 'end',
+        filterable: false,
+        value: 'features',
+      },
+      {
+        text: this.$t('headers.created_at').toString(),
+        align: 'end',
+        filterable: false,
+        value: 'created_at',
+      },
+      {
+        text: this.$t('headers.updated_at').toString(),
+        align: 'end',
+        filterable: false,
+        value: 'updated_at',
+      },
+      {
+        text: this.$t('headers.actions').toString(),
+        align: 'end',
+        filterable: false,
+        sortable: false,
+        value: 'actions',
+      },
+    ]
+  }
+
+  mounted() {
+    this.$api2.getProjects()
+        .then(response => {
+          console.info(response);
+          this.users = response;
+          this.showLoading = false;
+        })
+        .catch(error => {
+          console.error(error);
+          this.showLoading = false;
+        });
+  }
+
+  utcToDate(utc: undefined | string): string {
+    // Note: Parsing of strings with `Date.parse` is strongly discouraged due to browser
+    // differences and inconsistencies.
+    if (utc === undefined) {
+      return '';
+    }
+
+    // Example: 2021-07-24T08:24:29.315870
+    return utc.split('T')[0];
+  }
+
+  onClickRow(item) {
+  }
+
+  editProject(item) {
+  }
+
+  onClickNewProject() {
+  }
 }
 </script>

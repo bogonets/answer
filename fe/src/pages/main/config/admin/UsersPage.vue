@@ -7,7 +7,7 @@ en:
     username: "Username"
     email: "E-Mail"
     is_admin: "Admin"
-    created_at: "Created on"
+    created_at: "Created at"
     last_login: "Last sign-in"
     actions: "Actions"
   loading: "Loading... Please wait"
@@ -79,7 +79,7 @@ ko:
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon @click="editUser(item)">
+        <v-icon small @click="editUser(item)">
           mdi-pencil
         </v-icon>
       </template>
@@ -93,8 +93,7 @@ ko:
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
-import VueBase from '@/base/VueBase';
+import { Vue, Component } from 'vue-property-decorator';
 import AppBarTitle from '@/components/AppBarTitle.vue';
 
 @Component({
@@ -102,7 +101,7 @@ import AppBarTitle from '@/components/AppBarTitle.vue';
     AppBarTitle
   }
 })
-export default class UsersPage extends VueBase {
+export default class UsersPage extends Vue {
 
   filterText = "";
   headers: object = [];
@@ -160,12 +159,15 @@ export default class UsersPage extends VueBase {
         });
   }
 
-  utcToDate(utc: string): string {
+  utcToDate(utc: undefined | string): string {
     // Note: Parsing of strings with `Date.parse` is strongly discouraged due to browser
     // differences and inconsistencies.
+    if (utc === undefined) {
+      return '';
+    }
 
     // Example: 2021-07-24T08:24:29.315870
-    return utc.split("T")[0];
+    return utc.split('T')[0];
   }
 
   editUser(item) {
