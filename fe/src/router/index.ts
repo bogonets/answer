@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Router from 'vue-router';
+import VueRouter from 'vue-router';
 
 import Signup from '@/pages/signup/SignUp.vue';
 import SignupAdmin from '@/pages/signup/SignUpAdmin.vue';
@@ -30,10 +30,12 @@ import GroupsPage from "@/pages/main/config/admin/GroupsPage.vue";
 import FeaturesPage from "@/pages/main/config/admin/FeaturesPage.vue";
 import SettingsPage from "@/pages/main/config/admin/SettingsPage.vue";
 import LambdasPage from "@/pages/main/config/admin/LambdasPage.vue";
+import UserNewPage from "@/pages/main/config/admin/UserNewPage.vue";
+import UserEditPage from "@/pages/main/config/admin/UserEditPage.vue";
 
-Vue.use(Router);
+Vue.use(VueRouter);
 
-const answerRoutes = [
+const routes = [
   {
     path: '/',
     component: LoginPage,
@@ -78,6 +80,19 @@ const answerRoutes = [
           {
             path: 'users',
             component: UsersPage,
+          },
+          {
+            path: 'users/new',
+            component: UserNewPage,
+          },
+          {
+            path: 'users/edit',
+            component: UserEditPage,
+            props: (route) => {
+              return {
+                username: route.query.username
+              };
+            }
           },
           {
             path: 'groups',
@@ -160,6 +175,6 @@ const answerRoutes = [
   }
 ];
 
-export default new Router({
-  routes: answerRoutes
+export default new VueRouter({
+  routes: routes
 });

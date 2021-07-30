@@ -62,12 +62,12 @@ ko:
 </template>
 
 <script lang="ts">
-import VueI18n from '@/translations/VueI18n';
 import { Component } from 'vue-property-decorator';
+import VueBase from '@/base/VueBase';
 import { mdiChevronLeft, mdiEye } from '@mdi/js';
 
 @Component
-export default class ConfigAccountPage extends VueI18n {
+export default class ConfigAccountPage extends VueBase {
 
   readonly icons = {
     chevronLeft: mdiChevronLeft,
@@ -94,10 +94,7 @@ export default class ConfigAccountPage extends VueI18n {
   }
 
   moveAppearance() {
-    const movePath = '/main/config/account/appearance';
-    if (this.$router.currentRoute.path !== movePath) {
-      this.$router.push(movePath);
-    }
+    this.push('/main/config/account/appearance');
   }
 
   onClickFoldNavigation() {

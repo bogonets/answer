@@ -316,15 +316,15 @@ export default class LoginPage extends VueBase {
   }
 
   moveToMainPage() {
-    this.$router.push('/main');
+    this.push('/main');
   }
 
   moveToSignUpPage() {
-    this.$router.push('/signup');
+    this.push('/signup');
   }
 
   moveToSignUpAdminPage() {
-    this.$router.push('/signup/admin');
+    this.push('/signup/admin');
   }
 
   testInit() {

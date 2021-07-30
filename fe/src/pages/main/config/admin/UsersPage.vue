@@ -93,7 +93,8 @@ ko:
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
+import VueBase from '@/base/VueBase';
 import AppBarTitle from '@/components/AppBarTitle.vue';
 
 @Component({
@@ -101,7 +102,7 @@ import AppBarTitle from '@/components/AppBarTitle.vue';
     AppBarTitle
   }
 })
-export default class UsersPage extends Vue {
+export default class UsersPage extends VueBase {
 
   filterText = "";
   headers: object = [];
@@ -171,9 +172,11 @@ export default class UsersPage extends Vue {
   }
 
   editUser(item) {
+    this.push(`/main/config/admin/users/edit?username=${item.username}`);
   }
 
   onClickNewUser() {
+    this.push('/main/config/admin/users/new');
   }
 }
 </script>
