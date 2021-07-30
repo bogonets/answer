@@ -2,6 +2,7 @@
 en:
   title: "User Management"
   subtitle: "You can add, edit and remove users."
+  search_label: "You can filter by username or email."
   new_user: "New User"
   headers:
     username: "Username"
@@ -16,6 +17,7 @@ en:
 ko:
   title: "사용자 관리"
   subtitle: "사용자를 추가하거나 편집 및 제거할 수 있습니다."
+  search_label: "사용자명 또는 이메일을 필터링할 수 있습니다."
   new_user: "새로운 사용자"
   headers:
     username: "사용자명"
@@ -30,11 +32,9 @@ ko:
 
 <template>
   <v-container>
-    <app-bar-title
-        flat
-        :title="$t('title')"
-        :subtitle="$t('subtitle')"
-    ></app-bar-title>
+
+    <toolbar-navigation :items="navigationItems"></toolbar-navigation>
+    <v-divider></v-divider>
 
     <v-data-table
         :headers="headers"
@@ -51,7 +51,7 @@ ko:
               class="mr-4"
               v-model="filterText"
               append-icon="mdi-magnify"
-              label="Search"
+              :label="$t('search_label')"
               single-line
               hide-details
           ></v-text-field>
@@ -96,20 +96,34 @@ ko:
 import { Component } from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import AppBarTitle from '@/components/AppBarTitle.vue';
+import ToolbarNavigation from "@/components/ToolbarNavigation.vue";
 
 @Component({
   components: {
+    ToolbarNavigation,
     AppBarTitle
   }
 })
 export default class UsersPage extends VueBase {
 
   filterText = "";
+  navigationItems: object = [];
   headers: object = [];
   users: object = [];
   showLoading = true;
 
   created() {
+    this.navigationItems = [
+      {
+        text: 'Admin',
+        disabled: false,
+        href: this.paths.mainConfigAdmin,
+      },
+      {
+        text: 'Users',
+        disabled: true,
+      },
+    ];
     this.headers = [
       {
         text: this.$t('headers.username').toString(),
