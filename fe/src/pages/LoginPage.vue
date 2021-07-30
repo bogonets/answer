@@ -315,18 +315,6 @@ export default class LoginPage extends VueBase {
     }
   }
 
-  moveToMainPage() {
-    this.push('/main');
-  }
-
-  moveToSignUpPage() {
-    this.push('/signup');
-  }
-
-  moveToSignUpAdminPage() {
-    this.push('/signup/admin');
-  }
-
   testInit() {
     this.updateState(LoginPageState.Connecting);
 

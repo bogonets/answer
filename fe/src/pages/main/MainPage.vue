@@ -11,7 +11,8 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
+import VueBase from '@/base/VueBase';
 import MainTitleBar from '@/components/MainTitleBar.vue';
 
 @Component({
@@ -19,9 +20,9 @@ import MainTitleBar from '@/components/MainTitleBar.vue';
     MainTitleBar,
   }
 })
-export default class MainPage extends Vue {
+export default class MainPage extends VueBase {
   mounted() {
-    this.$router.push('/main/projects');
+    this.moveTo(this.paths.mainProjects);
   }
 }
 </script>

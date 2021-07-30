@@ -119,27 +119,31 @@ export default class UsersPage extends VueBase {
       },
       {
         text: this.$t('headers.email').toString(),
+        align: 'center',
         filterable: true,
         value: 'email',
       },
       {
         text: this.$t('headers.is_admin').toString(),
+        align: 'center',
         filterable: false,
         value: 'is_admin',
       },
       {
         text: this.$t('headers.created_at').toString(),
+        align: 'center',
         filterable: false,
         value: 'created_at',
       },
       {
         text: this.$t('headers.last_login').toString(),
+        align: 'center',
         filterable: false,
         value: 'last_login',
       },
       {
         text: this.$t('headers.actions').toString(),
-        align: 'end',
+        align: 'center',
         filterable: false,
         sortable: false,
         value: 'actions',
@@ -172,11 +176,11 @@ export default class UsersPage extends VueBase {
   }
 
   editUser(item) {
-    this.push(`/main/config/admin/users/edit?username=${item.username}`);
+    this.moveToUsersEditPage(item.username);
   }
 
   onClickNewUser() {
-    this.push('/main/config/admin/users/new');
+    this.moveTo(this.paths.mainConfigAdminUsersNew);
   }
 }
 </script>

@@ -116,8 +116,8 @@ ko:
 </template>
 
 <script lang="ts">
-import VueI18n from '@/translations/VueI18n';
 import { Component } from 'vue-property-decorator';
+import VueBase from '@/base/VueBase';
 import {
   mdiCogOutline,
   mdiChevronLeft,
@@ -130,7 +130,7 @@ import {
 } from '@mdi/js';
 
 @Component
-export default class ConfigAdminPage extends VueI18n {
+export default class ConfigAdminPage extends VueBase {
 
   readonly icons = {
     cogOutline: mdiCogOutline,
@@ -150,14 +150,8 @@ export default class ConfigAdminPage extends VueI18n {
     this.moveOverview();
   }
 
-  private movePage(path: string) {
-    if (this.$router.currentRoute.path !== path) {
-      this.$router.push(path);
-    }
-  }
-
   moveOverview() {
-    this.movePage('/main/config/admin/overview');
+    this.moveTo(this.paths.mainConfigAdminOverview);
   }
 
   onClickFoldNavigation() {
@@ -169,23 +163,23 @@ export default class ConfigAdminPage extends VueI18n {
   }
 
   onClickUsers() {
-    this.movePage('/main/config/admin/users');
+    this.moveTo(this.paths.mainConfigAdminUsers);
   }
 
   onClickGroups() {
-    this.movePage('/main/config/admin/groups');
+    this.moveTo(this.paths.mainConfigAdminGroups);
   }
 
   onClickLambdas() {
-    this.movePage('/main/config/admin/lambdas');
+    this.moveTo(this.paths.mainConfigAdminLambdas);
   }
 
   onClickFeatures() {
-    this.movePage('/main/config/admin/features');
+    this.moveTo(this.paths.mainConfigAdminFeatures);
   }
 
   onClickSettings() {
-    this.movePage('/main/config/admin/settings');
+    this.moveTo(this.paths.mainConfigAdminSettings);
   }
 }
 </script>

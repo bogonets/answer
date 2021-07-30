@@ -94,7 +94,7 @@ export default class ConfigAccountPage extends VueBase {
   }
 
   moveAppearance() {
-    this.push('/main/config/account/appearance');
+    this.moveTo(this.paths.mainConfigAccountAppearance);
   }
 
   onClickFoldNavigation() {
