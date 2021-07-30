@@ -1,3 +1,11 @@
+<i18n lang="yaml">
+en:
+  lang: "English"
+
+ko:
+  lang: "한글"
+</i18n>
+
 <template>
   <v-list :dense="dense">
     <v-subheader v-if="hasHeader">{{ header }}</v-subheader>
@@ -11,7 +19,7 @@
     >
       <v-list-item v-for="lang in languages" :key="lang">
         <v-list-item-content>
-          <v-list-item-title v-text="$t('global.lang_name', lang)"></v-list-item-title>
+          <v-list-item-title v-text="$t('lang', lang)"></v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list-item-group>

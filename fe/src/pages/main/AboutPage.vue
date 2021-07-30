@@ -1,10 +1,12 @@
 <i18n lang="yaml">
 en:
+  title: "Answer"
   version: "Version"
   documentation: "Official documentation"
   vender: "Bogonet Homepage"
 
 ko:
+  title: "Answer"
   version: "버전"
   documentation: "공식 문서 페이지"
   vender: "보고넷 홈페이지"
@@ -67,7 +69,7 @@ const VENDER_HREF = 'https://www.bogonets.com';
 })
 export default class AboutPage extends VueBase {
   get versionText(): string {
-    const title = this.$t('global.title').toString();
+    const title = this.$t('title').toString();
     const version = this.$t('version').toString();
     const number = this.$versions.answer;
     return `${title} ${version} ${number}`;

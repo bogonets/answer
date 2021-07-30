@@ -1,5 +1,6 @@
 <i18n lang="yaml">
 en:
+  lang: "English"
   title: "Appearance"
   subtitle: "Customize the look and feel of your Answer."
   theme:
@@ -14,6 +15,7 @@ en:
       subtitle: "It will be translated into your preferred language."
 
 ko:
+  lang: "한글"
   title: "외관 설정"
   subtitle: "Answer의 모양과 느낌을 설정할 수 있습니다."
   theme:
@@ -131,7 +133,7 @@ export default class AppearancePage extends VueBase {
     if (!lang) {
       return '';
     }
-    return this.$t('global.lang_name', lang).toString();
+    return this.$t('lang', lang).toString();
   }
 
   saveUserExtra() {

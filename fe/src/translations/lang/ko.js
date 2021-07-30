@@ -1,8 +1,4 @@
 export default {
-    global: {
-        title: 'Answer',
-        lang_name: "한글",
-    },
     title: 'Answer',
 
     basic: {
