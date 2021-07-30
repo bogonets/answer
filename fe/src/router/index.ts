@@ -3,7 +3,7 @@ import Router from 'vue-router';
 
 import Signup from '@/pages/signup/SignUp.vue';
 import SignupAdmin from '@/pages/signup/SignUpAdmin.vue';
-import ProjectsMain from '@/pages/main/ProjectsMain.vue';
+import ProjectsPage from '@/pages/main/ProjectsPage.vue';
 import Project from '@/pages/_main/project/ProjectMain.vue';
 import GuideLayout from '@/pages/_main/project/layout/LayoutGuide.vue';
 import LayoutMain from '@/pages/_main/project/layout/LayoutMain.vue';
@@ -107,7 +107,7 @@ const answerRoutes = [
       },
       {
         path: 'projects',
-        component: ProjectsMain,
+        component: ProjectsPage,
       },
       {
         path: 'project',

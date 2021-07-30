@@ -11,7 +11,7 @@ import aProjectTable from '@/components/Table/aProjectTable.vue';
     aProjectTable,
   }
 })
-export default class ProjectsMain extends Vue {
+export default class ProjectsPage extends Vue {
   // EMPTY.
 }
 </script>
