@@ -168,7 +168,7 @@ export default class UsersPage extends VueBase {
   mounted() {
     this.$api2.getUsers()
         .then(response => {
-          console.info(response);
+          // console.info(response);
           this.users = response;
           this.showLoading = false;
         })

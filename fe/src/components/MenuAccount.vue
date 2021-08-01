@@ -107,8 +107,8 @@ ko:
 </template>
 
 <script lang="ts">
-import VueI18n from '@/translations/VueI18n';
 import { Component } from 'vue-property-decorator';
+import VueBase from '@/base/VueBase';
 import {
   mdiAccountCircle,
   mdiAccountCogOutline,
@@ -119,7 +119,7 @@ import {
 } from '@mdi/js';
 
 @Component
-export default class MenuAccount extends VueI18n {
+export default class MenuAccount extends VueBase {
 
   readonly icons = {
     accountCircle: mdiAccountCircle,
@@ -159,19 +159,19 @@ export default class MenuAccount extends VueI18n {
   // Method.
 
   onClickAccountConfig() {
-    this.$router.push('/main/config/account');
+    this.moveToMainConfigAccount();
   }
 
   onClickAdminConfig() {
-    this.$router.push('/main/config/admin');
+    this.moveToMainConfigAdmin();
   }
 
   onClickDevelopmentTools() {
-    this.$router.push('/main/dev');
+    this.moveToMainDev();
   }
 
   onClickAboutAnswer() {
-    this.$router.push('/main/about');
+    this.moveToMainAbout();
   }
 
   onClickLogout() {

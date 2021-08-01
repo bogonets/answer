@@ -30,6 +30,7 @@ export default class VueBase extends Vue {
 
     @Watch('$vuetify.lang.current')
     updateI18n(newVal: string, oldVal: string) {
+        console.debug(`Update i18n: ${oldVal} -> ${newVal}`);
         this.$i18n.locale = newVal;
     }
 
@@ -49,16 +50,40 @@ export default class VueBase extends Vue {
         })
     }
 
-    moveToMainPage() {
-        this.moveTo(this.paths.main);
-    }
-
     moveToSignUpPage() {
         this.moveTo(this.paths.signup);
     }
 
     moveToSignUpAdminPage() {
         this.moveTo(this.paths.signupAdmin);
+    }
+
+    moveToMainPage() {
+        this.moveTo(this.paths.main);
+    }
+
+    moveToMainDev() {
+        this.moveTo(this.paths.mainDev);
+    }
+
+    moveToMainAbout() {
+        this.moveTo(this.paths.mainAbout);
+    }
+
+    moveToMainConfigAccount() {
+        this.moveTo(this.paths.mainConfigAccount);
+    }
+
+    moveToMainConfigAccountAppearance() {
+        this.moveTo(this.paths.mainConfigAccountAppearance);
+    }
+
+    moveToMainConfigAdmin() {
+        this.moveTo(this.paths.mainConfigAdmin);
+    }
+
+    moveToMainConfigAdminOverview() {
+        this.moveTo(this.paths.mainConfigAdminOverview);
     }
 
     moveToUsersEditPage(username: string) {

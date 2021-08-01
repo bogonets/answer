@@ -26,8 +26,8 @@ import VueBase from '@/base/VueBase';
 @Component
 export default class ToolbarNavigation extends VueBase {
 
-  @Prop({type: Object, default: []})
-  readonly items!: object;
+  @Prop({ type: Array, default: () => [] })
+  readonly items!: Array<object>;
 
   onClickNavigation(href) {
     this.moveTo(href);
