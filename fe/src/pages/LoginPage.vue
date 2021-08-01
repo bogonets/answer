@@ -190,7 +190,7 @@ export default class LoginPage extends VueBase {
 
   mounted() {
     if (this.$localStore.alreadySession) {
-      this.moveToMainPage();
+      this.moveToMain();
       return;
     }
 
@@ -328,7 +328,7 @@ export default class LoginPage extends VueBase {
         .catch(error => {
           if (error.response) {
             if (error.response.status && error.response.status == 520) {
-              this.moveToSignUpAdminPage();
+              this.moveToSignupAdmin();
             } else {
               this.updateState(LoginPageState.Unreachable);
             }
@@ -453,7 +453,7 @@ export default class LoginPage extends VueBase {
             console.warn('[LoginPage] Not exists user\'s extra information.');
           }
 
-          this.moveToMainPage();
+          this.moveToMain();
         })
         .catch(error => {
           console.error(error);
@@ -464,7 +464,7 @@ export default class LoginPage extends VueBase {
   }
 
   signup() {
-    this.moveToSignUpPage();
+    this.moveToSignup();
   }
 
   forgetPassword() {

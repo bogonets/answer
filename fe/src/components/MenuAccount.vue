@@ -159,11 +159,11 @@ export default class MenuAccount extends VueBase {
   // Method.
 
   onClickAccountConfig() {
-    this.moveToMainConfigAccount();
+    this.moveToMainConfigAccountAppearance();
   }
 
   onClickAdminConfig() {
-    this.moveToMainConfigAdmin();
+    this.moveToMainConfigAdminOverview();
   }
 
   onClickDevelopmentTools() {

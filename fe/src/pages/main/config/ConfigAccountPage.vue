@@ -30,7 +30,7 @@ ko:
             {{ username }}
           </v-list-item-title>
           <v-btn icon @click.stop="onClickFoldNavigation">
-            <v-icon>{{ icons.chevronLeft }}</v-icon>
+            <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
         </v-list-item>
 
@@ -44,7 +44,7 @@ ko:
 
           <v-list-item link @click.stop="onClickAppearance">
             <v-list-item-icon>
-              <v-icon>{{ icons.eye }}</v-icon>
+              <v-icon>mdi-eye</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('appearance') }}
@@ -64,21 +64,15 @@ ko:
 <script lang="ts">
 import { Component } from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import { mdiChevronLeft, mdiEye } from '@mdi/js';
 
 @Component
 export default class ConfigAccountPage extends VueBase {
-
-  readonly icons = {
-    chevronLeft: mdiChevronLeft,
-    eye: mdiEye,
-  };
 
   currentSubpageIndex = 0;
   miniNavigation = false;
 
   mounted() {
-    this.moveAppearance();
+    this.moveToMainConfigAccountAppearance();
   }
 
   get username(): string {
@@ -93,16 +87,12 @@ export default class ConfigAccountPage extends VueBase {
     return this.username[0].toUpperCase();
   }
 
-  moveAppearance() {
-    this.moveTo(this.paths.mainConfigAccountAppearance);
-  }
-
   onClickFoldNavigation() {
     this.miniNavigation = !this.miniNavigation;
   }
 
   onClickAppearance() {
-    this.moveAppearance();
+    this.moveToMainConfigAccountAppearance();
   }
 }
 </script>

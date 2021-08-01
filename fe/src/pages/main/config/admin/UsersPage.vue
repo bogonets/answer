@@ -96,7 +96,7 @@ ko:
 import { Component } from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import AppBarTitle from '@/components/AppBarTitle.vue';
-import ToolbarNavigation from "@/components/ToolbarNavigation.vue";
+import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 
 @Component({
   components: {
@@ -117,7 +117,7 @@ export default class UsersPage extends VueBase {
       {
         text: 'Admin',
         disabled: false,
-        href: this.paths.mainConfigAdmin,
+        href: this.paths.mainConfigAdminOverview,
       },
       {
         text: 'Users',
@@ -190,7 +190,7 @@ export default class UsersPage extends VueBase {
   }
 
   editUser(item) {
-    this.moveToUsersEditPage(item.username);
+    this.moveToMainConfigAdminUsersEdit(item.username);
   }
 
   onClickNewUser() {

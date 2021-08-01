@@ -14,14 +14,11 @@ ko:
 
 <template>
   <v-container>
-    <app-bar-title
-        flat
-        :title="$t('title')"
-        :subtitle="$t('subtitle')"
-    ></app-bar-title>
+    <toolbar-navigation :items="navigationItems"></toolbar-navigation>
+    <v-divider></v-divider>
 
-    <v-list flat subheader three-line>
-      <v-subheader>{{ $t('header.account') }}</v-subheader>
+<!--    <v-list flat subheader three-line>-->
+<!--      <v-subheader>{{ $t('header.account') }}</v-subheader>-->
 
 <!--      <v-list-item>-->
 <!--        <v-text-field-->
@@ -45,9 +42,9 @@ ko:
 <!--        ></v-text-field>-->
 <!--      </v-list-item>-->
 
-      <v-divider></v-divider>
+<!--      <v-divider></v-divider>-->
 
-    </v-list>
+<!--    </v-list>-->
 
     <!--Account-->
     <!--Name-->
@@ -58,14 +55,40 @@ ko:
     <!--* required-->
     <!--Password-->
 
-
   </v-container>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
+import VueBase from '@/base/VueBase';
+import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 
-@Component
-export default class UserNewPage extends Vue {
+@Component({
+  components: {
+    ToolbarNavigation
+  }
+})
+export default class UserNewPage extends VueBase {
+
+  navigationItems: object = [];
+
+  created() {
+    this.navigationItems = [
+      {
+        text: 'Admin',
+        disabled: false,
+        href: this.paths.mainConfigAdminOverview,
+      },
+      {
+        text: 'Users',
+        disabled: false,
+        href: this.paths.mainConfigAdminUsers,
+      },
+      {
+        text: 'New',
+        disabled: true,
+      },
+    ];
+  }
 }
 </script>

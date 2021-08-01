@@ -2,6 +2,7 @@
 en:
   title: "Project Management"
   subtitle: "You can add, edit and remove projects."
+  search_label: "You can filter by project name or description"
   new_project: "New Project"
   headers:
     name: "Project"
@@ -16,6 +17,7 @@ en:
 ko:
   title: "프로젝트 관리"
   subtitle: "프로젝트를 추가하거나 편집 및 제거할 수 있습니다."
+  search_label: "프로젝트명 또는 상세정보를 필터링할 수 있습니다."
   new_project: "새로운 프로젝트"
   headers:
     name: "프로젝트명"
@@ -30,12 +32,10 @@ ko:
 
 <template>
   <!--<a-project-table></a-project-table>-->
+
   <v-container>
-    <app-bar-title
-        flat
-        :title="$t('title')"
-        :subtitle="$t('subtitle')"
-    ></app-bar-title>
+    <toolbar-navigation :items="navigationItems"></toolbar-navigation>
+    <v-divider></v-divider>
 
     <v-data-table
         :headers="headers"
@@ -53,9 +53,9 @@ ko:
               class="mr-4"
               v-model="filterText"
               append-icon="mdi-magnify"
-              label="Search"
               single-line
               hide-details
+              :label="$t('search_label')"
           ></v-text-field>
 
           <v-btn color="primary" @click="onClickNewProject">
@@ -90,22 +90,29 @@ ko:
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 // import aProjectTable from '@/components/Table/aProjectTable.vue';
-import AppBarTitle from '@/components/AppBarTitle.vue';
+import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 
 @Component({
   components: {
-    AppBarTitle,
+    ToolbarNavigation,
     // aProjectTable,
   }
 })
 export default class ProjectsPage extends Vue {
 
+  navigationItems: object = [];
   filterText = "";
   headers: object = [];
   users: object = [];
   showLoading = true;
 
   created() {
+    this.navigationItems = [
+      {
+        text: 'Projects',
+        disabled: true,
+      },
+    ];
     this.headers = [
       {
         text: this.$t('headers.name').toString(),

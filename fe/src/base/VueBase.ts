@@ -26,6 +26,7 @@ export default class VueBase extends Vue {
         mainAbout: '/main/about',
         mainProjects: '/main/projects',
         mainProject: '/main/project',
+        mainGroups: '/main/groups',
     };
 
     @Watch('$vuetify.lang.current')
@@ -50,24 +51,24 @@ export default class VueBase extends Vue {
         })
     }
 
-    moveToSignUpPage() {
+    moveToRoot() {
+        this.moveTo(this.paths.root);
+    }
+
+    moveToSignup() {
         this.moveTo(this.paths.signup);
     }
 
-    moveToSignUpAdminPage() {
+    moveToSignupAdmin() {
         this.moveTo(this.paths.signupAdmin);
     }
 
-    moveToMainPage() {
+    moveToMain() {
         this.moveTo(this.paths.main);
     }
 
-    moveToMainDev() {
-        this.moveTo(this.paths.mainDev);
-    }
-
-    moveToMainAbout() {
-        this.moveTo(this.paths.mainAbout);
+    moveToMainDashboard() {
+        this.moveTo(this.paths.mainDashboard);
     }
 
     moveToMainConfigAccount() {
@@ -86,8 +87,60 @@ export default class VueBase extends Vue {
         this.moveTo(this.paths.mainConfigAdminOverview);
     }
 
-    moveToUsersEditPage(username: string) {
+    moveToMainConfigAdminUsers() {
+        this.moveTo(this.paths.mainConfigAdminUsers);
+    }
+
+    moveToMainConfigAdminUsersNew() {
+        this.moveTo(this.paths.mainConfigAdminUsersNew);
+    }
+
+    moveToMainConfigAdminUsersEdit(username: string) {
         const prefix = this.paths.mainConfigAdminUsersEdit;
         this.moveTo(`${prefix}?username=${username}`);
+    }
+
+    moveToMainConfigAdminGroups() {
+        this.moveTo(this.paths.mainConfigAdminGroups);
+    }
+
+    moveToMainConfigAdminGroupsNew() {
+        this.moveTo(this.paths.mainConfigAdminGroupsNew);
+    }
+
+    moveToMainConfigAdminGroupsEdit() {
+        this.moveTo(this.paths.mainConfigAdminGroupsEdit);
+    }
+
+    moveToMainConfigAdminFeatures() {
+        this.moveTo(this.paths.mainConfigAdminFeatures);
+    }
+
+    moveToMainConfigAdminSettings() {
+        this.moveTo(this.paths.mainConfigAdminSettings);
+    }
+
+    moveToMainConfigAdminLambdas() {
+        this.moveTo(this.paths.mainConfigAdminLambdas);
+    }
+
+    moveToMainDev() {
+        this.moveTo(this.paths.mainDev);
+    }
+
+    moveToMainAbout() {
+        this.moveTo(this.paths.mainAbout);
+    }
+
+    moveToMainProjects() {
+        this.moveTo(this.paths.mainProjects);
+    }
+
+    moveToMainProject() {
+        this.moveTo(this.paths.mainProject);
+    }
+
+    moveToMainGroups() {
+        this.moveTo(this.paths.mainGroups);
     }
 }

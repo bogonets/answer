@@ -10,11 +10,8 @@ ko:
 
 <template>
   <v-container>
-    <app-bar-title
-        flat
-        :title="$t('title')"
-        :subtitle="$t('subtitle')"
-    ></app-bar-title>
+    <toolbar-navigation :items="navigationItems"></toolbar-navigation>
+    <v-divider></v-divider>
 
   </v-container>
 </template>
@@ -22,13 +19,29 @@ ko:
 <script lang="ts">
 import { Component } from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import AppBarTitle from "@/components/AppBarTitle.vue";
+import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 
 @Component({
   components: {
-    AppBarTitle
+    ToolbarNavigation
   }
 })
 export default class OverviewPage extends VueBase {
+
+  navigationItems: object = [];
+
+  created() {
+    this.navigationItems = [
+      {
+        text: 'Admin',
+        disabled: false,
+        href: this.paths.mainConfigAdminOverview,
+      },
+      {
+        text: 'Overview',
+        disabled: true,
+      },
+    ];
+  }
 }
 </script>

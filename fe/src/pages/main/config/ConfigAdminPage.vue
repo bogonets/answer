@@ -33,13 +33,13 @@ ko:
 
         <v-list-item link @click.stop="onClickFoldNavigation">
           <v-list-item-icon>
-            <v-icon>{{ icons.cogOutline }}</v-icon>
+            <v-icon>mdi-cog-outline</v-icon>
           </v-list-item-icon>
           <v-list-item-title>
             {{ $t('title') }}
           </v-list-item-title>
           <v-btn icon @click.stop="onClickFoldNavigation">
-            <v-icon>{{ icons.chevronLeft }}</v-icon>
+            <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
         </v-list-item>
 
@@ -53,7 +53,7 @@ ko:
 
           <v-list-item link @click.stop="onClickOverview">
             <v-list-item-icon>
-              <v-icon>{{ icons.developerBoard }}</v-icon>
+              <v-icon>mdi-developer-board</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('overview') }}
@@ -62,7 +62,7 @@ ko:
 
           <v-list-item link @click.stop="onClickUsers">
             <v-list-item-icon>
-              <v-icon>{{ icons.account }}</v-icon>
+              <v-icon>mdi-account</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('users') }}
@@ -71,7 +71,7 @@ ko:
 
           <v-list-item link @click.stop="onClickGroups">
             <v-list-item-icon>
-              <v-icon>{{ icons.accountGroup }}</v-icon>
+              <v-icon>mdi-account-group</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('groups') }}
@@ -80,7 +80,7 @@ ko:
 
           <v-list-item link @click.stop="onClickLambdas">
             <v-list-item-icon>
-              <v-icon>{{ icons.lambda }}</v-icon>
+              <v-icon>mdi-lambda</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('lambdas') }}
@@ -89,7 +89,7 @@ ko:
 
           <v-list-item link @click.stop="onClickFeatures">
             <v-list-item-icon>
-              <v-icon>{{ icons.formatListChecks }}</v-icon>
+              <v-icon>mdi-format-list-checks</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('features') }}
@@ -98,7 +98,7 @@ ko:
 
           <v-list-item link @click.stop="onClickSettings">
             <v-list-item-icon>
-              <v-icon>{{ icons.cogs }}</v-icon>
+              <v-icon>mdi-cogs</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('settings') }}
@@ -118,30 +118,9 @@ ko:
 <script lang="ts">
 import { Component } from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import {
-  mdiCogOutline,
-  mdiChevronLeft,
-  mdiDeveloperBoard,
-  mdiAccount,
-  mdiAccountGroup,
-  mdiLambda,
-  mdiFormatListChecks,
-  mdiCogs,
-} from '@mdi/js';
 
 @Component
 export default class ConfigAdminPage extends VueBase {
-
-  readonly icons = {
-    cogOutline: mdiCogOutline,
-    chevronLeft: mdiChevronLeft,
-    developerBoard: mdiDeveloperBoard,
-    account: mdiAccount,
-    accountGroup: mdiAccountGroup,
-    lambda: mdiLambda,
-    formatListChecks: mdiFormatListChecks,
-    cogs: mdiCogs,
-  };
 
   currentSubpageIndex = 0;
   miniNavigation = false;

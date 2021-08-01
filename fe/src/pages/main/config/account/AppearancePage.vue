@@ -32,11 +32,9 @@ ko:
 
 <template>
   <v-container>
-    <app-bar-title
-        flat
-        :title="$t('title')"
-        :subtitle="$t('subtitle')"
-    ></app-bar-title>
+
+    <toolbar-navigation :items="navigationItems"></toolbar-navigation>
+    <v-divider></v-divider>
 
     <v-list flat subheader three-line>
       <v-subheader>{{ $t('theme.header') }}</v-subheader>
@@ -68,7 +66,7 @@ ko:
             <v-btn v-bind="attrs" v-on="on">
               {{ currentLangName }}
               <v-icon right role="img" aria-hidden="false">
-                {{ icons.chevronDown }}
+                mdi-chevron-down
               </v-icon>
             </v-btn>
           </template>
@@ -87,26 +85,34 @@ ko:
 import { Component } from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ListLanguages, { LANGUAGES } from '@/components/ListLanguages.vue';
-import AppBarTitle from "@/components/AppBarTitle.vue";
+import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import { Extra } from '@/apis/api-v2';
-import { mdiChevronDown } from '@mdi/js';
 
 @Component({
   components: {
-    AppBarTitle,
-    ListLanguages
+    ToolbarNavigation,
+    ListLanguages,
   }
 })
 export default class AppearancePage extends VueBase {
 
   readonly languages = LANGUAGES;
-  readonly icons = {
-    chevronDown: mdiChevronDown,
-  };
 
+  navigationItems: object = [];
   extra!: Extra;
 
   created() {
+    this.navigationItems = [
+      {
+        text: 'Account',
+        disabled: false,
+        href: this.paths.mainConfigAccountAppearance,
+      },
+      {
+        text: 'Appearance',
+        disabled: true,
+      },
+    ];
     this.extra = this.getInitExtra();
   }
 
