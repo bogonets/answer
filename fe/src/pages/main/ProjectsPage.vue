@@ -92,7 +92,7 @@ import VueBase from '@/base/VueBase';
 import aProjectTable from '@/components/Table/aProjectTable.vue';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 
-const ANONYMOUS_GROUP = '';
+const ANONYMOUS_GROUP = '-';
 
 @Component({
   components: {
@@ -183,6 +183,10 @@ export default class ProjectsPage extends VueBase {
   }
 
   onClickRow(item) {
+
+    // Legacy way:
+    this.$store.commit("project/setSelectProject", { name: item.name });
+    this.moveToMainProject();
   }
 
   onClickEditProject(item) {

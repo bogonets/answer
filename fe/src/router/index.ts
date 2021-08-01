@@ -4,7 +4,7 @@ import VueRouter from 'vue-router';
 import Signup from '@/pages/signup/SignUp.vue';
 import SignupAdmin from '@/pages/signup/SignUpAdmin.vue';
 import ProjectsPage from '@/pages/main/ProjectsPage.vue';
-import Project from '@/pages/_main/project/ProjectMain.vue';
+import Project from '@/pages/main/project/ProjectPage.vue';
 import GuideLayout from '@/pages/_main/project/layout/LayoutGuide.vue';
 import LayoutMain from '@/pages/_main/project/layout/LayoutMain.vue';
 import VisualMain from '@/pages/_main/project/setting/vgMain.vue';
@@ -58,6 +58,10 @@ const routes = [
     },
     children: [
       {
+        path: '',
+        redirect: 'dashboard',
+      },
+      {
         path: 'dashboard',
         component: DashboardPage,
       },
@@ -65,6 +69,10 @@ const routes = [
         path: 'config/account',
         component: ConfigAccountPage,
         children: [
+          {
+            path: '',
+            redirect: 'appearance',
+          },
           {
             path: 'appearance',
             component: AppearancePage,
@@ -75,6 +83,10 @@ const routes = [
         path: 'config/admin',
         component: ConfigAdminPage,
         children: [
+          {
+            path: '',
+            redirect: 'overview',
+          },
           {
             path: 'overview',
             component: OverviewPage,

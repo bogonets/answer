@@ -22,7 +22,7 @@ import MainTitleBar from '@/components/MainTitleBar.vue';
 })
 export default class MainPage extends VueBase {
   mounted() {
-    this.moveTo(this.paths.mainProjects);
+    // this.moveTo(this.paths.mainProjects);
   }
 }
 </script>
