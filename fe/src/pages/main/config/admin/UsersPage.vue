@@ -79,7 +79,7 @@ ko:
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon small @click="editUser(item)">
+        <v-icon small @click="onClickEditUser(item)">
           mdi-pencil
         </v-icon>
       </template>
@@ -189,7 +189,7 @@ export default class UsersPage extends VueBase {
     return utc.split('T')[0];
   }
 
-  editUser(item) {
+  onClickEditUser(item) {
     this.moveToMainConfigAdminUsersEdit(item.username);
   }
 

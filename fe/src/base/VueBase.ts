@@ -25,6 +25,8 @@ export default class VueBase extends Vue {
         mainDev: '/main/dev',
         mainAbout: '/main/about',
         mainProjects: '/main/projects',
+        mainProjectsNew: '/main/projects/new',
+        mainProjectsEdit: '/main/projects/edit',
         mainProject: '/main/project',
         mainGroups: '/main/groups',
     };
@@ -134,6 +136,15 @@ export default class VueBase extends Vue {
 
     moveToMainProjects() {
         this.moveTo(this.paths.mainProjects);
+    }
+
+    moveToMainProjectsNew() {
+        this.moveTo(this.paths.mainProjectsNew);
+    }
+
+    moveToMainProjectsEdit(group: string, project: string) {
+        const prefix = this.paths.mainProjectsEdit;
+        this.moveTo(`${prefix}?group=${group}&project=${project}`);
     }
 
     moveToMainProject() {

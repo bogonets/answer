@@ -24,14 +24,16 @@ import DashboardPage from '@/pages/main/DashboardPage.vue';
 import DevelopmentToolsPage from '@/pages/main/DevelopmentToolsPage.vue';
 import LoginPage from '@/pages/LoginPage.vue';
 import MainPage from '@/pages/main/MainPage.vue';
-import AppearancePage from "@/pages/main/config/account/AppearancePage.vue";
-import UsersPage from "@/pages/main/config/admin/UsersPage.vue";
-import GroupsPage from "@/pages/main/config/admin/GroupsPage.vue";
-import FeaturesPage from "@/pages/main/config/admin/FeaturesPage.vue";
-import SettingsPage from "@/pages/main/config/admin/SettingsPage.vue";
-import LambdasPage from "@/pages/main/config/admin/LambdasPage.vue";
-import UserNewPage from "@/pages/main/config/admin/UserNewPage.vue";
-import UserEditPage from "@/pages/main/config/admin/UserEditPage.vue";
+import AppearancePage from '@/pages/main/config/account/AppearancePage.vue';
+import UsersPage from '@/pages/main/config/admin/UsersPage.vue';
+import GroupsPage from '@/pages/main/config/admin/GroupsPage.vue';
+import FeaturesPage from '@/pages/main/config/admin/FeaturesPage.vue';
+import SettingsPage from '@/pages/main/config/admin/SettingsPage.vue';
+import LambdasPage from '@/pages/main/config/admin/LambdasPage.vue';
+import UsersNewPage from '@/pages/main/config/admin/UsersNewPage.vue';
+import UsersEditPage from '@/pages/main/config/admin/UsersEditPage.vue';
+import ProjectsEditPage from '@/pages/main/ProjectsEditPage.vue';
+import ProjectsNewPage from '@/pages/main/ProjectsNewPage.vue';
 
 Vue.use(VueRouter);
 
@@ -83,11 +85,11 @@ const routes = [
           },
           {
             path: 'users/new',
-            component: UserNewPage,
+            component: UsersNewPage,
           },
           {
             path: 'users/edit',
-            component: UserEditPage,
+            component: UsersEditPage,
             props: (route) => {
               return {
                 username: route.query.username
@@ -123,6 +125,14 @@ const routes = [
       {
         path: 'projects',
         component: ProjectsPage,
+      },
+      {
+        path: 'projects/edit',
+        component: ProjectsEditPage,
+      },
+      {
+        path: 'projects/new',
+        component: ProjectsNewPage,
       },
       {
         path: 'project',

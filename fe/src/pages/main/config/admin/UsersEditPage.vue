@@ -16,7 +16,7 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
     ToolbarNavigation,
   }
 })
-export default class UserEditPage extends VueBase {
+export default class UsersEditPage extends VueBase {
 
   @Prop({type: String, default: ''})
   readonly username!: string;

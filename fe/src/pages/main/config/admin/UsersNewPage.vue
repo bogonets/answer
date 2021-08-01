@@ -68,7 +68,7 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
     ToolbarNavigation
   }
 })
-export default class UserNewPage extends VueBase {
+export default class UsersNewPage extends VueBase {
 
   navigationItems: object = [];
 

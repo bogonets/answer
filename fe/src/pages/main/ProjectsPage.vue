@@ -31,9 +31,8 @@ ko:
 </i18n>
 
 <template>
-  <!--<a-project-table></a-project-table>-->
-
-  <v-container>
+  <a-project-table v-if="enableLegacy"></a-project-table>
+  <v-container v-else>
     <toolbar-navigation :items="navigationItems"></toolbar-navigation>
     <v-divider></v-divider>
 
@@ -74,7 +73,7 @@ ko:
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon small @click="editProject(item)">
+        <v-icon small @click="onClickEditProject(item)">
           mdi-pencil
         </v-icon>
       </template>
@@ -88,17 +87,22 @@ ko:
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
-// import aProjectTable from '@/components/Table/aProjectTable.vue';
+import { Component } from 'vue-property-decorator';
+import VueBase from '@/base/VueBase';
+import aProjectTable from '@/components/Table/aProjectTable.vue';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+
+const ANONYMOUS_GROUP = '';
 
 @Component({
   components: {
     ToolbarNavigation,
-    // aProjectTable,
+    aProjectTable,
   }
 })
-export default class ProjectsPage extends Vue {
+export default class ProjectsPage extends VueBase {
+
+  readonly enableLegacy = false;
 
   navigationItems: object = [];
   filterText = "";
@@ -181,10 +185,12 @@ export default class ProjectsPage extends Vue {
   onClickRow(item) {
   }
 
-  editProject(item) {
+  onClickEditProject(item) {
+    this.moveToMainProjectsEdit(ANONYMOUS_GROUP, item.name);
   }
 
   onClickNewProject() {
+    this.moveToMainProjectsNew();
   }
 }
 </script>
