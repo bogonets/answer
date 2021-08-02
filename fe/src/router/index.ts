@@ -34,6 +34,11 @@ import UsersNewPage from '@/pages/main/config/admin/UsersNewPage.vue';
 import UsersEditPage from '@/pages/main/config/admin/UsersEditPage.vue';
 import ProjectsEditPage from '@/pages/main/ProjectsEditPage.vue';
 import ProjectsNewPage from '@/pages/main/ProjectsNewPage.vue';
+import TablesPage from "@/pages/main/project/TablesPage.vue";
+import FilesPage from "@/pages/main/project/FilesPage.vue";
+import TasksPage from "@/pages/main/project/TasksPage.vue";
+import VmsPage from "@/pages/main/project/VmsPage.vue";
+import LayoutsPage from "@/pages/main/project/LayoutsPage.vue";
 
 Vue.use(VueRouter);
 
@@ -177,6 +182,26 @@ const routes = [
           {
             path: 'airjoy_monitor',
             component: AirJoyMonitor,
+          },
+          {
+            path: 'layouts',
+            component: LayoutsPage,
+          },
+          {
+            path: 'tables',
+            component: TablesPage,
+          },
+          {
+            path: 'files',
+            component: FilesPage,
+          },
+          {
+            path: 'tasks',
+            component: TasksPage,
+          },
+          {
+            path: 'vms',
+            component: VmsPage,
           },
           {
             path: 'auth_management',

@@ -35,9 +35,29 @@ const state = {
       level: 10,
     },
     {
+      title: "tables",
+      icon: "fas fa-database",
+      level: 10,
+    },
+    {
+      title: "files",
+      icon: "fas fa-folder-open",
+      level: 10,
+    },
+    {
+      title: "tasks",
+      icon: "fas fa-tasks",
+      level: 10,
+    },
+    {
+      title: "vms",
+      icon: "fas fa-cctv",
+      level: 10,
+    },
+    {
       title: "auth_management",
       icon: "fas fa-users-cog",
-      level: 100,
+      level: 10,
     },
   ],
   select_project: "",

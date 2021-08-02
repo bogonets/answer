@@ -42,7 +42,7 @@ export default class ProjectPage extends VueBase {
     if (this.enableLegacy) {
       this.$store.commit('drawer/setNaviShow', {bool: true});
       this.$store.commit('project/setSelectProject', {name: '[Project Name]'});
-      this.$store.commit('project/setViewNaviList', {menus: [0, 1, 2, 3, 4]});
+      this.$store.commit('project/setViewNaviList', {menus: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]});
       this.$store.commit('signal/setLayoutMainSignal', {bool: true});
     }
   }
