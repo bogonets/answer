@@ -126,7 +126,7 @@ export default class ConfigAdminPage extends VueBase {
   miniNavigation = false;
 
   mounted() {
-    this.moveOverview();
+    // EMPTY.
   }
 
   moveOverview() {

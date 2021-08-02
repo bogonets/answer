@@ -10,7 +10,6 @@ en:
     features: "Features"
     created_at: "Created at"
     updated_at: "Updated at"
-    actions: "Actions"
   loading: "Loading... Please wait"
   empty_project: "Empty Project"
 
@@ -25,7 +24,6 @@ ko:
     features: "기능"
     created_at: "생성일"
     updated_at: "갱신일"
-    actions: "관리"
   loading: "불러오는중 입니다... 잠시만 기다려 주세요."
   empty_project: "프로젝트가 존재하지 않습니다."
 </i18n>
@@ -70,12 +68,6 @@ ko:
 
       <template v-slot:item.updated_at="{ item }">
         {{ utcToDate(item.updated_at) }}
-      </template>
-
-      <template v-slot:item.actions="{ item }">
-        <v-icon small @click="onClickEditProject(item)">
-          mdi-pencil
-        </v-icon>
       </template>
 
       <template v-slot:no-data>
@@ -148,13 +140,6 @@ export default class ProjectsPage extends VueBase {
         filterable: false,
         value: 'updated_at',
       },
-      {
-        text: this.$t('headers.actions').toString(),
-        align: 'end',
-        filterable: false,
-        sortable: false,
-        value: 'actions',
-      },
     ]
   }
 
@@ -183,14 +168,9 @@ export default class ProjectsPage extends VueBase {
   }
 
   onClickRow(item) {
-
-    // Legacy way:
+    // Legacy code:
     this.$store.commit("project/setSelectProject", { name: item.name });
-    this.moveToMainProject();
-  }
-
-  onClickEditProject(item) {
-    this.moveToMainProjectsEdit(ANONYMOUS_GROUP, item.name);
+    this.moveToMainProject(ANONYMOUS_GROUP, item.name);
   }
 
   onClickNewProject() {

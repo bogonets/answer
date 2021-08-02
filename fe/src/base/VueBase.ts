@@ -1,5 +1,15 @@
 import { Vue, Watch } from 'vue-property-decorator';
 import { RawLocation } from 'vue-router';
+import VisualMain from "@/pages/_main/project/setting/vgMain.vue";
+import AirJoyManage from "@/components/external/airjoy/AirJoyManage.vue";
+import AirJoyGraph from "@/components/external/airjoy/AirJoyGraph.vue";
+import AirJoyMonitor from "@/components/external/airjoy/AirjoyMonitor.vue";
+import ProjectDashboardPage from "@/pages/main/project/ProjectDashboardPage.vue";
+import LayoutsPage from "@/pages/main/project/LayoutsPage.vue";
+import TablesPage from "@/pages/main/project/TablesPage.vue";
+import FilesPage from "@/pages/main/project/FilesPage.vue";
+import TasksPage from "@/pages/main/project/TasksPage.vue";
+import VmsPage from "@/pages/main/project/VmsPage.vue";
 
 export default class VueBase extends Vue {
 
@@ -27,8 +37,26 @@ export default class VueBase extends Vue {
         mainProjects: '/main/projects',
         mainProjectsNew: '/main/projects/new',
         mainProjectsEdit: '/main/projects/edit',
-        mainProject: '/main/project',
         mainGroups: '/main/groups',
+        mainProject: (group: string, project: string): string => {
+            return `/main/project/${group}/${project}`;
+        },
+    };
+
+    readonly mainPaths = {
+        graph: '/graph_setting',
+        airjoy_manage: '/airjoy_manage',
+        airjoy_graph: '/airjoy_graph',
+        airjoy_monitor: '/airjoy_monitor',
+        dashboard: '/dashboard',
+        layouts: '/layouts',
+        tables: '/tables',
+        files: '/files',
+        tasks: '/tasks',
+        vp: '/vp',
+        vms: '/vms',
+        auth: '/auth_management',
+        settings: '/settings',
     };
 
     @Watch('$vuetify.lang.current')
@@ -142,16 +170,83 @@ export default class VueBase extends Vue {
         this.moveTo(this.paths.mainProjectsNew);
     }
 
-    moveToMainProjectsEdit(group: string, project: string) {
-        const prefix = this.paths.mainProjectsEdit;
-        this.moveTo(`${prefix}?group=${group}&project=${project}`);
-    }
-
-    moveToMainProject() {
-        this.moveTo(this.paths.mainProject);
-    }
-
     moveToMainGroups() {
         this.moveTo(this.paths.mainGroups);
+    }
+
+    // moveToMainProjectsEdit(group: string, project: string) {
+    //     const prefix = this.paths.mainProjectsEdit;
+    //     this.moveTo(`${prefix}?group=${group}&project=${project}`);
+    // }
+
+    moveToMainProject(group: string, project: string) {
+        this.moveTo(this.paths.mainProject(group, project));
+    }
+
+    private get routeParamsGroup(): string {
+        return this.$route.params.group;
+    }
+
+    private get routeParamsProject(): string {
+        return this.$route.params.project;
+    }
+
+    moveToMainProjectSubpage(subpage: string) {
+        const group = this.routeParamsGroup;
+        const project = this.routeParamsProject;
+        const prefix = this.paths.mainProject(group, project);
+        this.moveTo(prefix + subpage);
+    }
+
+    moveToMainProjectGraph() {
+        this.moveToMainProjectSubpage(this.mainPaths.graph);
+    }
+
+    moveToMainProjectAirjoyManage() {
+        this.moveToMainProjectSubpage(this.mainPaths.airjoy_manage);
+    }
+
+    moveToMainProjectAirjoyGraph() {
+        this.moveToMainProjectSubpage(this.mainPaths.airjoy_graph);
+    }
+
+    moveToMainProjectAirjoyMonitor() {
+        this.moveToMainProjectSubpage(this.mainPaths.airjoy_monitor);
+    }
+
+    moveToMainProjectDashboard() {
+        this.moveToMainProjectSubpage(this.mainPaths.dashboard);
+    }
+
+    moveToMainProjectLayouts() {
+        this.moveToMainProjectSubpage(this.mainPaths.layouts);
+    }
+
+    moveToMainProjectTables() {
+        this.moveToMainProjectSubpage(this.mainPaths.tables);
+    }
+
+    moveToMainProjectFiles() {
+        this.moveToMainProjectSubpage(this.mainPaths.files);
+    }
+
+    moveToMainProjectTasks() {
+        this.moveToMainProjectSubpage(this.mainPaths.tasks);
+    }
+
+    moveToMainProjectVp() {
+        this.moveToMainProjectSubpage(this.mainPaths.vp);
+    }
+
+    moveToMainProjectVms() {
+        this.moveToMainProjectSubpage(this.mainPaths.vms);
+    }
+
+    moveToMainProjectAuth() {
+        this.moveToMainProjectSubpage(this.mainPaths.auth);
+    }
+
+    moveToMainProjectSettings() {
+        this.moveToMainProjectSubpage(this.mainPaths.settings);
     }
 }

@@ -30,6 +30,14 @@ export default class TasksPage extends VueBase {
 
   navigationItems: object = [];
 
+  get group(): string {
+    return this.$route.params.group;
+  }
+
+  get project(): string {
+    return this.$route.params.project;
+  }
+
   created() {
     this.navigationItems = [
       {
@@ -38,7 +46,7 @@ export default class TasksPage extends VueBase {
         href: this.paths.mainProjects,
       },
       {
-        text: '{project_name}',  // TODO
+        text: this.project,
         disabled: false,
         href: this.paths.mainProjects,
       },

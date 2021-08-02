@@ -1,11 +1,11 @@
 <i18n lang="yaml">
 en:
-  title: "File Browser"
-  subtitle: "Browse the files in the project workspace."
+  title: "Project Settings"
+  subtitle: ""
 
 ko:
-  title: "파일 탐색기"
-  subtitle: "프로젝트 작업공간의 파일을 탐색합니다."
+  title: "프로젝트 설정"
+  subtitle: ""
 </i18n>
 
 <template>
@@ -23,10 +23,10 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 
 @Component({
   components: {
-    ToolbarNavigation
+    ToolbarNavigation,
   }
 })
-export default class FilesPage extends VueBase {
+export default class ProjectSettingsPage extends VueBase {
 
   navigationItems: object = [];
 
@@ -51,7 +51,7 @@ export default class FilesPage extends VueBase {
         href: this.paths.mainProjects,
       },
       {
-        text: 'Files',
+        text: 'Settings',
         disabled: true,
       },
     ];

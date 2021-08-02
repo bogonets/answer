@@ -17,10 +17,10 @@ import Version from '@/pages/Info/Version.vue';
 import NotFound from '@/pages/Error/NotFound.vue';
 
 import AboutPage from '@/pages/main/AboutPage.vue';
-import ConfigAccountPage from '@/pages/main/config/ConfigAccountPage.vue';
-import ConfigAdminPage from '@/pages/main/config/ConfigAdminPage.vue';
+import ConfigAccountPage from '@/pages/main/config/account/ConfigAccountPage.vue';
+import ConfigAdminPage from '@/pages/main/config/admin/ConfigAdminPage.vue';
 import OverviewPage from '@/pages/main/config/admin/OverviewPage.vue';
-import DashboardPage from '@/pages/main/DashboardPage.vue';
+import MainDashboardPage from '@/pages/main/MainDashboardPage.vue';
 import DevelopmentToolsPage from '@/pages/main/DevelopmentToolsPage.vue';
 import LoginPage from '@/pages/LoginPage.vue';
 import MainPage from '@/pages/main/MainPage.vue';
@@ -32,13 +32,15 @@ import SettingsPage from '@/pages/main/config/admin/SettingsPage.vue';
 import LambdasPage from '@/pages/main/config/admin/LambdasPage.vue';
 import UsersNewPage from '@/pages/main/config/admin/UsersNewPage.vue';
 import UsersEditPage from '@/pages/main/config/admin/UsersEditPage.vue';
-import ProjectsEditPage from '@/pages/main/ProjectsEditPage.vue';
 import ProjectsNewPage from '@/pages/main/ProjectsNewPage.vue';
 import TablesPage from "@/pages/main/project/TablesPage.vue";
 import FilesPage from "@/pages/main/project/FilesPage.vue";
 import TasksPage from "@/pages/main/project/TasksPage.vue";
 import VmsPage from "@/pages/main/project/VmsPage.vue";
 import LayoutsPage from "@/pages/main/project/LayoutsPage.vue";
+import ProjectDashboardPage from "@/pages/main/project/ProjectDashboardPage.vue";
+import VisualProgrammingPage from "@/pages/main/project/VisualProgrammingPage.vue";
+import ProjectSettingsPage from "@/pages/main/project/ProjectSettingsPage.vue";
 
 Vue.use(VueRouter);
 
@@ -68,7 +70,7 @@ const routes = [
       },
       {
         path: 'dashboard',
-        component: DashboardPage,
+        component: MainDashboardPage,
       },
       {
         path: 'config/account',
@@ -144,15 +146,11 @@ const routes = [
         component: ProjectsPage,
       },
       {
-        path: 'projects/edit',
-        component: ProjectsEditPage,
-      },
-      {
         path: 'projects/new',
         component: ProjectsNewPage,
       },
       {
-        path: 'project',
+        path: 'project/:group/:project',
         component: Project,
         children: [
           {
@@ -184,6 +182,14 @@ const routes = [
             component: AirJoyMonitor,
           },
           {
+            path: '',
+            redirect: 'dashboard',
+          },
+          {
+            path: 'dashboard',
+            component: ProjectDashboardPage,
+          },
+          {
             path: 'layouts',
             component: LayoutsPage,
           },
@@ -200,8 +206,16 @@ const routes = [
             component: TasksPage,
           },
           {
+            path: 'vp',
+            component: VisualProgrammingPage,
+          },
+          {
             path: 'vms',
             component: VmsPage,
+          },
+          {
+            path: 'settings',
+            component: ProjectSettingsPage,
           },
           {
             path: 'auth_management',
