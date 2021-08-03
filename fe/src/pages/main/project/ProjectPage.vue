@@ -33,7 +33,8 @@ ko:
 </i18n>
 
 <template>
-  <v-container class="project-main">
+  <!-- Avoid using <v-container> to get rid of `max-width` limit on subpages. -->
+  <div class="pa-0">
     <adr-navigation v-if="enableLegacyNavigation">
     </adr-navigation>
     <v-navigation-drawer
@@ -204,7 +205,7 @@ ko:
 
     <router-view>
     </router-view>
-  </v-container>
+  </div>
 </template>
 
 <script lang='ts'>
