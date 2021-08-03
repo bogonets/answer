@@ -17,8 +17,8 @@ import Version from '@/pages/Info/Version.vue';
 import NotFound from '@/pages/Error/NotFound.vue';
 
 import AboutPage from '@/pages/main/AboutPage.vue';
-import ConfigAccountPage from '@/pages/main/config/account/ConfigAccountPage.vue';
-import ConfigAdminPage from '@/pages/main/config/admin/ConfigAdminPage.vue';
+import AccountPage from '@/pages/main/config/account/AccountPage.vue';
+import AdminPage from '@/pages/main/config/admin/AdminPage.vue';
 import OverviewPage from '@/pages/main/config/admin/OverviewPage.vue';
 import MainDashboardPage from '@/pages/main/MainDashboardPage.vue';
 import DevelopmentToolsPage from '@/pages/main/DevelopmentToolsPage.vue';
@@ -74,7 +74,7 @@ const routes = [
       },
       {
         path: 'config/account',
-        component: ConfigAccountPage,
+        component: AccountPage,
         children: [
           {
             path: '',
@@ -88,7 +88,7 @@ const routes = [
       },
       {
         path: 'config/admin',
-        component: ConfigAdminPage,
+        component: AdminPage,
         children: [
           {
             path: '',

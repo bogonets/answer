@@ -10,8 +10,6 @@ ko:
 
 <template>
   <v-container class="pa-0 fill-width">
-    <v-system-bar></v-system-bar>
-
     <v-navigation-drawer
         app
         right
@@ -37,8 +35,21 @@ ko:
     </v-navigation-drawer>
 
     <v-container class="pa-0 fill-width d-flex flex-wrap" :style="contentStyle">
-      <v-card v-for="n in 4" :key="n" outlined tile width="200" height="200">
-        {{ `Column-${n}` }}
+      <v-card
+          v-for="i in maxCards"
+          :key="i"
+          outlined
+          tile
+          class="disconnected-background"
+          :style="cardStyle(i)"
+      >
+        <div class="pa-0 fill-height d-flex align-center justify-center">
+          <v-system-bar absolute lights-out>
+            <v-icon small color="red">mdi-record</v-icon>
+            {{ `CCTV ${i}` }}
+          </v-system-bar>
+          <v-img src="@/assets/logo/answer-logo-notext.svg" max-width="200px" max-height="200px" contain></v-img>
+        </div>
       </v-card>
     </v-container>
 
@@ -51,7 +62,6 @@ import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 
 const TOOLBAR_HEIGHT = 48;
-const SYSTEM_BAR_HEIGHT = 24;
 
 @Component({
   components: {
@@ -63,6 +73,7 @@ export default class VmsPage extends VueBase {
   windowWidth = window.innerWidth;
   windowHeight = window.innerHeight;
 
+  maxCards = 4;
   navigationItems: object = [];
   miniNavigation = false;
 
@@ -85,8 +96,18 @@ export default class VmsPage extends VueBase {
   }
 
   get contentStyle() {
-    const height = this.windowHeight - TOOLBAR_HEIGHT - SYSTEM_BAR_HEIGHT;
+    const height = this.windowHeight - TOOLBAR_HEIGHT;
     return {height: `${height}px`};
+  }
+
+  cardStyle(index: number) {
+    const height = this.windowHeight - TOOLBAR_HEIGHT;
+    const halfHeight = height * 0.5;
+
+    return {
+      width: '50%',
+      height: `${halfHeight}px`
+    };
   }
 
   created() {
@@ -132,5 +153,15 @@ export default class VmsPage extends VueBase {
 <style lang="scss" scoped>
 .fill-width {
   max-width: 100%;
+}
+
+.absolute-position {
+  position: absolute;
+  //position: fixed;
+  //transform: translateX(0%);
+}
+
+.disconnected-background {
+  background: gray;
 }
 </style>

@@ -120,14 +120,10 @@ import { Component } from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 
 @Component
-export default class ConfigAdminPage extends VueBase {
+export default class AdminPage extends VueBase {
 
   currentSubpageIndex = 0;
   miniNavigation = false;
-
-  mounted() {
-    // EMPTY.
-  }
 
   moveOverview() {
     this.moveTo(this.paths.mainConfigAdminOverview);

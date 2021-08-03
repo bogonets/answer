@@ -66,14 +66,10 @@ import { Component } from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 
 @Component
-export default class ConfigAccountPage extends VueBase {
+export default class AccountPage extends VueBase {
 
   currentSubpageIndex = 0;
   miniNavigation = false;
-
-  mounted() {
-    this.moveToMainConfigAccountAppearance();
-  }
 
   get username(): string {
     const username = this.$localStore.user.username;
