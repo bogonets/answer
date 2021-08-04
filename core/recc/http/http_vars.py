@@ -1,9 +1,0 @@
-# -*- coding: utf-8 -*-
-
-DEFAULT_SCHEME = "http"
-DEFAULT_REQUEST_TIMEOUT_SECONDS = 30.0
-
-SLASH = "/"
-URL_PATH_SEPARATOR = SLASH
-
-XML_ROOT_TAG = "data"

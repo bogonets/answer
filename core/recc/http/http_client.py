@@ -3,10 +3,7 @@
 import requests
 from time import time
 from typing import Optional, Tuple
-from recc.http.http_vars import (
-    DEFAULT_SCHEME,
-    DEFAULT_REQUEST_TIMEOUT_SECONDS,
-)
+from recc.variables.http import DEFAULT_SCHEME, DEFAULT_REQUEST_TIMEOUT_SECONDS
 from recc.http import http_urls as u
 
 

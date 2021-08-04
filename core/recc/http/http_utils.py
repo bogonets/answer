@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import reduce
-from recc.http.http_vars import URL_PATH_SEPARATOR
+from recc.variables.http import URL_PATH_SEPARATOR
 from recc.http import http_urls as u
 
 

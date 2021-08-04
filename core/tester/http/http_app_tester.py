@@ -26,13 +26,12 @@ from recc.argparse.default_parser import parse_arguments_to_core_config
 from recc.http.v1 import path_v1 as pv1
 from recc.http.v1.common import get_v1_path
 from recc.http.http_interface import EmptyHttpAppCallback
-from recc.http.http_vars import DEFAULT_SCHEME, URL_PATH_SEPARATOR
 from recc.http.http_app import HttpApp
 from recc.http.http_utils import v2_public_path
 from recc.http import http_data_keys as d
 from recc.http import http_urls as u
 from recc.core.context import Context
-from recc.variables.http import TEST_HTTP_PORT
+from recc.variables.http import TEST_HTTP_PORT, DEFAULT_SCHEME, URL_PATH_SEPARATOR
 
 DEFAULT_ADMIN_USERNAME: Final[str] = "admin"
 DEFAULT_ADMIN_PASSWORD: Final[str] = "0000"
