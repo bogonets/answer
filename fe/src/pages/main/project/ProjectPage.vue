@@ -70,7 +70,7 @@ ko:
 
           <v-list-item link @click.stop="onClickDashboard">
             <v-list-item-icon>
-              <v-icon>mdi-monitor-dashboard</v-icon>
+              <v-icon>mdi-gauge</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('dashboard') }}
