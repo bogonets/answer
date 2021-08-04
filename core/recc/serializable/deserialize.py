@@ -17,7 +17,6 @@ from typing import (
     MutableMapping,
 )
 from datetime import datetime
-from recc.exception.recc_error import ReccDeserializeError
 from recc.serializable.serializable import (
     MAPPING_METHOD_ITEMS,
     MAPPING_METHOD_KEYS,
@@ -331,7 +330,7 @@ def deserialize(
     try:
         return _deserialize_any(version, data, cls, _ROOT_KEY, hint)
     except DeserializeError as e:
-        raise ReccDeserializeError(f"Key(`{e.key}`) error: {e.msg}")
+        raise KeyError(f"Key(`{e.key}`) error: {e.msg}")
 
 
 def deserialize_default(

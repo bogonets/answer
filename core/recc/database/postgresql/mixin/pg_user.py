@@ -3,7 +3,6 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
-from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.user import User, PassInfo
 from recc.database.interfaces.db_user import DbUser
@@ -177,7 +176,7 @@ class PgUser(DbUser, PgBase):
         row = await self.fetch_row(query, username)
         params_msg = f"username={username}"
         if not row:
-            raise ReccNotFoundError(f"Not found user: {params_msg}")
+            raise RuntimeError(f"Not found user: {params_msg}")
         assert len(row) == 2
         logger.info(f"get_user_password_and_salt({params_msg}) ok.")
         return PassInfo(**dict(row))
@@ -188,7 +187,7 @@ class PgUser(DbUser, PgBase):
         row = await self.fetch_row(query, username)
         params_msg = f"username={username}"
         if not row:
-            raise ReccNotFoundError(f"Not found user: {params_msg}")
+            raise RuntimeError(f"Not found user: {params_msg}")
         assert len(row) == 1
         result = row.get("extra", None)
         logger.info(f"get_user_extra({params_msg}) ok.")
@@ -200,7 +199,7 @@ class PgUser(DbUser, PgBase):
         row = await self.fetch_row(query, username)
         params_msg = f"username={username}"
         if not row:
-            raise ReccNotFoundError(f"Not found user: {params_msg}")
+            raise RuntimeError(f"Not found user: {params_msg}")
         assert len(row) == 9
         result = User(**dict(row))
         result.username = username

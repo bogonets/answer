@@ -3,7 +3,6 @@
 import unittest
 from datetime import datetime, timedelta
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
-from recc.exception.recc_error import ReccNotFoundError
 
 
 class PgProjectTestCase(PostgresqlTestCase):
@@ -18,14 +17,14 @@ class PgProjectTestCase(PostgresqlTestCase):
         unknown = "unknown"
         await self.db.create_project(group_uid, name)
 
-        with self.assertRaises(ReccNotFoundError):
+        with self.assertRaises(RuntimeError):
             await self.db.get_project_by_fullpath(unknown, name)
-        with self.assertRaises(ReccNotFoundError):
+        with self.assertRaises(RuntimeError):
             await self.db.get_project_by_fullpath(group_name, unknown)
 
-        with self.assertRaises(ReccNotFoundError):
+        with self.assertRaises(RuntimeError):
             await self.db.get_project_uid_by_fullpath(unknown, name)
-        with self.assertRaises(ReccNotFoundError):
+        with self.assertRaises(RuntimeError):
             await self.db.get_project_uid_by_fullpath(group_name, unknown)
 
     async def test_create_and_get(self):

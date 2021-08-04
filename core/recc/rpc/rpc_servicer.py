@@ -6,7 +6,6 @@ import pickle
 from copy import deepcopy
 from typing import Any, Optional, Union
 from grpc.aio import ServicerContext
-from recc.exception.recc_error import ReccError
 from recc.argparse.config.task_config import TaskConfig
 from recc.argparse.default_namespace import get_default_task_config
 from recc.argparse.injection_values import injection_task_default_values
@@ -139,13 +138,9 @@ class RpcServicer(ReccApiServicer):
     ) -> UploadTemplateA:
         assert isinstance(request.tar, TarFile)
         logger.info(f"UploadTemplate(data={len(request.tar.data)}byte)")
-        try:
-            self._workspace.decompress_templates(request.tar.data)
-            self._workspace.refresh_templates()
-        except ReccError as e:
-            return UploadTemplateA(result=Result(code=e.code, msg=str(e)))
-        else:
-            return UploadTemplateA(result=Result(code=0))
+        self._workspace.decompress_templates(request.tar.data)
+        self._workspace.refresh_templates()
+        return UploadTemplateA(result=Result(code=0))
 
     async def SetTaskBlueprint(
         self, request: SetTaskBlueprintQ, context: ServicerContext

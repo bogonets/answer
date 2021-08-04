@@ -3,7 +3,6 @@
 from functools import reduce
 from datetime import datetime
 from overrides import overrides
-from recc.exception.recc_error import ReccNotReadyError
 from recc.database.interfaces.db_misc import DbMisc
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.tables import CREATE_TABLES, DROP_TABLES
@@ -74,29 +73,29 @@ class PgMisc(DbMisc, PgBase):
     @overrides
     def get_anonymous_group_uid(self) -> int:
         if self._anonymous_group_uid is None:
-            raise ReccNotReadyError("The cache has not been updated")
+            raise RuntimeError("The cache has not been updated")
         return self._anonymous_group_uid
 
     @overrides
     def get_guest_permission_uid(self) -> int:
         if self._guest_permission_uid is None:
-            raise ReccNotReadyError("The cache has not been updated")
+            raise RuntimeError("The cache has not been updated")
         return self._guest_permission_uid
 
     @overrides
     def get_reporter_permission_uid(self) -> int:
         if self._reporter_permission_uid is None:
-            raise ReccNotReadyError("The cache has not been updated")
+            raise RuntimeError("The cache has not been updated")
         return self._reporter_permission_uid
 
     @overrides
     def get_operator_permission_uid(self) -> int:
         if self._operator_permission_uid is None:
-            raise ReccNotReadyError("The cache has not been updated")
+            raise RuntimeError("The cache has not been updated")
         return self._operator_permission_uid
 
     @overrides
     def get_maintainer_permission_uid(self) -> int:
         if self._maintainer_permission_uid is None:
-            raise ReccNotReadyError("The cache has not been updated")
+            raise RuntimeError("The cache has not been updated")
         return self._maintainer_permission_uid

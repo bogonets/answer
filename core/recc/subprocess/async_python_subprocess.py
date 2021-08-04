@@ -2,7 +2,6 @@
 
 from typing import Optional, List, Dict, Tuple
 from functools import reduce
-from recc.exception.recc_error import ReccAbnormalTerminationError, ReccArgumentError
 from recc.subprocess.async_subprocess import (
     AsyncSubprocess,
     ReaderCallable,
@@ -46,7 +45,7 @@ class AsyncPythonSubprocess:
         writable=False,
     ) -> AsyncSubprocess:
         if not subcommands:
-            ReccArgumentError("No subcommands arguments.")
+            ValueError("Empty subcommands arguments")
 
         total_commands = [self._python_executable_path, *subcommands]
         proc = await start_async_subprocess(
@@ -117,7 +116,7 @@ class AsyncPythonSubprocess:
                 stderr_text = reduce(lambda x, y: f"{x} {y}", stderr_lines)
                 params_msg += f",stderr={stderr_text}"
             error_msg = f"pip {subcommands[0]} error: {params_msg}"
-            raise ReccAbnormalTerminationError(error_msg)
+            raise RuntimeError(error_msg)
 
         return stdout_lines, stderr_lines
 

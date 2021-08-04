@@ -5,7 +5,6 @@ from pkgutil import iter_modules, ModuleInfo
 from typing import List
 from functools import reduce
 from importlib import import_module
-from recc.exception.recc_error import ReccNotFoundError
 
 
 def get_module_directory(module) -> str:
@@ -19,7 +18,7 @@ def get_module_directory(module) -> str:
         assert isinstance(module_file, str)
         return os.path.dirname(module_file)
 
-    raise ReccNotFoundError(f"The '{module.__name__}' module path is unknown.")
+    raise RuntimeError(f"The '{module.__name__}' module path is unknown")
 
 
 def merge_import_path(*modules) -> str:
@@ -30,7 +29,7 @@ def list_submodules(module) -> List[ModuleInfo]:
     module_path = getattr(module, "__path__")
     if module_path:
         return [submodule for submodule in iter_modules(module_path)]
-    raise ReccNotFoundError(f"'{module.__name__}' does not have attribute `__path__`")
+    raise RuntimeError(f"'{module.__name__}' does not have attribute `__path__`")
 
 
 def list_submodule_names(module) -> List[str]:

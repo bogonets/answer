@@ -3,7 +3,6 @@
 from typing import List
 from datetime import datetime
 from overrides import overrides
-from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.info import Info
 from recc.database.interfaces.db_info import DbInfo
@@ -63,7 +62,7 @@ class PgInfo(DbInfo, PgBase):
         row = await self.fetch_row(query, key)
         params_msg = f"key={key}"
         if not row:
-            raise ReccNotFoundError(f"Not found info: {params_msg}")
+            raise RuntimeError(f"Not found info: {params_msg}")
         assert len(row) == 3
         result = Info(**dict(row))
         result.key = key

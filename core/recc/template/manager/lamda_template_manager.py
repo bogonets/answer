@@ -7,7 +7,6 @@ from io import BytesIO
 from tarfile import open as tar_open
 from tarfile import TarInfo
 from typing import List, Dict, Optional, Iterable, KeysView, ValuesView
-from recc.exception.recc_error import ReccDeserializeError, ReccNotFoundError
 from recc.package.package_utils import get_module_directory
 from recc.file.permission import is_readable_dir
 from recc.serializable.json import deserialize_json_file
@@ -61,19 +60,16 @@ def create_template(
 ) -> LamdaTemplate:
     template = deserialize_json_file(1, template_path, LamdaTemplate)
     if not template.information:
-        error_msg = f"Empty template information section: {template_path}"
-        raise ReccDeserializeError(error_msg)
+        raise ValueError(f"Empty template information section: {template_path}")
 
     category = template.information.category
     name = template.information.name
 
     if not category:
-        error_msg = f"Empty template category: {template_path}"
-        raise ReccDeserializeError(error_msg)
+        raise ValueError(f"Empty template category: {template_path}")
 
     if not name:
-        error_msg = f"Empty template name: {name}"
-        raise ReccDeserializeError(error_msg)
+        raise ValueError(f"Empty template name: {name}")
 
     runtime_info = RuntimeInformation()
     runtime_info.template_filename = os.path.basename(template_path)
@@ -290,12 +286,11 @@ class LamdaTemplateManager:
             category_to_names = self._builtin_category_to_names
         else:
             params_msg = f"{category}"
-            raise ReccNotFoundError(f"Not found template category: {params_msg}")
+            raise RuntimeError(f"Not found template category: {params_msg}")
 
         assert category in category_to_names
         if name not in category_to_names[category]:
-            params_msg = f"category={category},name={name}"
-            raise ReccNotFoundError(f"Not found template: {params_msg}")
+            raise RuntimeError(f"Not found template: category={category},name={name}")
 
         key = LamdaTemplateKey(position, category, name)
         return self._templates[key]

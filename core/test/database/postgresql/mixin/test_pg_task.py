@@ -3,7 +3,6 @@
 import unittest
 from datetime import datetime, timedelta
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
-from recc.exception.recc_error import ReccNotFoundError
 from recc.variables.database import ANONYMOUS_GROUP_NAME
 
 
@@ -24,18 +23,18 @@ class PgTaskTestCase(PostgresqlTestCase):
         unknown = "unknown"
         await self.db.create_task(self.project.uid, name)
 
-        with self.assertRaises(ReccNotFoundError):
+        with self.assertRaises(RuntimeError):
             await self.db.get_task_by_fullpath(unknown, project, name)
-        with self.assertRaises(ReccNotFoundError):
+        with self.assertRaises(RuntimeError):
             await self.db.get_task_by_fullpath(group, unknown, name)
-        with self.assertRaises(ReccNotFoundError):
+        with self.assertRaises(RuntimeError):
             await self.db.get_task_by_fullpath(group, project, unknown)
 
-        with self.assertRaises(ReccNotFoundError):
+        with self.assertRaises(RuntimeError):
             await self.db.get_task_uid_by_fullpath(unknown, project, name)
-        with self.assertRaises(ReccNotFoundError):
+        with self.assertRaises(RuntimeError):
             await self.db.get_task_uid_by_fullpath(group, unknown, name)
-        with self.assertRaises(ReccNotFoundError):
+        with self.assertRaises(RuntimeError):
             await self.db.get_task_uid_by_fullpath(group, project, unknown)
 
     async def test_create_and_get(self):

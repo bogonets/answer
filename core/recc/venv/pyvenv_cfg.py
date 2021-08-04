@@ -3,11 +3,6 @@
 import os
 from typing import Tuple
 from configparser import ConfigParser
-from recc.exception.recc_error import (
-    ReccArgumentError,
-    ReccNotFoundError,
-    ReccNoReadableError,
-)
 
 PYVENV_CFG_FILENAME = "pyvenv.cfg"
 CFG_KEY_HOME = "home"
@@ -34,13 +29,13 @@ def exists_pyvenv_cfg(env_root: str) -> bool:
 
 def read_pyvenv_cfg(env_root: str) -> PyvenvCfg:
     if not env_root:
-        raise ReccArgumentError("Empty argument.")
+        raise ValueError("Empty argument")
 
     cfg_path = os.path.join(env_root, PYVENV_CFG_FILENAME)
     if not os.path.isfile(cfg_path):
-        raise ReccNotFoundError(f"Not found '{cfg_path}' file.")
+        raise FileNotFoundError(f"Not found '{cfg_path}' file")
     if not os.access(cfg_path, os.R_OK):
-        raise ReccNoReadableError(f"Not readable '{cfg_path}' file.")
+        raise PermissionError(f"Not readable '{cfg_path}' file")
 
     with open(cfg_path) as f:
         content = _FAKE_DEFAULT_SECTION + "\n" + f.read()

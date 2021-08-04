@@ -10,14 +10,6 @@ from recc.container.struct.container_status import ContainerStatus
 from recc.container.struct.container_info import ContainerInfo
 from recc.container.struct.port_binding_guest import PortBindingGuest
 from recc.core.mixin.context_base import ContextBase
-from recc.exception.recc_error import (
-    ReccAlreadyError,
-    ReccArgumentError,
-    ReccNotReadyError,
-    ReccStateError,
-    ReccNotFoundError,
-    ReccTimeoutError,
-)
 from recc.rule.naming_base import valid_naming
 from recc.rule.naming_task import naming_task
 from recc.log.logging import recc_core_logger as logger
@@ -48,11 +40,11 @@ class ContextTask(ContextBase):
 
     async def connect_global_network(self) -> None:
         if not self.container.is_open():
-            raise ReccNotReadyError("The container-manager is not ready.")
+            raise RuntimeError("The container-manager is not ready")
 
         if self.is_host_mode():
-            msg = "You can connect to the global network only in guest mode."
-            raise ReccStateError(msg)
+            msg = "You can connect to the global network only in guest mode"
+            raise RuntimeError(msg)
 
         assert self.container_key
         network_key = await self.prepare_global_task_network()
@@ -62,11 +54,11 @@ class ContextTask(ContextBase):
 
     async def disconnect_global_network(self) -> None:
         if not self.container.is_open():
-            raise ReccNotReadyError("The container-manager is not ready.")
+            raise RuntimeError("The container-manager is not ready")
 
         if self.is_host_mode():
-            msg = "You can connect to the global network only in guest mode."
-            raise ReccStateError(msg)
+            msg = "You can connect to the global network only in guest mode"
+            raise RuntimeError(msg)
 
         assert self.container_key
         network_key = await self.prepare_global_task_network()
@@ -103,7 +95,7 @@ class ContextTask(ContextBase):
         try:
             task_uid = await self.database.get_task_uid_by_name(project_uid, task_name)
             await self.database.update_task_by_uid(task_uid, **kwargs)  # UPDATE
-        except ReccNotFoundError:
+        except BaseException:  # noqa
             await self.database.create_task(project_uid, **kwargs)  # INSERT
 
     async def run_task(
@@ -125,17 +117,17 @@ class ContextTask(ContextBase):
         verbose_level: Optional[int] = None,
     ) -> RpcClient:
         if self.is_host_mode() and not os.path.isdir(self.storage.get_root_directory()):
-            raise ReccNotReadyError("In Host mode, the storage path must be specified.")
+            raise RuntimeError("In Host mode, the storage path must be specified")
 
         if not valid_naming(group_name):
-            raise ReccArgumentError(f"Invalid group name: {group_name}")
+            raise ValueError(f"Invalid group name: {group_name}")
         if not valid_naming(project_name):
-            raise ReccArgumentError(f"Invalid project name: {project_name}")
+            raise ValueError(f"Invalid project name: {project_name}")
         if not valid_naming(task_name):
-            raise ReccArgumentError(f"Invalid task name: {task_name}")
+            raise ValueError(f"Invalid task name: {task_name}")
 
         if await self.container.exist_task(group_name, project_name, task_name):
-            raise ReccAlreadyError("A container already created exists.")
+            raise RuntimeError("A container already created exists")
 
         if rpc_bind:
             bind = rpc_bind
@@ -172,7 +164,7 @@ class ContextTask(ContextBase):
 
         if self.is_host_mode():
             if rpc_guest_port in ports:
-                raise ValueError("`publish_ports` must not contain RPC ports.")
+                raise RuntimeError("`publish_ports` must not contain RPC ports")
 
             expose_port = self.ports.alloc()
             ports[rpc_guest_port] = expose_port
@@ -205,13 +197,13 @@ class ContextTask(ContextBase):
 
             container = await self.container.get_container(container.key)
             if container.status != ContainerStatus.Running:
-                raise LookupError(f"Invalid status: {container.status}")
+                raise RuntimeError(f"Invalid status: {container.status}")
 
             if self.is_host_mode():
                 # [WARNING] When a port is assigned, it must be bound in the guest.
                 host_bindings = container.ports[PortBindingGuest(port, rpc_protocol)]
                 if not host_bindings:
-                    raise RuntimeError("No exposed ports.")
+                    raise RuntimeError("No exposed ports")
                 host_binding_port = host_bindings[0].port
                 access_rpc_address = f"localhost:{host_binding_port}"
             else:
@@ -270,11 +262,11 @@ class ContextTask(ContextBase):
         retries=DEFAULT_WAIT_TASK_RETRIES,
     ) -> None:
         if interval <= 0:
-            raise ReccArgumentError("'interval' must be greater than 0.")
+            raise ValueError("'interval' must be greater than 0")
         if timeout <= 0:
-            raise ReccArgumentError("'timeout' must be greater than 0.")
+            raise ValueError("'timeout' must be greater than 0")
         if retries <= 0:
-            raise ReccArgumentError("'retries' must be greater than 0.")
+            raise ValueError("'retries' must be greater than 0")
 
         for try_count in range(retries):
 
@@ -299,7 +291,7 @@ class ContextTask(ContextBase):
             )
 
             if not connection_result:
-                raise ReccTimeoutError(f"Connection timeout: {rpc_address}")
+                raise TimeoutError(f"Connection timeout: {rpc_address}")
 
     async def create_task_client(
         self,
@@ -416,14 +408,14 @@ class ContextTask(ContextBase):
         assert project.uid is not None
 
         if not isinstance(extra, dict):
-            raise ReccArgumentError("extra must be of type `dict`.")
+            raise TypeError("extra must be of type `dict`")
 
         graph = bp_converter(extra)
         if graph is None:
-            raise ReccArgumentError("Could not find `graph` in `extra` argument.")
+            raise KeyError("Could not find `graph` in `extra` argument")
 
         if graph.tasks is None:
-            raise ReccArgumentError("Could not find `tasks` in `extra` argument.")
+            raise KeyError("Could not find `tasks` in `extra.graph` argument")
 
         # Clear containers.
         for c in await self.container.get_tasks(group_name, project_name):

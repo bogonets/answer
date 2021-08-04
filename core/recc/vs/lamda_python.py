@@ -3,7 +3,6 @@
 import builtins
 from typing import Optional, Any, Dict, List
 from importlib.machinery import BuiltinImporter
-from recc.exception.recc_error import ReccNotFoundError, ReccInitError
 from recc.venv.pyvenv_cfg import read_site_packages_dir
 from recc.blueprint.blueprint import BpProperty
 from recc.vs.lamda_interface import REQUEST_METHOD_SET, REQUEST_METHOD_GET, Lamda
@@ -147,7 +146,7 @@ class LamdaPython(Lamda):
 
     def _request(self, method: str, key: str, value: Any = None, **options) -> Any:
         if NAME_ON_REQUEST not in self._global_variables:
-            raise ReccNotFoundError(f"Not found `{NAME_ON_REQUEST}` function.")
+            raise RuntimeError(f"Not found `{NAME_ON_REQUEST}` function")
 
         local_variables: Dict[str, Any] = {
             VAR_NAME_METHOD: method,
@@ -160,7 +159,7 @@ class LamdaPython(Lamda):
 
     def _get(self, key: str) -> Any:
         if NAME_ON_GET not in self._global_variables:
-            raise ReccNotFoundError(f"Not found `{NAME_ON_GET}` function.")
+            raise RuntimeError(f"Not found `{NAME_ON_GET}` function")
 
         local_variables = {VAR_NAME_KEY: key}
         exec(self._on_get_ast, self._global_variables, local_variables)
@@ -176,7 +175,7 @@ class LamdaPython(Lamda):
 
     def _set(self, key: str, value: Any = None) -> None:
         if NAME_ON_SET not in self._global_variables:
-            raise ReccNotFoundError(f"Not found `{NAME_ON_SET}` function.")
+            raise RuntimeError(f"Not found `{NAME_ON_SET}` function")
 
         if self._template.get_version_tuple() >= (2, 0):
             assign_value = value
@@ -209,7 +208,7 @@ class LamdaPython(Lamda):
 
         assert VAR_NAME_RESULT in local_variables
         if not bool(local_variables[VAR_NAME_RESULT]):
-            raise ReccInitError("Initialization failed.")
+            raise RuntimeError("Initialization failed")
 
     def valid(self) -> bool:
         if NAME_ON_VALID not in self._global_variables:

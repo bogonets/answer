@@ -12,11 +12,6 @@ from asyncio.subprocess import Process, PIPE
 from asyncio.streams import StreamReader, StreamWriter
 from typing import Optional, Callable
 from functools import reduce
-from recc.exception.recc_error import (
-    ReccNotReadyError,
-    ReccNoWritableError,
-    ReccAlreadyError,
-)
 
 ReaderCallable = Callable[[bytes], None]
 
@@ -106,7 +101,7 @@ class AsyncSubprocess:
 
     async def start(self) -> None:
         if self._process is not None:
-            raise ReccAlreadyError("Already started process.")
+            raise RuntimeError("Already started process")
 
         self._process = await self.create_subprocess()
 
@@ -127,15 +122,15 @@ class AsyncSubprocess:
     @property
     def process(self) -> Process:
         if not self._process:
-            raise ReccNotReadyError("Process is not started.")
+            raise RuntimeError("Process is not started")
         return self._process
 
     @property
     def stdin(self) -> StreamWriter:
         if not self._process:
-            raise ReccNotReadyError("Process is not started.")
+            raise RuntimeError("Process is not started")
         if not self._writable:
-            raise ReccNoWritableError("The writable flag is disabled.")
+            raise RuntimeError("The writable flag is disabled")
         assert self._process.stdin
         return self._process.stdin
 

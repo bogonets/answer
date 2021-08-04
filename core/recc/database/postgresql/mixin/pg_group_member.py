@@ -2,7 +2,6 @@
 
 from typing import List
 from overrides import overrides
-from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.group_member import GroupMember
 from recc.database.interfaces.db_group_member import DbGroupMember
@@ -54,7 +53,7 @@ class PgGroupMember(DbGroupMember, PgBase):
         row = await self.fetch_row(query, group_uid, user_uid)
         params_msg = f"group_uid={group_uid},user_uid={user_uid}"
         if not row:
-            raise ReccNotFoundError(f"Not found group member: {params_msg}")
+            raise RuntimeError(f"Not found group member: {params_msg}")
         assert len(row) == 1
         result = GroupMember(**dict(row))
         result.group_uid = group_uid

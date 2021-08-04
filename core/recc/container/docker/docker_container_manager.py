@@ -6,11 +6,6 @@ from typing import Optional, List, Dict, Any
 from enum import Enum
 from docker import DockerClient
 from overrides import overrides
-from recc.exception.recc_error import (
-    ReccNotFoundError,
-    ReccArgumentError,
-    ReccAlreadyError,
-)
 from recc.log.logging import recc_container_logger as logger
 from recc.rule.naming_base import valid_naming
 from recc.rule.naming_task import (
@@ -60,13 +55,13 @@ DOCKER_CGROUP_REGEX = re.compile(r"\d+:[\w=]+:/docker(-[ce]e)?/(\w+)")
 def _get_current_container_key_from_common_host() -> str:
     value = os.environ.get("HOSTNAME")
     if value is None:
-        raise ReccNotFoundError("Not found current container key.")
+        raise RuntimeError("Not found current container key")
     return value
 
 
 def _get_current_container_key_from_ubuntu_host() -> str:
     if not os.path.isfile(SELF_CGROUP_PATH):
-        raise ReccNotFoundError("Not found cgroup file.")
+        raise FileNotFoundError("Not found cgroup file")
     with open(SELF_CGROUP_PATH) as f:
         for line in f:
             result = DOCKER_CGROUP_REGEX.search(line)
@@ -76,7 +71,7 @@ def _get_current_container_key_from_ubuntu_host() -> str:
             assert len(groups) == 2
             assert isinstance(groups[1], str)
             return groups[1]
-    raise ReccNotFoundError("Not found current container key. (by cgroup)")
+    raise RuntimeError("Not found current container key (by cgroup)")
 
 
 class BaseHostType(Enum):
@@ -99,7 +94,7 @@ def _get_current_container_key(host=BaseHostType.Unknown) -> str:
 def _inside_container(host=BaseHostType.Unknown) -> bool:
     try:
         _get_current_container_key(host)
-    except ReccNotFoundError:
+    except BaseException:  # noqa
         return False
     else:
         return True
@@ -200,7 +195,7 @@ class DockerContainerManager(
         nodes = await self.get_tasks(group_name, project_name, task_name)
         if not nodes:
             params = f"group={group_name},project={project_name},task={task_name}"
-            raise ReccNotFoundError(f"Not found node: {params}")
+            raise RuntimeError(f"Not found node: {params}")
         return nodes[0]
 
     @overrides
@@ -229,7 +224,7 @@ class DockerContainerManager(
         volumes = await self.get_task_volumes(group_name, project_name)
         if not volumes:
             params = f"group={group_name},project={project_name}"
-            raise ReccNotFoundError(f"Not found volume: {params}")
+            raise RuntimeError(f"Not found volume: {params}")
         return volumes[0]
 
     @overrides
@@ -256,7 +251,7 @@ class DockerContainerManager(
         networks = await self.get_task_networks(group_name, project_name)
         if not networks:
             params = f"group={group_name},project={project_name}"
-            raise ReccNotFoundError(f"Not found network: {params}")
+            raise RuntimeError(f"Not found network: {params}")
         return networks[0]
 
     @overrides
@@ -308,7 +303,7 @@ class DockerContainerManager(
     ) -> None:
         image_name = image_full_name if image_full_name else TASK_IMAGE_LATEST_FULLNAME
         if image_name in await self.images():
-            raise ReccAlreadyError(f"Docker image already exists: {image_name}")
+            raise RuntimeError(f"Docker image already exists: {image_name}")
 
         context_bytes = get_compressed_task_dockerfile_tar(
             base_image=base_image,
@@ -347,11 +342,11 @@ class DockerContainerManager(
         verbose_level=0,
     ) -> ContainerInfo:
         if not valid_naming(group_name):
-            raise ReccArgumentError(f"Invalid group name: {group_name}")
+            raise ValueError(f"Invalid group name: {group_name}")
         if not valid_naming(project_name):
-            raise ReccArgumentError(f"Invalid project name: {project_name}")
+            raise ValueError(f"Invalid project name: {project_name}")
         if not valid_naming(task_name):
-            raise ReccArgumentError(f"Invalid task name: {task_name}")
+            raise ValueError(f"Invalid task name: {task_name}")
 
         kwargs = {
             "detach": True,

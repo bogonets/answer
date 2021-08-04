@@ -3,7 +3,6 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
-from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.widget import Widget
 from recc.database.interfaces.db_widget import DbWidget
@@ -93,7 +92,7 @@ class PgWidget(DbWidget, PgBase):
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
         if not row:
-            raise ReccNotFoundError(f"Not found widget: {params_msg}")
+            raise RuntimeError(f"Not found widget: {params_msg}")
         assert len(row) == 6
         result = Widget(**dict(row))
         result.uid = uid
@@ -106,7 +105,7 @@ class PgWidget(DbWidget, PgBase):
         row = await self.fetch_row(query, layout_uid, name)
         params_msg = f"layout_uid={layout_uid},name={name}"
         if not row:
-            raise ReccNotFoundError(f"Not found widget({params_msg})")
+            raise RuntimeError(f"Not found widget({params_msg})")
         assert len(row) == 5
         result = Widget(**dict(row))
         result.layout_uid = layout_uid

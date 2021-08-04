@@ -3,7 +3,6 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
-from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.project import Project
 from recc.database.interfaces.db_project import DbProject
@@ -148,7 +147,7 @@ class PgProject(DbProject, PgBase):
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
         if not row:
-            raise ReccNotFoundError(f"Not found project: {params_msg}")
+            raise RuntimeError(f"Not found project: {params_msg}")
         result = Project(**dict(row))
         assert result.uid == uid
         logger.info(f"get_project_by_uid({params_msg}) ok.")
@@ -160,7 +159,7 @@ class PgProject(DbProject, PgBase):
         row = await self.fetch_row(query, group_uid, name)
         params_msg = f"group_uid={group_uid},name={name}"
         if not row:
-            raise ReccNotFoundError(f"Not found project: {params_msg}")
+            raise RuntimeError(f"Not found project: {params_msg}")
         result = Project(**dict(row))
         assert result.group_uid == group_uid
         assert result.name == name
@@ -190,9 +189,9 @@ class PgProject(DbProject, PgBase):
         row = await self.fetch_row(query, group_name, project_name)
         params_msg = f"group={group_name},project={project_name}"
         if not row:
-            raise ReccNotFoundError(f"Not found project: {params_msg}")
+            raise RuntimeError(f"Not found project: {params_msg}")
         if row.get("uid") is None:
-            raise ReccNotFoundError(f"Not found project: {params_msg}")
+            raise RuntimeError(f"Not found project: {params_msg}")
         result = Project(**dict(row))
         assert result.name == project_name
         logger.info(f"get_project_by_fullpath({params_msg}) ok.")
@@ -206,9 +205,9 @@ class PgProject(DbProject, PgBase):
         row = await self.fetch_row(query, group_name, project_name)
         params_msg = f"group={group_name},project={project_name}"
         if not row:
-            raise ReccNotFoundError(f"Not found project: {params_msg}")
+            raise RuntimeError(f"Not found project: {params_msg}")
         result = row.get("uid")
         if result is None:
-            raise ReccNotFoundError(f"Not found project: {params_msg}")
+            raise RuntimeError(f"Not found project: {params_msg}")
         logger.info(f"get_project_uid_by_fullpath({params_msg}) -> {result}")
         return result

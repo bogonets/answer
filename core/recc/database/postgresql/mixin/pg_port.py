@@ -3,7 +3,6 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
-from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.port import Port
 from recc.database.interfaces.db_port import DbPort
@@ -103,7 +102,7 @@ class PgPort(DbPort, PgBase):
         row = await self.fetch_row(query, number)
         params_msg = f"number={number}"
         if not row:
-            raise ReccNotFoundError(f"Not found widget: {params_msg}")
+            raise RuntimeError(f"Not found widget: {params_msg}")
         assert len(row) == 7
         result = Port(**dict(row))
         result.number = number

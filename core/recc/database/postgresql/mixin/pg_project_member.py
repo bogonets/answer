@@ -2,7 +2,6 @@
 
 from typing import List
 from overrides import overrides
-from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.project_member import ProjectMember
 from recc.database.interfaces.db_project_member import DbProjectMember
@@ -56,7 +55,7 @@ class PgProjectMember(DbProjectMember, PgBase):
         row = await self.fetch_row(query, project_uid, user_uid)
         params_msg = f"project_uid={project_uid},user_uid={user_uid}"
         if not row:
-            raise ReccNotFoundError(f"Not found project member: {params_msg}")
+            raise RuntimeError(f"Not found project member: {params_msg}")
         assert len(row) == 1
         result = ProjectMember(**dict(row))
         result.project_uid = project_uid

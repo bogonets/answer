@@ -85,8 +85,7 @@ assert TASK_NUMA_MEMORY_NODES_STR_SIZE == len(_MAXIMUM_NUMA_EXAMPLE)
 TASK_BASE_IMAGE_STR_SIZE = 128
 FEATURE_NAME_STR_SIZE = 128
 
-# You should be able to enter a group name in the URL path.
-ANONYMOUS_GROUP_NAME = ""  # "-"  # TODO
+ANONYMOUS_GROUP_NAME = ""
 assert len(ANONYMOUS_GROUP_NAME) == 0, "Anonymous groups do not have a name."
 ANONYMOUS_GROUP_DESCRIPTION = "Anonymous Group"
 

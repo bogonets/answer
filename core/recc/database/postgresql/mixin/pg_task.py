@@ -3,7 +3,6 @@
 from typing import Optional, Any, List, Dict
 from datetime import datetime
 from overrides import overrides
-from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.task import Task
 from recc.database.interfaces.db_task import DbTask
@@ -201,7 +200,7 @@ class PgTask(DbTask, PgBase):
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
         if not row:
-            raise ReccNotFoundError(f"Not found task: {params_msg}")
+            raise RuntimeError(f"Not found task: {params_msg}")
         result = Task(**dict(row))
         assert result.uid == uid
         logger.info(f"get_task_by_uid({params_msg}) ok.")
@@ -213,7 +212,7 @@ class PgTask(DbTask, PgBase):
         row = await self.fetch_row(query, project_uid, name)
         params_msg = f"project_uid={project_uid},name={name}"
         if not row:
-            raise ReccNotFoundError(f"Not found task: {params_msg}")
+            raise RuntimeError(f"Not found task: {params_msg}")
         result = Task(**dict(row))
         assert result.project_uid == project_uid
         assert result.name == name
@@ -226,10 +225,10 @@ class PgTask(DbTask, PgBase):
         row = await self.fetch_row(query, project_uid, name)
         params_msg = f"project_uid={project_uid},name={name}"
         if not row:
-            raise ReccNotFoundError(f"Not found task: {params_msg}")
+            raise RuntimeError(f"Not found task: {params_msg}")
         result = row.get("uid")
         if result is None:
-            raise ReccNotFoundError(f"Not found task: {params_msg}")
+            raise RuntimeError(f"Not found task: {params_msg}")
         logger.info(f"get_task_uid_by_name({params_msg}) -> {result}")
         return result
 
@@ -256,9 +255,9 @@ class PgTask(DbTask, PgBase):
         row = await self.fetch_row(query, group_name, project_name, task_name)
         params_msg = f"group={group_name},project={project_name},task={task_name}"
         if not row:
-            raise ReccNotFoundError(f"Not found task: {params_msg}")
+            raise RuntimeError(f"Not found task: {params_msg}")
         if row.get("uid") is None:
-            raise ReccNotFoundError(f"Not found task: {params_msg}")
+            raise RuntimeError(f"Not found task: {params_msg}")
         result = Task(**dict(row))
         assert result.name == task_name
         logger.info(f"get_task_by_fullpath({params_msg}) ok.")
@@ -272,9 +271,9 @@ class PgTask(DbTask, PgBase):
         row = await self.fetch_row(query, group_name, project_name, task_name)
         params_msg = f"group={group_name},project={project_name},task={task_name}"
         if not row:
-            raise ReccNotFoundError(f"Not found task: {params_msg}")
+            raise RuntimeError(f"Not found task: {params_msg}")
         result = row.get("uid")
         if result is None:
-            raise ReccNotFoundError(f"Not found task: {params_msg}")
+            raise RuntimeError(f"Not found task: {params_msg}")
         logger.info(f"get_task_uid_by_fullpath({params_msg}) -> {result}")
         return result

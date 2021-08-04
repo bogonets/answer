@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from typing import Dict, List, Optional, Iterable
-from recc.exception.recc_error import ReccNotFoundError
 from recc.variables.labels import (
     RECC_CLUSTER_KEY,
     RECC_CLUSTER_VAL_TRUE,
@@ -60,7 +59,7 @@ def find_label(labels: Iterable[str], key: str) -> str:
     for label in labels:
         if label.strip().startswith(key):
             return label
-    raise ReccNotFoundError(f"Not found label: {key}")
+    raise RuntimeError(f"Not found label: {key}")
 
 
 def find_label_value(labels: Iterable[str], key: str) -> str:

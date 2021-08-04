@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from recc.exception.recc_error import ReccDecodeError
-
 
 class BearerAuth:
     """
@@ -22,10 +20,10 @@ class BearerAuth:
 
         split = auth_header.strip().split(" ")
         if len(split) != 2:
-            raise ReccDecodeError("Could not parse authorization header.")
+            raise ValueError("Could not parse authorization header")
 
         if split[0].strip().lower() != cls.TYPE_LOWER:
-            raise ReccDecodeError(f"Unknown authorization method {split[0]}")
+            raise ValueError(f"Unknown authorization method {split[0]}")
 
         return cls(split[1].strip())
 

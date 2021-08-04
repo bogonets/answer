@@ -3,7 +3,6 @@
 from enum import Enum
 from typing import Tuple, List, Any
 from abc import ABCMeta, abstractmethod
-from recc.exception.recc_error import ReccArgumentError, ReccOperatorError
 
 QueryString = str
 Arguments = List[Any]
@@ -100,8 +99,8 @@ class WhereStatement:
             if op == Operator.EQUAL:
                 self._base.wheres += f"{key} IS NULL"
             else:
-                msg = "If the value is None, the Operator only allows EQUAL."
-                raise ReccOperatorError(msg)
+                msg = "If the value is None, the Operator only allows EQUAL"
+                raise ValueError(msg)
         else:
             self._base.wheres += f"{key} {op.query} ${self._base.insert_index}"
             self._base.arguments.append(value)
@@ -110,7 +109,7 @@ class WhereStatement:
     def _condition_by_dict(self, op: Operator, **kwargs) -> "WhereStatement":
         items = kwargs.items()
         if len(items) != 1:
-            raise ReccArgumentError("Only one argument is allowed.")
+            raise ValueError("Only one argument is allowed")
         key, val = list(items)[0]
         self.condition(key, op, val)
         return self

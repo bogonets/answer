@@ -2,7 +2,6 @@
 
 from typing import Dict, List, Optional, Any, Iterable
 from functools import reduce
-from recc.exception.recc_error import ReccArgumentError
 from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_register
 from recc.mime.mime_codec import MimeEncoder, MimeDecoder
 from recc.sequence.sequencer_interface import SequencerInterface
@@ -390,16 +389,16 @@ class TaskGraph:
 
     def set_blueprint(self, bp_task: BpTask, tm: LamdaTemplateManager) -> None:
         if not bp_task.nodes:
-            raise ReccArgumentError("Empty nodes")
+            raise ValueError("Empty nodes")
 
         for node_name, bp_node in bp_task.nodes.items():
             template_category = bp_node.template_category
             template_name = bp_node.template_name
 
             if template_category is None:
-                raise ReccArgumentError("Empty template category")
+                raise ValueError("Empty template category")
             if template_name is None:
-                raise ReccArgumentError("Empty template name")
+                raise ValueError("Empty template name")
 
             template = tm.find_template(template_category, template_name)
             template_edge = template.get_edge()
@@ -422,41 +421,41 @@ class TaskGraph:
                 if template.controller.flow_inputs:
                     for fi in template.controller.flow_inputs:
                         if not fi.name:
-                            raise ReccArgumentError(_ERR_MSG_NO_IFC_NAME)
+                            raise ValueError(_ERR_MSG_NO_IFC_NAME)
                         self.add_input_flow_slot(fi.name, node)
                 if template.controller.flow_outputs:
                     for fo in template.controller.flow_outputs:
                         if not fo.name:
-                            raise ReccArgumentError(_ERR_MSG_NO_OFC_NAME)
+                            raise ValueError(_ERR_MSG_NO_OFC_NAME)
                         self.add_output_flow_slot(fo.name, node)
 
                 if template.controller.data_inputs:
                     for di in template.controller.data_inputs:
                         if not di.name:
-                            raise ReccArgumentError(_ERR_MSG_NO_IDC_NAME)
+                            raise ValueError(_ERR_MSG_NO_IDC_NAME)
                         self.add_input_data_slot(di.name, node)
                 if template.controller.data_outputs:
                     for do in template.controller.data_outputs:
                         if not do.name:
-                            raise ReccArgumentError(_ERR_MSG_NO_ODC_NAME)
+                            raise ValueError(_ERR_MSG_NO_ODC_NAME)
                         self.add_output_data_slot(do.name, node)
 
         if bp_task.arcs:
             for arc_name, bp_arc in bp_task.arcs.items():
                 if not bp_arc.back:
-                    raise ReccArgumentError(_ERR_MSG_NO_BACK_ARC)
+                    raise ValueError(_ERR_MSG_NO_BACK_ARC)
                 if not bp_arc.front:
-                    raise ReccArgumentError(_ERR_MSG_NO_FRONT_ARC)
+                    raise ValueError(_ERR_MSG_NO_FRONT_ARC)
 
                 if not bp_arc.back.node:
-                    raise ReccArgumentError(_ERR_MSG_NO_BACK_NODE_NAME)
+                    raise ValueError(_ERR_MSG_NO_BACK_NODE_NAME)
                 if not bp_arc.back.slot:
-                    raise ReccArgumentError(_ERR_MSG_NO_BACK_SLOT_NAME)
+                    raise ValueError(_ERR_MSG_NO_BACK_SLOT_NAME)
 
                 if not bp_arc.front.node:
-                    raise ReccArgumentError(_ERR_MSG_NO_FRONT_NODE_NAME)
+                    raise ValueError(_ERR_MSG_NO_FRONT_NODE_NAME)
                 if not bp_arc.front.slot:
-                    raise ReccArgumentError(_ERR_MSG_NO_FRONT_SLOT_NAME)
+                    raise ValueError(_ERR_MSG_NO_FRONT_SLOT_NAME)
 
                 back_slot = Slot.create_key(bp_arc.back.node, bp_arc.back.slot)
                 front_slot = Slot.create_key(bp_arc.front.node, bp_arc.front.slot)

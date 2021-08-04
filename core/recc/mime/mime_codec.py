@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, Union, Any, Callable
-from recc.exception.recc_error import ReccArgumentError
 from recc.mime.mime_type import MimeType
 
 MimeEncoder = Callable[[Any], bytes]
@@ -20,7 +19,7 @@ class MimeCodec:
         elif isinstance(mime, MimeType):
             self.mime = mime
         else:
-            raise ReccArgumentError(f"Invalid `mime` type: {type(mime).__name__}")
+            raise ValueError(f"Invalid `mime` type: {type(mime).__name__}")
 
         self.encoder = encoder
         self.decoder = decoder

@@ -5,7 +5,6 @@ import grpc
 import pickle
 from typing import Optional, Callable, List, Any, TypeVar
 from grpc.aio._channel import Channel  # noqa
-from recc.exception.recc_error import RECC_CODE_TO_ERROR_TYPE_MAP, ReccRpcResponseError
 from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_register
 from recc.serializable.json import serialize_json_text
 from recc.blueprint.blueprint import BpTask
@@ -130,20 +129,6 @@ async def try_connection(
     return False
 
 
-def _check_result_code(code: int, msg: str) -> None:
-    if code == 0:
-        return
-    if code in RECC_CODE_TO_ERROR_TYPE_MAP:
-        raise RECC_CODE_TO_ERROR_TYPE_MAP[code](msg)
-    else:
-        raise ReccRpcResponseError(f"Result(code={code},msg='{msg}')")
-
-
-def _check_result(result) -> None:
-    assert isinstance(result, Result)
-    _check_result_code(result.code, result.msg)
-
-
 class RpcClient:
 
     _channel: Optional[Channel] = None
@@ -227,14 +212,14 @@ class RpcClient:
         request = UploadTemplateQ(tar=TarFile(data=data))
         response = await self._stub.UploadTemplate(request, **self._options)
         assert isinstance(response, UploadTemplateA)
-        _check_result(response.result)
+        assert isinstance(response.result, Result)
 
     async def set_task_blueprint_json(self, task_json: str) -> None:
         assert self._stub is not None
         request = SetTaskBlueprintQ(json=task_json)
         response = await self._stub.SetTaskBlueprint(request, **self._options)
         assert isinstance(response, SetTaskBlueprintA)
-        _check_result(response.result)
+        assert isinstance(response.result, Result)
 
     async def set_task_blueprint(self, task: BpTask, version=1) -> None:
         task_json = serialize_json_text(version, task)
@@ -246,7 +231,7 @@ class RpcClient:
         request = GetNodePropertyQ(path=path)
         response = await self._stub.GetNodeProperty(request, **self._options)
         assert isinstance(response, GetNodePropertyA)
-        _check_result(response.result)
+        assert isinstance(response.result, Result)
         return pickle.loads(response.data)
 
     async def set_node_property(self, node: str, prop: str, value: Any) -> None:
@@ -256,7 +241,7 @@ class RpcClient:
         request = SetNodePropertyQ(path=path, data=encoded_data)
         response = await self._stub.SetNodeProperty(request, **self._options)
         assert isinstance(response, SetNodePropertyA)
-        _check_result(response.result)
+        assert isinstance(response.result, Result)
 
     async def send_signal(
         self,
@@ -272,7 +257,7 @@ class RpcClient:
         )
         response = await self._stub.SendSignal(request, **self._options)
         assert isinstance(response, SendSignalA)
-        _check_result(response.result)
+        assert isinstance(response.result, Result)
         return cvt_box_datas(response.extracted_slots, self._unpickling)
 
 

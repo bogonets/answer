@@ -3,7 +3,6 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
-from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.permission import Permission
 from recc.database.interfaces.db_permission import DbPermission
@@ -166,7 +165,7 @@ class PgPermission(DbPermission, PgBase):
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
         if not row:
-            raise ReccNotFoundError(f"Not found permission: {params_msg}")
+            raise RuntimeError(f"Not found permission: {params_msg}")
         assert len(row) == 17
         result = Permission(**dict(row))
         result.uid = uid
@@ -179,7 +178,7 @@ class PgPermission(DbPermission, PgBase):
         row = await self.fetch_row(query, name)
         params_msg = f"name={name}"
         if not row:
-            raise ReccNotFoundError(f"Not found permission: {params_msg}")
+            raise RuntimeError(f"Not found permission: {params_msg}")
         assert len(row) == 17
         result = Permission(**dict(row))
         result.name = name
@@ -206,7 +205,7 @@ class PgPermission(DbPermission, PgBase):
         row = await self.fetch_row(query, user_uid, project_uid)
         params_msg = f"user_uid={user_uid},project_uid={project_uid}"
         if not row:
-            raise ReccNotFoundError(f"Not found permission: {params_msg}")
+            raise RuntimeError(f"Not found permission: {params_msg}")
         assert len(row) == 18
         result = Permission(**dict(row))
         logger.info(f"get_project_permission_by_uid({params_msg}) ok.")

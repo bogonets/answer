@@ -3,7 +3,6 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
-from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.layout import Layout
 from recc.database.interfaces.db_layout import DbLayout
@@ -94,7 +93,7 @@ class PgLayout(DbLayout, PgBase):
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
         if not row:
-            raise ReccNotFoundError(f"Not found layout: {params_msg}")
+            raise RuntimeError(f"Not found layout: {params_msg}")
         assert len(row) == 6
         result = Layout(**dict(row))
         result.uid = uid
@@ -107,7 +106,7 @@ class PgLayout(DbLayout, PgBase):
         row = await self.fetch_row(query, project_uid, name)
         params_msg = f"project_uid={project_uid},name={name}"
         if not row:
-            raise ReccNotFoundError(f"Not found layout: {params_msg}")
+            raise RuntimeError(f"Not found layout: {params_msg}")
         assert len(row) == 5
         result = Layout(**dict(row))
         result.project_uid = project_uid

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from typing import Dict, Any, List, Set
-from recc.exception.recc_error import ReccNotFoundError, ReccArgumentError
 from recc.blueprint.blueprint import BpSlot, BpArc, BpProperty, BpNode, BpTask, BpGraph
 
 k_id = "id"
@@ -50,7 +49,7 @@ def _find_input_name(link_id: int, controls: List[Dict[str, Any]]) -> str:
     for control in controls:
         if link_id == control[k_link]:
             return control[k_name]
-    raise ReccNotFoundError(f"Link(`{link_id}`) is not founded.")
+    raise RuntimeError(f"Link(`{link_id}`) is not founded")
 
 
 def _find_output_name(link_id: int, controls: List[Dict[str, Any]]) -> str:
@@ -59,7 +58,7 @@ def _find_output_name(link_id: int, controls: List[Dict[str, Any]]) -> str:
         assert isinstance(links, list)
         if link_id in links:
             return control[k_name]
-    raise ReccNotFoundError(f"Link(`{link_id}`) is not founded.")
+    raise RuntimeError(f"Link(`{link_id}`) is not founded")
 
 
 def _create_bp_arcs(
@@ -140,11 +139,11 @@ def _create_bp_graph(data: Dict[str, Any]) -> BpGraph:
     _tasks = data[k_tasks]
 
     if not isinstance(_links, list):
-        raise ReccArgumentError("data['links'] must be of type `list`.")
+        raise ValueError("data['links'] must be of type `list`.")
     if not isinstance(_nodes, list):
-        raise ReccArgumentError("data['nodes'] must be of type `list`.")
+        raise ValueError("data['nodes'] must be of type `list`.")
     if not isinstance(_tasks, list):
-        raise ReccArgumentError("data['tasks'] must be of type `list`.")
+        raise ValueError("data['tasks'] must be of type `list`.")
 
     links: Dict[int, dict] = {link[k_id]: link for link in _links}
     nodes: Dict[int, dict] = {node[k_id]: node for node in _nodes}

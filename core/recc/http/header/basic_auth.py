@@ -2,7 +2,6 @@
 
 import binascii
 from base64 import b64decode, b64encode
-from recc.exception.recc_error import ReccArgumentError, ReccDecodeError
 
 
 class BasicAuth:
@@ -15,9 +14,7 @@ class BasicAuth:
 
     def __init__(self, user_id: str, password="", encoding="latin1"):
         if ":" in user_id:
-            raise ReccArgumentError(
-                'A ":" is not allowed in user_id RFC 1945#section-11.1)'
-            )
+            raise ValueError('A ":" is not allowed in user_id RFC 1945#section-11.1)')
 
         self.user_id = user_id
         self.password = password
@@ -37,10 +34,10 @@ class BasicAuth:
 
         split = auth_header.strip().split(" ")
         if len(split) != 2:
-            raise ReccDecodeError("Could not parse authorization header.")
+            raise ValueError("Could not parse authorization header")
 
         if split[0].strip().lower() != cls.TYPE_LOWER:
-            raise ReccDecodeError(f"Unknown authorization method {split[0]}")
+            raise ValueError(f"Unknown authorization method {split[0]}")
 
         to_decode = split[1].strip()
 
@@ -49,7 +46,7 @@ class BasicAuth:
                 b64decode(to_decode.encode("ascii")).decode(encoding).partition(":")
             )
         except binascii.Error:
-            raise ReccDecodeError("Invalid base64 encoding.")
+            raise ValueError("Invalid base64 encoding")
 
         return cls(username, password, encoding)
 

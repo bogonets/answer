@@ -3,7 +3,6 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
-from recc.exception.recc_error import ReccNotFoundError
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.group import Group
 from recc.database.interfaces.db_group import DbGroup
@@ -113,7 +112,7 @@ class PgGroup(DbGroup, PgBase):
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
         if not row:
-            raise ReccNotFoundError(f"Not found group: {params_msg}")
+            raise RuntimeError(f"Not found group: {params_msg}")
         result = Group(**dict(row))
         result.uid = uid
         logger.info(f"get_group_by_uid({params_msg}) ok.")
@@ -125,7 +124,7 @@ class PgGroup(DbGroup, PgBase):
         row = await self.fetch_row(query, name)
         params_msg = f"name={name}"
         if not row:
-            raise ReccNotFoundError(f"Not found group: {params_msg}")
+            raise RuntimeError(f"Not found group: {params_msg}")
         result = Group(**dict(row))
         result.name = name
         logger.info(f"get_group_by_name({params_msg}) ok.")
