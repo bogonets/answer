@@ -14,10 +14,3 @@ class HTTPReccNotInitializedError(HTTPReccError):
 
     def __init__(self, reason="Not initialized"):
         super().__init__(reason=reason)
-
-
-class HTTPReccAlreadyInitializedError(HTTPReccError):
-    status_code = 521
-
-    def __init__(self, reason="Already initialized"):
-        super().__init__(reason=reason)

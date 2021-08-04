@@ -108,5 +108,5 @@ class DbUser(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def exist_admin_user(self) -> bool:
+    async def exists_admin_user(self) -> bool:
         raise NotImplementedError

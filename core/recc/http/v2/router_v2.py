@@ -28,16 +28,16 @@ from recc.database.struct.info import keys as info_keys
 # from recc.database.struct.layout import keys as layout_keys
 # from recc.database.struct.permission import keys as permission_keys
 # from recc.database.struct.port import keys as port_keys
-
-from recc.database.struct.project import keys as project_keys
-
+# from recc.database.struct.project import keys as project_keys
 # from recc.database.struct.project_member import keys as project_member_keys
 # from recc.database.struct.task import keys as task_keys
 
+from recc.http.struct.request.change_password import keys as change_password_keys
 from recc.database.struct.user import keys as user_keys
 
 # from recc.database.struct.widget import keys as widget_keys
 
+from recc.variables.http import DETAIL_RESPONSE_LOGGING_VERBOSE_LEVEL
 from recc.variables.database import ANONYMOUS_GROUP_NAME
 
 
@@ -73,7 +73,11 @@ class RouterV2:
             return await handler(request)
         except PermissionError as e:
             logger.exception(e)
-            raise HTTPUnauthorized()
+            error_message = str(e)
+            if error_message:
+                raise HTTPUnauthorized(reason=error_message)
+            else:
+                raise HTTPUnauthorized()
 
     async def _assign_session(self, request: Request) -> None:
         try:
@@ -82,13 +86,17 @@ class RouterV2:
             request[h.session] = await self.context.get_access_session(bearer.token)
         except BaseException as e:
             logger.exception(e)
-            raise HTTPUnauthorized()
+            error_message = str(e)
+            if error_message:
+                raise HTTPUnauthorized(reason=error_message)
+            else:
+                raise HTTPUnauthorized()
 
     def _get_routes(self) -> List[AbstractRouteDef]:
         # fmt: off
         return [
             # GET: SELECT
-            # PATCh: UPDATE
+            # PATCH: UPDATE
             # DELETE: DELETE
             # POST: INSERT, UPSERT, etc ...
 
@@ -96,6 +104,7 @@ class RouterV2:
             web.get(u.self, self.get_self),
             web.get(u.self_extra, self.get_self_extra),
             web.patch(u.self_extra, self.patch_self_extra),
+            web.patch(u.self_password, self.patch_self_password),
 
             # configs
             web.get(u.infos, self.get_infos),
@@ -113,21 +122,23 @@ class RouterV2:
             # projects
             web.get(u.projects, self.get_projects),
             web.post(u.projects, self.post_projects),
-            # anonymous projects
-            web.get(u.projects_pproject, self.get_projects_pproject),
-            web.patch(u.projects_pproject, self.patch_projects_pproject),
-            web.delete(u.projects_pproject, self.delete_projects_pproject),
+
+            # # anonymous projects
+            # web.get(u.projects_pproject, self.get_projects_pproject),
+            # web.patch(u.projects_pproject, self.patch_projects_pproject),
+            # web.delete(u.projects_pproject, self.delete_projects_pproject),
         ]
         # fmt: on
 
     def response(self, request: Request, data: Any = None) -> Response:
+        verbose = self.context.config.verbose
         if data is None:
-            if self.context.config.verbose >= 2:
+            if verbose >= DETAIL_RESPONSE_LOGGING_VERBOSE_LEVEL:
                 logger.debug(f"{request.method} {request.path}")
             return Response()
         else:
             result = auto_response(request, data)
-            if self.context.config.verbose >= 2:
+            if verbose >= DETAIL_RESPONSE_LOGGING_VERBOSE_LEVEL:
                 logger.debug(f"{request.method} {request.path} -> {data}")
             return result
 
@@ -141,7 +152,6 @@ class RouterV2:
         logger.info(f"get_self(session={audience})")
 
         session_user = await self.context.get_self(session)
-        session_user.remove_sensitive_infos()
         user_dict = serialize_default(session_user)
         return self.response(request, user_dict)
 
@@ -158,6 +168,17 @@ class RouterV2:
         audience = session.audience
         extra = await read_dict(request)
         logger.info(f"patch_self_extra(session={audience})")
+
+        await self.context.update_user(audience, extra=extra)
+        return self.response(request)
+
+    async def patch_self_password(self, request: Request) -> Response:
+        session = request[h.session]
+        audience = session.audience
+
+        k = change_password_keys
+        extra = await read_dict(request, [k.before, k.after])
+        logger.info(f"patch_self_password(session={audience})")
 
         await self.context.update_user(audience, extra=extra)
         return self.response(request)
@@ -183,12 +204,12 @@ class RouterV2:
         session = request[h.session]
         audience = session.audience
 
-        dk = info_keys  # Data Key
-        data = await read_dict(request, [dk.key, dk.value])
-        key = data[dk.key]
-        value = data[dk.value]
+        k = info_keys
+        data = await read_dict(request, [k.key, k.value])
+        key = data[k.key]
+        value = data[k.value]
 
-        logging_msg = f"{{ {dk.key}={key}, {dk.value}={value} }}"
+        logging_msg = f"{{ {k.key}={key}, {k.value}={value} }}"
         logger.info(f"post_infos(session={audience}) {logging_msg}")
 
         session_user = await self.context.get_self(session)
@@ -245,26 +266,26 @@ class RouterV2:
         session = request[h.session]
         audience = session.audience
 
-        dk = user_keys
-        data = await read_dict(request, [dk.username, dk.password])
-        username = data[dk.username]
-        hashed_password = data[dk.password]
+        k = user_keys
+        data = await read_dict(request, [k.username, k.password])
+        username = data[k.username]
+        hashed_password = data[k.password]
 
         if not username:
-            raise HTTPBadRequest(reason=f"`{dk.username}` is empty.")
+            raise HTTPBadRequest(reason=f"`{k.username}` is empty.")
         if not hashed_password:
-            raise HTTPBadRequest(reason=f"`{dk.password}` is empty.")
+            raise HTTPBadRequest(reason=f"`{k.password}` is empty.")
 
         logger.info(f"post_users(session={audience}) -> username={username}")
 
         await self.context.signup(
             username=username,
             hashed_password=hashed_password,
-            email=data.get(dk.email),
-            phone1=data.get(dk.phone1),
-            phone2=data.get(dk.phone2),
-            is_admin=data.get(dk.is_admin),
-            extra=data.get(dk.extra),
+            email=data.get(k.email),
+            phone1=data.get(k.phone1),
+            phone2=data.get(k.phone2),
+            is_admin=data.get(k.is_admin),
+            extra=data.get(k.extra),
         )
         return self.response(request)
 
@@ -290,18 +311,18 @@ class RouterV2:
         audience = session.audience
         username = request.match_info[p.user]
 
-        dk = user_keys
+        k = user_keys
         data = await read_dict(request)
 
         logger.info(f"patch_users_puser(session={audience},{p.user}={username})")
 
         await self.context.update_user(
             username,
-            email=data.get(dk.email),
-            phone1=data.get(dk.phone1),
-            phone2=data.get(dk.phone2),
-            is_admin=data.get(dk.is_admin),
-            extra=data.get(dk.extra),
+            email=data.get(k.email),
+            phone1=data.get(k.phone1),
+            phone2=data.get(k.phone2),
+            is_admin=data.get(k.is_admin),
+            extra=data.get(k.extra),
         )
         return self.response(request)
 
@@ -343,50 +364,50 @@ class RouterV2:
         await self.context.create_project(group_name, project_name)
         return self.response(request)
 
-    # ------------------
-    # Anonymous projects
-    # ------------------
-
-    async def get_projects_pproject(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-        project_name = request.match_info[p.project]
-        params_msg = f"session={audience},{p.project}={project_name}"
-        logger.info(f"get_projects_pproject({params_msg})")
-
-        group = ANONYMOUS_GROUP_NAME
-        project = await self.context.get_project(group, project_name)
-        return self.response(request, serialize_default(project))
-
-    async def patch_projects_pproject(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-        project_name = request.match_info[p.project]
-
-        dk = project_keys
-        data = await read_dict(request)
-
-        params_msg = f"session={audience},{p.project}={project_name}"
-        logger.info(f"patch_projects_pproject({params_msg})")
-
-        group = ANONYMOUS_GROUP_NAME
-        await self.context.update_project(
-            group,
-            project_name,
-            name=data.get(dk.name),
-            description=data.get(dk.description),
-            features=data.get(dk.features),
-            extra=data.get(dk.extra),
-        )
-        return Response(status=501)
-
-    async def delete_projects_pproject(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-        project_name = request.match_info[p.project]
-        params_msg = f"session={audience},{p.project}={project_name}"
-        logger.info(f"delete_projects_pproject({params_msg})")
-
-        group = ANONYMOUS_GROUP_NAME
-        await self.context.delete_project(group, project_name)
-        return self.response(request)
+    # # ------------------
+    # # Anonymous projects
+    # # ------------------
+    #
+    # async def get_projects_pproject(self, request: Request) -> Response:
+    #     session = request[h.session]
+    #     audience = session.audience
+    #     project_name = request.match_info[p.project]
+    #     params_msg = f"session={audience},{p.project}={project_name}"
+    #     logger.info(f"get_projects_pproject({params_msg})")
+    #
+    #     group = ANONYMOUS_GROUP_NAME
+    #     project = await self.context.get_project(group, project_name)
+    #     return self.response(request, serialize_default(project))
+    #
+    # async def patch_projects_pproject(self, request: Request) -> Response:
+    #     session = request[h.session]
+    #     audience = session.audience
+    #     project_name = request.match_info[p.project]
+    #
+    #     k = project_keys
+    #     data = await read_dict(request)
+    #
+    #     params_msg = f"session={audience},{p.project}={project_name}"
+    #     logger.info(f"patch_projects_pproject({params_msg})")
+    #
+    #     group = ANONYMOUS_GROUP_NAME
+    #     await self.context.update_project(
+    #         group,
+    #         project_name,
+    #         name=data.get(k.name),
+    #         description=data.get(k.description),
+    #         features=data.get(k.features),
+    #         extra=data.get(k.extra),
+    #     )
+    #     return Response(status=501)
+    #
+    # async def delete_projects_pproject(self, request: Request) -> Response:
+    #     session = request[h.session]
+    #     audience = session.audience
+    #     project_name = request.match_info[p.project]
+    #     params_msg = f"session={audience},{p.project}={project_name}"
+    #     logger.info(f"delete_projects_pproject({params_msg})")
+    #
+    #     group = ANONYMOUS_GROUP_NAME
+    #     await self.context.delete_project(group, project_name)
+    #     return self.response(request)

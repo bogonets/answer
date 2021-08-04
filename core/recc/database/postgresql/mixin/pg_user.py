@@ -219,7 +219,7 @@ class PgUser(DbUser, PgBase):
         return result
 
     @overrides
-    async def exist_admin_user(self) -> bool:
+    async def exists_admin_user(self) -> bool:
         query = SELECT_USER_ADMIN_COUNT
         row = await self.fetch_row(query)
         assert row and len(row) == 1

@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 
-access = "access"
-refresh = "refresh"
-user = "user"
-
 username = "username"
 password = "password"
 email = "email"

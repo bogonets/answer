@@ -110,17 +110,17 @@ class PgUserTestCase(PostgresqlTestCase):
         await self.db.delete_user_by_name(username)
         self.assertFalse(await self.db.exist_user(username))
 
-    async def test_exist_admin_user(self):
-        self.assertFalse(await self.db.exist_admin_user())
+    async def test_exists_admin_user(self):
+        self.assertFalse(await self.db.exists_admin_user())
 
     async def test_signup_admin_user(self):
         username = "admin"
         self.assertFalse(await self.db.exist_user(username))
-        self.assertFalse(await self.db.exist_admin_user())
+        self.assertFalse(await self.db.exists_admin_user())
         await self.db.create_user(username, "1234", "__unknown_salt__", is_admin=True)
         self.assertTrue(await self.db.exist_user(username))
-        self.assertTrue(await self.db.exist_admin_user())
-        self.assertTrue(await self.db.exist_admin_user())
+        self.assertTrue(await self.db.exists_admin_user())
+        self.assertTrue(await self.db.exists_admin_user())
 
 
 if __name__ == "__main__":

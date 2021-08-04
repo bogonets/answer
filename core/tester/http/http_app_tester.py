@@ -28,10 +28,15 @@ from recc.http.v1.common import get_v1_path
 from recc.http.http_interface import EmptyHttpAppCallback
 from recc.http.http_app import HttpApp
 from recc.http.http_utils import v2_public_path
-from recc.http import http_data_keys as d
 from recc.http import http_urls as u
+from recc.http.struct.request.signup import keys as signup_keys
+from recc.http.struct.response.login import keys as login_keys
 from recc.core.context import Context
-from recc.variables.http import TEST_HTTP_PORT, DEFAULT_SCHEME, URL_PATH_SEPARATOR
+from recc.variables.http import (
+    DEFAULT_HTTP_TEST_PORT,
+    DEFAULT_SCHEME,
+    URL_PATH_SEPARATOR,
+)
 
 DEFAULT_ADMIN_USERNAME: Final[str] = "admin"
 DEFAULT_ADMIN_PASSWORD: Final[str] = "0000"
@@ -82,7 +87,7 @@ class HttpAppTester(EmptyHttpAppCallback):
         self._config.developer = True
         self._config.teardown = True
         self._config.database_name = "recc.test.http"
-        self._config.http_port = TEST_HTTP_PORT
+        self._config.http_port = DEFAULT_HTTP_TEST_PORT
         self._context = Context(self._config, loop=loop)
         self._app = HttpApp(context=self._context, callback=self)
 
@@ -282,10 +287,11 @@ class HttpAppTester(EmptyHttpAppCallback):
         assert self._username
         assert self._password
 
+        k = signup_keys
         hashed_pw = hashlib.sha256(self._password.encode(encoding="utf-8")).hexdigest()
         signup_response = await self.post(
             path=v2_public_path(u.signup_admin),
-            data=json.dumps({d.username: self._username, d.password: hashed_pw}),
+            data=json.dumps({k.username: self._username, k.password: hashed_pw}),
         )
         if signup_response.status != HTTPStatus.OK:
             raise RuntimeError(f"Signup status error: {signup_response.status}")
@@ -300,8 +306,8 @@ class HttpAppTester(EmptyHttpAppCallback):
 
         assert login_response.data
         login_data = login_response.data
-        assert self._username == login_data[d.user]["username"]
-        assert d.access in login_data
-        assert d.refresh in login_data
-        self._access_token = login_data[d.access]
-        self._refresh_token = login_data[d.refresh]
+        assert self._username == login_data[login_keys.user]["username"]
+        assert login_keys.access in login_data
+        assert login_keys.refresh in login_data
+        self._access_token = login_data[login_keys.access]
+        self._refresh_token = login_data[login_keys.refresh]

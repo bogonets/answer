@@ -6,20 +6,23 @@ from aiohttp.hdrs import AUTHORIZATION
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
-from aiohttp.web_exceptions import HTTPBadRequest, HTTPUnauthorized
+from aiohttp.web_exceptions import (
+    HTTPBadRequest,
+    HTTPUnauthorized,
+    HTTPServiceUnavailable,
+)
 from recc.log.logging import recc_http_logger as logger
 from recc.core.context import Context
 from recc.driver.json import global_json_decoder
 from recc.serializable.serialize import serialize_default
 from recc.http.http_response import auto_response
-from recc.http.http_errors import (
-    HTTPReccNotInitializedError,
-    HTTPReccAlreadyInitializedError,
-)
+from recc.http.http_request import read_dict
 from recc.http.header.basic_auth import BasicAuth
+from recc.util.version import version_text
+from recc.http.struct.request.signup import keys as signup_keys
+from recc.http.struct.response.login import Login
 from recc.http import http_data_keys as d
 from recc.http import http_urls as u
-from recc.util.version import version_text
 
 
 class RouterV2Public:
@@ -58,37 +61,37 @@ class RouterV2Public:
     # API v2 handlers
     # ---------------
 
-    async def get_heartbeat(self, _: Request):
+    async def get_heartbeat(self, _: Request) -> Response:
         assert self._context
         logger.info("get_heartbeat()")
         return Response()
 
-    async def get_version(self, request: Request):
+    async def get_version(self, request: Request) -> Response:
         assert self._context
         logger.info(f"get_version() -> {version_text}")
         return auto_response(request, version_text)
 
-    async def get_test_init(self, _: Request):
+    async def get_test_init(self, _: Request) -> Response:
         logger.info("get_test_init()")
-        if not await self.context.exist_admin_user():
-            raise HTTPReccNotInitializedError()
+        if not await self.context.exists_admin_user():
+            raise HTTPServiceUnavailable(reason="Uninitialized server")
         return Response()
 
-    async def post_signup_admin(self, request: Request):
-        data = await request.json(loads=global_json_decoder)
+    async def post_signup_admin(self, request: Request) -> Response:
+        if await self.context.exists_admin_user():
+            raise HTTPServiceUnavailable(reason="An admin account already exists")
 
-        assert isinstance(data, dict)
-        username = data[d.username]
-        password = data[d.password]  # Perhaps the client encoded it with SHA256.
-        logger.info(f"post_signup_admin({d.username}={username})")
+        k = signup_keys
+        data = await read_dict(request, [k.username, k.password])
+        username = data[k.username]
+        password = data[k.password]  # Perhaps the client encoded it with SHA256.
 
-        if await self.context.exist_admin_user():
-            raise HTTPReccAlreadyInitializedError()
+        logger.info(f"post_signup_admin() {{ {k.username}={username} }}")
 
-        await self.context.signup_admin(username=username, hashed_password=password)
+        await self.context.signup_admin(username, password)
         return Response()
 
-    async def post_signup(self, request: Request):
+    async def post_signup(self, request: Request) -> Response:
         data = await request.json(loads=global_json_decoder)
 
         assert isinstance(data, dict)
@@ -99,24 +102,22 @@ class RouterV2Public:
         await self.context.signup(username=username, hashed_password=password)
         return Response()
 
-    async def post_login(self, request: Request):
+    async def post_login(self, request: Request) -> Response:
         authorization = request.headers[AUTHORIZATION]
         auth = BasicAuth.decode_from_authorization_header(authorization)
         logger.info(f"post_login({auth})")
 
-        try:
-            username = auth.user_id
-            password = auth.password
-            login = await self.context.login_and_obtain_userinfo(username, password)
+        username = auth.user_id
+        password = auth.password
 
-            access, refresh, user = login
-            user.remove_sensitive_infos()
-            user_dict = serialize_default(user)
-            result = {d.access: access, d.refresh: refresh, d.user: user_dict}
-            return web.json_response(result)
+        try:
+            if not await self.context.test_password(username, password):
+                raise HTTPUnauthorized(reason="The password is incorrect.")
         except ValueError as e:
-            logger.exception(e)
-            raise HTTPBadRequest()
-        except PermissionError as e:
-            logger.exception(e)
-            raise HTTPUnauthorized()
+            raise HTTPBadRequest(reason=str(e))
+
+        access, refresh = await self.context.login(username)
+        user = await self.context.get_user(username)
+
+        result = serialize_default(Login(access, refresh, user))
+        return auto_response(request, result)

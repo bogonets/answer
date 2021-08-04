@@ -210,7 +210,7 @@ class RouterV1:
     async def on_initialization(self, _: Request):
         name = "initialization"
         try:
-            if await self.context.exist_admin_user():
+            if await self.context.exists_admin_user():
                 return response_ok(name)
             else:
                 return response_error(name, "Not initialized yet.")
@@ -226,7 +226,7 @@ class RouterV1:
             password = json["password"]  # Perhaps the client encoded it with SHA256.
             logger.info(f"on_signup_admin(id={user_id})")
 
-            if await self.context.exist_admin_user():
+            if await self.context.exists_admin_user():
                 return response_error(name, "Root user already exists.")
 
             await self.context.signup_admin(username=user_id, hashed_password=password)
@@ -242,9 +242,10 @@ class RouterV1:
             auth = BasicAuth.decode_from_authorization_header(authorization)
             logger.info(f"on_login(id={auth.user_id})")
 
-            access_token, refresh_token = await self.context.login(
-                auth.user_id, auth.password
-            )
+            if not await self.context.test_password(auth.user_id, auth.password):
+                raise PermissionError("The password is incorrect.")
+
+            access_token, refresh_token = await self.context.login(auth.user_id)
 
             return response_ok_without_detail(
                 name,

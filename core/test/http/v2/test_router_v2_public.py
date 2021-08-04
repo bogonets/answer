@@ -28,7 +28,7 @@ class RouterV1TestCase(AsyncTestCase):
 
     async def test_test_init(self):
         response = await self.tester.get(v2_public_path(u.test_init))
-        self.assertEqual(520, response.status)
+        self.assertEqual(503, response.status)
 
 
 if __name__ == "__main__":

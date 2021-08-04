@@ -14,8 +14,15 @@ from recc.variables.database import (
 
 
 class ContextUser(ContextBase):
-    async def exist_admin_user(self) -> bool:
-        return await self.database.exist_admin_user()
+
+    _already_admin_user = False
+
+    async def exists_admin_user(self) -> bool:
+        # After being created in the DB, there is no scenario that can be removed.
+        if self._already_admin_user:
+            return True
+        self._already_admin_user = await self.database.exists_admin_user()
+        return self._already_admin_user
 
     async def signup(
         self,
@@ -58,7 +65,7 @@ class ContextUser(ContextBase):
     async def signup_admin(self, username: str, hashed_password: str) -> None:
         await self.signup(username, hashed_password, is_admin=True)
 
-    async def login(self, username: str, hashed_user_pw: str) -> Tuple[str, str]:
+    async def test_password(self, username: str, hashed_user_pw: str) -> bool:
         if not username:
             raise ValueError("User ID is required.")
 
@@ -73,18 +80,11 @@ class ContextUser(ContextBase):
         salt = bytes.fromhex(saved_salt)
         salted_password = encrypt_password(hashed_user_pw, salt)
 
-        if saved_password != salted_password.hex():
-            raise PermissionError("The password is incorrect.")
+        return saved_password == salted_password.hex()
 
+    async def login(self, username: str) -> Tuple[str, str]:
         await self.database.update_user_last_login_by_username(username)
         return self.session_factory.create_tokens(username)
-
-    async def login_and_obtain_userinfo(
-        self, username: str, hashed_user_pw: str
-    ) -> Tuple[str, str, User]:
-        access, refresh = await self.login(username, hashed_user_pw)
-        user = await self.database.get_user_by_username(username)
-        return access, refresh, user
 
     async def remove_user(self, username: str) -> None:
         # TODO: Remove related datas. e.g. group_member, project_member
