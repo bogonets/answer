@@ -49,17 +49,21 @@ class AsyncRedisCacheStore(AsyncCacheStoreInterface):
         self._redis = None
 
     async def set(self, key: str, val: bytes) -> None:
+        assert self._redis
         await self._redis.execute_command("SET", key, val)
 
     async def get(self, key: str) -> bytes:
+        assert self._redis
         result = await self._redis.execute_command("GET", key)
         assert isinstance(result, bytes)
         return result
 
     async def delete(self, key: str) -> None:
+        assert self._redis
         await self._redis.execute_command("DEL", key)
 
     async def exists(self, key: str) -> bool:
+        assert self._redis
         result = await self._redis.execute_command("EXISTS", key)
         assert isinstance(result, int)
         return bool(result)
