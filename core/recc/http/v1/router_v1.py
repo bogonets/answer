@@ -8,6 +8,7 @@ from aiohttp.web import HTTPException
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
+from aiohttp.web_exceptions import HTTPUnauthorized
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.header.bearer_auth import BearerAuth
 from recc.core.context import Context
@@ -316,7 +317,12 @@ class RouterV1:
         session = request[at_session]
         username = session.audience
         logger.info(f"on_get_users(session={username})")
-        users = await self.context.get_users(session)
+
+        session_user = await self.context.get_self(session)
+        if not session_user.is_admin:
+            raise HTTPUnauthorized(reason="Administrator privileges are required")
+
+        users = await self.context.get_users()
         result = [self._user_to_v1_dict(user) for user in users]
         return response_ok_without_detail(name, {"obj": result, "t": "get-user"})
 
@@ -371,7 +377,11 @@ class RouterV1:
         test_username = request.match_info[k_user]
         logger.info(f"on_exist_user(session={username},test={test_username})")
 
-        result = await self.context.exist_user(session, test_username)
+        session_user = await self.context.get_self(session)
+        if not session_user.is_admin:
+            raise HTTPUnauthorized(reason="Administrator privileges are required")
+
+        result = await self.context.exist_user(test_username)
         return response_ok_without_detail(name, {"t": name, "obj": {"findId": result}})
 
     async def on_get_user(self, request: Request):
@@ -381,7 +391,14 @@ class RouterV1:
         request_username = request.match_info[k_user]
         logger.info(f"on_get_user(session={username},user={request_username})")
 
-        user = await self.context.get_user(session, request_username)
+        session_user = await self.context.get_self(session)
+        if session.audience == request_username:
+            user = session_user
+        else:
+            if not session_user.is_admin:
+                raise HTTPUnauthorized(reason="Administrator privileges are required")
+            user = await self.context.get_user(request_username)
+
         result = self._user_to_v1_dict(user)
         return response_ok_without_detail(name, {"obj": result, "t": "get-user"})
 
@@ -391,7 +408,7 @@ class RouterV1:
         username = session.audience
         logger.info(f"on_get_templates(session={username})")
 
-        result = await self.context.get_templates_v1(session)
+        result = await self.context.get_templates_v1()
         return response_ok_without_detail(name, {"t": name, "obj": result})
 
     @staticmethod
@@ -414,7 +431,7 @@ class RouterV1:
         username = session.audience
         logger.info(f"on_get_projects(session={username})")
 
-        projects = await self.context.get_projects(session, GLOBAL_GROUP)
+        projects = await self.context.get_projects(GLOBAL_GROUP)
         result = [self._project_to_v1_dict(project) for project in projects]
         return response_ok_without_detail(name, {"t": name, "obj": result})
 
@@ -438,7 +455,7 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_get_project(session={username},project={projname})")
 
-        project = await self.context.get_project(session, GLOBAL_GROUP, projname)
+        project = await self.context.get_project(GLOBAL_GROUP, projname)
         result = self._project_to_v1_dict(project)
         return response_ok_without_detail(name, result)
 
@@ -449,7 +466,7 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_create_project(session={username},project={projname})")
 
-        await self.context.create_project(session, GLOBAL_GROUP, projname)
+        await self.context.create_project(GLOBAL_GROUP, projname)
         return response_ok_without_detail(name)
 
     async def on_delete_project(self, request: Request):
@@ -459,7 +476,7 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_delete_project(session={username},project={projname})")
 
-        await self.context.delete_project(session, GLOBAL_GROUP, projname)
+        await self.context.delete_project(GLOBAL_GROUP, projname)
         return response_ok_without_detail(name)
 
     async def on_create_layout(self, request: Request):
@@ -474,8 +491,8 @@ class RouterV1:
         layout_name = request_json["name"]
         layout_panels = global_json_decoder(request_json["panels"])
 
-        await self.context.create_layout(session, projname, layout_name, layout_panels)
-        layout = await self.context.get_layout(session, projname, layout_name)
+        await self.context.create_layout(projname, layout_name, layout_panels)
+        layout = await self.context.get_layout(projname, layout_name)
         return response_ok_without_detail(name, self._layout_to_v1_dict(layout))
 
     async def on_get_layouts(self, request: Request):
@@ -485,7 +502,7 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_get_layouts(session={username},project={projname})")
 
-        layouts = await self.context.get_layouts(session, projname)
+        layouts = await self.context.get_layouts(projname)
         result = [layout.name for layout in layouts]
         return response_ok_without_detail(name, {"layouts": result, "t": "layouts"})
 
@@ -510,7 +527,7 @@ class RouterV1:
         params = f"username={username},project={projname},layout={layname}"
         logger.info(f"on_get_layout({params})")
 
-        layout = await self.context.get_layout(session, projname, layname)
+        layout = await self.context.get_layout(projname, layname)
         return response_ok_without_detail(name, self._layout_to_v1_dict(layout))
 
     async def on_set_layout_extra(self, request: Request):
@@ -533,8 +550,8 @@ class RouterV1:
         else:
             panels = panels_json
 
-        await self.context.set_layout_extra(session, projname, layname, panels)
-        layout = await self.context.get_layout(session, projname, layname)
+        await self.context.set_layout_extra(projname, layname, panels)
+        layout = await self.context.get_layout(projname, layname)
         return response_ok_without_detail(name, self._layout_to_v1_dict(layout))
 
     async def on_del_layout(self, request: Request):
@@ -546,7 +563,7 @@ class RouterV1:
         params = f"username={username},project={projname},layout={layname}"
         logger.info(f"on_del_layout({params})")
 
-        await self.context.remove_layout(session, projname, layname)
+        await self.context.remove_layout(projname, layname)
         return response_ok_without_detail(name)
 
     async def on_exist_layout(self, request: Request):
@@ -558,7 +575,7 @@ class RouterV1:
 
         request_json = await request.json(loads=global_json_decoder)
         layout_name = request_json["name"]
-        result = await self.context.exists_layout(session, projname, layout_name)
+        result = await self.context.exists_layout(projname, layout_name)
         return response_ok_without_detail(name, {"check": result, "t": "layout-check"})
 
     async def on_get_graph(self, request: Request):
@@ -568,8 +585,8 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_get_graph(session={username},project={projname})")
 
-        group_name = ""
-        project = await self.context.get_project(session, group_name, projname)
+        group_name = ANONYMOUS_GROUP_NAME
+        project = await self.context.get_project(group_name, projname)
         return response_ok_without_detail(name, {"obj": project.extra, "t": name})
 
     async def on_set_graph(self, request: Request):
@@ -580,17 +597,9 @@ class RouterV1:
         logger.info(f"on_set_graph(session={username},project={projname})")
 
         request_json = await request.json(loads=global_json_decoder)
-        group_name = ""
-        await self.context.set_graph_with_extra_v1(
-            session, group_name, projname, request_json
-        )
-        result = [
-            {
-                "msg": "",
-                "status": "OK",
-                "taskId": 1,
-            },
-        ]
+        group_name = ANONYMOUS_GROUP_NAME
+        await self.context.set_graph_with_extra_v1(group_name, projname, request_json)
+        result = [{"msg": "", "status": "OK", "taskId": 1}]
         return response_ok_without_detail(name, {"t": name, "obj": result})
 
     async def on_get_graph_status(self, request: Request):
@@ -600,7 +609,7 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_get_graph_status(session={username},project={projname})")
 
-        tasks = await self.context.get_tasks(session, GLOBAL_GROUP, projname)
+        tasks = await self.context.get_tasks(GLOBAL_GROUP, projname)
 
         result = list()
         for s in tasks:
@@ -619,7 +628,7 @@ class RouterV1:
         params = f"session={username},project={projname},task={taskname}"
         logger.info(f"on_stop_task({params})")
 
-        group_name = ""
+        group_name = ANONYMOUS_GROUP_NAME
         await self.context.stop_task(group_name, projname, taskname)
         await self.context.remove_task(group_name, projname, taskname)
         return response_ok_without_detail(name)
@@ -643,7 +652,6 @@ class RouterV1:
         property_name = q_obj["property"]
 
         result = await self.context.get_lambda_property_value(
-            session,
             projname,
             taskname,
             lambda_name,
@@ -666,7 +674,6 @@ class RouterV1:
         property_value = request_json["value"]
 
         await self.context.set_lambda_property_value(
-            session,
             projname,
             taskname,
             lambda_name,
@@ -691,7 +698,6 @@ class RouterV1:
         output_queries = request_json["output_queries"]
 
         result = await self.context.send_signal_v1(
-            session,
             projname,
             taskname,
             signal_name,

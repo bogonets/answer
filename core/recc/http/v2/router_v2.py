@@ -233,7 +233,11 @@ class RouterV2:
         audience = session.audience
         logger.info(f"get_users(session={audience})")
 
-        users = await self.context.get_users(session)
+        session_user = await self.context.get_self(session)
+        if not session_user.is_admin:
+            raise HTTPUnauthorized(reason="Administrator privileges are required")
+
+        users = await self.context.get_users()
         users_dict = serialize_default(users)
         return self.response(request, users_dict)
 
@@ -270,7 +274,14 @@ class RouterV2:
         username = request.match_info[p.user]
         logger.info(f"get_users_puser(session={audience},{p.user}={username})")
 
-        user = await self.context.get_user(session, username)
+        session_user = await self.context.get_self(session)
+        if session.audience == username:
+            user = session_user
+        else:
+            if not session_user.is_admin:
+                raise HTTPUnauthorized(reason="Administrator privileges are required")
+            user = await self.context.get_user(username)
+
         user_dict = serialize_default(user)
         return self.response(request, user_dict)
 
@@ -312,7 +323,7 @@ class RouterV2:
         group_name = ANONYMOUS_GROUP_NAME
         logger.info(f"get_projects(session={audience})")
 
-        projects = await self.context.get_projects(session, group_name)
+        projects = await self.context.get_projects(group_name)
         for project in projects:
             project.remove_sensitive_fields()
         projects_dict = serialize_default(projects)
@@ -329,7 +340,7 @@ class RouterV2:
         logging_msg = f"{{ {d.group}={group_name}, {d.project}={project_name} }}"
         logger.info(f"post_projects(session={audience}) {logging_msg}")
 
-        await self.context.create_project(session, group_name, project_name)
+        await self.context.create_project(group_name, project_name)
         return self.response(request)
 
     # ------------------
@@ -344,7 +355,7 @@ class RouterV2:
         logger.info(f"get_projects_pproject({params_msg})")
 
         group = ANONYMOUS_GROUP_NAME
-        project = await self.context.get_project(session, group, project_name)
+        project = await self.context.get_project(group, project_name)
         return self.response(request, serialize_default(project))
 
     async def patch_projects_pproject(self, request: Request) -> Response:
@@ -360,7 +371,6 @@ class RouterV2:
 
         group = ANONYMOUS_GROUP_NAME
         await self.context.update_project(
-            session,
             group,
             project_name,
             name=data.get(dk.name),
@@ -378,5 +388,5 @@ class RouterV2:
         logger.info(f"delete_projects_pproject({params_msg})")
 
         group = ANONYMOUS_GROUP_NAME
-        await self.context.delete_project(session, group, project_name)
+        await self.context.delete_project(group, project_name)
         return self.response(request)

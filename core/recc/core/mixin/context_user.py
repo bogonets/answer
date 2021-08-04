@@ -115,24 +115,21 @@ class ContextUser(ContextBase):
         return self.session_factory.decode_access(token)
 
     async def get_self(self, session: Session) -> User:
-        return await self.database.get_user_by_username(session.audience)
+        result = await self.database.get_user_by_username(session.audience)
+        result.remove_sensitive_infos()
+        return result
 
-    async def get_user(self, session: Session, username: str) -> User:
-        user = await self.database.get_user_by_username(session.audience)
-        if session.audience == username:
-            return user
-        if not user.is_admin:
-            raise PermissionError
-        return await self.database.get_user_by_username(username)
+    async def get_user(self, username: str) -> User:
+        result = await self.database.get_user_by_username(username)
+        result.remove_sensitive_infos()
+        return result
 
-    async def get_users(self, session: Session) -> List[User]:
-        user = await self.database.get_user_by_username(session.audience)
-        if not user.is_admin:
-            raise PermissionError
-        return await self.database.get_users()
+    async def get_users(self) -> List[User]:
+        result = list()
+        for user in await self.database.get_users():
+            user.remove_sensitive_infos()
+            result.append(user)
+        return result
 
-    async def exist_user(self, session: Session, test_username: str) -> bool:
-        user = await self.database.get_user_by_username(session.audience)
-        if not user.is_admin:
-            raise PermissionError
-        return await self.database.exist_user(test_username)
+    async def exist_user(self, username: str) -> bool:
+        return await self.database.exist_user(username)

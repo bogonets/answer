@@ -2,12 +2,11 @@
 
 from typing import Dict, List, Any
 from recc.core.mixin.context_base import ContextBase
-from recc.session.session import Session
 from recc.template.v1 import keys as v1k
 
 
 class ContextStorage(ContextBase):
-    async def get_templates_v1(self, _: Session) -> List[Dict[str, Any]]:
+    async def get_templates_v1(self) -> List[Dict[str, Any]]:
         result = list()
         for k, v in self.storage.get_templates().items():
             template_dict = v.serialize_v1()

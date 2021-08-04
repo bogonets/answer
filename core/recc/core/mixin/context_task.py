@@ -4,7 +4,6 @@ import os
 from copy import deepcopy
 from typing import Optional, List, Any, Dict
 from Crypto.PublicKey import RSA
-from recc.session.session import Session
 from recc.blueprint.v1.converter import bp_converter
 from recc.container.struct.container_status import ContainerStatus
 from recc.container.struct.container_info import ContainerInfo
@@ -380,30 +379,22 @@ class ContextTask(ContextBase):
         await self.container.restart_container(task.key)
 
     async def get_tasks(
-        self, session: Session, group_name: str, project_name: str
+        self, group_name: str, project_name: str
     ) -> List[ContainerInfo]:
-        user = await self.database.get_user_by_username(session.audience)
         group = await self.database.get_group_by_name(group_name)
         project = await self.database.get_project_by_name(group.uid, project_name)
-        assert user.uid is not None
         assert group.uid is not None
         assert project.uid is not None
-
-        # TODO: test permission
-
         return await self.container.get_tasks(group_name, project_name)
 
     async def set_graph_with_extra_v1(
         self,
-        session: Session,
         group_name: str,
         project_name: str,
         extra: Any,
     ) -> None:
-        user = await self.database.get_user_by_username(session.audience)
         group = await self.database.get_group_by_name(group_name)
         project = await self.database.get_project_by_name(group.uid, project_name)
-        assert user.uid is not None
         assert group.uid is not None
         assert project.uid is not None
 
@@ -436,7 +427,6 @@ class ContextTask(ContextBase):
 
     async def send_signal_v1(
         self,
-        _: Session,
         project_name: str,
         task_name: str,
         signal_name: str,
@@ -448,7 +438,6 @@ class ContextTask(ContextBase):
 
     async def get_lambda_property_value(
         self,
-        _: Session,
         project_name: str,
         task_name: str,
         lambda_name: str,
@@ -458,7 +447,6 @@ class ContextTask(ContextBase):
 
     async def set_lambda_property_value(
         self,
-        _: Session,
         project_name: str,
         task_name: str,
         lambda_name: str,

@@ -1,34 +1,38 @@
 # -*- coding: utf-8 -*-
 
 from typing import List, Optional, Any
-from recc.session.session import Session
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.project import Project
 
 
 class ContextProject(ContextBase):
-    async def create_project(
-        self, session: Session, group_name: str, project_name: str
-    ) -> None:
-        user = await self.database.get_user_by_username(session.audience)
+    async def create_project(self, group_name: str, project_name: str) -> None:
         group = await self.database.get_group_by_name(group_name)
-        assert user.uid is not None
         assert group.uid is not None
-
-        # TODO: test group_member
-
-        maintainer_permission_uid = self.database.get_maintainer_permission_uid()
         await self.database.create_project(group.uid, project_name)
-        project = await self.database.get_project_by_name(group.uid, project_name)
-        assert project.uid is not None
 
-        await self.database.create_project_member(
-            project.uid, user.uid, maintainer_permission_uid
-        )
+    # from recc.session.session import Session
+    # user = await self.database.get_user_by_username(session.audience)
+    # assert user.uid is not None
+    # maintainer_permission_uid = self.database.get_maintainer_permission_uid()
+    # project = await self.database.get_project_by_name(group.uid, project_name)
+    # assert project.uid is not None
+    # await self.database.create_project_member(
+    #     project.uid, user.uid, maintainer_permission_uid
+    # )
+
+    async def get_projects(self, group_name: str) -> List[Project]:
+        group = await self.database.get_group_by_name(group_name)
+        assert group.uid is not None
+        return await self.database.get_project_by_group_uid(group.uid)
+
+    async def get_project(self, group_name: str, project_name: str) -> Project:
+        group = await self.database.get_group_by_name(group_name)
+        assert group.uid is not None
+        return await self.database.get_project_by_name(group.uid, project_name)
 
     async def update_project(
         self,
-        session: Session,
         group_name: str,
         project_name: str,
         name: Optional[str] = None,
@@ -36,15 +40,10 @@ class ContextProject(ContextBase):
         features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
     ) -> None:
-        user = await self.database.get_user_by_username(session.audience)
         group = await self.database.get_group_by_name(group_name)
         project = await self.database.get_project_by_name(group.uid, project_name)
-        assert user.uid is not None
         assert group.uid is not None
         assert project.uid is not None
-
-        # TODO: test permission
-
         await self.database.update_project_by_uid(
             project.uid,
             name=name,
@@ -53,38 +52,9 @@ class ContextProject(ContextBase):
             extra=extra,
         )
 
-    async def delete_project(
-        self, session: Session, group_name: str, project_name: str
-    ) -> None:
-        user = await self.database.get_user_by_username(session.audience)
+    async def delete_project(self, group_name: str, project_name: str) -> None:
         group = await self.database.get_group_by_name(group_name)
         project = await self.database.get_project_by_name(group.uid, project_name)
-        assert user.uid is not None
         assert group.uid is not None
         assert project.uid is not None
-
-        # TODO: test permission
-
         await self.database.delete_project_by_uid(project.uid)
-
-    async def get_projects(self, session: Session, group_name: str) -> List[Project]:
-        user = await self.database.get_user_by_username(session.audience)
-        group = await self.database.get_group_by_name(group_name)
-        assert user.uid is not None
-        assert group.uid is not None
-
-        # TODO: test permission
-
-        return await self.database.get_project_by_group_uid(group.uid)
-
-    async def get_project(
-        self, session: Session, group_name: str, project_name: str
-    ) -> Project:
-        user = await self.database.get_user_by_username(session.audience)
-        group = await self.database.get_group_by_name(group_name)
-        assert user.uid is not None
-        assert group.uid is not None
-
-        # TODO: test permission
-
-        return await self.database.get_project_by_name(group.uid, project_name)
