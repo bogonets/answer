@@ -12,12 +12,5 @@ phone2 = "phone2"
 is_admin = "is_admin"
 extra = "extra"
 
-name = "name"
-description = "description"
-features = "features"
-
-key = "key"
-val = "val"
-
 group = "group"
 project = "project"

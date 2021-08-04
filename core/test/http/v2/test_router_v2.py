@@ -7,8 +7,9 @@ from tester.http.http_app_tester import HttpAppTester
 from recc.variables.database import RECC_DB_VERSION_KEY
 from recc.http.http_utils import v2_path
 from recc.http import http_urls as u
-from recc.http import http_data_keys as d
 from recc.http import http_path_keys as p
+
+from recc.database.struct.info import keys as info_keys
 
 
 class RouterV2TestCase(AsyncTestCase):
@@ -58,24 +59,31 @@ class RouterV2TestCase(AsyncTestCase):
         self.assertEqual(200, response4.status)
         self.assertEqual(data2, response4.data)
 
-    async def test_configs(self):
+    async def test_infos(self):
         await self.tester.run_v2_admin_login()
 
-        response = await self.tester.get(v2_path(u.configs))
-        self.assertEqual(200, response.status)
-        self.assertIn(RECC_DB_VERSION_KEY, response.data)
+        response1 = await self.tester.get(v2_path(u.infos))
+        self.assertEqual(200, response1.status)
+        self.assertIn(RECC_DB_VERSION_KEY, response1.data)
 
+        dk = info_keys
         key = "config-key"
-        val = "config-value"
-        data = {d.key: key, d.val: val}
-        response = await self.tester.post(v2_path(u.configs), data=json.dumps(data))
-        self.assertEqual(200, response.status)
-        self.assertIsNone(response.data)
+        value = "config-value"
+        data = {dk.key: key, dk.value: value}
+        response2 = await self.tester.post(v2_path(u.infos), data=json.dumps(data))
+        self.assertEqual(200, response2.status)
+        self.assertIsNone(response2.data)
 
-        path = v2_path(u.configs_pkey.format(**{p.key: key}))
-        response = await self.tester.get(path)
-        self.assertEqual(200, response.status)
-        self.assertEqual(val, response.data)
+        path = v2_path(u.infos_pkey.format(**{p.key: key}))
+        response3 = await self.tester.get(path)
+        self.assertEqual(200, response3.status)
+        self.assertEqual(value, response3.data)
+
+        response4 = await self.tester.delete(path)
+        self.assertEqual(200, response4.status)
+
+        response5 = await self.tester.get(path)
+        self.assertNotEqual(200, response5.status)
 
 
 if __name__ == "__main__":
