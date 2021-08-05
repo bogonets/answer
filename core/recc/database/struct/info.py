@@ -2,22 +2,16 @@
 
 from typing import Optional, Final
 from datetime import datetime
-from recc.struct.structure_base import StructureBase
+from dataclasses import dataclass
 from recc.inspect.lexicographical_members import lexicographical_members
 
 
-class Info(StructureBase):
-    def __init__(
-        self,
-        key: Optional[str] = None,
-        value: Optional[str] = None,
-        created_at: Optional[datetime] = None,
-        updated_at: Optional[datetime] = None,
-    ):
-        self.key = key
-        self.value = value
-        self.created_at = created_at
-        self.updated_at = updated_at
+@dataclass
+class Info:
+    key: Optional[str] = None
+    value: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
 class InfoKeys:

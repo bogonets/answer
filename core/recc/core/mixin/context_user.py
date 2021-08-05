@@ -24,11 +24,13 @@ def salting_password(hashed_password: str) -> PassInfo:
 
     db_pw = salted_password.hex()
     assert len(db_pw) == PASSWORD_HEX_STR_SIZE
+    assert db_pw == db_pw.strip()
 
     db_salt = salt.hex()
     assert len(db_salt) == SALT_HEX_STR_SIZE
+    assert db_salt == db_salt.strip()
 
-    return PassInfo(db_pw, db_salt, False)
+    return PassInfo(db_pw, db_salt, strip=False)
 
 
 class ContextUser(ContextBase):
@@ -165,7 +167,7 @@ class ContextUser(ContextBase):
             raise ValueError("The 'username' argument is empty.")
 
         result = await self.database.get_user_by_username(username)
-        result.remove_sensitive_infos()
+        result.remove_sensitive()
         return result
 
     async def get_self(self, session: Session) -> User:
@@ -174,7 +176,7 @@ class ContextUser(ContextBase):
     async def get_users(self) -> List[User]:
         result = list()
         for user in await self.database.get_users():
-            user.remove_sensitive_infos()
+            user.remove_sensitive()
             result.append(user)
         return result
 

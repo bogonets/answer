@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from typing import Final
+from typing import Final, Optional
+from dataclasses import dataclass
 from recc.database.struct.user import User
 
 
+@dataclass
 class Login:
-
-    __slots__ = ("access", "refresh", "user")
-
-    def __init__(self, access: str, refresh: str, user: User):
-        self.access = access
-        self.refresh = refresh
-        self.user = user
+    access: str
+    refresh: str
+    user: Optional[User]
 
 
 class LoginKeys:

@@ -2,30 +2,25 @@
 
 from typing import Optional, Any, Final
 from datetime import datetime
-from recc.struct.structure_base import StructureBase
+from dataclasses import dataclass
 from recc.inspect.lexicographical_members import lexicographical_members
 
 
-class Port(StructureBase):
-    def __init__(
-        self,
-        number: Optional[int] = None,
-        group_uid: Optional[int] = None,
-        project_uid: Optional[int] = None,
-        task_uid: Optional[int] = None,
-        description: Optional[str] = None,
-        extra: Optional[Any] = None,
-        created_at: Optional[datetime] = None,
-        updated_at: Optional[datetime] = None,
-    ):
-        self.number = number
-        self.group_uid = group_uid
-        self.project_uid = project_uid
-        self.task_uid = task_uid
-        self.description = description
-        self.extra = extra
-        self.created_at = created_at
-        self.updated_at = updated_at
+@dataclass
+class Port:
+    number: Optional[int] = None
+    group_uid: Optional[int] = None
+    project_uid: Optional[int] = None
+    task_uid: Optional[int] = None
+    description: Optional[str] = None
+    extra: Optional[Any] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+    def remove_sensitive(self):
+        self.group_uid = None
+        self.project_uid = None
+        self.task_uid = None
 
 
 class PortKeys:

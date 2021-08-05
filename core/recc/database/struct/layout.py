@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import Optional, Any, Final
 from datetime import datetime
-from recc.struct.structure_base import StructureBase
+from dataclasses import dataclass
 from recc.inspect.lexicographical_members import lexicographical_members
 
 
@@ -12,24 +12,19 @@ class LayoutState(Enum):
     ENABLE = 1
 
 
-class Layout(StructureBase):
-    def __init__(
-        self,
-        uid: Optional[int] = None,
-        project_uid: Optional[int] = None,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        extra: Optional[Any] = None,
-        created_at: Optional[datetime] = None,
-        updated_at: Optional[datetime] = None,
-    ):
-        self.uid = uid
-        self.project_uid = project_uid
-        self.name = name
-        self.description = description
-        self.extra = extra
-        self.created_at = created_at
-        self.updated_at = updated_at
+@dataclass
+class Layout:
+    uid: Optional[int] = None
+    project_uid: Optional[int] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
+    extra: Optional[Any] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+    def remove_sensitive(self):
+        self.uid = None
+        self.project_uid = None
 
 
 class LayoutKeys:

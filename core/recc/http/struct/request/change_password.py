@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from typing import Final
+from dataclasses import dataclass
 
 
+@dataclass
 class ChangePassword:
-
-    __slots__ = ("before", "after")
-
-    def __init__(self, before: str, after: str):
-        self.before = before
-        self.after = after
+    before: str
+    after: str
 
 
 class ChangePasswordKeys:

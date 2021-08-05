@@ -354,7 +354,7 @@ class RouterV2:
 
         projects = await self.context.get_projects(group_name)
         for project in projects:
-            project.remove_sensitive_fields()
+            project.remove_sensitive()
         projects_dict = serialize_default(projects)
         return self.response(request, projects_dict)
 
