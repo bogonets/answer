@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-import unittest
-import tarfile
-import io
+from unittest import TestCase, main
+from tarfile import open as tar_open
+from io import BytesIO
 from recc import rpc
 from recc.rpc import rpc_client
 from recc.rpc import rpc_converter
@@ -11,7 +11,7 @@ from recc.rpc import rpc_servicer
 from recc.archive.tar_archive import compress_tar
 
 
-class TarArchiveTestCase(unittest.TestCase):
+class TarArchiveTestCase(TestCase):
     def test_compress(self):
         prefix = "prefix/path/node"
         node_init_path = os.path.abspath(rpc.__file__)
@@ -26,7 +26,7 @@ class TarArchiveTestCase(unittest.TestCase):
             os.path.basename(rpc_servicer.__file__),
         )
 
-        with tarfile.open(fileobj=io.BytesIO(node_data), mode="r") as tar:
+        with tar_open(fileobj=BytesIO(node_data), mode="r") as tar:
             names = tar.getnames()
             self.assertIn(f"{prefix}", names)
             self.assertIn(f"{prefix}/__init__.py", names)
@@ -35,4 +35,4 @@ class TarArchiveTestCase(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

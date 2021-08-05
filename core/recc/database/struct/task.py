@@ -3,7 +3,7 @@
 from typing import Optional, Dict, Any, Final
 from datetime import datetime
 from recc.struct.structure_base import StructureBase
-from recc.algorithm.lexicographical import lexicographical_equals
+from recc.inspect.lexicographical_members import lexicographical_members
 
 
 class Task(StructureBase):
@@ -61,4 +61,4 @@ class TaskKeys:
 
 
 keys: Final[TaskKeys] = TaskKeys()
-assert lexicographical_equals(keys, Task())
+assert lexicographical_members(keys, Task())

@@ -3,7 +3,7 @@
 from typing import Optional, Any, List, Final
 from datetime import datetime
 from recc.struct.structure_base import StructureBase
-from recc.algorithm.lexicographical import lexicographical_equals
+from recc.inspect.lexicographical_members import lexicographical_members
 
 
 class Group(StructureBase):
@@ -37,4 +37,4 @@ class GroupKeys:
 
 
 keys: Final[GroupKeys] = GroupKeys()
-assert lexicographical_equals(keys, Group())
+assert lexicographical_members(keys, Group())

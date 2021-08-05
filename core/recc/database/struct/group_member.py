@@ -2,7 +2,7 @@
 
 from typing import Optional, Final
 from recc.struct.structure_base import StructureBase
-from recc.algorithm.lexicographical import lexicographical_equals
+from recc.inspect.lexicographical_members import lexicographical_members
 
 
 class GroupMember(StructureBase):
@@ -24,4 +24,4 @@ class GroupMemberKeys:
 
 
 keys: Final[GroupMemberKeys] = GroupMemberKeys()
-assert lexicographical_equals(keys, GroupMember())
+assert lexicographical_members(keys, GroupMember())

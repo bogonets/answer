@@ -3,7 +3,7 @@
 from typing import Optional, Any, Final
 from datetime import datetime
 from recc.struct.structure_base import StructureBase
-from recc.algorithm.lexicographical import lexicographical_equals
+from recc.inspect.lexicographical_members import lexicographical_members
 
 
 class Port(StructureBase):
@@ -40,4 +40,4 @@ class PortKeys:
 
 
 keys: Final[PortKeys] = PortKeys()
-assert lexicographical_equals(keys, Port())
+assert lexicographical_members(keys, Port())

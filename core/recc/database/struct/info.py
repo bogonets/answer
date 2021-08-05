@@ -3,7 +3,7 @@
 from typing import Optional, Final
 from datetime import datetime
 from recc.struct.structure_base import StructureBase
-from recc.algorithm.lexicographical import lexicographical_equals
+from recc.inspect.lexicographical_members import lexicographical_members
 
 
 class Info(StructureBase):
@@ -28,4 +28,4 @@ class InfoKeys:
 
 
 keys: Final[InfoKeys] = InfoKeys()
-assert lexicographical_equals(keys, Info())
+assert lexicographical_members(keys, Info())

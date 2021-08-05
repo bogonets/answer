@@ -3,7 +3,7 @@
 from typing import Optional, Any, List, Final
 from datetime import datetime
 from recc.struct.structure_base import StructureBase
-from recc.algorithm.lexicographical import lexicographical_equals
+from recc.inspect.lexicographical_members import lexicographical_members
 
 
 class Project(StructureBase):
@@ -44,4 +44,4 @@ class ProjectKeys:
 
 
 keys: Final[ProjectKeys] = ProjectKeys()
-assert lexicographical_equals(keys, Project())
+assert lexicographical_members(keys, Project())

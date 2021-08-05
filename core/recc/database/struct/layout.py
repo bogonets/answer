@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Optional, Any, Final
 from datetime import datetime
 from recc.struct.structure_base import StructureBase
-from recc.algorithm.lexicographical import lexicographical_equals
+from recc.inspect.lexicographical_members import lexicographical_members
 
 
 class LayoutState(Enum):
@@ -43,4 +43,4 @@ class LayoutKeys:
 
 
 keys: Final[LayoutKeys] = LayoutKeys()
-assert lexicographical_equals(keys, Layout())
+assert lexicographical_members(keys, Layout())
