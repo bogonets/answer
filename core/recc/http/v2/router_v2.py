@@ -6,7 +6,11 @@ from aiohttp.hdrs import METH_OPTIONS, AUTHORIZATION
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
-from aiohttp.web_exceptions import HTTPUnauthorized, HTTPBadRequest
+from aiohttp.web_exceptions import (
+    HTTPUnauthorized,
+    HTTPBadRequest,
+    HTTPServiceUnavailable,
+)
 from recc.log.logging import recc_http_logger as logger
 from recc.core.context import Context
 from recc.serializable.serialize import serialize_default
@@ -62,16 +66,12 @@ class RouterV2:
     def context(self) -> Context:
         return self._context
 
-    @web.middleware
-    async def middleware(self, request: Request, handler):
-        if not request.path.startswith(u.api_v2_public):
-            if request.method == METH_OPTIONS:
-                return await handler(request)
-            else:
-                await self._assign_session(request)
+    async def _assign_session(self, request: Request) -> None:
         try:
-            return await handler(request)
-        except PermissionError as e:
+            authorization = request.headers[AUTHORIZATION]
+            bearer = BearerAuth.decode_from_authorization_header(authorization)
+            request[h.session] = await self.context.get_access_session(bearer.token)
+        except BaseException as e:
             logger.exception(e)
             error_message = str(e)
             if error_message:
@@ -79,12 +79,19 @@ class RouterV2:
             else:
                 raise HTTPUnauthorized()
 
-    async def _assign_session(self, request: Request) -> None:
+    @web.middleware
+    async def middleware(self, request: Request, handler):
+        if request.method == METH_OPTIONS:
+            return await handler(request)
+
+        if not request.path.startswith(u.api_v2_public):
+            if not await self.context.exists_admin_user():
+                raise HTTPServiceUnavailable(reason="Uninitialized server")
+            await self._assign_session(request)
+
         try:
-            authorization = request.headers[AUTHORIZATION]
-            bearer = BearerAuth.decode_from_authorization_header(authorization)
-            request[h.session] = await self.context.get_access_session(bearer.token)
-        except BaseException as e:
+            return await handler(request)
+        except PermissionError as e:
             logger.exception(e)
             error_message = str(e)
             if error_message:

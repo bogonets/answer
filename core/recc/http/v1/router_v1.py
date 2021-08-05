@@ -242,10 +242,10 @@ class RouterV1:
             auth = BasicAuth.decode_from_authorization_header(authorization)
             logger.info(f"on_login(id={auth.user_id})")
 
-            if not await self.context.test_password(auth.user_id, auth.password):
+            if not await self.context.challenge_password(auth.user_id, auth.password):
                 raise PermissionError("The password is incorrect.")
 
-            access_token, refresh_token = await self.context.login(auth.user_id)
+            access_token, refresh_token = await self.context.signin(auth.user_id)
 
             return response_ok_without_detail(
                 name,

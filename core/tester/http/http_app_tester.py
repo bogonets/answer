@@ -272,7 +272,7 @@ class HttpAppTester(EmptyHttpAppCallback):
         self._access_token = login_data["accessToken"]
         self._refresh_token = login_data["refreshToken"]
 
-    async def run_v2_admin_login(
+    async def run_v2_admin_signin(
         self,
         username=DEFAULT_ADMIN_USERNAME,
         password=DEFAULT_ADMIN_PASSWORD,
@@ -287,18 +287,20 @@ class HttpAppTester(EmptyHttpAppCallback):
         assert self._username
         assert self._password
 
-        k = signup_keys
         hashed_pw = hashlib.sha256(self._password.encode(encoding="utf-8")).hexdigest()
         signup_response = await self.post(
             path=v2_public_path(u.signup_admin),
-            data=json.dumps({k.username: self._username, k.password: hashed_pw}),
+            data=json.dumps({
+                signup_keys.username: self._username,
+                signup_keys.password: hashed_pw,
+            }),
         )
         if signup_response.status != HTTPStatus.OK:
             raise RuntimeError(f"Signup status error: {signup_response.status}")
 
         auth = BasicAuth(self._username, hashed_pw)
         login_response = await self.post(
-            path=v2_public_path(pv1.login),
+            path=v2_public_path(u.signin),
             headers={AUTHORIZATION: auth.encode()},
         )
         if login_response.status != HTTPStatus.OK:

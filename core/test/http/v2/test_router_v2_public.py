@@ -30,6 +30,9 @@ class RouterV1TestCase(AsyncTestCase):
         response = await self.tester.get(v2_public_path(u.test_init))
         self.assertEqual(503, response.status)
 
+    async def test_admin_signin(self):
+        await self.tester.run_v2_admin_signin()
+
 
 if __name__ == "__main__":
     main()

@@ -17,20 +17,17 @@ class RouterV2TestCase(AsyncTestCase):
         self.tester = HttpAppTester(self.loop)
         await self.tester.setup()
         await self.tester.wait_startup()
+        await self.tester.run_v2_admin_signin()
 
     async def tearDown(self):
         await self.tester.teardown()
 
-    async def test_admin_login(self):
-        await self.tester.run_v2_admin_login()
-
+    async def test_self(self):
         response = await self.tester.get(v2_path(u.self))
         self.assertEqual(200, response.status)
         self.assertIn("username", response.data)
 
     async def test_self_extra(self):
-        await self.tester.run_v2_admin_login()
-
         response = await self.tester.get(v2_path(u.self_extra))
         self.assertEqual(200, response.status)
         self.assertIsNone(response.data)
@@ -60,8 +57,6 @@ class RouterV2TestCase(AsyncTestCase):
         self.assertEqual(data2, response4.data)
 
     async def test_infos(self):
-        await self.tester.run_v2_admin_login()
-
         response1 = await self.tester.get(v2_path(u.infos))
         self.assertEqual(200, response1.status)
         self.assertIn(RECC_DB_VERSION_KEY, response1.data)

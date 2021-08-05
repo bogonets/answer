@@ -4,13 +4,31 @@ import os
 from typing import Optional, List, Tuple, Any
 from recc.crypto.password import encrypt_password
 from recc.session.session import Session
-from recc.database.struct.user import User
+from recc.database.struct.user import PassInfo, User
 from recc.core.mixin.context_base import ContextBase
 from recc.variables.database import (
     PASSWORD_HEX_STR_SIZE,
     SALT_BYTE,
     SALT_HEX_STR_SIZE,
 )
+
+
+def salting_password(hashed_password: str) -> PassInfo:
+    if len(hashed_password) != PASSWORD_HEX_STR_SIZE:
+        msg1 = f"Password('{hashed_password}')"
+        msg2 = f"length is not {PASSWORD_HEX_STR_SIZE} characters."
+        raise ValueError(f"{msg1} {msg2}")
+
+    salt = os.urandom(SALT_BYTE)
+    salted_password = encrypt_password(hashed_password, salt)
+
+    db_pw = salted_password.hex()
+    assert len(db_pw) == PASSWORD_HEX_STR_SIZE
+
+    db_salt = salt.hex()
+    assert len(db_salt) == SALT_HEX_STR_SIZE
+
+    return PassInfo(db_pw, db_salt, False)
 
 
 class ContextUser(ContextBase):
@@ -36,26 +54,14 @@ class ContextUser(ContextBase):
         extra: Optional[Any] = None,
     ) -> None:
         if not username:
-            raise ValueError("User ID is required.")
+            raise ValueError("The 'username' argument is empty.")
 
-        if len(hashed_password) != PASSWORD_HEX_STR_SIZE:
-            msg1 = f"Password({hashed_password})"
-            msg2 = f"length is not {PASSWORD_HEX_STR_SIZE} characters."
-            raise ValueError(f"{msg1} {msg2}")
-
-        salt = os.urandom(SALT_BYTE)
-        salted_password = encrypt_password(hashed_password, salt)
-
-        db_pw = salted_password.hex()
-        assert len(db_pw) == PASSWORD_HEX_STR_SIZE
-
-        db_salt = salt.hex()
-        assert len(db_salt) == SALT_HEX_STR_SIZE
+        pass_info = salting_password(hashed_password)
 
         return await self.database.create_user(
             username,
-            db_pw,
-            db_salt,
+            pass_info.password,
+            pass_info.salt,
             nickname=nickname,
             email=email,
             phone1=phone1,
@@ -67,12 +73,12 @@ class ContextUser(ContextBase):
     async def signup_admin(self, username: str, hashed_password: str) -> None:
         await self.signup(username, hashed_password, is_admin=True)
 
-    async def test_password(self, username: str, hashed_user_pw: str) -> bool:
+    async def challenge_password(self, username: str, hashed_password: str) -> bool:
         if not username:
-            raise ValueError("User ID is required.")
+            raise ValueError("The 'username' argument is empty.")
 
-        if len(hashed_user_pw) != PASSWORD_HEX_STR_SIZE:
-            msg1 = f"Password({hashed_user_pw})"
+        if len(hashed_password) != PASSWORD_HEX_STR_SIZE:
+            msg1 = f"Password('{hashed_password}')"
             msg2 = f"length is not {PASSWORD_HEX_STR_SIZE} characters."
             raise ValueError(f"{msg1} {msg2}")
 
@@ -80,15 +86,36 @@ class ContextUser(ContextBase):
         saved_password = saved_pass.password
         saved_salt = saved_pass.salt
         salt = bytes.fromhex(saved_salt)
-        salted_password = encrypt_password(hashed_user_pw, salt)
+        salted_password = encrypt_password(hashed_password, salt)
 
         return saved_password == salted_password.hex()
 
-    async def login(self, username: str) -> Tuple[str, str]:
+    async def signin(self, username: str) -> Tuple[str, str]:
+        if not username:
+            raise ValueError("The 'username' argument is empty.")
+
         await self.database.update_user_last_login_by_username(username)
         return self.session_factory.create_tokens(username)
 
+    async def login(self, username: str) -> Tuple[str, str]:
+        if not username:
+            raise ValueError("The 'username' argument is empty.")
+
+        return await self.signin(username)
+
+    async def change_password(self, username: str, hashed_password: str) -> None:
+        if not username:
+            raise ValueError("The 'username' argument is empty.")
+
+        pass_info = salting_password(hashed_password)
+        await self.database.update_user_password_and_salt_by_username(
+            username, pass_info.password, pass_info.salt
+        )
+
     async def remove_user(self, username: str) -> None:
+        if not username:
+            raise ValueError("The 'username' argument is empty.")
+
         # TODO: Remove related datas. e.g. group_member, project_member
         await self.database.delete_user_by_name(username)
 
@@ -102,6 +129,9 @@ class ContextUser(ContextBase):
         is_admin: Optional[bool] = None,
         extra: Optional[Any] = None,
     ) -> None:
+        if not username:
+            raise ValueError("The 'username' argument is empty.")
+
         await self.database.update_user_by_username(
             username,
             nickname=nickname,
@@ -112,21 +142,34 @@ class ContextUser(ContextBase):
             extra=extra,
         )
 
+    async def update_user_extra(self, username: str, extra: Any) -> None:
+        if not username:
+            raise ValueError("The 'username' argument is empty.")
+
+        await self.database.update_user_extra_by_username(username, extra)
+
     async def renew_access_token(self, token: str) -> str:
         return self.session_factory.renew_access_token(token)
 
     async def get_access_session(self, token: str) -> Session:
         return self.session_factory.decode_access(token)
 
-    async def get_self(self, session: Session) -> User:
-        result = await self.database.get_user_by_username(session.audience)
-        result.remove_sensitive_infos()
-        return result
+    async def get_user_uid(self, username: str) -> int:
+        if not username:
+            raise ValueError("The 'username' argument is empty.")
+
+        return await self.database.get_user_uid_by_username(username)
 
     async def get_user(self, username: str) -> User:
+        if not username:
+            raise ValueError("The 'username' argument is empty.")
+
         result = await self.database.get_user_by_username(username)
         result.remove_sensitive_infos()
         return result
+
+    async def get_self(self, session: Session) -> User:
+        return await self.get_user(session.audience)
 
     async def get_users(self) -> List[User]:
         result = list()
@@ -136,4 +179,7 @@ class ContextUser(ContextBase):
         return result
 
     async def exist_user(self, username: str) -> bool:
+        if not username:
+            raise ValueError("The 'username' argument is empty.")
+
         return await self.database.exist_user(username)

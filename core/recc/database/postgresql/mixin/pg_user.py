@@ -10,7 +10,6 @@ from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.user import (
     INSERT_USER,
     UPDATE_USER_LAST_LOGIN_BY_USERNAME,
-    UPDATE_USER_USERNAME_BY_UID,
     UPDATE_USER_PASSWORD_AND_SALT_BY_UID,
     UPDATE_USER_PASSWORD_AND_SALT_BY_USERNAME,
     UPDATE_USER_EXTRA_BY_UID,
@@ -69,15 +68,6 @@ class PgUser(DbUser, PgBase):
         await self.execute(query, username, last_login)
         params_msg = f"username={username},last_login={last_login}"
         logger.info(f"update_user_last_login_by_username({params_msg}) ok.")
-
-    @overrides
-    async def update_user_username_by_uid(
-        self, uid: int, username: str, updated_at=datetime.utcnow()
-    ) -> None:
-        query = UPDATE_USER_USERNAME_BY_UID
-        await self.execute(query, uid, username, updated_at)
-        params_msg = f"uid={uid},username={username}"
-        logger.info(f"update_user_username_by_uid({params_msg}) ok.")
 
     @overrides
     async def update_user_password_and_salt_by_uid(

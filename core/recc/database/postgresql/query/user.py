@@ -49,15 +49,6 @@ WHERE
     username LIKE $1;
 """
 
-UPDATE_USER_USERNAME_BY_UID = f"""
-UPDATE
-    {TABLE_USER}
-SET
-    username=$2, updated_at=$3
-WHERE
-    uid=$1;
-"""
-
 UPDATE_USER_PASSWORD_AND_SALT_BY_UID = f"""
 UPDATE
     {TABLE_USER}

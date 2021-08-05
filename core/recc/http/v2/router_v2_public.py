@@ -13,7 +13,6 @@ from aiohttp.web_exceptions import (
 )
 from recc.log.logging import recc_http_logger as logger
 from recc.core.context import Context
-from recc.driver.json import global_json_decoder
 from recc.serializable.serialize import serialize_default
 from recc.http.http_response import auto_response
 from recc.http.http_request import read_dict
@@ -54,7 +53,7 @@ class RouterV2Public:
             web.get(u.test_init, self.get_test_init),
             web.post(u.signup_admin, self.post_signup_admin),
             web.post(u.signup, self.post_signup),
-            web.post(u.login, self.post_login),
+            web.post(u.signin, self.post_signin),
         ]
 
     # ---------------
@@ -92,31 +91,47 @@ class RouterV2Public:
         return Response()
 
     async def post_signup(self, request: Request) -> Response:
-        data = await request.json(loads=global_json_decoder)
+        if not self.context.config.public_signup:
+            raise HTTPServiceUnavailable(reason="You cannot signup without permission.")
 
-        assert isinstance(data, dict)
-        username = data[d.username]
-        password = data[d.password]  # Perhaps the client encoded it with SHA256.
+        k = signup_keys
+        data = await read_dict(request, [k.username, k.password])
+        username = data[k.username]
+        password = data[k.password]  # Perhaps the client encoded it with SHA256.
         logger.info(f"post_signup({d.username}={username})")
 
-        await self.context.signup(username=username, hashed_password=password)
+        await self.context.signup(
+            username=username,
+            hashed_password=password,
+            nickname=data.get(k.nickname),
+            email=data.get(k.email),
+            phone1=data.get(k.phone1),
+            phone2=data.get(k.phone2),
+        )
         return Response()
 
-    async def post_login(self, request: Request) -> Response:
-        authorization = request.headers[AUTHORIZATION]
-        auth = BasicAuth.decode_from_authorization_header(authorization)
-        logger.info(f"post_login({auth})")
+    async def post_signin(self, request: Request) -> Response:
+        try:
+            authorization = request.headers[AUTHORIZATION]
+        except KeyError as e:
+            raise HTTPBadRequest(reason=str(e))
 
+        try:
+            auth = BasicAuth.decode_from_authorization_header(authorization)
+        except ValueError as e:
+            raise HTTPBadRequest(reason=str(e))
+
+        logger.info(f"post_signin({auth})")
         username = auth.user_id
         password = auth.password
 
         try:
-            if not await self.context.test_password(username, password):
+            if not await self.context.challenge_password(username, password):
                 raise HTTPUnauthorized(reason="The password is incorrect.")
         except ValueError as e:
             raise HTTPBadRequest(reason=str(e))
 
-        access, refresh = await self.context.login(username)
+        access, refresh = await self.context.signin(username)
         user = await self.context.get_user(username)
 
         result = serialize_default(Login(access, refresh, user))

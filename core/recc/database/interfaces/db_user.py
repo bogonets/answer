@@ -34,12 +34,6 @@ class DbUser(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_user_username_by_uid(
-        self, uid: int, username: str, updated_at=datetime.utcnow()
-    ) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
     async def update_user_password_and_salt_by_uid(
         self, uid: int, password: str, salt: str, updated_at=datetime.utcnow()
     ) -> None:
