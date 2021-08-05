@@ -26,6 +26,7 @@ class User(StructureBase):
         username: Optional[str] = None,
         password: Optional[str] = None,
         salt: Optional[str] = None,
+        nickname: Optional[str] = None,
         email: Optional[str] = None,
         phone1: Optional[str] = None,
         phone2: Optional[str] = None,
@@ -39,6 +40,7 @@ class User(StructureBase):
         self.username = username
         self.password = password
         self.salt = salt
+        self.nickname = nickname
         self.email = email
         self.phone1 = phone1
         self.phone2 = phone2
@@ -59,6 +61,7 @@ class UserKeys:
     username = "username"
     password = "password"
     salt = "salt"
+    nickname = "nickname"
     email = "email"
     phone1 = "phone1"
     phone2 = "phone2"

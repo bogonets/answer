@@ -34,6 +34,7 @@ class PgUser(DbUser, PgBase):
         username: str,
         password: str,
         salt: str,
+        nickname: Optional[str] = None,
         email: Optional[str] = None,
         phone1: Optional[str] = None,
         phone2: Optional[str] = None,
@@ -47,6 +48,7 @@ class PgUser(DbUser, PgBase):
             username,
             password,
             salt,
+            nickname,
             email,
             phone1,
             phone2,
@@ -117,6 +119,7 @@ class PgUser(DbUser, PgBase):
     async def update_user_by_username(
         self,
         username: str,
+        nickname: Optional[str] = None,
         email: Optional[str] = None,
         phone1: Optional[str] = None,
         phone2: Optional[str] = None,
@@ -126,6 +129,7 @@ class PgUser(DbUser, PgBase):
     ) -> None:
         query, args = get_update_user_query_by_username(
             username=username,
+            nickname=nickname,
             email=email,
             phone1=phone1,
             phone2=phone2,
@@ -200,7 +204,6 @@ class PgUser(DbUser, PgBase):
         params_msg = f"username={username}"
         if not row:
             raise RuntimeError(f"Not found user: {params_msg}")
-        assert len(row) == 9
         result = User(**dict(row))
         result.username = username
         logger.info(f"get_user_by_username({params_msg}) ok.")

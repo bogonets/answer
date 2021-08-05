@@ -28,7 +28,6 @@ export class ApiV2StatusError extends Error {
     }
 }
 
-
 export class ApiV2TokenError extends Error {
     constructor(token?: string) {
         let message;
@@ -68,6 +67,7 @@ export interface Extra {
 
 export interface User {
     username?: string;
+    nickname?: string;
     email?: string;
     phone1?: string;
     phone2?: string;

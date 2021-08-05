@@ -10,6 +10,7 @@ class PgUserTestCase(PostgresqlTestCase):
         username = "admin"
         password = "password"
         salt = "salt"
+        nickname = "Unknown"
         email = "admin@localhost"
         phone1 = "010-0000-0000"
         phone2 = "010-0000-0001"
@@ -21,6 +22,7 @@ class PgUserTestCase(PostgresqlTestCase):
             username,
             password,
             salt,
+            nickname=nickname,
             email=email,
             phone1=phone1,
             phone2=phone2,
@@ -31,6 +33,7 @@ class PgUserTestCase(PostgresqlTestCase):
 
         user = await self.db.get_user_by_username(username)
         self.assertEqual(username, user.username)
+        self.assertEqual(nickname, user.nickname)
         self.assertEqual(email, user.email)
         self.assertEqual(phone1, user.phone1)
         self.assertEqual(phone2, user.phone2)

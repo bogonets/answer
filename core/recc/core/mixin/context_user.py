@@ -28,6 +28,7 @@ class ContextUser(ContextBase):
         self,
         username: str,
         hashed_password: str,
+        nickname: Optional[str] = None,
         email: Optional[str] = None,
         phone1: Optional[str] = None,
         phone2: Optional[str] = None,
@@ -55,6 +56,7 @@ class ContextUser(ContextBase):
             username,
             db_pw,
             db_salt,
+            nickname=nickname,
             email=email,
             phone1=phone1,
             phone2=phone2,
@@ -93,6 +95,7 @@ class ContextUser(ContextBase):
     async def update_user(
         self,
         username: str,
+        nickname: Optional[str] = None,
         email: Optional[str] = None,
         phone1: Optional[str] = None,
         phone2: Optional[str] = None,
@@ -101,6 +104,7 @@ class ContextUser(ContextBase):
     ) -> None:
         await self.database.update_user_by_username(
             username,
+            nickname=nickname,
             email=email,
             phone1=phone1,
             phone2=phone2,

@@ -327,7 +327,7 @@ export default class LoginPage extends VueBase {
         })
         .catch(error => {
           if (error.response) {
-            if (error.response.status && error.response.status == 520) {
+            if (error.response.status && error.response.status == 503) {
               this.moveToSignupAdmin();
             } else {
               this.updateState(LoginPageState.Unreachable);

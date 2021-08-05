@@ -281,6 +281,7 @@ class RouterV2:
         await self.context.signup(
             username=username,
             hashed_password=hashed_password,
+            nickname=data.get(k.nickname),
             email=data.get(k.email),
             phone1=data.get(k.phone1),
             phone2=data.get(k.phone2),
