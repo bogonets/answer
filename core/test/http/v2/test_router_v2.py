@@ -56,14 +56,19 @@ class RouterV2TestCase(AsyncTestCase):
         self.assertEqual(200, response4.status)
         self.assertEqual(data2, response4.data)
 
+    async def test_users(self):
+        response = await self.tester.get(v2_path(u.users))
+        self.assertEqual(200, response.status)
+        self.assertIsNotNone(response.data)
+
     async def test_infos(self):
         response1 = await self.tester.get(v2_path(u.infos))
         self.assertEqual(200, response1.status)
         self.assertIn(RECC_DB_VERSION_KEY, response1.data)
 
         dk = info_keys
-        key = "config-key"
-        value = "config-value"
+        key = "key1"
+        value = "value2"
         data = {dk.key: key, dk.value: value}
         response2 = await self.tester.post(v2_path(u.infos), data=json.dumps(data))
         self.assertEqual(200, response2.status)
@@ -72,7 +77,7 @@ class RouterV2TestCase(AsyncTestCase):
         path = v2_path(u.infos_pkey.format(**{p.key: key}))
         response3 = await self.tester.get(path)
         self.assertEqual(200, response3.status)
-        self.assertEqual(value, response3.data)
+        self.assertIsNotNone(response3.data)
 
         response4 = await self.tester.delete(path)
         self.assertEqual(200, response4.status)

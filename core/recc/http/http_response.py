@@ -2,7 +2,7 @@
 
 from enum import Enum
 from multidict import CIMultiDict
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union
 from zlib import compress as zlib_compress
 from gzip import compress as gzip_compress
 from aiohttp.web_request import Request
@@ -89,8 +89,15 @@ class Encoding:
         return f"Encoding<t={self.t},q={self.q}>"
 
 
-def get_accept_type(header: str) -> AcceptType:
-    accepts = [MimeType.parse(a.strip()) for a in header.split(",")]
+def get_accept_type(header: Union[str, Request]) -> AcceptType:
+    if isinstance(header, Request):
+        try:
+            accept_text = header.headers[ACCEPT]
+        except KeyError:
+            raise HTTPNotAcceptable(reason=f"Not exists `{ACCEPT}` header")
+    else:
+        accept_text = header
+    accepts = [MimeType.parse(a.strip()) for a in accept_text.split(",")]
 
     is_any = False
     is_json = False
@@ -137,8 +144,15 @@ def get_encodings(text: str) -> List[AcceptEncoding]:
     return result
 
 
-def get_encoding(header: str) -> Encoding:
-    encodings = get_encodings(header)
+def get_encoding(header: Union[str, Request]) -> Encoding:
+    if isinstance(header, Request):
+        try:
+            encoding_text = header.headers[ACCEPT_ENCODING]
+        except KeyError:
+            raise HTTPNotAcceptable(reason=f"Not exists `{ACCEPT_ENCODING}` header")
+    else:
+        encoding_text = header
+    encodings = get_encodings(encoding_text)
 
     is_gzip: Optional[int] = None
     is_compress: Optional[int] = None
@@ -198,17 +212,7 @@ def get_encoding(header: str) -> Encoding:
     return Encoding(AcceptEncodingType.Identity)
 
 
-def auto_response(request: Request, data: Any) -> Response:
-    accept_header = request.headers[ACCEPT]
-    accept_encoding_header = request.headers[ACCEPT_ENCODING]
-
-    # Do not use the `Accept-Charset` header.
-    # https://developer.mozilla.org/ko/docs/Web/HTTP/Content_negotiation
-    # https://www.eff.org/deeplinks/2010/01/primer-information-theory-and-privacy
-
-    accept = get_accept_type(accept_header)
-    encoding = get_encoding(accept_encoding_header)
-
+def response(accept: AcceptType, encoding: Encoding, data: Any) -> Response:
     text: str
     content_type: str
     if accept == AcceptType.Json:
@@ -254,3 +258,14 @@ def auto_response(request: Request, data: Any) -> Response:
         reason="OK",
         headers=CIMultiDict(headers),
     )
+
+
+def auto_response(request: Request, data: Any) -> Response:
+    # Do not use the `Accept-Charset` header.
+    # https://developer.mozilla.org/ko/docs/Web/HTTP/Content_negotiation
+    # https://www.eff.org/deeplinks/2010/01/primer-information-theory-and-privacy
+
+    accept = get_accept_type(request)
+    encoding = get_encoding(request)
+
+    return response(accept, encoding, data)

@@ -1,46 +1,30 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Any
+from typing import List, Any, Dict
 from aiohttp import web
 from aiohttp.hdrs import METH_OPTIONS, AUTHORIZATION
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 from aiohttp.web_exceptions import (
+    HTTPNotFound,
     HTTPUnauthorized,
     HTTPBadRequest,
     HTTPServiceUnavailable,
 )
 from recc.log.logging import recc_http_logger as logger
 from recc.core.context import Context
-from recc.serializable.serialize import serialize_default
 from recc.http.v2.router_v2_public import RouterV2Public
 from recc.http.header.bearer_auth import BearerAuth
 from recc.http.http_response import auto_response
-from recc.http.http_request import read_dict
-
-from recc.http import http_data_keys as d
+from recc.http.http_decorator import parameter_matcher
+from recc.session.session import Session
 from recc.http import http_header_keys as h
-from recc.http import http_path_keys as p
 from recc.http import http_urls as u
-
-# from recc.database.struct.group import keys as group_keys
-# from recc.database.struct.group_member import keys as group_member_keys
-
-from recc.database.struct.info import keys as info_keys
-
-# from recc.database.struct.layout import keys as layout_keys
-# from recc.database.struct.permission import keys as permission_keys
-# from recc.database.struct.port import keys as port_keys
-# from recc.database.struct.project import keys as project_keys
-# from recc.database.struct.project_member import keys as project_member_keys
-# from recc.database.struct.task import keys as task_keys
-
-from recc.http.struct.request.change_password import keys as change_password_keys
-from recc.database.struct.user import keys as user_keys
-
-# from recc.database.struct.widget import keys as widget_keys
-
+from recc.database.struct.info import Info
+from recc.database.struct.project import Project
+from recc.http.struct.request.change_password import ChangePassword
+from recc.database.struct.user import User
 from recc.variables.http import DETAIL_RESPONSE_LOGGING_VERBOSE_LEVEL
 from recc.variables.database import ANONYMOUS_GROUP_NAME
 
@@ -99,6 +83,7 @@ class RouterV2:
             else:
                 raise HTTPUnauthorized()
 
+    # noinspection PyTypeChecker
     def _get_routes(self) -> List[AbstractRouteDef]:
         # fmt: off
         return [
@@ -128,7 +113,6 @@ class RouterV2:
 
             # projects
             web.get(u.projects, self.get_projects),
-            web.post(u.projects, self.post_projects),
 
             # # anonymous projects
             # web.get(u.projects_pproject, self.get_projects_pproject),
@@ -153,229 +137,174 @@ class RouterV2:
     # Self
     # ----
 
-    async def get_self(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-        logger.info(f"get_self(session={audience})")
+    @parameter_matcher
+    async def get_self(self, session: Session) -> User:
+        return await self.context.get_self(session)
 
-        session_user = await self.context.get_self(session)
-        user_dict = serialize_default(session_user)
-        return self.response(request, user_dict)
+    @parameter_matcher
+    async def get_self_extra(self, session: Session) -> Any:
+        return await self.context.get_self_extra(session)
 
-    async def get_self_extra(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-        logger.info(f"get_self_extra(session={audience})")
+    @parameter_matcher
+    async def patch_self_extra(self, session: Session, extra: Dict[str, Any]) -> None:
+        await self.context.update_user_extra(session.audience, extra)
 
-        session_user = await self.context.get_self(session)
-        return self.response(request, session_user.extra)
-
-    async def patch_self_extra(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-        extra = await read_dict(request)
-        logger.info(f"patch_self_extra(session={audience})")
-
-        await self.context.update_user(audience, extra=extra)
-        return self.response(request)
-
-    async def patch_self_password(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-
-        k = change_password_keys
-        extra = await read_dict(request, [k.before, k.after])
-        logger.info(f"patch_self_password(session={audience})")
-
-        await self.context.update_user(audience, extra=extra)
-        return self.response(request)
+    @parameter_matcher
+    async def patch_self_password(
+        self, session: Session, change_password: ChangePassword
+    ) -> None:
+        before = change_password.before
+        after = change_password.after
+        try:
+            if not self.context.challenge_password(session.audience, before):
+                raise HTTPUnauthorized(reason="The password is incorrect.")
+        except ValueError as e:
+            raise HTTPBadRequest(reason=str(e))
+        await self.context.change_password(session.audience, after)
 
     # -----
     # Infos
     # -----
 
-    async def get_infos(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-        logger.info(f"get_infos(session={audience})")
-
+    @parameter_matcher
+    async def get_infos(self, session: Session) -> Dict[str, str]:
         session_user = await self.context.get_self(session)
         if not session_user.is_admin:
             raise HTTPUnauthorized(reason="Administrator privileges are required")
 
-        configs = await self.context.get_infos()
-        result = {config.key: config.value for config in configs}
-        return self.response(request, result)
+        result = dict()
+        for info in await self.context.get_infos():
+            if not info.key:
+                continue
+            result[info.key] = info.value if info.value else ""
+        return result
 
-    async def post_infos(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
+    @parameter_matcher
+    async def post_infos(self, session: Session, info: Info) -> None:
+        assert info.key is not None
+        assert info.value is not None
+        session_user = await self.context.get_self(session)
+        if not session_user.is_admin:
+            raise HTTPUnauthorized(reason="Administrator privileges are required")
+        await self.context.set_info(info.key, info.value)
 
-        k = info_keys
-        data = await read_dict(request, [k.key, k.value])
-        key = data[k.key]
-        value = data[k.value]
-
-        logging_msg = f"{{ {k.key}={key}, {k.value}={value} }}"
-        logger.info(f"post_infos(session={audience}) {logging_msg}")
-
+    @parameter_matcher
+    async def get_infos_pkey(self, session: Session, key: str) -> Info:
         session_user = await self.context.get_self(session)
         if not session_user.is_admin:
             raise HTTPUnauthorized(reason="Administrator privileges are required")
 
-        await self.context.set_info(key, value)
-        return self.response(request)
+        try:
+            return await self.context.get_info(key)
+        except RuntimeError as e:
+            reason = str(e)
+            logger.error(e)
+            raise HTTPNotFound(reason=reason if reason else None)
 
-    async def get_infos_pkey(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-        key = request.match_info[p.key]
-        logger.info(f"get_infos_pkey(session={audience},key={key})")
-
+    @parameter_matcher
+    async def delete_infos_pkey(self, session: Session, key: str) -> None:
         session_user = await self.context.get_self(session)
         if not session_user.is_admin:
             raise HTTPUnauthorized(reason="Administrator privileges are required")
-
-        config = await self.context.get_info(key)
-        return self.response(request, config.value)
-
-    async def delete_infos_pkey(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-        key = request.match_info[p.key]
-        logger.info(f"delete_infos_pkey(session={audience},key={key})")
-
-        session_user = await self.context.get_self(session)
-        if not session_user.is_admin:
-            raise HTTPUnauthorized(reason="Administrator privileges are required")
-
         await self.context.delete_info(key)
-        return self.response(request)
 
     # -----
     # Users
     # -----
 
-    async def get_users(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-        logger.info(f"get_users(session={audience})")
+    @parameter_matcher
+    async def get_users(self, session: Session) -> List[User]:
+        session_user = await self.context.get_self(session)
+        if not session_user.is_admin:
+            raise HTTPUnauthorized(reason="Administrator privileges are required")
+        return await self.context.get_users()
+
+    @parameter_matcher
+    async def post_users(self, session: Session, user: User) -> None:
+        if not user.username:
+            raise HTTPBadRequest(reason="Not exists username field")
+        if not user.password:
+            raise HTTPBadRequest(reason="Not exists password field")
 
         session_user = await self.context.get_self(session)
         if not session_user.is_admin:
             raise HTTPUnauthorized(reason="Administrator privileges are required")
 
-        users = await self.context.get_users()
-        users_dict = serialize_default(users)
-        return self.response(request, users_dict)
-
-    async def post_users(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-
-        k = user_keys
-        data = await read_dict(request, [k.username, k.password])
-        username = data[k.username]
-        hashed_password = data[k.password]
-
-        if not username:
-            raise HTTPBadRequest(reason=f"`{k.username}` is empty.")
-        if not hashed_password:
-            raise HTTPBadRequest(reason=f"`{k.password}` is empty.")
-
-        logger.info(f"post_users(session={audience}) -> username={username}")
-
         await self.context.signup(
-            username=username,
-            hashed_password=hashed_password,
-            nickname=data.get(k.nickname),
-            email=data.get(k.email),
-            phone1=data.get(k.phone1),
-            phone2=data.get(k.phone2),
-            is_admin=data.get(k.is_admin),
-            extra=data.get(k.extra),
+            username=user.username,
+            hashed_password=user.password,
+            nickname=user.nickname,
+            email=user.email,
+            phone1=user.phone1,
+            phone2=user.phone2,
+            is_admin=user.is_admin,
+            extra=user.extra,
         )
-        return self.response(request)
 
-    async def get_users_puser(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-        username = request.match_info[p.user]
-        logger.info(f"get_users_puser(session={audience},{p.user}={username})")
-
+    @parameter_matcher
+    async def get_users_puser(self, session: Session, user: str) -> User:
         session_user = await self.context.get_self(session)
-        if session.audience == username:
-            user = session_user
-        else:
+        if session.audience == user:
+            return session_user
+
+        if not session_user.is_admin:
+            raise HTTPUnauthorized(reason="Administrator privileges are required")
+        return await self.context.get_user(user)
+
+    @parameter_matcher
+    async def patch_users_puser(
+        self, session: Session, user: str, patch_user_info: User
+    ) -> None:
+        session_user = await self.context.get_self(session)
+        if session.audience != user:
             if not session_user.is_admin:
                 raise HTTPUnauthorized(reason="Administrator privileges are required")
-            user = await self.context.get_user(username)
-
-        user_dict = serialize_default(user)
-        return self.response(request, user_dict)
-
-    async def patch_users_puser(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-        username = request.match_info[p.user]
-
-        k = user_keys
-        data = await read_dict(request)
-
-        logger.info(f"patch_users_puser(session={audience},{p.user}={username})")
 
         await self.context.update_user(
-            username,
-            email=data.get(k.email),
-            phone1=data.get(k.phone1),
-            phone2=data.get(k.phone2),
-            is_admin=data.get(k.is_admin),
-            extra=data.get(k.extra),
+            user,
+            email=patch_user_info.email,
+            phone1=patch_user_info.phone1,
+            phone2=patch_user_info.phone2,
+            is_admin=patch_user_info.is_admin,
+            extra=patch_user_info.extra,
         )
-        return self.response(request)
 
-    async def delete_users_puser(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-        username = request.match_info[p.user]
-        logger.info(f"delete_users_puser(session={audience},{p.user}={username})")
-        await self.context.remove_user(username)
-        return self.response(request)
+    @parameter_matcher
+    async def delete_users_puser(self, session: Session, user: str) -> None:
+        session_user = await self.context.get_self(session)
+        if not session_user.is_admin:
+            raise HTTPUnauthorized(reason="Administrator privileges are required")
+        await self.context.remove_user(user)
 
     # --------
     # Projects
     # --------
 
-    async def get_projects(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-        group_name = ANONYMOUS_GROUP_NAME
-        logger.info(f"get_projects(session={audience})")
-
-        projects = await self.context.get_projects(group_name)
+    @parameter_matcher
+    async def get_projects(self, session: Session) -> List[Project]:
+        projects = await self.context.get_projects(ANONYMOUS_GROUP_NAME)
         for project in projects:
             project.remove_sensitive()
-        projects_dict = serialize_default(projects)
-        return self.response(request, projects_dict)
+        return projects
 
-    async def post_projects(self, request: Request) -> Response:
-        session = request[h.session]
-        audience = session.audience
-
-        data = await read_dict(request, [d.project])
-        group_name = data.get(d.group, ANONYMOUS_GROUP_NAME)
-        project_name = data[d.project]
-
-        logging_msg = f"{{ {d.group}={group_name}, {d.project}={project_name} }}"
-        logger.info(f"post_projects(session={audience}) {logging_msg}")
-
-        await self.context.create_project(group_name, project_name)
-        return self.response(request)
-
-    # # ------------------
-    # # Anonymous projects
-    # # ------------------
+    # async def post_projects(self, request: Request) -> Response:
+    #     session = request[h.session]
+    #     audience = session.audience
     #
+    #     data = await read_dict(request, [d.project])
+    #     group_name = data.get(d.group, ANONYMOUS_GROUP_NAME)
+    #     project_name = data[d.project]
+    #
+    #     logging_msg = f"{{ {d.group}={group_name}, {d.project}={project_name} }}"
+    #     logger.info(f"post_projects(session={audience}) {logging_msg}")
+    #
+    #     await self.context.create_project(group_name, project_name)
+    #     return self.response(request)
+
+    # ------------------
+    # Anonymous projects
+    # ------------------
+
     # async def get_projects_pproject(self, request: Request) -> Response:
     #     session = request[h.session]
     #     audience = session.audience

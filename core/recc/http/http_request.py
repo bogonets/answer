@@ -1,6 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, TypeVar, List, Optional, Dict
+from typing import (
+    Any,
+    TypeVar,
+    Type,
+    List,
+    Optional,
+    Dict,
+    Union,
+    get_type_hints,
+    get_origin,
+    get_args,
+)
 from io import StringIO
 from aiohttp.web_request import Request
 from aiohttp.hdrs import (
@@ -20,6 +31,7 @@ from recc.mime.mime_type import (
 from recc.driver.json import global_json_decoder
 from recc.driver.xml import global_xml_decoder
 from recc.driver.yaml import global_yaml_decoder
+from recc.serializable.deserialize import deserialize_default
 
 _T = TypeVar("_T")
 
@@ -31,7 +43,7 @@ TEXT = MIME_TEXT_PLAIN.family
 PLAIN = MIME_TEXT_PLAIN.subtype
 
 
-async def read_data(request: Request) -> Any:
+async def body_to_object(request: Request) -> Any:
     content_type = request.headers.get(CONTENT_TYPE)
     content_encoding = request.headers.get(CONTENT_ENCODING)
     content_length = request.headers.get(CONTENT_LENGTH)
@@ -69,7 +81,7 @@ async def read_dict(
     request: Request,
     assert_keys: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
-    data = await read_data(request)
+    data = await body_to_object(request)
     if not isinstance(data, dict):
         raise HTTPBadRequest(reason="Only dictionary-type requests are accepted")
 
@@ -79,3 +91,27 @@ async def read_dict(
                 raise HTTPBadRequest(reason=f"Not exists key: {key}")
 
     return data
+
+
+async def body_to_class(
+    request: Request,
+    cls: Type[_T],
+) -> _T:
+    data = await body_to_object(request)
+    if not isinstance(data, dict):
+        raise HTTPBadRequest(reason="Only dictionary-type requests are accepted")
+
+    result = deserialize_default(data, cls)
+
+    for key, hint in get_type_hints(result).items():
+        type_origin = get_origin(hint)
+        type_args = get_args(hint)
+
+        if type_origin is Union:
+            if type(None) in type_args:
+                continue
+
+        if not hasattr(result, key):
+            raise HTTPBadRequest(reason=f"Not exists `{key}` in content body")
+
+    return result

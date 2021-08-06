@@ -9,8 +9,8 @@ class HTTPReccError(HTTPServerError):
     pass
 
 
-class HTTPReccNotInitializedError(HTTPReccError):
+class HTTPReccUnknownError(HTTPReccError):
     status_code = 520
 
-    def __init__(self, reason="Not initialized"):
+    def __init__(self, reason="Unknown recc error"):
         super().__init__(reason=reason)

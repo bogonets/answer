@@ -295,7 +295,9 @@ class HttpAppTester(EmptyHttpAppCallback):
                 signup_keys.password: hashed_pw,
             }),
         )
-        if signup_response.status != HTTPStatus.OK:
+        if signup_response.status == HTTPStatus.SERVICE_UNAVAILABLE:
+            pass
+        elif signup_response.status != HTTPStatus.OK:
             raise RuntimeError(f"Signup status error: {signup_response.status}")
 
         auth = BasicAuth(self._username, hashed_pw)

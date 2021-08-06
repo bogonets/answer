@@ -190,7 +190,7 @@ export default class ApiV2 {
         const config = {
             auth: auth,
         } as AxiosRequestConfig;
-        return this.api.post('/public/login', undefined, config)
+        return this.api.post('/public/signin', undefined, config)
             .then((response: AxiosResponse) => {
                 if (response.status !== 200) {
                     throw new ApiV2StatusError(response);
