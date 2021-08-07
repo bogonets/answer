@@ -5,11 +5,13 @@ from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
 from recc.core.struct.signup_request import SignupRequest
 from recc.http import http_urls as u
+from recc.http.header.basic_auth import BasicAuth
 from recc.http.http_utils import v2_public_path
 from recc.util.version import version_text
+from aiohttp.hdrs import AUTHORIZATION
 
 
-class RouterV1TestCase(AsyncTestCase):
+class RouterV2PublicTestCase(AsyncTestCase):
     async def setUp(self):
         self.tester = HttpAppTester(self.loop)
         await self.tester.setup()
@@ -34,7 +36,7 @@ class RouterV1TestCase(AsyncTestCase):
     async def test_admin_signin(self):
         await self.tester.run_v2_admin_signin()
 
-    async def test_signup(self):
+    async def test_signup_and_signin(self):
         self.assertFalse(self.tester.context.config.public_signup)
         signup = SignupRequest("user1", SignupRequest.encrypt_password("1234"), "Nick")
         response1 = await self.tester.post(v2_public_path(u.signup), data=signup)
@@ -43,6 +45,14 @@ class RouterV1TestCase(AsyncTestCase):
         self.tester.context.config.public_signup = True
         response2 = await self.tester.post(v2_public_path(u.signup), data=signup)
         self.assertEqual(200, response2.status)
+
+        auth = BasicAuth(signup.username, signup.password)
+        signin_headers = {str(AUTHORIZATION): auth.encode()}
+        response3 = await self.tester.post(
+            v2_public_path(u.signin),
+            headers=signin_headers,
+        )
+        self.assertEqual(200, response3.status)
 
 
 if __name__ == "__main__":

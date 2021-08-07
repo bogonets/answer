@@ -78,14 +78,7 @@ class RouterV2Public:
     async def post_signup(self, signup: SignupRequest) -> None:
         if not self.context.config.public_signup:
             raise HTTPServiceUnavailable(reason="You cannot signup without permission")
-        await self.context.signup(
-            username=signup.username,
-            hashed_password=signup.password,
-            nickname=signup.nickname,
-            email=signup.email,
-            phone1=signup.phone1,
-            phone2=signup.phone2,
-        )
+        await self.context.signup_with_request(signup)
 
     @parameter_matcher
     async def post_signin(self, auth: BasicAuth) -> SigninResponse:

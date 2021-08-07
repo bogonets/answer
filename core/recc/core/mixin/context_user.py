@@ -6,6 +6,7 @@ from recc.crypto.password import encrypt_password
 from recc.session.session import Session
 from recc.database.struct.user import PassInfo, User
 from recc.core.mixin.context_base import ContextBase
+from recc.core.struct.signup_request import SignupRequest
 from recc.variables.database import (
     PASSWORD_HEX_STR_SIZE,
     SALT_BYTE,
@@ -57,9 +58,7 @@ class ContextUser(ContextBase):
     ) -> None:
         if not username:
             raise ValueError("The `username` argument is empty.")
-
         pass_info = salting_password(hashed_password)
-
         return await self.database.create_user(
             username,
             pass_info.password,
@@ -70,6 +69,17 @@ class ContextUser(ContextBase):
             phone2=phone2,
             is_admin=is_admin,
             extra=extra,
+        )
+
+    async def signup_with_request(self, request: SignupRequest) -> None:
+        await self.signup(
+            username=request.username,
+            hashed_password=request.password,
+            nickname=request.nickname,
+            email=request.email,
+            phone1=request.phone1,
+            phone2=request.phone2,
+            is_admin=request.is_admin,
         )
 
     async def signup_admin(self, username: str, hashed_password: str) -> None:

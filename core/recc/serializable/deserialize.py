@@ -262,6 +262,8 @@ def _deserialize_any(
                 raise DeserializeError("The `bytes` type is not supported.")
             elif issubclass(cls, bytearray):
                 raise DeserializeError("The `bytearray` type is not supported.")
+            elif issubclass(cls, bool):
+                return bool(data)
             elif issubclass(cls, int):
                 return int(data)
             elif issubclass(cls, float):
@@ -300,6 +302,8 @@ def _deserialize_any(
             raise DeserializeError("The `bytes` data is not supported.")
         elif isinstance(data, bytearray):
             raise DeserializeError("The `bytearray` data is not supported.")
+        elif isinstance(data, bool):
+            return bool(data)
         elif isinstance(data, int):
             return int(data)
         elif isinstance(data, float):
