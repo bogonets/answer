@@ -131,40 +131,43 @@ async def _parameter_matcher_main(func, obj: Any, request: Request) -> Response:
     raise NotImplementedError
 
 
-def parameter_matcher(func):
-    @wraps(func)
-    async def wrap(obj, request: Request) -> Response:
-        now = datetime.utcnow()
+def parameter_matcher(*args):
+    def _wrap(func):
+        @wraps(func)
+        async def __wrap(obj, request: Request) -> Response:
+            now = datetime.utcnow()
 
-        # Forwarded
-        # X-Forwarded-For
-        # X-Forwarded-Host
-        # X-Forwarded-Proto
-        remote = request.remote
-        method = request.method
-        path = request.path
-        version = request.version
-        request_info = f"{remote} {method} {path} HTTP/{version[0]}.{version[1]}"
+            # Forwarded
+            # X-Forwarded-For
+            # X-Forwarded-Host
+            # X-Forwarded-Proto
+            remote = request.remote
+            method = request.method
+            path = request.path
+            version = request.version
+            request_info = f"{remote} {method} {path} HTTP/{version[0]}.{version[1]}"
 
-        try:
-            result = await _parameter_matcher_main(func, obj, request)
-        except HTTPException as e:
-            logger.exception(e)
-            raise e
-        except PermissionError as e:
-            logger.exception(e)
-            reason = str(e)
-            raise HTTPUnauthorized(reason=reason if reason else None)
-        except BaseException as e:
-            logger.exception(e)
-            reason = str(e)
-            raise HTTPInternalServerError(reason=reason if reason else None)
-        else:
-            status = result.status
-            reason = result.reason
-            duration = (datetime.utcnow() - now).total_seconds()
-            logger.info(f"{request_info} -> {status} {reason} ({duration:.3f}s)")
+            try:
+                result = await _parameter_matcher_main(func, obj, request)
+            except HTTPException as e:
+                logger.exception(e)
+                raise e
+            except PermissionError as e:
+                logger.exception(e)
+                reason = str(e)
+                raise HTTPUnauthorized(reason=reason if reason else None)
+            except BaseException as e:
+                logger.exception(e)
+                reason = str(e)
+                raise HTTPInternalServerError(reason=reason if reason else None)
+            else:
+                status = result.status
+                reason = result.reason
+                duration = (datetime.utcnow() - now).total_seconds()
+                logger.info(f"{request_info} -> {status} {reason} ({duration:.3f}s)")
 
-        return result
+            return result
 
-    return wrap
+        return __wrap
+
+    return _wrap

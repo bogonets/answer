@@ -137,19 +137,19 @@ class RouterV2:
     # Self
     # ----
 
-    @parameter_matcher
+    @parameter_matcher()
     async def get_self(self, session: Session) -> User:
         return await self.context.get_self(session)
 
-    @parameter_matcher
+    @parameter_matcher()
     async def get_self_extra(self, session: Session) -> Any:
         return await self.context.get_self_extra(session)
 
-    @parameter_matcher
+    @parameter_matcher()
     async def patch_self_extra(self, session: Session, extra: Dict[str, Any]) -> None:
         await self.context.update_user_extra(session.audience, extra)
 
-    @parameter_matcher
+    @parameter_matcher()
     async def patch_self_password(
         self, session: Session, change_password: ChangePasswordRequest
     ) -> None:
@@ -166,7 +166,7 @@ class RouterV2:
     # Infos
     # -----
 
-    @parameter_matcher
+    @parameter_matcher()
     async def get_infos(self, session: Session) -> Dict[str, str]:
         session_user = await self.context.get_self(session)
         if not session_user.is_admin:
@@ -179,7 +179,7 @@ class RouterV2:
             result[info.key] = info.value if info.value else ""
         return result
 
-    @parameter_matcher
+    @parameter_matcher()
     async def post_infos(self, session: Session, info: Info) -> None:
         assert info.key is not None
         assert info.value is not None
@@ -188,7 +188,7 @@ class RouterV2:
             raise HTTPUnauthorized(reason="Administrator privileges are required")
         await self.context.set_info(info.key, info.value)
 
-    @parameter_matcher
+    @parameter_matcher()
     async def get_infos_pkey(self, session: Session, key: str) -> Info:
         session_user = await self.context.get_self(session)
         if not session_user.is_admin:
@@ -201,7 +201,7 @@ class RouterV2:
             logger.error(e)
             raise HTTPNotFound(reason=reason if reason else None)
 
-    @parameter_matcher
+    @parameter_matcher()
     async def delete_infos_pkey(self, session: Session, key: str) -> None:
         session_user = await self.context.get_self(session)
         if not session_user.is_admin:
@@ -212,14 +212,14 @@ class RouterV2:
     # Users
     # -----
 
-    @parameter_matcher
+    @parameter_matcher()
     async def get_users(self, session: Session) -> List[User]:
         session_user = await self.context.get_self(session)
         if not session_user.is_admin:
             raise HTTPUnauthorized(reason="Administrator privileges are required")
         return await self.context.get_users()
 
-    @parameter_matcher
+    @parameter_matcher()
     async def post_users(self, session: Session, user: User) -> None:
         if not user.username:
             raise HTTPBadRequest(reason="Not exists username field")
@@ -241,7 +241,7 @@ class RouterV2:
             extra=user.extra,
         )
 
-    @parameter_matcher
+    @parameter_matcher()
     async def get_users_puser(self, session: Session, user: str) -> User:
         session_user = await self.context.get_self(session)
         if session.audience == user:
@@ -251,7 +251,7 @@ class RouterV2:
             raise HTTPUnauthorized(reason="Administrator privileges are required")
         return await self.context.get_user(user)
 
-    @parameter_matcher
+    @parameter_matcher()
     async def patch_users_puser(
         self, session: Session, user: str, patch_user_info: User
     ) -> None:
@@ -269,7 +269,7 @@ class RouterV2:
             extra=patch_user_info.extra,
         )
 
-    @parameter_matcher
+    @parameter_matcher()
     async def delete_users_puser(self, session: Session, user: str) -> None:
         session_user = await self.context.get_self(session)
         if not session_user.is_admin:
@@ -280,7 +280,7 @@ class RouterV2:
     # Projects
     # --------
 
-    @parameter_matcher
+    @parameter_matcher()
     async def get_projects(self, session: Session) -> List[Project]:
         projects = await self.context.get_projects(ANONYMOUS_GROUP_NAME)
         for project in projects:

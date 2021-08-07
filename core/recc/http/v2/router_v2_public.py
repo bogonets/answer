@@ -55,32 +55,32 @@ class RouterV2Public:
     # API v2 handlers
     # ---------------
 
-    @parameter_matcher
+    @parameter_matcher()
     async def get_heartbeat(self) -> None:
         pass
 
-    @parameter_matcher
+    @parameter_matcher()
     async def get_version(self) -> str:
         return version_text
 
-    @parameter_matcher
+    @parameter_matcher()
     async def get_test_init(self) -> None:
         if not await self.context.exists_admin_user():
             raise HTTPServiceUnavailable(reason="Uninitialized server")
 
-    @parameter_matcher
+    @parameter_matcher()
     async def post_signup_admin(self, signup: SignupRequest) -> None:
         if await self.context.exists_admin_user():
             raise HTTPServiceUnavailable(reason="An admin account already exists")
         await self.context.signup_admin(signup.username, signup.password)
 
-    @parameter_matcher
+    @parameter_matcher()
     async def post_signup(self, signup: SignupRequest) -> None:
         if not self.context.config.public_signup:
             raise HTTPServiceUnavailable(reason="You cannot signup without permission")
         await self.context.signup_with_request(signup)
 
-    @parameter_matcher
+    @parameter_matcher()
     async def post_signin(self, auth: BasicAuth) -> SigninResponse:
         username = auth.user_id
         password = auth.password
