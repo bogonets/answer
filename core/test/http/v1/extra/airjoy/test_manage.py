@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import json
-import unittest
+from unittest import main
 from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
 from recc.http.v1.common import get_airjoy_v1_path
@@ -53,7 +52,7 @@ class AirjoyV1TestManageCase(AsyncTestCase):
         }
         non_metric_post = await self.tester.post(
             get_airjoy_v1_path(path_post_manage_data_non_metric.format(proj="test")),
-            data=json.dumps(non_metric_post_data),
+            data=non_metric_post_data,
         )
         self.assertEqual(200, non_metric_post.status)
         self.assertEqual("OK", non_metric_post.data["status"])
@@ -61,11 +60,11 @@ class AirjoyV1TestManageCase(AsyncTestCase):
         metric_post_data = {"serial": "serial1", "editData": ["firmware_version", "v3"]}
         metric_post = await self.tester.post(
             get_airjoy_v1_path(path_post_manage_data_metric.format(proj="test")),
-            data=json.dumps(metric_post_data),
+            data=metric_post_data,
         )
         self.assertEqual(200, metric_post.status)
         self.assertEqual("OK", metric_post.data["status"])
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

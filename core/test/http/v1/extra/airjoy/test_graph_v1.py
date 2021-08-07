@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import json
-import unittest
+from unittest import main
 from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
 from recc.http.v1.common import get_airjoy_v1_path
@@ -50,7 +49,7 @@ class AirjoyV1TestGraphCase(AsyncTestCase):
         graph_term_data = {"agency": "agency1", "start": "", "end": ""}
         graph_term = await self.tester.post(
             get_airjoy_v1_path(path_get_graph_term.format(proj="test")),
-            data=json.dumps(graph_term_data),
+            data=graph_term_data,
         )
         self.assertEqual(200, graph_term.status)
         self.assertEqual("OK", graph_term.data["status"])
@@ -66,11 +65,11 @@ class AirjoyV1TestGraphCase(AsyncTestCase):
         device_signal_data = {"serial": "serial1", "device": "on_off"}
         device_signal = await self.tester.post(
             get_airjoy_v1_path(path_post_manage_device_signal.format(proj="test")),
-            data=json.dumps(device_signal_data),
+            data=device_signal_data,
         )
         self.assertEqual(200, device_signal.status)
         self.assertEqual("OK", device_signal.data["status"])
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

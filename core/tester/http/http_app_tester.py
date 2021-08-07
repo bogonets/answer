@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import json
-import hashlib
-from copy import deepcopy
-from typing import Optional, Any, Union, Final
-from multidict import CIMultiDictProxy, CIMultiDict
+from hashlib import sha256
+from typing import Optional, Any, Union, Final, Dict
+from multidict import CIMultiDictProxy, CIMultiDict, istr
 from http import HTTPStatus
 from asyncio import Task, Event, AbstractEventLoop, CancelledError
 from aiohttp import ClientSession
-from aiohttp.hdrs import AUTHORIZATION
+from aiohttp.hdrs import AUTHORIZATION, CONTENT_TYPE
 from aiohttp.web import Application
 from aiohttp.typedefs import LooseHeaders
 from aiohttp.hdrs import (
@@ -34,6 +32,8 @@ from recc.serializable.deserialize import deserialize_default
 from recc.core.struct.signup_request import SignupRequest
 from recc.core.struct.signin_response import SigninResponse
 from recc.core.context import Context
+from recc.driver.json import global_json_encoder
+from recc.mime.mime_type import APPLICATION_JSON, MIME_APPLICATION_JSON_UTF8
 from recc.variables.http import (
     DEFAULT_HTTP_TEST_PORT,
     DEFAULT_SCHEME,
@@ -104,6 +104,10 @@ class HttpAppTester(EmptyHttpAppCallback):
         self._port = self._config.http_port
         self._timeout = self._config.http_timeout
 
+    @property
+    def context(self) -> Context:
+        return self._context
+
     async def on_startup(self, app: Application):
         self._startup.set()
 
@@ -148,10 +152,10 @@ class HttpAppTester(EmptyHttpAppCallback):
         self,
         method: str,
         path: str,
-        headers: Optional[LooseHeaders] = None,
+        headers: Optional[Dict[str, str]] = None,
+        text: Optional[str] = None,
         data: Optional[Any] = None,
     ) -> ResponseData:
-
         prefix = f"{self._scheme}://{self._bind}:{self._port}"
         if path:
             if path[0] == URL_PATH_SEPARATOR:
@@ -160,27 +164,41 @@ class HttpAppTester(EmptyHttpAppCallback):
                 url = prefix + URL_PATH_SEPARATOR + path
         else:
             url = prefix
-        updated_headers = deepcopy(headers) if headers else CIMultiDict()
 
-        if self._access_token is not None:
-            keys = headers.keys() if headers else []
-            if "authorization" not in keys:
-                token = BearerAuth(self._access_token).encode()
-                if isinstance(updated_headers, CIMultiDict):
-                    updated_headers.add("authorization", token)
-                else:
-                    updated_headers = CIMultiDict(authorization=token)
+        updated_headers = CIMultiDict[str]()
+        if headers:
+            for key, value in headers.items():
+                updated_headers.add(key, value)
+
+        if self._access_token and AUTHORIZATION not in updated_headers:
+            token = BearerAuth(self._access_token).encode()
+            updated_headers.add(AUTHORIZATION, token)
+
+        request_body: str
+        if text and data:
+            raise ValueError("You must pass only one `text` or `data`")
+        elif text:
+            request_body = text
+        elif data:
+            request_body = global_json_encoder(serialize_default(data))
+            if CONTENT_TYPE not in updated_headers:
+                updated_headers.add(CONTENT_TYPE, str(MIME_APPLICATION_JSON_UTF8))
+        else:
+            request_body = ""
 
         await self._startup.wait()
 
         async with ClientSession(timeout=self._timeout) as session:
             method_caller = self.get_method_caller(method, session)
             async with method_caller(
-                url=url, data=data, headers=updated_headers, timeout=self._timeout
+                url=url,
+                data=request_body,
+                headers=updated_headers,
+                timeout=self._timeout,
             ) as response:
                 response_data: Optional[Union[object, str]] = None
                 if response.content_length > 0:
-                    if response.content_type == "application/json":
+                    if response.content_type == APPLICATION_JSON:
                         response_data = await response.json()
                     else:
                         response_data = await response.text()
@@ -194,42 +212,47 @@ class HttpAppTester(EmptyHttpAppCallback):
     async def get(
         self,
         path: str,
-        headers: Optional[LooseHeaders] = None,
+        headers: Optional[Dict[str, str]] = None,
+        text: Optional[str] = None,
         data: Optional[Any] = None,
     ) -> ResponseData:
-        return await self.request(METH_GET, path, headers, data)
+        return await self.request(METH_GET, path, headers, text, data)
 
     async def post(
         self,
         path: str,
-        headers: Optional[LooseHeaders] = None,
+        headers: Optional[Dict[str, str]] = None,
+        text: Optional[str] = None,
         data: Optional[Any] = None,
     ) -> ResponseData:
-        return await self.request(METH_POST, path, headers, data)
+        return await self.request(METH_POST, path, headers, text, data)
 
     async def patch(
         self,
         path: str,
-        headers: Optional[LooseHeaders] = None,
+        headers: Optional[Dict[str, str]] = None,
+        text: Optional[str] = None,
         data: Optional[Any] = None,
     ) -> ResponseData:
-        return await self.request(METH_PATCH, path, headers, data)
+        return await self.request(METH_PATCH, path, headers, text, data)
 
     async def put(
         self,
         path: str,
-        headers: Optional[LooseHeaders] = None,
+        headers: Optional[Dict[str, str]] = None,
+        text: Optional[str] = None,
         data: Optional[Any] = None,
     ) -> ResponseData:
-        return await self.request(METH_PUT, path, headers, data)
+        return await self.request(METH_PUT, path, headers, text, data)
 
     async def delete(
         self,
         path: str,
-        headers: Optional[LooseHeaders] = None,
+        headers: Optional[Dict[str, str]] = None,
+        text: Optional[str] = None,
         data: Optional[Any] = None,
     ) -> ResponseData:
-        return await self.request(METH_DELETE, path, headers, data)
+        return await self.request(METH_DELETE, path, headers, text, data)
 
     async def run_v1_admin_login(
         self,
@@ -246,10 +269,10 @@ class HttpAppTester(EmptyHttpAppCallback):
         assert self._username
         assert self._password
 
-        hashed_pw = hashlib.sha256(self._password.encode(encoding="utf-8")).hexdigest()
+        hashed_pw = sha256(self._password.encode(encoding="utf-8")).hexdigest()
         signup_response = await self.post(
             path=get_v1_path(pv1.signup_admin),
-            data=json.dumps({"id": self._username, "password": hashed_pw}),
+            data={"id": self._username, "password": hashed_pw},
         )
         if signup_response.status != HTTPStatus.OK:
             raise RuntimeError(f"Signup status error: {signup_response.status}")
@@ -258,7 +281,7 @@ class HttpAppTester(EmptyHttpAppCallback):
         login_response = await self.post(
             path=get_v1_path(pv1.login),
             headers={AUTHORIZATION: auth.encode()},
-            data=json.dumps({"id": self._username, "password": hashed_pw}),
+            data={"id": self._username, "password": hashed_pw},
         )
         if login_response.status != HTTPStatus.OK:
             raise RuntimeError(f"Login status error: {login_response.status}")
@@ -289,12 +312,9 @@ class HttpAppTester(EmptyHttpAppCallback):
         assert self._username
         assert self._password
 
-        hashed_pw = hashlib.sha256(self._password.encode(encoding="utf-8")).hexdigest()
+        hashed_pw = SignupRequest.encrypt_password(self._password)
         signup = SignupRequest(self._username, hashed_pw)
-        signup_response = await self.post(
-            path=v2_public_path(u.signup_admin),
-            data=serialize_default(signup),
-        )
+        signup_response = await self.post(v2_public_path(u.signup_admin), data=signup)
 
         if signup_response.status == HTTPStatus.SERVICE_UNAVAILABLE:
             pass
@@ -302,14 +322,12 @@ class HttpAppTester(EmptyHttpAppCallback):
             raise RuntimeError(f"Signup status error: {signup_response.status}")
 
         auth = BasicAuth(self._username, hashed_pw)
-        login_response = await self.post(
-            path=v2_public_path(u.signin),
-            headers={AUTHORIZATION: auth.encode()},
-        )
-        if login_response.status != HTTPStatus.OK:
-            raise RuntimeError(f"Login status error: {login_response.status}")
+        signin_headers = {str(AUTHORIZATION): auth.encode()}
+        signin_response = await self.post(v2_public_path(u.signin), signin_headers)
+        if signin_response.status != HTTPStatus.OK:
+            raise RuntimeError(f"Login status error: {signin_response.status}")
 
-        signin = deserialize_default(login_response.data, SigninResponse)
+        signin = deserialize_default(signin_response.data, SigninResponse)
         assert signin.user is not None
         assert self._username == signin.user.username
         self._access_token = signin.access

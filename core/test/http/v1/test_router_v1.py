@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import unittest
-import json
-import hashlib
+from unittest import main
+from hashlib import sha256
 from tester.samples.read_samples import read_sample
 from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
@@ -41,7 +40,7 @@ class RouterV1TestCase(AsyncTestCase):
         password = "0000"
         email = "aaa@localhost.com"
         phone = "010-333-4444"
-        hashed_pw = hashlib.sha256(password.encode()).hexdigest()
+        hashed_pw = sha256(password.encode()).hexdigest()
         self.assertEqual(k_user, "usr")
         path_exist_user_my = pv1.exist_user.format(usr=username)
         path_get_user_my = pv1.get_user.format(usr=username)
@@ -59,7 +58,7 @@ class RouterV1TestCase(AsyncTestCase):
 
         user_add = await self.tester.post(
             get_v1_path(pv1.add_user),
-            data=json.dumps({"id": username, "password": hashed_pw}),
+            data={"id": username, "password": hashed_pw},
         )
         self.assertEqual(200, user_add.status)
         self.assertEqual("OK", user_add.data["status"])
@@ -69,10 +68,7 @@ class RouterV1TestCase(AsyncTestCase):
         self.assertTrue(user_exist_yes.data["result"]["obj"]["findId"])
 
         user_set_data = {"id": username, "email": email, "telephone": phone}
-        user_set = await self.tester.put(
-            get_v1_path(pv1.set_user),
-            data=json.dumps(user_set_data),
-        )
+        user_set = await self.tester.put(get_v1_path(pv1.set_user), data=user_set_data)
         self.assertEqual(200, user_set.status)
         self.assertEqual("OK", user_set.data["status"])
 
@@ -83,7 +79,7 @@ class RouterV1TestCase(AsyncTestCase):
 
         user_del = await self.tester.delete(
             get_v1_path(pv1.delete_user),
-            data=json.dumps({"id": username}),
+            data={"id": username},
         )
         self.assertEqual(200, user_del.status)
         self.assertEqual("OK", user_del.data["status"])
@@ -138,7 +134,9 @@ class RouterV1TestCase(AsyncTestCase):
         set_proj_graph_path = pv1.set_proj_graph.format(proj=proj0)
         set_proj_graph_request_data = read_sample("set_graph.numpy2.json")
         set_proj_graph_result = await self.tester.post(
-            get_v1_path(set_proj_graph_path), data=set_proj_graph_request_data
+            get_v1_path(set_proj_graph_path),
+            headers={"Content-Type": "application/json"},
+            text=set_proj_graph_request_data,
         )
         self.assertEqual(200, set_proj_graph_result.status)
 
@@ -158,4 +156,4 @@ class RouterV1TestCase(AsyncTestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()
