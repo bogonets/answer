@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+from datetime import datetime
 from typing import Any, List, Dict, Optional
+from dataclasses import dataclass
 from recc.serializable.serializable import DeserializeInterface
-from recc.serializable.deserialize import deserialize
+from recc.serializable.deserialize import deserialize, deserialize_default
 
 
 class _Test0:
@@ -68,6 +70,12 @@ class _Test6:
 
     def __init__(self):
         pass
+
+
+@dataclass
+class _Test7:
+    test1: str
+    test2: Optional[str] = None
 
 
 class DeserializeTestCase(TestCase):
@@ -228,6 +236,21 @@ class DeserializeTestCase(TestCase):
         self.assertIsInstance(result, list)
         self.assertEqual(1, len(result))
         self.assertEqual(2, result[0].a)
+
+    def test_test7(self):
+        result = deserialize_default({"test1": "aa"}, _Test7)
+        self.assertIsInstance(result, _Test7)
+
+    def test_datetime(self):
+        time_format = "2021-08-07T09:42:14.776297"
+        result = deserialize_default(time_format, datetime)
+        self.assertIsInstance(result, datetime)
+        self.assertEqual(result, datetime.fromisoformat(time_format))
+
+    def test_list(self):
+        result = deserialize_default([1, 2, 3], list)
+        self.assertIsInstance(result, list)
+        self.assertListEqual(result, [1, 2, 3])
 
 
 if __name__ == "__main__":

@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from typing import Any
+from datetime import datetime
+from typing import Any, Optional
+from dataclasses import dataclass
 from recc.serializable.serializable import Serializable
-from recc.serializable.serialize import serialize
+from recc.serializable.serialize import serialize, serialize_default
 
 
 class _Test0:
@@ -37,6 +39,12 @@ class _Test3:
         self.test2 = _Test2()
         self.test1_list = [_Test1(), _Test1()]
         self.test2_dict = {"a": _Test2(), "b": _Test2()}
+
+
+@dataclass
+class _Test4:
+    test1: str
+    test2: Optional[str] = None
 
 
 class SerializeTestCase(TestCase):
@@ -81,6 +89,23 @@ class SerializeTestCase(TestCase):
             },
         }
         self.assertEqual(result, data)
+
+    def test_test4(self):
+        test = _Test4("aa")
+        data = serialize(0, test)
+        result = {"test1": "aa"}
+        self.assertEqual(result, data)
+
+    def test_datetime(self):
+        now = datetime.fromisoformat("2021-08-07T09:42:14.776297")
+        data = serialize_default(now)
+        self.assertIsInstance(data, str)
+        self.assertEqual(now, datetime.fromisoformat(data))
+
+    def test_list(self):
+        data = serialize_default([1, 2, 3])
+        self.assertIsInstance(data, list)
+        self.assertListEqual(data, [1, 2, 3])
 
 
 if __name__ == "__main__":
