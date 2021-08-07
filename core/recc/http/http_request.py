@@ -13,6 +13,7 @@ from typing import (
     get_args,
 )
 from io import StringIO
+from urllib.parse import parse_qs
 from aiohttp.web_request import Request
 from aiohttp.hdrs import (
     CONTENT_TYPE,
@@ -26,6 +27,7 @@ from recc.mime.mime_type import (
     MIME_APPLICATION_JSON,
     MIME_APPLICATION_XML,
     MIME_APPLICATION_YAML,
+    MIME_APPLICATION_FORM,
     MIME_TEXT_PLAIN,
 )
 from recc.driver.json import global_json_decoder
@@ -35,12 +37,13 @@ from recc.serializable.deserialize import deserialize_default
 
 _T = TypeVar("_T")
 
-APPLICATION = MIME_APPLICATION_JSON.family
-JSON = MIME_APPLICATION_JSON.subtype
-YAML = MIME_APPLICATION_YAML.subtype
-XML = MIME_APPLICATION_XML.subtype
-TEXT = MIME_TEXT_PLAIN.family
-PLAIN = MIME_TEXT_PLAIN.subtype
+# APPLICATION = MIME_APPLICATION_JSON.family
+# JSON = MIME_APPLICATION_JSON.subtype
+# XML = MIME_APPLICATION_XML.subtype
+# YAML = MIME_APPLICATION_YAML.subtype
+# FORM = MIME_APPLICATION_FORM.subtype
+# TEXT = MIME_TEXT_PLAIN.family
+# PLAIN = MIME_TEXT_PLAIN.subtype
 
 
 async def body_to_object(request: Request) -> Any:
@@ -67,13 +70,16 @@ async def body_to_object(request: Request) -> Any:
     # Skip the content decoding process.
 
     content_mime = MimeType.parse(content_type)
+    text = await request.text()
     data: Any
     if content_mime.test_from_accepts([MIME_APPLICATION_JSON, MIME_TEXT_PLAIN]):
-        return global_json_decoder(await request.text())
+        return global_json_decoder(text)
     elif content_mime.test_from_accept(MIME_APPLICATION_YAML):
-        return global_yaml_decoder(await request.text())
+        return global_yaml_decoder(text)
     elif content_mime.test_from_accept(MIME_APPLICATION_XML):
-        return global_xml_decoder(await request.text())
+        return global_xml_decoder(text)
+    elif content_mime.test_from_accept(MIME_APPLICATION_FORM):
+        return {k: v[-1] for k, v in parse_qs(text).items()}
     raise HTTPBadRequest(reason=f"Unsupported content-type: {content_type}")
 
 

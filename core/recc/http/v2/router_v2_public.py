@@ -2,25 +2,19 @@
 
 from typing import List
 from aiohttp import web
-from aiohttp.hdrs import AUTHORIZATION
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
-from aiohttp.web_response import Response
 from aiohttp.web_exceptions import (
     HTTPBadRequest,
     HTTPUnauthorized,
     HTTPServiceUnavailable,
 )
-from recc.log.logging import recc_http_logger as logger
 from recc.core.context import Context
-from recc.serializable.serialize import serialize_default
-from recc.http.http_response import auto_response
-from recc.http.http_request import read_dict
 from recc.http.header.basic_auth import BasicAuth
+from recc.http.http_decorator import parameter_matcher
 from recc.util.version import version_text
-from recc.core.struct.request.signup import keys as signup_keys
-from recc.core.struct.response.login import Login
-from recc.http import http_data_keys as d
+from recc.core.struct.signup_request import SignupRequest
+from recc.core.struct.signin_response import SigninResponse
 from recc.http import http_urls as u
 
 
@@ -46,6 +40,7 @@ class RouterV2Public:
     async def middleware(self, request: Request, handler):
         return await handler(request)
 
+    # noinspection PyTypeChecker
     def _get_routes(self) -> List[AbstractRouteDef]:
         return [
             web.get(u.heartbeat, self.get_heartbeat),
@@ -60,79 +55,49 @@ class RouterV2Public:
     # API v2 handlers
     # ---------------
 
-    async def get_heartbeat(self, _: Request) -> Response:
-        assert self._context
-        logger.info("get_heartbeat()")
-        return Response()
+    @parameter_matcher
+    async def get_heartbeat(self) -> None:
+        pass
 
-    async def get_version(self, request: Request) -> Response:
-        assert self._context
-        logger.info(f"get_version() -> {version_text}")
-        return auto_response(request, version_text)
+    @parameter_matcher
+    async def get_version(self) -> str:
+        return version_text
 
-    async def get_test_init(self, _: Request) -> Response:
-        logger.info("get_test_init()")
+    @parameter_matcher
+    async def get_test_init(self) -> None:
         if not await self.context.exists_admin_user():
             raise HTTPServiceUnavailable(reason="Uninitialized server")
-        return Response()
 
-    async def post_signup_admin(self, request: Request) -> Response:
+    @parameter_matcher
+    async def post_signup_admin(self, signup: SignupRequest) -> None:
         if await self.context.exists_admin_user():
             raise HTTPServiceUnavailable(reason="An admin account already exists")
+        await self.context.signup_admin(signup.username, signup.password)
 
-        k = signup_keys
-        data = await read_dict(request, [k.username, k.password])
-        username = data[k.username]
-        password = data[k.password]  # Perhaps the client encoded it with SHA256.
-
-        logger.info(f"post_signup_admin() {{ {k.username}={username} }}")
-
-        await self.context.signup_admin(username, password)
-        return Response()
-
-    async def post_signup(self, request: Request) -> Response:
+    @parameter_matcher
+    async def post_signup(self, signup: SignupRequest) -> None:
         if not self.context.config.public_signup:
-            raise HTTPServiceUnavailable(reason="You cannot signup without permission.")
-
-        k = signup_keys
-        data = await read_dict(request, [k.username, k.password])
-        username = data[k.username]
-        password = data[k.password]  # Perhaps the client encoded it with SHA256.
-        logger.info(f"post_signup({d.username}={username})")
-
+            raise HTTPServiceUnavailable(reason="You cannot signup without permission")
         await self.context.signup(
-            username=username,
-            hashed_password=password,
-            nickname=data.get(k.nickname),
-            email=data.get(k.email),
-            phone1=data.get(k.phone1),
-            phone2=data.get(k.phone2),
+            username=signup.username,
+            hashed_password=signup.password,
+            nickname=signup.nickname,
+            email=signup.email,
+            phone1=signup.phone1,
+            phone2=signup.phone2,
         )
-        return Response()
 
-    async def post_signin(self, request: Request) -> Response:
-        try:
-            authorization = request.headers[AUTHORIZATION]
-        except KeyError as e:
-            raise HTTPBadRequest(reason=str(e))
-
-        try:
-            auth = BasicAuth.decode_from_authorization_header(authorization)
-        except ValueError as e:
-            raise HTTPBadRequest(reason=str(e))
-
-        logger.info(f"post_signin({auth})")
+    @parameter_matcher
+    async def post_signin(self, auth: BasicAuth) -> SigninResponse:
         username = auth.user_id
         password = auth.password
 
         try:
             if not await self.context.challenge_password(username, password):
-                raise HTTPUnauthorized(reason="The password is incorrect.")
+                raise HTTPUnauthorized(reason="The password is incorrect")
         except ValueError as e:
             raise HTTPBadRequest(reason=str(e))
 
         access, refresh = await self.context.signin(username)
         user = await self.context.get_user(username)
-
-        result = serialize_default(Login(access, refresh, user))
-        return auto_response(request, result)
+        return SigninResponse(access, refresh, user)

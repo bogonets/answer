@@ -8,6 +8,7 @@ from typing import (
     Union,
     Any,
     Tuple,
+    Dict,
     TypeVar,
     Type,
     Iterable,
@@ -17,18 +18,19 @@ from typing import (
     MutableMapping,
 )
 from datetime import datetime
+from dataclasses import is_dataclass
 from recc.serializable.serializable import (
     MAPPING_METHOD_ITEMS,
     MAPPING_METHOD_KEYS,
     SEQUENCE_METHOD_INSERT,
     DeserializeError,
-    NotImplementedDeserializeError,
     DESERIALIZE_METHOD_NAME,
     is_deserialize_cls,
     is_serializable_pod_cls,
     is_none,
 )
 from recc.inspect.member import get_public_members
+from recc.inspect.init_signature import required_init_parameters
 from recc.util.version import version_info
 
 _T = TypeVar("_T")
@@ -68,23 +70,9 @@ def _is_bytearray(obj: Any) -> bool:
 
 def _deserialize_interface(version: int, data: Any, cls: Type[_T]) -> _T:
     result = cls()
-
-    try:
-        if hasattr(result, DESERIALIZE_METHOD_NAME):
-            func = getattr(result, DESERIALIZE_METHOD_NAME)
-            func(version, data)
-            return result
-    except (NotImplementedError, NotImplementedDeserializeError):
-        pass
-
-    result_hints = get_type_hints(cls)
-    for key in result_hints.keys():
-        serialize_value = getattr(data, key, None)
-        hint = result_hints.get(key)
-        origin = get_origin(hint)
-        attr_cls = origin if origin else type(serialize_value)
-        attr_value = _deserialize_any(version, serialize_value, attr_cls, key, hint)
-        setattr(result, key, attr_value)
+    func = getattr(result, DESERIALIZE_METHOD_NAME)
+    assert func is not None
+    func(version, data)
     return result
 
 
@@ -127,7 +115,6 @@ def _deserialize_mapping(
     elem_hint: Optional[Any] = None,
 ) -> _MM:
     assert issubclass(cls, MutableMapping)
-
     if hasattr(data, MAPPING_METHOD_ITEMS):
         items_func = getattr(data, MAPPING_METHOD_ITEMS)
         items = items_func()
@@ -165,10 +152,9 @@ def _deserialize_iterable(
     elem_hint: Optional[Any] = None,
 ) -> _MS:
     assert issubclass(cls, MutableSequence)
-
     result = cls()
     if not hasattr(result, SEQUENCE_METHOD_INSERT):
-        raise DeserializeError(f"Not found `{SEQUENCE_METHOD_INSERT}` method.")
+        raise DeserializeError(f"Not found `{SEQUENCE_METHOD_INSERT}` method")
 
     for i, serialize_value in enumerate(data):
         attr_cls = elem_hint if elem_hint else type(serialize_value)
@@ -190,8 +176,8 @@ def _deserialize_iterable_any(
         return _deserialize_iterable(version, [data], cls, elem_hint)
 
 
-def _deserialize_object(version: int, data: Any, cls: Type[_T]) -> _T:
-    result = cls()
+def _deserialize_data_to_dict(version: int, data: Any, cls: Type[_T]) -> Dict[str, Any]:
+    result: Dict[str, Any] = dict()
     result_hints = get_type_hints(cls)
     for key, serialize_value in get_public_members(data):
         hint = result_hints.get(key)
@@ -207,8 +193,19 @@ def _deserialize_object(version: int, data: Any, cls: Type[_T]) -> _T:
             assert hint is None
             attr_cls = type(serialize_value)
 
-        attr_value = _deserialize_any(version, serialize_value, attr_cls, key, hint)
-        setattr(result, key, attr_value)
+        result[key] = _deserialize_any(version, serialize_value, attr_cls, key, hint)
+    return result
+
+
+def _deserialize_dataclass(version: int, data: Any, cls: Type[_T]) -> _T:
+    deserialize_datas = _deserialize_data_to_dict(version, data, cls)
+    return cls(**deserialize_datas)  # type: ignore[call-arg]
+
+
+def _deserialize_object(version: int, data: Any, cls: Type[_T]) -> _T:
+    result = cls()
+    for key, value in _deserialize_data_to_dict(version, data, cls).items():
+        setattr(result, key, value)
     return result
 
 
@@ -289,8 +286,13 @@ def _deserialize_any(
                 return _deserialize_mapping_any(version, data, cls)
             elif issubclass(cls, MutableSequence):
                 return _deserialize_iterable_any(version, data, cls)
+            elif is_dataclass(cls):
+                return _deserialize_dataclass(version, data, cls)
             elif isclass(cls):
-                return _deserialize_object(version, data, cls)
+                if required_init_parameters(cls):
+                    return _deserialize_dataclass(version, data, cls)
+                else:
+                    return _deserialize_object(version, data, cls)
 
         # Deduced by data.
 

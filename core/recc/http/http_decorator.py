@@ -4,10 +4,12 @@ from typing import List, Any, get_origin
 from inspect import signature, isclass, iscoroutinefunction
 from functools import wraps
 from datetime import datetime
+from aiohttp.hdrs import AUTHORIZATION
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 from aiohttp.web_exceptions import (
     HTTPException,
+    HTTPBadRequest,
     HTTPUnauthorized,
     HTTPInternalServerError,
 )
@@ -17,6 +19,7 @@ from recc.serializable.serialize import serialize_default
 from recc.http import http_header_keys as h
 from recc.http.http_request import body_to_object, body_to_class
 from recc.http.http_response import get_accept_type, get_encoding, response
+from recc.http.header.basic_auth import BasicAuth
 
 
 def _is_serializable_instance(obj: Any) -> bool:
@@ -66,6 +69,18 @@ async def _parameter_matcher_main(func, obj: Any, request: Request) -> Response:
             assert type_origin is not None
             assert isinstance(type_origin, type)
 
+            # BasicAuth
+            if issubclass(type_origin, BasicAuth):
+                if AUTHORIZATION not in request.headers:
+                    raise HTTPBadRequest(reason=f"Not exists {AUTHORIZATION} header")
+                try:
+                    authorization = request.headers[AUTHORIZATION]
+                    basic = BasicAuth.decode_from_authorization_header(authorization)
+                except ValueError as e:
+                    raise HTTPBadRequest(reason=str(e))
+                update_arguments.append(basic)
+                continue
+
             # Request
             if issubclass(type_origin, Request):
                 update_arguments.append(request)
@@ -74,7 +89,7 @@ async def _parameter_matcher_main(func, obj: Any, request: Request) -> Response:
             # Session
             if issubclass(type_origin, Session):
                 if h.session not in request:
-                    raise HTTPUnauthorized(reason="Session info does not exist.")
+                    raise HTTPUnauthorized(reason=f"Not exists {h.session}")
                 update_arguments.append(request[h.session])
                 continue
 

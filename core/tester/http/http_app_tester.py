@@ -29,8 +29,10 @@ from recc.http.http_interface import EmptyHttpAppCallback
 from recc.http.http_app import HttpApp
 from recc.http.http_utils import v2_public_path
 from recc.http import http_urls as u
-from recc.core.struct.request.signup import keys as signup_keys
-from recc.core.struct.response.login import keys as login_keys
+from recc.serializable.serialize import serialize_default
+from recc.serializable.deserialize import deserialize_default
+from recc.core.struct.signup_request import SignupRequest
+from recc.core.struct.signin_response import SigninResponse
 from recc.core.context import Context
 from recc.variables.http import (
     DEFAULT_HTTP_TEST_PORT,
@@ -288,13 +290,12 @@ class HttpAppTester(EmptyHttpAppCallback):
         assert self._password
 
         hashed_pw = hashlib.sha256(self._password.encode(encoding="utf-8")).hexdigest()
+        signup = SignupRequest(self._username, hashed_pw)
         signup_response = await self.post(
             path=v2_public_path(u.signup_admin),
-            data=json.dumps({
-                signup_keys.username: self._username,
-                signup_keys.password: hashed_pw,
-            }),
+            data=serialize_default(signup),
         )
+
         if signup_response.status == HTTPStatus.SERVICE_UNAVAILABLE:
             pass
         elif signup_response.status != HTTPStatus.OK:
@@ -308,10 +309,8 @@ class HttpAppTester(EmptyHttpAppCallback):
         if login_response.status != HTTPStatus.OK:
             raise RuntimeError(f"Login status error: {login_response.status}")
 
-        assert login_response.data
-        login_data = login_response.data
-        assert self._username == login_data[login_keys.user]["username"]
-        assert login_keys.access in login_data
-        assert login_keys.refresh in login_data
-        self._access_token = login_data[login_keys.access]
-        self._refresh_token = login_data[login_keys.refresh]
+        signin = deserialize_default(login_response.data, SigninResponse)
+        assert signin.user is not None
+        assert self._username == signin.user.username
+        self._access_token = signin.access
+        self._refresh_token = signin.refresh
