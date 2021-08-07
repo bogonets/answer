@@ -18,8 +18,8 @@ from recc.http.http_response import auto_response
 from recc.http.http_request import read_dict
 from recc.http.header.basic_auth import BasicAuth
 from recc.util.version import version_text
-from recc.http.struct.request.signup import keys as signup_keys
-from recc.http.struct.response.login import Login
+from recc.core.struct.request.signup import keys as signup_keys
+from recc.core.struct.response.login import Login
 from recc.http import http_data_keys as d
 from recc.http import http_urls as u
 

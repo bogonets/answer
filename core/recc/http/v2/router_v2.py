@@ -23,7 +23,7 @@ from recc.http import http_header_keys as h
 from recc.http import http_urls as u
 from recc.database.struct.info import Info
 from recc.database.struct.project import Project
-from recc.http.struct.request.change_password import ChangePassword
+from recc.core.struct.request.change_password import ChangePassword
 from recc.database.struct.user import User
 from recc.variables.http import DETAIL_RESPONSE_LOGGING_VERBOSE_LEVEL
 from recc.variables.database import ANONYMOUS_GROUP_NAME

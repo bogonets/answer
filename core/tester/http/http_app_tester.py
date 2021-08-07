@@ -29,8 +29,8 @@ from recc.http.http_interface import EmptyHttpAppCallback
 from recc.http.http_app import HttpApp
 from recc.http.http_utils import v2_public_path
 from recc.http import http_urls as u
-from recc.http.struct.request.signup import keys as signup_keys
-from recc.http.struct.response.login import keys as login_keys
+from recc.core.struct.request.signup import keys as signup_keys
+from recc.core.struct.response.login import keys as login_keys
 from recc.core.context import Context
 from recc.variables.http import (
     DEFAULT_HTTP_TEST_PORT,
