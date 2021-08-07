@@ -1,17 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import (
-    Any,
-    TypeVar,
-    Type,
-    List,
-    Optional,
-    Dict,
-    Union,
-    get_type_hints,
-    get_origin,
-    get_args,
-)
+from typing import Any, TypeVar, Type, Union, get_type_hints, get_origin, get_args
 from io import StringIO
 from urllib.parse import parse_qs
 from aiohttp.web_request import Request
@@ -36,14 +25,6 @@ from recc.driver.yaml import global_yaml_decoder
 from recc.serializable.deserialize import deserialize_default
 
 _T = TypeVar("_T")
-
-# APPLICATION = MIME_APPLICATION_JSON.family
-# JSON = MIME_APPLICATION_JSON.subtype
-# XML = MIME_APPLICATION_XML.subtype
-# YAML = MIME_APPLICATION_YAML.subtype
-# FORM = MIME_APPLICATION_FORM.subtype
-# TEXT = MIME_TEXT_PLAIN.family
-# PLAIN = MIME_TEXT_PLAIN.subtype
 
 
 async def body_to_object(request: Request) -> Any:
@@ -81,22 +62,6 @@ async def body_to_object(request: Request) -> Any:
     elif content_mime.test_from_accept(MIME_APPLICATION_FORM):
         return {k: v[-1] for k, v in parse_qs(text).items()}
     raise HTTPBadRequest(reason=f"Unsupported content-type: {content_type}")
-
-
-async def read_dict(
-    request: Request,
-    assert_keys: Optional[List[str]] = None,
-) -> Dict[str, Any]:
-    data = await body_to_object(request)
-    if not isinstance(data, dict):
-        raise HTTPBadRequest(reason="Only dictionary-type requests are accepted")
-
-    if assert_keys:
-        for key in assert_keys:
-            if key not in data:
-                raise HTTPBadRequest(reason=f"Not exists key: {key}")
-
-    return data
 
 
 async def body_to_class(
