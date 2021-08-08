@@ -207,3 +207,10 @@ SELECT
 FROM
     {VIEW_USER_ADMIN_COUNT};
 """
+
+SELECT_USER_COUNT = f"""
+SELECT
+    count(uid) AS count
+FROM
+    {TABLE_USER};
+"""

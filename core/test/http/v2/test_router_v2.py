@@ -8,6 +8,8 @@ from recc.http.http_utils import v2_path
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
 from recc.database.struct.info import keys as info_keys
+from recc.serializable.deserialize import deserialize_default
+from recc.core.struct.system_overview import SystemOverview
 
 
 class RouterV2TestCase(AsyncTestCase):
@@ -48,11 +50,6 @@ class RouterV2TestCase(AsyncTestCase):
         self.assertEqual(200, response4.status)
         self.assertEqual(data2, response4.data)
 
-    async def test_users(self):
-        response = await self.tester.get(v2_path(u.users))
-        self.assertEqual(200, response.status)
-        self.assertIsNotNone(response.data)
-
     async def test_infos(self):
         response1 = await self.tester.get(v2_path(u.infos))
         self.assertEqual(200, response1.status)
@@ -76,6 +73,23 @@ class RouterV2TestCase(AsyncTestCase):
 
         response5 = await self.tester.get(path)
         self.assertNotEqual(200, response5.status)
+
+    async def test_users(self):
+        response = await self.tester.get(v2_path(u.users))
+        self.assertEqual(200, response.status)
+        self.assertIsNotNone(response.data)
+
+    async def test_system_overview(self):
+        response = await self.tester.get(v2_path(u.system_overview))
+        self.assertEqual(200, response.status)
+        self.assertIsNotNone(response.data)
+        result = deserialize_default(response.data, SystemOverview)
+        self.assertIsNotNone(result.users)
+        self.assertIsNotNone(result.groups)
+        self.assertIsNotNone(result.projects)
+        self.assertLessEqual(0, result.users)
+        self.assertLessEqual(0, result.groups)
+        self.assertLessEqual(0, result.projects)
 
 
 if __name__ == "__main__":

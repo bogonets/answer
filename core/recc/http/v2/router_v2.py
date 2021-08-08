@@ -25,6 +25,7 @@ from recc.database.struct.info import Info
 from recc.database.struct.project import Project
 from recc.core.struct.update_password import UpdatePassword
 from recc.core.struct.update_info import UpdateInfo
+from recc.core.struct.system_overview import SystemOverview
 from recc.database.struct.user import User
 from recc.variables.http import DETAIL_RESPONSE_LOGGING_VERBOSE_LEVEL
 from recc.variables.database import ANONYMOUS_GROUP_NAME
@@ -100,6 +101,9 @@ class RouterV2:
             web.post(u.infos, self.post_infos),
             web.get(u.infos_pkey, self.get_infos_pkey),
             web.delete(u.infos_pkey, self.delete_infos_pkey),
+
+            # system
+            web.get(u.system_overview, self.get_system_overview),
 
             # users
             web.get(u.users, self.get_users),
@@ -193,6 +197,14 @@ class RouterV2:
     @parameter_matcher(acl={aa.HasAdmin})
     async def delete_infos_pkey(self, key: str) -> None:
         await self.context.delete_info(key)
+
+    # ------
+    # System
+    # ------
+
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def get_system_overview(self) -> SystemOverview:
+        return await self.context.get_system_overview()
 
     # -----
     # Users

@@ -20,6 +20,7 @@ from recc.database.postgresql.query.group import (
     SELECT_GROUP_BY_UID,
     SELECT_GROUP_BY_NAME,
     SELECT_GROUP_ALL,
+    SELECT_GROUP_COUNT,
 )
 
 
@@ -140,4 +141,13 @@ class PgGroup(DbGroup, PgBase):
                     result.append(Group(**dict(row)))
         result_msg = f"{len(result)} groups"
         logger.info(f"get_groups() -> {result_msg}")
+        return result
+
+    @overrides
+    async def get_groups_count(self) -> int:
+        query = SELECT_GROUP_COUNT
+        row = await self.fetch_row(query)
+        assert row and len(row) == 1
+        result = int(row.get("count", 0))
+        logger.info(f"get_groups_count() -> {result}")
         return result

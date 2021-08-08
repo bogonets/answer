@@ -77,3 +77,7 @@ class DbGroup(metaclass=ABCMeta):
     @abstractmethod
     async def get_groups(self) -> List[Group]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def get_groups_count(self) -> int:
+        raise NotImplementedError

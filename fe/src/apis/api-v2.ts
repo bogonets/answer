@@ -93,6 +93,12 @@ export interface Project {
     updated_at?: string;
 }
 
+export interface SystemOverview {
+    users?: number;
+    groups?: number;
+    projects?: number;
+}
+
 
 function newEmptySession(): Login {
     return {
@@ -163,14 +169,17 @@ export default class ApiV2 {
         this.api.defaults.headers['Authorization'] = `Bearer ${token}`;
     }
 
-    async version(): Promise<string> {
-        return await this.api.get('/public/version')
-            .then(response => {
+    // ------
+    // Public
+    // ------
+
+    version() {
+        return this.api.get('/public/version')
+            .then((response: AxiosResponse) => {
+                if (response.status !== 200) {
+                    throw new ApiV2StatusError(response);
+                }
                 return response.data;
-            })
-            .catch(error => {
-                console.debug(error);
-                // EMPTY.
             });
     }
 
@@ -214,6 +223,10 @@ export default class ApiV2 {
             });
     }
 
+    // ----
+    // Self
+    // ----
+
     getSelfExtra() {
         return this.api.get('/self/extra')
             .then((response: AxiosResponse) => {
@@ -232,6 +245,28 @@ export default class ApiV2 {
                 }
             });
     }
+
+    // -----
+    // Infos
+    // -----
+
+    // ------
+    // System
+    // ------
+
+    getSystemOverview() {
+        return this.api.get('/system/overview')
+            .then((response: AxiosResponse) => {
+                if (response.status !== 200) {
+                    throw new ApiV2StatusError(response);
+                }
+                return response.data as SystemOverview;
+            });
+    }
+
+    // -----
+    // Users
+    // -----
 
     getUsers() {
         return this.api.get('/users')

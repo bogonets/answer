@@ -106,3 +106,7 @@ class DbProject(metaclass=ABCMeta):
         self, group_name: str, project_name: str
     ) -> int:
         raise NotImplementedError
+
+    @abstractmethod
+    async def get_projects_count(self) -> int:
+        raise NotImplementedError

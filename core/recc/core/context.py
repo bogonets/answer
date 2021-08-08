@@ -5,22 +5,26 @@ from typing import Optional
 from recc.argparse.config.core_config import CoreConfig
 from recc.log.logging import recc_core_logger as logger
 from recc.core.mixin.context_config import ContextInfo
+from recc.core.mixin.context_group import ContextGroup
 from recc.core.mixin.context_init import ContextInit
 from recc.core.mixin.context_layout import ContextLayout
 from recc.core.mixin.context_port import ContextPort
 from recc.core.mixin.context_project import ContextProject
 from recc.core.mixin.context_storage import ContextStorage
+from recc.core.mixin.context_system import ContextSystem
 from recc.core.mixin.context_task import ContextTask
 from recc.core.mixin.context_user import ContextUser
 
 
 class Context(
     ContextInfo,
+    ContextGroup,
     ContextInit,
     ContextLayout,
     ContextPort,
     ContextProject,
     ContextStorage,
+    ContextSystem,
     ContextTask,
     ContextUser,
 ):

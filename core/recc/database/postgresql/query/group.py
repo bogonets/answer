@@ -110,3 +110,10 @@ SELECT_GROUP_ALL = f"""
 SELECT *
 FROM {TABLE_GROUP};
 """
+
+SELECT_GROUP_COUNT = f"""
+SELECT
+    count(uid) AS count
+FROM
+    {TABLE_GROUP};
+"""

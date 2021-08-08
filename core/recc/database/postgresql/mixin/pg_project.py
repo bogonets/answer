@@ -22,6 +22,7 @@ from recc.database.postgresql.query.project import (
     SELECT_PROJECT_BY_GROUP_ID,
     SELECT_PROJECT_BY_FULLPATH,
     SELECT_PROJECT_UID_BY_FULLPATH,
+    SELECT_PROJECT_COUNT,
     get_update_project_query_by_uid,
 )
 
@@ -210,4 +211,13 @@ class PgProject(DbProject, PgBase):
         if result is None:
             raise RuntimeError(f"Not found project: {params_msg}")
         logger.info(f"get_project_uid_by_fullpath({params_msg}) -> {result}")
+        return result
+
+    @overrides
+    async def get_projects_count(self) -> int:
+        query = SELECT_PROJECT_COUNT
+        row = await self.fetch_row(query)
+        assert row and len(row) == 1
+        result = int(row.get("count", 0))
+        logger.info(f"get_projects_count() -> {result}")
         return result

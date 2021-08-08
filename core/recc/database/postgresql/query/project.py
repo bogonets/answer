@@ -126,3 +126,10 @@ SELECT p.uid AS uid
 FROM (SELECT uid FROM {TABLE_GROUP} WHERE name LIKE $1) g
     LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.name LIKE $2;
 """
+
+SELECT_PROJECT_COUNT = f"""
+SELECT
+    count(uid) AS count
+FROM
+    {TABLE_PROJECT};
+"""

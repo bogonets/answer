@@ -17,6 +17,7 @@ from recc.database.postgresql.query.user import (
     DELETE_USER_BY_UID,
     DELETE_USER_BY_USERNAME,
     SELECT_USER_ADMIN_COUNT,
+    SELECT_USER_COUNT,
     SELECT_USER_UID_BY_USERNAME,
     SELECT_USER_PASSWORD_AND_SALT_BY_USERNAME,
     SELECT_USER_BY_USERNAME,
@@ -218,4 +219,13 @@ class PgUser(DbUser, PgBase):
         assert row and len(row) == 1
         result = bool(row.get("count", 0) >= 1)
         logger.info(f"exist_admin_user() -> {result}")
+        return result
+
+    @overrides
+    async def get_users_count(self) -> int:
+        query = SELECT_USER_COUNT
+        row = await self.fetch_row(query)
+        assert row and len(row) == 1
+        result = int(row.get("count", 0))
+        logger.info(f"get_users_count() -> {result}")
         return result
