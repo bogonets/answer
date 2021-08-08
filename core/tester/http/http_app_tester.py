@@ -29,8 +29,8 @@ from recc.http.http_utils import v2_public_path
 from recc.http import http_urls as u
 from recc.serializable.serialize import serialize_default
 from recc.serializable.deserialize import deserialize_default
-from recc.core.struct.signup_request import SignupRequest
-from recc.core.struct.signin_response import SigninResponse
+from recc.core.struct.signup import Signup
+from recc.core.struct.signin import Signin
 from recc.core.context import Context
 from recc.driver.json import global_json_encoder
 from recc.mime.mime_type import APPLICATION_JSON, MIME_APPLICATION_JSON_UTF8
@@ -312,8 +312,8 @@ class HttpAppTester(EmptyHttpAppCallback):
         assert self._username
         assert self._password
 
-        hashed_pw = SignupRequest.encrypt_password(self._password)
-        signup = SignupRequest(self._username, hashed_pw)
+        hashed_pw = Signup.encrypt_password(self._password)
+        signup = Signup(self._username, hashed_pw)
         signup_response = await self.post(v2_public_path(u.signup_admin), data=signup)
 
         if signup_response.status == HTTPStatus.SERVICE_UNAVAILABLE:
@@ -327,7 +327,7 @@ class HttpAppTester(EmptyHttpAppCallback):
         if signin_response.status != HTTPStatus.OK:
             raise RuntimeError(f"Login status error: {signin_response.status}")
 
-        signin = deserialize_default(signin_response.data, SigninResponse)
+        signin = deserialize_default(signin_response.data, Signin)
         assert signin.user is not None
         assert self._username == signin.user.username
         self._access_token = signin.access

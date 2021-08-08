@@ -6,7 +6,7 @@ from recc.database.struct.user import User
 
 
 @dataclass
-class SigninResponse:
+class Signin:
     access: str
     refresh: str
     user: Optional[User]

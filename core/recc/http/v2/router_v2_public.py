@@ -13,8 +13,8 @@ from recc.core.context import Context
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.http_decorator import parameter_matcher
 from recc.util.version import version_text
-from recc.core.struct.signup_request import SignupRequest
-from recc.core.struct.signin_response import SigninResponse
+from recc.core.struct.signup import Signup
+from recc.core.struct.signin import Signin
 from recc.http import http_urls as u
 
 
@@ -69,19 +69,19 @@ class RouterV2Public:
             raise HTTPServiceUnavailable(reason="Uninitialized server")
 
     @parameter_matcher()
-    async def post_signup_admin(self, signup: SignupRequest) -> None:
+    async def post_signup_admin(self, signup: Signup) -> None:
         if await self.context.exists_admin_user():
             raise HTTPServiceUnavailable(reason="An admin account already exists")
         await self.context.signup_admin(signup.username, signup.password)
 
     @parameter_matcher()
-    async def post_signup(self, signup: SignupRequest) -> None:
+    async def post_signup(self, signup: Signup) -> None:
         if not self.context.config.public_signup:
             raise HTTPServiceUnavailable(reason="You cannot signup without permission")
         await self.context.signup_with_request(signup)
 
     @parameter_matcher()
-    async def post_signin(self, auth: BasicAuth) -> SigninResponse:
+    async def post_signin(self, auth: BasicAuth) -> Signin:
         username = auth.user_id
         password = auth.password
 
@@ -93,4 +93,4 @@ class RouterV2Public:
 
         access, refresh = await self.context.signin(username)
         user = await self.context.get_user(username)
-        return SigninResponse(access, refresh, user)
+        return Signin(access, refresh, user)

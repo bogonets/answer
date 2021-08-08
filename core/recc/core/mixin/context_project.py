@@ -11,16 +11,6 @@ class ContextProject(ContextBase):
         assert group.uid is not None
         await self.database.create_project(group.uid, project_name)
 
-    # from recc.session.session import Session
-    # user = await self.database.get_user_by_username(session.audience)
-    # assert user.uid is not None
-    # maintainer_permission_uid = self.database.get_maintainer_permission_uid()
-    # project = await self.database.get_project_by_name(group.uid, project_name)
-    # assert project.uid is not None
-    # await self.database.create_project_member(
-    #     project.uid, user.uid, maintainer_permission_uid
-    # )
-
     async def get_projects(self, group_name: str) -> List[Project]:
         group = await self.database.get_group_by_name(group_name)
         assert group.uid is not None

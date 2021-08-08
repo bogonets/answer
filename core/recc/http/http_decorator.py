@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Any, get_origin
+from typing import List, Any, Optional, Set, get_origin
 from inspect import signature, isclass, iscoroutinefunction
 from functools import wraps
 from datetime import datetime
@@ -16,10 +16,12 @@ from aiohttp.web_exceptions import (
 from recc.session.session import Session
 from recc.log.logging import recc_http_logger as logger
 from recc.serializable.serialize import serialize_default
-from recc.http import http_header_keys as h
+from recc.http.header.basic_auth import BasicAuth
 from recc.http.http_request import body_to_object, body_to_class
 from recc.http.http_response import get_accept_type, get_encoding, response
-from recc.http.header.basic_auth import BasicAuth
+from recc.http.http_session import HttpSession
+from recc.http import http_cache_keys as c
+from recc.access_control.abac.attributes import aa
 
 
 def _is_serializable_instance(obj: Any) -> bool:
@@ -50,7 +52,19 @@ def _is_serializable_class(obj: type) -> bool:
     return False
 
 
-async def _parameter_matcher_main(func, obj: Any, request: Request) -> Response:
+def _test_permission(hs: HttpSession, acl: Set[aa]) -> None:
+    for ac in acl:
+        if ac == aa.HasAdmin:
+            if not hs.user.is_admin:
+                raise HTTPUnauthorized(reason="Administrator privileges are required")
+
+
+async def _parameter_matcher_main(
+    func,
+    obj: Any,
+    request: Request,
+    acl: Optional[Set[aa]] = None,
+) -> Response:
     accept = get_accept_type(request)
     encoding = get_encoding(request)
 
@@ -59,6 +73,11 @@ async def _parameter_matcher_main(func, obj: Any, request: Request) -> Response:
     update_arguments: List[Any] = list()
     match_count = len(request.match_info)
     assign_body = False
+
+    if acl:
+        if c.http_session not in request:
+            raise HTTPUnauthorized(reason=f"Not exists {c.http_session}")
+        _test_permission(request[c.http_session], acl if acl else set())
 
     if len(keys) >= 2:
         for key in keys[1:]:
@@ -88,9 +107,16 @@ async def _parameter_matcher_main(func, obj: Any, request: Request) -> Response:
 
             # Session
             if issubclass(type_origin, Session):
-                if h.session not in request:
-                    raise HTTPUnauthorized(reason=f"Not exists {h.session}")
-                update_arguments.append(request[h.session])
+                if c.session not in request:
+                    raise HTTPUnauthorized(reason=f"Not exists {c.session}")
+                update_arguments.append(request[c.session])
+                continue
+
+            # HttpSession
+            if issubclass(type_origin, HttpSession):
+                if c.http_session not in request:
+                    raise HTTPUnauthorized(reason=f"Not exists {c.http_session}")
+                update_arguments.append(request[c.http_session])
                 continue
 
             # Path
@@ -131,7 +157,7 @@ async def _parameter_matcher_main(func, obj: Any, request: Request) -> Response:
     raise NotImplementedError
 
 
-def parameter_matcher(*args):
+def parameter_matcher(acl: Optional[Set[aa]] = None):
     def _wrap(func):
         @wraps(func)
         async def __wrap(obj, request: Request) -> Response:
@@ -148,7 +174,7 @@ def parameter_matcher(*args):
             request_info = f"{remote} {method} {path} HTTP/{version[0]}.{version[1]}"
 
             try:
-                result = await _parameter_matcher_main(func, obj, request)
+                result = await _parameter_matcher_main(func, obj, request, acl)
             except HTTPException as e:
                 logger.exception(e)
                 raise e

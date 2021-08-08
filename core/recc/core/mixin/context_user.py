@@ -6,7 +6,7 @@ from recc.crypto.password import encrypt_password
 from recc.session.session import Session
 from recc.database.struct.user import PassInfo, User
 from recc.core.mixin.context_base import ContextBase
-from recc.core.struct.signup_request import SignupRequest
+from recc.core.struct.signup import Signup
 from recc.variables.database import (
     PASSWORD_HEX_STR_SIZE,
     SALT_BYTE,
@@ -71,7 +71,7 @@ class ContextUser(ContextBase):
             extra=extra,
         )
 
-    async def signup_with_request(self, request: SignupRequest) -> None:
+    async def signup_with_request(self, request: Signup) -> None:
         await self.signup(
             username=request.username,
             hashed_password=request.password,
@@ -172,16 +172,17 @@ class ContextUser(ContextBase):
 
         return await self.database.get_user_uid_by_username(username)
 
-    async def get_user(self, username: str) -> User:
+    async def get_user(self, username: str, remove_sensitive=True) -> User:
         if not username:
             raise ValueError("The `username` argument is empty.")
 
         result = await self.database.get_user_by_username(username)
-        result.remove_sensitive()
+        if remove_sensitive:
+            result.remove_sensitive()
         return result
 
-    async def get_self(self, session: Session) -> User:
-        return await self.get_user(session.audience)
+    async def get_self(self, session: Session, remove_sensitive=True) -> User:
+        return await self.get_user(session.audience, remove_sensitive)
 
     async def get_user_extra(self, username: str) -> Any:
         if not username:
@@ -191,10 +192,11 @@ class ContextUser(ContextBase):
     async def get_self_extra(self, session: Session) -> Any:
         return await self.get_user_extra(session.audience)
 
-    async def get_users(self) -> List[User]:
+    async def get_users(self, remove_sensitive=True) -> List[User]:
         result = list()
         for user in await self.database.get_users():
-            user.remove_sensitive()
+            if remove_sensitive:
+                user.remove_sensitive()
             result.append(user)
         return result
 

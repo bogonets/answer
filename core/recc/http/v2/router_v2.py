@@ -18,15 +18,17 @@ from recc.http.v2.router_v2_public import RouterV2Public
 from recc.http.header.bearer_auth import BearerAuth
 from recc.http.http_response import auto_response
 from recc.http.http_decorator import parameter_matcher
-from recc.http import http_header_keys as h
+from recc.http.http_session import HttpSession
+from recc.http import http_cache_keys as c
 from recc.http import http_urls as u
-from recc.session.session import Session
 from recc.database.struct.info import Info
 from recc.database.struct.project import Project
-from recc.core.struct.change_password_request import ChangePasswordRequest
+from recc.core.struct.update_password import UpdatePassword
+from recc.core.struct.update_info import UpdateInfo
 from recc.database.struct.user import User
 from recc.variables.http import DETAIL_RESPONSE_LOGGING_VERBOSE_LEVEL
 from recc.variables.database import ANONYMOUS_GROUP_NAME
+from recc.access_control.abac.attributes import aa
 
 
 class RouterV2:
@@ -54,7 +56,10 @@ class RouterV2:
         try:
             authorization = request.headers[AUTHORIZATION]
             bearer = BearerAuth.decode_from_authorization_header(authorization)
-            request[h.session] = await self.context.get_access_session(bearer.token)
+            session = await self.context.get_access_session(bearer.token)
+            session_user = await self.context.get_self(session, remove_sensitive=False)
+            request[c.session] = session
+            request[c.http_session] = HttpSession(session, session_user)
         except BaseException as e:
             logger.exception(e)
             error_message = str(e)
@@ -66,22 +71,14 @@ class RouterV2:
     @web.middleware
     async def middleware(self, request: Request, handler):
         if request.method == METH_OPTIONS:
-            return await handler(request)
+            return await handler(request)  # Default `options` handling.
 
         if not request.path.startswith(u.api_v2_public):
             if not await self.context.exists_admin_user():
                 raise HTTPServiceUnavailable(reason="Uninitialized server")
             await self._assign_session(request)
 
-        try:
-            return await handler(request)
-        except PermissionError as e:
-            logger.exception(e)
-            error_message = str(e)
-            if error_message:
-                raise HTTPUnauthorized(reason=error_message)
-            else:
-                raise HTTPUnauthorized()
+        return await handler(request)
 
     # noinspection PyTypeChecker
     def _get_routes(self) -> List[AbstractRouteDef]:
@@ -138,40 +135,42 @@ class RouterV2:
     # ----
 
     @parameter_matcher()
-    async def get_self(self, session: Session) -> User:
-        return await self.context.get_self(session)
+    async def get_self(self, hs: HttpSession) -> User:
+        return hs.user
 
     @parameter_matcher()
-    async def get_self_extra(self, session: Session) -> Any:
-        return await self.context.get_self_extra(session)
+    async def patch_self(self, hs: HttpSession, user: User) -> None:
+        await self.context.update_user(
+            hs.username,
+            email=user.email,
+            phone1=user.phone1,
+            phone2=user.phone2,
+            extra=user.extra,
+        )
 
     @parameter_matcher()
-    async def patch_self_extra(self, session: Session, extra: Dict[str, Any]) -> None:
-        await self.context.update_user_extra(session.audience, extra)
+    async def get_self_extra(self, hs: HttpSession) -> Any:
+        return hs.extra
 
     @parameter_matcher()
-    async def patch_self_password(
-        self, session: Session, change_password: ChangePasswordRequest
-    ) -> None:
-        before = change_password.before
-        after = change_password.after
+    async def patch_self_extra(self, hs: HttpSession, extra: Dict[str, Any]) -> None:
+        await self.context.update_user_extra(hs.audience, extra)
+
+    @parameter_matcher()
+    async def patch_self_password(self, hs: HttpSession, cp: UpdatePassword) -> None:
         try:
-            if not self.context.challenge_password(session.audience, before):
+            if not self.context.challenge_password(hs.audience, cp.before):
                 raise HTTPUnauthorized(reason="The password is incorrect.")
         except ValueError as e:
             raise HTTPBadRequest(reason=str(e))
-        await self.context.change_password(session.audience, after)
+        await self.context.change_password(hs.audience, cp.after)
 
     # -----
     # Infos
     # -----
 
-    @parameter_matcher()
-    async def get_infos(self, session: Session) -> Dict[str, str]:
-        session_user = await self.context.get_self(session)
-        if not session_user.is_admin:
-            raise HTTPUnauthorized(reason="Administrator privileges are required")
-
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def get_infos(self) -> Dict[str, str]:
         result = dict()
         for info in await self.context.get_infos():
             if not info.key:
@@ -179,56 +178,36 @@ class RouterV2:
             result[info.key] = info.value if info.value else ""
         return result
 
-    @parameter_matcher()
-    async def post_infos(self, session: Session, info: Info) -> None:
-        assert info.key is not None
-        assert info.value is not None
-        session_user = await self.context.get_self(session)
-        if not session_user.is_admin:
-            raise HTTPUnauthorized(reason="Administrator privileges are required")
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def post_infos(self, info: UpdateInfo) -> None:
         await self.context.set_info(info.key, info.value)
 
-    @parameter_matcher()
-    async def get_infos_pkey(self, session: Session, key: str) -> Info:
-        session_user = await self.context.get_self(session)
-        if not session_user.is_admin:
-            raise HTTPUnauthorized(reason="Administrator privileges are required")
-
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def get_infos_pkey(self, key: str) -> Info:
         try:
             return await self.context.get_info(key)
         except RuntimeError as e:
-            reason = str(e)
-            logger.error(e)
-            raise HTTPNotFound(reason=reason if reason else None)
+            logger.exception(e)
+            raise HTTPNotFound(reason=str(e))
 
-    @parameter_matcher()
-    async def delete_infos_pkey(self, session: Session, key: str) -> None:
-        session_user = await self.context.get_self(session)
-        if not session_user.is_admin:
-            raise HTTPUnauthorized(reason="Administrator privileges are required")
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def delete_infos_pkey(self, key: str) -> None:
         await self.context.delete_info(key)
 
     # -----
     # Users
     # -----
 
-    @parameter_matcher()
-    async def get_users(self, session: Session) -> List[User]:
-        session_user = await self.context.get_self(session)
-        if not session_user.is_admin:
-            raise HTTPUnauthorized(reason="Administrator privileges are required")
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def get_users(self) -> List[User]:
         return await self.context.get_users()
 
-    @parameter_matcher()
-    async def post_users(self, session: Session, user: User) -> None:
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def post_users(self, user: User) -> None:
         if not user.username:
             raise HTTPBadRequest(reason="Not exists username field")
         if not user.password:
             raise HTTPBadRequest(reason="Not exists password field")
-
-        session_user = await self.context.get_self(session)
-        if not session_user.is_admin:
-            raise HTTPUnauthorized(reason="Administrator privileges are required")
 
         await self.context.signup(
             username=user.username,
@@ -241,25 +220,14 @@ class RouterV2:
             extra=user.extra,
         )
 
-    @parameter_matcher()
-    async def get_users_puser(self, session: Session, user: str) -> User:
-        session_user = await self.context.get_self(session)
-        if session.audience == user:
-            return session_user
-
-        if not session_user.is_admin:
-            raise HTTPUnauthorized(reason="Administrator privileges are required")
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def get_users_puser(self, hs: HttpSession, user: str) -> User:
+        if hs.audience == user:
+            return hs.user
         return await self.context.get_user(user)
 
-    @parameter_matcher()
-    async def patch_users_puser(
-        self, session: Session, user: str, patch_user_info: User
-    ) -> None:
-        session_user = await self.context.get_self(session)
-        if session.audience != user:
-            if not session_user.is_admin:
-                raise HTTPUnauthorized(reason="Administrator privileges are required")
-
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def patch_users_puser(self, user: str, patch_user_info: User) -> None:
         await self.context.update_user(
             user,
             email=patch_user_info.email,
@@ -269,11 +237,8 @@ class RouterV2:
             extra=patch_user_info.extra,
         )
 
-    @parameter_matcher()
-    async def delete_users_puser(self, session: Session, user: str) -> None:
-        session_user = await self.context.get_self(session)
-        if not session_user.is_admin:
-            raise HTTPUnauthorized(reason="Administrator privileges are required")
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def delete_users_puser(self, user: str) -> None:
         await self.context.remove_user(user)
 
     # --------
@@ -281,7 +246,7 @@ class RouterV2:
     # --------
 
     @parameter_matcher()
-    async def get_projects(self, session: Session) -> List[Project]:
+    async def get_projects(self, hs: HttpSession) -> List[Project]:
         projects = await self.context.get_projects(ANONYMOUS_GROUP_NAME)
         for project in projects:
             project.remove_sensitive()

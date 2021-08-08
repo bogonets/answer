@@ -4,6 +4,6 @@ from dataclasses import dataclass
 
 
 @dataclass
-class ChangePasswordRequest:
-    before: str
-    after: str
+class UpdateInfo:
+    key: str
+    value: str

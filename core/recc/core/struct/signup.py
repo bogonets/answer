@@ -6,7 +6,7 @@ from hashlib import sha256
 
 
 @dataclass
-class SignupRequest:
+class Signup:
     username: str
     password: str  # Perhaps the client encoded it with SHA256.
     nickname: Optional[str] = None
