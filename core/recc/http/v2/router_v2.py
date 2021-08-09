@@ -22,6 +22,7 @@ from recc.http.http_session import HttpSession
 from recc.http import http_cache_keys as c
 from recc.http import http_urls as u
 from recc.database.struct.info import Info
+from recc.database.struct.group import Group
 from recc.database.struct.project import Project
 from recc.core.struct.update_password import UpdatePassword
 from recc.core.struct.update_info import UpdateInfo
@@ -252,6 +253,14 @@ class RouterV2:
     @parameter_matcher(acl={aa.HasAdmin})
     async def delete_users_puser(self, user: str) -> None:
         await self.context.remove_user(user)
+
+    # ------
+    # Groups
+    # ------
+
+    @parameter_matcher()
+    async def get_groups(self, hs: HttpSession) -> List[Group]:
+        return hs.groups
 
     # --------
     # Projects

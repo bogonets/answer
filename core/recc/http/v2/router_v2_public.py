@@ -64,9 +64,8 @@ class RouterV2Public:
         return version_text
 
     @parameter_matcher()
-    async def get_test_init(self) -> None:
-        if not await self.context.exists_admin_user():
-            raise HTTPServiceUnavailable(reason="Uninitialized server")
+    async def get_test_init(self) -> bool:
+        return await self.context.exists_admin_user()
 
     @parameter_matcher()
     async def post_signup_admin(self, signup: Signup) -> None:

@@ -20,8 +20,8 @@ class ContextGroup(ContextBase):
             extra=extra,
         )
 
-    async def get_groups(self, group_uid: int) -> List[Group]:
-        return await self.database.get_group_by_group_uid(group_uid)
+    async def get_groups(self) -> List[Group]:
+        return await self.database.get_groups()
 
     async def get_groups_by_name(self, group_name: str) -> List[Group]:
         group = await self.database.get_group_by_name(group_name)

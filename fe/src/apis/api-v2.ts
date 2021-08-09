@@ -4,6 +4,7 @@ import AxiosLib, {
     AxiosRequestConfig,
     AxiosBasicCredentials,
 } from 'axios'
+
 import sha256 from 'sha256'
 
 const DEFAULT_ORIGIN = document.location.origin;
@@ -58,6 +59,11 @@ export function originToBaseUrl(origin: string): string {
     } else {
         return origin + '/api/v2';
     }
+}
+
+export interface UpdatePassword {
+    before?: string;
+    after?: string;
 }
 
 export interface Extra {
@@ -169,36 +175,69 @@ export default class ApiV2 {
         this.api.defaults.headers['Authorization'] = `Bearer ${token}`;
     }
 
-    // ------
-    // Public
-    // ------
+    request<T = any>(
+        method: string,
+        url: string,
+        data?: any,
+        config?: AxiosRequestConfig,
+    ) {
+        const request_config = {
+            url: url,
+            method: method,
+            ...config,
+        } as AxiosRequestConfig;
 
-    version() {
-        return this.api.get('/public/version')
+        return this.api.request(request_config)
             .then((response: AxiosResponse) => {
                 if (response.status !== 200) {
                     throw new ApiV2StatusError(response);
                 }
-                return response.data;
+                return response.data as T;
             });
     }
 
-    heartbeat() {
-        return this.api.get('/public/heartbeat');
+    get<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
+        return this.request<T>("GET", url, data, config);
     }
 
-    testInit() {
-        return this.api.get('/public/test/init');
+    post<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
+        return this.request<T>("POST", url, data, config);
     }
 
-    login(username: string, password: string, updateDefaultAuth = true) {
+    patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
+        return this.request<T>("PATCH", url, data, config);
+    }
+
+    delete<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
+        return this.request<T>("DELETE", url, data, config);
+    }
+
+    // ------
+    // Public
+    // ------
+
+    getVersion() {
+        return this.get<string>('/public/version');
+    }
+
+    getHeartbeat() {
+        return this.get('/public/heartbeat');
+    }
+
+    getTestInit() {
+        return this.get<boolean>('/public/test/init');
+    }
+
+    signin(username: string, password: string, updateDefaultAuth = true) {
         const auth = {
             username: username,
             password: sha256(password),
         } as AxiosBasicCredentials;
+
         const config = {
             auth: auth,
         } as AxiosRequestConfig;
+
         return this.api.post('/public/signin', undefined, config)
             .then((response: AxiosResponse) => {
                 if (response.status !== 200) {
@@ -227,23 +266,20 @@ export default class ApiV2 {
     // Self
     // ----
 
+    getSelf() {
+        return this.get<User>('/self');
+    }
+
     getSelfExtra() {
-        return this.api.get('/self/extra')
-            .then((response: AxiosResponse) => {
-                if (response.status !== 200) {
-                    throw new ApiV2StatusError(response);
-                }
-                return response.data as Extra;
-            });
+        return this.get<Extra>('/self/extra');
     }
 
     patchSelfExtra(extra: Extra) {
-        return this.api.patch('/self/extra', extra)
-            .then((response: AxiosResponse) => {
-                if (response.status !== 200) {
-                    throw new ApiV2StatusError(response);
-                }
-            });
+        return this.patch('/self/extra', extra);
+    }
+
+    patchSelfPassword(update_password: UpdatePassword) {
+        return this.patch('/self/password', update_password);
     }
 
     // -----
@@ -255,13 +291,7 @@ export default class ApiV2 {
     // ------
 
     getSystemOverview() {
-        return this.api.get('/system/overview')
-            .then((response: AxiosResponse) => {
-                if (response.status !== 200) {
-                    throw new ApiV2StatusError(response);
-                }
-                return response.data as SystemOverview;
-            });
+        return this.get<SystemOverview>('/system/overview');
     }
 
     // -----
@@ -269,22 +299,14 @@ export default class ApiV2 {
     // -----
 
     getUsers() {
-        return this.api.get('/users')
-            .then((response: AxiosResponse) => {
-                if (response.status !== 200) {
-                    throw new ApiV2StatusError(response);
-                }
-                return response.data as Array<User>;
-            });
+        return this.get<Array<User>>('/users');
     }
 
+    // --------
+    // Projects
+    // --------
+
     getProjects() {
-        return this.api.get('/projects')
-            .then((response: AxiosResponse) => {
-                if (response.status !== 200) {
-                    throw new ApiV2StatusError(response);
-                }
-                return response.data as Array<Project>;
-            });
+        return this.get<Array<Project>>('/projects');
     }
 }

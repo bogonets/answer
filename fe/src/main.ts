@@ -147,17 +147,19 @@ Vue.prototype.$buttonColor = function () {
   }
 }
 
-router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!sessionStore.getters['user/getAccessToken']) {
-      next('/');
+if (process.env.NODE_ENV === 'production') {
+  router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+      if (!sessionStore.getters['user/getAccessToken']) {
+        next('/');
+      } else {
+        next();
+      }
     } else {
       next();
     }
-  } else {
-    next();
-  }
-});
+  });
+}
 
 new Vue({
   router,

@@ -318,23 +318,19 @@ export default class LoginPage extends VueBase {
   testInit() {
     this.updateState(LoginPageState.Connecting);
 
-    this.$api2.testInit()
-        .then(_ => {
-          this.updateState(LoginPageState.ReadyForWait);
-          setTimeout(() => {
-            this.updateState(LoginPageState.Ready);
-          }, this.waitMoment);
+    this.$api2.getTestInit()
+        .then(result => {
+          if (result) {
+            this.updateState(LoginPageState.ReadyForWait);
+            setTimeout(() => {
+              this.updateState(LoginPageState.Ready);
+            }, this.waitMoment);
+          } else {
+            this.moveToSignupAdmin();
+          }
         })
         .catch(error => {
-          if (error.response) {
-            if (error.response.status && error.response.status == 503) {
-              this.moveToSignupAdmin();
-            } else {
-              this.updateState(LoginPageState.Unreachable);
-            }
-          } else {
-            this.updateState(LoginPageState.Unreachable);
-          }
+          this.updateState(LoginPageState.Unreachable);
         });
   }
 
@@ -434,7 +430,7 @@ export default class LoginPage extends VueBase {
     console.debug(`User ${username} is trying to login ...`);
     this.showLoading = true;
 
-    this.$api2.login(username, password)
+    this.$api2.signin(username, password)
         .then(response => {
           console.debug(`Login for user ${username} was successful !!`);
 
