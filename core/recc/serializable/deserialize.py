@@ -339,9 +339,16 @@ def deserialize(
         raise KeyError(f"Key(`{e.key}`) error: {e.msg}")
 
 
-def deserialize_default(
-    data: Any,
-    cls: Type[_T],
-    hint: Optional[Any] = None,
-) -> _T:
-    return deserialize(version_info[0], data, cls, hint)
+def deserialize_default(data: Any, cls_or_hint: Any) -> Any:
+    major = version_info[0]
+    origin = get_origin(cls_or_hint)
+    if origin is None:
+        return deserialize(major, data, cls_or_hint, None)
+    elif issubclass(origin, list):
+        # maybe typing.List[_V]
+        return deserialize(major, data, list, cls_or_hint)
+    elif issubclass(origin, dict):
+        # maybe typing.Dict[_K, _V]
+        return deserialize(major, data, dict, cls_or_hint)
+    else:
+        raise TypeError(f"Unsupported origin: {origin.__name__}")

@@ -16,7 +16,7 @@ from recc.log.logging import recc_http_logger as logger
 from recc.core.context import Context
 from recc.http.v2.router_v2_public import RouterV2Public
 from recc.http.header.bearer_auth import BearerAuth
-from recc.http.http_response import auto_response
+from recc.http.http_response import create_response_with_request
 from recc.http.http_decorator import parameter_matcher
 from recc.http.http_session import HttpSession
 from recc.http import http_cache_keys as c
@@ -130,7 +130,7 @@ class RouterV2:
                 logger.debug(f"{request.method} {request.path}")
             return Response()
         else:
-            result = auto_response(request, data)
+            result = create_response_with_request(request, data)
             if verbose >= DETAIL_RESPONSE_LOGGING_VERBOSE_LEVEL:
                 logger.debug(f"{request.method} {request.path} -> {data}")
             return result
@@ -175,13 +175,8 @@ class RouterV2:
     # -----
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def get_infos(self) -> Dict[str, str]:
-        result = dict()
-        for info in await self.context.get_infos():
-            if not info.key:
-                continue
-            result[info.key] = info.value if info.value else ""
-        return result
+    async def get_infos(self) -> List[Info]:
+        return await self.context.get_infos()
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def post_infos(self, info: UpdateInfo) -> None:

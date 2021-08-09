@@ -3,6 +3,7 @@
 from typing import Any, TypeVar, Type, Union, get_type_hints, get_origin, get_args
 from io import StringIO
 from urllib.parse import parse_qs
+from multidict import CIMultiDictProxy
 from aiohttp.web_request import Request
 from aiohttp.hdrs import (
     CONTENT_TYPE,
@@ -27,10 +28,10 @@ from recc.serializable.deserialize import deserialize_default
 _T = TypeVar("_T")
 
 
-async def body_to_object(request: Request) -> Any:
-    content_type = request.headers.get(CONTENT_TYPE)
-    content_encoding = request.headers.get(CONTENT_ENCODING)
-    content_length = request.headers.get(CONTENT_LENGTH)
+def payload_to_object(headers: CIMultiDictProxy[str], payload: str) -> Any:
+    content_type = headers.get(CONTENT_TYPE)
+    content_encoding = headers.get(CONTENT_ENCODING)
+    content_length = headers.get(CONTENT_LENGTH)
 
     if content_type is None:
         raise HTTPBadRequest(reason="Empty content-type header")
@@ -51,30 +52,25 @@ async def body_to_object(request: Request) -> Any:
     # Skip the content decoding process.
 
     content_mime = MimeType.parse(content_type)
-    text = await request.text()
     data: Any
     if content_mime.test_from_accepts([MIME_APPLICATION_JSON, MIME_TEXT_PLAIN]):
-        return global_json_decoder(text)
+        return global_json_decoder(payload)
     elif content_mime.test_from_accept(MIME_APPLICATION_YAML):
-        return global_yaml_decoder(text)
+        return global_yaml_decoder(payload)
     elif content_mime.test_from_accept(MIME_APPLICATION_XML):
-        return global_xml_decoder(text)
+        return global_xml_decoder(payload)
     elif content_mime.test_from_accept(MIME_APPLICATION_FORM):
-        return {k: v[-1] for k, v in parse_qs(text).items()}
+        return {k: v[-1] for k, v in parse_qs(payload).items()}
     raise HTTPBadRequest(reason=f"Unsupported content-type: {content_type}")
 
 
-async def body_to_class(
-    request: Request,
-    cls: Type[_T],
-) -> _T:
-    data = await body_to_object(request)
-    if not isinstance(data, dict):
-        raise HTTPBadRequest(reason="Only dictionary-type requests are accepted")
+def payload_to_class(headers: CIMultiDictProxy[str], payload: str, cls: Type[_T]) -> _T:
+    data = payload_to_object(headers, payload)
+    return deserialize_default(data, cls)
 
-    result = deserialize_default(data, cls)
 
-    for key, hint in get_type_hints(result).items():
+def assert_required_arguments(obj: Any) -> None:
+    for key, hint in get_type_hints(obj).items():
         type_origin = get_origin(hint)
         type_args = get_args(hint)
 
@@ -82,7 +78,9 @@ async def body_to_class(
             if type(None) in type_args:
                 continue
 
-        if not hasattr(result, key):
+        if not hasattr(obj, key):
             raise HTTPBadRequest(reason=f"Not exists `{key}` in content body")
 
-    return result
+
+async def request_payload_to_class(request: Request, cls: Type[_T]) -> _T:
+    return payload_to_class(request.headers, await request.text(), cls)

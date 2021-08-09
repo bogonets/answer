@@ -212,7 +212,7 @@ def get_encoding(header: Union[str, Request]) -> Encoding:
     return Encoding(AcceptEncodingType.Identity)
 
 
-def response(accept: AcceptType, encoding: Encoding, data: Any) -> Response:
+def create_response(accept: AcceptType, encoding: Encoding, data: Any) -> Response:
     text: str
     content_type: str
     if accept == AcceptType.Json:
@@ -260,7 +260,7 @@ def response(accept: AcceptType, encoding: Encoding, data: Any) -> Response:
     )
 
 
-def auto_response(request: Request, data: Any) -> Response:
+def create_response_with_request(request: Request, data: Any) -> Response:
     # Do not use the `Accept-Charset` header.
     # https://developer.mozilla.org/ko/docs/Web/HTTP/Content_negotiation
     # https://www.eff.org/deeplinks/2010/01/primer-information-theory-and-privacy
@@ -268,4 +268,4 @@ def auto_response(request: Request, data: Any) -> Response:
     accept = get_accept_type(request)
     encoding = get_encoding(request)
 
-    return response(accept, encoding, data)
+    return create_response(accept, encoding, data)

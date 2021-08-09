@@ -17,8 +17,8 @@ from recc.session.session import Session
 from recc.log.logging import recc_http_logger as logger
 from recc.serializable.serialize import serialize_default
 from recc.http.header.basic_auth import BasicAuth
-from recc.http.http_request import body_to_object, body_to_class
-from recc.http.http_response import get_accept_type, get_encoding, response
+from recc.http.http_payload import payload_to_object, request_payload_to_class
+from recc.http.http_response import get_accept_type, get_encoding, create_response
 from recc.http.http_session import HttpSession
 from recc.http import http_cache_keys as c
 from recc.access_control.abac.attributes import aa
@@ -128,12 +128,14 @@ async def _parameter_matcher_main(
             # Body
             if not assign_body:
                 if _is_serializable_class(type_origin):
-                    update_arguments.append(await body_to_object(request))
+                    update_arguments.append(
+                        payload_to_object(request.headers, await request.text())
+                    )
                     assign_body = True
                     continue
 
                 if isclass(type_origin):
-                    body = await body_to_class(request, type_origin)  # noqa
+                    body = await request_payload_to_class(request, type_origin)  # noqa
                     update_arguments.append(body)
                     assign_body = True
                     continue
@@ -150,9 +152,9 @@ async def _parameter_matcher_main(
     elif isinstance(result, Response):
         return result
     elif _is_serializable_instance(result):
-        return response(accept, encoding, result)
+        return create_response(accept, encoding, result)
     elif isclass(type(result)):
-        return response(accept, encoding, serialize_default(result))
+        return create_response(accept, encoding, serialize_default(result))
 
     raise NotImplementedError
 

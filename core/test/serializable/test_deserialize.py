@@ -241,6 +241,23 @@ class DeserializeTestCase(TestCase):
         result = deserialize_default({"test1": "aa"}, _Test7)
         self.assertIsInstance(result, _Test7)
 
+    def test_test7_list(self):
+        result = deserialize_default([{"test1": "aa"}], List[_Test7])
+        self.assertIsInstance(result, list)
+        self.assertEqual(1, len(result))
+        self.assertIsInstance(result[0], _Test7)
+        self.assertEqual("aa", result[0].test1)
+        self.assertIsNone(result[0].test2)
+
+    def test_test7_dict(self):
+        result = deserialize_default({"key1": {"test1": "aa"}}, Dict[str, _Test7])
+        self.assertIsInstance(result, dict)
+        self.assertEqual(1, len(result))
+        self.assertIn("key1", result)
+        self.assertIsInstance(result["key1"], _Test7)
+        self.assertEqual("aa", result["key1"].test1)
+        self.assertIsNone(result["key1"].test2)
+
     def test_datetime(self):
         time_format = "2021-08-07T09:42:14.776297"
         result = deserialize_default(time_format, datetime)

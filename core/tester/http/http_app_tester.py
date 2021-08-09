@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from hashlib import sha256
-from typing import Optional, Any, Union, Final, Dict
-from multidict import CIMultiDictProxy, CIMultiDict, istr
+from typing import Optional, Any, Union, Final, Dict, TypeVar, Type
+from multidict import CIMultiDictProxy, CIMultiDict
 from http import HTTPStatus
 from asyncio import Task, Event, AbstractEventLoop, CancelledError
 from aiohttp import ClientSession
@@ -23,6 +23,7 @@ from recc.http.header.bearer_auth import BearerAuth
 from recc.argparse.default_parser import parse_arguments_to_core_config
 from recc.http.v1 import path_v1 as pv1
 from recc.http.v1.common import get_v1_path
+from recc.http.http_payload import payload_to_class
 from recc.http.http_interface import EmptyHttpAppCallback
 from recc.http.http_app import HttpApp
 from recc.http.http_utils import v2_public_path
@@ -39,6 +40,8 @@ from recc.variables.http import (
     DEFAULT_SCHEME,
     URL_PATH_SEPARATOR,
 )
+
+_T = TypeVar("_T")
 
 DEFAULT_ADMIN_USERNAME: Final[str] = "admin"
 DEFAULT_ADMIN_PASSWORD: Final[str] = "0000"
@@ -155,6 +158,7 @@ class HttpAppTester(EmptyHttpAppCallback):
         headers: Optional[Dict[str, str]] = None,
         text: Optional[str] = None,
         data: Optional[Any] = None,
+        cls: Optional[Type[_T]] = None,
     ) -> ResponseData:
         prefix = f"{self._scheme}://{self._bind}:{self._port}"
         if path:
@@ -196,8 +200,12 @@ class HttpAppTester(EmptyHttpAppCallback):
                 headers=updated_headers,
                 timeout=self._timeout,
             ) as response:
-                response_data: Optional[Union[object, str]] = None
-                if response.content_length > 0:
+                response_data: Any = None
+                if cls is not None:
+                    response_data = payload_to_class(
+                        response.headers, await response.text(), cls
+                    )
+                elif response.content_length > 0:
                     if response.content_type == APPLICATION_JSON:
                         response_data = await response.json()
                     else:
@@ -215,8 +223,9 @@ class HttpAppTester(EmptyHttpAppCallback):
         headers: Optional[Dict[str, str]] = None,
         text: Optional[str] = None,
         data: Optional[Any] = None,
+        cls: Optional[Type[_T]] = None,
     ) -> ResponseData:
-        return await self.request(METH_GET, path, headers, text, data)
+        return await self.request(METH_GET, path, headers, text, data, cls)
 
     async def post(
         self,
@@ -224,8 +233,9 @@ class HttpAppTester(EmptyHttpAppCallback):
         headers: Optional[Dict[str, str]] = None,
         text: Optional[str] = None,
         data: Optional[Any] = None,
+        cls: Optional[Type[_T]] = None,
     ) -> ResponseData:
-        return await self.request(METH_POST, path, headers, text, data)
+        return await self.request(METH_POST, path, headers, text, data, cls)
 
     async def patch(
         self,
@@ -233,8 +243,9 @@ class HttpAppTester(EmptyHttpAppCallback):
         headers: Optional[Dict[str, str]] = None,
         text: Optional[str] = None,
         data: Optional[Any] = None,
+        cls: Optional[Type[_T]] = None,
     ) -> ResponseData:
-        return await self.request(METH_PATCH, path, headers, text, data)
+        return await self.request(METH_PATCH, path, headers, text, data, cls)
 
     async def put(
         self,
@@ -242,8 +253,9 @@ class HttpAppTester(EmptyHttpAppCallback):
         headers: Optional[Dict[str, str]] = None,
         text: Optional[str] = None,
         data: Optional[Any] = None,
+        cls: Optional[Type[_T]] = None,
     ) -> ResponseData:
-        return await self.request(METH_PUT, path, headers, text, data)
+        return await self.request(METH_PUT, path, headers, text, data, cls)
 
     async def delete(
         self,
@@ -251,8 +263,9 @@ class HttpAppTester(EmptyHttpAppCallback):
         headers: Optional[Dict[str, str]] = None,
         text: Optional[str] = None,
         data: Optional[Any] = None,
+        cls: Optional[Type[_T]] = None,
     ) -> ResponseData:
-        return await self.request(METH_DELETE, path, headers, text, data)
+        return await self.request(METH_DELETE, path, headers, text, data, cls)
 
     async def run_v1_admin_login(
         self,

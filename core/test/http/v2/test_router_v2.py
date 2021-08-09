@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from unittest import main
+from typing import List
 from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
 from recc.variables.database import RECC_DB_VERSION_KEY
 from recc.http.http_utils import v2_path
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
-from recc.database.struct.info import keys as info_keys
 from recc.serializable.deserialize import deserialize_default
+from recc.core.struct.update_info import UpdateInfo
 from recc.core.struct.system_overview import SystemOverview
+from recc.database.struct.info import Info
 
 
 class RouterV2TestCase(AsyncTestCase):
@@ -51,19 +53,19 @@ class RouterV2TestCase(AsyncTestCase):
         self.assertEqual(data2, response4.data)
 
     async def test_infos(self):
-        response1 = await self.tester.get(v2_path(u.infos))
+        response1 = await self.tester.get(v2_path(u.infos), cls=List[Info])
         self.assertEqual(200, response1.status)
-        self.assertIn(RECC_DB_VERSION_KEY, response1.data)
+        self.assertIsInstance(response1.data, list)
+        version = list(filter(lambda x: x.key == RECC_DB_VERSION_KEY, response1.data))
+        self.assertEqual(1, len(version))
+        self.assertEqual(RECC_DB_VERSION_KEY, version[0].key)
 
-        dk = info_keys
-        key = "key1"
-        value = "value2"
-        data = {dk.key: key, dk.value: value}
-        response2 = await self.tester.post(v2_path(u.infos), data=data)
+        update_info = UpdateInfo("key1", "value2")
+        response2 = await self.tester.post(v2_path(u.infos), data=update_info)
         self.assertEqual(200, response2.status)
         self.assertIsNone(response2.data)
 
-        path = v2_path(u.infos_pkey.format(**{p.key: key}))
+        path = v2_path(u.infos_pkey.format(**{p.key: update_info.key}))
         response3 = await self.tester.get(path)
         self.assertEqual(200, response3.status)
         self.assertIsNotNone(response3.data)

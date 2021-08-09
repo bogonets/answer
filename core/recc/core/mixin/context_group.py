@@ -24,9 +24,7 @@ class ContextGroup(ContextBase):
         return await self.database.get_groups()
 
     async def get_groups_by_name(self, group_name: str) -> List[Group]:
-        group = await self.database.get_group_by_name(group_name)
-        assert group.uid is not None
-        return await self.get_groups(group.uid)
+        return await self.database.get_group_by_name(group_name)
 
     async def delete_group(self, group_uid: int) -> None:
         await self.database.delete_group_by_uid(group_uid)
