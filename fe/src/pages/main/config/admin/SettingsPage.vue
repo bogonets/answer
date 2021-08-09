@@ -67,8 +67,21 @@ ko:
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon small @click="onClickEditInfo(item)">
+        <v-icon
+            small
+            class="mr-2"
+            :disabled="validModifiable(item.key)"
+            @click="onClickEditInfo(item)"
+        >
           mdi-pencil
+        </v-icon>
+        <v-icon
+            small
+            color="red"
+            :disabled="validRemovable(item.key)"
+            @click="onClickRemoveInfo(item)"
+        >
+          mdi-delete
         </v-icon>
       </template>
 
@@ -85,6 +98,8 @@ ko:
 import { Component } from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+
+const RECC_REGEX = /^recc\..*/;
 
 @Component({
   components: {
@@ -161,10 +176,21 @@ export default class SettingsPage extends VueBase {
     return utc?.split('T')[0] || '';
   }
 
+  validModifiable(key: string): boolean {
+    return !!RECC_REGEX.exec(key);
+  }
+
+  validRemovable(key: string): boolean {
+    return !!RECC_REGEX.exec(key);
+  }
+
   onClickAddInfo() {
   }
 
   onClickEditInfo(item) {
+  }
+
+  onClickRemoveInfo(item) {
   }
 }
 </script>
