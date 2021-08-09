@@ -84,6 +84,18 @@ export interface User {
     last_login?: string;
 }
 
+export interface Info {
+    key?: string;
+    value?: string;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface UpdateInfo {
+    key?: string;
+    value?: string;
+}
+
 export interface Login {
     access?: string;
     refresh?: string;
@@ -285,6 +297,18 @@ export default class ApiV2 {
     // -----
     // Infos
     // -----
+
+    getInfos() {
+        return this.get<Array<Info>>('/infos');
+    }
+
+    postInfos(info: UpdateInfo) {
+        return this.post<object>('/infos', info);
+    }
+
+    deleteInfo(key: string) {
+        return this.delete<object>(`/infos/${key}`);
+    }
 
     // ------
     // System
