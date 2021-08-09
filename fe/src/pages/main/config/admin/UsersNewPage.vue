@@ -61,14 +61,15 @@ ko:
     <toolbar-navigation :items="navigationItems"></toolbar-navigation>
     <v-divider></v-divider>
 
-      <v-list flat>
-        <v-subheader>{{ $t('header.required') }}</v-subheader>
+    <v-form>
+      <v-subheader>{{ $t('header.required') }}</v-subheader>
+      <v-divider></v-divider>
 
+      <v-list flat>
         <v-list-item>
           <v-text-field
               dense
               outlined
-              persistent-hint
               type="text"
               autocomplete="off"
               ref="usernameField"
@@ -82,10 +83,9 @@ ko:
           <v-text-field
               dense
               outlined
-              persistent-hint
               type="password"
               autocomplete="off"
-              ref="password"
+              ref="passwordField"
               v-model="password"
               :label="$t('label.password')"
               :hint="$t('hint.password')"
@@ -96,27 +96,26 @@ ko:
           <v-text-field
               dense
               outlined
-              persistent-hint
               type="password"
               autocomplete="off"
-              ref="password"
+              ref="confirmPasswordField"
               v-model="confirmPassword"
               :label="$t('label.confirmPassword')"
               :hint="$t('hint.confirmPassword')"
           ></v-text-field>
         </v-list-item>
+      </v-list>
 
-        <v-divider></v-divider>
-        <v-subheader>{{ $t('header.profile') }}</v-subheader>
+      <v-subheader>{{ $t('header.profile') }}</v-subheader>
+      <v-divider></v-divider>
 
+      <v-list flat>
         <v-list-item>
           <v-text-field
               dense
               outlined
-              persistent-hint
               type="text"
               autocomplete="off"
-              ref="nicknameField"
               v-model="nickname"
               :label="$t('label.nickname')"
               :hint="$t('hint.nickname')"
@@ -127,10 +126,8 @@ ko:
           <v-text-field
               dense
               outlined
-              persistent-hint
               type="text"
               autocomplete="off"
-              ref="emailField"
               v-model="email"
               :label="$t('label.email')"
               :hint="$t('hint.email')"
@@ -141,10 +138,8 @@ ko:
           <v-text-field
               dense
               outlined
-              persistent-hint
               type="text"
               autocomplete="off"
-              ref="phone1Field"
               v-model="phone1"
               :label="$t('label.phone1')"
               :hint="$t('hint.phone1')"
@@ -155,19 +150,19 @@ ko:
           <v-text-field
               dense
               outlined
-              persistent-hint
               type="text"
               autocomplete="off"
-              ref="phone2Field"
               v-model="phone2"
               :label="$t('label.phone2')"
               :hint="$t('hint.phone2')"
           ></v-text-field>
         </v-list-item>
+      </v-list>
 
-        <v-divider></v-divider>
-        <v-subheader>{{ $t('header.access') }}</v-subheader>
+      <v-subheader>{{ $t('header.access') }}</v-subheader>
+      <v-divider></v-divider>
 
+      <v-list flat>
         <v-list-item three-line>
           <v-list-item-content>
             <v-list-item-title>{{ $t('label.is_admin') }}</v-list-item-title>
@@ -179,16 +174,18 @@ ko:
               v-model="isAdmin"
           ></v-switch>
         </v-list-item>
+      </v-list>
 
-        <v-divider></v-divider>
+      <v-divider></v-divider>
 
+      <v-list flat>
         <v-list-item three-line>
           <v-spacer></v-spacer>
           <v-btn color="second" class="mr-4">{{ $t('cancel') }}</v-btn>
           <v-btn color="primary">{{ $t('signup') }}</v-btn>
         </v-list-item>
-
       </v-list>
+    </v-form>
 
   </v-container>
 </template>
