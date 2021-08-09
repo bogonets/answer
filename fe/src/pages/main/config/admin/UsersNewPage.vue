@@ -24,6 +24,11 @@ en:
     phone1: "This is the representative phone number."
     phone2: "Secondary phone number."
     is_admin: "Gain full control over the system."
+  msg:
+    required_field: "Required field."
+    at_least: "At least {0} characters."
+    email_format: "Email format is incorrect."
+    phone_format: "Phone format is incorrect."
   cancel: "Cancel"
   signup: "Signup"
 
@@ -52,6 +57,11 @@ ko:
     phone1: "대표 전화번호 입니다."
     phone2: "보조 전화번호 입니다."
     is_admin: "시스템을 완전히 제어할 수 있는 권한을 획득합니다."
+  msg:
+    required_field: "공백을 허용하지 않습니다."
+    at_least: "최소 {0}자 이상 허용됩니다."
+    email_format: "이메일 형식이 올바르지 않습니다."
+    phone_format: "전화번호 형식이 올바르지 않습니다."
   cancel: "취소"
   signup: "가입"
 </i18n>
@@ -70,10 +80,13 @@ ko:
           <v-text-field
               dense
               outlined
+              clearable
               type="text"
               autocomplete="off"
+              prepend-icon="mdi-account"
               ref="usernameField"
               v-model="username"
+              :rules="[rules.required, rules.at_least]"
               :label="$t('label.username')"
               :hint="$t('hint.username')"
           ></v-text-field>
@@ -83,12 +96,18 @@ ko:
           <v-text-field
               dense
               outlined
-              type="password"
+              clearable
+              counter
               autocomplete="off"
+              prepend-icon="mdi-lock"
               ref="passwordField"
               v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :rules="[rules.required, rules.at_least]"
               :label="$t('label.password')"
               :hint="$t('hint.password')"
+              @click:append="showPassword = !showPassword"
           ></v-text-field>
         </v-list-item>
 
@@ -96,12 +115,18 @@ ko:
           <v-text-field
               dense
               outlined
-              type="password"
+              clearable
+              counter
               autocomplete="off"
+              prepend-icon="mdi-lock-check"
               ref="confirmPasswordField"
               v-model="confirmPassword"
+              :type="showConfirmPassword ? 'text' : 'password'"
+              :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :rules="[rules.required, rules.at_least]"
               :label="$t('label.confirmPassword')"
               :hint="$t('hint.confirmPassword')"
+              @click:append="showConfirmPassword = !showConfirmPassword"
           ></v-text-field>
         </v-list-item>
       </v-list>
@@ -114,8 +139,10 @@ ko:
           <v-text-field
               dense
               outlined
+              clearable
               type="text"
               autocomplete="off"
+              prepend-icon="mdi-account-outline"
               v-model="nickname"
               :label="$t('label.nickname')"
               :hint="$t('hint.nickname')"
@@ -126,9 +153,13 @@ ko:
           <v-text-field
               dense
               outlined
+              clearable
               type="text"
               autocomplete="off"
+              prepend-icon="mdi-email"
+              ref="emailField"
               v-model="email"
+              :rules="[rules.email]"
               :label="$t('label.email')"
               :hint="$t('hint.email')"
           ></v-text-field>
@@ -138,9 +169,13 @@ ko:
           <v-text-field
               dense
               outlined
+              clearable
               type="text"
               autocomplete="off"
+              prepend-icon="mdi-phone"
+              ref="phone1Field"
               v-model="phone1"
+              :rules="[rules.phone]"
               :label="$t('label.phone1')"
               :hint="$t('hint.phone1')"
           ></v-text-field>
@@ -150,9 +185,13 @@ ko:
           <v-text-field
               dense
               outlined
+              clearable
               type="text"
               autocomplete="off"
+              prepend-icon="mdi-phone"
+              ref="phone2Field"
               v-model="phone2"
+              :rules="[rules.phone]"
               :label="$t('label.phone2')"
               :hint="$t('hint.phone2')"
           ></v-text-field>
@@ -181,8 +220,20 @@ ko:
       <v-list flat>
         <v-list-item three-line>
           <v-spacer></v-spacer>
-          <v-btn color="second" class="mr-4">{{ $t('cancel') }}</v-btn>
-          <v-btn color="primary">{{ $t('signup') }}</v-btn>
+          <v-btn
+              color="second"
+              class="mr-4"
+              @click="onClickCancel"
+          >
+            {{ $t('cancel') }}
+          </v-btn>
+          <v-btn
+              color="primary"
+              :loading="showSignupLoading"
+              @click="onClickOk"
+          >
+            {{ $t('signup') }}
+          </v-btn>
         </v-list-item>
       </v-list>
     </v-form>
@@ -194,6 +245,10 @@ ko:
 import { Component } from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import { User } from '@/apis/api-v2';
+
+const V_TEXT_FIELD_VALIDATE = 'validate';
+const AT_LEAST = 4;
 
 @Component({
   components: {
@@ -201,6 +256,29 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
   }
 })
 export default class UsersNewPage extends VueBase {
+
+  private readonly rules = {
+    required: (value) => {
+      return !!value || this.$t('msg.required_field');
+    },
+    at_least: (value) => {
+      return value.length >= AT_LEAST || this.$t('msg.at_least', [AT_LEAST]);
+    },
+    email: (value) => {
+      if (value) {
+        return /^\S+@\S+\.\S+$/.test(value) || this.$t('msg.email_format');
+      } else {
+        return true;
+      }
+    },
+    phone: (value) => {
+      if (value) {
+        return /^[-+0-9]+$/.test(value) || this.$t('msg.phone_format');
+      } else {
+        return true;
+      }
+    },
+  };
 
   navigationItems: object = [];
   username = '';
@@ -211,6 +289,10 @@ export default class UsersNewPage extends VueBase {
   phone1 = '';
   phone2 = '';
   isAdmin = false;
+
+  showPassword = false;
+  showConfirmPassword = false;
+  showSignupLoading = false;
 
   created() {
     this.navigationItems = [
@@ -229,6 +311,64 @@ export default class UsersNewPage extends VueBase {
         disabled: true,
       },
     ];
+  }
+
+  validateForms(): boolean {
+    const fields = [
+      this.$refs.usernameField,
+      this.$refs.passwordField,
+      this.$refs.confirmPasswordField,
+      this.$refs.emailField,
+      this.$refs.phone1Field,
+      this.$refs.phone2Field,
+    ];
+    let result = true;
+    for (const key in fields) {
+      const field = fields[key];
+      if (!field) {
+        continue;
+      }
+
+      const validate = field[V_TEXT_FIELD_VALIDATE];
+      if (validate === undefined) {
+        continue;
+      }
+
+      // You need to repeat the validation function for every field.
+      if (!validate(true)) {
+        result = false;
+      }
+    }
+    return result;
+  }
+
+  onClickCancel() {
+    this.$router.back();
+  }
+
+  onClickOk() {
+    if (!this.validateForms()) {
+      return;
+    }
+
+    const user = {
+      username: this.username,
+      password: this.$api2.encryptPassword(this.password),
+      nickname: this.nickname,
+      email: this.email,
+      phone1: this.phone1,
+      phone2: this.phone2,
+      is_admin: this.isAdmin,
+    } as User;
+    this.showSignupLoading = true;
+    this.$api2.postUsers(user)
+        .then(() => {
+          this.showSignupLoading = false;
+          this.moveToMainConfigAdminUsers();
+        })
+        .catch(error => {
+          this.showSignupLoading = false;
+        });
   }
 }
 </script>

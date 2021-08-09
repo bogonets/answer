@@ -72,7 +72,7 @@ ko:
                       type="text"
                       ref="usernameField"
                       v-model="currentUsername"
-                      :rules="[rules.username.required]"
+                      :rules="[rules.required]"
                       :label="usernameFieldLabel"
                   ></v-text-field>
                   <v-text-field
@@ -80,7 +80,7 @@ ko:
                       autocomplete="off"
                       ref="passwordField"
                       v-model="currentPassword"
-                      :rules="[rules.password.required]"
+                      :rules="[rules.required]"
                       :label="passwordFieldLabel"
                       @keypress.enter.stop="signin"
                   ></v-text-field>
@@ -168,15 +168,8 @@ export default class LoginPage extends VueBase {
 
   private readonly waitMoment = WAIT_MOMENT_MILLISECONDS;
   private readonly rules = {
-    username: {
-      required: (value) => {
-        return !!value || this.$t('msg.required_field');
-      },
-    },
-    password: {
-      required: (value) => {
-        return !!value || this.$t('msg.required_field');
-      },
+    required: (value) => {
+      return !!value || this.$t('msg.required_field');
     },
   };
 

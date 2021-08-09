@@ -73,6 +73,7 @@ export interface Extra {
 
 export interface User {
     username?: string;
+    password?: string;
     nickname?: string;
     email?: string;
     phone1?: string;
@@ -243,6 +244,10 @@ export default class ApiV2 {
         return this.get<boolean>('/public/test/init');
     }
 
+    encryptPassword(password: string): string {
+        return sha256(password);
+    }
+
     signin(username: string, password: string, updateDefaultAuth = true) {
         const auth = {
             username: username,
@@ -328,6 +333,11 @@ export default class ApiV2 {
     getUsers() {
         return this.get<Array<User>>('/users');
     }
+
+    postUsers(user: User) {
+        return this.post('/users', user);
+    }
+
 
     // --------
     // Projects
