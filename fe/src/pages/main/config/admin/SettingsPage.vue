@@ -3,27 +3,29 @@ en:
   title: "Settings"
   subtitle: "Modify environment variables used in the system."
   search_label: "You can filter by key or value."
-  add_info: "Add info"
+  new_info: "New info"
   headers:
     key: "Key"
     value: "Value"
     created_at: "Created at"
     updated_at: "Updated at"
     actions: "Actions"
-  empty_infos: ""
+  loading: "Loading... Please wait"
+  empty_infos: "Empty Infos"
 
 ko:
   title: "환경설정"
   subtitle: "시스템에서 사용되는 환경변수를 수정합니다."
   search_label: "열쇠 또는 값을 필터링할 수 있습니다."
-  add_info: "설정 추가"
+  new_info: "설정 추가"
   headers:
     key: "열쇠 (Key)"
     value: "값 (Value)"
     created_at: "생성일"
     updated_at: "수정일"
     actions: "관리"
-  empty_infos: ""
+  loading: "불러오는중 입니다... 잠시만 기다려 주세요."
+  empty_infos: "정보가 존재하지 않습니다."
 </i18n>
 
 <template>
@@ -51,9 +53,23 @@ ko:
               hide-details
           ></v-text-field>
 
-          <v-btn color="primary" @click="onClickAddInfo">
-            {{ $t('add_info') }}
-          </v-btn>
+          <v-dialog
+              v-model="showNewInfoDialog"
+              persistent
+              max-width="360px"
+              no-click-animation
+              @keydown.esc.stop="onClickNewInfoCancel"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn v-bind="attrs" v-on="on" color="primary" @click="onClickAddInfo">
+                {{ $t('new_info') }}
+              </v-btn>
+            </template>
+            <card-info-new
+                @cancel="onClickNewInfoCancel"
+                @ok="onClickNewInfoOk"
+            ></card-info-new>
+          </v-dialog>
 
         </v-toolbar>
       </template>
@@ -68,6 +84,7 @@ ko:
 
       <template v-slot:item.actions="{ item }">
         <v-icon
+            v-if="!validModifiable(item.key)"
             small
             class="mr-2"
             :disabled="validModifiable(item.key)"
@@ -75,21 +92,19 @@ ko:
         >
           mdi-pencil
         </v-icon>
-        <v-icon
-            small
-            color="red"
-            :disabled="validRemovable(item.key)"
-            @click="onClickRemoveInfo(item)"
-        >
-          mdi-delete
-        </v-icon>
       </template>
 
       <template v-slot:no-data>
         {{ $t('empty_infos') }}
       </template>
-
     </v-data-table>
+
+    <v-snackbar
+        v-model="showRequestErrorSnackbar"
+        :timeout="snackbarTimeout"
+    >
+      {{ requestErrorMessage }}
+    </v-snackbar>
 
   </v-container>
 </template>
@@ -98,21 +113,29 @@ ko:
 import { Component } from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import CardInfoNew from '@/components/CardInfoNew.vue';
+import { UpdateInfo } from '@/apis/api-v2';
 
 const RECC_REGEX = /^recc\..*/;
 
 @Component({
   components: {
     ToolbarNavigation,
+    CardInfoNew: CardInfoNew,
   }
 })
 export default class SettingsPage extends VueBase {
 
-  filterText = "";
+  readonly snackbarTimeout = 4000;
+
+  filterText = '';
   navigationItems: object = [];
   headers: object = [];
   infos: object = [];
+  showNewInfoDialog = false;
   showLoading = true;
+  showRequestErrorSnackbar = false;
+  requestErrorMessage = '';
 
   created() {
     this.navigationItems = [
@@ -161,6 +184,11 @@ export default class SettingsPage extends VueBase {
   }
 
   mounted() {
+    this.updateInfos();
+  }
+
+  updateInfos() {
+    this.showLoading = true;
     this.$api2.getInfos()
         .then((infos) => {
           this.infos = infos;
@@ -170,6 +198,11 @@ export default class SettingsPage extends VueBase {
           console.error(error);
           this.showLoading = false;
         });
+  }
+
+  showSnackbar(message: string) {
+    this.requestErrorMessage = message;
+    this.showRequestErrorSnackbar = true;
   }
 
   utcToDate(utc: undefined | string): string {
@@ -190,7 +223,26 @@ export default class SettingsPage extends VueBase {
   onClickEditInfo(item) {
   }
 
-  onClickRemoveInfo(item) {
+  onClickNewInfoCancel() {
+    this.showNewInfoDialog = false;
+  }
+
+  onClickNewInfoOk(event) {
+    this.showNewInfoDialog = false;
+
+    const info = {
+      key: event.key,
+      value: event.value,
+    } as UpdateInfo;
+    this.$api2.postInfos(info)
+        .then(() => {
+          this.updateInfos();
+        })
+        .catch(error => {
+          const code = error.request.status;
+          const reason = error.request.statusText;
+          this.showSnackbar(`Request error(${code}) ${reason}`);
+        });
   }
 }
 </script>

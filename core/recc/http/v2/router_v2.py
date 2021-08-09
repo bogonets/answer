@@ -5,7 +5,6 @@ from aiohttp import web
 from aiohttp.hdrs import METH_OPTIONS, AUTHORIZATION
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
-from aiohttp.web_response import Response
 from aiohttp.web_exceptions import (
     HTTPNotFound,
     HTTPUnauthorized,
@@ -16,7 +15,6 @@ from recc.log.logging import recc_http_logger as logger
 from recc.core.context import Context
 from recc.http.v2.router_v2_public import RouterV2Public
 from recc.http.header.bearer_auth import BearerAuth
-from recc.http.http_response import create_response_with_request
 from recc.http.http_decorator import parameter_matcher
 from recc.http.http_session import HttpSession
 from recc.http import http_cache_keys as c
@@ -28,7 +26,6 @@ from recc.core.struct.update_password import UpdatePassword
 from recc.core.struct.update_info import UpdateInfo
 from recc.core.struct.system_overview import SystemOverview
 from recc.database.struct.user import User
-from recc.variables.http import DETAIL_RESPONSE_LOGGING_VERBOSE_LEVEL
 from recc.variables.database import ANONYMOUS_GROUP_NAME
 from recc.access_control.abac.attributes import aa
 
@@ -123,18 +120,6 @@ class RouterV2:
         ]
         # fmt: on
 
-    def response(self, request: Request, data: Any = None) -> Response:
-        verbose = self.context.config.verbose
-        if data is None:
-            if verbose >= DETAIL_RESPONSE_LOGGING_VERBOSE_LEVEL:
-                logger.debug(f"{request.method} {request.path}")
-            return Response()
-        else:
-            result = create_response_with_request(request, data)
-            if verbose >= DETAIL_RESPONSE_LOGGING_VERBOSE_LEVEL:
-                logger.debug(f"{request.method} {request.path} -> {data}")
-            return result
-
     # ----
     # Self
     # ----
@@ -180,14 +165,16 @@ class RouterV2:
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def post_infos(self, info: UpdateInfo) -> None:
-        await self.context.set_info(info.key, info.value)
+        try:
+            await self.context.create_info(info.key, info.value)
+        except KeyError as e:
+            raise HTTPBadRequest(reason=str(e))
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def get_infos_pkey(self, key: str) -> Info:
         try:
             return await self.context.get_info(key)
         except RuntimeError as e:
-            logger.exception(e)
             raise HTTPNotFound(reason=str(e))
 
     @parameter_matcher(acl={aa.HasAdmin})

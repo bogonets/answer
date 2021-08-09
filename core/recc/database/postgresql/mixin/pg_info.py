@@ -3,6 +3,7 @@
 from typing import List
 from datetime import datetime
 from overrides import overrides
+from asyncpg.exceptions import UniqueViolationError
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.info import Info
 from recc.database.interfaces.db_info import DbInfo
@@ -27,9 +28,12 @@ class PgInfo(DbInfo, PgBase):
         created_at=datetime.utcnow(),
     ) -> None:
         query = INSERT_INFO
-        await self.execute(query, key, value, created_at)
+        try:
+            await self.execute(query, key, value, created_at)
+        except UniqueViolationError:
+            raise KeyError(f"The `{key}` key already exists")
         params_msg = f"key={key},value={value}"
-        logger.info(f"create_info({params_msg}) ok.")
+        logger.info(f"create_info({params_msg}) ok")
 
     @overrides
     async def update_info_value_by_key(

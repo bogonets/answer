@@ -11,8 +11,8 @@ from aiohttp.web_exceptions import (
     HTTPException,
     HTTPBadRequest,
     HTTPUnauthorized,
-    HTTPInternalServerError,
 )
+from recc.core.context import Context
 from recc.session.session import Session
 from recc.log.logging import recc_http_logger as logger
 from recc.serializable.serialize import serialize_default
@@ -20,8 +20,16 @@ from recc.http.header.basic_auth import BasicAuth
 from recc.http.http_payload import payload_to_object, request_payload_to_class
 from recc.http.http_response import get_accept_type, get_encoding, create_response
 from recc.http.http_session import HttpSession
+from recc.http.http_status import (
+    STATUS_BAD_REQUEST,
+    STATUS_UNAUTHORIZED,
+    STATUS_INTERNAL_SERVER_ERROR,
+)
 from recc.http import http_cache_keys as c
 from recc.access_control.abac.attributes import aa
+from recc.variables.http import VERY_VERBOSE_DEBUGGING
+
+CONTEXT_METHOD_NAME = "context"
 
 
 def _is_serializable_instance(obj: Any) -> bool:
@@ -73,6 +81,13 @@ async def _parameter_matcher_main(
     update_arguments: List[Any] = list()
     match_count = len(request.match_info)
     assign_body = False
+
+    very_verbose_debugging = False
+    context = getattr(obj, CONTEXT_METHOD_NAME, None)
+    if context and isinstance(context, Context):
+        config = context.config
+        if config.developer and config.verbose >= VERY_VERBOSE_DEBUGGING:
+            very_verbose_debugging = True
 
     if acl:
         if c.http_session not in request:
@@ -128,16 +143,19 @@ async def _parameter_matcher_main(
             # Body
             if not assign_body:
                 if _is_serializable_class(type_origin):
-                    update_arguments.append(
-                        payload_to_object(request.headers, await request.text())
-                    )
+                    body = payload_to_object(request.headers, await request.text())
                     assign_body = True
-                    continue
-
-                if isclass(type_origin):
+                elif isclass(type_origin):
                     body = await request_payload_to_class(request, type_origin)  # noqa
-                    update_arguments.append(body)
                     assign_body = True
+                else:
+                    body = None
+
+                if assign_body:
+                    assert body is not None
+                    if very_verbose_debugging:
+                        logger.debug(f"BODY: {str(body)}")
+                    update_arguments.append(body)
                     continue
 
             update_arguments.append(None)
@@ -146,6 +164,9 @@ async def _parameter_matcher_main(
         result = await func(obj, *update_arguments)
     else:
         result = func(obj, *update_arguments)
+
+    if very_verbose_debugging:
+        logger.debug(f"RESULT: {str(result)}")
 
     if result is None:
         return Response()
@@ -178,21 +199,28 @@ def parameter_matcher(acl: Optional[Set[aa]] = None):
             try:
                 result = await _parameter_matcher_main(func, obj, request, acl)
             except HTTPException as e:
+                logger.error(e)
+                result = Response(
+                    status=e.status,
+                    reason=e.reason,
+                    text=e.text,
+                    headers=e.headers,
+                )
+            except (ValueError, KeyError) as e:
                 logger.exception(e)
-                raise e
+                result = Response(status=STATUS_BAD_REQUEST, reason=str(e))
             except PermissionError as e:
                 logger.exception(e)
-                reason = str(e)
-                raise HTTPUnauthorized(reason=reason if reason else None)
+                result = Response(status=STATUS_UNAUTHORIZED, reason=str(e))
             except BaseException as e:
                 logger.exception(e)
-                reason = str(e)
-                raise HTTPInternalServerError(reason=reason if reason else None)
-            else:
-                status = result.status
-                reason = result.reason
-                duration = (datetime.utcnow() - now).total_seconds()
-                logger.info(f"{request_info} -> {status} {reason} ({duration:.3f}s)")
+                result = Response(status=STATUS_INTERNAL_SERVER_ERROR, reason=str(e))
+
+            status = result.status
+            reason = result.reason
+            duration = (datetime.utcnow() - now).total_seconds()
+            response_info = f"{status} {reason} ({duration:.3f}s)"
+            logger.info(f"{request_info} -> {response_info}")
 
             return result
 
