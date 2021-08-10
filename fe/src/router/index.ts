@@ -48,18 +48,22 @@ const routes = [
   {
     path: '/',
     component: LoginPage,
+    name: LoginPage.name,
   },
   {
     path: '/signup',
     component: Signup,
+    name: Signup.name,
   },
   {
     path: '/signup/admin',
     component: SignupAdmin,
+    name: SignupAdmin.name,
   },
   {
     path: '/main',
     component: MainPage,
+    name: MainPage.name,
     meta: {
       requiresAuth: true
     },
@@ -71,10 +75,12 @@ const routes = [
       {
         path: 'dashboard',
         component: MainDashboardPage,
+        name: MainDashboardPage.name,
       },
       {
         path: 'config/account',
         component: AccountPage,
+        name: AccountPage.name,
         children: [
           {
             path: '',
@@ -83,12 +89,14 @@ const routes = [
           {
             path: 'appearance',
             component: AppearancePage,
+            name: AppearancePage.name,
           },
         ]
       },
       {
         path: 'config/admin',
         component: AdminPage,
+        name: AdminPage.name,
         children: [
           {
             path: '',
@@ -97,89 +105,104 @@ const routes = [
           {
             path: 'overview',
             component: OverviewPage,
+            name: OverviewPage.name,
           },
           {
             path: 'users',
             component: UsersPage,
+            name: UsersPage.name,
           },
           {
             path: 'users/new',
             component: UsersNewPage,
+            name: UsersNewPage.name,
           },
           {
             path: 'users/edit',
             component: UsersEditPage,
-            props: (route) => {
-              return {
-                username: route.query.username
-              };
-            }
+            name: UsersEditPage.name,
           },
           {
             path: 'groups',
             component: GroupsPage,
+            name: GroupsPage.name,
           },
           {
             path: 'features',
             component: FeaturesPage,
+            name: FeaturesPage.name,
           },
           {
             path: 'settings',
             component: SettingsPage,
+            name: SettingsPage.name,
           },
           {
             path: 'lambdas',
             component: LambdasPage,
+            name: LambdasPage.name,
           },
         ]
       },
       {
         path: 'dev',
         component: DevelopmentToolsPage,
+        name: DevelopmentToolsPage.name,
       },
       {
         path: 'about',
         component: AboutPage,
+        name: AboutPage.name,
       },
       {
         path: 'projects',
         component: ProjectsPage,
+        name: ProjectsPage.name,
       },
       {
         path: 'projects/new',
         component: ProjectsNewPage,
+        name: ProjectsNewPage.name,
       },
       {
         path: 'project/:group/:project',
         component: Project,
+        name: Project.name,
         children: [
           {
             path: 'guide_layout',
             component: GuideLayout,
+            name: GuideLayout.name,
           },
           {
             path: 'layout/:name',
             component: LayoutMain,
+            name: LayoutMain.name,
           },
           {
             path: 'storage',
             component: StorageMain,
+            name: StorageMain.name,
           },
           {
             path: 'graph_setting',
             component: VisualMain,
+            name: VisualMain.name,
           },
           {
             path: 'airjoy_manage',
             component: AirJoyManage,
+            name: AirJoyManage.name,
           },
           {
             path: 'airjoy_graph',
             component: AirJoyGraph,
+            name: AirJoyGraph.name,
           },
           {
             path: 'airjoy_monitor',
             component: AirJoyMonitor,
+            name: AirJoyMonitor.name,
           },
           {
             path: '',
@@ -188,42 +211,52 @@ const routes = [
           {
             path: 'dashboard',
             component: ProjectDashboardPage,
+            name: ProjectDashboardPage.name,
           },
           {
             path: 'layouts',
             component: LayoutsPage,
+            name: LayoutsPage.name,
           },
           {
             path: 'tables',
             component: TablesPage,
+            name: TablesPage.name,
           },
           {
             path: 'files',
             component: FilesPage,
+            name: FilesPage.name,
           },
           {
             path: 'tasks',
             component: TasksPage,
+            name: TasksPage.name,
           },
           {
             path: 'vp',
             component: VisualProgrammingPage,
+            name: VisualProgrammingPage.name,
           },
           {
             path: 'vms',
             component: VmsPage,
+            name: VmsPage.name,
           },
           {
             path: 'settings',
             component: ProjectSettingsPage,
+            name: ProjectSettingsPage.name,
           },
           {
             path: 'auth_management',
             component: AuthManagement,
+            name: AuthManagement.name,
           },
           {
             path: 'version',
             component: Version,
+            name: Version.name,
           }
         ]
       }

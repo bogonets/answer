@@ -1,17 +1,50 @@
 import { Vue, Watch } from 'vue-property-decorator';
 import { RawLocation } from 'vue-router';
-import VisualMain from "@/pages/_main/project/setting/vgMain.vue";
-import AirJoyManage from "@/components/external/airjoy/AirJoyManage.vue";
-import AirJoyGraph from "@/components/external/airjoy/AirJoyGraph.vue";
-import AirJoyMonitor from "@/components/external/airjoy/AirjoyMonitor.vue";
-import ProjectDashboardPage from "@/pages/main/project/ProjectDashboardPage.vue";
-import LayoutsPage from "@/pages/main/project/LayoutsPage.vue";
-import TablesPage from "@/pages/main/project/TablesPage.vue";
-import FilesPage from "@/pages/main/project/FilesPage.vue";
-import TasksPage from "@/pages/main/project/TasksPage.vue";
-import VmsPage from "@/pages/main/project/VmsPage.vue";
+import { User } from '@/apis/api-v2';
+import {Dictionary} from 'vue-router/types/router';
+import LoginPage from '@/pages/LoginPage.vue';
+import MainPage from '@/pages/main/MainPage.vue';
+import MainDashboardPage from '@/pages/main/MainDashboardPage.vue';
+import AccountPage from '@/pages/main/config/account/AccountPage.vue';
+import AppearancePage from '@/pages/main/config/account/AppearancePage.vue';
+import AdminPage from '@/pages/main/config/admin/AdminPage.vue';
+import OverviewPage from '@/pages/main/config/admin/OverviewPage.vue';
+import UsersPage from '@/pages/main/config/admin/UsersPage.vue';
+import UsersNewPage from '@/pages/main/config/admin/UsersNewPage.vue';
+import UsersEditPage from '@/pages/main/config/admin/UsersEditPage.vue';
+import GroupsPage from '@/pages/main/config/admin/GroupsPage.vue';
+import FeaturesPage from '@/pages/main/config/admin/FeaturesPage.vue';
+import SettingsPage from '@/pages/main/config/admin/SettingsPage.vue';
+import LambdasPage from '@/pages/main/config/admin/LambdasPage.vue';
+import DevelopmentToolsPage from '@/pages/main/DevelopmentToolsPage.vue';
+import AboutPage from '@/pages/main/AboutPage.vue';
+import ProjectsPage from '@/pages/main/ProjectsPage.vue';
+import ProjectsNewPage from '@/pages/main/ProjectsNewPage.vue';
+import ProjectPage from '@/pages/main/project/ProjectPage.vue';
 
 export default class VueBase extends Vue {
+
+    readonly names = {
+        signup: LoginPage.name,
+        main: MainPage.name,
+        mainDashboard: MainDashboardPage.name,
+        mainConfigAccount: AccountPage.name,
+        mainConfigAccountAppearance: AppearancePage.name,
+        mainConfigAdmin: AdminPage.name,
+        mainConfigAdminOverview: OverviewPage.name,
+        mainConfigAdminUsers: UsersPage.name,
+        mainConfigAdminUsersNew: UsersNewPage.name,
+        mainConfigAdminUsersEdit: UsersEditPage.name,
+        mainConfigAdminGroups: GroupsPage.name,
+        mainConfigAdminLambdas: LambdasPage.name,
+        mainConfigAdminFeatures: FeaturesPage.name,
+        mainConfigAdminSettings: SettingsPage.name,
+        mainDev: DevelopmentToolsPage.name,
+        mainAbout: AboutPage.name,
+        mainProjects: ProjectsPage.name,
+        mainProjectsNew: ProjectsNewPage.name,
+        mainProject: ProjectPage.name,
+    };
 
     readonly paths = {
         root: '/',
@@ -69,12 +102,17 @@ export default class VueBase extends Vue {
         return this.$router.currentRoute.path;
     }
 
-    moveTo(location: RawLocation) {
-        if (this.$router.currentRoute.path === location.toString()) {
+    moveTo(location: string, params?: Dictionary<string>) {
+        if (this.$router.currentRoute.path === location) {
             return;
         }
 
-        this.$router.push(location).catch((reason: any) => {
+        const rawLocation = {
+            path: location,
+            params: params,
+        } as RawLocation;
+
+        this.$router.push(rawLocation).catch((reason: any) => {
             if (reason.name !== 'NavigationDuplicated') {
                 throw reason;
             }
@@ -125,9 +163,36 @@ export default class VueBase extends Vue {
         this.moveTo(this.paths.mainConfigAdminUsersNew);
     }
 
-    moveToMainConfigAdminUsersEdit(username: string) {
-        const prefix = this.paths.mainConfigAdminUsersEdit;
-        this.moveTo(`${prefix}?username=${username}`);
+    moveToMainConfigAdminUsersEdit(user: User) {
+        this.moveTo(this.paths.mainConfigAdminUsersEdit, this.userToRouteParam(user));
+    }
+
+    userToRouteParam(user: User): Dictionary<string> {
+        return {
+            username: user.username || '',
+            nickname: user.nickname || '',
+            email: user.email || '',
+            phone1: user.phone1 || '',
+            phone2: user.phone2 || '',
+            isAdmin: user.is_admin ? 'true' : 'false',
+            createdAt: user.created_at || '',
+            updatedAt: user.updated_at || '',
+            lastLogin: user.last_login || '',
+        };
+    }
+
+    routeParamToUser(params: Dictionary<string>): User {
+        return {
+            username: params.username,
+            nickname: params.nickname,
+            email: params.email,
+            phone1: params.phone1,
+            phone2: params.phone2,
+            is_admin: params.isAdmin === 'true',
+            created_at: params.created_at,
+            updated_at: params.updated_at,
+            last_login: params.last_login,
+        } as User;
     }
 
     moveToMainConfigAdminGroups() {
