@@ -103,12 +103,27 @@ const FOOTER_HEIGHT = 200;
   }
 })
 export default class MainProjectVms extends VueBase {
+  private readonly navigationItems = [
+    {
+      text: 'Projects',
+      disabled: false,
+      href: () => this.moveToMainProjects(),
+    },
+    {
+      text: this.currentProjectName,
+      disabled: false,
+      href: () => this.moveToMainProjects(),
+    },
+    {
+      text: 'VMS',
+      disabled: true,
+    },
+  ];
 
   contentWidth = window.innerWidth;
   contentHeight = window.innerHeight;
 
   maxCards = 4;
-  navigationItems: object = [];
   miniNavigation = false;
 
   @Watch('contentWidth')
@@ -121,14 +136,6 @@ export default class MainProjectVms extends VueBase {
     console.debug(`Update content-height: ${oldVal} -> ${newVal}`);
   }
 
-  get group(): string {
-    return this.$route.params.group;
-  }
-
-  get project(): string {
-    return this.$route.params.project;
-  }
-
   get contentStyle() {
     return {height: `${this.contentHeight}px`};
   }
@@ -139,25 +146,6 @@ export default class MainProjectVms extends VueBase {
       width: '50%',
       height: '50%',
     };
-  }
-
-  created() {
-    this.navigationItems = [
-      {
-        text: 'Projects',
-        disabled: false,
-        href: this.paths.mainProjects,
-      },
-      {
-        text: this.project,
-        disabled: false,
-        href: this.paths.mainProjects,
-      },
-      {
-        text: 'VMS',
-        disabled: true,
-      },
-    ];
   }
 
   mounted() {

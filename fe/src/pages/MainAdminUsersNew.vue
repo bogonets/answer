@@ -235,10 +235,10 @@ ko:
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import { User } from '@/apis/api-v2';
+import {User} from '@/apis/api-v2';
 
 const V_TEXT_FIELD_VALIDATE = 'validate';
 const AT_LEAST = 4;
@@ -273,16 +273,16 @@ export default class MainAdminUsersNew extends VueBase {
     },
   };
 
-  navigationItems = [
+  private readonly navigationItems = [
     {
       text: 'Admin',
       disabled: false,
-      href: this.paths.mainConfigAdminOverview,
+      href: () => this.moveToMainAdminOverview(),
     },
     {
       text: 'Users',
       disabled: false,
-      href: this.paths.mainConfigAdminUsers,
+      href: () => this.moveToMainAdminUsers(),
     },
     {
       text: 'New',
@@ -355,7 +355,7 @@ export default class MainAdminUsersNew extends VueBase {
     this.$api2.postUsers(user)
         .then(() => {
           this.showSignupLoading = false;
-          this.moveToMainConfigAdminUsers();
+          this.moveToMainAdminUsers();
         })
         .catch(error => {
           this.showSignupLoading = false;

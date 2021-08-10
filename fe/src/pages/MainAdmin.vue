@@ -6,7 +6,7 @@ en:
   groups: "Groups"
   lambdas: "Lambdas"
   features: "Features"
-  settings: "Settings"
+  envs: "환경 변수"
 
 ko:
   title: "관리자 설정"
@@ -15,7 +15,7 @@ ko:
   groups: "그룹"
   lambdas: "람다 관리"
   features: "기능 설정"
-  settings: "환경 설정"
+  envs: "환경 변수"
 </i18n>
 
 <template>
@@ -96,12 +96,12 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item link @click.stop="onClickSettings">
+          <v-list-item link @click.stop="onClickEnvs">
             <v-list-item-icon>
               <v-icon>mdi-cogs</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
-              {{ $t('settings') }}
+              {{ $t('envs') }}
             </v-list-item-title>
           </v-list-item>
 
@@ -116,7 +116,7 @@ ko:
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 
 @Component
@@ -126,7 +126,7 @@ export default class MainAdmin extends VueBase {
   miniNavigation = false;
 
   moveOverview() {
-    this.moveTo(this.paths.mainConfigAdminOverview);
+    this.moveToMainAdminOverview();
   }
 
   onClickFoldNavigation() {
@@ -138,23 +138,23 @@ export default class MainAdmin extends VueBase {
   }
 
   onClickUsers() {
-    this.moveTo(this.paths.mainConfigAdminUsers);
+    this.moveToMainAdminUsers();
   }
 
   onClickGroups() {
-    this.moveTo(this.paths.mainConfigAdminGroups);
+    this.moveToMainAdminGroups();
   }
 
   onClickLambdas() {
-    this.moveTo(this.paths.mainConfigAdminLambdas);
+    this.moveToMainAdminLambdas();
   }
 
   onClickFeatures() {
-    this.moveTo(this.paths.mainConfigAdminFeatures);
+    this.moveToMainAdminFeatures();
   }
 
-  onClickSettings() {
-    this.moveTo(this.paths.mainConfigAdminSettings);
+  onClickEnvs() {
+    this.moveToMainAdminEnvs();
   }
 }
 </script>

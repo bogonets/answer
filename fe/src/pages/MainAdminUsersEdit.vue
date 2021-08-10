@@ -191,10 +191,10 @@ ko:
 
 
 <script lang="ts">
-import { Component, Prop } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import {Extra, User} from "@/apis/api-v2";
+import {User} from "@/apis/api-v2";
 
 const V_TEXT_FIELD_VALIDATE = 'validate';
 
@@ -226,12 +226,12 @@ export default class MainAdminUsersEdit extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: this.paths.mainConfigAdminOverview,
+      href: () => this.moveToMainAdminOverview(),
     },
     {
       text: 'Users',
       disabled: false,
-      href: this.paths.mainConfigAdminUsers,
+      href: () => this.moveToMainAdminUsers(),
     },
     {
       text: 'Edit',
@@ -256,8 +256,8 @@ export default class MainAdminUsersEdit extends VueBase {
   showSignupLoading = false;
 
   mounted() {
-    this.originalUser = this.routeParamToUser(this.$route.params);
-    console.debug(`Edit User: ${this.$route.params}`)
+    // this.originalUser = this.routeParamToUser(this.$route.params);
+    // console.debug(`Edit User: ${this.$route.params}`)
   }
 
   validateForms(): boolean {

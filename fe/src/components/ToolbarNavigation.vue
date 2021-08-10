@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from 'vue-property-decorator';
+import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 
 @Component
@@ -30,7 +30,11 @@ export default class ToolbarNavigation extends VueBase {
   readonly items!: Array<object>;
 
   onClickNavigation(href) {
-    this.moveTo(href);
+    if (typeof href === 'function') {
+      href.call();
+    } else {
+      this.moveTo(href);
+    }
   }
 }
 </script>

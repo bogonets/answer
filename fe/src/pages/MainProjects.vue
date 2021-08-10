@@ -79,7 +79,7 @@ ko:
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import aProjectTable from '@/components/Table/aProjectTable.vue';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
@@ -94,54 +94,49 @@ const ANONYMOUS_GROUP = '-';
 })
 export default class MainProjects extends VueBase {
 
-  readonly enableLegacy = false;
+  private readonly enableLegacy = false;
+  private readonly navigationItems = [
+    {
+      text: 'Projects',
+      disabled: true,
+    },
+  ];
+  private readonly headers = [
+    {
+      text: this.$t('headers.name').toString(),
+      align: 'start',
+      filterable: true,
+      value: 'name',
+    },
+    {
+      text: this.$t('headers.description').toString(),
+      align: 'center',
+      filterable: true,
+      value: 'description',
+    },
+    {
+      text: this.$t('headers.features').toString(),
+      align: 'end',
+      filterable: false,
+      value: 'features',
+    },
+    {
+      text: this.$t('headers.created_at').toString(),
+      align: 'end',
+      filterable: false,
+      value: 'created_at',
+    },
+    {
+      text: this.$t('headers.updated_at').toString(),
+      align: 'end',
+      filterable: false,
+      value: 'updated_at',
+    },
+  ];
 
-  navigationItems: object = [];
-  filterText = "";
-  headers: object = [];
+  filterText = '';
   users: object = [];
   showLoading = true;
-
-  created() {
-    this.navigationItems = [
-      {
-        text: 'Projects',
-        disabled: true,
-      },
-    ];
-    this.headers = [
-      {
-        text: this.$t('headers.name').toString(),
-        align: 'start',
-        filterable: true,
-        value: 'name',
-      },
-      {
-        text: this.$t('headers.description').toString(),
-        align: 'center',
-        filterable: true,
-        value: 'description',
-      },
-      {
-        text: this.$t('headers.features').toString(),
-        align: 'end',
-        filterable: false,
-        value: 'features',
-      },
-      {
-        text: this.$t('headers.created_at').toString(),
-        align: 'end',
-        filterable: false,
-        value: 'created_at',
-      },
-      {
-        text: this.$t('headers.updated_at').toString(),
-        align: 'end',
-        filterable: false,
-        value: 'updated_at',
-      },
-    ]
-  }
 
   mounted() {
     this.$api2.getProjects()
@@ -157,19 +152,12 @@ export default class MainProjects extends VueBase {
   }
 
   utcToDate(utc: undefined | string): string {
-    // Note: Parsing of strings with `Date.parse` is strongly discouraged due to browser
-    // differences and inconsistencies.
-    if (utc === undefined) {
-      return '';
-    }
-
-    // Example: 2021-07-24T08:24:29.315870
-    return utc.split('T')[0];
+    return utc?.split('T')[0] || '';
   }
 
   onClickRow(item) {
     // Legacy code:
-    this.$store.commit("project/setSelectProject", { name: item.name });
+    this.$store.commit('project/setSelectProject', { name: item.name });
     this.moveToMainProject(ANONYMOUS_GROUP, item.name);
   }
 

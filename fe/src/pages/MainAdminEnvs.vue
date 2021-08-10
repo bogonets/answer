@@ -110,11 +110,11 @@ ko:
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import CardInfoNew from '@/components/CardInfoNew.vue';
-import { UpdateInfo } from '@/apis/api-v2';
+import {UpdateInfo} from '@/apis/api-v2';
 
 const RECC_REGEX = /^recc\..*/;
 
@@ -125,63 +125,57 @@ const RECC_REGEX = /^recc\..*/;
   }
 })
 export default class MainAdminEnvs extends VueBase {
-
-  readonly snackbarTimeout = 4000;
+  private readonly snackbarTimeout = 4000;
+  private readonly navigationItems = [
+    {
+      text: 'Admin',
+      disabled: false,
+      href: () => this.moveToMainAdminOverview(),
+    },
+    {
+      text: 'Settings',
+      disabled: true,
+    },
+  ];
+  private readonly headers = [
+    {
+      text: this.$t('headers.key').toString(),
+      align: 'start',
+      filterable: true,
+      value: 'key',
+    },
+    {
+      text: this.$t('headers.value').toString(),
+      filterable: true,
+      value: 'value',
+    },
+    {
+      text: this.$t('headers.created_at').toString(),
+      align: 'center',
+      filterable: false,
+      value: 'created_at',
+    },
+    {
+      text: this.$t('headers.updated_at').toString(),
+      align: 'center',
+      filterable: false,
+      value: 'updated_at',
+    },
+    {
+      text: this.$t('headers.actions').toString(),
+      align: 'center',
+      filterable: false,
+      sortable: false,
+      value: 'actions',
+    },
+  ]
 
   filterText = '';
-  navigationItems: object = [];
-  headers: object = [];
   infos: object = [];
   showNewInfoDialog = false;
   showLoading = true;
   showRequestErrorSnackbar = false;
   requestErrorMessage = '';
-
-  created() {
-    this.navigationItems = [
-      {
-        text: 'Admin',
-        disabled: false,
-        href: this.paths.mainConfigAdminOverview,
-      },
-      {
-        text: 'Settings',
-        disabled: true,
-      },
-    ];
-    this.headers = [
-      {
-        text: this.$t('headers.key').toString(),
-        align: 'start',
-        filterable: true,
-        value: 'key',
-      },
-      {
-        text: this.$t('headers.value').toString(),
-        filterable: true,
-        value: 'value',
-      },
-      {
-        text: this.$t('headers.created_at').toString(),
-        align: 'center',
-        filterable: false,
-        value: 'created_at',
-      },
-      {
-        text: this.$t('headers.updated_at').toString(),
-        align: 'center',
-        filterable: false,
-        value: 'updated_at',
-      },
-      {
-        text: this.$t('headers.actions').toString(),
-        align: 'center',
-        filterable: false,
-        sortable: false,
-        value: 'actions',
-      },
-    ]
-  }
 
   mounted() {
     this.updateInfos();

@@ -17,7 +17,7 @@ ko:
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 
@@ -27,34 +27,21 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
   }
 })
 export default class MainProjectDashboard extends VueBase {
-
-  navigationItems: object = [];
-
-  get group(): string {
-    return this.$route.params.group;
-  }
-
-  get project(): string {
-    return this.$route.params.project;
-  }
-
-  created() {
-    this.navigationItems = [
-      {
-        text: 'Projects',
-        disabled: false,
-        href: this.paths.mainProjects,
-      },
-      {
-        text: this.project,
-        disabled: false,
-        href: this.paths.mainProjects,
-      },
-      {
-        text: 'Dashboard',
-        disabled: true,
-      },
-    ];
-  }
+  private readonly navigationItems = [
+    {
+      text: 'Projects',
+      disabled: false,
+      href: () => this.moveToMainProjects(),
+    },
+    {
+      text: this.currentProjectName,
+      disabled: false,
+      href: () => this.moveToMainProjects(),
+    },
+    {
+      text: 'Dashboard',
+      disabled: true,
+    },
+  ];
 }
 </script>

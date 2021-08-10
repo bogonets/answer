@@ -53,7 +53,7 @@ ko:
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 
@@ -63,25 +63,23 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
   }
 })
 export default class MainAdminOverview extends VueBase {
+  private readonly navigationItems = [
+    {
+      text: 'Admin',
+      disabled: false,
+      href: () => this.moveToMainAdminOverview(),
+    },
+    {
+      text: 'Overview',
+      disabled: true,
+    },
+  ];
 
-  navigationItems: object = [];
   users = 0;
   groups = 0;
   projects = 0;
 
   created() {
-    this.navigationItems = [
-      {
-        text: 'Admin',
-        disabled: false,
-        href: this.paths.mainConfigAdminOverview,
-      },
-      {
-        text: 'Overview',
-        disabled: true,
-      },
-    ];
-
     this.$api2.getSystemOverview()
         .then(response => {
           this.users = response.users || 0;

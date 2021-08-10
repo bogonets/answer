@@ -143,7 +143,7 @@ import {Extra, User} from '@/apis/api-v2';
 import TitleLogo from '@/components/TitleLogo.vue';
 import LinearLoading from '@/components/LinearLoading.vue';
 import ButtonsConfigPublic from '@/components/ButtonsConfigPublic.vue';
-import VueBase from "@/base/VueBase";
+import VueBase from '@/base/VueBase';
 
 const WAIT_MOMENT_MILLISECONDS = 0;
 const V_TEXT_FIELD_VALIDATE = 'validate';

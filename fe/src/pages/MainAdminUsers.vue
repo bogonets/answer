@@ -93,7 +93,7 @@ ko:
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import AppBarTitle from '@/components/AppBarTitle.vue';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
@@ -105,65 +105,61 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
   }
 })
 export default class MainAdminUsers extends VueBase {
+  private readonly navigationItems = [
+    {
+      text: 'Admin',
+      disabled: false,
+      href: () => this.moveToMainAdminOverview(),
+    },
+    {
+      text: 'Users',
+      disabled: true,
+    },
+  ];
 
-  filterText = "";
-  navigationItems: object = [];
-  headers: object = [];
+  private readonly headers = [
+    {
+      text: this.$t('headers.username').toString(),
+      align: 'start',
+      filterable: true,
+      value: 'username',
+    },
+    {
+      text: this.$t('headers.email').toString(),
+      align: 'center',
+      filterable: true,
+      value: 'email',
+    },
+    {
+      text: this.$t('headers.is_admin').toString(),
+      align: 'center',
+      filterable: false,
+      value: 'is_admin',
+    },
+    {
+      text: this.$t('headers.created_at').toString(),
+      align: 'center',
+      filterable: false,
+      value: 'created_at',
+    },
+    {
+      text: this.$t('headers.last_login').toString(),
+      align: 'center',
+      filterable: false,
+      value: 'last_login',
+    },
+    {
+      text: this.$t('headers.actions').toString(),
+      align: 'center',
+      filterable: false,
+      sortable: false,
+      value: 'actions',
+    },
+  ]
+
+  filterText = '';
   users: object = [];
   showLoading = true;
-
-  created() {
-    this.navigationItems = [
-      {
-        text: 'Admin',
-        disabled: false,
-        href: this.paths.mainConfigAdminOverview,
-      },
-      {
-        text: 'Users',
-        disabled: true,
-      },
-    ];
-    this.headers = [
-      {
-        text: this.$t('headers.username').toString(),
-        align: 'start',
-        filterable: true,
-        value: 'username',
-      },
-      {
-        text: this.$t('headers.email').toString(),
-        align: 'center',
-        filterable: true,
-        value: 'email',
-      },
-      {
-        text: this.$t('headers.is_admin').toString(),
-        align: 'center',
-        filterable: false,
-        value: 'is_admin',
-      },
-      {
-        text: this.$t('headers.created_at').toString(),
-        align: 'center',
-        filterable: false,
-        value: 'created_at',
-      },
-      {
-        text: this.$t('headers.last_login').toString(),
-        align: 'center',
-        filterable: false,
-        value: 'last_login',
-      },
-      {
-        text: this.$t('headers.actions').toString(),
-        align: 'center',
-        filterable: false,
-        sortable: false,
-        value: 'actions',
-      },
-    ]
-  }
 
   mounted() {
     this.$api2.getUsers()
@@ -183,11 +179,11 @@ export default class MainAdminUsers extends VueBase {
   }
 
   onClickEditUser(item) {
-    this.moveToMainConfigAdminUsersEdit(item);
+    this.moveToMainAdminUsersEdit(item);
   }
 
   onClickNewUser() {
-    this.moveTo(this.paths.mainConfigAdminUsersNew);
+    this.moveToMainAdminUsersNew();
   }
 }
 </script>

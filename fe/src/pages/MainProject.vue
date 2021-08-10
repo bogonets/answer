@@ -13,7 +13,7 @@ en:
     monitoring: "Airjoy Monitoring"
     users: "Airjoy Users"
   graph: "Graph"
-  settings: "Settings"
+  configs: "Configs"
 
 ko:
   dashboard: "대시보드"
@@ -29,7 +29,7 @@ ko:
     monitoring: "에어조이 모니터링"
     users: "에어조이 사용자 관리"
   graph: "그래프"
-  settings: "설정"
+  configs: "설정"
 </i18n>
 
 <template>
@@ -53,7 +53,7 @@ ko:
             <v-avatar color="accent" size="24">{{ projectAvatar }}</v-avatar>
           </v-list-item-avatar>
           <v-list-item-title>
-            {{ project }}
+            {{ currentProjectName }}
           </v-list-item-title>
           <v-btn icon @click.stop="onClickFoldNavigation">
             <v-icon>mdi-chevron-left</v-icon>
@@ -184,12 +184,12 @@ ko:
 
           <v-divider v-if="enableLegacyGraph"></v-divider>
 
-          <v-list-item link @click.stop="onClickSettings">
+          <v-list-item link @click.stop="onClickConfigs">
             <v-list-item-icon>
               <v-icon>mdi-cogs</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
-              {{ $t('settings') }}
+              {{ $t('configs') }}
             </v-list-item-title>
           </v-list-item>
 
@@ -209,11 +209,11 @@ ko:
 </template>
 
 <script lang='ts'>
+import {Component} from 'vue-property-decorator';
+import VueBase from '@/base/VueBase';
 import adrNavigation from '@/components/Drawer/adrNavigation.vue';
 import adrComponents from '@/components/Drawer/adrComponents.vue';
 import adlgAddLayout from '@/components/Dialog/adlgAddLayout.vue';
-import { Component } from 'vue-property-decorator';
-import VueBase from '@/base/VueBase';
 
 @Component({
   components: {
@@ -232,22 +232,14 @@ export default class MainProject extends VueBase {
   currentSubpageIndex = 0;
   miniNavigation = false;
 
-  get group(): string {
-    return this.$route.params.group;
-  }
-
-  get project(): string {
-    return this.$route.params.project;
-  }
-
   get projectAvatar(): string {
-    return this.project[0].toUpperCase();
+    return this.currentProjectName[0].toUpperCase();
   }
 
   mounted() {
     // Legacy code:
     this.$store.commit('drawer/setNaviShow', {bool: true});
-    this.$store.commit('project/setSelectProject', {name: this.project});
+    this.$store.commit('project/setSelectProject', {name: this.currentProjectName});
     this.$store.commit('project/setViewNaviList', {menus: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]});
     this.$store.commit('signal/setLayoutMainSignal', {bool: true});
   }
@@ -263,7 +255,7 @@ export default class MainProject extends VueBase {
   }
 
   onClickGraph() {
-    this.moveToMainProjectGraph();
+    // this.moveToMainProjectGraph();
   }
 
   onClickDashboard() {
@@ -291,27 +283,27 @@ export default class MainProject extends VueBase {
   }
 
   onClickVisualProgramming() {
-    this.moveToMainProjectVp();
+    this.moveToMainProjectVisualProgramming();
   }
 
-  onClickSettings() {
-    this.moveToMainProjectSettings();
+  onClickConfigs() {
+    this.moveToMainProjectConfigs();
   }
 
   onClickAirjoyTables() {
-    this.moveToMainProjectAirjoyManage();
+    // this.moveToMainProjectAirjoyManage();
   }
 
   onClickAirjoyStatistics() {
-    this.moveToMainProjectAirjoyGraph();
+    // this.moveToMainProjectAirjoyGraph();
   }
 
   onClickAirjoyMonitoring() {
-    this.moveToMainProjectAirjoyMonitor();
+    // this.moveToMainProjectAirjoyMonitor();
   }
 
   onClickAirjoyUsers() {
-    this.moveToMainProjectAuth();
+    // this.moveToMainProjectAuth();
   }
 }
 </script>

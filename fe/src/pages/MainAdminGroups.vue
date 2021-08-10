@@ -17,7 +17,7 @@ ko:
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 
@@ -27,21 +27,16 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
   }
 })
 export default class MainAdminGroups extends VueBase {
-
-  navigationItems: object = [];
-
-  created() {
-    this.navigationItems = [
-      {
-        text: 'Admin',
-        disabled: false,
-        href: this.paths.mainConfigAdminOverview,
-      },
-      {
-        text: 'Groups',
-        disabled: true,
-      },
-    ];
-  }
+  private readonly navigationItems = [
+    {
+      text: 'Admin',
+      disabled: false,
+      href: () => this.moveToMainAdminOverview(),
+    },
+    {
+      text: 'Groups',
+      disabled: true,
+    },
+  ];
 }
 </script>

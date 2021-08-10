@@ -82,11 +82,11 @@ ko:
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ListLanguages, { LANGUAGES } from '@/components/ListLanguages.vue';
+import ListLanguages, {LANGUAGES} from '@/components/ListLanguages.vue';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import { Extra } from '@/apis/api-v2';
+import {Extra} from '@/apis/api-v2';
 
 @Component({
   components: {
@@ -96,23 +96,22 @@ import { Extra } from '@/apis/api-v2';
 })
 export default class MainAccountAppearance extends VueBase {
 
-  readonly languages = LANGUAGES;
+  private readonly languages = LANGUAGES;
+  private readonly navigationItems = [
+    {
+      text: 'Account',
+      disabled: false,
+      href: () => this.moveToMainAccountAppearance(),
+    },
+    {
+      text: 'Appearance',
+      disabled: true,
+    },
+  ];
 
-  navigationItems: object = [];
   extra!: Extra;
 
   created() {
-    this.navigationItems = [
-      {
-        text: 'Account',
-        disabled: false,
-        href: this.paths.mainConfigAccountAppearance,
-      },
-      {
-        text: 'Appearance',
-        disabled: true,
-      },
-    ];
     this.extra = this.getInitExtra();
   }
 

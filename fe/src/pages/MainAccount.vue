@@ -62,7 +62,7 @@ ko:
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 
 @Component
@@ -88,7 +88,7 @@ export default class MainAccount extends VueBase {
   }
 
   onClickAppearance() {
-    this.moveToMainConfigAccountAppearance();
+    this.moveToMainAccountAppearance();
   }
 }
 </script>
