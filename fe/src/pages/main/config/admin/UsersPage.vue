@@ -179,18 +179,11 @@ export default class UsersPage extends VueBase {
   }
 
   utcToDate(utc: undefined | string): string {
-    // Note: Parsing of strings with `Date.parse` is strongly discouraged due to browser
-    // differences and inconsistencies.
-    if (utc === undefined) {
-      return '';
-    }
-
-    // Example: 2021-07-24T08:24:29.315870
-    return utc.split('T')[0];
+    return utc?.split('T')[0] || '';
   }
 
   onClickEditUser(item) {
-    this.moveToMainConfigAdminUsersEdit(item.username);
+    this.moveToMainConfigAdminUsersEdit(item);
   }
 
   onClickNewUser() {
