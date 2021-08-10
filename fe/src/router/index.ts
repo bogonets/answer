@@ -3,8 +3,8 @@ import VueRouter from 'vue-router';
 
 import Signup from '@/pages/signup/SignUp.vue';
 import SignupAdmin from '@/pages/signup/SignUpAdmin.vue';
-import ProjectsPage from '@/pages/main/ProjectsPage.vue';
-import Project from '@/pages/main/project/ProjectPage.vue';
+import MainProjects from '@/pages/MainProjects.vue';
+import Project from '@/pages/MainProject.vue';
 import GuideLayout from '@/pages/_main/project/layout/LayoutGuide.vue';
 import LayoutMain from '@/pages/_main/project/layout/LayoutMain.vue';
 import VisualMain from '@/pages/_main/project/setting/vgMain.vue';
@@ -13,42 +13,41 @@ import AirJoyManage from '@/components/external/airjoy/AirJoyManage.vue';
 import AirJoyGraph from '@/components/external/airjoy/AirJoyGraph.vue';
 import AirJoyMonitor from '@/components/external/airjoy/AirjoyMonitor.vue';
 import AuthManagement from '@/components/external/airjoy/AuthManagement.vue'
-import Version from '@/pages/Info/Version.vue';
-import NotFound from '@/pages/Error/NotFound.vue';
+import Error from '@/pages/Error.vue';
 
-import AboutPage from '@/pages/main/AboutPage.vue';
-import AccountPage from '@/pages/main/config/account/AccountPage.vue';
-import AdminPage from '@/pages/main/config/admin/AdminPage.vue';
-import OverviewPage from '@/pages/main/config/admin/OverviewPage.vue';
-import MainDashboardPage from '@/pages/main/MainDashboardPage.vue';
-import DevelopmentToolsPage from '@/pages/main/DevelopmentToolsPage.vue';
-import LoginPage from '@/pages/LoginPage.vue';
-import MainPage from '@/pages/main/MainPage.vue';
-import AppearancePage from '@/pages/main/config/account/AppearancePage.vue';
-import UsersPage from '@/pages/main/config/admin/UsersPage.vue';
-import GroupsPage from '@/pages/main/config/admin/GroupsPage.vue';
-import FeaturesPage from '@/pages/main/config/admin/FeaturesPage.vue';
-import SettingsPage from '@/pages/main/config/admin/SettingsPage.vue';
-import LambdasPage from '@/pages/main/config/admin/LambdasPage.vue';
-import UsersNewPage from '@/pages/main/config/admin/UsersNewPage.vue';
-import UsersEditPage from '@/pages/main/config/admin/UsersEditPage.vue';
-import ProjectsNewPage from '@/pages/main/ProjectsNewPage.vue';
-import TablesPage from "@/pages/main/project/TablesPage.vue";
-import FilesPage from "@/pages/main/project/FilesPage.vue";
-import TasksPage from "@/pages/main/project/TasksPage.vue";
-import VmsPage from "@/pages/main/project/VmsPage.vue";
-import LayoutsPage from "@/pages/main/project/LayoutsPage.vue";
-import ProjectDashboardPage from "@/pages/main/project/ProjectDashboardPage.vue";
-import VisualProgrammingPage from "@/pages/main/project/VisualProgrammingPage.vue";
-import ProjectSettingsPage from "@/pages/main/project/ProjectSettingsPage.vue";
+import MainAbout from '@/pages/MainAbout.vue';
+import MainAccount from '@/pages/MainAccount.vue';
+import MainAdmin from '@/pages/MainAdmin.vue';
+import MainAdminOverview from '@/pages/MainAdminOverview.vue';
+import MainDashboard from '@/pages/MainDashboard.vue';
+import MainDevTools from '@/pages/MainDevTools.vue';
+import Signin from '@/pages/Signin.vue';
+import Main from '@/pages/Main.vue';
+import MainAccountAppearance from '@/pages/MainAccountAppearance.vue';
+import MainAdminUsers from '@/pages/MainAdminUsers.vue';
+import MainAdminGroups from '@/pages/MainAdminGroups.vue';
+import MainAdminFeatures from '@/pages/MainAdminFeatures.vue';
+import MainAdminEnvs from '@/pages/MainAdminEnvs.vue';
+import MainAdminLambdas from '@/pages/MainAdminLambdas.vue';
+import MainAdminUsersNew from '@/pages/MainAdminUsersNew.vue';
+import MainAdminUsersEdit from '@/pages/MainAdminUsersEdit.vue';
+import MainProjectsNew from '@/pages/MainProjectsNew.vue';
+import MainProjectTables from "@/pages/MainProjectTables.vue";
+import MainProjectFiles from "@/pages/MainProjectFiles.vue";
+import MainProjectTasks from "@/pages/MainProjectTasks.vue";
+import MainProjectVms from "@/pages/MainProjectVms.vue";
+import MainProjectLayouts from "@/pages/MainProjectLayouts.vue";
+import MainProjectDashboard from "@/pages/MainProjectDashboard.vue";
+import MainProjectVisualProgramming from "@/pages/MainProjectVisualProgramming.vue";
+import MainProjectConfigs from "@/pages/MainProjectConfigs.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    component: LoginPage,
-    name: LoginPage.name,
+    component: Signin,
+    name: Signin.name,
   },
   {
     path: '/signup',
@@ -62,8 +61,8 @@ const routes = [
   },
   {
     path: '/main',
-    component: MainPage,
-    name: MainPage.name,
+    component: Main,
+    name: Main.name,
     meta: {
       requiresAuth: true
     },
@@ -74,13 +73,13 @@ const routes = [
       },
       {
         path: 'dashboard',
-        component: MainDashboardPage,
-        name: MainDashboardPage.name,
+        component: MainDashboard,
+        name: MainDashboard.name,
       },
       {
         path: 'config/account',
-        component: AccountPage,
-        name: AccountPage.name,
+        component: MainAccount,
+        name: MainAccount.name,
         children: [
           {
             path: '',
@@ -88,15 +87,15 @@ const routes = [
           },
           {
             path: 'appearance',
-            component: AppearancePage,
-            name: AppearancePage.name,
+            component: MainAccountAppearance,
+            name: MainAccountAppearance.name,
           },
         ]
       },
       {
         path: 'config/admin',
-        component: AdminPage,
-        name: AdminPage.name,
+        component: MainAdmin,
+        name: MainAdmin.name,
         children: [
           {
             path: '',
@@ -104,65 +103,65 @@ const routes = [
           },
           {
             path: 'overview',
-            component: OverviewPage,
-            name: OverviewPage.name,
+            component: MainAdminOverview,
+            name: MainAdminOverview.name,
           },
           {
             path: 'users',
-            component: UsersPage,
-            name: UsersPage.name,
+            component: MainAdminUsers,
+            name: MainAdminUsers.name,
           },
           {
             path: 'users/new',
-            component: UsersNewPage,
-            name: UsersNewPage.name,
+            component: MainAdminUsersNew,
+            name: MainAdminUsersNew.name,
           },
           {
             path: 'users/edit',
-            component: UsersEditPage,
-            name: UsersEditPage.name,
+            component: MainAdminUsersEdit,
+            name: MainAdminUsersEdit.name,
           },
           {
             path: 'groups',
-            component: GroupsPage,
-            name: GroupsPage.name,
+            component: MainAdminGroups,
+            name: MainAdminGroups.name,
           },
           {
             path: 'features',
-            component: FeaturesPage,
-            name: FeaturesPage.name,
+            component: MainAdminFeatures,
+            name: MainAdminFeatures.name,
           },
           {
             path: 'settings',
-            component: SettingsPage,
-            name: SettingsPage.name,
+            component: MainAdminEnvs,
+            name: MainAdminEnvs.name,
           },
           {
             path: 'lambdas',
-            component: LambdasPage,
-            name: LambdasPage.name,
+            component: MainAdminLambdas,
+            name: MainAdminLambdas.name,
           },
         ]
       },
       {
         path: 'dev',
-        component: DevelopmentToolsPage,
-        name: DevelopmentToolsPage.name,
+        component: MainDevTools,
+        name: MainDevTools.name,
       },
       {
         path: 'about',
-        component: AboutPage,
-        name: AboutPage.name,
+        component: MainAbout,
+        name: MainAbout.name,
       },
       {
         path: 'projects',
-        component: ProjectsPage,
-        name: ProjectsPage.name,
+        component: MainProjects,
+        name: MainProjects.name,
       },
       {
         path: 'projects/new',
-        component: ProjectsNewPage,
-        name: ProjectsNewPage.name,
+        component: MainProjectsNew,
+        name: MainProjectsNew.name,
       },
       {
         path: 'project/:group/:project',
@@ -210,54 +209,49 @@ const routes = [
           },
           {
             path: 'dashboard',
-            component: ProjectDashboardPage,
-            name: ProjectDashboardPage.name,
+            component: MainProjectDashboard,
+            name: MainProjectDashboard.name,
           },
           {
             path: 'layouts',
-            component: LayoutsPage,
-            name: LayoutsPage.name,
+            component: MainProjectLayouts,
+            name: MainProjectLayouts.name,
           },
           {
             path: 'tables',
-            component: TablesPage,
-            name: TablesPage.name,
+            component: MainProjectTables,
+            name: MainProjectTables.name,
           },
           {
             path: 'files',
-            component: FilesPage,
-            name: FilesPage.name,
+            component: MainProjectFiles,
+            name: MainProjectFiles.name,
           },
           {
             path: 'tasks',
-            component: TasksPage,
-            name: TasksPage.name,
+            component: MainProjectTasks,
+            name: MainProjectTasks.name,
           },
           {
             path: 'vp',
-            component: VisualProgrammingPage,
-            name: VisualProgrammingPage.name,
+            component: MainProjectVisualProgramming,
+            name: MainProjectVisualProgramming.name,
           },
           {
             path: 'vms',
-            component: VmsPage,
-            name: VmsPage.name,
+            component: MainProjectVms,
+            name: MainProjectVms.name,
           },
           {
             path: 'settings',
-            component: ProjectSettingsPage,
-            name: ProjectSettingsPage.name,
+            component: MainProjectConfigs,
+            name: MainProjectConfigs.name,
           },
           {
             path: 'auth_management',
             component: AuthManagement,
             name: AuthManagement.name,
           },
-          {
-            path: 'version',
-            component: Version,
-            name: Version.name,
-          }
         ]
       }
     ]
@@ -265,9 +259,11 @@ const routes = [
   {
     path: '*',
     name: '404',
-    component: NotFound,
+    component: Error,
   }
 ];
+
+console.debug(routes);
 
 export default new VueRouter({
   routes: routes

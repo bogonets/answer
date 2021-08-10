@@ -2,49 +2,49 @@ import { Vue, Watch } from 'vue-property-decorator';
 import { RawLocation } from 'vue-router';
 import { User } from '@/apis/api-v2';
 import {Dictionary} from 'vue-router/types/router';
-import LoginPage from '@/pages/LoginPage.vue';
-import MainPage from '@/pages/main/MainPage.vue';
-import MainDashboardPage from '@/pages/main/MainDashboardPage.vue';
-import AccountPage from '@/pages/main/config/account/AccountPage.vue';
-import AppearancePage from '@/pages/main/config/account/AppearancePage.vue';
-import AdminPage from '@/pages/main/config/admin/AdminPage.vue';
-import OverviewPage from '@/pages/main/config/admin/OverviewPage.vue';
-import UsersPage from '@/pages/main/config/admin/UsersPage.vue';
-import UsersNewPage from '@/pages/main/config/admin/UsersNewPage.vue';
-import UsersEditPage from '@/pages/main/config/admin/UsersEditPage.vue';
-import GroupsPage from '@/pages/main/config/admin/GroupsPage.vue';
-import FeaturesPage from '@/pages/main/config/admin/FeaturesPage.vue';
-import SettingsPage from '@/pages/main/config/admin/SettingsPage.vue';
-import LambdasPage from '@/pages/main/config/admin/LambdasPage.vue';
-import DevelopmentToolsPage from '@/pages/main/DevelopmentToolsPage.vue';
-import AboutPage from '@/pages/main/AboutPage.vue';
-import ProjectsPage from '@/pages/main/ProjectsPage.vue';
-import ProjectsNewPage from '@/pages/main/ProjectsNewPage.vue';
-import ProjectPage from '@/pages/main/project/ProjectPage.vue';
+// import Signin from '@/pages/Signin.vue';
+// import Main from '@/pages/Main.vue';
+// import MainDashboard from '@/pages/MainDashboard.vue';
+// import MainAccount from '@/pages/MainAccount.vue';
+// import MainAccountAppearance from '@/pages/MainAccountAppearance.vue';
+// import MainAdmin from '@/pages/MainAdmin.vue';
+// import MainAdminOverview from '@/pages/MainAdminOverview.vue';
+// import MainAdminUsers from '@/pages/MainAdminUsers.vue';
+// import MainAdminUsersNew from '@/pages/MainAdminUsersNew.vue';
+// import MainAdminUsersEdit from '@/pages/MainAdminUsersEdit.vue';
+// import MainAdminGroups from '@/pages/MainAdminGroups.vue';
+// import MainAdminFeatures from '@/pages/MainAdminFeatures.vue';
+// import MainAdminEnvs from '@/pages/MainAdminEnvs.vue';
+// import MainAdminLambdas from '@/pages/MainAdminLambdas.vue';
+// import MainDevTools from '@/pages/MainDevTools.vue';
+// import MainAbout from '@/pages/MainAbout.vue';
+// import MainProjects from '@/pages/MainProjects.vue';
+// import MainProjectsNew from '@/pages/MainProjectsNew.vue';
+// import MainProject from '@/pages/MainProject.vue';
 
 export default class VueBase extends Vue {
 
-    readonly names = {
-        signup: LoginPage.name,
-        main: MainPage.name,
-        mainDashboard: MainDashboardPage.name,
-        mainConfigAccount: AccountPage.name,
-        mainConfigAccountAppearance: AppearancePage.name,
-        mainConfigAdmin: AdminPage.name,
-        mainConfigAdminOverview: OverviewPage.name,
-        mainConfigAdminUsers: UsersPage.name,
-        mainConfigAdminUsersNew: UsersNewPage.name,
-        mainConfigAdminUsersEdit: UsersEditPage.name,
-        mainConfigAdminGroups: GroupsPage.name,
-        mainConfigAdminLambdas: LambdasPage.name,
-        mainConfigAdminFeatures: FeaturesPage.name,
-        mainConfigAdminSettings: SettingsPage.name,
-        mainDev: DevelopmentToolsPage.name,
-        mainAbout: AboutPage.name,
-        mainProjects: ProjectsPage.name,
-        mainProjectsNew: ProjectsNewPage.name,
-        mainProject: ProjectPage.name,
-    };
+    // readonly names = {
+    //     signup: Signin.name,
+    //     main: Main.name,
+    //     mainDashboard: MainDashboard.name,
+    //     mainConfigAccount: MainAccount.name,
+    //     mainConfigAccountAppearance: MainAccountAppearance.name,
+    //     mainConfigAdmin: MainAdmin.name,
+    //     mainConfigAdminOverview: MainAdminOverview.name,
+    //     mainConfigAdminUsers: MainAdminUsers.name,
+    //     mainConfigAdminUsersNew: MainAdminUsersNew.name,
+    //     mainConfigAdminUsersEdit: MainAdminUsersEdit.name,
+    //     mainConfigAdminGroups: MainAdminGroups.name,
+    //     mainConfigAdminLambdas: MainAdminLambdas.name,
+    //     mainConfigAdminFeatures: MainAdminFeatures.name,
+    //     mainConfigAdminSettings: MainAdminEnvs.name,
+    //     mainDev: MainDevTools.name,
+    //     mainAbout: MainAbout.name,
+    //     mainProjects: MainProjects.name,
+    //     mainProjectsNew: MainProjectsNew.name,
+    //     mainProject: MainProject.name,
+    // };
 
     readonly paths = {
         root: '/',
