@@ -80,7 +80,6 @@ ko:
           <v-text-field
               dense
               outlined
-              clearable
               type="text"
               autocomplete="off"
               prepend-icon="mdi-account"
@@ -96,7 +95,6 @@ ko:
           <v-text-field
               dense
               outlined
-              clearable
               counter
               autocomplete="off"
               prepend-icon="mdi-lock"
@@ -115,7 +113,6 @@ ko:
           <v-text-field
               dense
               outlined
-              clearable
               counter
               autocomplete="off"
               prepend-icon="mdi-lock-check"
@@ -139,7 +136,6 @@ ko:
           <v-text-field
               dense
               outlined
-              clearable
               type="text"
               autocomplete="off"
               prepend-icon="mdi-account-outline"
@@ -153,7 +149,6 @@ ko:
           <v-text-field
               dense
               outlined
-              clearable
               type="text"
               autocomplete="off"
               prepend-icon="mdi-email"
@@ -169,7 +164,6 @@ ko:
           <v-text-field
               dense
               outlined
-              clearable
               type="text"
               autocomplete="off"
               prepend-icon="mdi-phone"
@@ -185,7 +179,6 @@ ko:
           <v-text-field
               dense
               outlined
-              clearable
               type="text"
               autocomplete="off"
               prepend-icon="mdi-phone"
@@ -280,7 +273,23 @@ export default class UsersNewPage extends VueBase {
     },
   };
 
-  navigationItems: object = [];
+  navigationItems = [
+    {
+      text: 'Admin',
+      disabled: false,
+      href: this.paths.mainConfigAdminOverview,
+    },
+    {
+      text: 'Users',
+      disabled: false,
+      href: this.paths.mainConfigAdminUsers,
+    },
+    {
+      text: 'New',
+      disabled: true,
+    },
+  ];
+
   username = '';
   password = '';
   confirmPassword = '';
@@ -293,25 +302,6 @@ export default class UsersNewPage extends VueBase {
   showPassword = false;
   showConfirmPassword = false;
   showSignupLoading = false;
-
-  created() {
-    this.navigationItems = [
-      {
-        text: 'Admin',
-        disabled: false,
-        href: this.paths.mainConfigAdminOverview,
-      },
-      {
-        text: 'Users',
-        disabled: false,
-        href: this.paths.mainConfigAdminUsers,
-      },
-      {
-        text: 'New',
-        disabled: true,
-      },
-    ];
-  }
 
   validateForms(): boolean {
     const fields = [
@@ -360,6 +350,7 @@ export default class UsersNewPage extends VueBase {
       phone2: this.phone2,
       is_admin: this.isAdmin,
     } as User;
+
     this.showSignupLoading = true;
     this.$api2.postUsers(user)
         .then(() => {
