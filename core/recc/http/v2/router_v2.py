@@ -204,6 +204,9 @@ class RouterV2:
         if not user.password:
             raise HTTPBadRequest(reason="Not exists password field")
 
+        user.strip_insensitive()
+        user.empty_is_none_insensitive()
+
         await self.context.signup(
             username=user.username,
             hashed_password=user.password,
