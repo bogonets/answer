@@ -6,7 +6,8 @@ import vuetify from '@/plugins/vuetify';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
-import '@/styles/font-face-nanum.css'
+import '@/styles/font-face-nanum.css';
+import '@/toast';
 
 import { sessionStore } from '@/store';
 Vue.prototype.$store = sessionStore;

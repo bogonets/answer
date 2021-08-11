@@ -64,10 +64,7 @@ ko:
       </template>
 
       <template v-slot:item.is_admin="{ item }">
-        <v-simple-checkbox
-            v-model="item.is_admin"
-            disabled
-        ></v-simple-checkbox>
+        <v-icon dense v-if="!!item.is_admin">mdi-check</v-icon>
       </template>
 
       <template v-slot:item.created_at="{ item }">

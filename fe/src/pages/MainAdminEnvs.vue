@@ -10,6 +10,9 @@ en:
     created_at: "Created at"
     updated_at: "Updated at"
     actions: "Actions"
+  msg:
+    request_successful: "The request was successful."
+    request_failed: "Request failed."
   loading: "Loading... Please wait"
   empty_infos: "Empty Infos"
 
@@ -24,6 +27,9 @@ ko:
     created_at: "생성일"
     updated_at: "수정일"
     actions: "관리"
+  msg:
+    request_successful: "요청이 성공했습니다."
+    request_failed: "요청이 실패하였습니다."
   loading: "불러오는중 입니다... 잠시만 기다려 주세요."
   empty_infos: "정보가 존재하지 않습니다."
 </i18n>
@@ -99,13 +105,6 @@ ko:
       </template>
     </v-data-table>
 
-    <v-snackbar
-        v-model="showRequestErrorSnackbar"
-        :timeout="snackbarTimeout"
-    >
-      {{ requestErrorMessage }}
-    </v-snackbar>
-
   </v-container>
 </template>
 
@@ -174,8 +173,6 @@ export default class MainAdminEnvs extends VueBase {
   infos: object = [];
   showNewInfoDialog = false;
   showLoading = true;
-  showRequestErrorSnackbar = false;
-  requestErrorMessage = '';
 
   mounted() {
     this.updateInfos();
@@ -192,11 +189,6 @@ export default class MainAdminEnvs extends VueBase {
           console.error(error);
           this.showLoading = false;
         });
-  }
-
-  showSnackbar(message: string) {
-    this.requestErrorMessage = message;
-    this.showRequestErrorSnackbar = true;
   }
 
   utcToDate(utc: undefined | string): string {
@@ -231,11 +223,13 @@ export default class MainAdminEnvs extends VueBase {
     this.$api2.postInfos(info)
         .then(() => {
           this.updateInfos();
+          this.$toast.info(this.$t('msg.request_successful').toString());
         })
         .catch(error => {
           const code = error.request.status;
           const reason = error.request.statusText;
-          this.showSnackbar(`Request error(${code}) ${reason}`);
+          console.error(`Request failed: code=${code}, reason=${reason}`);
+          this.$toast.error(this.$t('msg.request_failed').toString());
         });
   }
 }

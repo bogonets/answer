@@ -34,6 +34,8 @@ en:
     at_least: "At least {0} characters."
     email_format: "Email format is incorrect."
     phone_format: "Phone format is incorrect."
+    request_successful: "The request was successful."
+    request_failed: "Request failed."
   cancel: "Cancel"
   submit: "Submit"
 
@@ -72,6 +74,8 @@ ko:
     at_least: "최소 {0}자 이상 허용됩니다."
     email_format: "이메일 형식이 올바르지 않습니다."
     phone_format: "전화번호 형식이 올바르지 않습니다."
+    request_successful: "요청이 성공했습니다."
+    request_failed: "요청이 실패하였습니다."
   cancel: "취소"
   submit: "제출"
 </i18n>
@@ -190,14 +194,6 @@ ko:
         </v-row>
       </v-container>
     </v-form>
-
-    <v-snackbar
-        v-model="showRequestErrorSnackbar"
-        :timeout="snackbarTimeout"
-    >
-      {{ requestErrorMessage }}
-    </v-snackbar>
-
   </v-container>
 </template>
 
@@ -219,7 +215,6 @@ import {User} from "@/apis/api-v2";
   }
 })
 export default class MainAdminUsersEdit extends VueBase {
-  private readonly snackbarTimeout = 4000;
   private readonly navigationItems = [
     {
       text: 'Admin',
@@ -249,9 +244,6 @@ export default class MainAdminUsersEdit extends VueBase {
   showPassword = false;
   showConfirmPassword = false;
   showSignupLoading = false;
-
-  showRequestErrorSnackbar = false;
-  requestErrorMessage = '';
 
   mounted() {
     const user = this.$route.params.user as User;
@@ -294,11 +286,6 @@ export default class MainAdminUsersEdit extends VueBase {
       return true;
     }
     return this.originalUser.is_admin != this.isAdmin;
-  }
-
-  showSnackbar(message: string) {
-    this.requestErrorMessage = message;
-    this.showRequestErrorSnackbar = true;
   }
 
   validateSubmit() {
@@ -353,13 +340,14 @@ export default class MainAdminUsersEdit extends VueBase {
         .then(() => {
           this.showSignupLoading = false;
           this.moveToMainAdminUsers();
-          this.showSnackbar('Request successful');
+          this.$toast.info(this.$t('msg.request_successful').toString());
         })
         .catch(error => {
           this.showSignupLoading = false;
           const code = error.request.status;
           const reason = error.request.statusText;
-          this.showSnackbar(`Request error(${code}) ${reason}`);
+          console.error(`Request failed: code=${code}, reason=${reason}`);
+          this.$toast.error(this.$t('msg.request_failed').toString());
         });
   }
 }
