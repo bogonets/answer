@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import {Vue, Component, Prop} from 'vue-property-decorator';
 
 const DEFAULT_TEXT_MODE = false;
 const DEFAULT_IS_UPPERCASE = false;

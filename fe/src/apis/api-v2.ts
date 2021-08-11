@@ -338,6 +338,9 @@ export default class ApiV2 {
         return this.post('/users', user);
     }
 
+    patchUsersUser(username: string, patchUser?: User) {
+        return this.patch(`/users/${username}`, patchUser);
+    }
 
     // --------
     // Projects

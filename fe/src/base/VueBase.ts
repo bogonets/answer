@@ -9,8 +9,8 @@ export default class VueBase extends Vue {
     readonly routeNames = Names;
 
     @Watch('$vuetify.lang.current')
-    updateI18n(newVal: string, oldVal: string) {
-        console.debug(`Update i18n: ${oldVal} -> ${newVal}`);
+    onChangeI18n(newVal: string, oldVal: string) {
+        console.debug(`Change i18n: ${oldVal} -> ${newVal}`);
         this.$i18n.locale = newVal;
     }
 
@@ -28,6 +28,10 @@ export default class VueBase extends Vue {
 
     get currentProjectName(): string {
         return this.$route.params.project || '';
+    }
+
+    moveToBack() {
+        this.$router.back();
     }
 
     moveTo(name: string, params?: object/*Dictionary<string>*/) {
@@ -80,7 +84,7 @@ export default class VueBase extends Vue {
     }
 
     moveToMainAdminUsersEdit(user: User) {
-        this.moveTo(this.routeNames.mainAdminUsersEdit, user);
+        this.moveTo(this.routeNames.mainAdminUsersEdit, {user: user});
     }
 
     moveToMainAdminUsersNew() {

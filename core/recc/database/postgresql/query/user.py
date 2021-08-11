@@ -169,16 +169,7 @@ WHERE
 
 SELECT_USER_BY_USERNAME = f"""
 SELECT
-    uid,
-    nickname,
-    email,
-    phone1,
-    phone2,
-    is_admin,
-    extra,
-    created_at,
-    updated_at,
-    last_login
+    *
 FROM
     {TABLE_USER}
 WHERE
@@ -187,16 +178,7 @@ WHERE
 
 SELECT_USER_ALL = f"""
 SELECT
-    uid,
-    username,
-    email,
-    phone1,
-    phone2,
-    is_admin,
-    extra,
-    created_at,
-    updated_at,
-    last_login
+    *
 FROM
     {TABLE_USER};
 """

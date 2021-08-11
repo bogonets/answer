@@ -228,6 +228,7 @@ class RouterV2:
     async def patch_users_puser(self, user: str, patch_user_info: User) -> None:
         await self.context.update_user(
             user,
+            nickname=patch_user_info.nickname,
             email=patch_user_info.email,
             phone1=patch_user_info.phone1,
             phone2=patch_user_info.phone2,

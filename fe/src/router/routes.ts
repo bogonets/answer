@@ -40,6 +40,7 @@ import Signup from '@/pages/Signup.vue';
 export const mainAccountChildren = [
     {
         path: '',
+        name: Names.mainAccount,
         redirect: 'appearance',
     },
     {
@@ -52,6 +53,7 @@ export const mainAccountChildren = [
 export const mainAdminChildren = [
     {
         path: '',
+        name: Names.mainAdmin,
         redirect: 'overview',
     },
     {
@@ -99,6 +101,7 @@ export const mainAdminChildren = [
 export const mainProjectChildren = [
     {
         path: '',
+        name: Names.mainProject,
         redirect: 'dashboard',
     },
     {
@@ -186,12 +189,8 @@ export const mainProjectChildren = [
 export const mainChildren = [
     {
         path: '',
+        name: Names.main,
         redirect: 'dashboard',
-    },
-    {
-        path: 'dashboard',
-        component: MainDashboard,
-        name: Names.mainDashboard,
     },
     {
         path: 'dashboard',
@@ -201,13 +200,11 @@ export const mainChildren = [
     {
         path: 'account',
         component: MainAccount,
-        name: Names.mainAccount,
         children: mainAccountChildren,
     },
     {
         path: 'admin',
         component: MainAdmin,
-        name: Names.mainAdmin,
         children: mainAdminChildren,
     },
     {
@@ -233,7 +230,6 @@ export const mainChildren = [
     {
         path: 'project/:group/:project',
         component: MainProject,
-        name: Names.mainProject,
         children: mainProjectChildren,
     },
     {
@@ -262,7 +258,6 @@ export const Routes = [
     {
         path: '/main',
         component: Main,
-        name: Names.main,
         meta: {requiresAuth: true},
         children: mainChildren,
     },
