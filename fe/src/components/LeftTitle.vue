@@ -4,10 +4,10 @@
       <v-col cols="4">
         <v-card flat color="transparent">
           <v-card-title>
-            {{ header }}
+            <span :class="headerTextColor">{{ header }}</span>
           </v-card-title>
           <v-card-subtitle>
-            {{ subheader }}
+            <span :class="subheaderTextColor">{{ subheader }}</span>
           </v-card-subtitle>
         </v-card>
       </v-col>
@@ -33,5 +33,25 @@ export default class LeftTitle extends Vue {
 
   @Prop({type: String, default: ''})
   readonly subheader!: string;
+
+  @Prop({type: String, default: ''})
+  readonly headerColor!: string;
+
+  @Prop({type: String, default: ''})
+  readonly subheaderColor!: string;
+
+  get headerTextColor(): string {
+    if (this.headerColor) {
+      return this.headerColor + '--text';
+    }
+    return ''
+  }
+
+  get subheaderTextColor(): string {
+    if (this.subheaderColor) {
+      return this.subheaderColor + '--text';
+    }
+    return ''
+  }
 }
 </script>

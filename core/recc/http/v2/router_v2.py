@@ -214,7 +214,7 @@ class RouterV2:
             email=user.email,
             phone1=user.phone1,
             phone2=user.phone2,
-            is_admin=user.is_admin,
+            is_admin=user.is_admin if user.is_admin else False,
             extra=user.extra,
         )
 

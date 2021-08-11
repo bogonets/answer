@@ -45,6 +45,9 @@ class ContextUser(ContextBase):
         self._already_admin_user = await self.database.exists_admin_user()
         return self._already_admin_user
 
+    async def get_admin_count(self) -> int:
+        return await self.database.get_admin_count()
+
     async def signup(
         self,
         username: str,

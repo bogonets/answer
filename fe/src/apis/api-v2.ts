@@ -342,6 +342,10 @@ export default class ApiV2 {
         return this.patch(`/users/${username}`, patchUser);
     }
 
+    deleteUsersUser(username: string) {
+        return this.delete(`/users/${username}`);
+    }
+
     // --------
     // Projects
     // --------

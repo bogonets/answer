@@ -213,19 +213,28 @@ class PgUser(DbUser, PgBase):
         return result
 
     @overrides
-    async def exists_admin_user(self) -> bool:
-        query = SELECT_USER_ADMIN_COUNT
-        row = await self.fetch_row(query)
-        assert row and len(row) == 1
-        result = bool(row.get("count", 0) >= 1)
-        logger.info(f"exist_admin_user() -> {result}")
-        return result
-
-    @overrides
     async def get_users_count(self) -> int:
         query = SELECT_USER_COUNT
         row = await self.fetch_row(query)
         assert row and len(row) == 1
         result = int(row.get("count", 0))
         logger.info(f"get_users_count() -> {result}")
+        return result
+
+    @overrides
+    async def get_admin_count(self) -> int:
+        query = SELECT_USER_ADMIN_COUNT
+        row = await self.fetch_row(query)
+        assert row and len(row) == 1
+        result = int(row.get("count", 0))
+        logger.info(f"get_admin_count() -> {result}")
+        return result
+
+    @overrides
+    async def exists_admin_user(self) -> bool:
+        query = SELECT_USER_ADMIN_COUNT
+        row = await self.fetch_row(query)
+        assert row and len(row) == 1
+        result = bool(row.get("count", 0) >= 1)
+        logger.info(f"exist_admin_user() -> {result}")
         return result
