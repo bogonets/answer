@@ -4,6 +4,7 @@ en:
   overview: "Overview"
   users: "Users"
   groups: "Groups"
+  projects: "Projects"
   lambdas: "Lambdas"
   features: "Features"
   envs: "환경 변수"
@@ -13,6 +14,7 @@ ko:
   overview: "개요"
   users: "사용자"
   groups: "그룹"
+  projects: "프로젝트"
   lambdas: "람다 관리"
   features: "기능 설정"
   envs: "환경 변수"
@@ -75,6 +77,15 @@ ko:
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('groups') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click.stop="onClickProject">
+            <v-list-item-icon>
+              <v-icon>mdi-clipboard-check-multiple</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('projects') }}
             </v-list-item-title>
           </v-list-item>
 
@@ -143,6 +154,9 @@ export default class MainAdmin extends VueBase {
 
   onClickGroups() {
     this.moveToMainAdminGroups();
+  }
+
+  onClickProject() {
   }
 
   onClickLambdas() {

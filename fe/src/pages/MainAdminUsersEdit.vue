@@ -172,10 +172,10 @@ ko:
       >
         <v-switch
             inset
-            :value="isAdmin"
+            v-model="isAdmin"
             :loading="showIsAdminLoading"
             :disabled="showIsAdminLoading"
-            @change="onInputIsAdmin"
+            @change="onChangeIsAdmin"
         ></v-switch>
       </right-control>
     </left-title>
@@ -195,36 +195,7 @@ ko:
             item-key="name"
             class="elevation-1"
         ></v-data-table>
-<!--        <v-card-text>-->
-<!--          {{ $t('label.created_at') + ': ' + originalUser.created_at }}-->
-<!--        </v-card-text>-->
-<!--        <v-divider></v-divider>-->
-<!--        <v-card-text>-->
-<!--          {{ $t('label.updated_at') + ': ' + originalUser.updated_at }}-->
-<!--        </v-card-text>-->
-<!--        <v-divider></v-divider>-->
-<!--        <v-card-text>-->
-<!--          {{ $t('label.last_login') + ': ' + originalUser.last_login }}-->
-<!--        </v-card-text>-->
       </v-card>
-
-<!--      <text-field-three-line-->
-<!--          disabled-->
-<!--          :label="$t('label.created_at')"-->
-<!--          :value="originalUser.created_at"-->
-<!--      ></text-field-three-line>-->
-
-<!--      <text-field-three-line-->
-<!--          disabled-->
-<!--          :label="$t('label.updated_at')"-->
-<!--          :value="originalUser.updated_at"-->
-<!--      ></text-field-three-line>-->
-
-<!--      <text-field-three-line-->
-<!--          disabled-->
-<!--          :label="$t('label.last_login')"-->
-<!--          :value="originalUser.last_login"-->
-<!--      ></text-field-three-line>-->
     </left-title>
 
     <v-divider></v-divider>
@@ -429,7 +400,7 @@ export default class MainAdminUsersEdit extends VueBase {
     this.validateSubmit();
   }
 
-  onInputIsAdmin(value: boolean | null) {
+  onChangeIsAdmin(value: boolean | null) {
     const isAdminFlag = !!value;
     const patchUser = {is_admin: isAdminFlag} as User;
     this.showIsAdminLoading = true;
@@ -437,14 +408,15 @@ export default class MainAdminUsersEdit extends VueBase {
         .then(() => {
           this.isAdmin = isAdminFlag;
           this.showIsAdminLoading = false;
-          this.$toast.success(this.$t('msg.request_successful').toString());
+          this.toastSuccess(this.$t('msg.request_successful'));
         })
         .catch(error => {
+          this.isAdmin = !isAdminFlag;
           this.showIsAdminLoading = false;
           const code = error.request.status;
           const reason = error.request.statusText;
-          console.error(`Request failed: code=${code}, reason=${reason}`);
-          this.$toast.error(this.$t('msg.request_failed').toString());
+          const detail = `code=${code},reason=${reason}`;
+          this.toastError(this.$t('msg.request_failed'), detail);
         });
   }
 
@@ -472,7 +444,7 @@ export default class MainAdminUsersEdit extends VueBase {
     this.$api2.patchUsersUser(this.username, patchUser)
         .then(() => {
           this.showSignupLoading = false;
-          this.$toast.success(this.$t('msg.request_successful').toString());
+          this.toastSuccess(this.$t('msg.request_successful'));
 
           this.originalUser.nickname = patchUser.nickname;
           this.originalUser.email = patchUser.email;
@@ -484,8 +456,8 @@ export default class MainAdminUsersEdit extends VueBase {
           this.showSignupLoading = false;
           const code = error.request.status;
           const reason = error.request.statusText;
-          console.error(`Request failed: code=${code}, reason=${reason}`);
-          this.$toast.error(this.$t('msg.request_failed').toString());
+          const detail = `code=${code},reason=${reason}`;
+          this.toastError(this.$t('msg.request_failed'), detail);
         });
   }
 
@@ -499,7 +471,7 @@ export default class MainAdminUsersEdit extends VueBase {
         .then(() => {
           this.showDeleteLoading = false;
           this.showDeleteUserDialog = false;
-          this.$toast.success(this.$t('msg.request_successful').toString());
+          this.toastSuccess(this.$t('msg.request_successful'));
           this.moveToMainAdminUsers();
         })
         .catch(error => {
@@ -507,8 +479,8 @@ export default class MainAdminUsersEdit extends VueBase {
           this.showDeleteUserDialog = false;
           const code = error.request.status;
           const reason = error.request.statusText;
-          console.error(`Request failed: code=${code}, reason=${reason}`);
-          this.$toast.error(this.$t('msg.request_failed').toString());
+          const detail = `code=${code},reason=${reason}`;
+          this.toastError(this.$t('msg.request_failed'), detail);
         });
   }
 }

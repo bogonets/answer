@@ -1,0 +1,31 @@
+// Override the variables
+$vt-color-default: #1976d2;
+$vt-text-color-default: #fff;
+$vt-color-info: #2196f3;
+$vt-text-color-info: #fff;
+$vt-color-success: #4caf50;
+$vt-text-color-success: #fff;
+$vt-color-warning: #ffc107;
+$vt-text-color-warning: #fff;
+$vt-color-error: #ff5252;
+$vt-text-color-error: #fff;
+
+$vt-font-family:
+        Lato,
+        Helvetica,
+        Roboto,
+        Arial,
+        sans-serif;
+
+// import the regular vue-toastification stylesheets.
+@import '~vue-toastification/src/scss/_variables';
+@import '~vue-toastification/src/scss/_toastContainer';
+@import '~vue-toastification/src/scss/_toast';
+@import '~vue-toastification/src/scss/_closeButton';
+@import '~vue-toastification/src/scss/_progressBar';
+@import '~vue-toastification/src/scss/_icon';
+@import '~vue-toastification/src/scss/animations/_bounce';
+
+//.#{$vt-namespace}__toast {
+//  padding: 12px 14px;
+//}

@@ -1,8 +1,8 @@
 import {Vue, Watch} from 'vue-property-decorator';
 import {RawLocation} from 'vue-router';
-import {Dictionary} from 'vue-router/types/router';
 import {Names} from '@/router/names';
 import {User} from '@/apis/api-v2';
+import SimpleToast from '@/components/SimpleToast.vue';
 
 export default class VueBase extends Vue {
 
@@ -13,6 +13,43 @@ export default class VueBase extends Vue {
         console.debug(`Change i18n: ${oldVal} -> ${newVal}`);
         this.$i18n.locale = newVal;
     }
+
+    // -----
+    // Toast
+    // -----
+
+    simpleToast(message: any, detail?: any) {
+        return {
+            component: SimpleToast,
+            props: {
+                message: message?.toString() || '',
+                detail: detail?.toString() || '',
+            },
+            listeners: {
+                click: () => {},
+            },
+        };
+    }
+
+    toastSuccess(message: any, detail?: any) {
+        this.$toast.success(this.simpleToast(message, detail));
+    }
+
+    toastInfo(message: any, detail?: any) {
+        this.$toast.info(this.simpleToast(message, detail));
+    }
+
+    toastWarning(message: any, detail?: any) {
+        this.$toast.warning(this.simpleToast(message, detail));
+    }
+
+    toastError(message: any, detail?: any) {
+        this.$toast.error(this.simpleToast(message, detail));
+    }
+
+    // ------
+    // Router
+    // ------
 
     get currentRoutePath(): string {
         return this.$router.currentRoute.path;
@@ -34,7 +71,7 @@ export default class VueBase extends Vue {
         this.$router.back();
     }
 
-    moveTo(name: string, params?: object/*Dictionary<string>*/) {
+    moveTo(name: string, params?: object) {
         if (this.currentRouteName === name) {
             return;
         }
