@@ -8,6 +8,7 @@ from recc.core.mixin.context_config import ContextConfig
 from recc.core.mixin.context_group import ContextGroup
 from recc.core.mixin.context_info import ContextInfo
 from recc.core.mixin.context_init import ContextInit
+from recc.core.mixin.context_lamda import ContextLamda
 from recc.core.mixin.context_layout import ContextLayout
 from recc.core.mixin.context_port import ContextPort
 from recc.core.mixin.context_project import ContextProject
@@ -22,6 +23,7 @@ class Context(
     ContextGroup,
     ContextInfo,
     ContextInit,
+    ContextLamda,
     ContextLayout,
     ContextPort,
     ContextProject,

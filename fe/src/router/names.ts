@@ -6,7 +6,7 @@ export const Names = {
     mainAdminInfos: 'MainAdminInfos',
     mainAdminConfigs: 'MainAdminConfigs',
     mainAdminGroups: 'MainAdminGroups',
-    mainAdminLambdas: 'MainAdminLambdas',
+    mainAdminLamdas: 'MainAdminLamdas',
     mainAdminOverview: 'MainAdminOverview',
     mainAdminProjects: 'MainAdminProjects',
     mainAdminUsersEdit: 'MainAdminUsersEdit',

@@ -26,6 +26,7 @@ from recc.core.struct.config import Config, UpdateConfigValue
 from recc.core.struct.update_password import UpdatePassword
 from recc.core.struct.update_info import UpdateInfo, UpdateInfoValue
 from recc.core.struct.system_overview import SystemOverview
+from recc.core.struct.template import TemplateKey
 from recc.database.struct.user import User
 from recc.variables.database import ANONYMOUS_GROUP_NAME
 from recc.access_control.abac.attributes import aa
@@ -109,6 +110,9 @@ class RouterV2:
 
             # system
             web.get(u.system_overview, self.get_system_overview),
+
+            # system
+            web.get(u.templates, self.get_templates),
 
             # users
             web.get(u.users, self.get_users),
@@ -224,6 +228,14 @@ class RouterV2:
     @parameter_matcher(acl={aa.HasAdmin})
     async def get_system_overview(self) -> SystemOverview:
         return await self.context.get_system_overview()
+
+    # ---------
+    # Templates
+    # ---------
+
+    @parameter_matcher()
+    async def get_templates(self) -> List[TemplateKey]:
+        return self.context.get_template_keys()
 
     # -----
     # Users

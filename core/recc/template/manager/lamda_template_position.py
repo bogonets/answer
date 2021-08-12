@@ -11,3 +11,6 @@ class LamdaTemplatePosition(Enum):
 
 
 LAMDA_TEMPLATE_POSITION_MAP = string_to_enum_map(LamdaTemplatePosition)
+LAMDA_TEMPLATE_POSITION_NAME_MAP = {
+    v: k for k, v in LAMDA_TEMPLATE_POSITION_MAP.items()
+}

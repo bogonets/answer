@@ -12,7 +12,7 @@ import MainAccount from '@/pages/MainAccount.vue';
 import MainAdminInfos from '@/pages/MainAdminInfos.vue';
 import MainAdminConfigs from '@/pages/MainAdminConfigs.vue';
 import MainAdminGroups from '@/pages/MainAdminGroups.vue';
-import MainAdminLambdas from '@/pages/MainAdminLambdas.vue';
+import MainAdminLamdas from '@/pages/MainAdminLamdas.vue';
 import MainAdminOverview from '@/pages/MainAdminOverview.vue';
 import MainAdminProjects from '@/pages/MainAdminProjects.vue';
 import MainAdminUsersEdit from '@/pages/MainAdminUsersEdit.vue';
@@ -98,9 +98,9 @@ export const mainAdminChildren = [
         name: Names.mainAdminInfos,
     },
     {
-        path: 'lambdas',
-        component: MainAdminLambdas,
-        name: Names.mainAdminLambdas,
+        path: 'lamdas',
+        component: MainAdminLamdas,
+        name: Names.mainAdminLamdas,
     },
 ]
 

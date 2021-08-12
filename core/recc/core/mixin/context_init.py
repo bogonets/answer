@@ -22,6 +22,7 @@ from recc.database.database import create_database
 from recc.storage.core_storage import CoreStorage
 from recc.task.task_connection_pool import create_task_connection_pool
 from recc.resource.port_manager import PortManager
+from recc.template.manager.lamda_template_manager import LamdaTemplateManager
 from recc.log.logging import recc_core_logger as logger
 from recc.session.session import (
     DEFAULT_ISSUER_RECC_ACCESS,
@@ -150,6 +151,10 @@ class ContextInit(ContextBase):
         self._ports = PortManager(min_port, max_port)
         logger.info("Created port-manager.")
 
+    def _init_templates(self) -> None:
+        self._templates = LamdaTemplateManager()
+        self._templates.refresh()
+
     def init_all(
         self,
         config: Optional[CoreConfig] = None,
@@ -174,6 +179,7 @@ class ContextInit(ContextBase):
         self._init_database()
         self._init_task_manager()
         self._init_port_manager()
+        self._init_templates()
 
         if skip_assertion:
             return

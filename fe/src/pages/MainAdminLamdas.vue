@@ -1,23 +1,23 @@
 <i18n lang="yaml">
 en:
-  search_label: "You can filter by key or value."
+  search_label: "You can filter by category or name."
   headers:
-    key: "Key"
-    type: "Type"
-    value: "Value"
+    position: "Position"
+    category: "Category"
+    name: "Name"
     actions: "Actions"
   loading: "Loading... Please wait"
-  empty_configs: "Empty Configs"
+  empty_lamdas: "Empty Lamdas"
 
 ko:
-  search_label: "열쇠 또는 값을 필터링할 수 있습니다."
+  search_label: "범주 또는 이름을 필터링할 수 있습니다."
   headers:
-    key: "열쇠 (Key)"
-    type: "자료형 (Type)"
-    value: "값 (Value)"
+    position: "위치"
+    category: "범주"
+    name: "이름"
     actions: "관리"
   loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-  empty_configs: "설정이 존재하지 않습니다."
+  empty_lamdas: "람다가 존재하지 않습니다."
 </i18n>
 
 <template>
@@ -27,7 +27,7 @@ ko:
 
     <v-data-table
         :headers="headers"
-        :items="configs"
+        :items="lamdas"
         :search="filterText"
         :loading="showLoading"
         :loading-text="$t('loading')"
@@ -57,7 +57,7 @@ ko:
       </template>
 
       <template v-slot:no-data>
-        {{ $t('empty_configs') }}
+        {{ $t('empty_lamdas') }}
       </template>
     </v-data-table>
 
@@ -71,10 +71,10 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 
 @Component({
   components: {
-    ToolbarNavigation
+    ToolbarNavigation,
   }
 })
-export default class MainAdminConfigs extends VueBase {
+export default class MainAdminLamdas extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',
@@ -82,28 +82,27 @@ export default class MainAdminConfigs extends VueBase {
       href: () => this.moveToMainAdminOverview(),
     },
     {
-      text: 'Configs',
+      text: 'Lamdas',
       disabled: true,
     },
   ];
+
   private readonly headers = [
     {
-      text: this.$t('headers.key').toString(),
-      align: 'start',
+      text: this.$t('headers.position').toString(),
       filterable: true,
-      value: 'key',
+      value: 'position',
     },
     {
-      text: this.$t('headers.type').toString(),
-      align: 'center',
+      text: this.$t('headers.category').toString(),
       filterable: true,
-      value: 'type',
+      value: 'category',
     },
     {
-      text: this.$t('headers.value').toString(),
+      text: this.$t('headers.name').toString(),
       align: 'center',
       filterable: true,
-      value: 'value',
+      value: 'name',
     },
     {
       text: this.$t('headers.actions').toString(),
@@ -115,7 +114,7 @@ export default class MainAdminConfigs extends VueBase {
   ];
 
   filterText = '';
-  configs: object = [];
+  lamdas: object = [];
   showLoading = true;
 
   editCandidateKey = '';
@@ -123,14 +122,14 @@ export default class MainAdminConfigs extends VueBase {
   showEditConfigDialog = false;
 
   mounted() {
-    this.updateConfigs();
+    this.updateLamdas();
   }
 
-  updateConfigs() {
+  updateLamdas() {
     this.showLoading = true;
-    this.$api2.getConfigs()
-        .then((infos) => {
-          this.configs = infos;
+    this.$api2.getTemplates()
+        .then((lamdas) => {
+          this.lamdas = lamdas;
           this.showLoading = false;
         })
         .catch(error => {
@@ -144,6 +143,5 @@ export default class MainAdminConfigs extends VueBase {
     this.editCandidateValue = item.value;
     this.showEditConfigDialog = true;
   }
-
 }
 </script>

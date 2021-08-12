@@ -101,6 +101,12 @@ export interface UpdateInfoValue {
     value?: string;
 }
 
+export interface TemplateKey {
+    position?: string;
+    category?: string;
+    name?: string;
+}
+
 export interface Config {
     key?: string;
     type?: string;
@@ -369,6 +375,14 @@ export default class ApiV2 {
 
     deleteUsersUser(username: string) {
         return this.delete(`/users/${username}`);
+    }
+
+    // ---------
+    // Templates
+    // ---------
+
+    getTemplates() {
+        return this.get<Array<TemplateKey>>(`/templates`);
     }
 
     // --------

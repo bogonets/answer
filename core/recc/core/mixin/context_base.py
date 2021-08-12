@@ -9,6 +9,7 @@ from recc.cache.async_cs_interface import AsyncCacheStoreInterface
 from recc.database.interfaces.db_interface import DbInterface
 from recc.task.task_connection_pool import TaskConnectionPool
 from recc.resource.port_manager import PortManager
+from recc.template.manager.lamda_template_manager import LamdaTemplateManager
 
 
 class ContextBase:
@@ -24,6 +25,7 @@ class ContextBase:
     _database: DbInterface
     _tasks: TaskConnectionPool
     _ports: PortManager
+    _templates: LamdaTemplateManager
 
     @property
     def config(self) -> CoreConfig:
