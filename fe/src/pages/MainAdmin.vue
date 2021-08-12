@@ -157,6 +157,7 @@ export default class MainAdmin extends VueBase {
   }
 
   onClickProject() {
+    this.moveToMainAdminProjects();
   }
 
   onClickLambdas() {

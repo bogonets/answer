@@ -1,6 +1,13 @@
 export default {
     title: 'Answer',
 
+    rules: {
+        required: '공백을 허용하지 않습니다.',
+        at_least_4char: '최소 네 글자 이상 허용됩니다.',
+        email: '이메일 형식이 올바르지 않습니다.',
+        phone: '전화번호 형식이 올바르지 않습니다.',
+    },
+
     basic: {
         admin: "관리자",
         apply: "적용",

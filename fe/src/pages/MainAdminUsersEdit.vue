@@ -255,9 +255,9 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import TextFieldThreeLine from '@/components/TextFieldThreeLine.vue';
-import LeftTitle from "@/components/LeftTitle.vue";
-import RightControl from "@/components/RightControl.vue";
-import {User} from "@/apis/api-v2";
+import LeftTitle from '@/components/LeftTitle.vue';
+import RightControl from '@/components/RightControl.vue';
+import {User} from '@/apis/api-v2';
 
 @Component({
   components: {

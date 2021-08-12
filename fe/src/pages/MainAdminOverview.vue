@@ -25,7 +25,7 @@ ko:
           <v-col cols="4">
             <v-card flat outlined>
               <v-card-text class="text-h6 text-center">
-                {{ $t('users') + `: ${users}` }}
+                <a @click="onClickUsers">{{ $t('users') + `: ${users}` }}</a>
               </v-card-text>
             </v-card>
           </v-col>
@@ -33,7 +33,7 @@ ko:
           <v-col cols="4">
             <v-card flat outlined>
               <v-card-text class="text-h6 text-center">
-                {{ $t('groups') + `: ${groups}` }}
+                <a @click="onClickGroups">{{ $t('groups') + `: ${groups}` }}</a>
               </v-card-text>
             </v-card>
           </v-col>
@@ -41,7 +41,7 @@ ko:
           <v-col cols="4">
             <v-card flat outlined>
               <v-card-text class="text-h6 text-center">
-                {{ $t('projects') + `: ${projects}` }}
+                <a @click="onClickProjects">{{ $t('projects') + `: ${projects}` }}</a>
               </v-card-text>
             </v-card>
           </v-col>
@@ -89,6 +89,18 @@ export default class MainAdminOverview extends VueBase {
         .catch(error => {
           console.error(error);
         });
+  }
+
+  onClickUsers() {
+    this.moveToMainAdminUsers();
+  }
+
+  onClickGroups() {
+    this.moveToMainAdminGroups();
+  }
+
+  onClickProjects() {
+    this.moveToMainAdminProjects();
   }
 }
 </script>

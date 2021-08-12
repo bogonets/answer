@@ -8,6 +8,7 @@ export const Names = {
     mainAdminGroups: 'MainAdminGroups',
     mainAdminLambdas: 'MainAdminLambdas',
     mainAdminOverview: 'MainAdminOverview',
+    mainAdminProjects: 'MainAdminProjects',
     mainAdminUsersEdit: 'MainAdminUsersEdit',
     mainAdminUsersNew: 'MainAdminUsersNew',
     mainAdminUsers: 'MainAdminUsers',

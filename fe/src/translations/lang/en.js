@@ -1,6 +1,13 @@
 export default {
     title: 'Answer',
 
+    rules: {
+        required: 'Required field',
+        at_least_4char: 'At least 4 characters.',
+        email: 'Email format is incorrect.',
+        phone: 'Phone format is incorrect.',
+    },
+
     basic: {
         admin: "Admin",
         apply: "Apply",

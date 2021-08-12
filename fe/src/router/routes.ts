@@ -14,6 +14,7 @@ import MainAdminFeatures from '@/pages/MainAdminFeatures.vue';
 import MainAdminGroups from '@/pages/MainAdminGroups.vue';
 import MainAdminLambdas from '@/pages/MainAdminLambdas.vue';
 import MainAdminOverview from '@/pages/MainAdminOverview.vue';
+import MainAdminProjects from '@/pages/MainAdminProjects.vue';
 import MainAdminUsersEdit from '@/pages/MainAdminUsersEdit.vue';
 import MainAdminUsersNew from '@/pages/MainAdminUsersNew.vue';
 import MainAdminUsers from '@/pages/MainAdminUsers.vue';
@@ -80,6 +81,11 @@ export const mainAdminChildren = [
         path: 'groups',
         component: MainAdminGroups,
         name: Names.mainAdminGroups,
+    },
+    {
+        path: 'projects',
+        component: MainAdminProjects,
+        name: Names.mainAdminProjects,
     },
     {
         path: 'features',
