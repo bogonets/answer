@@ -2,10 +2,16 @@ export default {
     title: 'Answer',
 
     rules: {
-        required: 'Required field',
+        required: 'Required field.',
         at_least_4char: 'At least 4 characters.',
         email: 'Email format is incorrect.',
         phone: 'Phone format is incorrect.',
+        no_recc_prefix: "'recc.' prefix cannot be used.",
+    },
+
+    toast: {
+        request_success: 'The request was successful',
+        request_failure: 'The request failed',
     },
 
     basic: {

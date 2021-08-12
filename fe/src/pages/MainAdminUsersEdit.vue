@@ -1,7 +1,5 @@
 <i18n lang="yaml">
 en:
-  title: "Add user"
-  subtitle: "Register a new user"
   header:
     required: "Required information"
     profile: "User profile"
@@ -31,22 +29,13 @@ en:
     phone2: "Secondary phone number."
     is_admin: "Gain full control over the system."
     delete: "Please be careful! It cannot be recovered."
-  msg:
-    required_field: "Required field."
-    at_least: "At least {0} characters."
-    email_format: "Email format is incorrect."
-    phone_format: "Phone format is incorrect."
-    request_successful: "The request was successful."
-    request_failed: "Request failed."
-    delete_confirm: "Are you sure? Are you really removing this user?"
+  delete_confirm: "Are you sure? Are you really removing this user?"
   delete: "Delete"
   cancel: "Cancel"
   clear: "Clear"
   submit: "Submit"
 
 ko:
-  title: "사용자 추가"
-  subtitle: "새로운 사용자를 등록합니다."
   header:
     required: "필수 정보"
     profile: "사용자 프로필"
@@ -76,14 +65,7 @@ ko:
     phone2: "보조 전화번호 입니다."
     is_admin: "시스템을 완전히 제어할 수 있는 권한을 획득합니다."
     delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
-  msg:
-    required_field: "공백을 허용하지 않습니다."
-    at_least: "최소 {0}자 이상 허용됩니다."
-    email_format: "이메일 형식이 올바르지 않습니다."
-    phone_format: "전화번호 형식이 올바르지 않습니다."
-    request_successful: "요청이 성공했습니다."
-    request_failed: "요청이 실패하였습니다."
-    delete_confirm: "이 사용자를 정말 제거합니까?"
+  delete_confirm: "이 사용자를 정말 제거합니까?"
   delete: "제거"
   cancel: "취소"
   clear: "복구"
@@ -228,7 +210,7 @@ ko:
           {{ $t('label.delete') }}
         </v-card-title>
         <v-card-text>
-          {{ $t('msg.delete_confirm') }}
+          {{ $t('delete_confirm') }}
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
@@ -408,15 +390,12 @@ export default class MainAdminUsersEdit extends VueBase {
         .then(() => {
           this.isAdmin = isAdminFlag;
           this.showIsAdminLoading = false;
-          this.toastSuccess(this.$t('msg.request_successful'));
+          this.toastRequestSuccess();
         })
         .catch(error => {
           this.isAdmin = !isAdminFlag;
           this.showIsAdminLoading = false;
-          const code = error.request.status;
-          const reason = error.request.statusText;
-          const detail = `code=${code},reason=${reason}`;
-          this.toastError(this.$t('msg.request_failed'), detail);
+          this.toastRequestFailure(error);
         });
   }
 
@@ -444,7 +423,7 @@ export default class MainAdminUsersEdit extends VueBase {
     this.$api2.patchUsersUser(this.username, patchUser)
         .then(() => {
           this.showSignupLoading = false;
-          this.toastSuccess(this.$t('msg.request_successful'));
+          this.toastRequestSuccess();
 
           this.originalUser.nickname = patchUser.nickname;
           this.originalUser.email = patchUser.email;
@@ -454,10 +433,7 @@ export default class MainAdminUsersEdit extends VueBase {
         })
         .catch(error => {
           this.showSignupLoading = false;
-          const code = error.request.status;
-          const reason = error.request.statusText;
-          const detail = `code=${code},reason=${reason}`;
-          this.toastError(this.$t('msg.request_failed'), detail);
+          this.toastRequestFailure(error);
         });
   }
 
@@ -471,16 +447,13 @@ export default class MainAdminUsersEdit extends VueBase {
         .then(() => {
           this.showDeleteLoading = false;
           this.showDeleteUserDialog = false;
-          this.toastSuccess(this.$t('msg.request_successful'));
+          this.toastRequestSuccess();
           this.moveToMainAdminUsers();
         })
         .catch(error => {
           this.showDeleteLoading = false;
           this.showDeleteUserDialog = false;
-          const code = error.request.status;
-          const reason = error.request.statusText;
-          const detail = `code=${code},reason=${reason}`;
-          this.toastError(this.$t('msg.request_failed'), detail);
+          this.toastRequestFailure(error);
         });
   }
 }

@@ -3,7 +3,7 @@ export const Names = {
     mainAbout: 'MainAbout',
     mainAccountAppearance: 'MainAccountAppearance',
     mainAccount: 'MainAccount',
-    mainAdminEnvs: 'MainAdminEnvs',
+    mainAdminInfos: 'MainAdminInfos',
     mainAdminFeatures: 'MainAdminFeatures',
     mainAdminGroups: 'MainAdminGroups',
     mainAdminLambdas: 'MainAdminLambdas',

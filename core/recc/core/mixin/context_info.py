@@ -11,12 +11,12 @@ from recc.rule.database_info import (
 
 
 class ContextInfo(ContextBase):
-    async def create_info(self, key: str, val: Any, force=False) -> None:
+    async def create_info(self, key: str, val: str, force=False) -> None:
         if not force and not valid_user_creatable(key):
             raise KeyError(f"Non-creatable info: {key}")
         await self.database.create_info(key, val)
 
-    async def update_info(self, key: str, val: Any, force=False) -> None:
+    async def update_info(self, key: str, val: str, force=False) -> None:
         if not force and not valid_user_modifiable(key):
             raise KeyError(f"Non-modifiable info: {key}")
         await self.database.update_info_value_by_key(key, val)

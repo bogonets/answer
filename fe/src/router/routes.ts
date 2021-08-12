@@ -9,7 +9,7 @@ import Error from '@/pages/Error.vue';
 import MainAbout from '@/pages/MainAbout.vue';
 import MainAccountAppearance from '@/pages/MainAccountAppearance.vue';
 import MainAccount from '@/pages/MainAccount.vue';
-import MainAdminEnvs from '@/pages/MainAdminEnvs.vue';
+import MainAdminInfos from '@/pages/MainAdminInfos.vue';
 import MainAdminFeatures from '@/pages/MainAdminFeatures.vue';
 import MainAdminGroups from '@/pages/MainAdminGroups.vue';
 import MainAdminLambdas from '@/pages/MainAdminLambdas.vue';
@@ -93,9 +93,9 @@ export const mainAdminChildren = [
         name: Names.mainAdminFeatures,
     },
     {
-        path: 'settings',
-        component: MainAdminEnvs,
-        name: Names.mainAdminEnvs,
+        path: 'infos',
+        component: MainAdminInfos,
+        name: Names.mainAdminInfos,
     },
     {
         path: 'lambdas',

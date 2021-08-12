@@ -1,63 +1,58 @@
 <i18n lang="yaml">
 en:
-  title: "New info"
-  subtitle: "You can add new environment variables."
-  label:
-    key: "Key"
-    value: "Value"
-  msg:
-    required_field: "Required field"
+  key: "Key"
+  value: "Value"
   cancel: "Cancel"
   ok: "Ok"
 
 ko:
-  title: "설정 추가"
-  subtitle: "새로운 환경 변수를 추가할 수 있습니다."
-  label:
-    key: "열쇠 (Key)"
-    value: "값 (Value)"
-  msg:
-    required_field: "공백을 허용하지 않습니다."
+  key: "열쇠 (Key)"
+  value: "값 (Value)"
   cancel: "취소"
   ok: "확인"
 </i18n>
 
 <template>
   <v-card>
-    <v-card-title class="mb-1">{{ $t('title') }}</v-card-title>
-    <v-card-subtitle>{{ $t('subtitle') }}</v-card-subtitle>
+    <v-card-title class="mb-1">{{ title }}</v-card-title>
+    <v-card-subtitle>{{ subtitle }}</v-card-subtitle>
 
     <v-divider></v-divider>
 
     <v-container>
-      <v-list flat>
-        <v-list-item>
-          <v-text-field
-              dense
-              outlined
-              persistent-hint
-              type="text"
-              autocomplete="off"
-              ref="keyField"
-              v-model="infoKey"
-              :rules="[rules.key.required]"
-              :label="$t('label.key')"
-          ></v-text-field>
-        </v-list-item>
-
-        <v-list-item>
-          <v-text-field
-              dense
-              outlined
-              persistent-hint
-              type="text"
-              autocomplete="off"
-              v-model="infoValue"
-              :label="$t('label.value')"
-              @keydown.enter.stop="submit"
-          ></v-text-field>
-        </v-list-item>
-      </v-list>
+      <v-form
+          ref="form"
+          v-model="valid"
+          lazy-validation
+      >
+        <v-list flat>
+          <v-list-item>
+            <v-text-field
+                dense
+                outlined
+                type="text"
+                autocomplete="off"
+                v-model="infoKey"
+                :filled="disableKey"
+                :disabled="disableKey"
+                :rules="infoRules"
+                :label="$t('key')"
+            ></v-text-field>
+          </v-list-item>
+          <v-list-item>
+            <v-text-field
+                dense
+                outlined
+                hide-details
+                type="text"
+                autocomplete="off"
+                v-model="infoValue"
+                :label="$t('value')"
+                @keydown.enter.stop="submit"
+            ></v-text-field>
+          </v-list-item>
+        </v-list>
+      </v-form>
     </v-container>
 
     <v-divider></v-divider>
@@ -66,7 +61,7 @@ ko:
       <v-spacer></v-spacer>
       <v-btn
           color="second"
-          class="mr-4"
+          class="mr-1"
           @click="cancel"
       >
         {{ $t('cancel') }}
@@ -82,50 +77,76 @@ ko:
 </template>
 
 <script lang="ts">
-import { Component, Emit } from 'vue-property-decorator';
+import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-
-const V_TEXT_FIELD_VALIDATE = 'validate';
+import {INFO_RULES} from '@/rules';
 
 @Component
 export default class CardInfoNew extends VueBase {
+  private readonly infoRules = INFO_RULES;
 
-  private readonly rules = {
-    key: {
-      required: (text) => {
-        return !!text || this.$t('msg.required_field');
-      },
-    },
-  };
+  @Prop({type: String, default: ''})
+  readonly title!: string;
 
+  @Prop({type: String, default: ''})
+  readonly subtitle!: string;
+
+  @Prop({type: Boolean, default: false})
+  readonly disableKey!: boolean;
+
+  @Prop({type: Boolean, default: false})
+  readonly disableValidate!: boolean;
+
+  @Prop({type: String, default: ''})
+  readonly initKey!: string;
+
+  @Prop({type: String, default: ''})
+  readonly initValue!: string;
+
+  valid = false;
   infoKey = '';
   infoValue = '';
 
   mounted() {
-    this.infoKey = '';
-    this.infoValue = '';
+    this.infoKey = this.initKey;
+    this.infoValue = this.initValue;
   }
 
-  validateForms(): boolean {
-    const fields = [this.$refs.keyField];
-    let result = true;
-    for (const key in fields) {
-      const field = fields[key];
-      if (!field) {
-        continue;
-      }
+  @Watch('initKey')
+  onWatchInitKey(value) {
+    this.infoKey = value;
+  }
 
-      const validate = field[V_TEXT_FIELD_VALIDATE];
-      if (validate === undefined) {
-        continue;
-      }
+  @Watch('initValue')
+  onWatchInitValue(value) {
+    this.infoValue = value;
+  }
 
-      // You need to repeat the validation function for every field.
-      if (!validate(true)) {
-        result = false;
+  get form() {
+    return this.$refs.form;
+  }
+
+  validate() {
+    this.form['validate']();
+  }
+
+  reset() {
+    this.form['reset']();
+  }
+
+  resetValidation() {
+    this.form['resetValidation']();
+  }
+
+  submit() {
+    if (!this.disableValidate) {
+      this.validate();
+      if (!this.valid) {
+        return;
       }
     }
-    return result;
+
+    this.ok();
   }
 
   @Emit()
@@ -134,13 +155,6 @@ export default class CardInfoNew extends VueBase {
       key: this.infoKey,
       value: this.infoValue,
     };
-  }
-
-  submit() {
-    if (!this.validateForms()) {
-      return;
-    }
-    this.ok();
   }
 
   @Emit()

@@ -11,6 +11,7 @@ const DEFAULT_FALLBACK_LOCALE = process.env.ANSWER_I18N_FALLBACK_LOCALE || 'en';
 const i18n = new VueI18n({
   locale: DEFAULT_LOCALE,
   fallbackLocale: DEFAULT_FALLBACK_LOCALE,
+  silentFallbackWarn: true,
   messages: {
     en: en,
     ko: ko,

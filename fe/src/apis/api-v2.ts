@@ -97,6 +97,10 @@ export interface UpdateInfo {
     value?: string;
 }
 
+export interface UpdateInfoValue {
+    value?: string;
+}
+
 export interface Login {
     access?: string;
     refresh?: string;
@@ -157,6 +161,9 @@ export default class ApiV2 {
             headers: {
                 Accept: 'application/json',
             },
+            validateStatus: (status: number): boolean => {
+                return status === 200;
+            }
         });
         this.session = newEmptySession();
     }
@@ -189,43 +196,25 @@ export default class ApiV2 {
     }
 
     get<T = any>(url: string, config?: AxiosRequestConfig) {
-        return this.api.get(url, config)
-            .then((response: AxiosResponse) => {
-                if (response.status !== 200) {
-                    throw new ApiV2StatusError(response);
-                }
-                return response.data as T;
-            });
+        return this.api.get<T>(url, config).then((res) => {
+            return res.data;
+        });
     }
 
     post<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-        return this.api.post(url, data, config)
-            .then((response: AxiosResponse) => {
-                if (response.status !== 200) {
-                    throw new ApiV2StatusError(response);
-                }
-                return response.data as T;
-            });
+        return this.api.post<T>(url, data, config).then((res) => {
+            return res.data;
+        });
     }
 
     patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-        return this.api.patch(url, data, config)
-            .then((response: AxiosResponse) => {
-                if (response.status !== 200) {
-                    throw new ApiV2StatusError(response);
-                }
-                return response.data as T;
-            });
+        return this.api.patch<T>(url, data, config).then((res) => {
+            return res.data;
+        });
     }
 
-    delete<T = any>(url: string, config?: AxiosRequestConfig) {
-        return this.api.delete(url, config)
-            .then((response: AxiosResponse) => {
-                if (response.status !== 200) {
-                    throw new ApiV2StatusError(response);
-                }
-                return response.data as T;
-            });
+    delete(url: string, config?: AxiosRequestConfig) {
+        return this.api.delete(url, config);
     }
 
     // ------
@@ -310,8 +299,19 @@ export default class ApiV2 {
         return this.get<Array<Info>>('/infos');
     }
 
-    postInfos(info: UpdateInfo) {
-        return this.post('/infos', info);
+    postInfos(key: string, value: string) {
+        const data = {
+            key: key,
+            value: value,
+        } as UpdateInfo;
+        return this.post('/infos', data);
+    }
+
+    patchInfo(key: string, value: string) {
+        const data = {
+            value: value
+        } as UpdateInfoValue;
+        return this.patch(`/infos/${key}`, data);
     }
 
     deleteInfo(key: string) {

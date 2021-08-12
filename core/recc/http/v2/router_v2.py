@@ -24,6 +24,7 @@ from recc.database.struct.group import Group
 from recc.database.struct.project import Project
 from recc.core.struct.update_password import UpdatePassword
 from recc.core.struct.update_info import UpdateInfo
+from recc.core.struct.update_info_value import UpdateInfoValue
 from recc.core.struct.system_overview import SystemOverview
 from recc.database.struct.user import User
 from recc.variables.database import ANONYMOUS_GROUP_NAME
@@ -94,10 +95,11 @@ class RouterV2:
             web.patch(u.self_extra, self.patch_self_extra),
             web.patch(u.self_password, self.patch_self_password),
 
-            # configs
+            # infos
             web.get(u.infos, self.get_infos),
             web.post(u.infos, self.post_infos),
             web.get(u.infos_pkey, self.get_infos_pkey),
+            web.patch(u.infos_pkey, self.patch_infos_pkey),
             web.delete(u.infos_pkey, self.delete_infos_pkey),
 
             # system
@@ -176,6 +178,13 @@ class RouterV2:
             return await self.context.get_info(key)
         except RuntimeError as e:
             raise HTTPNotFound(reason=str(e))
+
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def patch_infos_pkey(self, key: str, info: UpdateInfoValue) -> None:
+        try:
+            await self.context.update_info(key, info.value)
+        except KeyError as e:
+            raise HTTPBadRequest(reason=str(e))
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def delete_infos_pkey(self, key: str) -> None:

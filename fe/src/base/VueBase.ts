@@ -1,8 +1,9 @@
 import {Vue, Watch} from 'vue-property-decorator';
 import {RawLocation} from 'vue-router';
 import {Names} from '@/router/names';
-import {User} from '@/apis/api-v2';
+import {User, ApiV2StatusError} from '@/apis/api-v2';
 import SimpleToast from '@/components/SimpleToast.vue';
+import {AxiosError} from 'axios';
 
 export default class VueBase extends Vue {
 
@@ -45,6 +46,26 @@ export default class VueBase extends Vue {
 
     toastError(message: any, detail?: any) {
         this.$toast.error(this.simpleToast(message, detail));
+    }
+
+    toastRequestSuccess() {
+        this.toastSuccess(this.$t('toast.request_success').toString());
+    }
+
+    toastRequestFailure(error?) {
+        const message = this.$t('toast.request_failure').toString();
+        if (!error) {
+            this.toastError(message);
+            return;
+        }
+
+        if (typeof error.response !== 'undefined') {
+            const code = error.response.status;
+            const reason = error.response.statusText;
+            this.toastError(message, `[${code}] ${reason}`);
+        } else {
+            this.toastError(message, error.toString());
+        }
     }
 
     // ------
@@ -101,7 +122,7 @@ export default class VueBase extends Vue {
     }
 
     moveToMainAdminEnvs() {
-        this.moveTo(this.routeNames.mainAdminEnvs);
+        this.moveTo(this.routeNames.mainAdminInfos);
     }
 
     moveToMainAdminFeatures() {
