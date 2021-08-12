@@ -10,7 +10,7 @@ import MainAbout from '@/pages/MainAbout.vue';
 import MainAccountAppearance from '@/pages/MainAccountAppearance.vue';
 import MainAccount from '@/pages/MainAccount.vue';
 import MainAdminInfos from '@/pages/MainAdminInfos.vue';
-import MainAdminFeatures from '@/pages/MainAdminFeatures.vue';
+import MainAdminConfigs from '@/pages/MainAdminConfigs.vue';
 import MainAdminGroups from '@/pages/MainAdminGroups.vue';
 import MainAdminLambdas from '@/pages/MainAdminLambdas.vue';
 import MainAdminOverview from '@/pages/MainAdminOverview.vue';
@@ -88,9 +88,9 @@ export const mainAdminChildren = [
         name: Names.mainAdminProjects,
     },
     {
-        path: 'features',
-        component: MainAdminFeatures,
-        name: Names.mainAdminFeatures,
+        path: 'configs',
+        component: MainAdminConfigs,
+        name: Names.mainAdminConfigs,
     },
     {
         path: 'infos',

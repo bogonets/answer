@@ -4,8 +4,9 @@ from asyncio import AbstractEventLoop
 from typing import Optional
 from recc.argparse.config.core_config import CoreConfig
 from recc.log.logging import recc_core_logger as logger
-from recc.core.mixin.context_info import ContextInfo
+from recc.core.mixin.context_config import ContextConfig
 from recc.core.mixin.context_group import ContextGroup
+from recc.core.mixin.context_info import ContextInfo
 from recc.core.mixin.context_init import ContextInit
 from recc.core.mixin.context_layout import ContextLayout
 from recc.core.mixin.context_port import ContextPort
@@ -17,8 +18,9 @@ from recc.core.mixin.context_user import ContextUser
 
 
 class Context(
-    ContextInfo,
+    ContextConfig,
     ContextGroup,
+    ContextInfo,
     ContextInit,
     ContextLayout,
     ContextPort,

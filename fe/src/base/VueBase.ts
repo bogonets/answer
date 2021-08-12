@@ -126,7 +126,7 @@ export default class VueBase extends Vue {
     }
 
     moveToMainAdminFeatures() {
-        this.moveTo(this.routeNames.mainAdminFeatures);
+        this.moveTo(this.routeNames.mainAdminConfigs);
     }
 
     moveToMainAdminGroups() {

@@ -8,21 +8,17 @@ en:
     created_at: "Created at"
     updated_at: "Updated at"
     actions: "Actions"
-  label:
-    delete: "Delete an info"
   title:
     add: "Add info"
     edit: "Edit info"
-    delete: "Delete info"
   subtitle:
     add: "You can add new info."
     edit: "Edit"
-    delete: "Delete"
   loading: "Loading... Please wait"
   empty_infos: "Empty Infos"
   delete_confirm: "Are you sure? Are you really removing this info?"
   cancel: "Cancel"
-  clear: "Clear"
+  delete: "Delete"
 
 ko:
   search_label: "열쇠 또는 값을 필터링할 수 있습니다."
@@ -33,21 +29,17 @@ ko:
     created_at: "생성일"
     updated_at: "수정일"
     actions: "관리"
-  label:
-    delete: "설정 제거"
   title:
     add: "설정 추가"
     edit: "설정 변경"
-    delete: "설정 제거"
   subtitle:
     add: "새로운 설정을 추가할 수 있습니다."
     edit: "설정을 편집할 수 있습니다."
-    delete: "설정을 제거할 수 있습니다."
   loading: "불러오는중 입니다... 잠시만 기다려 주세요."
   empty_infos: "정보가 존재하지 않습니다."
   delete_confirm: "이 정보를 정말 제거합니까?"
-  delete: "제거"
   cancel: "취소"
+  delete: "제거"
 </i18n>
 
 <template>
@@ -150,7 +142,7 @@ ko:
     <v-dialog v-model="showDeleteInfoDialog" max-width="320">
       <v-card>
         <v-card-title class="text-h5 error--text">
-          {{ $t('label.delete') }}
+          {{ $t('delete') }}
         </v-card-title>
         <v-card-text>
           {{ $t('delete_confirm') }}
@@ -197,7 +189,7 @@ export default class MainAdminInfos extends VueBase {
       href: () => this.moveToMainAdminOverview(),
     },
     {
-      text: 'Settings',
+      text: 'Infos',
       disabled: true,
     },
   ];
@@ -232,7 +224,7 @@ export default class MainAdminInfos extends VueBase {
       sortable: false,
       value: 'actions',
     },
-  ]
+  ];
 
   filterText = '';
   infos: object = [];

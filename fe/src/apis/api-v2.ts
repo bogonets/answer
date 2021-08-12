@@ -101,6 +101,16 @@ export interface UpdateInfoValue {
     value?: string;
 }
 
+export interface Config {
+    key?: string;
+    type?: string;
+    value?: string;
+}
+
+export interface UpdateConfigValue {
+    value?: string;
+}
+
 export interface Login {
     access?: string;
     refresh?: string;
@@ -289,6 +299,21 @@ export default class ApiV2 {
 
     patchSelfPassword(update_password: UpdatePassword) {
         return this.patch('/self/password', update_password);
+    }
+
+    // -------
+    // Configs
+    // -------
+
+    getConfigs() {
+        return this.get<Array<Config>>('/configs');
+    }
+
+    patchConfig(key: string, value: string) {
+        const data = {
+            value: value
+        } as UpdateConfigValue;
+        return this.patch(`/configs/${key}`, data);
     }
 
     // -----

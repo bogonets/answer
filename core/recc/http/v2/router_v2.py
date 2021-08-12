@@ -22,9 +22,9 @@ from recc.http import http_urls as u
 from recc.database.struct.info import Info
 from recc.database.struct.group import Group
 from recc.database.struct.project import Project
+from recc.core.struct.config import Config, UpdateConfigValue
 from recc.core.struct.update_password import UpdatePassword
-from recc.core.struct.update_info import UpdateInfo
-from recc.core.struct.update_info_value import UpdateInfoValue
+from recc.core.struct.update_info import UpdateInfo, UpdateInfoValue
 from recc.core.struct.system_overview import SystemOverview
 from recc.database.struct.user import User
 from recc.variables.database import ANONYMOUS_GROUP_NAME
@@ -95,6 +95,11 @@ class RouterV2:
             web.patch(u.self_extra, self.patch_self_extra),
             web.patch(u.self_password, self.patch_self_password),
 
+            # configs
+            web.get(u.configs, self.get_configs),
+            web.get(u.configs_pkey, self.get_configs_pkey),
+            web.patch(u.configs_pkey, self.patch_configs_pkey),
+
             # infos
             web.get(u.infos, self.get_infos),
             web.post(u.infos, self.post_infos),
@@ -156,6 +161,28 @@ class RouterV2:
         except ValueError as e:
             raise HTTPBadRequest(reason=str(e))
         await self.context.change_password(hs.audience, cp.after)
+
+    # -------
+    # Configs
+    # -------
+
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def get_configs(self) -> List[Config]:
+        return self.context.get_configs()
+
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def get_configs_pkey(self, key: str) -> Config:
+        try:
+            return self.context.get_config(key)
+        except KeyError as e:
+            raise HTTPBadRequest(reason=str(e))
+
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def patch_configs_pkey(self, key: str, config: UpdateConfigValue) -> None:
+        try:
+            self.context.update_config(key, config.value)
+        except KeyError as e:
+            raise HTTPBadRequest(reason=str(e))
 
     # -----
     # Infos

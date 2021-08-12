@@ -7,7 +7,7 @@ en:
   projects: "Projects"
   lambdas: "Lambdas"
   features: "Features"
-  envs: "환경 변수"
+  envs: "System variables"
 
 ko:
   title: "관리자 설정"
@@ -17,7 +17,7 @@ ko:
   projects: "프로젝트"
   lambdas: "람다 관리"
   features: "기능 설정"
-  envs: "환경 변수"
+  envs: "시스템 변수"
 </i18n>
 
 <template>

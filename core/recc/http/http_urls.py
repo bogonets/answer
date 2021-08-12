@@ -21,6 +21,7 @@ v2 = "/v2"
 
 # Depth 3rd.
 admin = "/admin"
+configs = "/configs"
 infos = "/infos"
 extra = "/extra"
 heartbeat = "/heartbeat"
@@ -52,9 +53,12 @@ api_v1 = api + v1
 api_v2 = api + v2
 api_v2_public = api + v2 + public
 
-# Mixin
+# Mixin (api prefix)
 api_version = api + version
 api_heartbeat = api + heartbeat
+
+# Mixin (api/v2 sub)
+configs_pkey = configs + pkey
 infos_pkey = infos + pkey
 projects_pproject = projects + pproject
 self_extra = self + extra
