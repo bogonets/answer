@@ -295,7 +295,7 @@ export default class MainAdminUsersEdit extends VueBase {
   showDeleteUserDialog = false;
   showDeleteLoading = false;
 
-  mounted() {
+  created() {
     const user = this.$route.params.user as User;
     const username = user?.username || '';
     if (!username) {
