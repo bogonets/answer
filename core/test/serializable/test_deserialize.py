@@ -4,6 +4,7 @@ from unittest import TestCase, main
 from datetime import datetime
 from typing import Any, List, Dict, Optional
 from dataclasses import dataclass
+from enum import Enum
 from recc.serializable.serializable import DeserializeInterface
 from recc.serializable.deserialize import deserialize, deserialize_default
 
@@ -76,6 +77,12 @@ class _Test6:
 class _Test7:
     test1: str
     test2: Optional[str] = None
+
+
+class _Enum1(Enum):
+    Value0 = 0
+    Value1 = 1
+    Value2 = 2
 
 
 class DeserializeTestCase(TestCase):
@@ -268,6 +275,17 @@ class DeserializeTestCase(TestCase):
         result = deserialize_default([1, 2, 3], list)
         self.assertIsInstance(result, list)
         self.assertListEqual(result, [1, 2, 3])
+
+    def test_enum(self):
+        result = deserialize_default([0, 1, 2], List[_Enum1])
+        self.assertIsInstance(result, list)
+        self.assertEqual(3, len(result))
+        self.assertIsInstance(result[0], _Enum1)
+        self.assertIsInstance(result[1], _Enum1)
+        self.assertIsInstance(result[2], _Enum1)
+        self.assertEqual(result[0], _Enum1.Value0)
+        self.assertEqual(result[1], _Enum1.Value1)
+        self.assertEqual(result[2], _Enum1.Value2)
 
 
 if __name__ == "__main__":

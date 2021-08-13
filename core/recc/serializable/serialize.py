@@ -11,6 +11,7 @@ from typing import (
     Optional,
 )
 from datetime import datetime
+from enum import Enum
 from recc.serializable.serializable import (
     MAPPING_METHOD_ITEMS,
     MAPPING_METHOD_KEYS,
@@ -85,6 +86,8 @@ def _serialize_any(version: int, obj: Any, key: Optional[str] = None) -> Any:
             return None
         elif isinstance(obj, datetime):
             return obj.isoformat()
+        elif isinstance(obj, Enum):
+            return obj.value
         elif is_serialize_obj(obj):
             return _serialize_interface(version, obj)
         elif is_serializable_pod_obj(obj):
@@ -102,12 +105,12 @@ def _serialize_any(version: int, obj: Any, key: Optional[str] = None) -> Any:
         raise SerializeError(str(e), key)
 
 
-def serialize(version: int, obj: Any) -> Dict[str, Any]:
+def serialize(version: int, obj: Any) -> Any:
     try:
         return _serialize_any(version, obj)
     except SerializeError as e:
         raise KeyError(f"Key({e.key}) error: {e.msg}")
 
 
-def serialize_default(obj: Any) -> Dict[str, Any]:
+def serialize_default(obj: Any) -> Any:
     return serialize(version_info[0], obj)

@@ -19,6 +19,7 @@ from typing import (
 )
 from datetime import datetime
 from dataclasses import is_dataclass
+from enum import Enum
 from recc.serializable.serializable import (
     MAPPING_METHOD_ITEMS,
     MAPPING_METHOD_KEYS,
@@ -282,6 +283,8 @@ def _deserialize_any(
                     dest_type = "`datetime` type"
                     msg = f"{src_type} cannot be converted to {dest_type}."
                     raise DeserializeError(msg)
+            elif issubclass(cls, Enum):
+                return cls(data)
             elif is_deserialize_cls(cls):
                 return _deserialize_interface(version, data, cls)
             elif issubclass(cls, MutableMapping):

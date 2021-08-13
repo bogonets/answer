@@ -4,6 +4,7 @@ from unittest import TestCase, main
 from datetime import datetime
 from typing import Any, Optional
 from dataclasses import dataclass
+from enum import Enum
 from recc.serializable.serializable import Serializable
 from recc.serializable.serialize import serialize, serialize_default
 
@@ -45,6 +46,12 @@ class _Test3:
 class _Test4:
     test1: str
     test2: Optional[str] = None
+
+
+class _Enum1(Enum):
+    Value0 = 0
+    Value1 = 1
+    Value2 = 2
 
 
 class SerializeTestCase(TestCase):
@@ -105,7 +112,16 @@ class SerializeTestCase(TestCase):
     def test_list(self):
         data = serialize_default([1, 2, 3])
         self.assertIsInstance(data, list)
-        self.assertListEqual(data, [1, 2, 3])
+        self.assertListEqual([1, 2, 3], data)
+
+    def test_enum(self):
+        data1 = serialize_default(_Enum1.Value0)
+        self.assertIsInstance(data1, int)
+        self.assertEqual(0, data1)
+
+        data2 = serialize_default([_Enum1.Value0, _Enum1.Value1, _Enum1.Value2])
+        self.assertIsInstance(data2, list)
+        self.assertListEqual([0, 1, 2], data2)
 
 
 if __name__ == "__main__":
