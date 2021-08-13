@@ -5,6 +5,6 @@ from dataclasses import dataclass
 
 @dataclass
 class TemplateKey:
-    position: str
+    position: int
     category: str
     name: str

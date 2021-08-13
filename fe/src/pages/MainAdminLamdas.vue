@@ -1,5 +1,9 @@
 <i18n lang="yaml">
 en:
+  position:
+    builtin: "Builtin"
+    package: "Package"
+    storage: "Storage"
   search_label: "You can filter by category or name."
   headers:
     position: "Position"
@@ -10,6 +14,10 @@ en:
   empty_lamdas: "Empty Lamdas"
 
 ko:
+  position:
+    builtin: "내장"
+    package: "패키지"
+    storage: "저장소"
   search_label: "범주 또는 이름을 필터링할 수 있습니다."
   headers:
     position: "위치"
@@ -25,9 +33,18 @@ ko:
     <toolbar-navigation :items="navigationItems"></toolbar-navigation>
     <v-divider></v-divider>
 
+    <v-tabs v-model="tabIndex">
+      <v-tab>{{ $t('position.builtin') }}</v-tab>
+      <v-tab>{{ $t('position.package') }}</v-tab>
+      <v-tab>{{ $t('position.storage') }}</v-tab>
+    </v-tabs>
+    <v-divider></v-divider>
+
     <v-data-table
+        dense
+        :items-per-page="itemsPerPage"
         :headers="headers"
-        :items="lamdas"
+        :items="currentLamdas"
         :search="filterText"
         :loading="showLoading"
         :loading-text="$t('loading')"
@@ -47,8 +64,8 @@ ko:
 
       <template v-slot:item.actions="{ item }">
         <v-icon
-            v-if="false"
             small
+            disabled
             class="mr-2"
             @click="onClickEditConfig(item)"
         >
@@ -65,9 +82,16 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component} from 'vue-property-decorator';
+import {Component, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import {TemplateKey} from '@/apis/api-v2';
+import * as _ from 'lodash';
+
+const ITEMS_PER_PAGE = 15;
+const BUILTIN_TAB_INDEX = 0;
+const PACKAGE_TAB_INDEX = 1;
+const STORAGE_TAB_INDEX = 2;
 
 @Component({
   components: {
@@ -75,6 +99,7 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
   }
 })
 export default class MainAdminLamdas extends VueBase {
+  private readonly itemsPerPage = ITEMS_PER_PAGE;
   private readonly navigationItems = [
     {
       text: 'Admin',
@@ -89,12 +114,8 @@ export default class MainAdminLamdas extends VueBase {
 
   private readonly headers = [
     {
-      text: this.$t('headers.position').toString(),
-      filterable: true,
-      value: 'position',
-    },
-    {
       text: this.$t('headers.category').toString(),
+      align: 'center',
       filterable: true,
       value: 'category',
     },
@@ -113,13 +134,20 @@ export default class MainAdminLamdas extends VueBase {
     },
   ];
 
+  tabIndex = 0;
   filterText = '';
-  lamdas: object = [];
+  totalLamdas: Array<TemplateKey> = [];
+  currentLamdas: Array<TemplateKey> = [];
   showLoading = true;
 
   editCandidateKey = '';
   editCandidateValue = '';
   showEditConfigDialog = false;
+
+  @Watch('tabIndex')
+  onChangeTab(value: number) {
+    this.updateCurrentLamdas(value)
+  }
 
   mounted() {
     this.updateLamdas();
@@ -129,13 +157,38 @@ export default class MainAdminLamdas extends VueBase {
     this.showLoading = true;
     this.$api2.getTemplates()
         .then((lamdas) => {
-          this.lamdas = lamdas;
+          this.totalLamdas = lamdas;
           this.showLoading = false;
+          this.updateCurrentLamdasWithTabIndex();
         })
         .catch(error => {
           console.error(error);
           this.showLoading = false;
         });
+  }
+
+  isPositionIndex(index: number) {
+    switch (index) {
+      case BUILTIN_TAB_INDEX:
+      case PACKAGE_TAB_INDEX:
+      case STORAGE_TAB_INDEX:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  updateCurrentLamdas(position: number) {
+    if (!this.isPositionIndex(position)) {
+      throw Error(`Unknown tab index: ${position}`)
+    }
+    this.currentLamdas = _.filter(this.totalLamdas, o => {
+      return o.position == position;
+    });
+  }
+
+  updateCurrentLamdasWithTabIndex() {
+    this.updateCurrentLamdas(this.tabIndex);
   }
 
   onClickEditConfig(item) {

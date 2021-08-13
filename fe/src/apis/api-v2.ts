@@ -86,56 +86,56 @@ export interface User {
 }
 
 export interface Info {
-    key?: string;
-    value?: string;
-    created_at?: string;
-    updated_at?: string;
+    key: string;
+    value: string;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface UpdateInfo {
-    key?: string;
-    value?: string;
+    key: string;
+    value: string;
 }
 
 export interface UpdateInfoValue {
-    value?: string;
+    value: string;
 }
 
 export interface TemplateKey {
-    position?: string;
-    category?: string;
-    name?: string;
+    position: number;
+    category: string;
+    name: string;
 }
 
 export interface Config {
-    key?: string;
-    type?: string;
-    value?: string;
+    key: string;
+    type: string;
+    value: string;
 }
 
 export interface UpdateConfigValue {
-    value?: string;
+    value: string;
 }
 
 export interface Login {
-    access?: string;
-    refresh?: string;
-    user?: User;
+    access: string;
+    refresh: string;
+    user: User;
 }
 
 export interface Project {
-    name?: string;
-    description?: string;
-    features?: object;
-    extra?: object;
-    created_at?: string;
-    updated_at?: string;
+    name: string;
+    description: string;
+    features: object;
+    extra: object;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface SystemOverview {
-    users?: number;
-    groups?: number;
-    projects?: number;
+    users: number;
+    groups: number;
+    projects: number;
 }
 
 
