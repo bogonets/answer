@@ -132,13 +132,22 @@ export interface Login {
     user: User;
 }
 
+export interface Group {
+    name?: string;
+    description?: string;
+    features?: Array<string>;
+    extra?: object;
+    created_at?: string;
+    updated_at?: string;
+}
+
 export interface Project {
-    name: string;
-    description: string;
-    features: object;
-    extra: object;
-    created_at: string;
-    updated_at: string;
+    name?: string;
+    description?: string;
+    features?: object;
+    extra?: object;
+    created_at?: string;
+    updated_at?: string;
 }
 
 export interface SystemOverview {
@@ -382,12 +391,12 @@ export default class ApiV2 {
         return this.get<Array<User>>('/users');
     }
 
-    postUsers(user: User) {
-        return this.post('/users', user);
+    postUsers(body: User) {
+        return this.post('/users', body);
     }
 
-    patchUsersUser(username: string, patchUser?: User) {
-        return this.patch(`/users/${username}`, patchUser);
+    patchUsersUser(username: string, body?: User) {
+        return this.patch(`/users/${username}`, body);
     }
 
     deleteUsersUser(username: string) {
@@ -400,6 +409,26 @@ export default class ApiV2 {
 
     getTemplates() {
         return this.get<Array<TemplateKey>>(`/templates`);
+    }
+
+    // -----
+    // Groups
+    // -----
+
+    getGroups() {
+        return this.get<Array<Group>>('/groups');
+    }
+
+    postGroups(body: Group) {
+        return this.post('/groups', body);
+    }
+
+    patchGroupsGroup(name: string, body?: Group) {
+        return this.patch(`/users/${name}`, body);
+    }
+
+    deleteGroupsGroup(group: string) {
+        return this.delete(`/users/${group}`);
     }
 
     // --------

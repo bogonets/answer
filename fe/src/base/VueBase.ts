@@ -1,9 +1,8 @@
 import {Vue, Watch} from 'vue-property-decorator';
 import {RawLocation} from 'vue-router';
 import {Names} from '@/router/names';
-import {User, ApiV2StatusError} from '@/apis/api-v2';
+import {User, Group} from '@/apis/api-v2';
 import SimpleToast from '@/components/SimpleToast.vue';
-import {AxiosError} from 'axios';
 
 export default class VueBase extends Vue {
 
@@ -131,6 +130,14 @@ export default class VueBase extends Vue {
 
     moveToMainAdminGroups() {
         this.moveTo(this.routeNames.mainAdminGroups);
+    }
+
+    moveToMainAdminGroupsNew() {
+        this.moveTo(this.routeNames.mainAdminGroupsNew);
+    }
+
+    moveToMainAdminGroupsEdit(group: Group) {
+        this.moveTo(this.routeNames.mainAdminGroupsEdit, {group: group});
     }
 
     moveToMainAdminProjects() {

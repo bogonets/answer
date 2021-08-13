@@ -12,12 +12,15 @@ import MainAccount from '@/pages/MainAccount.vue';
 import MainAdminInfos from '@/pages/MainAdminInfos.vue';
 import MainAdminConfigs from '@/pages/MainAdminConfigs.vue';
 import MainAdminGroups from '@/pages/MainAdminGroups.vue';
+import MainAdminGroupsEdit from '@/pages/MainAdminGroupsEdit.vue';
+import MainAdminGroupsNew from '@/pages/MainAdminGroupsNew.vue';
 import MainAdminLamdas from '@/pages/MainAdminLamdas.vue';
 import MainAdminOverview from '@/pages/MainAdminOverview.vue';
 import MainAdminProjects from '@/pages/MainAdminProjects.vue';
+import MainAdminTasks from '@/pages/MainAdminTasks.vue';
+import MainAdminUsers from '@/pages/MainAdminUsers.vue';
 import MainAdminUsersEdit from '@/pages/MainAdminUsersEdit.vue';
 import MainAdminUsersNew from '@/pages/MainAdminUsersNew.vue';
-import MainAdminUsers from '@/pages/MainAdminUsers.vue';
 import MainAdmin from '@/pages/MainAdmin.vue';
 import MainDashboard from '@/pages/MainDashboard.vue';
 import MainDevTools from '@/pages/MainDevTools.vue';
@@ -37,7 +40,6 @@ import Main from '@/pages/Main.vue';
 import Signin from '@/pages/Signin.vue';
 import SignupAdmin from '@/pages/SignupAdmin.vue';
 import Signup from '@/pages/Signup.vue';
-import MainAdminTasks from "@/pages/MainAdminTasks.vue";
 
 export const mainAccountChildren = [
     {
@@ -82,6 +84,16 @@ export const mainAdminChildren = [
         path: 'groups',
         component: MainAdminGroups,
         name: Names.mainAdminGroups,
+    },
+    {
+        path: 'groups/new',
+        component: MainAdminGroupsNew,
+        name: Names.mainAdminGroupsNew,
+    },
+    {
+        path: 'groups/edit',
+        component: MainAdminGroupsEdit,
+        name: Names.mainAdminGroupsEdit,
     },
     {
         path: 'projects',

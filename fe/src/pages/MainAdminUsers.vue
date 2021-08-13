@@ -1,9 +1,7 @@
 <i18n lang="yaml">
 en:
-  title: "User Management"
-  subtitle: "You can add, edit and remove users."
   search_label: "You can filter by username or email."
-  new_user: "New User"
+  new_item: "New User"
   headers:
     username: "Username"
     email: "E-Mail"
@@ -12,13 +10,11 @@ en:
     last_login: "Last sign-in"
     actions: "Actions"
   loading: "Loading... Please wait"
-  empty_user: "Empty User"
+  empty_item: "Empty User"
 
 ko:
-  title: "사용자 관리"
-  subtitle: "사용자를 추가하거나 편집 및 제거할 수 있습니다."
   search_label: "사용자명 또는 이메일을 필터링할 수 있습니다."
-  new_user: "새로운 사용자"
+  new_item: "새로운 사용자"
   headers:
     username: "사용자명"
     email: "이메일"
@@ -27,7 +23,7 @@ ko:
     last_login: "마지막 로그인"
     actions: "관리"
   loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-  empty_user: "사용자가 존재하지 않습니다."
+  empty_item: "사용자가 존재하지 않습니다."
 </i18n>
 
 <template>
@@ -38,7 +34,7 @@ ko:
 
     <v-data-table
         :headers="headers"
-        :items="users"
+        :items="tableItems"
         :search="filterText"
         :loading="showLoading"
         :loading-text="$t('loading')"
@@ -56,8 +52,8 @@ ko:
               hide-details
           ></v-text-field>
 
-          <v-btn color="primary" @click="onClickNewUser">
-            {{ $t('new_user') }}
+          <v-btn color="primary" @click="onClickNew">
+            {{ $t('new_item') }}
           </v-btn>
 
         </v-toolbar>
@@ -76,13 +72,13 @@ ko:
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon small @click="onClickEditUser(item)">
+        <v-icon small @click="onClickEdit(item)">
           mdi-pencil
         </v-icon>
       </template>
 
       <template v-slot:no-data>
-        {{ $t('empty_user') }}
+        {{ $t('empty_item') }}
       </template>
 
     </v-data-table>
@@ -94,6 +90,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import AppBarTitle from '@/components/AppBarTitle.vue';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import {User} from "@/apis/api-v2";
 
 @Component({
   components: {
@@ -155,14 +152,13 @@ export default class MainAdminUsers extends VueBase {
   ]
 
   filterText = '';
-  users: object = [];
+  tableItems: Array<User> = [];
   showLoading = true;
 
   mounted() {
     this.$api2.getUsers()
-        .then(response => {
-          // console.info(response);
-          this.users = response;
+        .then(items => {
+          this.tableItems = items;
           this.showLoading = false;
         })
         .catch(error => {
@@ -175,12 +171,12 @@ export default class MainAdminUsers extends VueBase {
     return utc?.split('T')[0] || '';
   }
 
-  onClickEditUser(item) {
-    this.moveToMainAdminUsersEdit(item);
+  onClickNew() {
+    this.moveToMainAdminUsersNew();
   }
 
-  onClickNewUser() {
-    this.moveToMainAdminUsersNew();
+  onClickEdit(item) {
+    this.moveToMainAdminUsersEdit(item);
   }
 }
 </script>
