@@ -23,6 +23,12 @@ class DbGroup(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def update_group_name_by_uid(
+        self, uid: int, name: str, updated_at=datetime.utcnow()
+    ) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def update_group_description_by_uid(
         self, uid: int, description: str, updated_at=datetime.utcnow()
     ) -> None:
@@ -59,11 +65,27 @@ class DbGroup(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def update_group_by_uid(
+        self,
+        uid: int,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        features: Optional[List[str]] = None,
+        extra: Optional[Any] = None,
+        updated_at=datetime.utcnow(),
+    ) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def delete_group_by_uid(self, uid: int) -> None:
         raise NotImplementedError
 
     @abstractmethod
     async def delete_group_by_name(self, name: str) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_group_uid_by_name(self, name: str) -> int:
         raise NotImplementedError
 
     @abstractmethod

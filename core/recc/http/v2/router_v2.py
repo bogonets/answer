@@ -121,6 +121,13 @@ class RouterV2:
             web.patch(u.users_puser, self.patch_users_puser),
             web.delete(u.users_puser, self.delete_users_puser),
 
+            # groups
+            web.get(u.groups, self.get_groups),
+            web.post(u.groups, self.post_groups),
+            web.get(u.groups_pgroup, self.get_groups_pgroup),
+            web.patch(u.groups_pgroup, self.patch_groups_pgroup),
+            web.delete(u.groups_pgroup, self.delete_groups_pgroup),
+
             # projects
             web.get(u.projects, self.get_projects),
 
@@ -140,13 +147,13 @@ class RouterV2:
         return hs.user
 
     @parameter_matcher()
-    async def patch_self(self, hs: HttpSession, user: User) -> None:
+    async def patch_self(self, hs: HttpSession, body: User) -> None:
         await self.context.update_user(
             hs.username,
-            email=user.email,
-            phone1=user.phone1,
-            phone2=user.phone2,
-            extra=user.extra,
+            email=body.email,
+            phone1=body.phone1,
+            phone2=body.phone2,
+            extra=body.extra,
         )
 
     @parameter_matcher()
@@ -154,17 +161,17 @@ class RouterV2:
         return hs.extra
 
     @parameter_matcher()
-    async def patch_self_extra(self, hs: HttpSession, extra: Dict[str, Any]) -> None:
-        await self.context.update_user_extra(hs.audience, extra)
+    async def patch_self_extra(self, hs: HttpSession, body: Dict[str, Any]) -> None:
+        await self.context.update_user_extra(hs.audience, body)
 
     @parameter_matcher()
-    async def patch_self_password(self, hs: HttpSession, cp: UpdatePassword) -> None:
+    async def patch_self_password(self, hs: HttpSession, body: UpdatePassword) -> None:
         try:
-            if not self.context.challenge_password(hs.audience, cp.before):
+            if not self.context.challenge_password(hs.audience, body.before):
                 raise HTTPUnauthorized(reason="The password is incorrect.")
         except ValueError as e:
             raise HTTPBadRequest(reason=str(e))
-        await self.context.change_password(hs.audience, cp.after)
+        await self.context.change_password(hs.audience, body.after)
 
     # -------
     # Configs
@@ -182,9 +189,9 @@ class RouterV2:
             raise HTTPBadRequest(reason=str(e))
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def patch_configs_pkey(self, key: str, config: UpdateConfigValue) -> None:
+    async def patch_configs_pkey(self, key: str, body: UpdateConfigValue) -> None:
         try:
-            self.context.update_config(key, config.value)
+            self.context.update_config(key, body.value)
         except KeyError as e:
             raise HTTPBadRequest(reason=str(e))
 
@@ -197,9 +204,9 @@ class RouterV2:
         return await self.context.get_infos()
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def post_infos(self, info: UpdateInfo) -> None:
+    async def post_infos(self, body: UpdateInfo) -> None:
         try:
-            await self.context.create_info(info.key, info.value)
+            await self.context.create_info(body.key, body.value)
         except KeyError as e:
             raise HTTPBadRequest(reason=str(e))
 
@@ -211,9 +218,9 @@ class RouterV2:
             raise HTTPNotFound(reason=str(e))
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def patch_infos_pkey(self, key: str, info: UpdateInfoValue) -> None:
+    async def patch_infos_pkey(self, key: str, body: UpdateInfoValue) -> None:
         try:
-            await self.context.update_info(key, info.value)
+            await self.context.update_info(key, body.value)
         except KeyError as e:
             raise HTTPBadRequest(reason=str(e))
 
@@ -246,24 +253,24 @@ class RouterV2:
         return await self.context.get_users()
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def post_users(self, user: User) -> None:
-        if not user.username:
-            raise HTTPBadRequest(reason="Not exists username field")
-        if not user.password:
-            raise HTTPBadRequest(reason="Not exists password field")
+    async def post_users(self, body: User) -> None:
+        if not body.username:
+            raise HTTPBadRequest(reason="Not exists `username` field")
+        if not body.password:
+            raise HTTPBadRequest(reason="Not exists `password` field")
 
-        user.strip_insensitive()
-        user.empty_is_none_insensitive()
+        body.strip_insensitive()
+        body.empty_is_none_insensitive()
 
         await self.context.signup(
-            username=user.username,
-            hashed_password=user.password,
-            nickname=user.nickname,
-            email=user.email,
-            phone1=user.phone1,
-            phone2=user.phone2,
-            is_admin=user.is_admin if user.is_admin else False,
-            extra=user.extra,
+            username=body.username,
+            hashed_password=body.password,
+            nickname=body.nickname,
+            email=body.email,
+            phone1=body.phone1,
+            phone2=body.phone2,
+            is_admin=body.is_admin if body.is_admin else False,
+            extra=body.extra,
         )
 
     @parameter_matcher(acl={aa.HasAdmin})
@@ -273,15 +280,15 @@ class RouterV2:
         return await self.context.get_user(user)
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def patch_users_puser(self, user: str, patch_user_info: User) -> None:
+    async def patch_users_puser(self, user: str, body: User) -> None:
         await self.context.update_user(
             user,
-            nickname=patch_user_info.nickname,
-            email=patch_user_info.email,
-            phone1=patch_user_info.phone1,
-            phone2=patch_user_info.phone2,
-            is_admin=patch_user_info.is_admin,
-            extra=patch_user_info.extra,
+            nickname=body.nickname,
+            email=body.email,
+            phone1=body.phone1,
+            phone2=body.phone2,
+            is_admin=body.is_admin,
+            extra=body.extra,
         )
 
     @parameter_matcher(acl={aa.HasAdmin})
@@ -292,9 +299,39 @@ class RouterV2:
     # Groups
     # ------
 
-    @parameter_matcher()
-    async def get_groups(self, hs: HttpSession) -> List[Group]:
-        return hs.groups
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def get_groups(self) -> List[Group]:
+        return await self.context.get_groups()
+
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def post_groups(self, body: Group) -> None:
+        if not body.name:
+            raise HTTPBadRequest(reason="Not exists `name` field")
+
+        await self.context.create_group(
+            name=body.name,
+            description=body.description,
+            features=body.features,
+        )
+
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def get_groups_pgroup(self, group: str) -> Group:
+        return await self.context.get_group_by_name(group)
+
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def patch_groups_pgroup(self, group: str, body: Group) -> None:
+        uid = await self.context.get_group_uid_by_name(group)
+        await self.context.update_group_by_uid(
+            uid=uid,
+            name=body.name,
+            description=body.description,
+            features=body.features,
+            extra=body.extra,
+        )
+
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def delete_groups_pgroup(self, group: str) -> None:
+        await self.context.delete_group_by_name(group)
 
     # --------
     # Projects

@@ -29,8 +29,8 @@ class RouterV2PublicTestCase(AsyncTestCase):
         self.assertEqual(200, response.status)
         self.assertEqual(version_text, response.data)
 
-    async def test_test_init(self):
-        response = await self.tester.get(v2_public_path(u.test_init))
+    async def test_state_already(self):
+        response = await self.tester.get(v2_public_path(u.state_already))
         self.assertEqual(200, response.status)
         self.assertFalse(response.data)
 

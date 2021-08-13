@@ -9,6 +9,7 @@ from recc.database.interfaces.db_group import DbGroup
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.group import (
     INSERT_GROUP,
+    UPDATE_GROUP_NAME_BY_UID,
     UPDATE_GROUP_DESCRIPTION_BY_UID,
     UPDATE_GROUP_DESCRIPTION_BY_NAME,
     UPDATE_GROUP_EXTRA_BY_UID,
@@ -17,10 +18,12 @@ from recc.database.postgresql.query.group import (
     UPDATE_GROUP_FEATURES_BY_NAME,
     DELETE_GROUP_BY_UID,
     DELETE_GROUP_BY_NAME,
+    SELECT_GROUP_UID_BY_NAME,
     SELECT_GROUP_BY_UID,
     SELECT_GROUP_BY_NAME,
     SELECT_GROUP_ALL,
     SELECT_GROUP_COUNT,
+    get_update_group_query_by_uid,
 )
 
 
@@ -38,6 +41,15 @@ class PgGroup(DbGroup, PgBase):
         await self.execute(query, name, description, features, extra, created_at)
         params_msg = f"name={name}"
         logger.info(f"create_group({params_msg}) ok.")
+
+    @overrides
+    async def update_group_name_by_uid(
+        self, uid: int, name: str, updated_at=datetime.utcnow()
+    ) -> None:
+        query = UPDATE_GROUP_NAME_BY_UID
+        await self.execute(query, uid, name, updated_at)
+        params_msg = f"uid={uid}"
+        logger.info(f"update_group_name_by_uid({params_msg}) ok.")
 
     @overrides
     async def update_group_description_by_uid(
@@ -94,6 +106,28 @@ class PgGroup(DbGroup, PgBase):
         logger.info(f"update_group_features_by_name({params_msg}) ok.")
 
     @overrides
+    async def update_group_by_uid(
+        self,
+        uid: int,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        features: Optional[List[str]] = None,
+        extra: Optional[Any] = None,
+        updated_at=datetime.utcnow(),
+    ) -> None:
+        query, args = get_update_group_query_by_uid(
+            uid=uid,
+            name=name,
+            description=description,
+            features=features,
+            extra=extra,
+            updated_at=updated_at,
+        )
+        await self.execute(query, *args)
+        params_msg = f"uid={uid}"
+        logger.info(f"update_group_by_uid({params_msg}) ok.")
+
+    @overrides
     async def delete_group_by_uid(self, uid: int) -> None:
         query = DELETE_GROUP_BY_UID
         await self.execute(query, uid)
@@ -106,6 +140,18 @@ class PgGroup(DbGroup, PgBase):
         await self.execute(query, name)
         params_msg = f"name={name}"
         logger.info(f"delete_group_by_name({params_msg}) ok.")
+
+    @overrides
+    async def get_group_uid_by_name(self, name: str) -> int:
+        query = SELECT_GROUP_UID_BY_NAME
+        row = await self.fetch_row(query, name)
+        params_msg = f"name={name}"
+        if not row:
+            raise RuntimeError(f"Not found group: {params_msg}")
+        assert row and len(row) == 1
+        result = int(row.get("uid"))
+        logger.info(f"get_group_uid_by_name({params_msg}) -> {result}")
+        return result
 
     @overrides
     async def get_group_by_uid(self, uid: int) -> Group:

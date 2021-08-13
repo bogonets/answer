@@ -71,7 +71,7 @@ class DbProject(metaclass=ABCMeta):
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
-        updated_at: Optional[datetime] = None,
+        updated_at=datetime.utcnow(),
     ) -> None:
         raise NotImplementedError
 

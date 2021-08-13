@@ -23,9 +23,10 @@ v2 = "/v2"
 admin = "/admin"
 already = "/already"
 configs = "/configs"
-infos = "/infos"
 extra = "/extra"
+groups = "/groups"
 heartbeat = "/heartbeat"
+infos = "/infos"
 init = "/init"
 overview = "/overview"
 password = "/password"
@@ -47,6 +48,7 @@ def _param_path(key: str) -> str:
 
 
 # Params (Use the prefix 'p')
+pgroup = _param_path(p.group)
 pkey = _param_path(p.key)
 pproject = _param_path(p.project)
 puser = _param_path(p.user)
@@ -62,6 +64,7 @@ api_heartbeat = api + heartbeat
 
 # Mixin (api/v2 sub)
 configs_pkey = configs + pkey
+groups_pgroup = groups + pgroup
 infos_pkey = infos + pkey
 projects_pproject = projects + pproject
 self_extra = self + extra
@@ -70,4 +73,3 @@ signup_admin = signup + admin
 state_already = state + already
 system_overview = system + overview
 users_puser = users + puser
-test_init = test + init
