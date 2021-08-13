@@ -211,7 +211,7 @@ import {User} from '@/apis/api-v2';
 import {USERNAME_RULES, PASSWORD_RULES, PHONE_RULES, EMAIL_RULES} from '@/rules';
 
 @Component
-export default class FormSignup extends VueBase {
+export default class FormUserNew extends VueBase {
   private readonly rules = {
     username: USERNAME_RULES,
     password: PASSWORD_RULES,

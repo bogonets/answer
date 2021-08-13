@@ -13,13 +13,13 @@ ko:
         <v-col class="max-content-width">
           <v-card elevation="8">
             <v-card-title>{{ $t('title') }}</v-card-title>
-            <form-signup
+            <form-user-new
                 hide-access
                 dense-footer
                 :loading="showSignupLoading"
                 @cancel="onClickCancel"
                 @ok="onClickOk"
-            ></form-signup>
+            ></form-user-new>
           </v-card>
         </v-col>
       </v-row>
@@ -30,12 +30,12 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import FormSignup from '@/components/FormSignup.vue';
+import FormUserNew from '@/components/FormUserNew.vue';
 import {Signup} from '@/apis/api-v2';
 
 @Component({
   components: {
-    FormSignup,
+    FormUserNew,
   }
 })
 export default class MainAdminUsersNew extends VueBase {
