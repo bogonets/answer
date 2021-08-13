@@ -137,6 +137,10 @@ export default class VueBase extends Vue {
         this.moveTo(this.routeNames.mainAdminProjects);
     }
 
+    moveToMainAdminTasks() {
+        this.moveTo(this.routeNames.mainAdminTasks);
+    }
+
     moveToMainAdminLambdas() {
         this.moveTo(this.routeNames.mainAdminLamdas);
     }

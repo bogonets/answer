@@ -37,6 +37,7 @@ import Main from '@/pages/Main.vue';
 import Signin from '@/pages/Signin.vue';
 import SignupAdmin from '@/pages/SignupAdmin.vue';
 import Signup from '@/pages/Signup.vue';
+import MainAdminTasks from "@/pages/MainAdminTasks.vue";
 
 export const mainAccountChildren = [
     {
@@ -86,6 +87,11 @@ export const mainAdminChildren = [
         path: 'projects',
         component: MainAdminProjects,
         name: Names.mainAdminProjects,
+    },
+    {
+        path: 'tasks',
+        component: MainAdminTasks,
+        name: Names.mainAdminTasks,
     },
     {
         path: 'configs',
