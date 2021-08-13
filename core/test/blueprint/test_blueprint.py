@@ -2,8 +2,8 @@
 
 from unittest import TestCase, main
 from recc.blueprint.blueprint import BpSlot, BpArc, BpProperty, BpNode, BpTask, BpGraph
-from recc.serializable.deserialize import deserialize
-from recc.serializable.serialize import serialize
+from recc.serialization.deserialize import deserialize
+from recc.serialization.serialize import serialize
 
 
 class BlueprintTestCase(TestCase):

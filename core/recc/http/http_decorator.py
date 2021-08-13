@@ -15,7 +15,7 @@ from aiohttp.web_exceptions import (
 from recc.core.context import Context
 from recc.session.session import Session
 from recc.log.logging import recc_http_logger as logger
-from recc.serializable.serialize import serialize_default
+from recc.serialization.serialize import serialize_default
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.http_payload import payload_to_object, request_payload_to_class
 from recc.http.http_response import get_accept_type, get_encoding, create_response

@@ -2,9 +2,9 @@
 
 from typing import Optional, Any, Dict, List
 from recc.typing.optional import strip_optional
-from recc.serializable.serializable import Serializable, update_dict, normalize_strings
-from recc.serializable.deserialize import deserialize
-from recc.serializable.serialize import serialize
+from recc.serialization.serializable import Serializable, update_dict, normalize_strings
+from recc.serialization.deserialize import deserialize
+from recc.serialization.serialize import serialize
 from recc.template.dependency import Dependency
 from recc.template.environment import Environment
 from recc.template.locale import Locale

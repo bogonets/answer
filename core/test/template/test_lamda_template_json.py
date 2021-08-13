@@ -7,7 +7,7 @@ from recc.template.lamda_template import LamdaTemplate
 from recc.template.information import Information
 from recc.template.controller import Controller
 from recc.template.property import Property
-from recc.serializable.json import serialize_json_file, deserialize_json_file
+from recc.serialization.json import serialize_json_file, deserialize_json_file
 
 SAMPLE_DATA = {
     "info": {"name": "sample"},

@@ -9,7 +9,7 @@ from recc.sequence.default_sequencer import DefaultSequencer
 from recc.blueprint.blueprint import BpTask
 from recc.template.manager.lamda_template_manager import LamdaTemplateManager
 from recc.template.information import EDGE_BEGIN, EDGE_MIDDLE, EDGE_END
-from recc.serializable.json import deserialize_json_text
+from recc.serialization.json import deserialize_json_text
 from recc.vs.box import BoxState, BoxData, BoxRequest
 from recc.vs.arc import Arc, ArcKey
 from recc.vs.slot import SlotDirection, SlotCategory, Slot, SlotKey

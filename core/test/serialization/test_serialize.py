@@ -5,8 +5,8 @@ from datetime import datetime
 from typing import Any, Optional
 from dataclasses import dataclass
 from enum import Enum
-from recc.serializable.serializable import Serializable
-from recc.serializable.serialize import serialize, serialize_default
+from recc.serialization.serializable import Serializable
+from recc.serialization.serialize import serialize, serialize_default
 
 
 class _Test0:

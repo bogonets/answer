@@ -8,7 +8,7 @@ from recc.variables.database import RECC_DB_VERSION_KEY
 from recc.http.http_utils import v2_path
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
-from recc.serializable.deserialize import deserialize_default
+from recc.serialization.deserialize import deserialize_default
 from recc.core.struct.update_info import UpdateInfo
 from recc.core.struct.system_overview import SystemOverview
 from recc.database.struct.info import Info

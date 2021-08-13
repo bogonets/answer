@@ -20,7 +20,7 @@ from typing import (
 from datetime import datetime
 from dataclasses import is_dataclass
 from enum import Enum
-from recc.serializable.serializable import (
+from recc.serialization.serializable import (
     MAPPING_METHOD_ITEMS,
     MAPPING_METHOD_KEYS,
     SEQUENCE_METHOD_INSERT,

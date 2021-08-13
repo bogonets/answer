@@ -5,7 +5,7 @@ from recc.core.mixin.context_base import ContextBase
 from recc.core.struct.template import TemplateKey
 from recc.template.manager.lamda_template_key import LamdaTemplateKey
 from recc.template.manager.lamda_template_position import (
-    LAMDA_TEMPLATE_POSITION_NAME_MAP
+    LAMDA_TEMPLATE_POSITION_NAME_MAP,
 )
 
 

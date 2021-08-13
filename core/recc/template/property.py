@@ -2,9 +2,9 @@
 
 from typing import Dict, Any, Optional, List
 from functools import reduce
-from recc.serializable.serializable import Serializable, update_dict
-from recc.serializable.deserialize import deserialize
-from recc.serializable.serialize import serialize
+from recc.serialization.serializable import Serializable, update_dict
+from recc.serialization.deserialize import deserialize
+from recc.serialization.serialize import serialize
 from recc.template.locale import Locale
 from recc.template.v1 import keys as v1k
 from recc.template.v2 import keys as v2k

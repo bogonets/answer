@@ -2,7 +2,7 @@
 
 from unittest import TestCase, main
 from typing import Any, Optional, get_type_hints
-from recc.serializable.serializable import (
+from recc.serialization.serializable import (
     Serializable,
     is_serialize_cls,
     is_serializable_pod_cls,

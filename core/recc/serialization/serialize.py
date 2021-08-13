@@ -12,7 +12,7 @@ from typing import (
 )
 from datetime import datetime
 from enum import Enum
-from recc.serializable.serializable import (
+from recc.serialization.serializable import (
     MAPPING_METHOD_ITEMS,
     MAPPING_METHOD_KEYS,
     SerializeError,

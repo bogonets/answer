@@ -6,7 +6,7 @@ import pickle
 from typing import Optional, Callable, List, Any, TypeVar
 from grpc.aio._channel import Channel  # noqa
 from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_register
-from recc.serializable.json import serialize_json_text
+from recc.serialization.json import serialize_json_text
 from recc.blueprint.blueprint import BpTask
 from recc.proto.api_pb2_grpc import ReccApiStub
 from recc.variables.rpc import DEFAULT_GRPC_OPTIONS

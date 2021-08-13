@@ -23,7 +23,7 @@ from recc.mime.mime_type import (
 from recc.driver.json import global_json_decoder
 from recc.driver.xml import global_xml_decoder
 from recc.driver.yaml import global_yaml_decoder
-from recc.serializable.deserialize import deserialize_default
+from recc.serialization.deserialize import deserialize_default
 
 _T = TypeVar("_T")
 

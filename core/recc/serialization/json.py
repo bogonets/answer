@@ -4,8 +4,8 @@ import codecs
 from typing import Type, TypeVar, Optional, Any, Final
 from json import JSONDecodeError
 from recc.driver.json import global_json_encoder, global_json_decoder
-from recc.serializable.serialize import serialize
-from recc.serializable.deserialize import deserialize
+from recc.serialization.serialize import serialize
+from recc.serialization.deserialize import deserialize
 
 _T = TypeVar("_T")
 _ET = TypeVar("_ET")

@@ -28,8 +28,8 @@ from recc.http.http_interface import EmptyHttpAppCallback
 from recc.http.http_app import HttpApp
 from recc.http.http_utils import v2_public_path
 from recc.http import http_urls as u
-from recc.serializable.serialize import serialize_default
-from recc.serializable.deserialize import deserialize_default
+from recc.serialization.serialize import serialize_default
+from recc.serialization.deserialize import deserialize_default
 from recc.core.struct.signup import Signup
 from recc.core.struct.signin import Signin
 from recc.core.context import Context

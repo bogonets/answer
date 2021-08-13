@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, Any, Dict, List, Tuple
-from recc.serializable.serializable import Serializable, update_dict
-from recc.serializable.serialize import serialize
-from recc.serializable.deserialize import deserialize
+from recc.serialization.serializable import Serializable, update_dict
+from recc.serialization.serialize import serialize
+from recc.serialization.deserialize import deserialize
 from recc.template.information import Information, EDGE_BEGIN, EDGE_MIDDLE, EDGE_END
 from recc.template.runtime_information import RuntimeInformation
 from recc.template.controller import Controller

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Dict, Any, Optional, List
-from recc.serializable.serializable import Serializable, update_dict, normalize_strings
+from recc.serialization.serializable import Serializable, update_dict, normalize_strings
 from recc.template.v1 import keys as v1k
 from recc.template.v2 import keys as v2k
 

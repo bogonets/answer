@@ -5,8 +5,8 @@ from datetime import datetime
 from typing import Any, List, Dict, Optional
 from dataclasses import dataclass
 from enum import Enum
-from recc.serializable.serializable import DeserializeInterface
-from recc.serializable.deserialize import deserialize, deserialize_default
+from recc.serialization.serializable import DeserializeInterface
+from recc.serialization.deserialize import deserialize, deserialize_default
 
 
 class _Test0:
