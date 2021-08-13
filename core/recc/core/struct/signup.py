@@ -13,7 +13,6 @@ class Signup:
     email: Optional[str] = None
     phone1: Optional[str] = None
     phone2: Optional[str] = None
-    is_admin: bool = False
 
     @staticmethod
     def encrypt_password(password: str) -> str:

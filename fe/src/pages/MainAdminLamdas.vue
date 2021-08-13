@@ -41,7 +41,6 @@ ko:
     <v-divider></v-divider>
 
     <v-data-table
-        dense
         :items-per-page="itemsPerPage"
         :headers="headers"
         :items="currentLamdas"

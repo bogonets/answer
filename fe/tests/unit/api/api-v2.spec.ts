@@ -33,8 +33,8 @@ describe('ApiV2', () => {
     expect(result).toBeTruthy();
   });
 
-  test('test_init', async () => {
-    const result = await api.getTestInit();
+  test('already', async () => {
+    const result = await api.already();
     expect(typeof result).toEqual('boolean');
   });
 });

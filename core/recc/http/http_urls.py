@@ -21,6 +21,7 @@ v2 = "/v2"
 
 # Depth 3rd.
 admin = "/admin"
+already = "/already"
 configs = "/configs"
 infos = "/infos"
 extra = "/extra"
@@ -33,6 +34,7 @@ public = "/public"
 self = "/self"
 signin = "/signin"
 signup = "/signup"
+state = "/state"
 system = "/system"
 templates = "/templates"
 test = "/test"
@@ -65,6 +67,7 @@ projects_pproject = projects + pproject
 self_extra = self + extra
 self_password = self + password
 signup_admin = signup + admin
+state_already = state + already
 system_overview = system + overview
 users_puser = users + puser
 test_init = test + init

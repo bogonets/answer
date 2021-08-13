@@ -61,6 +61,15 @@ export function originToBaseUrl(origin: string): string {
     }
 }
 
+export interface Signup {
+    username: string;
+    password: string;
+    nickname?: string;
+    email?: string;
+    phone1?: string;
+    phone2?: string;
+}
+
 export interface UpdatePassword {
     before?: string;
     after?: string;
@@ -245,12 +254,20 @@ export default class ApiV2 {
         return this.get('/public/heartbeat');
     }
 
-    getTestInit() {
-        return this.get<boolean>('/public/test/init');
+    already() {
+        return this.get<boolean>('/public/state/already');
     }
 
     encryptPassword(password: string): string {
         return sha256(password);
+    }
+
+    signup(user: Signup) {
+        return this.post('/public/signup', user);
+    }
+
+    signupAdmin(user: Signup) {
+        return this.post('/public/signup/admin', user);
     }
 
     signin(username: string, password: string, updateDefaultAuth = true) {

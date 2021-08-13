@@ -37,7 +37,6 @@ class PgUserTestCase(PostgresqlTestCase):
         self.assertEqual(email, user.email)
         self.assertEqual(phone1, user.phone1)
         self.assertEqual(phone2, user.phone2)
-        self.assertEqual(is_admin, user.is_admin)
         self.assertEqual(extra, user.extra)
         self.assertEqual(created_at, user.created_at)
         self.assertIsNone(user.updated_at)
@@ -100,7 +99,6 @@ class PgUserTestCase(PostgresqlTestCase):
         self.assertIsNone(user.email)
         self.assertIsNone(user.phone1)
         self.assertEqual(update_phone2, user.phone2)
-        self.assertFalse(user.is_admin)
         self.assertEqual(updated_at, user.updated_at)
 
     async def test_delete(self):

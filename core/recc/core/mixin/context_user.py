@@ -74,7 +74,7 @@ class ContextUser(ContextBase):
             extra=extra,
         )
 
-    async def signup_with_request(self, request: Signup) -> None:
+    async def signup_guest(self, request: Signup) -> None:
         await self.signup(
             username=request.username,
             hashed_password=request.password,
@@ -82,7 +82,7 @@ class ContextUser(ContextBase):
             email=request.email,
             phone1=request.phone1,
             phone2=request.phone2,
-            is_admin=request.is_admin,
+            is_admin=False,
         )
 
     async def signup_admin(self, username: str, hashed_password: str) -> None:

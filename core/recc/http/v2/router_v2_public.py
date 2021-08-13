@@ -45,7 +45,7 @@ class RouterV2Public:
         return [
             web.get(u.heartbeat, self.get_heartbeat),
             web.get(u.version, self.get_version),
-            web.get(u.test_init, self.get_test_init),
+            web.get(u.state_already, self.get_state_already),
             web.post(u.signup_admin, self.post_signup_admin),
             web.post(u.signup, self.post_signup),
             web.post(u.signin, self.post_signin),
@@ -54,6 +54,9 @@ class RouterV2Public:
     # ---------------
     # API v2 handlers
     # ---------------
+
+    async def _already(self) -> bool:
+        return await self.context.exists_admin_user()
 
     @parameter_matcher()
     async def get_heartbeat(self) -> None:
@@ -64,12 +67,12 @@ class RouterV2Public:
         return version_text
 
     @parameter_matcher()
-    async def get_test_init(self) -> bool:
-        return await self.context.exists_admin_user()
+    async def get_state_already(self) -> bool:
+        return await self._already()
 
     @parameter_matcher()
     async def post_signup_admin(self, signup: Signup) -> None:
-        if await self.context.exists_admin_user():
+        if await self._already():
             raise HTTPServiceUnavailable(reason="An admin account already exists")
         await self.context.signup_admin(signup.username, signup.password)
 
@@ -77,7 +80,7 @@ class RouterV2Public:
     async def post_signup(self, signup: Signup) -> None:
         if not self.context.config.public_signup:
             raise HTTPServiceUnavailable(reason="You cannot signup without permission")
-        await self.context.signup_with_request(signup)
+        await self.context.signup_guest(signup)
 
     @parameter_matcher()
     async def post_signin(self, auth: BasicAuth) -> Signin:

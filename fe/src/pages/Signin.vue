@@ -311,7 +311,7 @@ export default class Signin extends VueBase {
   testInit() {
     this.updateState(LoginPageState.Connecting);
 
-    this.$api2.getTestInit()
+    this.$api2.already()
         .then(result => {
           if (result) {
             this.updateState(LoginPageState.ReadyForWait);

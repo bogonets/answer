@@ -182,7 +182,7 @@ ko:
     <v-divider></v-divider>
 
     <v-list flat>
-      <v-list-item three-line>
+      <v-list-item :three-line="!denseFooter">
         <v-spacer></v-spacer>
         <v-btn
             color="second"
@@ -237,6 +237,9 @@ export default class FormSignup extends VueBase {
 
   @Prop({type: Boolean, default: false})
   readonly hideSubheader!: boolean;
+
+  @Prop({type: Boolean, default: false})
+  readonly denseFooter!: boolean;
 
   @Prop({type: Boolean, default: false})
   readonly disableValidate!: boolean;
@@ -299,14 +302,24 @@ export default class FormSignup extends VueBase {
 
   @Emit()
   ok() {
-    return {
+    const required = {
       username: this.username,
       password: this.$api2.encryptPassword(this.password),
+    };
+    const profile = {
       nickname: this.nickname,
       email: this.email,
       phone1: this.phone1,
       phone2: this.phone2,
+    };
+    const access = {
       is_admin: this.isAdmin,
+    };
+
+    return {
+      ... required,
+      ... (this.hideProfile ? undefined : profile),
+      ... (this.hideAccess ? undefined : access),
     } as User;
   }
 
