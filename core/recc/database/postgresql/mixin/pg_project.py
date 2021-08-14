@@ -10,15 +10,15 @@ from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.project import (
     INSERT_PROJECT,
     UPDATE_PROJECT_DESCRIPTION_BY_UID,
-    UPDATE_PROJECT_DESCRIPTION_BY_GROUP_UID_AND_NAME,
+    UPDATE_PROJECT_DESCRIPTION_BY_GROUP_UID_AND_SLUG,
     UPDATE_PROJECT_EXTRA_BY_UID,
-    UPDATE_PROJECT_EXTRA_BY_GROUP_UID_AND_NAME,
+    UPDATE_PROJECT_EXTRA_BY_GROUP_UID_AND_SLUG,
     UPDATE_PROJECT_FEATURES_BY_UID,
-    UPDATE_PROJECT_FEATURES_BY_GROUP_UID_AND_NAME,
+    UPDATE_PROJECT_FEATURES_BY_GROUP_UID_AND_SLUG,
     DELETE_PROJECT_BY_UID,
-    DELETE_PROJECT_BY_GROUP_UID_AND_NAME,
+    DELETE_PROJECT_BY_GROUP_UID_AND_SLUG,
     SELECT_PROJECT_BY_UID,
-    SELECT_PROJECT_BY_GROUP_ID_AND_NAME,
+    SELECT_PROJECT_BY_GROUP_ID_AND_SLUG,
     SELECT_PROJECT_BY_GROUP_ID,
     SELECT_PROJECT_BY_FULLPATH,
     SELECT_PROJECT_UID_BY_FULLPATH,
@@ -32,7 +32,8 @@ class PgProject(DbProject, PgBase):
     async def create_project(
         self,
         group_uid: int,
-        name: str,
+        slug: str,
+        name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
@@ -42,13 +43,14 @@ class PgProject(DbProject, PgBase):
         await self.execute(
             query,
             group_uid,
+            slug,
             name,
             description,
             features,
             extra,
             created_at,
         )
-        params_msg = f"group_uid={group_uid},name={name}"
+        params_msg = f"group_uid={group_uid},slug={slug}"
         logger.info(f"create_project({params_msg}) ok.")
 
     @overrides
@@ -61,13 +63,13 @@ class PgProject(DbProject, PgBase):
         logger.info(f"update_project_description_by_uid({params_msg}) ok.")
 
     @overrides
-    async def update_project_description_by_name(
-        self, group_uid: int, name: str, description: str, updated_at=datetime.utcnow()
+    async def update_project_description_by_slug(
+        self, group_uid: int, slug: str, description: str, updated_at=datetime.utcnow()
     ) -> None:
-        query = UPDATE_PROJECT_DESCRIPTION_BY_GROUP_UID_AND_NAME
-        await self.execute(query, group_uid, name, description, updated_at)
-        params_msg = f"group_uid={group_uid},name={name}"
-        logger.info(f"update_project_description_by_name({params_msg}) ok.")
+        query = UPDATE_PROJECT_DESCRIPTION_BY_GROUP_UID_AND_SLUG
+        await self.execute(query, group_uid, slug, description, updated_at)
+        params_msg = f"group_uid={group_uid},slug={slug}"
+        logger.info(f"update_project_description_by_slug({params_msg}) ok.")
 
     @overrides
     async def update_project_extra_by_uid(
@@ -78,13 +80,13 @@ class PgProject(DbProject, PgBase):
         logger.info(f"update_project_extra_by_uid(uid={uid}) ok.")
 
     @overrides
-    async def update_project_extra_by_name(
-        self, group_uid: int, name: str, extra: Any, updated_at=datetime.utcnow()
+    async def update_project_extra_by_slug(
+        self, group_uid: int, slug: str, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
-        query = UPDATE_PROJECT_EXTRA_BY_GROUP_UID_AND_NAME
-        await self.execute(query, group_uid, name, extra, updated_at)
-        params_msg = f"group_uid={group_uid},name={name}"
-        logger.info(f"update_project_extra_by_name({params_msg}) ok.")
+        query = UPDATE_PROJECT_EXTRA_BY_GROUP_UID_AND_SLUG
+        await self.execute(query, group_uid, slug, extra, updated_at)
+        params_msg = f"group_uid={group_uid},slug={slug}"
+        logger.info(f"update_project_extra_by_slug({params_msg}) ok.")
 
     @overrides
     async def update_project_features_by_uid(
@@ -95,22 +97,23 @@ class PgProject(DbProject, PgBase):
         logger.info(f"update_project_features_by_uid(uid={uid}) ok.")
 
     @overrides
-    async def update_project_features_by_name(
+    async def update_project_features_by_slug(
         self,
         group_uid: int,
-        name: str,
+        slug: str,
         features: List[str],
         updated_at=datetime.utcnow(),
     ) -> None:
-        query = UPDATE_PROJECT_FEATURES_BY_GROUP_UID_AND_NAME
-        await self.execute(query, group_uid, name, features, updated_at)
-        params_msg = f"group_uid={group_uid},name={name}"
-        logger.info(f"update_project_features_by_name({params_msg}) ok.")
+        query = UPDATE_PROJECT_FEATURES_BY_GROUP_UID_AND_SLUG
+        await self.execute(query, group_uid, slug, features, updated_at)
+        params_msg = f"group_uid={group_uid},slug={slug}"
+        logger.info(f"update_project_features_by_slug({params_msg}) ok.")
 
     @overrides
     async def update_project_by_uid(
         self,
         uid: Optional[int] = None,
+        slug: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
@@ -119,6 +122,7 @@ class PgProject(DbProject, PgBase):
     ) -> None:
         query, args = get_update_project_query_by_uid(
             uid=uid,
+            slug=slug,
             name=name,
             description=description,
             features=features,
@@ -136,11 +140,11 @@ class PgProject(DbProject, PgBase):
         logger.info(f"delete_project_by_uid(uid={uid}) ok.")
 
     @overrides
-    async def delete_project_by_name(self, group_uid: int, name: str) -> None:
-        query = DELETE_PROJECT_BY_GROUP_UID_AND_NAME
-        await self.execute(query, group_uid, name)
-        params_msg = f"group_uid={group_uid},name={name}"
-        logger.info(f"delete_project_by_name({params_msg}) ok.")
+    async def delete_project_by_slug(self, group_uid: int, slug: str) -> None:
+        query = DELETE_PROJECT_BY_GROUP_UID_AND_SLUG
+        await self.execute(query, group_uid, slug)
+        params_msg = f"group_uid={group_uid},slug={slug}"
+        logger.info(f"delete_project_by_slug({params_msg}) ok.")
 
     @overrides
     async def get_project_by_uid(self, uid: int) -> Project:
@@ -155,16 +159,16 @@ class PgProject(DbProject, PgBase):
         return result
 
     @overrides
-    async def get_project_by_name(self, group_uid: int, name: str) -> Project:
-        query = SELECT_PROJECT_BY_GROUP_ID_AND_NAME
-        row = await self.fetch_row(query, group_uid, name)
-        params_msg = f"group_uid={group_uid},name={name}"
+    async def get_project_by_slug(self, group_uid: int, slug: str) -> Project:
+        query = SELECT_PROJECT_BY_GROUP_ID_AND_SLUG
+        row = await self.fetch_row(query, group_uid, slug)
+        params_msg = f"group_uid={group_uid},slug={slug}"
         if not row:
             raise RuntimeError(f"Not found project: {params_msg}")
         result = Project(**dict(row))
         assert result.group_uid == group_uid
-        assert result.name == name
-        logger.info(f"get_project_by_name({params_msg}) ok.")
+        assert result.slug == slug
+        logger.info(f"get_project_by_slug({params_msg}) ok.")
         return result
 
     @overrides
@@ -184,27 +188,27 @@ class PgProject(DbProject, PgBase):
 
     @overrides
     async def get_project_by_fullpath(
-        self, group_slug: str, project_name: str
+        self, group_slug: str, project_slug: str
     ) -> Project:
         query = SELECT_PROJECT_BY_FULLPATH
-        row = await self.fetch_row(query, group_slug, project_name)
-        params_msg = f"group={group_slug},project={project_name}"
+        row = await self.fetch_row(query, group_slug, project_slug)
+        params_msg = f"group={group_slug},project={project_slug}"
         if not row:
             raise RuntimeError(f"Not found project: {params_msg}")
         if row.get("uid") is None:
             raise RuntimeError(f"Not found project: {params_msg}")
         result = Project(**dict(row))
-        assert result.name == project_name
+        assert result.slug == project_slug
         logger.info(f"get_project_by_fullpath({params_msg}) ok.")
         return result
 
     @overrides
     async def get_project_uid_by_fullpath(
-        self, group_slug: str, project_name: str
+        self, group_slug: str, project_slug: str
     ) -> int:
         query = SELECT_PROJECT_UID_BY_FULLPATH
-        row = await self.fetch_row(query, group_slug, project_name)
-        params_msg = f"group={group_slug},project={project_name}"
+        row = await self.fetch_row(query, group_slug, project_slug)
+        params_msg = f"group={group_slug},project={project_slug}"
         if not row:
             raise RuntimeError(f"Not found project: {params_msg}")
         result = row.get("uid")

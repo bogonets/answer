@@ -15,7 +15,8 @@ class DbProject(metaclass=ABCMeta):
     async def create_project(
         self,
         group_uid: int,
-        name: str,
+        slug: str,
+        name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
@@ -30,8 +31,8 @@ class DbProject(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_project_description_by_name(
-        self, group_uid: int, name: str, description: str, updated_at=datetime.utcnow()
+    async def update_project_description_by_slug(
+        self, group_uid: int, slug: str, description: str, updated_at=datetime.utcnow()
     ) -> None:
         raise NotImplementedError
 
@@ -42,8 +43,8 @@ class DbProject(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_project_extra_by_name(
-        self, group_uid: int, name: str, extra: Any, updated_at=datetime.utcnow()
+    async def update_project_extra_by_slug(
+        self, group_uid: int, slug: str, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
         raise NotImplementedError
 
@@ -54,10 +55,10 @@ class DbProject(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_project_features_by_name(
+    async def update_project_features_by_slug(
         self,
         group_uid: int,
-        name: str,
+        slug: str,
         features: List[str],
         updated_at=datetime.utcnow(),
     ) -> None:
@@ -67,6 +68,7 @@ class DbProject(metaclass=ABCMeta):
     async def update_project_by_uid(
         self,
         uid: Optional[int] = None,
+        slug: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
@@ -80,7 +82,7 @@ class DbProject(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def delete_project_by_name(self, group_uid: int, name: str) -> None:
+    async def delete_project_by_slug(self, group_uid: int, slug: str) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -88,7 +90,7 @@ class DbProject(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_project_by_name(self, group_uid: int, name: str) -> Project:
+    async def get_project_by_slug(self, group_uid: int, slug: str) -> Project:
         raise NotImplementedError
 
     @abstractmethod
@@ -97,13 +99,13 @@ class DbProject(metaclass=ABCMeta):
 
     @abstractmethod
     async def get_project_by_fullpath(
-        self, group_slug: str, project_name: str
+        self, group_slug: str, project_slug: str
     ) -> Project:
         raise NotImplementedError
 
     @abstractmethod
     async def get_project_uid_by_fullpath(
-        self, group_slug: str, project_name: str
+        self, group_slug: str, project_slug: str
     ) -> int:
         raise NotImplementedError
 

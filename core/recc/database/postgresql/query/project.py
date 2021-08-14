@@ -12,9 +12,9 @@ from recc.database.query_builder import UpdateBuilder, BuildResult
 
 INSERT_PROJECT = f"""
 INSERT INTO {TABLE_PROJECT}
-    (group_uid, name, description, features, extra, created_at)
+    (group_uid, slug, name, description, features, extra, created_at)
 VALUES
-    ($1, $2, $3, $4, $5, $6);
+    ($1, $2, $3, $4, $5, $6, $7);
 """
 
 ##########
@@ -27,10 +27,10 @@ SET description=$2, updated_at=$3
 WHERE uid=$1;
 """
 
-UPDATE_PROJECT_DESCRIPTION_BY_GROUP_UID_AND_NAME = f"""
+UPDATE_PROJECT_DESCRIPTION_BY_GROUP_UID_AND_SLUG = f"""
 UPDATE {TABLE_PROJECT}
 SET description=$3, updated_at=$4
-WHERE group_uid=$1 AND name LIKE $2;
+WHERE group_uid=$1 AND slug LIKE $2;
 """
 
 UPDATE_PROJECT_EXTRA_BY_UID = f"""
@@ -39,10 +39,10 @@ SET extra=$2, updated_at=$3
 WHERE uid=$1;
 """
 
-UPDATE_PROJECT_EXTRA_BY_GROUP_UID_AND_NAME = f"""
+UPDATE_PROJECT_EXTRA_BY_GROUP_UID_AND_SLUG = f"""
 UPDATE {TABLE_PROJECT}
 SET extra=$3, updated_at=$4
-WHERE group_uid=$1 AND name LIKE $2;
+WHERE group_uid=$1 AND slug LIKE $2;
 """
 
 UPDATE_PROJECT_FEATURES_BY_UID = f"""
@@ -51,15 +51,16 @@ SET features=$2, updated_at=$3
 WHERE uid=$1;
 """
 
-UPDATE_PROJECT_FEATURES_BY_GROUP_UID_AND_NAME = f"""
+UPDATE_PROJECT_FEATURES_BY_GROUP_UID_AND_SLUG = f"""
 UPDATE {TABLE_PROJECT}
 SET features=$3, updated_at=$4
-WHERE group_uid=$1 AND name LIKE $2;
+WHERE group_uid=$1 AND slug LIKE $2;
 """
 
 
 def get_update_project_query_by_uid(
     uid: Optional[int] = None,
+    slug: Optional[str] = None,
     name: Optional[str] = None,
     description: Optional[str] = None,
     features: Optional[List[str]] = None,
@@ -69,6 +70,7 @@ def get_update_project_query_by_uid(
     assert updated_at is not None
     builder = UpdateBuilder(
         if_none_skip=True,
+        slug=slug,
         name=name,
         description=description,
         features=features,
@@ -88,9 +90,9 @@ DELETE FROM {TABLE_PROJECT}
 WHERE uid=$1;
 """
 
-DELETE_PROJECT_BY_GROUP_UID_AND_NAME = f"""
+DELETE_PROJECT_BY_GROUP_UID_AND_SLUG = f"""
 DELETE FROM {TABLE_PROJECT}
-WHERE group_uid=$1 AND name LIKE $2;
+WHERE group_uid=$1 AND slug LIKE $2;
 """
 
 ##########
@@ -103,10 +105,10 @@ FROM {TABLE_PROJECT}
 WHERE uid=$1;
 """
 
-SELECT_PROJECT_BY_GROUP_ID_AND_NAME = f"""
+SELECT_PROJECT_BY_GROUP_ID_AND_SLUG = f"""
 SELECT *
 FROM {TABLE_PROJECT}
-WHERE group_uid=$1 AND name LIKE $2;
+WHERE group_uid=$1 AND slug LIKE $2;
 """
 
 SELECT_PROJECT_BY_GROUP_ID = f"""
@@ -118,13 +120,13 @@ WHERE group_uid=$1;
 SELECT_PROJECT_BY_FULLPATH = f"""
 SELECT p.*
 FROM (SELECT uid FROM {TABLE_GROUP} WHERE slug LIKE $1) g
-    LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.name LIKE $2;
+    LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.slug LIKE $2;
 """
 
 SELECT_PROJECT_UID_BY_FULLPATH = f"""
 SELECT p.uid AS uid
 FROM (SELECT uid FROM {TABLE_GROUP} WHERE slug LIKE $1) g
-    LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.name LIKE $2;
+    LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.slug LIKE $2;
 """
 
 SELECT_PROJECT_COUNT = f"""

@@ -421,7 +421,7 @@ class RouterV1:
             "active": "Active" if state else "Inactive",
             "createdAt": created,
             "modifiedAt": modified,
-            "name": project.name,
+            "name": project.slug,
             "menus": [0, 1, 2, 3, 4],
             "t": "project",
         }

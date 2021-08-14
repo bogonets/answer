@@ -10,15 +10,15 @@ class PgTaskTestCase(PostgresqlTestCase):
     async def setUp(self):
         await super().setUp()
 
-        self.project_name = "project"
-        await self.db.create_project(self.anonymous_group_uid, self.project_name)
-        self.project = await self.db.get_project_by_name(
-            self.anonymous_group_uid, self.project_name
+        self.project_slug = "project"
+        await self.db.create_project(self.anonymous_group_uid, self.project_slug)
+        self.project = await self.db.get_project_by_slug(
+            self.anonymous_group_uid, self.project_slug
         )
 
     async def test_none_exists_get(self):
         group = ANONYMOUS_GROUP_SLUG
-        project = self.project_name
+        project = self.project_slug
         name = "task"
         unknown = "unknown"
         await self.db.create_task(self.project.uid, name)
@@ -76,7 +76,7 @@ class PgTaskTestCase(PostgresqlTestCase):
         self.assertEqual(task2, task2_2nd)
 
         group = ANONYMOUS_GROUP_SLUG
-        project = self.project_name
+        project = self.project_slug
         task1_3rd = await self.db.get_task_by_fullpath(group, project, name1)
         task2_3rd = await self.db.get_task_by_fullpath(group, project, name2)
         self.assertEqual(task1, task1_3rd)

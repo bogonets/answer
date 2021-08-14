@@ -10,7 +10,7 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
 
         self.project_name = "project"
         await self.db.create_project(self.anonymous_group_uid, self.project_name)
-        self.project = await self.db.get_project_by_name(
+        self.project = await self.db.get_project_by_slug(
             self.anonymous_group_uid, self.project_name
         )
 

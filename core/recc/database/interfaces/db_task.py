@@ -126,12 +126,12 @@ class DbTask(metaclass=ABCMeta):
 
     @abstractmethod
     async def get_task_by_fullpath(
-        self, group_slug: str, project_name: str, task_name: str
+        self, group_slug: str, project_slug: str, task_name: str
     ) -> Task:
         raise NotImplementedError
 
     @abstractmethod
     async def get_task_uid_by_fullpath(
-        self, group_slug: str, project_name: str, task_name: str
+        self, group_slug: str, project_slug: str, task_name: str
     ) -> int:
         raise NotImplementedError

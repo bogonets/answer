@@ -249,11 +249,11 @@ class PgTask(DbTask, PgBase):
 
     @overrides
     async def get_task_by_fullpath(
-        self, group_slug: str, project_name: str, task_name: str
+        self, group_slug: str, project_slug: str, task_name: str
     ) -> Task:
         query = SELECT_TASK_BY_FULLPATH
-        row = await self.fetch_row(query, group_slug, project_name, task_name)
-        params_msg = f"group={group_slug},project={project_name},task={task_name}"
+        row = await self.fetch_row(query, group_slug, project_slug, task_name)
+        params_msg = f"group={group_slug},project={project_slug},task={task_name}"
         if not row:
             raise RuntimeError(f"Not found task: {params_msg}")
         if row.get("uid") is None:
@@ -265,11 +265,11 @@ class PgTask(DbTask, PgBase):
 
     @overrides
     async def get_task_uid_by_fullpath(
-        self, group_slug: str, project_name: str, task_name: str
+        self, group_slug: str, project_slug: str, task_name: str
     ) -> int:
         query = SELECT_TASK_UID_BY_FULLPATH
-        row = await self.fetch_row(query, group_slug, project_name, task_name)
-        params_msg = f"group={group_slug},project={project_name},task={task_name}"
+        row = await self.fetch_row(query, group_slug, project_slug, task_name)
+        params_msg = f"group={group_slug},project={project_slug},task={task_name}"
         if not row:
             raise RuntimeError(f"Not found task: {params_msg}")
         result = row.get("uid")

@@ -13,7 +13,7 @@ class ContextLayout(ContextBase):
         extra: Optional[Any] = None,
     ) -> None:
         anonymous_group_uid = self.database.get_anonymous_group_uid()
-        project = await self.database.get_project_by_name(
+        project = await self.database.get_project_by_slug(
             anonymous_group_uid, project_name
         )
         assert project.uid is not None
@@ -25,7 +25,7 @@ class ContextLayout(ContextBase):
 
     async def get_layouts(self, project_name: str) -> List[Layout]:
         anonymous_group_uid = self.database.get_anonymous_group_uid()
-        project = await self.database.get_project_by_name(
+        project = await self.database.get_project_by_slug(
             anonymous_group_uid, project_name
         )
         assert project.uid is not None
@@ -33,7 +33,7 @@ class ContextLayout(ContextBase):
 
     async def get_layout(self, project_name: str, layout_name: str) -> Layout:
         anonymous_group_uid = self.database.get_anonymous_group_uid()
-        project = await self.database.get_project_by_name(
+        project = await self.database.get_project_by_slug(
             anonymous_group_uid, project_name
         )
         assert project.uid is not None
@@ -50,7 +50,7 @@ class ContextLayout(ContextBase):
         self, project_name: str, layout_name: str, extra: Any
     ) -> None:
         anonymous_group_uid = self.database.get_anonymous_group_uid()
-        project = await self.database.get_project_by_name(
+        project = await self.database.get_project_by_slug(
             anonymous_group_uid, project_name
         )
         assert project.uid is not None
@@ -58,7 +58,7 @@ class ContextLayout(ContextBase):
 
     async def remove_layout(self, project_name: str, layout_name: str) -> None:
         anonymous_group_uid = self.database.get_anonymous_group_uid()
-        project = await self.database.get_project_by_name(
+        project = await self.database.get_project_by_slug(
             anonymous_group_uid, project_name
         )
         assert project.uid is not None

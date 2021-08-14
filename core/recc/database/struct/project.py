@@ -10,6 +10,7 @@ from recc.inspect.lexicographical_members import lexicographical_members
 class Project:
     uid: Optional[int] = None
     group_uid: Optional[int] = None
+    slug: Optional[str] = None
     name: Optional[str] = None
     description: Optional[str] = None
     features: Optional[List[str]] = None
@@ -25,6 +26,7 @@ class Project:
 class ProjectKeys:
     uid = "uid"
     group_uid = "group_uid"
+    slug = "slug"
     name = "name"
     description = "description"
     features = "features"

@@ -382,7 +382,7 @@ class ContextTask(ContextBase):
         self, group_name: str, project_name: str
     ) -> List[ContainerInfo]:
         group = await self.database.get_group_by_slug(group_name)
-        project = await self.database.get_project_by_name(group.uid, project_name)
+        project = await self.database.get_project_by_slug(group.uid, project_name)
         assert group.uid is not None
         assert project.uid is not None
         return await self.container.get_tasks(group_name, project_name)
@@ -394,7 +394,7 @@ class ContextTask(ContextBase):
         extra: Any,
     ) -> None:
         group = await self.database.get_group_by_slug(group_name)
-        project = await self.database.get_project_by_name(group.uid, project_name)
+        project = await self.database.get_project_by_slug(group.uid, project_name)
         assert group.uid is not None
         assert project.uid is not None
 
