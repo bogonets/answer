@@ -10,6 +10,10 @@ export const USERNAME_RULES = [
     atLeast4Char,
 ];
 
+export const GROUP_NAME_RULES = [
+    requiredField,
+];
+
 export const PASSWORD_RULES = [
     requiredField,
     atLeast4Char,

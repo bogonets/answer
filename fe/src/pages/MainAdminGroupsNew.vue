@@ -3,6 +3,11 @@
     <toolbar-navigation :items="navigationItems"></toolbar-navigation>
     <v-divider></v-divider>
 
+    <form-group-new
+        @cancel="onClickCancel"
+        @ok="onClickOk"
+    ></form-group-new>
+
   </v-container>
 </template>
 
@@ -10,9 +15,11 @@
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import FormGroupNew from '@/components/FormGroupNew.vue';
 
 @Component({
   components: {
+    FormGroupNew,
     ToolbarNavigation,
   }
 })

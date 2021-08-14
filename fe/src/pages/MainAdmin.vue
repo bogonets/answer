@@ -16,7 +16,7 @@ ko:
   users: "사용자"
   groups: "그룹"
   projects: "프로젝트"
-  tasks: "테스크"
+  tasks: "태스크"
   lambdas: "람다 관리"
   features: "기능 설정"
   envs: "시스템 변수"
