@@ -9,15 +9,15 @@ class PgPortTestCase(PostgresqlTestCase):
     async def setUp(self):
         await super().setUp()
 
-        self.project_name = "project"
-        await self.db.create_project(self.anonymous_group_uid, self.project_name)
+        self.project_slug = "project"
+        await self.db.create_project(self.anonymous_group_uid, self.project_slug)
         self.project = await self.db.get_project_by_slug(
-            self.anonymous_group_uid, self.project_name
+            self.anonymous_group_uid, self.project_slug
         )
 
-        self.task_name = "task"
-        await self.db.create_task(self.project.uid, self.task_name)
-        self.task = await self.db.get_task_by_name(self.project.uid, self.task_name)
+        self.task_slug = "task"
+        await self.db.create_task(self.project.uid, self.task_slug)
+        self.task = await self.db.get_task_by_slug(self.project.uid, self.task_slug)
 
     async def test_create_and_get(self):
         number1 = 100

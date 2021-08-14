@@ -15,7 +15,8 @@ class DbTask(metaclass=ABCMeta):
     async def create_task(
         self,
         project_uid: int,
-        name: str,
+        slug: str,
+        name: Optional[str] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
         rpc_address: Optional[str] = None,
@@ -37,10 +38,10 @@ class DbTask(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_task_description_by_name(
+    async def update_task_description_by_slug(
         self,
         project_uid: int,
-        name: str,
+        slug: str,
         description: str,
         updated_at=datetime.utcnow(),
     ) -> None:
@@ -53,8 +54,8 @@ class DbTask(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_task_extra_by_name(
-        self, project_uid: int, name: str, extra: Any, updated_at=datetime.utcnow()
+    async def update_task_extra_by_slug(
+        self, project_uid: int, slug: str, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
         raise NotImplementedError
 
@@ -70,10 +71,10 @@ class DbTask(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_task_keys_by_name(
+    async def update_task_keys_by_slug(
         self,
         project_uid: int,
-        name: str,
+        slug: str,
         auth_algorithm: str,
         private_key: str,
         public_key: str,
@@ -85,6 +86,7 @@ class DbTask(metaclass=ABCMeta):
     async def update_task_by_uid(
         self,
         uid: int,
+        slug: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
@@ -105,7 +107,7 @@ class DbTask(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def delete_task_by_name(self, project_uid: int, name: str) -> None:
+    async def delete_task_by_slug(self, project_uid: int, slug: str) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -113,11 +115,11 @@ class DbTask(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_task_by_name(self, project_uid: int, name: str) -> Task:
+    async def get_task_by_slug(self, project_uid: int, slug: str) -> Task:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_task_uid_by_name(self, project_uid: int, name: str) -> int:
+    async def get_task_uid_by_slug(self, project_uid: int, slug: str) -> int:
         raise NotImplementedError
 
     @abstractmethod
@@ -126,12 +128,12 @@ class DbTask(metaclass=ABCMeta):
 
     @abstractmethod
     async def get_task_by_fullpath(
-        self, group_slug: str, project_slug: str, task_name: str
+        self, group_slug: str, project_slug: str, task_slug: str
     ) -> Task:
         raise NotImplementedError
 
     @abstractmethod
     async def get_task_uid_by_fullpath(
-        self, group_slug: str, project_slug: str, task_name: str
+        self, group_slug: str, project_slug: str, task_slug: str
     ) -> int:
         raise NotImplementedError

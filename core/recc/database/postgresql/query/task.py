@@ -12,13 +12,22 @@ from recc.database.query_builder import UpdateBuilder, BuildResult
 
 INSERT_TASK = f"""
 INSERT INTO {TABLE_TASK} (
-    project_uid, name, description, extra,
+    project_uid,
+    slug,
+    name,
+    description,
+    extra,
     rpc_address,
-    auth_algorithm, private_key, public_key,
-    maximum_restart_count, numa_memory_nodes, base_image_name, publish_ports,
+    auth_algorithm,
+    private_key,
+    public_key,
+    maximum_restart_count,
+    numa_memory_nodes,
+    base_image_name,
+    publish_ports,
     created_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
 );
 """
 
@@ -32,10 +41,10 @@ SET description=$2, updated_at=$3
 WHERE uid=$1;
 """
 
-UPDATE_TASK_DESCRIPTION_BY_PROJECT_UID_AND_NAME = f"""
+UPDATE_TASK_DESCRIPTION_BY_PROJECT_UID_AND_SLUG = f"""
 UPDATE {TABLE_TASK}
 SET description=$3, updated_at=$4
-WHERE project_uid=$1 AND name LIKE $2;
+WHERE project_uid=$1 AND slug LIKE $2;
 """
 
 UPDATE_TASK_EXTRA_BY_UID = f"""
@@ -44,10 +53,10 @@ SET extra=$2, updated_at=$3
 WHERE uid=$1;
 """
 
-UPDATE_TASK_EXTRA_BY_PROJECT_UID_AND_NAME = f"""
+UPDATE_TASK_EXTRA_BY_PROJECT_UID_AND_SLUG = f"""
 UPDATE {TABLE_TASK}
 SET extra=$3, updated_at=$4
-WHERE project_uid=$1 AND name LIKE $2;
+WHERE project_uid=$1 AND slug LIKE $2;
 """
 
 UPDATE_TASK_KEYS_BY_UID = f"""
@@ -56,15 +65,16 @@ SET auth_algorithm=$2, private_key=$3, public_key=$4, updated_at=$5
 WHERE uid=$1;
 """
 
-UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_NAME = f"""
+UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_SLUG = f"""
 UPDATE {TABLE_TASK}
 SET auth_algorithm=$3, private_key=$4, public_key=$5, updated_at=$6
-WHERE project_uid=$1 AND name LIKE $2;
+WHERE project_uid=$1 AND slug LIKE $2;
 """
 
 
 def get_update_task_query_by_uid(
     uid: int,
+    slug: Optional[str] = None,
     name: Optional[str] = None,
     description: Optional[str] = None,
     extra: Optional[Any] = None,
@@ -81,6 +91,7 @@ def get_update_task_query_by_uid(
     assert updated_at is not None
     builder = UpdateBuilder(
         if_none_skip=True,
+        slug=slug,
         name=name,
         description=description,
         extra=extra,
@@ -107,9 +118,9 @@ DELETE FROM {TABLE_TASK}
 WHERE uid=$1;
 """
 
-DELETE_TASK_BY_PROJECT_UID_AND_NAME = f"""
+DELETE_TASK_BY_PROJECT_UID_AND_SLUG = f"""
 DELETE FROM {TABLE_TASK}
-WHERE project_uid=$1 AND name LIKE $2;
+WHERE project_uid=$1 AND slug LIKE $2;
 """
 
 ##########
@@ -122,16 +133,16 @@ FROM {TABLE_TASK}
 WHERE uid=$1;
 """
 
-SELECT_TASK_BY_PROJECT_ID_AND_NAME = f"""
+SELECT_TASK_BY_PROJECT_ID_AND_SLUG = f"""
 SELECT *
 FROM {TABLE_TASK}
-WHERE project_uid=$1 AND name LIKE $2;
+WHERE project_uid=$1 AND slug LIKE $2;
 """
 
-SELECT_TASK_UID_BY_PROJECT_ID_AND_NAME = f"""
+SELECT_TASK_UID_BY_PROJECT_ID_AND_SLUG = f"""
 SELECT uid
 FROM {TABLE_TASK}
-WHERE project_uid=$1 AND name LIKE $2;
+WHERE project_uid=$1 AND slug LIKE $2;
 """
 
 SELECT_TASK_BY_PROJECT_ID = f"""
@@ -144,12 +155,12 @@ SELECT_TASK_BY_FULLPATH = f"""
 SELECT t.*
 FROM (SELECT uid FROM {TABLE_GROUP} WHERE slug LIKE $1) g
     LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.slug LIKE $2
-    LEFT JOIN {TABLE_TASK} t ON t.project_uid=p.uid AND t.name LIKE $3;
+    LEFT JOIN {TABLE_TASK} t ON t.project_uid=p.uid AND t.slug LIKE $3;
 """
 
 SELECT_TASK_UID_BY_FULLPATH = f"""
 SELECT t.uid AS uid
 FROM (SELECT uid FROM {TABLE_GROUP} WHERE slug LIKE $1) g
     LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.slug LIKE $2
-    LEFT JOIN {TABLE_TASK} t ON t.project_uid=p.uid AND t.name LIKE $3;
+    LEFT JOIN {TABLE_TASK} t ON t.project_uid=p.uid AND t.slug LIKE $3;
 """

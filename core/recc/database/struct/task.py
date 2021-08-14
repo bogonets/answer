@@ -10,6 +10,7 @@ from recc.inspect.lexicographical_members import lexicographical_members
 class Task:
     uid: Optional[int] = None
     project_uid: Optional[int] = None
+    slug: Optional[str] = None
     name: Optional[str] = None
     description: Optional[str] = None
     extra: Optional[Any] = None
@@ -26,11 +27,19 @@ class Task:
 
     def remove_sensitive(self):
         self.uid = None
+        self.project_uid = None
+        self.rpc_address = None
+        self.auth_algorithm = None
+        self.private_key = None
+        self.public_key = None
+        self.numa_memory_nodes = None
+        self.publish_ports = None
 
 
 class TaskKeys:
     uid = "uid"
     project_uid = "project_uid"
+    slug = "slug"
     name = "name"
     description = "description"
     extra = "extra"

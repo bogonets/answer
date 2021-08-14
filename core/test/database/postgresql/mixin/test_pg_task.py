@@ -19,36 +19,44 @@ class PgTaskTestCase(PostgresqlTestCase):
     async def test_none_exists_get(self):
         group = ANONYMOUS_GROUP_SLUG
         project = self.project_slug
-        name = "task"
+        slug = "task"
         unknown = "unknown"
-        await self.db.create_task(self.project.uid, name)
+        await self.db.create_task(self.project.uid, slug)
 
         with self.assertRaises(RuntimeError):
-            await self.db.get_task_by_fullpath(unknown, project, name)
+            await self.db.get_task_by_fullpath(unknown, project, slug)
         with self.assertRaises(RuntimeError):
-            await self.db.get_task_by_fullpath(group, unknown, name)
+            await self.db.get_task_by_fullpath(group, unknown, slug)
         with self.assertRaises(RuntimeError):
             await self.db.get_task_by_fullpath(group, project, unknown)
 
         with self.assertRaises(RuntimeError):
-            await self.db.get_task_uid_by_fullpath(unknown, project, name)
+            await self.db.get_task_uid_by_fullpath(unknown, project, slug)
         with self.assertRaises(RuntimeError):
-            await self.db.get_task_uid_by_fullpath(group, unknown, name)
+            await self.db.get_task_uid_by_fullpath(group, unknown, slug)
         with self.assertRaises(RuntimeError):
             await self.db.get_task_uid_by_fullpath(group, project, unknown)
 
     async def test_create_and_get(self):
-        name1 = "task1"
-        name2 = "task2"
+        slug1 = "slug1"
+        slug2 = "slug2"
+        name1 = "name1"
+        name2 = "name2"
         created_at1 = datetime.utcnow() + timedelta(days=1)
         created_at2 = datetime.utcnow() + timedelta(days=2)
-        await self.db.create_task(self.project.uid, name1, created_at=created_at1)
-        await self.db.create_task(self.project.uid, name2, created_at=created_at2)
-        task1 = await self.db.get_task_by_name(self.project.uid, name1)
-        task2 = await self.db.get_task_by_name(self.project.uid, name2)
+        await self.db.create_task(
+            self.project.uid, slug1, name1, created_at=created_at1
+        )
+        await self.db.create_task(
+            self.project.uid, slug2, name2, created_at=created_at2
+        )
+        task1 = await self.db.get_task_by_slug(self.project.uid, slug1)
+        task2 = await self.db.get_task_by_slug(self.project.uid, slug2)
 
         self.assertEqual(self.project.uid, task1.project_uid)
         self.assertEqual(self.project.uid, task2.project_uid)
+        self.assertEqual(slug1, task1.slug)
+        self.assertEqual(slug2, task2.slug)
         self.assertEqual(name1, task1.name)
         self.assertEqual(name2, task2.name)
         self.assertIsNone(task1.description)
@@ -77,73 +85,73 @@ class PgTaskTestCase(PostgresqlTestCase):
 
         group = ANONYMOUS_GROUP_SLUG
         project = self.project_slug
-        task1_3rd = await self.db.get_task_by_fullpath(group, project, name1)
-        task2_3rd = await self.db.get_task_by_fullpath(group, project, name2)
+        task1_3rd = await self.db.get_task_by_fullpath(group, project, slug1)
+        task2_3rd = await self.db.get_task_by_fullpath(group, project, slug2)
         self.assertEqual(task1, task1_3rd)
         self.assertEqual(task2, task2_3rd)
 
-        task1_4th_uid = await self.db.get_task_uid_by_fullpath(group, project, name1)
-        task2_4th_uid = await self.db.get_task_uid_by_fullpath(group, project, name2)
+        task1_4th_uid = await self.db.get_task_uid_by_fullpath(group, project, slug1)
+        task2_4th_uid = await self.db.get_task_uid_by_fullpath(group, project, slug2)
         self.assertEqual(task1.uid, task1_4th_uid)
         self.assertEqual(task2.uid, task2_4th_uid)
 
-        task1_5th_uid = await self.db.get_task_uid_by_name(self.project.uid, name1)
-        task2_5th_uid = await self.db.get_task_uid_by_name(self.project.uid, name2)
+        task1_5th_uid = await self.db.get_task_uid_by_slug(self.project.uid, slug1)
+        task2_5th_uid = await self.db.get_task_uid_by_slug(self.project.uid, slug2)
         self.assertEqual(task1.uid, task1_5th_uid)
         self.assertEqual(task2.uid, task2_5th_uid)
 
     async def test_update_description(self):
-        name1 = "task1"
-        name2 = "task2"
-        await self.db.create_task(self.project.uid, name1)
-        await self.db.create_task(self.project.uid, name2)
-        task1_uid = (await self.db.get_task_by_name(self.project.uid, name1)).uid
+        slug1 = "task1"
+        slug2 = "task2"
+        await self.db.create_task(self.project.uid, slug1)
+        await self.db.create_task(self.project.uid, slug2)
+        task1_uid = (await self.db.get_task_by_slug(self.project.uid, slug1)).uid
 
         desc1 = "description1"
         desc2 = "description2"
         updated_at1 = datetime.utcnow() + timedelta(days=1)
         updated_at2 = datetime.utcnow() + timedelta(days=2)
         await self.db.update_task_description_by_uid(task1_uid, desc1, updated_at1)
-        await self.db.update_task_description_by_name(
-            self.project.uid, name2, desc2, updated_at2
+        await self.db.update_task_description_by_slug(
+            self.project.uid, slug2, desc2, updated_at2
         )
 
-        task1 = await self.db.get_task_by_name(self.project.uid, name1)
-        task2 = await self.db.get_task_by_name(self.project.uid, name2)
+        task1 = await self.db.get_task_by_slug(self.project.uid, slug1)
+        task2 = await self.db.get_task_by_slug(self.project.uid, slug2)
         self.assertEqual(desc1, task1.description)
         self.assertEqual(desc2, task2.description)
         self.assertEqual(updated_at1, task1.updated_at)
         self.assertEqual(updated_at2, task2.updated_at)
 
     async def test_update_extra(self):
-        name1 = "task1"
-        name2 = "task2"
-        await self.db.create_task(self.project.uid, name1)
-        await self.db.create_task(self.project.uid, name2)
-        task1_uid = (await self.db.get_task_by_name(self.project.uid, name1)).uid
+        slug1 = "task1"
+        slug2 = "task2"
+        await self.db.create_task(self.project.uid, slug1)
+        await self.db.create_task(self.project.uid, slug2)
+        task1_uid = (await self.db.get_task_by_slug(self.project.uid, slug1)).uid
 
         extra1 = {"a": 1, "b": 2}
         extra2 = {"c": 3, "d": 4}
         updated_at1 = datetime.utcnow() + timedelta(days=1)
         updated_at2 = datetime.utcnow() + timedelta(days=2)
         await self.db.update_task_extra_by_uid(task1_uid, extra1, updated_at1)
-        await self.db.update_task_extra_by_name(
-            self.project.uid, name2, extra2, updated_at2
+        await self.db.update_task_extra_by_slug(
+            self.project.uid, slug2, extra2, updated_at2
         )
 
-        task1 = await self.db.get_task_by_name(self.project.uid, name1)
-        task2 = await self.db.get_task_by_name(self.project.uid, name2)
+        task1 = await self.db.get_task_by_slug(self.project.uid, slug1)
+        task2 = await self.db.get_task_by_slug(self.project.uid, slug2)
         self.assertEqual(extra1, task1.extra)
         self.assertEqual(extra2, task2.extra)
         self.assertEqual(updated_at1, task1.updated_at)
         self.assertEqual(updated_at2, task2.updated_at)
 
     async def test_update_keys(self):
-        name1 = "task1"
-        name2 = "task2"
-        await self.db.create_task(self.project.uid, name1)
-        await self.db.create_task(self.project.uid, name2)
-        task1_uid = (await self.db.get_task_by_name(self.project.uid, name1)).uid
+        slug1 = "task1"
+        slug2 = "task2"
+        await self.db.create_task(self.project.uid, slug1)
+        await self.db.create_task(self.project.uid, slug2)
+        task1_uid = (await self.db.get_task_by_slug(self.project.uid, slug1)).uid
 
         auth_algorithm1 = "algorithm1"
         auth_algorithm2 = "algorithm2"
@@ -160,17 +168,17 @@ class PgTaskTestCase(PostgresqlTestCase):
             public_key1,
             updated_at1,
         )
-        await self.db.update_task_keys_by_name(
+        await self.db.update_task_keys_by_slug(
             self.project.uid,
-            name2,
+            slug2,
             auth_algorithm2,
             private_key2,
             public_key2,
             updated_at2,
         )
 
-        task1 = await self.db.get_task_by_name(self.project.uid, name1)
-        task2 = await self.db.get_task_by_name(self.project.uid, name2)
+        task1 = await self.db.get_task_by_slug(self.project.uid, slug1)
+        task2 = await self.db.get_task_by_slug(self.project.uid, slug2)
         self.assertEqual(auth_algorithm1, task1.auth_algorithm)
         self.assertEqual(auth_algorithm2, task2.auth_algorithm)
         self.assertEqual(private_key1, task1.private_key)
@@ -181,11 +189,12 @@ class PgTaskTestCase(PostgresqlTestCase):
         self.assertEqual(updated_at2, task2.updated_at)
 
     async def test_update_task_by_uid(self):
-        name = "task1"
-        await self.db.create_task(self.project.uid, name)
-        task_uid = (await self.db.get_task_by_name(self.project.uid, name)).uid
+        slug1 = "task1"
+        await self.db.create_task(self.project.uid, slug1)
+        task_uid = (await self.db.get_task_by_slug(self.project.uid, slug1)).uid
 
-        name_change = "task1_change"
+        slug2 = "slug2"
+        name = "name"
         description = "description"
         extra = {"aa": 1, "bb": 2}
         rpc_address = "[::]:20000"
@@ -200,7 +209,8 @@ class PgTaskTestCase(PostgresqlTestCase):
 
         await self.db.update_task_by_uid(
             task_uid,
-            name=name_change,
+            slug=slug2,
+            name=name,
             description=description,
             extra=extra,
             rpc_address=rpc_address,
@@ -215,7 +225,8 @@ class PgTaskTestCase(PostgresqlTestCase):
         )
 
         task = await self.db.get_task_by_uid(task_uid)
-        self.assertEqual(name_change, task.name)
+        self.assertEqual(slug2, task.slug)
+        self.assertEqual(name, task.name)
         self.assertEqual(description, task.description)
         self.assertEqual(extra, task.extra)
         self.assertEqual(rpc_address, task.rpc_address)
@@ -227,17 +238,17 @@ class PgTaskTestCase(PostgresqlTestCase):
         self.assertEqual(updated_at, task.updated_at)
 
     async def test_delete(self):
-        name1 = "task1"
-        name2 = "task2"
-        await self.db.create_task(self.project.uid, name1)
-        await self.db.create_task(self.project.uid, name2)
-        task1_uid = (await self.db.get_task_by_name(self.project.uid, name1)).uid
+        slug1 = "task1"
+        slug2 = "task2"
+        await self.db.create_task(self.project.uid, slug1)
+        await self.db.create_task(self.project.uid, slug2)
+        task1_uid = (await self.db.get_task_by_slug(self.project.uid, slug1)).uid
 
         tasks1 = await self.db.get_task_by_project_uid(self.project.uid)
         self.assertEqual(2, len(tasks1))
 
         await self.db.delete_task_by_uid(task1_uid)
-        await self.db.delete_task_by_name(self.project.uid, name2)
+        await self.db.delete_task_by_slug(self.project.uid, slug2)
 
         tasks2 = await self.db.get_task_by_project_uid(self.project.uid)
         self.assertEqual(0, len(tasks2))

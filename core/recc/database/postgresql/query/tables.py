@@ -28,6 +28,7 @@ from recc.variables.database import (
     LAYOUT_NAME_STR_SIZE,
     WIDGET_NAME_STR_SIZE,
     WIDGET_TYPE_STR_SIZE,
+    TASK_SLUG_STR_SIZE,
     TASK_NAME_STR_SIZE,
     TASK_NUMA_MEMORY_NODES_STR_SIZE,
     TASK_BASE_IMAGE_STR_SIZE,
@@ -138,9 +139,10 @@ CREATE TABLE IF NOT EXISTS {TABLE_TASK} (
     uid SERIAL PRIMARY KEY,
 
     project_uid INTEGER NOT NULL REFERENCES {TABLE_PROJECT} (uid),
-    name VARCHAR({TASK_NAME_STR_SIZE}) NOT NULL,
-    UNIQUE(project_uid, name),
+    slug VARCHAR({TASK_SLUG_STR_SIZE}) NOT NULL,
+    UNIQUE(project_uid, slug),
 
+    name VARCHAR({TASK_NAME_STR_SIZE}),
     description TEXT,
     extra JSONB,
 

@@ -10,16 +10,16 @@ from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.task import (
     INSERT_TASK,
     UPDATE_TASK_DESCRIPTION_BY_UID,
-    UPDATE_TASK_DESCRIPTION_BY_PROJECT_UID_AND_NAME,
+    UPDATE_TASK_DESCRIPTION_BY_PROJECT_UID_AND_SLUG,
     UPDATE_TASK_EXTRA_BY_UID,
-    UPDATE_TASK_EXTRA_BY_PROJECT_UID_AND_NAME,
+    UPDATE_TASK_EXTRA_BY_PROJECT_UID_AND_SLUG,
     UPDATE_TASK_KEYS_BY_UID,
-    UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_NAME,
+    UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_SLUG,
     DELETE_TASK_BY_UID,
-    DELETE_TASK_BY_PROJECT_UID_AND_NAME,
+    DELETE_TASK_BY_PROJECT_UID_AND_SLUG,
     SELECT_TASK_BY_UID,
-    SELECT_TASK_BY_PROJECT_ID_AND_NAME,
-    SELECT_TASK_UID_BY_PROJECT_ID_AND_NAME,
+    SELECT_TASK_BY_PROJECT_ID_AND_SLUG,
+    SELECT_TASK_UID_BY_PROJECT_ID_AND_SLUG,
     SELECT_TASK_BY_PROJECT_ID,
     SELECT_TASK_BY_FULLPATH,
     SELECT_TASK_UID_BY_FULLPATH,
@@ -32,7 +32,8 @@ class PgTask(DbTask, PgBase):
     async def create_task(
         self,
         project_uid: int,
-        name: str,
+        slug: str,
+        name: Optional[str] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
         rpc_address: Optional[str] = None,
@@ -49,6 +50,7 @@ class PgTask(DbTask, PgBase):
         await self.execute(
             query,
             project_uid,
+            slug,
             name,
             description,
             extra,
@@ -75,17 +77,17 @@ class PgTask(DbTask, PgBase):
         logger.info(f"update_task_description_by_uid({params_msg}) ok.")
 
     @overrides
-    async def update_task_description_by_name(
+    async def update_task_description_by_slug(
         self,
         project_uid: int,
-        name: str,
+        slug: str,
         description: str,
         updated_at=datetime.utcnow(),
     ) -> None:
-        query = UPDATE_TASK_DESCRIPTION_BY_PROJECT_UID_AND_NAME
-        await self.execute(query, project_uid, name, description, updated_at)
-        params_msg = f"project_uid={project_uid},name={name}"
-        logger.info(f"update_task_description_by_name({params_msg}) ok.")
+        query = UPDATE_TASK_DESCRIPTION_BY_PROJECT_UID_AND_SLUG
+        await self.execute(query, project_uid, slug, description, updated_at)
+        params_msg = f"project_uid={project_uid},slug={slug}"
+        logger.info(f"update_task_description_by_slug({params_msg}) ok.")
 
     @overrides
     async def update_task_extra_by_uid(
@@ -97,13 +99,13 @@ class PgTask(DbTask, PgBase):
         logger.info(f"update_task_extra_by_uid({params_msg}) ok.")
 
     @overrides
-    async def update_task_extra_by_name(
-        self, project_uid: int, name: str, extra: Any, updated_at=datetime.utcnow()
+    async def update_task_extra_by_slug(
+        self, project_uid: int, slug: str, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
-        query = UPDATE_TASK_EXTRA_BY_PROJECT_UID_AND_NAME
-        await self.execute(query, project_uid, name, extra, updated_at)
-        params_msg = f"project_uid={project_uid},name={name}"
-        logger.info(f"update_task_extra_by_name({params_msg}) ok.")
+        query = UPDATE_TASK_EXTRA_BY_PROJECT_UID_AND_SLUG
+        await self.execute(query, project_uid, slug, extra, updated_at)
+        params_msg = f"project_uid={project_uid},slug={slug}"
+        logger.info(f"update_task_extra_by_slug({params_msg}) ok.")
 
     @overrides
     async def update_task_keys_by_uid(
@@ -122,32 +124,33 @@ class PgTask(DbTask, PgBase):
         logger.info(f"update_task_keys_by_uid({params_msg}) ok.")
 
     @overrides
-    async def update_task_keys_by_name(
+    async def update_task_keys_by_slug(
         self,
         project_uid: int,
-        name: str,
+        slug: str,
         auth_algorithm: str,
         private_key: str,
         public_key: str,
         updated_at=datetime.utcnow(),
     ) -> None:
-        query = UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_NAME
+        query = UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_SLUG
         await self.execute(
             query,
             project_uid,
-            name,
+            slug,
             auth_algorithm,
             private_key,
             public_key,
             updated_at,
         )
-        params_msg = f"project_uid={project_uid},name={name}"
-        logger.info(f"update_task_keys_by_name({params_msg}) ok.")
+        params_msg = f"project_uid={project_uid},slug={slug}"
+        logger.info(f"update_task_keys_by_slug({params_msg}) ok.")
 
     @overrides
     async def update_task_by_uid(
         self,
         uid: int,
+        slug: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
@@ -163,6 +166,7 @@ class PgTask(DbTask, PgBase):
     ) -> None:
         query, args = get_update_task_query_by_uid(
             uid=uid,
+            slug=slug,
             name=name,
             description=description,
             extra=extra,
@@ -188,11 +192,11 @@ class PgTask(DbTask, PgBase):
         logger.info(f"delete_task_by_uid({params_msg}) ok.")
 
     @overrides
-    async def delete_task_by_name(self, project_uid: int, name: str) -> None:
-        query = DELETE_TASK_BY_PROJECT_UID_AND_NAME
-        await self.execute(query, project_uid, name)
-        params_msg = f"project_uid={project_uid},name={name}"
-        logger.info(f"delete_task_by_name({params_msg}) ok.")
+    async def delete_task_by_slug(self, project_uid: int, slug: str) -> None:
+        query = DELETE_TASK_BY_PROJECT_UID_AND_SLUG
+        await self.execute(query, project_uid, slug)
+        params_msg = f"project_uid={project_uid},slug={slug}"
+        logger.info(f"delete_task_by_slug({params_msg}) ok.")
 
     @overrides
     async def get_task_by_uid(self, uid: int) -> Task:
@@ -207,29 +211,29 @@ class PgTask(DbTask, PgBase):
         return result
 
     @overrides
-    async def get_task_by_name(self, project_uid: int, name: str) -> Task:
-        query = SELECT_TASK_BY_PROJECT_ID_AND_NAME
-        row = await self.fetch_row(query, project_uid, name)
-        params_msg = f"project_uid={project_uid},name={name}"
+    async def get_task_by_slug(self, project_uid: int, slug: str) -> Task:
+        query = SELECT_TASK_BY_PROJECT_ID_AND_SLUG
+        row = await self.fetch_row(query, project_uid, slug)
+        params_msg = f"project_uid={project_uid},slug={slug}"
         if not row:
             raise RuntimeError(f"Not found task: {params_msg}")
         result = Task(**dict(row))
         assert result.project_uid == project_uid
-        assert result.name == name
-        logger.info(f"get_task_by_name({params_msg}) ok.")
+        assert result.slug == slug
+        logger.info(f"get_task_by_slug({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_task_uid_by_name(self, project_uid: int, name: str) -> int:
-        query = SELECT_TASK_UID_BY_PROJECT_ID_AND_NAME
-        row = await self.fetch_row(query, project_uid, name)
-        params_msg = f"project_uid={project_uid},name={name}"
+    async def get_task_uid_by_slug(self, project_uid: int, slug: str) -> int:
+        query = SELECT_TASK_UID_BY_PROJECT_ID_AND_SLUG
+        row = await self.fetch_row(query, project_uid, slug)
+        params_msg = f"project_uid={project_uid},slug={slug}"
         if not row:
             raise RuntimeError(f"Not found task: {params_msg}")
         result = row.get("uid")
         if result is None:
             raise RuntimeError(f"Not found task: {params_msg}")
-        logger.info(f"get_task_uid_by_name({params_msg}) -> {result}")
+        logger.info(f"get_task_uid_by_slug({params_msg}) -> {result}")
         return result
 
     @overrides
@@ -249,27 +253,27 @@ class PgTask(DbTask, PgBase):
 
     @overrides
     async def get_task_by_fullpath(
-        self, group_slug: str, project_slug: str, task_name: str
+        self, group_slug: str, project_slug: str, task_slug: str
     ) -> Task:
         query = SELECT_TASK_BY_FULLPATH
-        row = await self.fetch_row(query, group_slug, project_slug, task_name)
-        params_msg = f"group={group_slug},project={project_slug},task={task_name}"
+        row = await self.fetch_row(query, group_slug, project_slug, task_slug)
+        params_msg = f"group={group_slug},project={project_slug},task={task_slug}"
         if not row:
             raise RuntimeError(f"Not found task: {params_msg}")
         if row.get("uid") is None:
             raise RuntimeError(f"Not found task: {params_msg}")
         result = Task(**dict(row))
-        assert result.name == task_name
+        assert result.slug == task_slug
         logger.info(f"get_task_by_fullpath({params_msg}) ok.")
         return result
 
     @overrides
     async def get_task_uid_by_fullpath(
-        self, group_slug: str, project_slug: str, task_name: str
+        self, group_slug: str, project_slug: str, task_slug: str
     ) -> int:
         query = SELECT_TASK_UID_BY_FULLPATH
-        row = await self.fetch_row(query, group_slug, project_slug, task_name)
-        params_msg = f"group={group_slug},project={project_slug},task={task_name}"
+        row = await self.fetch_row(query, group_slug, project_slug, task_slug)
+        params_msg = f"group={group_slug},project={project_slug},task={task_slug}"
         if not row:
             raise RuntimeError(f"Not found task: {params_msg}")
         result = row.get("uid")
