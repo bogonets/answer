@@ -1,184 +1,166 @@
 <i18n lang="yaml">
 en:
-  header:
-    basic: "Basic information"
-    detail: "Detail information"
   label:
-    name: "Name"
-    description: "Password"
-    features: "Confirm"
+    name: "Name (Required)"
+    nickname: "Nickname"
+    description: "Description (Optional)"
+    features: "Features (Optional)"
   hint:
-    name: "The group name to be displayed on the screen."
+    name: "Group name to be used in the URL."
+    nickname: "The nickname of the group as it is displayed on the screen."
     description: "A specific description of the group."
-    features: "The function to be applied to the group."
+    features: "A list of features to apply to the group."
+  no_matching: "No results matching \"{search}\". Press {key} to create a new one."
   cancel: "Cancel"
-  create: "Create"
+  submit: "Submit"
 
 ko:
-  header:
-    basic: "기본 정보"
-    detail: "상세 정보"
   label:
-    name: "이름"
-    description: "비밀번호"
-    features: "비밀번호 확인"
+    name: "이름 (필수)"
+    nickname: "별칭"
+    description: "설명"
+    features: "기능"
   hint:
-    name: "화면에 표시될 그룹 명칭."
+    name: "URL에 사용될 그룹 이름."
+    nickname: "화면에 출력되는 그룹의 별명."
     description: "그룹의 구체적인 설명."
     features: "그룹에 적용할 기능 목록 입니다."
+  no_matching: "\"{search}\" 와 일치하는 결과가 없습니다. {key} 키를 눌러 추가할 수 있습니다."
   cancel: "취소"
-  create: "생성"
+  submit: "제출"
 </i18n>
 
 <template>
-  <v-form
-      ref="form"
-      v-model="valid"
-  >
-    <v-subheader v-if="!hideSubheader">{{ $t('header.required') }}</v-subheader>
-    <v-divider v-if="!hideSubheader"></v-divider>
-    <v-list flat>
-      <v-list-item>
-        <v-text-field
-            dense
-            outlined
-            type="text"
-            autocomplete="off"
-            prepend-icon="mdi-account-group"
-            v-model="name"
-            :rules="rules.name"
-            :label="$t('label.name')"
-            :hint="$t('hint.name')"
-        ></v-text-field>
-      </v-list-item>
-    </v-list>
+  <v-form ref="form" v-model="valid">
 
-    <v-subheader v-if="!hideDetail && !hideSubheader">{{ $t('header.detail') }}</v-subheader>
-    <v-divider v-if="!hideDetail && !hideSubheader"></v-divider>
-    <v-list v-if="!hideDetail" flat>
-      <v-list-item>
-        <v-textarea
-            :label="$t('label.description')"
-            auto-grow
-            outlined
-            filled
-        ></v-textarea>
-      </v-list-item>
+    <subtitle bold>{{ $t('label.name') }}</subtitle>
+    <v-text-field
+        class="my-2"
+        dense
+        persistent-hint
+        :disabled="disableName"
+        :hint="$t('hint.name')"
+        :rules="rules.name"
+        :value="name"
+    ></v-text-field>
 
-      <v-list-item>
-      </v-list-item>
+    <subtitle bold>{{ $t('label.nickname') }}</subtitle>
+    <v-text-field
+        class="my-2"
+        dense
+        persistent-hint
+        :hint="$t('hint.nickname')"
+        :value="nickname"
+    ></v-text-field>
 
-      <v-list-item>
-        <v-text-field
-            dense
-            outlined
-            type="text"
-            autocomplete="off"
-            prepend-icon="mdi-phone"
-            v-model="phone1"
-            :rules="rules.phone"
-            :label="$t('label.phone1')"
-            :hint="$t('hint.phone1')"
-        ></v-text-field>
-      </v-list-item>
+    <subtitle bold>{{ $t('label.description') }}</subtitle>
+    <v-textarea
+        class="my-2"
+        dense
+        auto-grow
+        persistent-hint
+        :hint="$t('hint.description')"
+        :value="description"
+    ></v-textarea>
 
-      <v-list-item>
-        <v-text-field
-            dense
-            outlined
-            type="text"
-            autocomplete="off"
-            prepend-icon="mdi-phone"
-            v-model="phone2"
-            :rules="rules.phone"
-            :label="$t('label.phone2')"
-            :hint="$t('hint.phone2')"
-        ></v-text-field>
-      </v-list-item>
-    </v-list>
+    <subtitle bold>{{ $t('label.features') }}</subtitle>
+    <v-combobox
+        class="my-2"
+        dense
+        hide-selected
+        multiple
+        small-chips
+        persistent-hint
+        v-model="features"
+        :items="featuresItems"
+        :hint="$t('hint.features')"
+        :search-input.sync="searchFeature"
+    >
+      <template v-slot:no-data>
+        <subtitle>
+          <i18n class="py-1 px-4 text-body-2" path="no_matching" tag="span">
+            <template #search>
+              <strong>{{ searchFeature }}</strong>
+            </template>
+            <template #key>
+              <kbd>enter</kbd>
+            </template>
+          </i18n>
+        </subtitle>
+      </template>
+    </v-combobox>
 
-    <v-subheader v-if="!hideAccess && !hideSubheader">{{ $t('header.access') }}</v-subheader>
-    <v-divider v-if="!hideAccess && !hideSubheader"></v-divider>
-    <v-list v-if="!hideAccess" flat>
-      <v-list-item three-line>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t('label.is_admin') }}</v-list-item-title>
-          <v-list-item-subtitle>{{ $t('hint.is_admin') }}</v-list-item-subtitle>
-        </v-list-item-content>
-        <v-switch inset v-model="isAdmin"></v-switch>
-      </v-list-item>
-    </v-list>
+    <v-row no-gutters>
+      <v-spacer></v-spacer>
+      <v-btn
+          color="second"
+          class="mr-4"
+          @click="cancel"
+      >
+        {{ $t('cancel') }}
+      </v-btn>
+      <v-btn
+          color="primary"
+          :loading="loading"
+          :disabled="disableSubmit"
+          @click="submit"
+      >
+        {{ $t('submit') }}
+      </v-btn>
+    </v-row>
 
-    <v-divider></v-divider>
-
-    <v-list flat>
-      <v-list-item :three-line="!denseFooter">
-        <v-spacer></v-spacer>
-        <v-btn
-            color="second"
-            class="mr-4"
-            @click="cancel"
-        >
-          {{ $t('cancel') }}
-        </v-btn>
-        <v-btn
-            color="primary"
-            :loading="loading"
-            :disabled="disableSubmit"
-            @click="submit"
-        >
-          {{ $t('Create') }}
-        </v-btn>
-      </v-list-item>
-    </v-list>
   </v-form>
 </template>
 
 <script lang="ts">
-import {Component, Prop, Watch, Emit} from 'vue-property-decorator';
+import {Component, Prop, Ref, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import LeftTitle from '@/components/LeftTitle.vue';
+import TextFieldThreeLine from '@/components/TextFieldThreeLine.vue';
+import TextAreaThreeLine from '@/components/TextAreaThreeLine.vue';
+import NameSlotHint from '@/components/NameSlotHint.vue';
+import Subtitle from '@/components/Subtitle.vue';
+import {VForm} from 'vuetify/lib/components/VForm';
 import {Group} from '@/apis/api-v2';
 import {GROUP_NAME_RULES} from '@/rules';
 
-@Component
+@Component({
+  components: {
+    Subtitle,
+    NameSlotHint,
+    LeftTitle,
+    TextFieldThreeLine,
+    TextAreaThreeLine,
+  },
+})
 export default class FormGroupNew extends VueBase {
   private readonly rules = {
     name: GROUP_NAME_RULES,
   };
 
-  @Prop({type: String, default: ''})
-  readonly title!: string;
-
-  @Prop({type: String, default: ''})
-  readonly subtitle!: string;
-
-  @Prop({type: Boolean, default: false})
+  @Prop({type: Boolean})
   readonly loading!: boolean;
 
-  @Prop({type: Boolean, default: false})
-  readonly hideDetail!: boolean;
+  @Prop({type: Boolean})
+  readonly disableName!: boolean;
 
-  @Prop({type: Boolean, default: false})
-  readonly hideSubheader!: boolean;
-
-  @Prop({type: Boolean, default: false})
-  readonly denseFooter!: boolean;
-
-  @Prop({type: Boolean, default: false})
+  @Prop({type: Boolean})
   readonly disableValidate!: boolean;
+
+  @Ref()
+  readonly form!: VForm;
 
   valid = false;
   name = '';
+  nickname = '';
   description = '';
   features: Array<string> = [];
-  isAdmin = false;
+
+  searchFeature = '';
+  featuresItems: Array<string> = [];
 
   get disableSubmit(): boolean {
     return this.loading || !this.valid;
-  }
-
-  get form() {
-    return this.$refs.form;
   }
 
   validate() {
@@ -200,17 +182,11 @@ export default class FormGroupNew extends VueBase {
 
   @Emit()
   ok() {
-    const required = {
+    return {
       name: this.name,
-    };
-    const detail = {
+      nickname: this.nickname,
       description: this.description,
       features: this.features,
-    };
-
-    return {
-      ... required,
-      ... (this.hideDetail ? undefined : detail),
     } as Group;
   }
 

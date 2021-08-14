@@ -1,23 +1,21 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="4">
+      <v-col class="pb-0" cols="0" sm="4" md="4" lg="4" xl="4">
         <v-card flat color="transparent">
           <v-card-title>
             <span :class="headerTextColor">{{ header }}</span>
           </v-card-title>
-          <v-card-subtitle>
+          <v-card-subtitle class="pb-0">
             <span :class="subheaderTextColor">{{ subheader }}</span>
           </v-card-subtitle>
         </v-card>
       </v-col>
 
-      <v-col cols="8">
-        <v-card flat color="transparent">
-          <v-card-text>
-            <slot></slot>
-          </v-card-text>
-        </v-card>
+      <v-col cols="12" sm="8" md="8" lg="8" xl="8">
+        <div class="pa-4">
+          <slot></slot>
+        </div>
       </v-col>
     </v-row>
   </v-container>

@@ -134,6 +134,7 @@ export interface Login {
 
 export interface Group {
     name?: string;
+    nickname?: string;
     description?: string;
     features?: Array<string>;
     extra?: object;

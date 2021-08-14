@@ -1,12 +1,31 @@
+<i18n lang="yaml">
+en:
+  header: "New group"
+  subheader: >
+    Groups allow you to manage and collaborate across multiple projects.
+    Members of a group have access to all of its projects.
+
+ko:
+  header: "새로운 그룹"
+  subheader: >
+    여러 프로젝트를 관리하고 공동 작업할 수 있습니다.
+    그룹의 구성원은 모든 프로젝트에 접근할 수 있습니다.
+</i18n>
+
 <template>
   <v-container>
     <toolbar-navigation :items="navigationItems"></toolbar-navigation>
     <v-divider></v-divider>
 
-    <form-group-new
-        @cancel="onClickCancel"
-        @ok="onClickOk"
-    ></form-group-new>
+    <left-title
+        :header="$t('header')"
+        :subheader="$t('subheader')"
+    >
+      <form-group-new
+          @cancel="onClickCancel"
+          @ok="onClickOk"
+      ></form-group-new>
+    </left-title>
 
   </v-container>
 </template>
@@ -16,9 +35,11 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import FormGroupNew from '@/components/FormGroupNew.vue';
+import LeftTitle from "@/components/LeftTitle.vue";
 
 @Component({
   components: {
+    LeftTitle,
     FormGroupNew,
     ToolbarNavigation,
   }
