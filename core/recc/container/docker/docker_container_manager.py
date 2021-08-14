@@ -181,28 +181,24 @@ class DockerContainerManager(
     @overrides
     async def get_tasks(
         self,
-        group_name: Optional[str] = None,
-        project_name: Optional[str] = None,
-        task_name: Optional[str] = None,
+        group: Optional[str] = None,
+        project: Optional[str] = None,
+        task: Optional[str] = None,
     ) -> List[ContainerInfo]:
-        labels = task_find_labels(group_name, project_name, task_name)
+        labels = task_find_labels(group, project, task)
         return await self.containers(filters={"label": labels})
 
     @overrides
-    async def get_task(
-        self, group_name: str, project_name: str, task_name: str
-    ) -> ContainerInfo:
-        nodes = await self.get_tasks(group_name, project_name, task_name)
+    async def get_task(self, group: str, project: str, task: str) -> ContainerInfo:
+        nodes = await self.get_tasks(group, project, task)
         if not nodes:
-            params = f"group={group_name},project={project_name},task={task_name}"
+            params = f"group={group},project={project},task={task}"
             raise RuntimeError(f"Not found node: {params}")
         return nodes[0]
 
     @overrides
-    async def exist_task(
-        self, group_name: str, project_name: str, task_name: str
-    ) -> bool:
-        nodes = await self.get_tasks(group_name, project_name, task_name)
+    async def exist_task(self, group: str, project: str, task: str) -> bool:
+        nodes = await self.get_tasks(group, project, task)
         if nodes is None or len(nodes) == 0:
             return False
         assert len(nodes) >= 1
@@ -213,23 +209,23 @@ class DockerContainerManager(
     @overrides
     async def get_task_volumes(
         self,
-        group_name: Optional[str] = None,
-        project_name: Optional[str] = None,
+        group: Optional[str] = None,
+        project: Optional[str] = None,
     ) -> List[VolumeInfo]:
-        labels = task_find_labels(group_name, project_name)
+        labels = task_find_labels(group, project)
         return await self.volumes(filters={"label": labels})
 
     @overrides
-    async def get_task_volume(self, group_name: str, project_name: str) -> VolumeInfo:
-        volumes = await self.get_task_volumes(group_name, project_name)
+    async def get_task_volume(self, group: str, project: str) -> VolumeInfo:
+        volumes = await self.get_task_volumes(group, project)
         if not volumes:
-            params = f"group={group_name},project={project_name}"
+            params = f"group={group},project={project}"
             raise RuntimeError(f"Not found volume: {params}")
         return volumes[0]
 
     @overrides
-    async def exist_task_volume(self, group_name: str, project_name: str) -> bool:
-        volumes = await self.get_task_volumes(group_name, project_name)
+    async def exist_task_volume(self, group: str, project: str) -> bool:
+        volumes = await self.get_task_volumes(group, project)
         if volumes is None or len(volumes) == 0:
             return False
         assert len(volumes) >= 1
@@ -240,23 +236,23 @@ class DockerContainerManager(
     @overrides
     async def get_task_networks(
         self,
-        group_name: Optional[str] = None,
-        project_name: Optional[str] = None,
+        group: Optional[str] = None,
+        project: Optional[str] = None,
     ) -> List[NetworkInfo]:
-        labels = task_find_labels(group_name, project_name)
+        labels = task_find_labels(group, project)
         return await self.networks(filters={"label": labels})
 
     @overrides
-    async def get_task_network(self, group_name: str, project_name: str) -> NetworkInfo:
-        networks = await self.get_task_networks(group_name, project_name)
+    async def get_task_network(self, group: str, project: str) -> NetworkInfo:
+        networks = await self.get_task_networks(group, project)
         if not networks:
-            params = f"group={group_name},project={project_name}"
+            params = f"group={group},project={project}"
             raise RuntimeError(f"Not found network: {params}")
         return networks[0]
 
     @overrides
-    async def exist_task_network(self, group_name: str, project_name: str) -> bool:
-        networks = await self.get_task_networks(group_name, project_name)
+    async def exist_task_network(self, group: str, project: str) -> bool:
+        networks = await self.get_task_networks(group, project)
         if networks is None or len(networks) == 0:
             return False
         assert len(networks) >= 1
@@ -266,24 +262,24 @@ class DockerContainerManager(
 
     @overrides
     async def create_task_volume_if_not_exist(
-        self, group_name: str, project_name: str
+        self, group: str, project: str
     ) -> VolumeInfo:
-        name = naming_task_volume(group_name, project_name)
-        volumes = await self.get_task_volumes(group_name, project_name)
+        name = naming_task_volume(group, project)
+        volumes = await self.get_task_volumes(group, project)
         if volumes:
             return volumes[0]
-        labels = task_create_labels(group_name, project_name)
+        labels = task_create_labels(group, project)
         return await self.create_volume(name, labels=labels)
 
     @overrides
     async def create_task_network_if_not_exist(
-        self, group_name: str, project_name: str
+        self, group: str, project: str
     ) -> NetworkInfo:
-        name = naming_task_network(group_name, project_name)
-        networks = await self.get_task_networks(group_name, project_name)
+        name = naming_task_network(group, project)
+        networks = await self.get_task_networks(group, project)
         if networks:
             return networks[0]
-        labels = task_create_labels(group_name, project_name)
+        labels = task_create_labels(group, project)
         return await self.create_network(name, labels=labels, check_duplicate=True)
 
     @overrides
@@ -327,9 +323,9 @@ class DockerContainerManager(
     @overrides
     async def create_task(
         self,
-        group_name: str,
-        project_name: str,
-        task_name: str,
+        group: str,
+        project: str,
+        task: str,
         rpc_address: Optional[str] = None,
         register_key: Optional[str] = None,
         maximum_restart_count: Optional[int] = None,
@@ -341,25 +337,25 @@ class DockerContainerManager(
         network_name: Optional[str] = None,
         verbose_level=0,
     ) -> ContainerInfo:
-        if not valid_naming(group_name):
-            raise ValueError(f"Invalid group name: {group_name}")
-        if not valid_naming(project_name):
-            raise ValueError(f"Invalid project name: {project_name}")
-        if not valid_naming(task_name):
-            raise ValueError(f"Invalid task name: {task_name}")
+        if not valid_naming(group):
+            raise ValueError(f"Invalid group name: {group}")
+        if not valid_naming(project):
+            raise ValueError(f"Invalid project name: {project}")
+        if not valid_naming(task):
+            raise ValueError(f"Invalid task name: {task}")
 
         kwargs = {
             "detach": True,
-            "labels": task_create_labels(group_name, project_name, task_name),
+            "labels": task_create_labels(group, project, task),
             "network": network_name,
             "tmpfs": {TASK_GUEST_CACHE_DIR: ""},
         }
 
         environment = {
             "TZ": DEFAULT_TIME_ZONE,
-            "RECC_TASK_GROUP": group_name,
-            "RECC_TASK_PROJECT": project_name,
-            "RECC_TASK_NAME": task_name,
+            "RECC_TASK_GROUP": group,
+            "RECC_TASK_PROJECT": project,
+            "RECC_TASK_NAME": task,
         }
         if rpc_address:
             environment["RECC_TASK_ADDRESS"] = rpc_address
@@ -372,7 +368,7 @@ class DockerContainerManager(
         if container_name:
             kwargs["name"] = container_name
         else:
-            kwargs["name"] = naming_task(group_name, project_name, task_name)
+            kwargs["name"] = naming_task(group, project, task)
 
         volumes = dict()
         if workspace_volume:

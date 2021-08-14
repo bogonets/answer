@@ -16,38 +16,38 @@ from recc.variables.labels import (
 
 
 def task_create_labels(
-    group_name: Optional[str] = None,
-    project_name: Optional[str] = None,
-    task_name: Optional[str] = None,
+    group: Optional[str] = None,
+    project: Optional[str] = None,
+    task: Optional[str] = None,
 ) -> Dict[str, str]:
     result = {
         RECC_CLUSTER_KEY: RECC_CLUSTER_VAL_TRUE,
         RECC_CATEGORY_KEY: RECC_CATEGORY_VAL_TASK,
     }
-    if group_name is not None:
-        result[RECC_TASK_GROUP_KEY] = group_name
-    if project_name is not None:
-        result[RECC_TASK_PROJECT_KEY] = project_name
-    if task_name is not None:
-        result[RECC_TASK_TASK_KEY] = task_name
+    if group is not None:
+        result[RECC_TASK_GROUP_KEY] = group
+    if project is not None:
+        result[RECC_TASK_PROJECT_KEY] = project
+    if task is not None:
+        result[RECC_TASK_TASK_KEY] = task
     return result
 
 
 def task_find_labels(
-    group_name: Optional[str] = None,
-    project_name: Optional[str] = None,
-    task_name: Optional[str] = None,
+    group: Optional[str] = None,
+    project: Optional[str] = None,
+    task: Optional[str] = None,
 ) -> List[str]:
     result = [
         RECC_CLUSTER_TRUE,
         RECC_CATEGORY_TASK,
     ]
-    if group_name is not None:
-        result.append(f"{RECC_TASK_GROUP_KEY}={group_name}")
-    if project_name is not None:
-        result.append(f"{RECC_TASK_PROJECT_KEY}={project_name}")
-    if task_name is not None:
-        result.append(f"{RECC_TASK_TASK_KEY}={task_name}")
+    if group is not None:
+        result.append(f"{RECC_TASK_GROUP_KEY}={group}")
+    if project is not None:
+        result.append(f"{RECC_TASK_PROJECT_KEY}={project}")
+    if task is not None:
+        result.append(f"{RECC_TASK_TASK_KEY}={task}")
     return result
 
 

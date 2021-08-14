@@ -142,14 +142,14 @@ WHERE project_uid=$1;
 
 SELECT_TASK_BY_FULLPATH = f"""
 SELECT t.*
-FROM (SELECT uid FROM {TABLE_GROUP} WHERE name LIKE $1) g
+FROM (SELECT uid FROM {TABLE_GROUP} WHERE slug LIKE $1) g
     LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.name LIKE $2
     LEFT JOIN {TABLE_TASK} t ON t.project_uid=p.uid AND t.name LIKE $3;
 """
 
 SELECT_TASK_UID_BY_FULLPATH = f"""
 SELECT t.uid AS uid
-FROM (SELECT uid FROM {TABLE_GROUP} WHERE name LIKE $1) g
+FROM (SELECT uid FROM {TABLE_GROUP} WHERE slug LIKE $1) g
     LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.name LIKE $2
     LEFT JOIN {TABLE_TASK} t ON t.project_uid=p.uid AND t.name LIKE $3;
 """

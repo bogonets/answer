@@ -97,13 +97,13 @@ class DbProject(metaclass=ABCMeta):
 
     @abstractmethod
     async def get_project_by_fullpath(
-        self, group_name: str, project_name: str
+        self, group_slug: str, project_name: str
     ) -> Project:
         raise NotImplementedError
 
     @abstractmethod
     async def get_project_uid_by_fullpath(
-        self, group_name: str, project_name: str
+        self, group_slug: str, project_name: str
     ) -> int:
         raise NotImplementedError
 

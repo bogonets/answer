@@ -28,7 +28,7 @@ from recc.core.struct.update_info import UpdateInfo, UpdateInfoValue
 from recc.core.struct.system_overview import SystemOverview
 from recc.core.struct.template import TemplateKey
 from recc.database.struct.user import User
-from recc.variables.database import ANONYMOUS_GROUP_NAME
+from recc.variables.database import ANONYMOUS_GROUP_SLUG
 from recc.access_control.abac.attributes import aa
 
 
@@ -305,24 +305,25 @@ class RouterV2:
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def post_groups(self, body: Group) -> None:
-        if not body.name:
+        if not body.slug:
             raise HTTPBadRequest(reason="Not exists `name` field")
 
         await self.context.create_group(
-            name=body.name,
+            name=body.slug,
             description=body.description,
             features=body.features,
         )
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def get_groups_pgroup(self, group: str) -> Group:
-        return await self.context.get_group_by_name(group)
+        return await self.context.get_group_by_slug(group)
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def patch_groups_pgroup(self, group: str, body: Group) -> None:
-        uid = await self.context.get_group_uid_by_name(group)
+        uid = await self.context.get_group_uid_by_slug(group)
         await self.context.update_group_by_uid(
             uid=uid,
+            slug=body.slug,
             name=body.name,
             description=body.description,
             features=body.features,
@@ -331,7 +332,7 @@ class RouterV2:
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def delete_groups_pgroup(self, group: str) -> None:
-        await self.context.delete_group_by_name(group)
+        await self.context.delete_group_by_slug(group)
 
     # --------
     # Projects
@@ -339,7 +340,7 @@ class RouterV2:
 
     @parameter_matcher()
     async def get_projects(self, hs: HttpSession) -> List[Project]:
-        projects = await self.context.get_projects(ANONYMOUS_GROUP_NAME)
+        projects = await self.context.get_projects(ANONYMOUS_GROUP_SLUG)
         for project in projects:
             project.remove_sensitive()
         return projects

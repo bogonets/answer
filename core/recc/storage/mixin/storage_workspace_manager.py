@@ -2,7 +2,7 @@
 
 import os
 from recc.file.directory import prepare_writable_directory
-from recc.variables.database import ANONYMOUS_GROUP_NAME
+from recc.variables.database import ANONYMOUS_GROUP_SLUG
 
 
 class StorageWorkspaceManagerMixin:
@@ -27,7 +27,7 @@ class StorageWorkspaceManagerMixin:
     def prepare_project_dir(self, group_name: str, project_name: str) -> str:
         assert project_name
 
-        if group_name == ANONYMOUS_GROUP_NAME:
+        if group_name == ANONYMOUS_GROUP_SLUG:
             group_dir = self._workspace_global_dir
         else:
             group_dir = os.path.join(self._workspace_dir, group_name)
@@ -39,7 +39,7 @@ class StorageWorkspaceManagerMixin:
 
     def get_project_dir(self, group_name: str, project_name: str) -> str:
         assert project_name
-        if group_name == ANONYMOUS_GROUP_NAME:
+        if group_name == ANONYMOUS_GROUP_SLUG:
             group_dir = self._workspace_global_dir
         else:
             group_dir = os.path.join(self._workspace_dir, group_name)

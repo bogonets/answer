@@ -86,10 +86,10 @@ class ContextTask(ContextBase):
         return volume.key
 
     async def upsert_task_db(
-        self, group_name: str, project_name: str, task_name: str, **kwargs
+        self, group_slug: str, project_name: str, task_name: str, **kwargs
     ) -> None:
         project_uid = await self.database.get_project_uid_by_fullpath(
-            group_name, project_name
+            group_slug, project_name
         )
         try:
             task_uid = await self.database.get_task_uid_by_name(project_uid, task_name)
@@ -99,7 +99,7 @@ class ContextTask(ContextBase):
 
     async def run_task(
         self,
-        group_name: str,
+        group_slug: str,
         project_name: str,
         task_name: str,
         rpc_bind: Optional[str] = None,
@@ -118,14 +118,14 @@ class ContextTask(ContextBase):
         if self.is_host_mode() and not os.path.isdir(self.storage.get_root_directory()):
             raise RuntimeError("In Host mode, the storage path must be specified")
 
-        if not valid_naming(group_name):
-            raise ValueError(f"Invalid group name: {group_name}")
+        if not valid_naming(group_slug):
+            raise ValueError(f"Invalid group name: {group_slug}")
         if not valid_naming(project_name):
             raise ValueError(f"Invalid project name: {project_name}")
         if not valid_naming(task_name):
             raise ValueError(f"Invalid task name: {task_name}")
 
-        if await self.container.exist_task(group_name, project_name, task_name):
+        if await self.container.exist_task(group_slug, project_name, task_name):
             raise RuntimeError("A container already created exists")
 
         if rpc_bind:
@@ -148,12 +148,12 @@ class ContextTask(ContextBase):
         else:
             verbose = self.config.verbose
 
-        container_name = naming_task(group_name, project_name, task_name)
+        container_name = naming_task(group_slug, project_name, task_name)
         auth_algorithm = f"RSA({REGISTER_KEY_RSA_SIZE})"
         key = RSA.generate(REGISTER_KEY_RSA_SIZE)
         private_key = str(key.export_key(), "utf-8")
         public_key = str(key.publickey().export_key(), "utf-8")
-        workspace_volume = await self.prepare_project_volume(group_name, project_name)
+        workspace_volume = await self.prepare_project_volume(group_slug, project_name)
         network_name = await self.prepare_global_task_network()
 
         rpc_address = f"{bind}:{port}"
@@ -170,9 +170,9 @@ class ContextTask(ContextBase):
 
         try:
             container = await self.container.create_task(
-                group_name=group_name,
-                project_name=project_name,
-                task_name=task_name,
+                group=group_slug,
+                project=project_name,
+                task=task_name,
                 rpc_address=rpc_address,
                 register_key=public_key,
                 maximum_restart_count=maximum_restart_count,
@@ -216,11 +216,11 @@ class ContextTask(ContextBase):
             )
 
             client = await self.create_task_client(
-                group_name, project_name, task_name, access_rpc_address
+                group_slug, project_name, task_name, access_rpc_address
             )
 
             await self.upsert_task_db(
-                group_name,
+                group_slug,
                 project_name,
                 task_name,
                 name=task_name,
@@ -249,7 +249,7 @@ class ContextTask(ContextBase):
             await self.container.remove_container(container.key, force=True)
             raise
 
-        params = f"group={group_name},project={project_name},task={task_name}"
+        params = f"group={group_slug},project={project_name},task={task_name}"
         logger.info(f"run_task({params}) -> {client}")
         return client
 
@@ -381,7 +381,7 @@ class ContextTask(ContextBase):
     async def get_tasks(
         self, group_name: str, project_name: str
     ) -> List[ContainerInfo]:
-        group = await self.database.get_group_by_name(group_name)
+        group = await self.database.get_group_by_slug(group_name)
         project = await self.database.get_project_by_name(group.uid, project_name)
         assert group.uid is not None
         assert project.uid is not None
@@ -393,7 +393,7 @@ class ContextTask(ContextBase):
         project_name: str,
         extra: Any,
     ) -> None:
-        group = await self.database.get_group_by_name(group_name)
+        group = await self.database.get_group_by_slug(group_name)
         project = await self.database.get_project_by_name(group.uid, project_name)
         assert group.uid is not None
         assert project.uid is not None

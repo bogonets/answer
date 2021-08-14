@@ -12,7 +12,7 @@ class PgProjectTestCase(PostgresqlTestCase):
 
     async def test_none_exists_get(self):
         group_uid = self.group.uid
-        group_name = self.group.name
+        group_slug = self.group.slug
         name = "project"
         unknown = "unknown"
         await self.db.create_project(group_uid, name)
@@ -20,12 +20,12 @@ class PgProjectTestCase(PostgresqlTestCase):
         with self.assertRaises(RuntimeError):
             await self.db.get_project_by_fullpath(unknown, name)
         with self.assertRaises(RuntimeError):
-            await self.db.get_project_by_fullpath(group_name, unknown)
+            await self.db.get_project_by_fullpath(group_slug, unknown)
 
         with self.assertRaises(RuntimeError):
             await self.db.get_project_uid_by_fullpath(unknown, name)
         with self.assertRaises(RuntimeError):
-            await self.db.get_project_uid_by_fullpath(group_name, unknown)
+            await self.db.get_project_uid_by_fullpath(group_slug, unknown)
 
     async def test_create_and_get(self):
         name1 = "project1"
@@ -57,14 +57,14 @@ class PgProjectTestCase(PostgresqlTestCase):
         self.assertEqual(project1, project1_2nd)
         self.assertEqual(project2, project2_2nd)
 
-        group_name = self.group.name
-        project1_3rd = await self.db.get_project_by_fullpath(group_name, name1)
-        project2_3rd = await self.db.get_project_by_fullpath(group_name, name2)
+        group_slug = self.group.slug
+        project1_3rd = await self.db.get_project_by_fullpath(group_slug, name1)
+        project2_3rd = await self.db.get_project_by_fullpath(group_slug, name2)
         self.assertEqual(project1, project1_3rd)
         self.assertEqual(project2, project2_3rd)
 
-        project1_4th_uid = await self.db.get_project_uid_by_fullpath(group_name, name1)
-        project2_4th_uid = await self.db.get_project_uid_by_fullpath(group_name, name2)
+        project1_4th_uid = await self.db.get_project_uid_by_fullpath(group_slug, name1)
+        project2_4th_uid = await self.db.get_project_uid_by_fullpath(group_slug, name2)
         self.assertEqual(project1.uid, project1_4th_uid)
         self.assertEqual(project2.uid, project2_4th_uid)
 

@@ -89,10 +89,10 @@ class RouterV2TestCase(AsyncTestCase):
         self.assertEqual(1, len(response.data))  # Anonymous group
         response_data0 = response.data[0]
         self.assertIsInstance(response_data0, Group)
-        anonymous_name = response_data0.name
+        anonymous_slug = response_data0.slug
 
         new_group1 = Group(
-            name="group1",
+            slug="group1",
             description="description1",
             features=["1", "2"],
         )
@@ -105,18 +105,18 @@ class RouterV2TestCase(AsyncTestCase):
         self.assertIsNotNone(response3.data)
         self.assertIsInstance(response3.data, list)
         self.assertEqual(2, len(response3.data))
-        group1 = list(filter(lambda g: g.name != anonymous_name, response3.data))[0]
+        group1 = list(filter(lambda g: g.slug != anonymous_slug, response3.data))[0]
         self.assertIsInstance(group1, Group)
-        self.assertEqual(new_group1.name, group1.name)
+        self.assertEqual(new_group1.slug, group1.slug)
         self.assertEqual(new_group1.description, group1.description)
         self.assertEqual(new_group1.features, group1.features)
 
-        path = v2_path(u.groups_pgroup.format(**{p.group: new_group1.name}))
+        path = v2_path(u.groups_pgroup.format(**{p.group: new_group1.slug}))
         response4 = await self.tester.get(path, cls=Group)
         self.assertEqual(200, response4.status)
         self.assertIsNotNone(response4.data)
         self.assertIsInstance(response4.data, Group)
-        self.assertEqual(new_group1.name, response4.data.name)
+        self.assertEqual(new_group1.slug, response4.data.slug)
         self.assertEqual(new_group1.description, response4.data.description)
         self.assertEqual(new_group1.features, response4.data.features)
 

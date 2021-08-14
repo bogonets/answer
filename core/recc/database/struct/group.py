@@ -9,6 +9,7 @@ from recc.inspect.lexicographical_members import lexicographical_members
 @dataclass
 class Group:
     uid: Optional[int] = None
+    slug: Optional[str] = None
     name: Optional[str] = None
     description: Optional[str] = None
     features: Optional[List[str]] = None
@@ -22,6 +23,7 @@ class Group:
 
 class GroupKeys:
     uid = "uid"
+    slug = "slug"
     name = "name"
     description = "description"
     features = "features"

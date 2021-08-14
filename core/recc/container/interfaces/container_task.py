@@ -22,65 +22,61 @@ class ContainerTask(metaclass=ABCMeta):
     @abstractmethod
     async def get_tasks(
         self,
-        group_name: Optional[str] = None,
-        project_name: Optional[str] = None,
-        task_name: Optional[str] = None,
+        group: Optional[str] = None,
+        project: Optional[str] = None,
+        task: Optional[str] = None,
     ) -> List[ContainerInfo]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_task(
-        self, group_name: str, project_name: str, task_name: str
-    ) -> ContainerInfo:
+    async def get_task(self, group: str, project: str, task: str) -> ContainerInfo:
         raise NotImplementedError
 
     @abstractmethod
-    async def exist_task(
-        self, group_name: str, project_name: str, task_name: str
-    ) -> bool:
+    async def exist_task(self, group: str, project: str, task: str) -> bool:
         raise NotImplementedError
 
     @abstractmethod
     async def get_task_volumes(
         self,
-        group_name: Optional[str] = None,
-        project_name: Optional[str] = None,
+        group: Optional[str] = None,
+        project: Optional[str] = None,
     ) -> List[VolumeInfo]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_task_volume(self, group_name: str, project_name: str) -> VolumeInfo:
+    async def get_task_volume(self, group: str, project: str) -> VolumeInfo:
         raise NotImplementedError
 
     @abstractmethod
-    async def exist_task_volume(self, group_name: str, project_name: str) -> bool:
+    async def exist_task_volume(self, group: str, project: str) -> bool:
         raise NotImplementedError
 
     @abstractmethod
     async def get_task_networks(
         self,
-        group_name: Optional[str] = None,
-        project_name: Optional[str] = None,
+        group: Optional[str] = None,
+        project: Optional[str] = None,
     ) -> List[NetworkInfo]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_task_network(self, group_name: str, project_name: str) -> NetworkInfo:
+    async def get_task_network(self, group: str, project: str) -> NetworkInfo:
         raise NotImplementedError
 
     @abstractmethod
-    async def exist_task_network(self, group_name: str, project_name: str) -> bool:
+    async def exist_task_network(self, group: str, project: str) -> bool:
         raise NotImplementedError
 
     @abstractmethod
     async def create_task_volume_if_not_exist(
-        self, group_name: str, project_name: str
+        self, group: str, project: str
     ) -> VolumeInfo:
         raise NotImplementedError
 
     @abstractmethod
     async def create_task_network_if_not_exist(
-        self, group_name: str, project_name: str
+        self, group: str, project: str
     ) -> NetworkInfo:
         raise NotImplementedError
 
@@ -103,9 +99,9 @@ class ContainerTask(metaclass=ABCMeta):
     @abstractmethod
     async def create_task(
         self,
-        group_name: str,
-        project_name: str,
-        task_name: str,
+        group: str,
+        project: str,
+        task: str,
         rpc_address: Optional[str] = None,
         register_key: Optional[str] = None,
         maximum_restart_count: Optional[int] = None,
@@ -119,11 +115,11 @@ class ContainerTask(metaclass=ABCMeta):
     ) -> ContainerInfo:
         """Create a new task.
 
-        :param group_name:
+        :param group:
             Group name.
-        :param project_name:
+        :param project:
             Project name.
-        :param task_name:
+        :param task:
             Task name.
         :param rpc_address:
             RPC bind address.

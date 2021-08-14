@@ -3,7 +3,7 @@
 import unittest
 from datetime import datetime, timedelta
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
-from recc.variables.database import ANONYMOUS_GROUP_NAME
+from recc.variables.database import ANONYMOUS_GROUP_SLUG
 
 
 class PgTaskTestCase(PostgresqlTestCase):
@@ -17,7 +17,7 @@ class PgTaskTestCase(PostgresqlTestCase):
         )
 
     async def test_none_exists_get(self):
-        group = ANONYMOUS_GROUP_NAME
+        group = ANONYMOUS_GROUP_SLUG
         project = self.project_name
         name = "task"
         unknown = "unknown"
@@ -75,7 +75,7 @@ class PgTaskTestCase(PostgresqlTestCase):
         self.assertEqual(task1, task1_2nd)
         self.assertEqual(task2, task2_2nd)
 
-        group = ANONYMOUS_GROUP_NAME
+        group = ANONYMOUS_GROUP_SLUG
         project = self.project_name
         task1_3rd = await self.db.get_task_by_fullpath(group, project, name1)
         task2_3rd = await self.db.get_task_by_fullpath(group, project, name2)

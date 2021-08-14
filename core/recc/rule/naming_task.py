@@ -11,33 +11,33 @@ from recc.variables.naming import (
 )
 
 
-def naming_task(group_name: str, project_name: str, task_name: str) -> str:
+def naming_task(group: str, project: str, task: str) -> str:
     return merge_naming(
         PREFIX_RECC,
         NAME_CONTAINER,
-        group_name,
-        project_name,
-        task_name,
+        group,
+        project,
+        task,
         delimiter=NAME_DELIMITER,
     )
 
 
-def naming_task_volume(group_name: str, project_name: str) -> str:
+def naming_task_volume(group: str, project: str) -> str:
     return merge_naming(
         PREFIX_RECC,
         NAME_VOLUME,
-        group_name,
-        project_name,
+        group,
+        project,
         delimiter=NAME_DELIMITER,
     )
 
 
-def naming_task_network(group_name: str, project_name: str) -> str:
+def naming_task_network(group: str, project: str) -> str:
     return merge_naming(
         PREFIX_RECC,
         NAME_NETWORK,
-        group_name,
-        project_name,
+        group,
+        project,
         delimiter=NAME_DELIMITER,
     )
 

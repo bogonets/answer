@@ -14,7 +14,8 @@ class DbGroup(metaclass=ABCMeta):
     @abstractmethod
     async def create_group(
         self,
-        name: str,
+        slug: str,
+        name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
@@ -23,8 +24,8 @@ class DbGroup(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_group_name_by_uid(
-        self, uid: int, name: str, updated_at=datetime.utcnow()
+    async def update_group_slug_by_uid(
+        self, uid: int, slug: str, updated_at=datetime.utcnow()
     ) -> None:
         raise NotImplementedError
 
@@ -35,8 +36,8 @@ class DbGroup(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_group_description_by_name(
-        self, name: str, description: str, updated_at=datetime.utcnow()
+    async def update_group_description_by_slug(
+        self, slug: str, description: str, updated_at=datetime.utcnow()
     ) -> None:
         raise NotImplementedError
 
@@ -47,8 +48,8 @@ class DbGroup(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_group_extra_by_name(
-        self, name: str, extra: Any, updated_at=datetime.utcnow()
+    async def update_group_extra_by_slug(
+        self, slug: str, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
         raise NotImplementedError
 
@@ -59,8 +60,8 @@ class DbGroup(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_group_features_by_name(
-        self, name: str, features: List[str], updated_at=datetime.utcnow()
+    async def update_group_features_by_slug(
+        self, slug: str, features: List[str], updated_at=datetime.utcnow()
     ) -> None:
         raise NotImplementedError
 
@@ -68,6 +69,7 @@ class DbGroup(metaclass=ABCMeta):
     async def update_group_by_uid(
         self,
         uid: int,
+        slug: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
@@ -81,11 +83,11 @@ class DbGroup(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def delete_group_by_name(self, name: str) -> None:
+    async def delete_group_by_slug(self, slug: str) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_group_uid_by_name(self, name: str) -> int:
+    async def get_group_uid_by_slug(self, slug: str) -> int:
         raise NotImplementedError
 
     @abstractmethod
@@ -93,7 +95,7 @@ class DbGroup(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_group_by_name(self, name: str) -> Group:
+    async def get_group_by_slug(self, slug: str) -> Group:
         raise NotImplementedError
 
     @abstractmethod

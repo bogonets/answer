@@ -38,10 +38,10 @@ from recc.database.struct.layout import Layout
 from recc.database.struct.user import User
 from recc.driver.json import global_json_encoder, global_json_decoder
 from recc.util.version import version_text
-from recc.variables.database import ANONYMOUS_GROUP_NAME
+from recc.variables.database import ANONYMOUS_GROUP_SLUG
 from recc.variables.labels import RECC_TASK_TASK_KEY
 
-GLOBAL_GROUP = ANONYMOUS_GROUP_NAME
+GLOBAL_GROUP = ANONYMOUS_GROUP_SLUG
 
 
 class RouterV1:
@@ -586,7 +586,7 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_get_graph(session={username},project={projname})")
 
-        group_name = ANONYMOUS_GROUP_NAME
+        group_name = ANONYMOUS_GROUP_SLUG
         project = await self.context.get_project(group_name, projname)
         return response_ok_without_detail(name, {"obj": project.extra, "t": name})
 
@@ -598,7 +598,7 @@ class RouterV1:
         logger.info(f"on_set_graph(session={username},project={projname})")
 
         request_json = await request.json(loads=global_json_decoder)
-        group_name = ANONYMOUS_GROUP_NAME
+        group_name = ANONYMOUS_GROUP_SLUG
         await self.context.set_graph_with_extra_v1(group_name, projname, request_json)
         result = [{"msg": "", "status": "OK", "taskId": 1}]
         return response_ok_without_detail(name, {"t": name, "obj": result})
@@ -629,7 +629,7 @@ class RouterV1:
         params = f"session={username},project={projname},task={taskname}"
         logger.info(f"on_stop_task({params})")
 
-        group_name = ANONYMOUS_GROUP_NAME
+        group_name = ANONYMOUS_GROUP_SLUG
         await self.context.stop_task(group_name, projname, taskname)
         await self.context.remove_task(group_name, projname, taskname)
         return response_ok_without_detail(name)

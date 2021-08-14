@@ -184,11 +184,11 @@ class PgProject(DbProject, PgBase):
 
     @overrides
     async def get_project_by_fullpath(
-        self, group_name: str, project_name: str
+        self, group_slug: str, project_name: str
     ) -> Project:
         query = SELECT_PROJECT_BY_FULLPATH
-        row = await self.fetch_row(query, group_name, project_name)
-        params_msg = f"group={group_name},project={project_name}"
+        row = await self.fetch_row(query, group_slug, project_name)
+        params_msg = f"group={group_slug},project={project_name}"
         if not row:
             raise RuntimeError(f"Not found project: {params_msg}")
         if row.get("uid") is None:
@@ -200,11 +200,11 @@ class PgProject(DbProject, PgBase):
 
     @overrides
     async def get_project_uid_by_fullpath(
-        self, group_name: str, project_name: str
+        self, group_slug: str, project_name: str
     ) -> int:
         query = SELECT_PROJECT_UID_BY_FULLPATH
-        row = await self.fetch_row(query, group_name, project_name)
-        params_msg = f"group={group_name},project={project_name}"
+        row = await self.fetch_row(query, group_slug, project_name)
+        params_msg = f"group={group_slug},project={project_name}"
         if not row:
             raise RuntimeError(f"Not found project: {params_msg}")
         result = row.get("uid")

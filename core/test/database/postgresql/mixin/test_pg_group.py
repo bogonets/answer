@@ -3,26 +3,30 @@
 import unittest
 from datetime import datetime, timedelta
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
-from recc.variables.database import ANONYMOUS_GROUP_NAME, ANONYMOUS_GROUP_DESCRIPTION
+from recc.variables.database import ANONYMOUS_GROUP_SLUG, ANONYMOUS_GROUP_DESCRIPTION
 
 
 class PgGroupTestCase(PostgresqlTestCase):
     async def test_anonymous_group(self):
         anonymous_group = await self.db.get_group_by_uid(self.anonymous_group_uid)
-        self.assertEqual(ANONYMOUS_GROUP_NAME, anonymous_group.name)
+        self.assertEqual(ANONYMOUS_GROUP_SLUG, anonymous_group.slug)
         self.assertEqual(ANONYMOUS_GROUP_DESCRIPTION, anonymous_group.description)
 
     async def test_create_and_get(self):
-        name1 = "group1"
-        name2 = "group2"
+        slug1 = "slug1"
+        slug2 = "slug2"
+        name1 = "name1"
+        name2 = "name2"
         desc1 = "description1"
         desc2 = "description2"
         created_at1 = datetime.utcnow() + timedelta(days=1)
         created_at2 = datetime.utcnow() + timedelta(days=2)
-        await self.db.create_group(name1, desc1, created_at=created_at1)
-        await self.db.create_group(name2, desc2, created_at=created_at2)
-        group1 = await self.db.get_group_by_name(name1)
-        group2 = await self.db.get_group_by_name(name2)
+        await self.db.create_group(slug1, name1, desc1, created_at=created_at1)
+        await self.db.create_group(slug2, name2, desc2, created_at=created_at2)
+        group1 = await self.db.get_group_by_slug(slug1)
+        group2 = await self.db.get_group_by_slug(slug2)
+        self.assertEqual(slug1, group1.slug)
+        self.assertEqual(slug2, group2.slug)
         self.assertEqual(name1, group1.name)
         self.assertEqual(name2, group2.name)
         self.assertEqual(desc1, group1.description)
@@ -46,54 +50,56 @@ class PgGroupTestCase(PostgresqlTestCase):
         self.assertEqual(group2, group2_2nd)
 
     async def test_update_description(self):
-        name1 = "group1"
-        name2 = "group2"
-        await self.db.create_group(name1)
-        await self.db.create_group(name2)
-        group1_uid = (await self.db.get_group_by_name(name1)).uid
+        slug1 = "slug1"
+        slug2 = "slug2"
+        name1 = "name1"
+        name2 = "name2"
+        await self.db.create_group(slug1, name1)
+        await self.db.create_group(slug2, name2)
+        group1_uid = (await self.db.get_group_by_slug(slug1)).uid
 
         desc1 = "description1"
         desc2 = "description2"
         updated_at1 = datetime.utcnow() + timedelta(days=1)
         updated_at2 = datetime.utcnow() + timedelta(days=2)
         await self.db.update_group_description_by_uid(group1_uid, desc1, updated_at1)
-        await self.db.update_group_description_by_name(name2, desc2, updated_at2)
+        await self.db.update_group_description_by_slug(slug2, desc2, updated_at2)
 
-        group1 = await self.db.get_group_by_name(name1)
-        group2 = await self.db.get_group_by_name(name2)
+        group1 = await self.db.get_group_by_slug(slug1)
+        group2 = await self.db.get_group_by_slug(slug2)
         self.assertEqual(desc1, group1.description)
         self.assertEqual(desc2, group2.description)
         self.assertEqual(updated_at1, group1.updated_at)
         self.assertEqual(updated_at2, group2.updated_at)
 
     async def test_update_extra(self):
-        name1 = "group1"
-        name2 = "group2"
-        await self.db.create_group(name1)
-        await self.db.create_group(name2)
-        group1_uid = (await self.db.get_group_by_name(name1)).uid
+        slug1 = "group1"
+        slug2 = "group2"
+        await self.db.create_group(slug1)
+        await self.db.create_group(slug2)
+        group1_uid = (await self.db.get_group_by_slug(slug1)).uid
 
         extra1 = {"a": 1, "b": 2}
         extra2 = {"c": 3, "d": 4}
         updated_at1 = datetime.utcnow() + timedelta(days=1)
         updated_at2 = datetime.utcnow() + timedelta(days=2)
         await self.db.update_group_extra_by_uid(group1_uid, extra1, updated_at1)
-        await self.db.update_group_extra_by_name(name2, extra2, updated_at2)
+        await self.db.update_group_extra_by_slug(slug2, extra2, updated_at2)
 
-        group1 = await self.db.get_group_by_name(name1)
-        group2 = await self.db.get_group_by_name(name2)
+        group1 = await self.db.get_group_by_slug(slug1)
+        group2 = await self.db.get_group_by_slug(slug2)
         self.assertEqual(extra1, group1.extra)
         self.assertEqual(extra2, group2.extra)
         self.assertEqual(updated_at1, group1.updated_at)
         self.assertEqual(updated_at2, group2.updated_at)
 
     async def test_delete(self):
-        name1 = "group1"
-        name2 = "group2"
-        await self.db.create_group(name1)
-        await self.db.create_group(name2)
-        group1_uid = (await self.db.get_group_by_name(name1)).uid
-        group2_uid = (await self.db.get_group_by_name(name2)).uid
+        slug1 = "group1"
+        slug2 = "group2"
+        await self.db.create_group(slug1)
+        await self.db.create_group(slug2)
+        group1_uid = (await self.db.get_group_by_slug(slug1)).uid
+        group2_uid = (await self.db.get_group_by_slug(slug2)).uid
 
         groups1 = await self.db.get_groups()
         groups1_ids = [g.uid for g in groups1]
@@ -103,7 +109,7 @@ class PgGroupTestCase(PostgresqlTestCase):
         self.assertIn(group2_uid, groups1_ids)
 
         await self.db.delete_group_by_uid(group1_uid)
-        await self.db.delete_group_by_name(name2)
+        await self.db.delete_group_by_slug(slug2)
 
         groups2 = await self.db.get_groups()
         groups2_ids = [g.uid for g in groups2]
@@ -111,21 +117,21 @@ class PgGroupTestCase(PostgresqlTestCase):
         self.assertIn(self.anonymous_group_uid, groups2_ids)
 
     async def test_features(self):
-        name1 = "group1"
+        slug1 = "group1"
         features1 = ["a", "b"]
-        await self.db.create_group(name1, features=features1)
-        group1 = await self.db.get_group_by_name(name1)
-        self.assertEqual(name1, group1.name)
+        await self.db.create_group(slug1, features=features1)
+        group1 = await self.db.get_group_by_slug(slug1)
+        self.assertEqual(slug1, group1.slug)
         self.assertEqual(features1, group1.features)
 
         features2 = ["c", "d", "e"]
         await self.db.update_group_features_by_uid(group1.uid, features2)
-        group2 = await self.db.get_group_by_name(name1)
+        group2 = await self.db.get_group_by_slug(slug1)
         self.assertEqual(features2, group2.features)
 
         features3 = ["f"]
-        await self.db.update_group_features_by_name(name1, features3)
-        group3 = await self.db.get_group_by_name(name1)
+        await self.db.update_group_features_by_slug(slug1, features3)
+        group3 = await self.db.get_group_by_slug(slug1)
         self.assertEqual(features3, group3.features)
 
 
