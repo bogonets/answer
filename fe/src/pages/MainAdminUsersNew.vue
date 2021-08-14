@@ -3,11 +3,11 @@
     <toolbar-navigation :items="navigationItems"></toolbar-navigation>
     <v-divider></v-divider>
 
-    <form-user-new
+    <form-signup-simple
         :loading="showSignupLoading"
         @cancel="onClickCancel"
         @ok="onClickOk"
-    ></form-user-new>
+    ></form-signup-simple>
   </v-container>
 </template>
 
@@ -15,12 +15,12 @@
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import FormUserNew from "@/components/FormUserNew.vue";
+import FormSignupSimple from "@/components/FormSignupSimple.vue";
 
 @Component({
   components: {
     ToolbarNavigation,
-    FormUserNew,
+    FormSignupSimple,
   }
 })
 export default class MainAdminUsersNew extends VueBase {

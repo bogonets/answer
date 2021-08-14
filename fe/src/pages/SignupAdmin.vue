@@ -16,14 +16,14 @@ ko:
           <v-card elevation="8">
             <v-card-title>{{ $t('title') }}</v-card-title>
             <v-card-subtitle>{{ $t('subtitle') }}</v-card-subtitle>
-            <form-user-new
+            <form-signup-simple
                 hide-access
                 hide-profile
                 dense-footer
                 :loading="showSignupLoading"
                 @cancel="onClickCancel"
                 @ok="onClickOk"
-            ></form-user-new>
+            ></form-signup-simple>
           </v-card>
         </v-col>
       </v-row>
@@ -34,12 +34,12 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import FormUserNew from '@/components/FormUserNew.vue';
+import FormSignupSimple from '@/components/FormSignupSimple.vue';
 import {Signup} from '@/apis/api-v2';
 
 @Component({
   components: {
-    FormUserNew,
+    FormSignupSimple,
   }
 })
 export default class MainAdminUsersNew extends VueBase {
