@@ -425,11 +425,11 @@ export default class ApiV2 {
     }
 
     patchGroupsGroup(name: string, body?: Group) {
-        return this.patch(`/users/${name}`, body);
+        return this.patch(`/groups/${name}`, body);
     }
 
     deleteGroupsGroup(group: string) {
-        return this.delete(`/users/${group}`);
+        return this.delete(`/groups/${group}`);
     }
 
     // --------

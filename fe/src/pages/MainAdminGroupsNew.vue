@@ -21,10 +21,10 @@ ko:
         :header="$t('header')"
         :subheader="$t('subheader')"
     >
-      <form-group-new
+      <form-group
           @cancel="onClickCancel"
           @ok="onClickOk"
-      ></form-group-new>
+      ></form-group>
     </left-title>
 
   </v-container>
@@ -34,13 +34,13 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import FormGroupNew from '@/components/FormGroupNew.vue';
+import FormGroup from '@/components/FormGroup.vue';
 import LeftTitle from "@/components/LeftTitle.vue";
 
 @Component({
   components: {
     LeftTitle,
-    FormGroupNew,
+    FormGroup,
     ToolbarNavigation,
   }
 })

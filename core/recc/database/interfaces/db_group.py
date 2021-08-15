@@ -79,6 +79,18 @@ class DbGroup(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def update_group_by_slug(
+        self,
+        slug: str,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        features: Optional[List[str]] = None,
+        extra: Optional[Any] = None,
+        updated_at=datetime.utcnow(),
+    ) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def delete_group_by_uid(self, uid: int) -> None:
         raise NotImplementedError
 

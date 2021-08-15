@@ -1,37 +1,37 @@
 <i18n lang="yaml">
 en:
   header:
-    basic: "Basic"
+    basic: "Edit group"
     detail: "Detail"
   subheader:
-    basic: "This is essential information."
+    basic: "You can edit the group's basic properties."
     detail: "Detailed information about this group."
   label:
-    name: "Name"
-    description: "Description"
-    features: "Features"
     created_at: "Created At"
     updated_at: "Updated At"
     delete: "Delete a group"
   hint:
-    name: "A human-readable group name."
+    delete: "Please be careful! It cannot be recovered."
+  delete_confirm: "Are you sure? Are you really removing this group?"
+  delete: "Delete"
+  cancel: "Cancel"
 
 ko:
   header:
-    basic: "기본 정보"
+    basic: "그룹 편집"
     detail: "상세 정보"
   subheader:
-    basic: "반드시 필요한 정보 입니다."
+    basic: "그룹의 기본 속성을 편집할 수 있습니다."
     detail: "이 그룹에 대한 자세한 정보입니다."
   label:
-    name: "이름"
-    description: "설명"
-    features: "기능"
     created_at: "계정 생성일"
     updated_at: "계정 갱신일"
     delete: "그룹 제거"
   hint:
-    name: "사람이 읽기 쉬운 그룹 이름 입니다."
+    delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
+  delete_confirm: "이 그룹을 정말 제거합니까?"
+  delete: "제거"
+  cancel: "취소"
 </i18n>
 
 <template>
@@ -43,14 +43,14 @@ ko:
         :header="$t('header.basic')"
         :subheader="$t('subheader.basic')"
     >
-      <text-field-three-line
-          :label="$t('label.name')"
-          :hint="$t('hint.name')"
-          :value="originalGroup.name"
-      ></text-field-three-line>
+      <form-group
+          disable-slug
+          hide-cancel-button
+          v-model="original"
+          :loading="showSubmitLoading"
+          @ok="onClickOk"
+      ></form-group>
     </left-title>
-
-    <v-divider></v-divider>
 
     <left-title
         :header="$t('header.detail')"
@@ -68,6 +68,53 @@ ko:
       </v-card>
     </left-title>
 
+    <v-alert outlined prominent type="error" class="ma-4">
+      <v-row align="center" class="pl-4">
+        <v-col>
+          <v-row>
+            <h6 class="text-h6">{{ $t('label.delete') }}</h6>
+          </v-row>
+          <v-row>
+            <span class="text-body-2">{{ $t('hint.delete') }}</span>
+          </v-row>
+        </v-col>
+        <v-col class="shrink">
+          <v-btn
+              color="error"
+              @click.stop="onClickDelete"
+          >
+            {{ $t('delete') }}
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-alert>
+
+    <!-- Delete a user dialog. -->
+    <v-dialog v-model="showDeleteDialog" max-width="320">
+      <v-card>
+        <v-card-title class="text-h5 error--text">
+          {{ $t('label.delete') }}
+        </v-card-title>
+        <v-card-text>
+          {{ $t('delete_confirm') }}
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="onClickDeleteCancel">
+            {{ $t('cancel') }}
+          </v-btn>
+          <v-btn
+              :loading="showDeleteLoading"
+              color="error"
+              @click="onClickDeleteOk"
+          >
+            {{ $t('delete') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </v-container>
 </template>
 
@@ -78,10 +125,12 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import TextFieldThreeLine from '@/components/TextFieldThreeLine.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import RightControl from '@/components/RightControl.vue';
+import FormGroup from '@/components/FormGroup.vue';
 import {Group} from '@/apis/api-v2';
 
 @Component({
   components: {
+    FormGroup,
     RightControl,
     ToolbarNavigation,
     TextFieldThreeLine,
@@ -118,104 +167,72 @@ export default class MainAdminGroupsEdit extends VueBase {
   ];
 
   detailItems: Array<object> = [];
-  originalGroup: Group = {};
+  original: Group = {};
+  // originalGroup: Group = {};
 
-  name = '';
-  description = '';
-  features: Array<string> = [];
+  // name = '';
+  // description = '';
+  // features: Array<string> = [];
 
-  disableSubmit = true;
-  showIsAdminLoading = false;
-  showSignupLoading = false;
-  showDeleteUserDialog = false;
+  showSubmitLoading = false;
+  showDeleteDialog = false;
   showDeleteLoading = false;
 
   created() {
-    const group = this.$route.params.group as Group;
-    // const name = group?.name || '';
-    // if (!name) {
-    //   console.error('Group name is not exists.');
-    //   this.moveToMainAdminGroups();
-    // }
-
-    this.name = group.name || '';
-    this.description = group.description || '';
-    this.features = group.features || [];
-    const created_at = group.created_at || '';
-    const updated_at = group.updated_at || '';
-
-    this.originalGroup = {
-      name: this.name,
-      description: this.description,
-      features: this.features,
-      created_at: created_at,
-      updated_at: updated_at,
-    } as Group;
-
+    this.original = this.$route.params.group as Group;
     this.detailItems = [
       {
         name: this.$t('label.created_at'),
-        value: created_at,
+        value: this.original.created_at || '',
       },
       {
         name: this.$t('label.updated_at'),
-        value: updated_at,
+        value: this.original.updated_at || '',
       },
     ];
   }
 
-  get groupName(): string {
-    return this.originalGroup.name || '';
+  get slug(): string {
+    return this.original.slug || '';
   }
 
-  onClickDelete() {
-    this.showDeleteUserDialog = true;
-  }
-
-  onClickClear() {
-    this.name = this.originalGroup.name || '';
-    this.description = this.originalGroup.description || '';
-    this.features = this.originalGroup.features || [];
-  }
-
-  onClickSubmit() {
-    const patchGroup = {
-      description: this.description,
-      features: this.features,
-    } as Group;
-
-    this.showSignupLoading = true;
-    this.$api2.patchGroupsGroup(this.name, patchGroup)
+  onClickOk(group: Group) {
+    this.showSubmitLoading = true;
+    this.$api2.patchGroupsGroup(this.slug, group)
         .then(() => {
-          this.showSignupLoading = false;
+          this.showSubmitLoading = false;
           this.toastRequestSuccess();
 
-          this.originalGroup.name = patchGroup.name;
-          this.originalGroup.description = patchGroup.description;
-          this.originalGroup.features = patchGroup.features;
+          this.original.name = group.name;
+          this.original.description = group.description;
+          this.original.features = group.features;
         })
         .catch(error => {
-          this.showSignupLoading = false;
+          this.showSubmitLoading = false;
           this.toastRequestFailure(error);
         });
   }
 
-  onClickDeleteUserCancel() {
-    this.showDeleteUserDialog = false;
+  onClickDelete() {
+    this.showDeleteDialog = true;
   }
 
-  onClickDeleteUserOk() {
+  onClickDeleteCancel() {
+    this.showDeleteDialog = false;
+  }
+
+  onClickDeleteOk() {
     this.showDeleteLoading = true;
-    this.$api2.deleteGroupsGroup(this.name)
+    this.$api2.deleteGroupsGroup(this.slug)
         .then(() => {
           this.showDeleteLoading = false;
-          this.showDeleteUserDialog = false;
+          this.showDeleteDialog = false;
           this.toastRequestSuccess();
           this.moveToMainAdminGroups();
         })
         .catch(error => {
           this.showDeleteLoading = false;
-          this.showDeleteUserDialog = false;
+          this.showDeleteDialog = false;
           this.toastRequestFailure(error);
         });
   }

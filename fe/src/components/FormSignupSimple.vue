@@ -261,9 +261,7 @@ export default class FormSignupSimple extends VueBase {
   get disableSignup(): boolean {
     const filledRequired = !!this.username && !!this.password && !!this.confirmPassword;
     const samePassword = this.password === this.confirmPassword;
-    const result = this.loading || !(this.valid && filledRequired && samePassword);
-    console.debug(`disableSignup -> ${result}`);
-    return result;
+    return this.loading || !(this.valid && filledRequired && samePassword);
   }
 
   get form() {
@@ -274,19 +272,19 @@ export default class FormSignupSimple extends VueBase {
     return this.$refs.confirmPasswordField;
   }
 
-  validate() {
-    this.form['validate']();
-  }
-
   validateConfirmPasswordField() {
     this.confirmPasswordField['validate']();
   }
 
-  reset() {
+  formValidate() {
+    this.form['validate']();
+  }
+
+  formReset() {
     this.form['reset']();
   }
 
-  resetValidation() {
+  formResetValidation() {
     this.form['resetValidation']();
   }
 
@@ -325,7 +323,7 @@ export default class FormSignupSimple extends VueBase {
 
   submit() {
     if (!this.disableValidate) {
-      this.validate();
+      this.formValidate();
       if (!this.valid) {
         return;
       }

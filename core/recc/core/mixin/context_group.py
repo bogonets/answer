@@ -60,6 +60,18 @@ class ContextGroup(ContextBase):
             uid, slug, name, description, features, extra
         )
 
+    async def update_group_by_slug(
+        self,
+        slug: str,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        features: Optional[List[str]] = None,
+        extra: Optional[Any] = None,
+    ) -> None:
+        await self.database.update_group_by_slug(
+            slug, name, description, features, extra
+        )
+
     async def delete_group_by_uid(self, uid: int) -> None:
         await self.database.delete_group_by_uid(uid)
 

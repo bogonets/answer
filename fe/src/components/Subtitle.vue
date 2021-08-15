@@ -1,5 +1,5 @@
 <template>
-  <p class="text-subtitle-2 mb-1" :class="textClass">
+  <p class="text-subtitle-2 my-2" :class="textClass">
     <slot></slot>
   </p>
 </template>

@@ -321,10 +321,8 @@ class RouterV2:
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def patch_groups_pgroup(self, group: str, body: Group) -> None:
-        uid = await self.context.get_group_uid_by_slug(group)
-        await self.context.update_group_by_uid(
-            uid=uid,
-            slug=body.slug,
+        await self.context.update_group_by_slug(
+            slug=group,
             name=body.name,
             description=body.description,
             features=body.features,

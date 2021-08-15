@@ -1,10 +1,10 @@
 <i18n lang="yaml">
 en:
   label:
-    slug: "Slug (Required)"
+    slug: "Slug"
     name: "Name"
-    description: "Description (Optional)"
-    features: "Features (Optional)"
+    description: "Description"
+    features: "Features"
   hint:
     slug: "Group slug to be used in the URL."
     name: "The name of the group as it is displayed on the screen."
@@ -23,12 +23,13 @@ en:
       label: "Public"
       hint: "The group and any public projects can be viewed without any authentication."
   no_matching: "No results matching \"{search}\". Press {key} to create a new one."
+  reset: "Reset"
   cancel: "Cancel"
   submit: "Submit"
 
 ko:
   label:
-    slug: "슬러그 (필수)"
+    slug: "슬러그"
     name: "이름"
     description: "설명"
     features: "기능"
@@ -50,6 +51,7 @@ ko:
       label: "Public"
       hint: "The group and any public projects can be viewed without any authentication."
   no_matching: "\"{search}\" 와 일치하는 결과가 없습니다. {key} 키를 눌러 추가할 수 있습니다."
+  reset: "복구"
   cancel: "취소"
   submit: "제출"
 </i18n>
@@ -60,10 +62,9 @@ ko:
     <subtitle bold>{{ $t('label.slug') }}</subtitle>
     <v-row no-gutters>
       <v-text-field
-          class="my-2"
           dense
           persistent-hint
-          v-model="slug"
+          v-model="current.slug"
           :disabled="disableSlug"
           :hint="$t('hint.slug')"
           :rules="rules.slug"
@@ -73,33 +74,30 @@ ko:
 
     <subtitle bold>{{ $t('label.name') }}</subtitle>
     <v-text-field
-        class="my-2"
         dense
         persistent-hint
-        v-model="name"
+        v-model="current.name"
         :hint="$t('hint.name')"
     ></v-text-field>
 
     <subtitle bold>{{ $t('label.description') }}</subtitle>
     <v-textarea
-        class="my-2"
         dense
         auto-grow
         persistent-hint
-        v-model="description"
+        v-model="current.description"
         :hint="$t('hint.description')"
     ></v-textarea>
 
     <subtitle bold>{{ $t('label.features') }}</subtitle>
     <v-combobox
-        class="my-2"
         dense
         hide-selected
         multiple
         small-chips
         persistent-hint
-        v-model="features"
-        :items="featuresItems"
+        v-model="current.features"
+        :items="featureItems"
         :hint="$t('hint.features')"
         :search-input.sync="searchFeature"
     >
@@ -117,20 +115,22 @@ ko:
       </template>
     </v-combobox>
 
-    <v-row no-gutters>
+    <v-row v-if="!hideButtons" class="mt-2" no-gutters>
       <v-spacer></v-spacer>
       <v-btn
-          color="second"
+          v-if="!hideCancelButton"
           class="mr-4"
+          color="second"
           @click="cancel"
       >
         {{ $t('cancel') }}
       </v-btn>
       <v-btn
+          v-if="!hideSubmitButton"
           color="primary"
           :loading="loading"
           :disabled="disableSubmit"
-          @click="submit"
+          @click="onSubmit"
       >
         {{ $t('submit') }}
       </v-btn>
@@ -140,7 +140,7 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop, Ref, Emit} from 'vue-property-decorator';
+import {Component, Prop, Watch, Ref, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import LeftTitle from '@/components/LeftTitle.vue';
 import TextFieldThreeLine from '@/components/TextFieldThreeLine.vue';
@@ -160,7 +160,7 @@ import {GROUP_SLUG_RULES} from '@/rules';
     TextAreaThreeLine,
   },
 })
-export default class FormGroupNew extends VueBase {
+export default class FormGroup extends VueBase {
   private readonly rules = {
     slug: GROUP_SLUG_RULES,
   };
@@ -174,17 +174,70 @@ export default class FormGroupNew extends VueBase {
   @Prop({type: Boolean})
   readonly disableValidate!: boolean;
 
+  @Prop({type: Boolean})
+  readonly hideButtons!: boolean;
+
+  @Prop({type: Boolean})
+  readonly hideCancelButton!: boolean;
+
+  @Prop({type: Boolean})
+  readonly hideSubmitButton!: boolean;
+
+  @Prop({type: Array, default: () => { return []; }})
+  readonly featureItems!: Array<string>;
+
+  @Prop({type: Object, default: () => { return {}; }})
+  readonly value!: Group;
+
   @Ref()
   readonly form!: VForm;
 
   valid = false;
-  slug = '';
-  name = '';
-  description = '';
-  features: Array<string> = [];
-
   searchFeature = '';
-  featuresItems: Array<string> = [];
+  current = {
+    slug: '',
+    name: '',
+    description: '',
+    features: [],
+  } as Group;
+
+  created() {
+    this.updateCurrent(this.value);
+  }
+
+  @Watch('value')
+  onChangeValue(value: Group) {
+    this.updateCurrent(value);
+  }
+
+  // @Watch('current')
+  // onChangeCurrent(value: Group) {
+  //   this.modified(value);
+  // }
+
+  copyGroup(source: Group, destination: Group) {
+    destination.slug = source?.slug || '';
+    destination.name = source?.name || '';
+    destination.description = source?.description || '';
+    destination.features = source?.features || [];
+  }
+
+  updateCurrent(value: Group) {
+    this.copyGroup(value, this.current);
+  }
+
+  get modified(): boolean {
+    if (this.value.slug !== this.current.slug) {
+      return true;
+    }
+    if (this.value.name !== this.current.name) {
+      return true;
+    }
+    if (this.value.description !== this.current.description) {
+      return true;
+    }
+    return this.value.features !== this.current.features;
+  }
 
   get origin(): string {
     return window.location.origin;
@@ -195,19 +248,34 @@ export default class FormGroupNew extends VueBase {
   }
 
   get disableSubmit(): boolean {
-    return this.loading || !this.valid;
+    return this.loading || !this.valid || !this.modified;
   }
 
-  validate() {
+  formValidate() {
     this.form['validate']();
   }
 
-  reset() {
+  formReset() {
     this.form['reset']();
   }
 
-  resetValidation() {
+  formResetValidation() {
     this.form['resetValidation']();
+  }
+
+  onSubmit() {
+    if (!this.disableValidate) {
+      this.formValidate();
+      if (!this.valid) {
+        return;
+      }
+    }
+    this.ok();
+  }
+
+  @Emit()
+  input() {
+    return this.current;
   }
 
   @Emit()
@@ -217,23 +285,7 @@ export default class FormGroupNew extends VueBase {
 
   @Emit()
   ok() {
-    return {
-      slug: this.slug,
-      name: this.name,
-      description: this.description,
-      features: this.features,
-    } as Group;
-  }
-
-  submit() {
-    if (!this.disableValidate) {
-      this.validate();
-      if (!this.valid) {
-        return;
-      }
-    }
-
-    this.ok();
+    return this.current;
   }
 }
 </script>
