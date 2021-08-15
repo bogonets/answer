@@ -133,8 +133,8 @@ export interface Login {
 }
 
 export interface Group {
+    slug?: string;
     name?: string;
-    nickname?: string;
     description?: string;
     features?: Array<string>;
     extra?: object;

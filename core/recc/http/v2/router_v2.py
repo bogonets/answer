@@ -306,10 +306,11 @@ class RouterV2:
     @parameter_matcher(acl={aa.HasAdmin})
     async def post_groups(self, body: Group) -> None:
         if not body.slug:
-            raise HTTPBadRequest(reason="Not exists `name` field")
+            raise HTTPBadRequest(reason="Not exists `slug` field")
 
         await self.context.create_group(
-            name=body.slug,
+            slug=body.slug,
+            name=body.name,
             description=body.description,
             features=body.features,
         )

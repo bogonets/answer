@@ -6,6 +6,7 @@ export default {
         at_least_4char: 'At least 4 characters.',
         email: 'Email format is incorrect.',
         phone: 'Phone format is incorrect.',
+        slug: "Slug format is incorrect.",
         no_recc_prefix: "'recc.' prefix cannot be used.",
     },
 

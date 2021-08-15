@@ -1,30 +1,54 @@
 <i18n lang="yaml">
 en:
   label:
-    name: "Name (Required)"
-    nickname: "Nickname"
+    slug: "Slug (Required)"
+    name: "Name"
     description: "Description (Optional)"
     features: "Features (Optional)"
   hint:
-    name: "Group name to be used in the URL."
-    nickname: "The nickname of the group as it is displayed on the screen."
+    slug: "Group slug to be used in the URL."
+    name: "The name of the group as it is displayed on the screen."
     description: "A specific description of the group."
     features: "A list of features to apply to the group."
+  visibility:
+    label: "Visibility level"
+    hint: "Who will be able to see this group?"
+    private:
+      label: "Private"
+      hint: "The group and its projects can only be viewed by members."
+    internal:
+      label: "Internal"
+      hint: "The group and any internal projects can be viewed by any logged in user."
+    public:
+      label: "Public"
+      hint: "The group and any public projects can be viewed without any authentication."
   no_matching: "No results matching \"{search}\". Press {key} to create a new one."
   cancel: "Cancel"
   submit: "Submit"
 
 ko:
   label:
-    name: "이름 (필수)"
-    nickname: "별칭"
+    slug: "슬러그 (필수)"
+    name: "이름"
     description: "설명"
     features: "기능"
   hint:
-    name: "URL에 사용될 그룹 이름."
-    nickname: "화면에 출력되는 그룹의 별명."
+    slug: "URL에 사용될 그룹 슬러그."
+    name: "화면에 출력되는 그룹명."
     description: "그룹의 구체적인 설명."
     features: "그룹에 적용할 기능 목록 입니다."
+  visibility:
+    label: "Visibility level"
+    hint: "Who will be able to see this group?"
+    private:
+      label: "Private"
+      hint: "The group and its projects can only be viewed by members."
+    internal:
+      label: "Internal"
+      hint: "The group and any internal projects can be viewed by any logged in user."
+    public:
+      label: "Public"
+      hint: "The group and any public projects can be viewed without any authentication."
   no_matching: "\"{search}\" 와 일치하는 결과가 없습니다. {key} 키를 눌러 추가할 수 있습니다."
   cancel: "취소"
   submit: "제출"
@@ -33,24 +57,27 @@ ko:
 <template>
   <v-form ref="form" v-model="valid">
 
+    <subtitle bold>{{ $t('label.slug') }}</subtitle>
+    <v-row no-gutters>
+      <v-text-field
+          class="my-2"
+          dense
+          persistent-hint
+          v-model="slug"
+          :disabled="disableSlug"
+          :hint="$t('hint.slug')"
+          :rules="rules.slug"
+          :prefix="slugPrefix"
+      ></v-text-field>
+    </v-row>
+
     <subtitle bold>{{ $t('label.name') }}</subtitle>
     <v-text-field
         class="my-2"
         dense
         persistent-hint
-        :disabled="disableName"
+        v-model="name"
         :hint="$t('hint.name')"
-        :rules="rules.name"
-        :value="name"
-    ></v-text-field>
-
-    <subtitle bold>{{ $t('label.nickname') }}</subtitle>
-    <v-text-field
-        class="my-2"
-        dense
-        persistent-hint
-        :hint="$t('hint.nickname')"
-        :value="nickname"
     ></v-text-field>
 
     <subtitle bold>{{ $t('label.description') }}</subtitle>
@@ -59,8 +86,8 @@ ko:
         dense
         auto-grow
         persistent-hint
+        v-model="description"
         :hint="$t('hint.description')"
-        :value="description"
     ></v-textarea>
 
     <subtitle bold>{{ $t('label.features') }}</subtitle>
@@ -122,7 +149,7 @@ import NameSlotHint from '@/components/NameSlotHint.vue';
 import Subtitle from '@/components/Subtitle.vue';
 import {VForm} from 'vuetify/lib/components/VForm';
 import {Group} from '@/apis/api-v2';
-import {GROUP_NAME_RULES} from '@/rules';
+import {GROUP_SLUG_RULES} from '@/rules';
 
 @Component({
   components: {
@@ -135,14 +162,14 @@ import {GROUP_NAME_RULES} from '@/rules';
 })
 export default class FormGroupNew extends VueBase {
   private readonly rules = {
-    name: GROUP_NAME_RULES,
+    slug: GROUP_SLUG_RULES,
   };
 
   @Prop({type: Boolean})
   readonly loading!: boolean;
 
   @Prop({type: Boolean})
-  readonly disableName!: boolean;
+  readonly disableSlug!: boolean;
 
   @Prop({type: Boolean})
   readonly disableValidate!: boolean;
@@ -151,13 +178,21 @@ export default class FormGroupNew extends VueBase {
   readonly form!: VForm;
 
   valid = false;
+  slug = '';
   name = '';
-  nickname = '';
   description = '';
   features: Array<string> = [];
 
   searchFeature = '';
   featuresItems: Array<string> = [];
+
+  get origin(): string {
+    return window.location.origin;
+  }
+
+  get slugPrefix(): string {
+    return this.origin + (this.origin[this.origin.length-1] === '/' ? '' : '/')
+  }
 
   get disableSubmit(): boolean {
     return this.loading || !this.valid;
@@ -183,8 +218,8 @@ export default class FormGroupNew extends VueBase {
   @Emit()
   ok() {
     return {
+      slug: this.slug,
       name: this.name,
-      nickname: this.nickname,
       description: this.description,
       features: this.features,
     } as Group;

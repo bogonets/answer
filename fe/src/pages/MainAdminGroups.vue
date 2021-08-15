@@ -3,9 +3,9 @@ en:
   search_label: "You can filter by name or description."
   new_item: "New Group"
   headers:
+    slug: "Slug"
     name: "Name"
     description: "Description"
-    features: "Features"
     created_at: "Created at"
     updated_at: "Updated at"
     actions: "Actions"
@@ -16,9 +16,9 @@ ko:
   search_label: "이름 또는 설명을 필터링할 수 있습니다."
   new_item: "새로운 그룹"
   headers:
+    slug: "슬러그"
     name: "이름"
     description: "설명"
-    features: "기능"
     created_at: "생성일"
     updated_at: "수정일"
     actions: "관리"
@@ -105,8 +105,14 @@ export default class MainAdminGroups extends VueBase {
 
   private readonly headers = [
     {
-      text: this.$t('headers.name').toString(),
+      text: this.$t('headers.slug').toString(),
       align: 'left',
+      filterable: true,
+      value: 'slug',
+    },
+    {
+      text: this.$t('headers.name').toString(),
+      align: 'center',
       filterable: true,
       value: 'name',
     },
@@ -115,12 +121,6 @@ export default class MainAdminGroups extends VueBase {
       align: 'center',
       filterable: true,
       value: 'description',
-    },
-    {
-      text: this.$t('headers.features').toString(),
-      align: 'center',
-      filterable: true,
-      value: 'features',
     },
     {
       text: this.$t('headers.created_at').toString(),

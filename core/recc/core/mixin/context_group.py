@@ -8,14 +8,15 @@ from recc.database.struct.group import Group
 class ContextGroup(ContextBase):
     async def create_group(
         self,
-        name: str,
-        nickname: Optional[str] = None,
+        slug: str,
+        name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
         extra: Any = None,
     ) -> None:
         await self.database.create_group(
-            name,
+            slug=slug,
+            name=name,
             description=description,
             features=features,
             extra=extra,

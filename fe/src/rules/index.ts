@@ -3,6 +3,7 @@ import emptyOrEmailFormat from '@/rules/email';
 import emptyOrPhoneFormat from '@/rules/phone';
 import requiredField from '@/rules/required';
 import noReccPrefix from '@/rules/recc-info';
+import slugFormat from '@/rules/slug';
 
 
 export const USERNAME_RULES = [
@@ -10,8 +11,9 @@ export const USERNAME_RULES = [
     atLeast4Char,
 ];
 
-export const GROUP_NAME_RULES = [
+export const GROUP_SLUG_RULES = [
     requiredField,
+    slugFormat,
 ];
 
 export const PASSWORD_RULES = [
