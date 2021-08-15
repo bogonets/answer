@@ -3,13 +3,13 @@
 from re import compile as re_compile
 from typing import List
 from functools import reduce
-from recc.variables.naming import INVALID_NAMING_RULE_PATTERN
+from recc.variables.naming import VALID_NAMING_RULE_PATTERN
 
-_INVALID_NAMING_RULE_REGEX = re_compile(INVALID_NAMING_RULE_PATTERN)
+_VALID_NAMING_RULE_REGEX = re_compile(VALID_NAMING_RULE_PATTERN)
 
 
 def valid_naming(name: str) -> bool:
-    return _INVALID_NAMING_RULE_REGEX.match(name) is None
+    return _VALID_NAMING_RULE_REGEX.match(name) is not None
 
 
 def merge_naming(*names, delimiter: str) -> str:

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-INVALID_NAMING_RULE_PATTERN = r"[^a-zA-Z0-9_-]"
+INVALID_NAMING_CHAR = "."  # dot('.') is used as an internal naming pattern.
+VALID_NAMING_RULE_PATTERN = r"^[a-zA-Z0-9_-]+$"
+VALID_DOCKER_CONTAINER_NAMING_RULE_PATTERN = r"[a-zA-Z0-9][a-zA-Z0-9_.-]*"
 
 NAME_DELIMITER = "."
 NAME_CONTAINER = "container"
