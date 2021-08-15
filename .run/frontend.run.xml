@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="frontend" type="JavascriptDebugType" uri="http://localhost:8080" useFirstLineBreakpoints="true">
+    <mapping url="http://localhost:8080" local-file="$PROJECT_DIR$/fe" />
+    <method v="2" />
+  </configuration>
+</component>
