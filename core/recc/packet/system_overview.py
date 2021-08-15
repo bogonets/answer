@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class TemplateKey:
-    position: int
-    category: str
-    name: str
+class SystemOverviewA:
+    users: int
+    groups: int
+    projects: int

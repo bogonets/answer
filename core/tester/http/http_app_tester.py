@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from hashlib import sha256
-from typing import Optional, Any, Union, Final, Dict, TypeVar, Type
+from typing import Optional, Any, Final, Dict, TypeVar, Type
 from multidict import CIMultiDictProxy, CIMultiDict
 from http import HTTPStatus
 from asyncio import Task, Event, AbstractEventLoop, CancelledError
@@ -30,8 +30,8 @@ from recc.http.http_utils import v2_public_path
 from recc.http import http_urls as u
 from recc.serialization.serialize import serialize_default
 from recc.serialization.deserialize import deserialize_default
-from recc.core.struct.signup import Signup
-from recc.core.struct.signin import Signin
+from recc.packet.signup import SignupQ
+from recc.packet.signin import SigninA
 from recc.core.context import Context
 from recc.driver.json import global_json_encoder
 from recc.mime.mime_type import APPLICATION_JSON, MIME_APPLICATION_JSON_UTF8
@@ -325,8 +325,8 @@ class HttpAppTester(EmptyHttpAppCallback):
         assert self._username
         assert self._password
 
-        hashed_pw = Signup.encrypt_password(self._password)
-        signup = Signup(self._username, hashed_pw)
+        hashed_pw = SignupQ.encrypt_password(self._password)
+        signup = SignupQ(self._username, hashed_pw)
         signup_response = await self.post(v2_public_path(u.signup_admin), data=signup)
 
         if signup_response.status == HTTPStatus.SERVICE_UNAVAILABLE:
@@ -340,7 +340,7 @@ class HttpAppTester(EmptyHttpAppCallback):
         if signin_response.status != HTTPStatus.OK:
             raise RuntimeError(f"Login status error: {signin_response.status}")
 
-        signin = deserialize_default(signin_response.data, Signin)
+        signin = deserialize_default(signin_response.data, SigninA)
         assert signin.user is not None
         assert self._username == signin.user.username
         self._access_token = signin.access

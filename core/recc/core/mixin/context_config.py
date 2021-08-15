@@ -2,7 +2,7 @@
 
 from typing import List, Any, get_type_hints
 from recc.core.mixin.context_base import ContextBase
-from recc.core.struct.config import Config
+from recc.packet.config import ConfigA
 from recc.argparse.config.core_config import CoreConfig
 
 _CORE_CONFIG_TYPE_HINTS = get_type_hints(CoreConfig)
@@ -26,17 +26,17 @@ class ContextConfig(ContextBase):
         assert self is not None
         return CONFIG_KEYS
 
-    def get_configs(self) -> List[Config]:
+    def get_configs(self) -> List[ConfigA]:
         result = list()
         for key in CONFIG_KEYS:
             type_name = CONFIG_TYPES[key].__name__
             value = getattr(self.config, key)
-            result.append(Config(key, type_name, str(value)))
+            result.append(ConfigA(key, type_name, str(value)))
         return result
 
-    def get_config(self, key: str) -> Config:
+    def get_config(self, key: str) -> ConfigA:
         if key not in CONFIG_KEYS:
             raise KeyError(f"Not exists {key} key")
         type_name = CONFIG_TYPES[key].__name__
         value = getattr(self.config, key)
-        return Config(key, type_name, str(value))
+        return ConfigA(key, type_name, str(value))

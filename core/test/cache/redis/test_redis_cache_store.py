@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+from unittest import main
 from tester.unittest.async_test_case import AsyncTestCase
 from recc.argparse.default_parser import parse_arguments_to_core_config
-from recc.cache.redis.async_redis import AsyncRedisCacheStore
+from recc.cache.redis.redis_cache_store import RedisCacheStore
 
 
-class AsyncRedisCacheStoreTestCase(AsyncTestCase):
+class RedisCacheStoreTestCase(AsyncTestCase):
     async def setUp(self):
         self.config = parse_arguments_to_core_config()
         self.host = self.config.cache_host
         self.port = self.config.cache_port
         self.pw = self.config.cache_pw
 
-        self.cs = AsyncRedisCacheStore(self.host, self.port, self.pw)
+        self.cs = RedisCacheStore(self.host, self.port, self.pw)
         await self.cs.open()
         self.assertTrue(self.cs.is_open())
 
@@ -37,4 +37,4 @@ class AsyncRedisCacheStoreTestCase(AsyncTestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

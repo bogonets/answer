@@ -3,7 +3,7 @@
 from unittest import main
 from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
-from recc.core.struct.signup import Signup
+from recc.packet.signup import SignupQ
 from recc.http import http_urls as u
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.http_utils import v2_public_path
@@ -39,7 +39,7 @@ class RouterV2PublicTestCase(AsyncTestCase):
 
     async def test_signup_and_signin(self):
         self.assertFalse(self.tester.context.config.public_signup)
-        signup = Signup("user1", Signup.encrypt_password("1234"), "Nick")
+        signup = SignupQ("user1", SignupQ.encrypt_password("1234"), "Nick")
         response1 = await self.tester.post(v2_public_path(u.signup), data=signup)
         self.assertEqual(503, response1.status)
 

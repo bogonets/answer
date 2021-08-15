@@ -3,7 +3,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class AsyncCacheStoreInterface(metaclass=ABCMeta):
+class CacheStoreInterface(metaclass=ABCMeta):
     """
     Cache Store interface.
     """

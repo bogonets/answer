@@ -4,11 +4,11 @@ from dataclasses import dataclass
 
 
 @dataclass
-class UpdateInfo:
+class UpdateInfoQ:
     key: str
     value: str
 
 
 @dataclass
-class UpdateInfoValue:
+class UpdateInfoValueQ:
     value: str

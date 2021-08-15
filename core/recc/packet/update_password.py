@@ -4,6 +4,6 @@ from dataclasses import dataclass
 
 
 @dataclass
-class UpdatePassword:
+class UpdatePasswordQ:
     before: str
     after: str

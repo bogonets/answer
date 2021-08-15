@@ -2,13 +2,13 @@
 
 from typing import Optional
 from aioredis import Redis, ConnectionPool
-from recc.cache.async_cs_interface import AsyncCacheStoreInterface
+from recc.cache.cache_store_interface import CacheStoreInterface
 from recc.variables.cache import DEFAULT_MAX_CONNECTIONS
 
 EX_KEY_MAX_CONNECTIONS = "max_connections"
 
 
-class AsyncRedisCacheStore(AsyncCacheStoreInterface):
+class RedisCacheStore(CacheStoreInterface):
     """
     Redis cache store class.
     """

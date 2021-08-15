@@ -22,11 +22,11 @@ from recc.http import http_urls as u
 from recc.database.struct.info import Info
 from recc.database.struct.group import Group
 from recc.database.struct.project import Project
-from recc.core.struct.config import Config, UpdateConfigValue
-from recc.core.struct.update_password import UpdatePassword
-from recc.core.struct.update_info import UpdateInfo, UpdateInfoValue
-from recc.core.struct.system_overview import SystemOverview
-from recc.core.struct.template import TemplateKey
+from recc.packet.config import ConfigA, UpdateConfigValueQ
+from recc.packet.update_password import UpdatePasswordQ
+from recc.packet.update_info import UpdateInfoQ, UpdateInfoValueQ
+from recc.packet.system_overview import SystemOverviewA
+from recc.packet.lamda_info import LamdaInfoA
 from recc.database.struct.user import User
 from recc.access_control.abac.attributes import aa
 
@@ -168,7 +168,7 @@ class RouterV2:
         await self.context.update_user_extra(hs.audience, body)
 
     @parameter_matcher()
-    async def patch_self_password(self, hs: HttpSession, body: UpdatePassword) -> None:
+    async def patch_self_password(self, hs: HttpSession, body: UpdatePasswordQ) -> None:
         try:
             if not self.context.challenge_password(hs.audience, body.before):
                 raise HTTPUnauthorized(reason="The password is incorrect.")
@@ -181,18 +181,18 @@ class RouterV2:
     # -------
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def get_configs(self) -> List[Config]:
+    async def get_configs(self) -> List[ConfigA]:
         return self.context.get_configs()
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def get_configs_pkey(self, key: str) -> Config:
+    async def get_configs_pkey(self, key: str) -> ConfigA:
         try:
             return self.context.get_config(key)
         except KeyError as e:
             raise HTTPBadRequest(reason=str(e))
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def patch_configs_pkey(self, key: str, body: UpdateConfigValue) -> None:
+    async def patch_configs_pkey(self, key: str, body: UpdateConfigValueQ) -> None:
         try:
             self.context.update_config(key, body.value)
         except KeyError as e:
@@ -207,7 +207,7 @@ class RouterV2:
         return await self.context.get_infos()
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def post_infos(self, body: UpdateInfo) -> None:
+    async def post_infos(self, body: UpdateInfoQ) -> None:
         try:
             await self.context.create_info(body.key, body.value)
         except KeyError as e:
@@ -221,7 +221,7 @@ class RouterV2:
             raise HTTPNotFound(reason=str(e))
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def patch_infos_pkey(self, key: str, body: UpdateInfoValue) -> None:
+    async def patch_infos_pkey(self, key: str, body: UpdateInfoValueQ) -> None:
         try:
             await self.context.update_info(key, body.value)
         except KeyError as e:
@@ -236,7 +236,7 @@ class RouterV2:
     # ------
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def get_system_overview(self) -> SystemOverview:
+    async def get_system_overview(self) -> SystemOverviewA:
         return await self.context.get_system_overview()
 
     # ---------
@@ -244,7 +244,7 @@ class RouterV2:
     # ---------
 
     @parameter_matcher()
-    async def get_templates(self) -> List[TemplateKey]:
+    async def get_templates(self) -> List[LamdaInfoA]:
         return self.context.get_template_keys()
 
     # -----

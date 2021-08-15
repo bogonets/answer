@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class SystemOverview:
-    users: int
-    groups: int
-    projects: int
+class LamdaInfoA:
+    position: int
+    category: str
+    name: str

@@ -8,8 +8,8 @@ from recc.variables.database import RECC_DB_VERSION_KEY
 from recc.http.http_utils import v2_path
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
-from recc.core.struct.update_info import UpdateInfo
-from recc.core.struct.system_overview import SystemOverview
+from recc.packet.update_info import UpdateInfoQ
+from recc.packet.system_overview import SystemOverviewA
 from recc.database.struct.info import Info
 from recc.database.struct.group import Group
 
@@ -60,7 +60,7 @@ class RouterV2TestCase(AsyncTestCase):
         self.assertEqual(1, len(version))
         self.assertEqual(RECC_DB_VERSION_KEY, version[0].key)
 
-        update_info = UpdateInfo("key1", "value2")
+        update_info = UpdateInfoQ("key1", "value2")
         response2 = await self.tester.post(v2_path(u.infos), data=update_info)
         self.assertEqual(200, response2.status)
         self.assertIsNone(response2.data)
@@ -140,10 +140,11 @@ class RouterV2TestCase(AsyncTestCase):
         self.assertEqual(1, len(response8.data))  # Anonymous group
 
     async def test_system_overview(self):
-        response = await self.tester.get(v2_path(u.system_overview), cls=SystemOverview)
+        path = v2_path(u.system_overview)
+        response = await self.tester.get(path, cls=SystemOverviewA)
         self.assertEqual(200, response.status)
         self.assertIsNotNone(response.data)
-        self.assertIsInstance(response.data, SystemOverview)
+        self.assertIsInstance(response.data, SystemOverviewA)
         self.assertIsNotNone(response.data.users)
         self.assertIsNotNone(response.data.groups)
         self.assertIsNotNone(response.data.projects)

@@ -4,12 +4,12 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Config:
+class ConfigA:
     key: str
     type: str
     value: str
 
 
 @dataclass
-class UpdateConfigValue:
+class UpdateConfigValueQ:
     value: str
