@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from enum import Enum
-from typing import Optional, Any, Final
+from typing import Optional, Any
 from datetime import datetime
 from dataclasses import dataclass
-from recc.inspect.lexicographical_members import lexicographical_members
 
 
 class LayoutState(Enum):
@@ -25,17 +24,3 @@ class Layout:
     def remove_sensitive(self):
         self.uid = None
         self.project_uid = None
-
-
-class LayoutKeys:
-    uid = "uid"
-    project_uid = "project_uid"
-    name = "name"
-    description = "description"
-    extra = "extra"
-    created_at = "created_at"
-    updated_at = "updated_at"
-
-
-keys: Final[LayoutKeys] = LayoutKeys()
-assert lexicographical_members(keys, Layout())

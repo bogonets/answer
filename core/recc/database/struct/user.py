@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, Final
+from typing import Optional, Any
 from datetime import datetime
 from dataclasses import dataclass
-from recc.inspect.lexicographical_members import lexicographical_members
 
 
 class PassInfo:
@@ -63,23 +62,3 @@ class User:
             self.is_admin = None
         if not self.extra:
             self.extra = None
-
-
-class UserKeys:
-    uid = "uid"
-    username = "username"
-    password = "password"
-    salt = "salt"
-    nickname = "nickname"
-    email = "email"
-    phone1 = "phone1"
-    phone2 = "phone2"
-    is_admin = "is_admin"
-    extra = "extra"
-    created_at = "created_at"
-    updated_at = "updated_at"
-    last_login = "last_login"
-
-
-keys: Final[UserKeys] = UserKeys()
-assert lexicographical_members(keys, User())

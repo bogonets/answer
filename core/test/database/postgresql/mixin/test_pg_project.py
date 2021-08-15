@@ -40,6 +40,12 @@ class PgProjectTestCase(PostgresqlTestCase):
         await self.db.create_project(
             self.group.uid, slug2, name2, created_at=created_at2
         )
+
+        projects1 = await self.db.get_projects()
+        self.assertEqual(2, len(projects1))
+        projects2 = await self.db.get_project_by_group_slug(self.group.slug)
+        self.assertEqual(2, len(projects2))
+
         project1 = await self.db.get_project_by_slug(self.group.uid, slug1)
         project2 = await self.db.get_project_by_slug(self.group.uid, slug2)
 

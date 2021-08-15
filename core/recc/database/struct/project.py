@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List, Final
+from typing import Optional, Any, List
 from datetime import datetime
-from dataclasses import dataclass
-from recc.inspect.lexicographical_members import lexicographical_members
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -18,22 +17,16 @@ class Project:
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
-    def remove_sensitive(self):
+    _group_slug: Optional[str] = field(default=None, init=False, repr=False)
+
+    def remove_sensitive(self) -> None:
         self.uid = None
         self.group_uid = None
 
+    @property
+    def group_slug(self) -> Optional[str]:
+        return self._group_slug
 
-class ProjectKeys:
-    uid = "uid"
-    group_uid = "group_uid"
-    slug = "slug"
-    name = "name"
-    description = "description"
-    features = "features"
-    extra = "extra"
-    created_at = "created_at"
-    updated_at = "updated_at"
-
-
-keys: Final[ProjectKeys] = ProjectKeys()
-assert lexicographical_members(keys, Project())
+    @group_slug.setter
+    def group_slug(self, value: Optional[str]):
+        self._group_slug = value

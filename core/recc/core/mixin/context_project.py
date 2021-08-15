@@ -6,45 +6,65 @@ from recc.database.struct.project import Project
 
 
 class ContextProject(ContextBase):
-    async def create_project(self, group_name: str, project_name: str) -> None:
-        group = await self.database.get_group_by_slug(group_name)
-        assert group.uid is not None
-        await self.database.create_project(group.uid, project_name)
-
-    async def get_projects(self, group_name: str) -> List[Project]:
-        group = await self.database.get_group_by_slug(group_name)
-        assert group.uid is not None
-        return await self.database.get_project_by_group_uid(group.uid)
-
-    async def get_project(self, group_name: str, project_name: str) -> Project:
-        group = await self.database.get_group_by_slug(group_name)
-        assert group.uid is not None
-        return await self.database.get_project_by_slug(group.uid, project_name)
-
-    async def update_project(
+    async def create_project(
         self,
-        group_name: str,
-        project_slug: str,
+        group: str,
+        project: str,
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
     ) -> None:
-        group = await self.database.get_group_by_slug(group_name)
-        project = await self.database.get_project_by_slug(group.uid, project_slug)
-        assert group.uid is not None
-        assert project.uid is not None
-        await self.database.update_project_by_uid(
-            project.uid,
+        group_uid = await self.database.get_group_uid_by_slug(group)
+        assert group_uid is not None
+        await self.database.create_project(
+            group_uid=group_uid,
+            slug=project,
             name=name,
             description=description,
             features=features,
             extra=extra,
         )
 
-    async def delete_project(self, group_slug: str, project_slug: str) -> None:
-        group = await self.database.get_group_by_slug(group_slug)
-        project = await self.database.get_project_by_slug(group.uid, project_slug)
-        assert group.uid is not None
-        assert project.uid is not None
-        await self.database.delete_project_by_uid(project.uid)
+    async def get_projects(
+        self,
+        group: Optional[str] = None,
+        remove_sensitive=True,
+    ) -> List[Project]:
+        if not group:
+            projects = await self.database.get_projects()
+        else:
+            projects = await self.database.get_project_by_group_slug(group)
+        if remove_sensitive:
+            for project in projects:
+                project.remove_sensitive()
+        return projects
+
+    async def get_project(self, group: str, project: str) -> Project:
+        group_uid = await self.database.get_group_uid_by_slug(group)
+        assert group_uid is not None
+        return await self.database.get_project_by_slug(group_uid, project)
+
+    async def update_project(
+        self,
+        group: str,
+        project: str,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        features: Optional[List[str]] = None,
+        extra: Optional[Any] = None,
+    ) -> None:
+        project_uid = await self.database.get_project_uid_by_fullpath(group, project)
+        assert project_uid is not None
+        await self.database.update_project_by_uid(
+            uid=project_uid,
+            name=name,
+            description=description,
+            features=features,
+            extra=extra,
+        )
+
+    async def delete_project(self, group: str, project: str) -> None:
+        project_uid = await self.database.get_project_uid_by_fullpath(group, project)
+        assert project_uid is not None
+        await self.database.delete_project_by_uid(project_uid)

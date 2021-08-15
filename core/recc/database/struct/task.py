@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Dict, Any, Final
+from typing import Optional, Dict, Any
 from datetime import datetime
 from dataclasses import dataclass
-from recc.inspect.lexicographical_members import lexicographical_members
 
 
 @dataclass
@@ -34,26 +33,3 @@ class Task:
         self.public_key = None
         self.numa_memory_nodes = None
         self.publish_ports = None
-
-
-class TaskKeys:
-    uid = "uid"
-    project_uid = "project_uid"
-    slug = "slug"
-    name = "name"
-    description = "description"
-    extra = "extra"
-    rpc_address = "rpc_address"
-    auth_algorithm = "auth_algorithm"
-    private_key = "private_key"
-    public_key = "public_key"
-    maximum_restart_count = "maximum_restart_count"
-    numa_memory_nodes = "numa_memory_nodes"
-    base_image_name = "base_image_name"
-    publish_ports = "publish_ports"
-    created_at = "created_at"
-    updated_at = "updated_at"
-
-
-keys: Final[TaskKeys] = TaskKeys()
-assert lexicographical_members(keys, Task())

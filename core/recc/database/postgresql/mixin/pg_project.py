@@ -17,9 +17,11 @@ from recc.database.postgresql.query.project import (
     UPDATE_PROJECT_FEATURES_BY_GROUP_UID_AND_SLUG,
     DELETE_PROJECT_BY_UID,
     DELETE_PROJECT_BY_GROUP_UID_AND_SLUG,
+    SELECT_PROJECT_ALL,
     SELECT_PROJECT_BY_UID,
     SELECT_PROJECT_BY_GROUP_ID_AND_SLUG,
     SELECT_PROJECT_BY_GROUP_ID,
+    SELECT_PROJECT_BY_GROUP_SLUG,
     SELECT_PROJECT_BY_FULLPATH,
     SELECT_PROJECT_UID_BY_FULLPATH,
     SELECT_PROJECT_COUNT,
@@ -147,6 +149,18 @@ class PgProject(DbProject, PgBase):
         logger.info(f"delete_project_by_slug({params_msg}) ok.")
 
     @overrides
+    async def get_projects(self) -> List[Project]:
+        result: List[Project] = list()
+        async with self.conn() as conn:
+            async with conn.transaction():
+                query = SELECT_PROJECT_ALL
+                async for row in conn.cursor(query):
+                    result.append(Project(**dict(row)))
+        result_msg = f"{len(result)} project"
+        logger.info(f"get_projects() -> {result_msg}")
+        return result
+
+    @overrides
     async def get_project_by_uid(self, uid: int) -> Project:
         query = SELECT_PROJECT_BY_UID
         row = await self.fetch_row(query, uid)
@@ -184,6 +198,19 @@ class PgProject(DbProject, PgBase):
         params_msg = f"group_uid={group_uid}"
         result_msg = f"{len(result)} project"
         logger.info(f"get_project_by_group_uid({params_msg}) -> {result_msg}")
+        return result
+
+    @overrides
+    async def get_project_by_group_slug(self, group_slug: str) -> List[Project]:
+        result: List[Project] = list()
+        async with self.conn() as conn:
+            async with conn.transaction():
+                query = SELECT_PROJECT_BY_GROUP_SLUG
+                async for row in conn.cursor(query, group_slug):
+                    result.append(Project(**dict(row)))
+        params_msg = f"group={group_slug}"
+        result_msg = f"{len(result)} project"
+        logger.info(f"get_project_by_group_slug({params_msg}) -> {result_msg}")
         return result
 
     @overrides

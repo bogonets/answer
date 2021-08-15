@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List, Final
+from typing import Optional, Any, List
 from datetime import datetime
 from dataclasses import dataclass
-from recc.inspect.lexicographical_members import lexicographical_members
 
 
 @dataclass
@@ -19,18 +18,3 @@ class Group:
 
     def remove_sensitive(self):
         self.uid = None
-
-
-class GroupKeys:
-    uid = "uid"
-    slug = "slug"
-    name = "name"
-    description = "description"
-    features = "features"
-    extra = "extra"
-    created_at = "created_at"
-    updated_at = "updated_at"
-
-
-keys: Final[GroupKeys] = GroupKeys()
-assert lexicographical_members(keys, Group())

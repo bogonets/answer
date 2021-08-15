@@ -86,6 +86,10 @@ class DbProject(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def get_projects(self) -> List[Project]:
+        raise NotImplementedError
+
+    @abstractmethod
     async def get_project_by_uid(self, uid: int) -> Project:
         raise NotImplementedError
 
@@ -95,6 +99,10 @@ class DbProject(metaclass=ABCMeta):
 
     @abstractmethod
     async def get_project_by_group_uid(self, group_uid: int) -> List[Project]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_project_by_group_slug(self, group_slug: str) -> List[Project]:
         raise NotImplementedError
 
     @abstractmethod

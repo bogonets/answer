@@ -28,7 +28,6 @@ from recc.core.struct.update_info import UpdateInfo, UpdateInfoValue
 from recc.core.struct.system_overview import SystemOverview
 from recc.core.struct.template import TemplateKey
 from recc.database.struct.user import User
-from recc.variables.database import ANONYMOUS_GROUP_SLUG
 from recc.access_control.abac.attributes import aa
 
 
@@ -130,6 +129,10 @@ class RouterV2:
 
             # projects
             web.get(u.projects, self.get_projects),
+            # web.post(u.projects, self.post_projects),
+            # web.get(u.projects_pproject, self.get_projects_pproject),
+            # web.patch(u.projects_pproject, self.patch_projects_pproject),
+            # web.delete(u.projects_pproject, self.delete_projects_pproject),
 
             # # anonymous projects
             # web.get(u.projects_pproject, self.get_projects_pproject),
@@ -337,12 +340,20 @@ class RouterV2:
     # Projects
     # --------
 
-    @parameter_matcher()
-    async def get_projects(self, hs: HttpSession) -> List[Project]:
-        projects = await self.context.get_projects(ANONYMOUS_GROUP_SLUG)
-        for project in projects:
-            project.remove_sensitive()
-        return projects
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def get_projects(self) -> List[Project]:
+        return await self.context.get_projects()
+
+    # @parameter_matcher(acl={aa.HasAdmin})
+    # async def post_projects(self, body: Project) -> None:
+    #     return await self.context.create_project(
+    #         group=body.group,
+    #         project=body.project,
+    #         name=body.name,
+    #         description=body.description,
+    #         features=body.features,
+    #         extra=body.extra,
+    #     )
 
     # async def post_projects(self, request: Request) -> Response:
     #     session = request[h.session]
