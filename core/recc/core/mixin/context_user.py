@@ -48,6 +48,24 @@ class ContextUser(ContextBase):
     async def get_admin_count(self) -> int:
         return await self.database.get_admin_count()
 
+    async def get_user_uid(self, username: str, caching=True) -> int:
+        if not username:
+            raise ValueError("The `username` argument is empty.")
+        uid = self.cache.get_user_uid(username)
+        if uid is None:
+            uid = await self.database.get_user_uid_by_username(username)
+            if caching:
+                self.cache.set_user(username, uid)
+        return uid
+
+    async def get_username(self, user_uid: int, caching=True) -> str:
+        username = self.cache.get_username(user_uid)
+        if username is None:
+            username = await self.database.get_user_username_by_uid(user_uid)
+            if caching:
+                self.cache.set_user(username, user_uid)
+        return username
+
     async def signup(
         self,
         username: str,
@@ -168,12 +186,6 @@ class ContextUser(ContextBase):
 
     async def get_access_session(self, token: str) -> Session:
         return self.session_factory.decode_access(token)
-
-    async def get_user_uid(self, username: str) -> int:
-        if not username:
-            raise ValueError("The `username` argument is empty.")
-
-        return await self.database.get_user_uid_by_username(username)
 
     async def get_user(self, username: str, remove_sensitive=True) -> User:
         if not username:

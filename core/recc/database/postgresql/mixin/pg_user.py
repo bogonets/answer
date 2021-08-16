@@ -18,6 +18,7 @@ from recc.database.postgresql.query.user import (
     DELETE_USER_BY_USERNAME,
     SELECT_USER_ADMIN_COUNT,
     SELECT_USER_COUNT,
+    SELECT_USER_USERNAME_BY_UID,
     SELECT_USER_UID_BY_USERNAME,
     SELECT_USER_PASSWORD_AND_SALT_BY_USERNAME,
     SELECT_USER_BY_USERNAME,
@@ -145,6 +146,16 @@ class PgUser(DbUser, PgBase):
         await self.execute(query, username)
         params_msg = f"username={username}"
         logger.info(f"delete_user_by_name({params_msg}) ok.")
+
+    @overrides
+    async def get_user_username_by_uid(self, uid: str) -> str:
+        query = SELECT_USER_USERNAME_BY_UID
+        row = await self.fetch_row(query, uid)
+        result = row["username"]
+        params_msg = f"uid={uid}"
+        result_msg = f"username={result}"
+        logger.info(f"get_user_username_by_uid({params_msg}) -> {result_msg}")
+        return result
 
     @overrides
     async def get_user_uid_by_username(self, username: str) -> int:

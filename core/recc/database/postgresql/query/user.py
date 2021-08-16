@@ -139,6 +139,15 @@ WHERE
 # SELECT #
 ##########
 
+SELECT_USER_USERNAME_BY_UID = f"""
+SELECT
+    username
+FROM
+    {TABLE_USER}
+WHERE
+    uid=$1;
+"""
+
 SELECT_USER_UID_BY_USERNAME = f"""
 SELECT
     uid

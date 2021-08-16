@@ -103,6 +103,10 @@ class DbGroup(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def get_group_slug_by_uid(self, uid: int) -> str:
+        raise NotImplementedError
+
+    @abstractmethod
     async def get_group_by_uid(self, uid: int) -> Group:
         raise NotImplementedError
 

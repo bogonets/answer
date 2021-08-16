@@ -42,6 +42,11 @@ class PgUserTestCase(PostgresqlTestCase):
         self.assertIsNone(user.updated_at)
         self.assertIsNone(user.last_login)
 
+        user_uid = await self.db.get_user_uid_by_username(username)
+        self.assertEqual(user.uid, user_uid)
+        username2 = await self.db.get_user_username_by_uid(user_uid)
+        self.assertEqual(username, username2)
+
     async def test_last_login(self):
         username = "admin"
         password = "password"

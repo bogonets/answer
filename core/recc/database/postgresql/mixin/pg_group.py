@@ -19,6 +19,7 @@ from recc.database.postgresql.query.group import (
     DELETE_GROUP_BY_UID,
     DELETE_GROUP_BY_SLUG,
     SELECT_GROUP_UID_BY_SLUG,
+    SELECT_GROUP_SLUG_BY_UID,
     SELECT_GROUP_BY_UID,
     SELECT_GROUP_BY_SLUG,
     SELECT_GROUP_ALL,
@@ -177,6 +178,18 @@ class PgGroup(DbGroup, PgBase):
         assert row and len(row) == 1
         result = int(row.get("uid"))
         logger.info(f"get_group_uid_by_slug({params_msg}) -> {result}")
+        return result
+
+    @overrides
+    async def get_group_slug_by_uid(self, uid: int) -> str:
+        query = SELECT_GROUP_SLUG_BY_UID
+        row = await self.fetch_row(query, uid)
+        params_msg = f"uid={uid}"
+        if not row:
+            raise RuntimeError(f"Not found group: {params_msg}")
+        assert row and len(row) == 1
+        result = row.get("slug")
+        logger.info(f"get_group_slug_by_uid({params_msg}) -> {result}")
         return result
 
     @overrides

@@ -49,6 +49,11 @@ class PgGroupTestCase(PostgresqlTestCase):
         self.assertEqual(group1, group1_2nd)
         self.assertEqual(group2, group2_2nd)
 
+        group1_uid_2nd = await self.db.get_group_uid_by_slug(group1.slug)
+        self.assertEqual(group1.uid, group1_uid_2nd)
+        group2_slug = await self.db.get_group_slug_by_uid(group2_uid)
+        self.assertEqual(group2.slug, group2_slug)
+
     async def test_update_description(self):
         slug1 = "slug1"
         slug2 = "slug2"
