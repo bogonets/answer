@@ -17,6 +17,7 @@ RECC_REQUIREMENTS_MAIN = (
     "pyyaml>=5.4.1",
     "psutil>=5.8.0",
     "pyjwt>=2.1.0",
+    "async-timeout>=3.0.1",
     "uvloop>=0.15.3",
     "aioredis>=2.0.0",
     "orjson>=3.6.0",

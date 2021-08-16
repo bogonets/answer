@@ -11,6 +11,7 @@ pyyaml>=5.4.1
 psutil>=5.8.0
 pyjwt>=2.1.0
 uvloop>=0.15.3
+async-timeout>=3.0.1
 aioredis>=2.0.0
 orjson>=3.6.0
 protobuf>=3.17.3
