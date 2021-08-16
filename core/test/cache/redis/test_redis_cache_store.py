@@ -35,6 +35,32 @@ class RedisCacheStoreTestCase(AsyncTestCase):
             if await self.cs.exists(key):
                 await self.cs.delete(key)
 
+    async def test_pub_sub(self):
+        class _Sub:
+            def __init__(self):
+                self.data = dict()
+
+            async def reader(self, data):
+                self.data = data
+
+        channel = "channel:1"
+        value = b"value"
+
+        result = _Sub()
+        await self.cs.subscribe(channel, callback=result.reader)
+        await self.cs.publish(channel, value)
+
+        self.cs.exit_flag_subscribe(channel)
+        await self.cs.wait_subscribe(channel)
+
+        self.assertEqual("message", result.data["type"])
+        self.assertIsNone(result.data["pattern"])
+        self.assertEqual(channel.encode(), result.data["channel"])
+        self.assertEqual(value, result.data["data"])
+
+        task = self.cs.get_subscribe_task(channel)
+        self.assertTrue(task.done())
+
 
 if __name__ == "__main__":
     main()

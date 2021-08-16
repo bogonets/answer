@@ -11,6 +11,8 @@
     - [ ] Korean
     - [ ] English
   - [ ] Product introduction on a single page
+- [ ] Commandline utility
+  - [ ] admin client
 - [x] Upload to PyPI
 - [ ] Release v2.0
   - [ ] Complete porting of Python version of "Answer" v1.0
