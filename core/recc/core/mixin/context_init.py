@@ -17,7 +17,7 @@ from recc.argparse.config.core_config import CoreConfig
 from recc.argparse.default_namespace import get_default_core_config
 from recc.argparse.injection_values import injection_core_default_values
 from recc.container.container_manager import create_container_manager
-from recc.cache.cache_store import create_cache_store
+from recc.cache.cache import Cache
 from recc.database.database import create_database
 from recc.storage.core_storage import CoreStorage
 from recc.task.task_connection_pool import create_task_connection_pool
@@ -122,7 +122,7 @@ class ContextInit(ContextBase):
                 logger.info("Containers operate on the host.")
 
     def _init_cache_store(self) -> None:
-        self._cache = create_cache_store(
+        self._cache = Cache(
             self._config.cache_type,
             self._config.cache_host,
             self._config.cache_port,

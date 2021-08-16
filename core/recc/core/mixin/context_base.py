@@ -5,7 +5,7 @@ from recc.argparse.config.core_config import CoreConfig
 from recc.session.session import SessionPairFactory
 from recc.storage.core_storage import CoreStorage
 from recc.container.interfaces.container_interface import ContainerInterface
-from recc.cache.cache_store_interface import CacheStoreInterface
+from recc.cache.cache import Cache
 from recc.database.interfaces.db_interface import DbInterface
 from recc.task.task_connection_pool import TaskConnectionPool
 from recc.resource.port_manager import PortManager
@@ -21,7 +21,7 @@ class ContextBase:
     _session_factory: SessionPairFactory
     _container: ContainerInterface
     _container_key: str
-    _cache: CacheStoreInterface
+    _cache: Cache
     _database: DbInterface
     _tasks: TaskConnectionPool
     _ports: PortManager
