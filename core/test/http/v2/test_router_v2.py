@@ -11,7 +11,7 @@ from recc.http import http_path_keys as p
 from recc.packet.update_info import UpdateInfoQ
 from recc.packet.system_overview import SystemOverviewA
 from recc.database.struct.info import Info
-from recc.database.struct.group import Group
+from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 
 
@@ -83,16 +83,16 @@ class RouterV2TestCase(AsyncTestCase):
         self.assertIsNotNone(response.data)
 
     async def test_groups(self):
-        response = await self.tester.get(v2_path(u.groups), cls=List[Group])
+        response = await self.tester.get(v2_path(u.groups), cls=List[GroupA])
         self.assertEqual(200, response.status)
         self.assertIsNotNone(response.data)
         self.assertIsInstance(response.data, list)
         self.assertEqual(1, len(response.data))  # Anonymous group
         response_data0 = response.data[0]
-        self.assertIsInstance(response_data0, Group)
+        self.assertIsInstance(response_data0, GroupA)
         anonymous_slug = response_data0.slug
 
-        new_group1 = Group(
+        new_group1 = CreateGroupQ(
             slug="group1",
             description="description1",
             features=["1", "2"],
@@ -101,47 +101,47 @@ class RouterV2TestCase(AsyncTestCase):
         self.assertEqual(200, response2.status)
         self.assertIsNone(response2.data)
 
-        response3 = await self.tester.get(v2_path(u.groups), cls=List[Group])
+        response3 = await self.tester.get(v2_path(u.groups), cls=List[GroupA])
         self.assertEqual(200, response3.status)
         self.assertIsNotNone(response3.data)
         self.assertIsInstance(response3.data, list)
         self.assertEqual(2, len(response3.data))
         group1 = list(filter(lambda g: g.slug != anonymous_slug, response3.data))[0]
-        self.assertIsInstance(group1, Group)
+        self.assertIsInstance(group1, GroupA)
         self.assertEqual(new_group1.slug, group1.slug)
         self.assertEqual(new_group1.description, group1.description)
         self.assertEqual(new_group1.features, group1.features)
 
         path = v2_path(u.groups_pgroup.format(**{p.group: new_group1.slug}))
-        response4 = await self.tester.get(path, cls=Group)
+        response4 = await self.tester.get(path, cls=GroupA)
         self.assertEqual(200, response4.status)
         self.assertIsNotNone(response4.data)
-        self.assertIsInstance(response4.data, Group)
+        self.assertIsInstance(response4.data, GroupA)
         self.assertEqual(new_group1.slug, response4.data.slug)
         self.assertEqual(new_group1.description, response4.data.description)
         self.assertEqual(new_group1.features, response4.data.features)
 
-        update_group1 = Group(description="description2")
+        update_group1 = UpdateGroupQ(description="description2")
         response5 = await self.tester.patch(path, data=update_group1)
         self.assertEqual(200, response5.status)
 
-        response6 = await self.tester.get(path, cls=Group)
+        response6 = await self.tester.get(path, cls=GroupA)
         self.assertEqual(200, response6.status)
         self.assertIsNotNone(response6.data)
-        self.assertIsInstance(response6.data, Group)
+        self.assertIsInstance(response6.data, GroupA)
         self.assertEqual(update_group1.description, response6.data.description)
 
         response7 = await self.tester.delete(path)
         self.assertEqual(200, response7.status)
 
-        response8 = await self.tester.get(v2_path(u.groups), cls=List[Group])
+        response8 = await self.tester.get(v2_path(u.groups), cls=List[GroupA])
         self.assertEqual(200, response8.status)
         self.assertIsNotNone(response8.data)
         self.assertIsInstance(response8.data, list)
         self.assertEqual(1, len(response8.data))  # Anonymous group
 
     async def test_projects(self):
-        group1 = Group(slug="group1")
+        group1 = CreateGroupQ(slug="group1")
         response1 = await self.tester.post(v2_path(u.groups), data=group1)
         self.assertEqual(200, response1.status)
 

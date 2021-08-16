@@ -20,8 +20,8 @@ from recc.http.http_session import HttpSession
 from recc.http import http_cache_keys as c
 from recc.http import http_urls as u
 from recc.database.struct.info import Info
-from recc.database.struct.group import Group
 from recc.packet.config import ConfigA, UpdateConfigValueQ
+from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.update_password import UpdatePasswordQ
 from recc.packet.update_info import UpdateInfoQ, UpdateInfoValueQ
@@ -298,14 +298,26 @@ class RouterV2:
     # ------
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def get_groups(self) -> List[Group]:
-        return await self.context.get_groups()
+    async def get_groups(self) -> List[GroupA]:
+        result = list()
+        for group in await self.context.get_groups():
+            assert group.slug is not None
+            item = GroupA(
+                slug=group.slug,
+                name=group.name,
+                description=group.description,
+                features=group.features,
+                extra=group.extra,
+                created_at=group.created_at,
+                updated_at=group.updated_at,
+            )
+            result.append(item)
+        return result
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def post_groups(self, body: Group) -> None:
+    async def post_groups(self, body: CreateGroupQ) -> None:
         if not body.slug:
             raise HTTPBadRequest(reason="Not exists `slug` field")
-
         await self.context.create_group(
             slug=body.slug,
             name=body.name,
@@ -314,11 +326,21 @@ class RouterV2:
         )
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def get_groups_pgroup(self, group: str) -> Group:
-        return await self.context.get_group_by_slug(group)
+    async def get_groups_pgroup(self, group: str) -> GroupA:
+        db_group = await self.context.get_group_by_slug(group)
+        assert db_group.slug is not None
+        return GroupA(
+            slug=db_group.slug,
+            name=db_group.name,
+            description=db_group.description,
+            features=db_group.features,
+            extra=db_group.extra,
+            created_at=db_group.created_at,
+            updated_at=db_group.updated_at,
+        )
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def patch_groups_pgroup(self, group: str, body: Group) -> None:
+    async def patch_groups_pgroup(self, group: str, body: UpdateGroupQ) -> None:
         await self.context.update_group_by_slug(
             slug=group,
             name=body.name,
