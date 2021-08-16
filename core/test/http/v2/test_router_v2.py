@@ -12,6 +12,7 @@ from recc.packet.update_info import UpdateInfoQ
 from recc.packet.system_overview import SystemOverviewA
 from recc.database.struct.info import Info
 from recc.database.struct.group import Group
+from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 
 
 class RouterV2TestCase(AsyncTestCase):
@@ -138,6 +139,58 @@ class RouterV2TestCase(AsyncTestCase):
         self.assertIsNotNone(response8.data)
         self.assertIsInstance(response8.data, list)
         self.assertEqual(1, len(response8.data))  # Anonymous group
+
+    async def test_projects(self):
+        group1 = Group(slug="group1")
+        response1 = await self.tester.post(v2_path(u.groups), data=group1)
+        self.assertEqual(200, response1.status)
+
+        project1 = CreateProjectQ(group_slug=group1.slug, project_slug="project1")
+        response2 = await self.tester.post(v2_path(u.projects), data=project1)
+        self.assertEqual(200, response2.status)
+
+        response3 = await self.tester.get(v2_path(u.projects), cls=List[ProjectA])
+        self.assertEqual(200, response3.status)
+        response3_data = response3.data
+        self.assertIsNotNone(response3_data)
+        self.assertIsInstance(response3_data, list)
+        self.assertEqual(1, len(response3_data))
+        response3_data0 = response3_data[0]
+        self.assertIsInstance(response3_data0, ProjectA)
+        self.assertEqual(project1.group_slug, response3_data0.group_slug)
+        self.assertEqual(project1.project_slug, response3_data0.project_slug)
+        self.assertIsNone(response3_data0.name)
+        self.assertIsNone(response3_data0.description)
+        self.assertIsNone(response3_data0.features)
+        self.assertIsNone(response3_data0.extra)
+        self.assertIsNotNone(response3_data0.created_at)
+        self.assertIsNone(response3_data0.updated_at)
+
+        path = v2_path(u.projects_pgroup_pproject).format(
+            group=project1.group_slug, project=project1.project_slug
+        )
+        update = UpdateProjectQ(name="name1")
+        response5 = await self.tester.patch(path, data=update)
+        self.assertEqual(200, response5.status)
+
+        response4 = await self.tester.get(path, cls=ProjectA)
+        self.assertEqual(200, response4.status)
+        response4_data = response4.data
+        self.assertIsNotNone(response4_data)
+        self.assertIsInstance(response4_data, ProjectA)
+        self.assertEqual(project1.group_slug, response4_data.group_slug)
+        self.assertEqual(project1.project_slug, response4_data.project_slug)
+        self.assertEqual(update.name, response4_data.name)
+
+        response5 = await self.tester.delete(path)
+        self.assertEqual(200, response5.status)
+
+        response6 = await self.tester.get(v2_path(u.projects), cls=List[ProjectA])
+        self.assertEqual(200, response6.status)
+        response6_data = response6.data
+        self.assertIsNotNone(response6_data)
+        self.assertIsInstance(response6_data, list)
+        self.assertEqual(0, len(response6_data))
 
     async def test_system_overview(self):
         path = v2_path(u.system_overview)

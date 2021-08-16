@@ -10,17 +10,17 @@ class Cache:
     _store: CacheStoreInterface
 
     # User
-    _username_to_uid: Dict[str, int]
-    _uid_to_username: Dict[int, str]
+    _username_to_uid: Dict[str, int] = dict()
+    _uid_to_username: Dict[int, str] = dict()
 
     # Group
-    _group_slug_to_uid: Dict[str, int]
-    _group_uid_to_slug: Dict[int, str]
+    _group_slug_to_uid: Dict[str, int] = dict()
+    _group_uid_to_slug: Dict[int, str] = dict()
 
     # Project
-    _project_uid_to_slug: Dict[int, str]
-    _project_uid_to_group_uid: Dict[int, int]
-    _group_uid_and_project_slug_to_project_uid: Dict[Tuple[int, str], int]
+    _project_uid_to_slug: Dict[int, str] = dict()
+    _project_uid_to_group_uid: Dict[int, int] = dict()
+    _group_uid_and_project_slug_to_project_uid: Dict[Tuple[int, str], int] = dict()
 
     def __init__(
         self,
