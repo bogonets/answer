@@ -99,6 +99,12 @@ WHERE group_uid=$1 AND slug LIKE $2;
 # SELECT #
 ##########
 
+SELECT_PROJECT_UID_BY_GROUP_UID_AND_SLUG = f"""
+SELECT uid
+FROM {TABLE_PROJECT}
+WHERE group_uid=$1 AND slug LIKE $2;
+"""
+
 SELECT_PROJECT_ALL = f"""
 SELECT *
 FROM {TABLE_PROJECT};

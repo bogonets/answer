@@ -21,8 +21,8 @@ from recc.http import http_cache_keys as c
 from recc.http import http_urls as u
 from recc.database.struct.info import Info
 from recc.database.struct.group import Group
-from recc.database.struct.project import Project
 from recc.packet.config import ConfigA, UpdateConfigValueQ
+from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.update_password import UpdatePasswordQ
 from recc.packet.update_info import UpdateInfoQ, UpdateInfoValueQ
 from recc.packet.system_overview import SystemOverviewA
@@ -129,15 +129,10 @@ class RouterV2:
 
             # projects
             web.get(u.projects, self.get_projects),
-            # web.post(u.projects, self.post_projects),
-            # web.get(u.projects_pproject, self.get_projects_pproject),
-            # web.patch(u.projects_pproject, self.patch_projects_pproject),
-            # web.delete(u.projects_pproject, self.delete_projects_pproject),
-
-            # # anonymous projects
-            # web.get(u.projects_pproject, self.get_projects_pproject),
-            # web.patch(u.projects_pproject, self.patch_projects_pproject),
-            # web.delete(u.projects_pproject, self.delete_projects_pproject),
+            web.post(u.projects, self.post_projects),
+            web.get(u.projects_pgroup_pproject, self.get_projects_pgroup_pproject),
+            web.patch(u.projects_pgroup_pproject, self.patch_projects_pgroup_pproject),
+            web.delete(u.projects_pgroup_pproject, self.delete_projects_pgroup_pproject),  # noqa
         ]
         # fmt: on
 
@@ -341,78 +336,68 @@ class RouterV2:
     # --------
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def get_projects(self) -> List[Project]:
-        return await self.context.get_projects()
+    async def get_projects(self) -> List[ProjectA]:
+        result = list()
+        for project in await self.context.get_projects(remove_sensitive=False):
+            assert project.uid is not None
+            assert project.group_uid is not None
+            assert project.slug is not None
+            item = ProjectA(
+                await self.context.get_group_slug(project.group_uid),
+                project.slug,
+                project.name,
+                project.description,
+                project.features,
+                project.extra,
+                project.created_at,
+                project.updated_at,
+            )
+            result.append(item)
+        return result
 
-    # @parameter_matcher(acl={aa.HasAdmin})
-    # async def post_projects(self, body: Project) -> None:
-    #     return await self.context.create_project(
-    #         group=body.group,
-    #         project=body.project,
-    #         name=body.name,
-    #         description=body.description,
-    #         features=body.features,
-    #         extra=body.extra,
-    #     )
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def post_projects(self, body: CreateProjectQ) -> None:
+        await self.context.create_project(
+            group=body.group_slug,
+            project=body.project_slug,
+            name=body.name,
+            description=body.description,
+            features=body.features,
+            extra=body.extra,
+        )
 
-    # async def post_projects(self, request: Request) -> Response:
-    #     session = request[h.session]
-    #     audience = session.audience
-    #
-    #     data = await read_dict(request, [d.project])
-    #     group_name = data.get(d.group, ANONYMOUS_GROUP_NAME)
-    #     project_name = data[d.project]
-    #
-    #     logging_msg = f"{{ {d.group}={group_name}, {d.project}={project_name} }}"
-    #     logger.info(f"post_projects(session={audience}) {logging_msg}")
-    #
-    #     await self.context.create_project(group_name, project_name)
-    #     return self.response(request)
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def get_projects_pgroup_pproject(self, group: str, project: str) -> ProjectA:
+        group_uid = await self.context.get_group_uid(group)
+        project_uid = await self.context.get_project_uid(group_uid, project)
+        db_project = await self.context.get_project(project_uid)
+        return ProjectA(
+            group_slug=group,
+            project_slug=project,
+            name=db_project.name,
+            description=db_project.description,
+            features=db_project.features,
+            extra=db_project.extra,
+            created_at=db_project.created_at,
+            updated_at=db_project.updated_at,
+        )
 
-    # ------------------
-    # Anonymous projects
-    # ------------------
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def patch_projects_pgroup_pproject(
+        self, group: str, project: str, body: UpdateProjectQ
+    ) -> None:
+        group_uid = await self.context.get_group_uid(group)
+        project_uid = await self.context.get_project_uid(group_uid, project)
+        await self.context.update_project(
+            project_uid=project_uid,
+            name=body.name,
+            description=body.description,
+            features=body.features,
+            extra=body.extra,
+        )
 
-    # async def get_projects_pproject(self, request: Request) -> Response:
-    #     session = request[h.session]
-    #     audience = session.audience
-    #     project_name = request.match_info[p.project]
-    #     params_msg = f"session={audience},{p.project}={project_name}"
-    #     logger.info(f"get_projects_pproject({params_msg})")
-    #
-    #     group = ANONYMOUS_GROUP_NAME
-    #     project = await self.context.get_project(group, project_name)
-    #     return self.response(request, serialize_default(project))
-    #
-    # async def patch_projects_pproject(self, request: Request) -> Response:
-    #     session = request[h.session]
-    #     audience = session.audience
-    #     project_name = request.match_info[p.project]
-    #
-    #     k = project_keys
-    #     data = await read_dict(request)
-    #
-    #     params_msg = f"session={audience},{p.project}={project_name}"
-    #     logger.info(f"patch_projects_pproject({params_msg})")
-    #
-    #     group = ANONYMOUS_GROUP_NAME
-    #     await self.context.update_project(
-    #         group,
-    #         project_name,
-    #         name=data.get(k.name),
-    #         description=data.get(k.description),
-    #         features=data.get(k.features),
-    #         extra=data.get(k.extra),
-    #     )
-    #     return Response(status=501)
-    #
-    # async def delete_projects_pproject(self, request: Request) -> Response:
-    #     session = request[h.session]
-    #     audience = session.audience
-    #     project_name = request.match_info[p.project]
-    #     params_msg = f"session={audience},{p.project}={project_name}"
-    #     logger.info(f"delete_projects_pproject({params_msg})")
-    #
-    #     group = ANONYMOUS_GROUP_NAME
-    #     await self.context.delete_project(group, project_name)
-    #     return self.response(request)
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def delete_projects_pgroup_pproject(self, group: str, project: str) -> None:
+        group_uid = await self.context.get_group_uid(group)
+        project_uid = await self.context.get_project_uid(group_uid, project)
+        await self.context.delete_project(project_uid)

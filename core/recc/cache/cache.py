@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Dict
+from typing import Optional, Dict, Tuple
 from recc.cache.cache_store_interface import CacheStoreInterface
 from recc.cache.cache_store import create_cache_store
 
@@ -16,6 +16,11 @@ class Cache:
     # Group
     _group_slug_to_uid: Dict[str, int]
     _group_uid_to_slug: Dict[int, str]
+
+    # Project
+    _project_uid_to_slug: Dict[int, str]
+    _project_uid_to_group_uid: Dict[int, int]
+    _group_uid_and_project_slug_to_project_uid: Dict[Tuple[int, str], int]
 
     def __init__(
         self,
@@ -107,3 +112,45 @@ class Cache:
     def set_group(self, group_uid: int, group_slug: str) -> None:
         self._group_slug_to_uid[group_slug] = group_uid
         self._group_uid_to_slug[group_uid] = group_slug
+
+    # -------------------
+    # project slug -> uid
+    # -------------------
+
+    @property
+    def project_uid_to_slug(self):
+        return self._project_uid_to_slug
+
+    @property
+    def project_uid_to_group_uid(self):
+        return self._project_uid_to_group_uid
+
+    @property
+    def group_uid_and_project_slug_to_project_uid(self):
+        return self._group_uid_and_project_slug_to_project_uid
+
+    def exists_project_uid(self, project_uid: int) -> bool:
+        return project_uid in self._project_uid_to_group_uid
+
+    def exists_group_uid_and_project_slug(
+        self, group_uid: int, project_slug: str
+    ) -> bool:
+        key = (group_uid, project_slug)
+        return key in self._group_uid_and_project_slug_to_project_uid
+
+    def get_group_uid_by_project_uid(self, project_uid: int) -> Optional[int]:
+        return self._project_uid_to_group_uid.get(project_uid)
+
+    def get_project_slug(self, project_uid: int) -> Optional[str]:
+        return self._project_uid_to_slug.get(project_uid)
+
+    def get_project_uid(self, group_uid: int, project_slug: str) -> Optional[int]:
+        key = (group_uid, project_slug)
+        return self._group_uid_and_project_slug_to_project_uid.get(key)
+
+    def set_project(self, project_uid: int, group_uid: int, project_slug: str) -> None:
+        self._project_uid_to_slug[project_uid] = project_slug
+        self._project_uid_to_group_uid[project_uid] = group_uid
+
+        key = (group_uid, project_slug)
+        self._group_uid_and_project_slug_to_project_uid[key] = project_uid

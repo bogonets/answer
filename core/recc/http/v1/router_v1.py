@@ -456,7 +456,7 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_get_project(session={username},project={projname})")
 
-        project = await self.context.get_project(GLOBAL_GROUP, projname)
+        project = await self.context.get_project_by_fullpath(GLOBAL_GROUP, projname)
         result = self._project_to_v1_dict(project)
         return response_ok_without_detail(name, result)
 
@@ -477,7 +477,7 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_delete_project(session={username},project={projname})")
 
-        await self.context.delete_project(GLOBAL_GROUP, projname)
+        await self.context.delete_project_by_fullpath(GLOBAL_GROUP, projname)
         return response_ok_without_detail(name)
 
     async def on_create_layout(self, request: Request):
@@ -587,7 +587,7 @@ class RouterV1:
         logger.info(f"on_get_graph(session={username},project={projname})")
 
         group_name = ANONYMOUS_GROUP_SLUG
-        project = await self.context.get_project(group_name, projname)
+        project = await self.context.get_project_by_fullpath(group_name, projname)
         return response_ok_without_detail(name, {"obj": project.extra, "t": name})
 
     async def on_set_graph(self, request: Request):

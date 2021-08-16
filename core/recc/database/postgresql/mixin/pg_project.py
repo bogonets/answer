@@ -17,6 +17,7 @@ from recc.database.postgresql.query.project import (
     UPDATE_PROJECT_FEATURES_BY_GROUP_UID_AND_SLUG,
     DELETE_PROJECT_BY_UID,
     DELETE_PROJECT_BY_GROUP_UID_AND_SLUG,
+    SELECT_PROJECT_UID_BY_GROUP_UID_AND_SLUG,
     SELECT_PROJECT_ALL,
     SELECT_PROJECT_BY_UID,
     SELECT_PROJECT_BY_GROUP_ID_AND_SLUG,
@@ -147,6 +148,21 @@ class PgProject(DbProject, PgBase):
         await self.execute(query, group_uid, slug)
         params_msg = f"group_uid={group_uid},slug={slug}"
         logger.info(f"delete_project_by_slug({params_msg}) ok.")
+
+    @overrides
+    async def get_project_uid_by_group_uid_and_slug(
+        self, group_uid: int, slug: str
+    ) -> int:
+        query = SELECT_PROJECT_UID_BY_GROUP_UID_AND_SLUG
+        row = await self.fetch_row(query, group_uid, slug)
+        params_msg = f"group_uid={group_uid},slug={slug}"
+        if not row:
+            raise RuntimeError(f"Not found project: {params_msg}")
+        result = row.get("uid")
+        if result is None:
+            raise RuntimeError(f"Not found project: {params_msg}")
+        logger.info(f"get_project_uid_by_group_uid_and_slug({params_msg}) -> {result}")
+        return result
 
     @overrides
     async def get_projects(self) -> List[Project]:
