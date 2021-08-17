@@ -51,13 +51,6 @@ export interface UserExtra {
     lang?: string;
 }
 
-export function createEmptyUserExtra() {
-    return {
-        dark: false,
-        lang: '',
-    } as UserExtra;
-}
-
 export function createEmptyUserA() {
     return {
         username: '',
@@ -79,4 +72,24 @@ export function createEmptySigninA() {
         refresh: '',
         user: createEmptyUserA(),
     } as SigninA;
+}
+
+export function createEmptySignupQ() {
+    return {
+        username: '',
+        password: '',
+        nickname: '',
+        email: '',
+        phone1: '',
+        phone2: '',
+        is_admin: false,
+        extra: createEmptyUserExtra(),
+    } as SignupQ;
+}
+
+export function createEmptyUserExtra() {
+    return {
+        dark: false,
+        lang: '',
+    } as UserExtra;
 }

@@ -21,7 +21,7 @@ en:
   msg:
     confirm_password: "Please reconfirm your password."
   cancel: "Cancel"
-  signup: "Signup"
+  submit: "Submit"
 
 ko:
   label:
@@ -45,7 +45,7 @@ ko:
   msg:
     confirm_password: "비밀번호를 재확인해주세요."
   cancel: "취소"
-  signup: "가입"
+  submit: "제출"
 </i18n>
 
 <template>
@@ -54,43 +54,48 @@ ko:
     <p :class="subtitleClass">{{ $t('label.username') }}</p>
     <v-text-field
         dense
-        persistent-hint
         type="text"
         autocomplete="off"
-        v-model="username"
+        v-model="current.username"
         :rules="rules.username"
+        :disabled="disableUsername"
+        :filled="disableUsername"
+        :persistent-hint="!disableUsername"
+        :hide-details="disableUsername"
         :hint="$t('hint.username')"
     ></v-text-field>
 
-    <p :class="subtitleClass">{{ $t('label.password') }}</p>
-    <v-text-field
-        dense
-        persistent-hint
-        type="password"
-        autocomplete="off"
-        v-model="password"
-        :rules="rules.password"
-        :hint="$t('hint.password')"
-    ></v-text-field>
+    <div v-if="!hidePassword">
+      <p :class="subtitleClass">{{ $t('label.password') }}</p>
+      <v-text-field
+          dense
+          persistent-hint
+          type="password"
+          autocomplete="off"
+          v-model="current.password"
+          :rules="rules.password"
+          :hint="$t('hint.password')"
+      ></v-text-field>
 
-    <p :class="subtitleClass">{{ $t('label.confirmPassword') }}</p>
-    <v-text-field
-        dense
-        persistent-hint
-        type="password"
-        autocomplete="off"
-        ref="confirmPasswordField"
-        v-model="confirmPassword"
-        :rules="rules.confirmPassword"
-        :hint="$t('hint.confirmPassword')"
-    ></v-text-field>
+      <p :class="subtitleClass">{{ $t('label.confirmPassword') }}</p>
+      <v-text-field
+          dense
+          persistent-hint
+          type="password"
+          autocomplete="off"
+          ref="confirmPasswordField"
+          v-model="confirmPassword"
+          :rules="rules.confirmPassword"
+          :hint="$t('hint.confirmPassword')"
+      ></v-text-field>
+    </div>
 
     <div v-if="!hideProfile">
       <p :class="subtitleClass">{{ $t('label.nickname') }}</p>
       <v-text-field
           dense
           persistent-hint
-          v-model="nickname"
+          v-model="current.nickname"
           :hint="$t('hint.nickname')"
       ></v-text-field>
 
@@ -98,7 +103,7 @@ ko:
       <v-text-field
           dense
           persistent-hint
-          v-model="email"
+          v-model="current.email"
           :rules="rules.email"
           :hint="$t('hint.email')"
       ></v-text-field>
@@ -107,7 +112,7 @@ ko:
       <v-text-field
           dense
           persistent-hint
-          v-model="phone1"
+          v-model="current.phone1"
           :rules="rules.phone"
           :hint="$t('hint.phone1')"
       ></v-text-field>
@@ -116,7 +121,7 @@ ko:
       <v-text-field
           dense
           persistent-hint
-          v-model="phone2"
+          v-model="current.phone2"
           :rules="rules.phone"
           :hint="$t('hint.phone2')"
       ></v-text-field>
@@ -129,13 +134,14 @@ ko:
       </div>
       <v-spacer></v-spacer>
       <div>
-        <v-switch inset v-model="isAdmin"></v-switch>
+        <v-switch inset v-model="current.isAdmin"></v-switch>
       </div>
     </v-row>
 
-    <v-row class="mt-4 mb-2" no-gutters>
+    <v-row v-if="!hideButtons" class="mt-4 mb-2" no-gutters>
       <v-spacer></v-spacer>
       <v-btn
+          v-if="!hideCancelButton"
           class="mr-4"
           color="second"
           @click="cancel"
@@ -143,12 +149,13 @@ ko:
         {{ $t('cancel') }}
       </v-btn>
       <v-btn
+          v-if="!hideSubmitButton"
           color="primary"
           :loading="loading"
-          :disabled="disableSignup"
+          :disabled="disableSubmit"
           @click="submit"
       >
-        {{ $t('signup') }}
+        {{ $t('submit') }}
       </v-btn>
     </v-row>
 
@@ -160,7 +167,6 @@ import {Component, Prop, Watch, Emit, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {VForm} from 'vuetify/lib/components/VForm';
 import {VTextField} from 'vuetify/lib/components/VTextField';
-import {UserA} from '@/packet/user';
 import {USERNAME_RULES, PASSWORD_RULES, PHONE_RULES, EMAIL_RULES} from '@/rules';
 
 const SUBTITLE_CLASSES = [
@@ -171,28 +177,69 @@ const SUBTITLE_CLASSES = [
 ];
 const SUBTITLE_CLASS = SUBTITLE_CLASSES.join(' ');
 
+export class UserItem {
+  username = '';
+  password = '';
+  nickname = '';
+  email = '';
+  phone1 = '';
+  phone2 = '';
+  isAdmin = false;
+
+  fromObject(obj?: any) {
+    this.username = obj?.username || '';
+    this.password = obj?.password || '';
+    this.nickname = obj?.nickname || '';
+    this.email = obj?.email || '';
+    this.phone1 = obj?.phone1 || '';
+    this.phone2 = obj?.phone2 || '';
+    this.isAdmin = obj?.is_admin || false;
+  }
+}
+
 @Component
 export default class FormUser extends VueBase {
   private readonly subtitleClass = SUBTITLE_CLASS
   private readonly rules = {
     username: USERNAME_RULES,
     password: PASSWORD_RULES,
-    confirmPassword: [...PASSWORD_RULES, this.samePasswordRule],
+    confirmPassword: [...PASSWORD_RULES, this.confirmPasswordRule],
     phone: PHONE_RULES,
     email: EMAIL_RULES,
   };
 
-  @Prop({type: Boolean, default: false})
+  @Prop({type: Boolean})
   readonly loading!: boolean;
 
-  @Prop({type: Boolean, default: false})
+  @Prop({type: Boolean})
+  readonly disableUsername!: boolean;
+
+  @Prop({type: Boolean})
+  readonly disableSubmitButton!: boolean;
+
+  @Prop({type: Boolean})
+  readonly disableValidate!: boolean;
+
+  @Prop({type: Boolean})
+  readonly hidePassword!: boolean;
+
+  @Prop({type: Boolean})
   readonly hideProfile!: boolean;
 
-  @Prop({type: Boolean, default: false})
+  @Prop({type: Boolean})
   readonly hideAccess!: boolean;
 
-  @Prop({type: Boolean, default: false})
-  readonly disableValidate!: boolean;
+  @Prop({type: Boolean})
+  readonly hideButtons!: boolean;
+
+  @Prop({type: Boolean})
+  readonly hideCancelButton!: boolean;
+
+  @Prop({type: Boolean})
+  readonly hideSubmitButton!: boolean;
+
+  @Prop({type: Object})
+  readonly value!: UserItem;
 
   @Ref()
   readonly form!: VForm;
@@ -201,68 +248,34 @@ export default class FormUser extends VueBase {
   readonly confirmPasswordField!: VTextField;
 
   valid = false;
-  username = '';
-  password = '';
+  current = new UserItem();
   confirmPassword = '';
-  nickname = '';
-  email = '';
-  phone1 = '';
-  phone2 = '';
-  isAdmin = false;
 
-  samePasswordRule(value: string): boolean | string {
-    return this.password === value || this.$t('msg.confirm_password').toString();
+  @Watch('value')
+  onChangeValue(value: UserItem) {
+    this.current = value;
   }
 
-  get disableSignup(): boolean {
-    const filledRequired = !!this.username && !!this.password && !!this.confirmPassword;
-    const samePassword = this.password === this.confirmPassword;
-    return this.loading || !(this.valid && filledRequired && samePassword);
+  @Watch('current.password')
+  onChangePassword() {
+    this.validateConfirmPasswordField();
+  }
+
+  confirmPasswordRule(value: string): boolean | string {
+    return this.current.password == value || this.$t('msg.confirm_password').toString();
   }
 
   validateConfirmPasswordField() {
     this.confirmPasswordField['validate']();
   }
 
+  get disableSubmit(): boolean {
+    const samePassword = this.current.password === this.confirmPassword;
+    return this.loading || !(this.valid && samePassword) || this.disableSubmitButton;
+  }
+
   formValidate() {
     this.form['validate']();
-  }
-
-  get formsResult(): UserA {
-    const required = {
-      username: this.username,
-      password: this.$api2.encryptPassword(this.password),
-    };
-    const profile = {
-      nickname: this.nickname,
-      email: this.email,
-      phone1: this.phone1,
-      phone2: this.phone2,
-    };
-    const access = {
-      is_admin: this.isAdmin,
-    };
-
-    return {
-      ... required,
-      ... (this.hideProfile ? undefined : profile),
-      ... (this.hideAccess ? undefined : access),
-    } as UserA;
-  }
-
-  @Watch('password')
-  onChangePassword() {
-    this.validateConfirmPasswordField();
-  }
-
-  @Emit()
-  cancel() {
-    return this.formsResult;
-  }
-
-  @Emit()
-  ok() {
-    return this.formsResult;
   }
 
   submit() {
@@ -273,6 +286,21 @@ export default class FormUser extends VueBase {
       }
     }
     this.ok();
+  }
+
+  @Emit()
+  input() {
+    return this.current;
+  }
+
+  @Emit()
+  cancel() {
+    return this.current;
+  }
+
+  @Emit()
+  ok() {
+    return this.current;
   }
 }
 </script>

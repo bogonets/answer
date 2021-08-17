@@ -22,6 +22,7 @@ ko:
         :subheader="$t('subheader')"
     >
       <form-group
+          :loading="submitLoading"
           @cancel="onClickCancel"
           @ok="onClickOk"
       ></form-group>
@@ -35,7 +36,8 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import LeftTitle from "@/components/LeftTitle.vue";
-import FormGroup from '@/components/FormGroup.vue';
+import FormGroup, {GroupItem} from '@/components/FormGroup.vue';
+import {CreateGroupQ} from '@/packet/group';
 
 @Component({
   components: {
@@ -62,22 +64,29 @@ export default class MainAdminGroupsNew extends VueBase {
     },
   ];
 
-  showNewGroupLoading = false;
+  submitLoading = false;
 
   onClickCancel() {
-    this.moveToMainAdminGroups();
+    this.moveToBack();
   }
 
-  onClickOk(group) {
-    this.showNewGroupLoading = true;
-    this.$api2.postGroups(group)
+  onClickOk(event: GroupItem) {
+    const body = {
+      slug: event.slug,
+      name: event.name,
+      description: event.description,
+      features: event.features,
+    } as CreateGroupQ;
+
+    this.submitLoading = true;
+    this.$api2.postGroups(body)
         .then(() => {
-          this.showNewGroupLoading = false;
+          this.submitLoading = false;
           this.moveToMainAdminGroups();
           this.toastRequestSuccess();
         })
         .catch(error => {
-          this.showNewGroupLoading = false;
+          this.submitLoading = false;
           this.toastRequestFailure(error);
         });
   }

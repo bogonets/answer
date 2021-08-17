@@ -23,7 +23,6 @@ en:
       label: "Public"
       hint: "The group and any public projects can be viewed without any authentication."
   no_matching: "No results matching \"{search}\". Press {key} to create a new one."
-  reset: "Reset"
   cancel: "Cancel"
   submit: "Submit"
 
@@ -51,7 +50,6 @@ ko:
       label: "Public"
       hint: "The group and any public projects can be viewed without any authentication."
   no_matching: "\"{search}\" 와 일치하는 결과가 없습니다. {key} 키를 눌러 추가할 수 있습니다."
-  reset: "복구"
   cancel: "취소"
   submit: "제출"
 </i18n>
@@ -62,12 +60,14 @@ ko:
     <p :class="subtitleClass">{{ $t('label.slug') }}</p>
     <v-text-field
         dense
-        persistent-hint
         v-model="current.slug"
-        :disabled="disableSlug"
-        :hint="$t('hint.slug')"
         :rules="rules.slug"
+        :disabled="disableSlug"
+        :filled="disableSlug"
+        :persistent-hint="!disableSlug"
+        :hide-details="disableSlug"
         :prefix="slugPrefix"
+        :hint="$t('hint.slug')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('label.name') }}</p>
@@ -101,7 +101,7 @@ ko:
     >
       <template v-slot:no-data>
         <p>
-          <i18n class="py-1 px-4 text-body-2" path="no_matching" tag="span">
+          <i18n class="py-1 px-4 text-caption text--secondary" path="no_matching" tag="span">
             <template #search>
               <strong>{{ searchFeature }}</strong>
             </template>
@@ -141,7 +141,6 @@ ko:
 import {Component, Prop, Watch, Ref, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {VForm} from 'vuetify/lib/components/VForm';
-import {GroupA} from '@/packet/group';
 import {GROUP_SLUG_RULES} from '@/rules';
 
 const SUBTITLE_CLASSES = [
@@ -151,6 +150,20 @@ const SUBTITLE_CLASSES = [
   'my-2',
 ];
 const SUBTITLE_CLASS = SUBTITLE_CLASSES.join(' ');
+
+export class GroupItem {
+  slug = '';
+  name = '';
+  description = '';
+  features = [] as Array<string>;
+
+  fromObject(obj?: any) {
+    this.slug = obj?.slug || '';
+    this.name = obj?.name || '';
+    this.description = obj?.description || '';
+    this.features = obj?.features || [];
+  }
+}
 
 @Component
 export default class FormGroup extends VueBase {
@@ -166,6 +179,9 @@ export default class FormGroup extends VueBase {
   readonly disableSlug!: boolean;
 
   @Prop({type: Boolean})
+  readonly disableSubmitButton!: boolean;
+
+  @Prop({type: Boolean})
   readonly disableValidate!: boolean;
 
   @Prop({type: Boolean})
@@ -177,67 +193,31 @@ export default class FormGroup extends VueBase {
   @Prop({type: Boolean})
   readonly hideSubmitButton!: boolean;
 
-  @Prop({type: Array, default: () => { return []; }})
+  @Prop({type: Array})
   readonly featureItems!: Array<string>;
 
-  @Prop({type: Object, default: () => { return {}; }})
-  readonly value!: GroupA;
+  @Prop({type: Object})
+  readonly value!: GroupItem;
 
   @Ref()
   readonly form!: VForm;
 
   valid = false;
+  current = new GroupItem();
   searchFeature = '';
-  current = {
-    slug: '',
-    name: '',
-    description: '',
-    features: [],
-  } as GroupA;
-
-  created() {
-    this.updateCurrent(this.value);
-  }
 
   @Watch('value')
-  onChangeValue(value: GroupA) {
-    this.updateCurrent(value);
-  }
-
-  copyGroup(source: GroupA, destination: GroupA) {
-    destination.slug = source?.slug || '';
-    destination.name = source?.name || '';
-    destination.description = source?.description || '';
-    destination.features = source?.features || [];
-  }
-
-  updateCurrent(value: GroupA) {
-    this.copyGroup(value, this.current);
-  }
-
-  get modified(): boolean {
-    if (this.value.slug !== this.current.slug) {
-      return true;
-    }
-    if (this.value.name !== this.current.name) {
-      return true;
-    }
-    if (this.value.description !== this.current.description) {
-      return true;
-    }
-    return this.value.features !== this.current.features;
-  }
-
-  get origin(): string {
-    return window.location.origin;
+  onChangeValue(value: GroupItem) {
+    this.current = value;
   }
 
   get slugPrefix(): string {
-    return this.origin + (this.origin[this.origin.length-1] === '/' ? '' : '/')
+    const origin = window.location.origin;
+    return origin + (origin[origin.length-1] === '/' ? '' : '/')
   }
 
   get disableSubmit(): boolean {
-    return this.loading || !this.valid || !this.modified;
+    return this.loading || !this.valid || this.disableSubmitButton;
   }
 
   formValidate() {
@@ -261,7 +241,7 @@ export default class FormGroup extends VueBase {
 
   @Emit()
   cancel() {
-    // EMPTY.
+    return this.current;
   }
 
   @Emit()

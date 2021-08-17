@@ -35,7 +35,7 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import FormUser from '@/components/FormUser.vue';
+import FormUser, {UserItem} from '@/components/FormUser.vue';
 import {SignupQ} from '@/packet/user';
 
 @Component({
@@ -50,10 +50,10 @@ export default class MainAdminUsersNew extends VueBase {
     this.moveToBack();
   }
 
-  onClickOk(user) {
+  onClickOk(event: UserItem) {
     const body = {
-      username: user.username,
-      password: user.password,
+      username: event.username,
+      password: this.$api2.encryptPassword(event.password),
     } as SignupQ;
 
     this.showSignupLoading = true;

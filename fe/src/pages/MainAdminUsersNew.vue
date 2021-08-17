@@ -18,7 +18,7 @@ ko:
         :subheader="$t('subheader')"
     >
       <form-user
-          :loading="showSignupLoading"
+          :loading="submitLoading"
           @cancel="onClickCancel"
           @ok="onClickOk"
       ></form-user>
@@ -30,8 +30,9 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import LeftTitle from "@/components/LeftTitle.vue";
-import FormUser from "@/components/FormUser.vue";
+import LeftTitle from '@/components/LeftTitle.vue';
+import FormUser, {UserItem} from '@/components/FormUser.vue';
+import {SignupQ} from '@/packet/user';
 
 @Component({
   components: {
@@ -58,22 +59,32 @@ export default class MainAdminUsersNew extends VueBase {
     },
   ];
 
-  showSignupLoading = false;
+  submitLoading = false;
 
   onClickCancel() {
-    this.moveToMainAdminUsers();
+    this.moveToBack();
   }
 
-  onClickOk(user) {
-    this.showSignupLoading = true;
-    this.$api2.postUsers(user)
+  onClickOk(event: UserItem) {
+    const body = {
+      username: event.username,
+      password: this.$api2.encryptPassword(event.password),
+      nickname: event.nickname,
+      email: event.email,
+      phone1: event.phone1,
+      phone2: event.phone1,
+      is_admin: event.isAdmin,
+    } as SignupQ;
+
+    this.submitLoading = true;
+    this.$api2.postUsers(body)
         .then(() => {
-          this.showSignupLoading = false;
+          this.submitLoading = false;
           this.moveToMainAdminUsers();
           this.toastRequestSuccess();
         })
         .catch(error => {
-          this.showSignupLoading = false;
+          this.submitLoading = false;
           this.toastRequestFailure(error);
         });
   }

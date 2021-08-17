@@ -13,8 +13,8 @@ en:
   hint:
     delete: "Please be careful! It cannot be recovered."
   delete_confirm: "Are you sure? Are you really removing this group?"
-  delete: "Delete"
   cancel: "Cancel"
+  delete: "Delete"
 
 ko:
   header:
@@ -30,8 +30,8 @@ ko:
   hint:
     delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
   delete_confirm: "이 그룹을 정말 제거합니까?"
-  delete: "제거"
   cancel: "취소"
+  delete: "제거"
 </i18n>
 
 <template>
@@ -46,7 +46,7 @@ ko:
       <form-group
           disable-slug
           hide-cancel-button
-          v-model="original"
+          v-model="current"
           :loading="showSubmitLoading"
           @ok="onClickOk"
       ></form-group>
@@ -79,17 +79,14 @@ ko:
           </v-row>
         </v-col>
         <v-col class="shrink">
-          <v-btn
-              color="error"
-              @click.stop="onClickDelete"
-          >
+          <v-btn color="error" @click.stop="onClickDelete">
             {{ $t('delete') }}
           </v-btn>
         </v-col>
       </v-row>
     </v-alert>
 
-    <!-- Delete a user dialog. -->
+    <!-- Delete dialog. -->
     <v-dialog v-model="showDeleteDialog" max-width="320">
       <v-card>
         <v-card-title class="text-h5 error--text">
@@ -104,11 +101,7 @@ ko:
           <v-btn @click="onClickDeleteCancel">
             {{ $t('cancel') }}
           </v-btn>
-          <v-btn
-              :loading="showDeleteLoading"
-              color="error"
-              @click="onClickDeleteOk"
-          >
+          <v-btn :loading="showDeleteLoading" color="error" @click="onClickDeleteOk">
             {{ $t('delete') }}
           </v-btn>
         </v-card-actions>
@@ -119,22 +112,18 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import TextFieldThreeLine from '@/components/TextFieldThreeLine.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
-import RightControl from '@/components/RightControl.vue';
-import FormGroup from '@/components/FormGroup.vue';
+import FormGroup, {GroupItem} from '@/components/FormGroup.vue';
 import {GroupA, UpdateGroupQ} from '@/packet/group';
 
 @Component({
   components: {
-    FormGroup,
-    RightControl,
     ToolbarNavigation,
-    TextFieldThreeLine,
     LeftTitle,
+    FormGroup,
   }
 })
 export default class MainAdminGroupsEdit extends VueBase {
@@ -167,12 +156,8 @@ export default class MainAdminGroupsEdit extends VueBase {
     },
   ];
 
-  detailItems: Array<object> = [];
-  original = {
-    name: '',
-    description: '',
-    features: [] as Array<string>,
-  };
+  detailItems = [] as Array<object>;
+  current = new GroupItem();
 
   showSubmitLoading = false;
   showDeleteDialog = false;
@@ -183,6 +168,10 @@ export default class MainAdminGroupsEdit extends VueBase {
   }
 
   created() {
+    this.requestGroup();
+  }
+
+  requestGroup() {
     this.$api2.getGroupsPgroup(this.group)
         .then(body => {
           this.updateGroup(body);
@@ -200,11 +189,12 @@ export default class MainAdminGroupsEdit extends VueBase {
     const createdAt = group.created_at || '';
     const updatedAt = group.updated_at || '';
 
-    this.original = {
+    this.current = {
+      slug: this.group,
       name: name,
       description: description,
       features: features,
-    };
+    } as GroupItem;
 
     this.detailItems = [
       {
@@ -218,27 +208,29 @@ export default class MainAdminGroupsEdit extends VueBase {
     ];
   }
 
-  onClickOk(event: GroupA) {
-    const name = event.name || '';
-    const description = event.description || '';
-    const features = event.features || [] as Array<string>;
+  onClickOk(event: GroupItem) {
+    const body = {
+      name: event.name,
+      description: event.description,
+      features: event.features,
+    } as UpdateGroupQ;
 
-    const body = {name, description, features} as UpdateGroupQ;
     this.showSubmitLoading = true;
     this.$api2.patchGroupsPgroup(this.group, body)
         .then(() => {
           this.showSubmitLoading = false;
           this.toastRequestSuccess();
-
-          this.original.name = name;
-          this.original.description = description;
-          this.original.features = features;
+          this.requestGroup();
         })
         .catch(error => {
           this.showSubmitLoading = false;
           this.toastRequestFailure(error);
         });
   }
+
+  // ------
+  // Delete
+  // ------
 
   onClickDelete() {
     this.showDeleteDialog = true;
