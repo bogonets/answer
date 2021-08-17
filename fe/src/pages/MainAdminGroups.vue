@@ -83,7 +83,7 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import {Group} from "@/apis/api-v2";
+import {GroupA} from '@/packet/group';
 
 @Component({
   components: {
@@ -144,7 +144,7 @@ export default class MainAdminGroups extends VueBase {
   ];
 
   filterText = '';
-  tableItems: Array<Group> = [];
+  tableItems = [] as Array<GroupA>;
   showLoading = true;
 
   mounted() {
@@ -172,11 +172,11 @@ export default class MainAdminGroups extends VueBase {
     this.moveToMainAdminGroupsNew();
   }
 
-  onClickEdit(item) {
-    this.moveToMainAdminGroupsEdit(item);
+  onClickEdit(item: GroupA) {
+    this.moveToMainAdminGroupsEdit(item.slug);
   }
 
-  onClickMove(item) {
+  onClickMove(item: GroupA) {
   }
 }
 </script>

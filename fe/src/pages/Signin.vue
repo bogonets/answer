@@ -138,12 +138,12 @@ ko:
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
-import {Extra, User} from '@/apis/api-v2';
+import {Component} from 'vue-property-decorator';
+import VueBase from '@/base/VueBase';
 import TitleLogo from '@/components/TitleLogo.vue';
 import LinearLoading from '@/components/LinearLoading.vue';
 import ButtonsConfigPublic from '@/components/ButtonsConfigPublic.vue';
-import VueBase from '@/base/VueBase';
+import {UserA, UserExtra} from '@/packet/user';
 
 const WAIT_MOMENT_MILLISECONDS = 0;
 const V_TEXT_FIELD_VALIDATE = 'validate';
@@ -262,7 +262,7 @@ export default class Signin extends VueBase {
 
   // Methods
 
-  saveUserToLocal(access: string, refresh: string, user: User) {
+  saveUserToLocal(access: string, refresh: string, user: UserA) {
     this.$localStore.access = access;
     this.$localStore.refresh = refresh;
     this.$localStore.user = user;
@@ -271,7 +271,7 @@ export default class Signin extends VueBase {
   /**
    * @deprecated
    */
-  saveUserToSession(access: string, refresh: string, user: User) {
+  saveUserToSession(access: string, refresh: string, user: UserA) {
     const username = user.username || '';
     const email = user.email || '';
     const phone = user.phone1 || '';
@@ -285,7 +285,7 @@ export default class Signin extends VueBase {
     });
   }
 
-  updateCurrentSettingsFromUserExtra(extra: Extra) {
+  updateCurrentSettingsFromUserExtra(extra: UserExtra) {
     if (extra.dark === undefined) {
       console.warn('[LoginPage] Not exists user\'s extra.dark information.');
     } else {
@@ -432,7 +432,7 @@ export default class Signin extends VueBase {
 
           const access = response.access || '';
           const refresh = response.refresh || '';
-          const user = response.user || {} as User;
+          const user = response.user || {} as UserA;
           this.saveUserToLocal(access, refresh, user);
           this.saveUserToSession(access, refresh, user);
 

@@ -9,7 +9,7 @@ from recc.http.http_utils import v2_path
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
-from recc.packet.info import InfoA, UpdateInfoQ
+from recc.packet.info import InfoA, CreateInfoQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.system import SystemOverviewA
 
@@ -60,12 +60,12 @@ class RouterV2TestCase(AsyncTestCase):
         self.assertEqual(1, len(version))
         self.assertEqual(RECC_DB_VERSION_KEY, version[0].key)
 
-        update_info = UpdateInfoQ("key1", "value2")
-        response2 = await self.tester.post(v2_path(u.infos), data=update_info)
+        info1 = CreateInfoQ("key1", "value2")
+        response2 = await self.tester.post(v2_path(u.infos), data=info1)
         self.assertEqual(200, response2.status)
         self.assertIsNone(response2.data)
 
-        path = v2_path(u.infos_pkey.format(**{p.key: update_info.key}))
+        path = v2_path(u.infos_pkey.format(**{p.key: info1.key}))
         response3 = await self.tester.get(path)
         self.assertEqual(200, response3.status)
         self.assertIsNotNone(response3.data)

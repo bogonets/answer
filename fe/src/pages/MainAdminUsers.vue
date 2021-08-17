@@ -90,7 +90,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import AppBarTitle from '@/components/AppBarTitle.vue';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import {User} from "@/apis/api-v2";
+import {UserA} from '@/packet/user';
 
 @Component({
   components: {
@@ -152,7 +152,7 @@ export default class MainAdminUsers extends VueBase {
   ]
 
   filterText = '';
-  tableItems: Array<User> = [];
+  tableItems: Array<UserA> = [];
   showLoading = true;
 
   mounted() {
@@ -175,8 +175,8 @@ export default class MainAdminUsers extends VueBase {
     this.moveToMainAdminUsersNew();
   }
 
-  onClickEdit(item) {
-    this.moveToMainAdminUsersEdit(item);
+  onClickEdit(item: UserA) {
+    this.moveToMainAdminUsersEdit(item.username);
   }
 }
 </script>

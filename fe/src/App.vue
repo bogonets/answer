@@ -5,9 +5,9 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator'
+import {Component} from 'vue-property-decorator'
 import VueBase from "@/base/VueBase";
-import { Extra } from "@/apis/api-v2";
+import {UserExtra} from "@/packet/user";
 
 @Component
 export default class App extends VueBase {
@@ -52,7 +52,7 @@ export default class App extends VueBase {
     }
   }
 
-  updateCurrentSettingsFromUserExtra(extra: Extra) {
+  updateCurrentSettingsFromUserExtra(extra: UserExtra) {
     if (extra.dark === undefined) {
       console.warn('[APP] Not exists user\'s extra.dark information.');
     } else {

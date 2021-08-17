@@ -24,7 +24,7 @@ ko:
     <!-- Theme Config Button -->
     <v-btn icon small @click="changeDark">
       <v-icon small role="img" aria-hidden="false">
-        {{ icons.theme }}
+        mdi-theme-light-dark
       </v-icon>
     </v-btn>
 
@@ -45,7 +45,7 @@ ko:
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn icon small v-bind="attrs" v-on="on">
-          <v-icon small role="img" aria-hidden="false">{{ icons.api }}</v-icon>
+          <v-icon small role="img" aria-hidden="false">mdi-api</v-icon>
         </v-btn>
       </template>
 
@@ -85,22 +85,16 @@ ko:
 </template>
 
 <script lang="ts">
-import VueI18n from '@/translations/VueI18n';
-import { Component, Prop, Emit } from 'vue-property-decorator';
+import {Component, Prop, Emit} from 'vue-property-decorator';
+import VueBase from '@/base/VueBase';
 import MenuTranslate from '@/components/MenuTranslate.vue';
-import { mdiThemeLightDark, mdiApi } from '@mdi/js';
 
 @Component({
   components: {
     MenuTranslate
   }
 })
-export default class ButtonsConfigPublic extends VueI18n {
-
-  readonly icons = {
-    theme: mdiThemeLightDark,
-    api: mdiApi,
-  };
+export default class ButtonsConfigPublic extends VueBase {
 
   @Prop({type: String, default: ''})
   readonly origin!: string;

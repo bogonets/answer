@@ -80,6 +80,7 @@ ko:
 import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {INFO_RULES} from '@/rules';
+import {CreateInfoQ} from '@/packet/info';
 
 @Component
 export default class CardInfoNew extends VueBase {
@@ -126,21 +127,13 @@ export default class CardInfoNew extends VueBase {
     return this.$refs.form;
   }
 
-  validate() {
+  formValidate() {
     this.form['validate']();
-  }
-
-  reset() {
-    this.form['reset']();
-  }
-
-  resetValidation() {
-    this.form['resetValidation']();
   }
 
   submit() {
     if (!this.disableValidate) {
-      this.validate();
+      this.formValidate();
       if (!this.valid) {
         return;
       }

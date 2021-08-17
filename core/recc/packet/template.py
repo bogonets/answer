@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class LamdaInfoA:
+class TemplateA:
     position: int
     category: str
     name: str

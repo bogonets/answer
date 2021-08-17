@@ -69,6 +69,7 @@ nocov
 noninteractive
 objname
 objs
+onlytext
 orjson
 osom
 outname

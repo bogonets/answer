@@ -38,10 +38,10 @@ export default class TitleLogo extends Vue {
   readonly text!: string;
 
   @Prop({type: Number, default: DEFAULT_MAX_WIDTH})
-  readonly maxWidth!: string;
+  readonly maxWidth!: number;
 
   @Prop({type: Number, default: DEFAULT_MAX_HEIGHT})
-  readonly maxHeight!: string;
+  readonly maxHeight!: number;
 
   get titleText(): string {
     if (this.isUppercase) {

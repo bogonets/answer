@@ -4,30 +4,25 @@ import AxiosLib, {
     AxiosRequestConfig,
     AxiosBasicCredentials,
 } from 'axios'
+import {ConfigA, UpdateConfigValueQ} from '@/packet/config';
+import {GroupA, CreateGroupQ, UpdateGroupQ} from '@/packet/group';
+import {InfoA, CreateInfoQ, UpdateInfoQ} from '@/packet/info';
+import {TemplateA} from '@/packet/template';
+import {ProjectA, CreateProjectQ, UpdateProjectQ} from '@/packet/project';
+import {SystemOverviewA} from '@/packet/system';
+import {
+    UserA,
+    UpdateUserQ,
+    SigninA,
+    SignupQ,
+    UpdatePasswordQ,
+    UserExtra,
+    createEmptySigninA,
+} from '@/packet/user';
+import {encryptSha256} from '@/crypto/sha';
 
-import sha256 from 'sha256'
-
-const DEFAULT_ORIGIN = document.location.origin;
 const DEFAULT_TIMEOUT = 30 * 1000;
 
-export class ApiV2StatusError extends Error {
-
-    code: number;
-    reason: string;
-    data: any;
-
-    constructor(response: AxiosResponse) {
-        const code = response.status;
-        const reason = response.statusText;
-        const data = response.data;
-
-        super(`Error: Status(${code}) ${reason}`);
-
-        this.code = code;
-        this.reason = reason;
-        this.data = data;
-    }
-}
 
 export class ApiV2TokenError extends Error {
     constructor(token?: string) {
@@ -61,132 +56,14 @@ export function originToBaseUrl(origin: string): string {
     }
 }
 
-export interface Signup {
-    username: string;
-    password: string;
-    nickname?: string;
-    email?: string;
-    phone1?: string;
-    phone2?: string;
-}
-
-export interface UpdatePassword {
-    before?: string;
-    after?: string;
-}
-
-export interface Extra {
-    dark?: boolean;
-    lang?: string;
-}
-
-export interface User {
-    username?: string;
-    password?: string;
-    nickname?: string;
-    email?: string;
-    phone1?: string;
-    phone2?: string;
-    is_admin?: boolean;
-    extra?: Extra;
-    created_at?: string;
-    updated_at?: string;
-    last_login?: string;
-}
-
-export interface Info {
-    key: string;
-    value: string;
-    created_at: string;
-    updated_at: string;
-}
-
-export interface UpdateInfo {
-    key: string;
-    value: string;
-}
-
-export interface UpdateInfoValue {
-    value: string;
-}
-
-export interface TemplateKey {
-    position: number;
-    category: string;
-    name: string;
-}
-
-export interface Config {
-    key: string;
-    type: string;
-    value: string;
-}
-
-export interface UpdateConfigValue {
-    value: string;
-}
-
-export interface Login {
-    access: string;
-    refresh: string;
-    user: User;
-}
-
-export interface Group {
-    slug?: string;
-    name?: string;
-    description?: string;
-    features?: Array<string>;
-    extra?: object;
-    created_at?: string;
-    updated_at?: string;
-}
-
-export interface Project {
-    name?: string;
-    description?: string;
-    features?: object;
-    extra?: object;
-    created_at?: string;
-    updated_at?: string;
-}
-
-export interface SystemOverview {
-    users: number;
-    groups: number;
-    projects: number;
-}
-
-
-function newEmptySession(): Login {
-    return {
-        access: '',
-        refresh: '',
-        user: {
-            username: '',
-            email: '',
-            phone1: '',
-            phone2: '',
-            is_admin: false,
-            extra: {
-                dark: false,
-                lang: '',
-            } as Extra,
-            created_at: '',
-            updated_at: '',
-            last_login: '',
-        } as User,
-    } as Login;
-}
-
 export default class ApiV2 {
 
     private originAddress: string;
     private api: AxiosInstance;
-    private session: Login;
+    private session: SigninA;
 
     constructor(
-        origin: string = DEFAULT_ORIGIN,
+        origin: string = document.location.origin,
         timeout: number = DEFAULT_TIMEOUT,
     ) {
         this.originAddress = origin;
@@ -200,7 +77,7 @@ export default class ApiV2 {
                 return status === 200;
             }
         });
-        this.session = newEmptySession();
+        this.session = createEmptySigninA();
     }
 
     get baseURL(): string {
@@ -220,7 +97,7 @@ export default class ApiV2 {
         this.api.defaults.baseURL = originToBaseUrl(origin);
     }
 
-    setDefaultSession(access: string, refresh: string, user: User) {
+    setDefaultSession(access: string, refresh: string, user: UserA) {
         this.session.access = access;
         this.session.refresh = refresh;
         this.session.user = user;
@@ -252,38 +129,38 @@ export default class ApiV2 {
         return this.api.delete(url, config);
     }
 
+    encryptPassword(password: string): string {
+        return encryptSha256(password);
+    }
+
     // ------
     // Public
     // ------
 
-    getVersion() {
-        return this.get<string>('/public/version');
-    }
-
     getHeartbeat() {
         return this.get('/public/heartbeat');
+    }
+
+    getVersion() {
+        return this.get<string>('/public/version');
     }
 
     already() {
         return this.get<boolean>('/public/state/already');
     }
 
-    encryptPassword(password: string): string {
-        return sha256(password);
+    signup(body: SignupQ) {
+        return this.post('/public/signup', body);
     }
 
-    signup(user: Signup) {
-        return this.post('/public/signup', user);
-    }
-
-    signupAdmin(user: Signup) {
-        return this.post('/public/signup/admin', user);
+    signupAdmin(body: SignupQ) {
+        return this.post('/public/signup/admin', body);
     }
 
     signin(username: string, password: string, updateDefaultAuth = true) {
         const auth = {
             username: username,
-            password: sha256(password),
+            password: encryptSha256(password),
         } as AxiosBasicCredentials;
 
         const config = {
@@ -292,11 +169,7 @@ export default class ApiV2 {
 
         return this.api.post('/public/signin', undefined, config)
             .then((response: AxiosResponse) => {
-                if (response.status !== 200) {
-                    throw new ApiV2StatusError(response);
-                }
-
-                const result = response.data as Login;
+                const result = response.data as SigninA;
                 const access = result.access;
                 const refresh = result.refresh;
                 if (!access) {
@@ -319,19 +192,23 @@ export default class ApiV2 {
     // ----
 
     getSelf() {
-        return this.get<User>('/self');
+        return this.get<UserA>('/self');
+    }
+
+    patchSelf(body: UpdateUserQ) {
+        return this.patch<UserA>('/self', body);
     }
 
     getSelfExtra() {
-        return this.get<Extra>('/self/extra');
+        return this.get<UserExtra>('/self/extra');
     }
 
-    patchSelfExtra(extra: Extra) {
+    patchSelfExtra(extra: UserExtra) {
         return this.patch('/self/extra', extra);
     }
 
-    patchSelfPassword(update_password: UpdatePassword) {
-        return this.patch('/self/password', update_password);
+    patchSelfPassword(body: UpdatePasswordQ) {
+        return this.patch('/self/password', body);
     }
 
     // -------
@@ -339,14 +216,15 @@ export default class ApiV2 {
     // -------
 
     getConfigs() {
-        return this.get<Array<Config>>('/configs');
+        return this.get<Array<ConfigA>>('/configs');
     }
 
-    patchConfig(key: string, value: string) {
-        const data = {
-            value: value
-        } as UpdateConfigValue;
-        return this.patch(`/configs/${key}`, data);
+    getConfigsPkey(key: string) {
+        return this.get<ConfigA>(`/configs/${key}`);
+    }
+
+    patchConfigsPkey(key: string, body: UpdateConfigValueQ) {
+        return this.patch(`/configs/${key}`, body);
     }
 
     // -----
@@ -354,22 +232,19 @@ export default class ApiV2 {
     // -----
 
     getInfos() {
-        return this.get<Array<Info>>('/infos');
+        return this.get<Array<InfoA>>('/infos');
     }
 
-    postInfos(key: string, value: string) {
-        const data = {
-            key: key,
-            value: value,
-        } as UpdateInfo;
-        return this.post('/infos', data);
+    postInfos(body: CreateInfoQ) {
+        return this.post('/infos', body);
     }
 
-    patchInfo(key: string, value: string) {
-        const data = {
-            value: value
-        } as UpdateInfoValue;
-        return this.patch(`/infos/${key}`, data);
+    getInfosPkey(key: string) {
+        return this.get<InfoA>(`/infos/${key}`);
+    }
+
+    patchInfosPkey(key: string, body: UpdateInfoQ) {
+        return this.patch(`/infos/${key}`, body);
     }
 
     deleteInfo(key: string) {
@@ -381,27 +256,7 @@ export default class ApiV2 {
     // ------
 
     getSystemOverview() {
-        return this.get<SystemOverview>('/system/overview');
-    }
-
-    // -----
-    // Users
-    // -----
-
-    getUsers() {
-        return this.get<Array<User>>('/users');
-    }
-
-    postUsers(body: User) {
-        return this.post('/users', body);
-    }
-
-    patchUsersUser(username: string, body?: User) {
-        return this.patch(`/users/${username}`, body);
-    }
-
-    deleteUsersUser(username: string) {
-        return this.delete(`/users/${username}`);
+        return this.get<SystemOverviewA>('/system/overview');
     }
 
     // ---------
@@ -409,23 +264,51 @@ export default class ApiV2 {
     // ---------
 
     getTemplates() {
-        return this.get<Array<TemplateKey>>(`/templates`);
+        return this.get<Array<TemplateA>>(`/templates`);
     }
 
     // -----
-    // Groups
+    // Users
     // -----
+
+    getUsers() {
+        return this.get<Array<UserA>>('/users');
+    }
+
+    postUsers(body: SignupQ) {
+        return this.post('/users', body);
+    }
+
+    getUsersPuser(user: string) {
+        return this.get<UserA>(`/users/${user}`);
+    }
+
+    patchUsersPuser(user: string, body: UpdateUserQ) {
+        return this.patch(`/users/${user}`, body);
+    }
+
+    deleteUsersPuser(user: string) {
+        return this.delete(`/users/${user}`);
+    }
+
+    // ------
+    // Groups
+    // ------
 
     getGroups() {
-        return this.get<Array<Group>>('/groups');
+        return this.get<Array<GroupA>>('/groups');
     }
 
-    postGroups(body: Group) {
+    postGroups(body: CreateGroupQ) {
         return this.post('/groups', body);
     }
 
-    patchGroupsGroup(name: string, body?: Group) {
-        return this.patch(`/groups/${name}`, body);
+    getGroupsPgroup(group: string) {
+        return this.get<GroupA>(`/groups/${group}`);
+    }
+
+    patchGroupsPgroup(group: string, body: UpdateGroupQ) {
+        return this.patch(`/groups/${group}`, body);
     }
 
     deleteGroupsGroup(group: string) {
@@ -437,6 +320,22 @@ export default class ApiV2 {
     // --------
 
     getProjects() {
-        return this.get<Array<Project>>('/projects');
+        return this.get<Array<ProjectA>>('/projects');
+    }
+
+    postProjects(body: CreateProjectQ) {
+        return this.post('/projects', body);
+    }
+
+    getProjectsPgroupPproject(group: string, project: string) {
+        return this.get<ProjectA>(`/projects/${group}/${project}`);
+    }
+
+    patchProjectsPgroupPproject(group: string, project: string, body: UpdateProjectQ) {
+        return this.patch(`/projects/${group}/${project}`, body);
+    }
+
+    deleteProjectsPgroupProject(group: string, project: string) {
+        return this.delete(`/projects/${group}/${project}`);
     }
 }

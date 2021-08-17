@@ -119,14 +119,14 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component} from 'vue-property-decorator';
+import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import TextFieldThreeLine from '@/components/TextFieldThreeLine.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import RightControl from '@/components/RightControl.vue';
 import FormGroup from '@/components/FormGroup.vue';
-import {Group} from '@/apis/api-v2';
+import {GroupA, UpdateGroupQ} from '@/packet/group';
 
 @Component({
   components: {
@@ -154,6 +154,7 @@ export default class MainAdminGroupsEdit extends VueBase {
       disabled: true,
     },
   ];
+
   private readonly detailHeaders = [
     {
       text: 'name',
@@ -167,45 +168,71 @@ export default class MainAdminGroupsEdit extends VueBase {
   ];
 
   detailItems: Array<object> = [];
-  original: Group = {};
-  // originalGroup: Group = {};
-
-  // name = '';
-  // description = '';
-  // features: Array<string> = [];
+  original = {
+    name: '',
+    description: '',
+    features: [] as Array<string>,
+  };
 
   showSubmitLoading = false;
   showDeleteDialog = false;
   showDeleteLoading = false;
 
+  get group(): string {
+    return this.$route.params.group;
+  }
+
   created() {
-    this.original = this.$route.params.group as Group;
+    this.$api2.getGroupsPgroup(this.group)
+        .then(body => {
+          this.updateGroup(body);
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+          this.moveToBack();
+        });
+  }
+
+  updateGroup(group: GroupA) {
+    const name = group.name || '';
+    const description = group.description || '';
+    const features = group.features || [];
+    const createdAt = group.created_at || '';
+    const updatedAt = group.updated_at || '';
+
+    this.original = {
+      name: name,
+      description: description,
+      features: features,
+    };
+
     this.detailItems = [
       {
         name: this.$t('label.created_at'),
-        value: this.original.created_at || '',
+        value: createdAt,
       },
       {
         name: this.$t('label.updated_at'),
-        value: this.original.updated_at || '',
+        value: updatedAt,
       },
     ];
   }
 
-  get slug(): string {
-    return this.original.slug || '';
-  }
+  onClickOk(event: GroupA) {
+    const name = event.name || '';
+    const description = event.description || '';
+    const features = event.features || [] as Array<string>;
 
-  onClickOk(group: Group) {
+    const body = {name, description, features} as UpdateGroupQ;
     this.showSubmitLoading = true;
-    this.$api2.patchGroupsGroup(this.slug, group)
+    this.$api2.patchGroupsPgroup(this.group, body)
         .then(() => {
           this.showSubmitLoading = false;
           this.toastRequestSuccess();
 
-          this.original.name = group.name;
-          this.original.description = group.description;
-          this.original.features = group.features;
+          this.original.name = name;
+          this.original.description = description;
+          this.original.features = features;
         })
         .catch(error => {
           this.showSubmitLoading = false;
@@ -223,7 +250,7 @@ export default class MainAdminGroupsEdit extends VueBase {
 
   onClickDeleteOk() {
     this.showDeleteLoading = true;
-    this.$api2.deleteGroupsGroup(this.slug)
+    this.$api2.deleteGroupsGroup(this.group)
         .then(() => {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;

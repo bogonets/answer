@@ -85,7 +85,7 @@ ko:
           disabled
           :label="$t('label.username')"
           :hint="$t('hint.username')"
-          :value="originalUser.username"
+          :value="username"
       ></text-field-three-line>
     </left-title>
 
@@ -233,13 +233,13 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component} from 'vue-property-decorator';
+import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import TextFieldThreeLine from '@/components/TextFieldThreeLine.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import RightControl from '@/components/RightControl.vue';
-import {User} from '@/apis/api-v2';
+import {UserA} from '@/packet/user';
 
 @Component({
   components: {
@@ -266,6 +266,7 @@ export default class MainAdminUsersEdit extends VueBase {
       disabled: true,
     },
   ];
+
   private readonly detailHeaders = [
     {
       text: 'name',
@@ -279,7 +280,13 @@ export default class MainAdminUsersEdit extends VueBase {
   ];
 
   detailItems: Array<object> = [];
-  originalUser: User = {};
+  original = {
+    nickname: '',
+    email: '',
+    phone1: '',
+    phone2: '',
+    isAdmin: false,
+  };
 
   nickname = '';
   email = '';
@@ -288,21 +295,27 @@ export default class MainAdminUsersEdit extends VueBase {
   isAdmin = false;
 
   disableSubmit = true;
-  showPassword = false;
-  showConfirmPassword = false;
   showIsAdminLoading = false;
   showSignupLoading = false;
   showDeleteUserDialog = false;
   showDeleteLoading = false;
 
-  created() {
-    const user = this.$route.params.user as User;
-    const username = user?.username || '';
-    if (!username) {
-      console.error('Username is not exists.');
-      this.moveToMainAdminUsers();
-    }
+  get username(): string {
+    return this.$route.params.username;
+  }
 
+  created() {
+    this.$api2.getUsersPuser(this.username)
+        .then(body => {
+          this.updateUser(body);
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+          this.moveToBack();
+        });
+  }
+
+  updateUser(user: UserA) {
     this.nickname = user.nickname || '';
     this.email = user.email || '';
     this.phone1 = user.phone1 || '';
@@ -312,17 +325,13 @@ export default class MainAdminUsersEdit extends VueBase {
     const updated_at = user.updated_at || '';
     const last_login = user.last_login || '';
 
-    this.originalUser = {
-      username: username,
+    this.original = {
       nickname: this.nickname,
       email: this.email,
       phone1: this.phone1,
       phone2: this.phone2,
-      is_admin: this.isAdmin,
-      created_at: created_at,
-      updated_at: updated_at,
-      last_login: last_login,
-    } as User;
+      isAdmin: this.isAdmin,
+    };
 
     this.detailItems = [
       {
@@ -338,24 +347,21 @@ export default class MainAdminUsersEdit extends VueBase {
         value: last_login,
       },
     ];
+
     this.validateSubmit();
   }
 
-  get username(): string {
-    return this.originalUser.username || '';
-  }
-
   get modified(): boolean {
-    if (this.originalUser.nickname != this.nickname) {
+    if (this.original.nickname != this.nickname) {
       return true;
     }
-    if (this.originalUser.email != this.email) {
+    if (this.original.email != this.email) {
       return true;
     }
-    if (this.originalUser.phone1 != this.phone1) {
+    if (this.original.phone1 != this.phone1) {
       return true;
     }
-    return this.originalUser.phone2 != this.phone2;
+    return this.original.phone2 != this.phone2;
   }
 
   validateSubmit() {
@@ -384,9 +390,9 @@ export default class MainAdminUsersEdit extends VueBase {
 
   onChangeIsAdmin(value: boolean | null) {
     const isAdminFlag = !!value;
-    const patchUser = {is_admin: isAdminFlag} as User;
+    const patchUser = {is_admin: isAdminFlag} as UserA;
     this.showIsAdminLoading = true;
-    this.$api2.patchUsersUser(this.username, patchUser)
+    this.$api2.patchUsersPuser(this.username, patchUser)
         .then(() => {
           this.isAdmin = isAdminFlag;
           this.showIsAdminLoading = false;
@@ -404,31 +410,30 @@ export default class MainAdminUsersEdit extends VueBase {
   }
 
   onClickClear() {
-    this.nickname = this.originalUser.nickname || '';
-    this.email = this.originalUser.email || '';
-    this.phone1 = this.originalUser.phone1 || '';
-    this.phone2 = this.originalUser.phone2 || '';
+    this.nickname = this.original.nickname || '';
+    this.email = this.original.email || '';
+    this.phone1 = this.original.phone1 || '';
+    this.phone2 = this.original.phone2 || '';
     this.validateSubmit();
   }
 
   onClickSubmit() {
-    const patchUser = {
-      nickname: this.nickname,
-      email: this.email,
-      phone1: this.phone1,
-      phone2: this.phone2,
-    } as User;
+    const nickname = this.nickname;
+    const email = this.email;
+    const phone1 = this.phone1;
+    const phone2 = this.phone2;
+    const body = {nickname, email, phone1, phone2} as UserA;
 
     this.showSignupLoading = true;
-    this.$api2.patchUsersUser(this.username, patchUser)
+    this.$api2.patchUsersPuser(this.username, body)
         .then(() => {
           this.showSignupLoading = false;
           this.toastRequestSuccess();
 
-          this.originalUser.nickname = patchUser.nickname;
-          this.originalUser.email = patchUser.email;
-          this.originalUser.phone1 = patchUser.phone1;
-          this.originalUser.phone2 = patchUser.phone2;
+          this.original.nickname = nickname;
+          this.original.email = email;
+          this.original.phone1 = phone1;
+          this.original.phone2 = phone2;
           this.validateSubmit();
         })
         .catch(error => {
@@ -443,7 +448,7 @@ export default class MainAdminUsersEdit extends VueBase {
 
   onClickDeleteUserOk() {
     this.showDeleteLoading = true;
-    this.$api2.deleteUsersUser(this.username)
+    this.$api2.deleteUsersPuser(this.username)
         .then(() => {
           this.showDeleteLoading = false;
           this.showDeleteUserDialog = false;

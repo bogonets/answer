@@ -1,8 +1,8 @@
 import VueInterface from 'vue';
-import { PluginObject } from 'vue/types/plugin';
-import { Store, CommitOptions } from 'vuex';
+import {PluginObject} from 'vue/types/plugin';
+import {Store, CommitOptions} from 'vuex';
 import VuexPersist from 'vuex-persist'
-import { User, Extra } from '@/apis/api-v2';
+import {UserA, UserExtra} from '@/packet/user';
 
 // Modules
 import api from '@/store/modules/api';
@@ -65,19 +65,19 @@ export class LocalStore {
         this.defaultCommitOptions = options;
     }
 
-    private getter(key: string): any {
+    private getter(key: string) {
         return this.store.getters[key];
     }
 
-    private setter(key: string, val: any): void {
+    private setter(key: string, val: any) {
         return this.store.commit(key, val, this.defaultCommitOptions)
     }
 
-    private clear(key: string): void {
+    private clear(key: string) {
         return this.setter(key, undefined);
     }
 
-    get origin(): string {
+    get origin() {
         return this.getter(API_ORIGIN) as string;
     }
 
@@ -85,7 +85,7 @@ export class LocalStore {
         this.setter(API_ORIGIN, val);
     }
 
-    get lang(): string {
+    get lang() {
         return this.getter(TRANSLATION_LANG) as string;
     }
 
@@ -93,7 +93,7 @@ export class LocalStore {
         this.setter(TRANSLATION_LANG, val);
     }
 
-    get dark(): boolean {
+    get dark() {
         return this.getter(APPEARANCE_DARK) as boolean;
     }
 
@@ -101,11 +101,11 @@ export class LocalStore {
         this.setter(APPEARANCE_DARK, val);
     }
 
-    get alreadySession(): boolean {
+    get alreadySession() {
         return this.getter(SESSION_ALREADY) as boolean;
     }
 
-    get access(): string {
+    get access() {
         return this.getter(SESSION_ACCESS) as string;
     }
 
@@ -113,7 +113,7 @@ export class LocalStore {
         this.setter(SESSION_ACCESS, val);
     }
 
-    get refresh(): string {
+    get refresh() {
         return this.getter(SESSION_REFRESH) as string;
     }
 
@@ -121,23 +121,23 @@ export class LocalStore {
         this.setter(SESSION_REFRESH, val);
     }
 
-    get user(): User {
-        return this.getter(SESSION_USER) as User;
+    get user() {
+        return this.getter(SESSION_USER) as UserA;
     }
 
-    set user(val: User) {
+    set user(val: UserA) {
         this.setter(SESSION_USER, val);
     }
 
-    get userExtra(): Extra {
-        return this.getter(SESSION_USER_EXTRA) as Extra;
+    get userExtra() {
+        return this.getter(SESSION_USER_EXTRA) as UserExtra;
     }
 
-    set userExtra(val: Extra) {
+    set userExtra(val: UserExtra) {
         this.setter(SESSION_USER_EXTRA, val);
     }
 
-    get userExtraDark(): boolean {
+    get userExtraDark() {
         return this.getter(SESSION_USER_EXTRA_DARK) as boolean;
     }
 
@@ -145,7 +145,7 @@ export class LocalStore {
         this.setter(SESSION_USER_EXTRA_DARK, val);
     }
 
-    get userExtraLang(): string {
+    get userExtraLang() {
         return this.getter(SESSION_USER_EXTRA_LANG) as string;
     }
 

@@ -174,6 +174,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import CardInfoNew from '@/components/CardInfoNew.vue';
 import {isReccKey} from '@/rules/recc-info';
+import {CreateInfoQ, UpdateInfoQ} from "@/packet/info";
 
 @Component({
   components: {
@@ -193,6 +194,7 @@ export default class MainAdminInfos extends VueBase {
       disabled: true,
     },
   ];
+
   private readonly headers = [
     {
       text: this.$t('headers.key').toString(),
@@ -231,7 +233,6 @@ export default class MainAdminInfos extends VueBase {
   showAddInfoDialog = false;
   showLoading = true;
   showEditInfoDialog = false;
-  showEditLoading = false;
   showDeleteInfoDialog = false;
   showDeleteLoading = false;
   editCandidateKey = '';
@@ -281,7 +282,8 @@ export default class MainAdminInfos extends VueBase {
 
   onClickAddInfoOk(event) {
     this.showAddInfoDialog = false;
-    this.$api2.postInfos(event.key, event.value)
+    const body = {key: event.key, value: event.value} as CreateInfoQ
+    this.$api2.postInfos(body)
         .then(() => {
           this.updateInfos();
           this.toastRequestSuccess();
@@ -307,7 +309,8 @@ export default class MainAdminInfos extends VueBase {
 
   onClickEditInfoOk(event) {
     this.showEditInfoDialog = false;
-    this.$api2.patchInfo(event.key, event.value)
+    const body = {value: event.value} as UpdateInfoQ;
+    this.$api2.patchInfosPkey(event.key, body)
         .then(() => {
           this.updateInfos();
           this.toastRequestSuccess();

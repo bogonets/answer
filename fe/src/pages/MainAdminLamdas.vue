@@ -84,7 +84,7 @@ ko:
 import {Component, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import {TemplateKey} from '@/apis/api-v2';
+import {TemplateA} from '@/packet/template';
 import * as _ from 'lodash';
 
 const ITEMS_PER_PAGE = 15;
@@ -135,8 +135,8 @@ export default class MainAdminLamdas extends VueBase {
 
   tabIndex = 0;
   filterText = '';
-  totalLamdas: Array<TemplateKey> = [];
-  currentLamdas: Array<TemplateKey> = [];
+  totalLamdas: Array<TemplateA> = [];
+  currentLamdas: Array<TemplateA> = [];
   showLoading = true;
 
   editCandidateKey = '';
@@ -155,7 +155,7 @@ export default class MainAdminLamdas extends VueBase {
   updateLamdas() {
     this.showLoading = true;
     this.$api2.getTemplates()
-        .then((lamdas) => {
+        .then(lamdas => {
           this.totalLamdas = lamdas;
           this.showLoading = false;
           this.updateCurrentLamdasWithTabIndex();

@@ -21,12 +21,11 @@ from recc.http import http_cache_keys as c
 from recc.http import http_urls as u
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
-from recc.packet.info import InfoA
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.user import UpdatePasswordQ
-from recc.packet.info import UpdateInfoQ, UpdateInfoValueQ
+from recc.packet.info import InfoA, CreateInfoQ, UpdateInfoQ
 from recc.packet.system import SystemOverviewA
-from recc.packet.lamda import LamdaInfoA
+from recc.packet.template import TemplateA
 from recc.packet.user import UserA, UpdateUserQ, SignupQ
 from recc.access_control.abac.attributes import aa
 
@@ -84,11 +83,6 @@ class RouterV2:
     def _get_routes(self) -> List[AbstractRouteDef]:
         # fmt: off
         return [
-            # GET: SELECT
-            # PATCH: UPDATE
-            # DELETE: DELETE
-            # POST: INSERT, UPSERT, etc ...
-
             # self
             web.get(u.self, self.get_self),
             web.get(u.self_extra, self.get_self_extra),
@@ -224,7 +218,7 @@ class RouterV2:
         return result
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def post_infos(self, body: UpdateInfoQ) -> None:
+    async def post_infos(self, body: CreateInfoQ) -> None:
         try:
             await self.context.create_info(body.key, body.value)
         except KeyError as e:
@@ -245,7 +239,7 @@ class RouterV2:
         )
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def patch_infos_pkey(self, key: str, body: UpdateInfoValueQ) -> None:
+    async def patch_infos_pkey(self, key: str, body: UpdateInfoQ) -> None:
         try:
             await self.context.update_info(key, body.value)
         except KeyError as e:
@@ -263,12 +257,12 @@ class RouterV2:
     async def get_system_overview(self) -> SystemOverviewA:
         return await self.context.get_system_overview()
 
-    # ---------
-    # Templates
-    # ---------
+    # ------
+    # Lamdas
+    # ------
 
     @parameter_matcher()
-    async def get_templates(self) -> List[LamdaInfoA]:
+    async def get_templates(self) -> List[TemplateA]:
         return self.context.get_template_keys()
 
     # -----

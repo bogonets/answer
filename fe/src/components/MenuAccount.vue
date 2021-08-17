@@ -68,7 +68,10 @@ ko:
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item v-if="isDeveloperMode" @click="onClickDevelopmentTools">
+      <v-list-item
+          v-if="hasAdminPermission && isDeveloperMode"
+          @click="onClickDevelopmentTools"
+      >
         <v-list-item-icon>
           <v-icon role="img" aria-hidden="false">
             {{ icons.devTo }}

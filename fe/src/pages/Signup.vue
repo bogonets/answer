@@ -31,7 +31,7 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import FormSignupSimple from '@/components/FormSignupSimple.vue';
-import {Signup} from '@/apis/api-v2';
+import {SignupQ} from '@/packet/user';
 
 @Component({
   components: {
@@ -46,17 +46,17 @@ export default class MainAdminUsersNew extends VueBase {
   }
 
   onClickOk(user) {
-    const data = {
+    const body = {
       username: user.username,
       password: user.password,
       nickname: user.nickname,
       email: user.email,
       phone1: user.phone1,
       phone2: user.phone2,
-    } as Signup;
+    } as SignupQ;
 
     this.showSignupLoading = true;
-    this.$api2.signup(data)
+    this.$api2.signup(body)
         .then(() => {
           this.showSignupLoading = false;
           this.moveToBack();

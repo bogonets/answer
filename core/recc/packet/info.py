@@ -14,11 +14,11 @@ class InfoA:
 
 
 @dataclass
-class UpdateInfoQ:
+class CreateInfoQ:
     key: str
     value: str
 
 
 @dataclass
-class UpdateInfoValueQ:
+class UpdateInfoQ:
     value: str

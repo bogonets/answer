@@ -86,7 +86,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ListLanguages, {LANGUAGES} from '@/components/ListLanguages.vue';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import {Extra} from '@/apis/api-v2';
+import {UserExtra} from '@/packet/user';
 
 @Component({
   components: {
@@ -95,8 +95,6 @@ import {Extra} from '@/apis/api-v2';
   }
 })
 export default class MainAccountAppearance extends VueBase {
-
-  private readonly languages = LANGUAGES;
   private readonly navigationItems = [
     {
       text: 'Account',
@@ -109,15 +107,15 @@ export default class MainAccountAppearance extends VueBase {
     },
   ];
 
-  extra!: Extra;
+  extra!: UserExtra;
 
   created() {
     this.extra = this.getInitExtra();
   }
 
-  getInitExtra(): Extra {
+  getInitExtra(): UserExtra {
     const userExtra = this.$localStore.user.extra;
-    const result = {} as Extra;
+    const result = {} as UserExtra;
 
     if (userExtra && userExtra.dark !== undefined) {
       result.dark = userExtra.dark;
@@ -152,15 +150,16 @@ export default class MainAccountAppearance extends VueBase {
   }
 
   changeDark() {
-    const value = this.extra.dark;
-    if (value === undefined) {
+    const dark = this.extra.dark;
+    if (dark === undefined) {
       console.error('extra.dark is undefined error.');
       return;
     }
 
     // Local settings should not be changed.
-    this.$vuetify.theme.dark = value;
-    this.$localStore.userExtraDark = value;
+    this.$vuetify.theme.dark = dark;
+    this.$localStore.dark = dark;
+    this.$localStore.userExtraDark = dark;
 
     this.saveUserExtra();
   }
@@ -171,6 +170,7 @@ export default class MainAccountAppearance extends VueBase {
     // Local settings should not be changed.
     this.$vuetify.lang.current = lang;
     this.$i18n.locale = lang;
+    this.$localStore.lang = lang;
     this.$localStore.userExtraLang = lang;
 
     this.saveUserExtra();

@@ -148,7 +148,7 @@ import TextAreaThreeLine from '@/components/TextAreaThreeLine.vue';
 import NameSlotHint from '@/components/NameSlotHint.vue';
 import Subtitle from '@/components/Subtitle.vue';
 import {VForm} from 'vuetify/lib/components/VForm';
-import {Group} from '@/apis/api-v2';
+import {GroupA} from '@/packet/group';
 import {GROUP_SLUG_RULES} from '@/rules';
 
 @Component({
@@ -187,7 +187,7 @@ export default class FormGroup extends VueBase {
   readonly featureItems!: Array<string>;
 
   @Prop({type: Object, default: () => { return {}; }})
-  readonly value!: Group;
+  readonly value!: GroupA;
 
   @Ref()
   readonly form!: VForm;
@@ -199,30 +199,25 @@ export default class FormGroup extends VueBase {
     name: '',
     description: '',
     features: [],
-  } as Group;
+  } as GroupA;
 
   created() {
     this.updateCurrent(this.value);
   }
 
   @Watch('value')
-  onChangeValue(value: Group) {
+  onChangeValue(value: GroupA) {
     this.updateCurrent(value);
   }
 
-  // @Watch('current')
-  // onChangeCurrent(value: Group) {
-  //   this.modified(value);
-  // }
-
-  copyGroup(source: Group, destination: Group) {
+  copyGroup(source: GroupA, destination: GroupA) {
     destination.slug = source?.slug || '';
     destination.name = source?.name || '';
     destination.description = source?.description || '';
     destination.features = source?.features || [];
   }
 
-  updateCurrent(value: Group) {
+  updateCurrent(value: GroupA) {
     this.copyGroup(value, this.current);
   }
 
@@ -253,14 +248,6 @@ export default class FormGroup extends VueBase {
 
   formValidate() {
     this.form['validate']();
-  }
-
-  formReset() {
-    this.form['reset']();
-  }
-
-  formResetValidation() {
-    this.form['resetValidation']();
   }
 
   onSubmit() {

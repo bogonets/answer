@@ -19,8 +19,8 @@ ko:
 
         <div class="d-block mb-16">
           <title-logo
-              max-width="300px"
-              max-height="300px"
+              :max-width="300"
+              :max-height="300"
           ></title-logo>
         </div>
 

@@ -70,16 +70,16 @@ class RouterV2Public:
         return await self._already()
 
     @parameter_matcher()
-    async def post_signup_admin(self, signup: SignupQ) -> None:
-        if await self._already():
-            raise HTTPServiceUnavailable(reason="An admin account already exists")
-        await self.context.signup_admin(signup.username, signup.password)
-
-    @parameter_matcher()
     async def post_signup(self, signup: SignupQ) -> None:
         if not self.context.config.public_signup:
             raise HTTPServiceUnavailable(reason="You cannot signup without permission")
         await self.context.signup_guest(signup)
+
+    @parameter_matcher()
+    async def post_signup_admin(self, signup: SignupQ) -> None:
+        if await self._already():
+            raise HTTPServiceUnavailable(reason="An admin account already exists")
+        await self.context.signup_admin(signup.username, signup.password)
 
     @parameter_matcher()
     async def post_signin(self, auth: BasicAuth) -> SigninA:

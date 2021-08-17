@@ -1,7 +1,6 @@
 import {Vue, Watch} from 'vue-property-decorator';
 import {RawLocation} from 'vue-router';
 import {Names} from '@/router/names';
-import {User, Group} from '@/apis/api-v2';
 import SimpleToast from '@/components/SimpleToast.vue';
 
 export default class VueBase extends Vue {
@@ -136,8 +135,8 @@ export default class VueBase extends Vue {
         this.moveTo(this.routeNames.mainAdminGroupsNew);
     }
 
-    moveToMainAdminGroupsEdit(group: Group) {
-        this.moveTo(this.routeNames.mainAdminGroupsEdit, {group: group});
+    moveToMainAdminGroupsEdit(group: string) {
+        this.moveTo(this.routeNames.mainAdminGroupsEdit, {group});
     }
 
     moveToMainAdminProjects() {
@@ -156,8 +155,8 @@ export default class VueBase extends Vue {
         this.moveTo(this.routeNames.mainAdminOverview);
     }
 
-    moveToMainAdminUsersEdit(user: User) {
-        this.moveTo(this.routeNames.mainAdminUsersEdit, {user: user});
+    moveToMainAdminUsersEdit(username: string) {
+        this.moveTo(this.routeNames.mainAdminUsersEdit, {username: username});
     }
 
     moveToMainAdminUsersNew() {
@@ -226,8 +225,8 @@ export default class VueBase extends Vue {
 
     moveToMainProject(group?: string, project?: string) {
         const params = {
-            group: group || '',
-            project: project || '',
+            group: group || this.$route.query.group,
+            project: project || this.$route.query.project,
         };
         this.moveTo(this.routeNames.mainProject, params);
     }
@@ -251,148 +250,4 @@ export default class VueBase extends Vue {
     moveToRoot() {
         this.moveToSignin();
     }
-
-    // moveToMainConfigAdminUsersEdit(user: User) {
-    //     this.moveTo(this.paths.mainConfigAdminUsersEdit, this.userToRouteParam(user));
-    // }
-    //
-    // userToRouteParam(user: User): Dictionary<string> {
-    //     return {
-    //         username: user.username || '',
-    //         nickname: user.nickname || '',
-    //         email: user.email || '',
-    //         phone1: user.phone1 || '',
-    //         phone2: user.phone2 || '',
-    //         isAdmin: user.is_admin ? 'true' : 'false',
-    //         createdAt: user.created_at || '',
-    //         updatedAt: user.updated_at || '',
-    //         lastLogin: user.last_login || '',
-    //     };
-    // }
-    //
-    // routeParamToUser(params: Dictionary<string>): User {
-    //     return {
-    //         username: params.username,
-    //         nickname: params.nickname,
-    //         email: params.email,
-    //         phone1: params.phone1,
-    //         phone2: params.phone2,
-    //         is_admin: params.isAdmin === 'true',
-    //         created_at: params.created_at,
-    //         updated_at: params.updated_at,
-    //         last_login: params.last_login,
-    //     } as User;
-    // }
-    //
-    // moveToMainConfigAdminGroups() {
-    //     this.moveTo(this.paths.mainConfigAdminGroups);
-    // }
-    //
-    // moveToMainConfigAdminGroupsNew() {
-    //     this.moveTo(this.paths.mainConfigAdminGroupsNew);
-    // }
-    //
-    // moveToMainConfigAdminGroupsEdit() {
-    //     this.moveTo(this.paths.mainConfigAdminGroupsEdit);
-    // }
-    //
-    // moveToMainConfigAdminFeatures() {
-    //     this.moveTo(this.paths.mainConfigAdminFeatures);
-    // }
-    //
-    // moveToMainConfigAdminSettings() {
-    //     this.moveTo(this.paths.mainConfigAdminSettings);
-    // }
-    //
-    // moveToMainConfigAdminLambdas() {
-    //     this.moveTo(this.paths.mainConfigAdminLambdas);
-    // }
-    //
-    // moveToMainDev() {
-    //     this.moveTo(this.paths.mainDev);
-    // }
-    //
-    // moveToMainAbout() {
-    //     this.moveTo(this.paths.mainAbout);
-    // }
-    //
-    // moveToMainProjects() {
-    //     this.moveTo(this.paths.mainProjects);
-    // }
-    //
-    // moveToMainProjectsNew() {
-    //     this.moveTo(this.paths.mainProjectsNew);
-    // }
-    //
-    // moveToMainGroups() {
-    //     this.moveTo(this.paths.mainGroups);
-    // }
-    //
-    // // moveToMainProjectsEdit(group: string, project: string) {
-    // //     const prefix = this.paths.mainProjectsEdit;
-    // //     this.moveTo(`${prefix}?group=${group}&project=${project}`);
-    // // }
-    //
-    // moveToMainProject(group: string, project: string) {
-    //     this.moveTo(this.paths.mainProject(group, project));
-    // }
-
-    // moveToMainProjectSubpage(subpage: string) {
-    //     const group = this.routeParamsGroup;
-    //     const project = this.routeParamsProject;
-    //     const prefix = this.paths.mainProject(group, project);
-    //     this.moveTo(prefix + subpage);
-    // }
-    //
-    // moveToMainProjectGraph() {
-    //     this.moveToMainProjectSubpage(this.mainPaths.graph);
-    // }
-    //
-    // moveToMainProjectAirjoyManage() {
-    //     this.moveToMainProjectSubpage(this.mainPaths.airjoy_manage);
-    // }
-    //
-    // moveToMainProjectAirjoyGraph() {
-    //     this.moveToMainProjectSubpage(this.mainPaths.airjoy_graph);
-    // }
-    //
-    // moveToMainProjectAirjoyMonitor() {
-    //     this.moveToMainProjectSubpage(this.mainPaths.airjoy_monitor);
-    // }
-    //
-    // moveToMainProjectDashboard() {
-    //     this.moveToMainProjectSubpage(this.mainPaths.dashboard);
-    // }
-    //
-    // moveToMainProjectLayouts() {
-    //     this.moveToMainProjectSubpage(this.mainPaths.layouts);
-    // }
-    //
-    // moveToMainProjectTables() {
-    //     this.moveToMainProjectSubpage(this.mainPaths.tables);
-    // }
-    //
-    // moveToMainProjectFiles() {
-    //     this.moveToMainProjectSubpage(this.mainPaths.files);
-    // }
-    //
-    // moveToMainProjectTasks() {
-    //     this.moveToMainProjectSubpage(this.mainPaths.tasks);
-    // }
-    //
-    // moveToMainProjectVp() {
-    //     this.moveToMainProjectSubpage(this.mainPaths.vp);
-    // }
-    //
-    // moveToMainProjectVms() {
-    //     this.moveToMainProjectSubpage(this.mainPaths.vms);
-    // }
-    //
-    // moveToMainProjectAuth() {
-    //     this.moveToMainProjectSubpage(this.mainPaths.auth);
-    // }
-    //
-    // moveToMainProjectSettings() {
-    //     this.moveToMainProjectSubpage(this.mainPaths.settings);
-    // }
 }

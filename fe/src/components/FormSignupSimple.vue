@@ -207,7 +207,7 @@ ko:
 <script lang="ts">
 import {Component, Prop, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import {User} from '@/apis/api-v2';
+import {UserA} from '@/packet/user';
 import {USERNAME_RULES, PASSWORD_RULES, PHONE_RULES, EMAIL_RULES} from '@/rules';
 
 @Component
@@ -318,7 +318,7 @@ export default class FormSignupSimple extends VueBase {
       ... required,
       ... (this.hideProfile ? undefined : profile),
       ... (this.hideAccess ? undefined : access),
-    } as User;
+    } as UserA;
   }
 
   submit() {
