@@ -34,14 +34,14 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import FormGroup from '@/components/FormGroup.vue';
 import LeftTitle from "@/components/LeftTitle.vue";
+import FormGroup from '@/components/FormGroup.vue';
 
 @Component({
   components: {
+    ToolbarNavigation,
     LeftTitle,
     FormGroup,
-    ToolbarNavigation,
   }
 })
 export default class MainAdminGroupsNew extends VueBase {

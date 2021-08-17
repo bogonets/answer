@@ -1,13 +1,28 @@
+<i18n lang="yaml">
+en:
+  header: "New user"
+  subheader: "Register a new member."
+
+ko:
+  header: "새로운 사용자"
+  subheader: "새로운 구성원을 등록합니다."
+</i18n>
+
 <template>
   <v-container>
     <toolbar-navigation :items="navigationItems"></toolbar-navigation>
     <v-divider></v-divider>
 
-    <form-signup-simple
-        :loading="showSignupLoading"
-        @cancel="onClickCancel"
-        @ok="onClickOk"
-    ></form-signup-simple>
+    <left-title
+        :header="$t('header')"
+        :subheader="$t('subheader')"
+    >
+      <form-user
+          :loading="showSignupLoading"
+          @cancel="onClickCancel"
+          @ok="onClickOk"
+      ></form-user>
+    </left-title>
   </v-container>
 </template>
 
@@ -15,12 +30,14 @@
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import FormSignupSimple from "@/components/FormSignupSimple.vue";
+import LeftTitle from "@/components/LeftTitle.vue";
+import FormUser from "@/components/FormUser.vue";
 
 @Component({
   components: {
     ToolbarNavigation,
-    FormSignupSimple,
+    LeftTitle,
+    FormUser,
   }
 })
 export default class MainAdminUsersNew extends VueBase {

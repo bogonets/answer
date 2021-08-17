@@ -59,20 +59,18 @@ ko:
 <template>
   <v-form ref="form" v-model="valid">
 
-    <subtitle bold>{{ $t('label.slug') }}</subtitle>
-    <v-row no-gutters>
-      <v-text-field
-          dense
-          persistent-hint
-          v-model="current.slug"
-          :disabled="disableSlug"
-          :hint="$t('hint.slug')"
-          :rules="rules.slug"
-          :prefix="slugPrefix"
-      ></v-text-field>
-    </v-row>
+    <p :class="subtitleClass">{{ $t('label.slug') }}</p>
+    <v-text-field
+        dense
+        persistent-hint
+        v-model="current.slug"
+        :disabled="disableSlug"
+        :hint="$t('hint.slug')"
+        :rules="rules.slug"
+        :prefix="slugPrefix"
+    ></v-text-field>
 
-    <subtitle bold>{{ $t('label.name') }}</subtitle>
+    <p :class="subtitleClass">{{ $t('label.name') }}</p>
     <v-text-field
         dense
         persistent-hint
@@ -80,7 +78,7 @@ ko:
         :hint="$t('hint.name')"
     ></v-text-field>
 
-    <subtitle bold>{{ $t('label.description') }}</subtitle>
+    <p :class="subtitleClass">{{ $t('label.description') }}</p>
     <v-textarea
         dense
         auto-grow
@@ -89,7 +87,7 @@ ko:
         :hint="$t('hint.description')"
     ></v-textarea>
 
-    <subtitle bold>{{ $t('label.features') }}</subtitle>
+    <p :class="subtitleClass">{{ $t('label.features') }}</p>
     <v-combobox
         dense
         hide-selected
@@ -102,7 +100,7 @@ ko:
         :search-input.sync="searchFeature"
     >
       <template v-slot:no-data>
-        <subtitle>
+        <p>
           <i18n class="py-1 px-4 text-body-2" path="no_matching" tag="span">
             <template #search>
               <strong>{{ searchFeature }}</strong>
@@ -111,7 +109,7 @@ ko:
               <kbd>enter</kbd>
             </template>
           </i18n>
-        </subtitle>
+        </p>
       </template>
     </v-combobox>
 
@@ -142,25 +140,21 @@ ko:
 <script lang="ts">
 import {Component, Prop, Watch, Ref, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import LeftTitle from '@/components/LeftTitle.vue';
-import TextFieldThreeLine from '@/components/TextFieldThreeLine.vue';
-import TextAreaThreeLine from '@/components/TextAreaThreeLine.vue';
-import NameSlotHint from '@/components/NameSlotHint.vue';
-import Subtitle from '@/components/Subtitle.vue';
 import {VForm} from 'vuetify/lib/components/VForm';
 import {GroupA} from '@/packet/group';
 import {GROUP_SLUG_RULES} from '@/rules';
 
-@Component({
-  components: {
-    Subtitle,
-    NameSlotHint,
-    LeftTitle,
-    TextFieldThreeLine,
-    TextAreaThreeLine,
-  },
-})
+const SUBTITLE_CLASSES = [
+  'text-subtitle-2',
+  'text--secondary',
+  'font-weight-bold',
+  'my-2',
+];
+const SUBTITLE_CLASS = SUBTITLE_CLASSES.join(' ');
+
+@Component
 export default class FormGroup extends VueBase {
+  private readonly subtitleClass = SUBTITLE_CLASS
   private readonly rules = {
     slug: GROUP_SLUG_RULES,
   };

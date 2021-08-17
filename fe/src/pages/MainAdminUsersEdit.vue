@@ -233,7 +233,7 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import TextFieldThreeLine from '@/components/TextFieldThreeLine.vue';
@@ -305,6 +305,10 @@ export default class MainAdminUsersEdit extends VueBase {
   }
 
   created() {
+    this.requestUser();
+  }
+
+  requestUser() {
     this.$api2.getUsersPuser(this.username)
         .then(body => {
           this.updateUser(body);
@@ -397,6 +401,7 @@ export default class MainAdminUsersEdit extends VueBase {
           this.isAdmin = isAdminFlag;
           this.showIsAdminLoading = false;
           this.toastRequestSuccess();
+          this.requestUser();
         })
         .catch(error => {
           this.isAdmin = !isAdminFlag;
@@ -423,18 +428,12 @@ export default class MainAdminUsersEdit extends VueBase {
     const phone1 = this.phone1;
     const phone2 = this.phone2;
     const body = {nickname, email, phone1, phone2} as UserA;
-
     this.showSignupLoading = true;
     this.$api2.patchUsersPuser(this.username, body)
         .then(() => {
           this.showSignupLoading = false;
           this.toastRequestSuccess();
-
-          this.original.nickname = nickname;
-          this.original.email = email;
-          this.original.phone1 = phone1;
-          this.original.phone2 = phone2;
-          this.validateSubmit();
+          this.requestUser();
         })
         .catch(error => {
           this.showSignupLoading = false;
