@@ -8,11 +8,10 @@ from recc.variables.database import RECC_DB_VERSION_KEY
 from recc.http.http_utils import v2_path
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
-from recc.packet.update_info import UpdateInfoQ
-from recc.packet.system_overview import SystemOverviewA
-from recc.database.struct.info import Info
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
+from recc.packet.info import InfoA, UpdateInfoQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
+from recc.packet.system import SystemOverviewA
 
 
 class RouterV2TestCase(AsyncTestCase):
@@ -54,7 +53,7 @@ class RouterV2TestCase(AsyncTestCase):
         self.assertEqual(data2, response4.data)
 
     async def test_infos(self):
-        response1 = await self.tester.get(v2_path(u.infos), cls=List[Info])
+        response1 = await self.tester.get(v2_path(u.infos), cls=List[InfoA])
         self.assertEqual(200, response1.status)
         self.assertIsInstance(response1.data, list)
         version = list(filter(lambda x: x.key == RECC_DB_VERSION_KEY, response1.data))

@@ -3,7 +3,7 @@
 from unittest import main
 from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
-from recc.packet.signup import SignupQ
+from recc.packet.user import SignupQ
 from recc.http import http_urls as u
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.http_utils import v2_public_path

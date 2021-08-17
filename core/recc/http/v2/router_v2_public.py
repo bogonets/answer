@@ -13,8 +13,7 @@ from recc.core.context import Context
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.http_decorator import parameter_matcher
 from recc.util.version import version_text
-from recc.packet.signup import SignupQ
-from recc.packet.signin import SigninA
+from recc.packet.user import UserA, SigninA, SignupQ
 from recc.http import http_urls as u
 
 
@@ -94,5 +93,18 @@ class RouterV2Public:
             raise HTTPBadRequest(reason=str(e))
 
         access, refresh = await self.context.signin(username)
-        user = await self.context.get_user(username)
+        db_user = await self.context.get_user(username)
+        assert db_user.username is not None
+        user = UserA(
+            username=db_user.username,
+            nickname=db_user.nickname,
+            email=db_user.email,
+            phone1=db_user.phone1,
+            phone2=db_user.phone2,
+            is_admin=db_user.is_admin if db_user.is_admin else False,
+            extra=db_user.extra,
+            created_at=db_user.created_at,
+            updated_at=db_user.updated_at,
+            last_login=db_user.last_login,
+        )
         return SigninA(access, refresh, user)

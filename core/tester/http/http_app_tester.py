@@ -30,8 +30,7 @@ from recc.http.http_utils import v2_public_path
 from recc.http import http_urls as u
 from recc.serialization.serialize import serialize_default
 from recc.serialization.deserialize import deserialize_default
-from recc.packet.signup import SignupQ
-from recc.packet.signin import SigninA
+from recc.packet.user import SigninA, SignupQ
 from recc.core.context import Context
 from recc.driver.json import global_json_encoder
 from recc.mime.mime_type import APPLICATION_JSON, MIME_APPLICATION_JSON_UTF8
@@ -342,6 +341,7 @@ class HttpAppTester(EmptyHttpAppCallback):
 
         signin = deserialize_default(signin_response.data, SigninA)
         assert signin.user is not None
+        assert isinstance(signin, SigninA)
         assert self._username == signin.user.username
         self._access_token = signin.access
         self._refresh_token = signin.refresh

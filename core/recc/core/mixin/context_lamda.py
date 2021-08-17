@@ -2,7 +2,7 @@
 
 from typing import List
 from recc.core.mixin.context_base import ContextBase
-from recc.packet.lamda_info import LamdaInfoA
+from recc.packet.lamda import LamdaInfoA
 from recc.template.manager.lamda_template_key import LamdaTemplateKey
 
 

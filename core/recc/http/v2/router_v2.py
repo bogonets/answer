@@ -19,15 +19,15 @@ from recc.http.http_decorator import parameter_matcher
 from recc.http.http_session import HttpSession
 from recc.http import http_cache_keys as c
 from recc.http import http_urls as u
-from recc.database.struct.info import Info
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
+from recc.packet.info import InfoA
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
-from recc.packet.update_password import UpdatePasswordQ
-from recc.packet.update_info import UpdateInfoQ, UpdateInfoValueQ
-from recc.packet.system_overview import SystemOverviewA
-from recc.packet.lamda_info import LamdaInfoA
-from recc.database.struct.user import User
+from recc.packet.user import UpdatePasswordQ
+from recc.packet.info import UpdateInfoQ, UpdateInfoValueQ
+from recc.packet.system import SystemOverviewA
+from recc.packet.lamda import LamdaInfoA
+from recc.packet.user import UserA, UpdateUserQ, SignupQ
 from recc.access_control.abac.attributes import aa
 
 
@@ -141,16 +141,28 @@ class RouterV2:
     # ----
 
     @parameter_matcher()
-    async def get_self(self, hs: HttpSession) -> User:
-        return hs.user
+    async def get_self(self, hs: HttpSession) -> UserA:
+        return UserA(
+            username=hs.username,
+            nickname=hs.nickname,
+            email=hs.email,
+            phone1=hs.phone1,
+            phone2=hs.phone2,
+            is_admin=hs.is_admin,
+            extra=hs.extra,
+            created_at=hs.created_at,
+            updated_at=hs.updated_at,
+            last_login=hs.last_login,
+        )
 
     @parameter_matcher()
-    async def patch_self(self, hs: HttpSession, body: User) -> None:
+    async def patch_self(self, hs: HttpSession, body: UpdateUserQ) -> None:
         await self.context.update_user(
             hs.username,
             email=body.email,
             phone1=body.phone1,
             phone2=body.phone2,
+            is_admin=None,
             extra=body.extra,
         )
 
@@ -198,8 +210,18 @@ class RouterV2:
     # -----
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def get_infos(self) -> List[Info]:
-        return await self.context.get_infos()
+    async def get_infos(self) -> List[InfoA]:
+        result = list()
+        for info in await self.context.get_infos():
+            assert info.key
+            item = InfoA(
+                key=info.key,
+                value=info.value,
+                created_at=info.created_at,
+                updated_at=info.updated_at,
+            )
+            result.append(item)
+        return result
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def post_infos(self, body: UpdateInfoQ) -> None:
@@ -209,11 +231,18 @@ class RouterV2:
             raise HTTPBadRequest(reason=str(e))
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def get_infos_pkey(self, key: str) -> Info:
+    async def get_infos_pkey(self, key: str) -> InfoA:
         try:
-            return await self.context.get_info(key)
+            db_info = await self.context.get_info(key)
         except RuntimeError as e:
             raise HTTPNotFound(reason=str(e))
+        assert db_info.key
+        return InfoA(
+            key=db_info.key,
+            value=db_info.value,
+            created_at=db_info.created_at,
+            updated_at=db_info.updated_at,
+        )
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def patch_infos_pkey(self, key: str, body: UpdateInfoValueQ) -> None:
@@ -247,11 +276,27 @@ class RouterV2:
     # -----
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def get_users(self) -> List[User]:
-        return await self.context.get_users()
+    async def get_users(self) -> List[UserA]:
+        result = list()
+        for user in await self.context.get_users():
+            assert user.username
+            item = UserA(
+                username=user.username,
+                nickname=user.nickname,
+                email=user.email,
+                phone1=user.phone1,
+                phone2=user.phone2,
+                is_admin=user.is_admin,
+                extra=user.extra,
+                created_at=user.created_at,
+                updated_at=user.updated_at,
+                last_login=user.last_login,
+            )
+            result.append(item)
+        return result
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def post_users(self, body: User) -> None:
+    async def post_users(self, body: SignupQ) -> None:
         if not body.username:
             raise HTTPBadRequest(reason="Not exists `username` field")
         if not body.password:
@@ -272,13 +317,38 @@ class RouterV2:
         )
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def get_users_puser(self, hs: HttpSession, user: str) -> User:
+    async def get_users_puser(self, hs: HttpSession, user: str) -> UserA:
         if hs.audience == user:
-            return hs.user
-        return await self.context.get_user(user)
+            return UserA(
+                username=hs.username,
+                nickname=hs.nickname,
+                email=hs.email,
+                phone1=hs.phone1,
+                phone2=hs.phone2,
+                is_admin=hs.is_admin,
+                extra=hs.extra,
+                created_at=hs.created_at,
+                updated_at=hs.updated_at,
+                last_login=hs.last_login,
+            )
+        else:
+            db_user = await self.context.get_user(user)
+            assert db_user.username
+            return UserA(
+                username=db_user.username,
+                nickname=db_user.nickname,
+                email=db_user.email,
+                phone1=db_user.phone1,
+                phone2=db_user.phone2,
+                is_admin=db_user.is_admin,
+                extra=db_user.extra,
+                created_at=db_user.created_at,
+                updated_at=db_user.updated_at,
+                last_login=db_user.last_login,
+            )
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def patch_users_puser(self, user: str, body: User) -> None:
+    async def patch_users_puser(self, user: str, body: UpdateUserQ) -> None:
         await self.context.update_user(
             user,
             nickname=body.nickname,

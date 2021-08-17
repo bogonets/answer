@@ -6,7 +6,7 @@ from recc.crypto.password import encrypt_password
 from recc.session.session import Session
 from recc.database.struct.user import PassInfo, User
 from recc.core.mixin.context_base import ContextBase
-from recc.packet.signup import SignupQ
+from recc.packet.user import SignupQ
 from recc.variables.database import (
     PASSWORD_HEX_STR_SIZE,
     SALT_BYTE,

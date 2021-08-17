@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from recc.core.mixin.context_base import ContextBase
-from recc.packet.system_overview import SystemOverviewA
+from recc.packet.system import SystemOverviewA
 
 
 class ContextSystem(ContextBase):
