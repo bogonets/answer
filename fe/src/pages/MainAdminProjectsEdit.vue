@@ -1,35 +1,35 @@
 <i18n lang="yaml">
 en:
   header:
-    basic: "Edit group"
+    basic: "Edit project"
     detail: "Detail"
   subheader:
-    basic: "You can edit the group's basic properties."
-    detail: "Detailed information about this group."
+    basic: "You can edit the project's basic properties."
+    detail: "Detailed information about this project."
   label:
     created_at: "Created At"
     updated_at: "Updated At"
-    delete: "Delete a group"
+    delete: "Delete a project"
   hint:
     delete: "Please be careful! It cannot be recovered."
-  delete_confirm: "Are you sure? Are you really removing this group?"
+  delete_confirm: "Are you sure? Are you really removing this project?"
   cancel: "Cancel"
   delete: "Delete"
 
 ko:
   header:
-    basic: "그룹 편집"
+    basic: "프로젝트 편집"
     detail: "상세 정보"
   subheader:
-    basic: "그룹의 기본 속성을 편집할 수 있습니다."
-    detail: "이 그룹에 대한 자세한 정보입니다."
+    basic: "프로젝트의 기본 속성을 편집할 수 있습니다."
+    detail: "이 프로젝트에 대한 자세한 정보입니다."
   label:
-    created_at: "그룹 생성일"
-    updated_at: "그룹 갱신일"
-    delete: "그룹 제거"
+    created_at: "프로젝트 생성일"
+    updated_at: "프로젝트 갱신일"
+    delete: "프로젝트 제거"
   hint:
     delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
-  delete_confirm: "이 그룹을 정말 제거합니까?"
+  delete_confirm: "이 프로젝트를 정말 제거합니까?"
   cancel: "취소"
   delete: "제거"
 </i18n>
@@ -43,7 +43,8 @@ ko:
         :header="$t('header.basic')"
         :subheader="$t('subheader.basic')"
     >
-      <form-group
+      <form-project
+          disable-group
           disable-slug
           hide-cancel-button
           :disable-submit-button="!modified"
@@ -51,7 +52,7 @@ ko:
           @input="inputCurrent"
           :loading="showSubmitLoading"
           @ok="onClickOk"
-      ></form-group>
+      ></form-project>
     </left-title>
 
     <left-title
@@ -118,18 +119,18 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
-import FormGroup, {GroupItem} from '@/components/FormGroup.vue';
-import {GroupA, UpdateGroupQ} from '@/packet/group';
+import FormProject, {ProjectItem} from '@/components/FormProject.vue';
+import {ProjectA, UpdateProjectQ} from '@/packet/project';
 import * as _ from 'lodash';
 
 @Component({
   components: {
     ToolbarNavigation,
     LeftTitle,
-    FormGroup,
+    FormProject,
   }
 })
-export default class MainAdminGroupsEdit extends VueBase {
+export default class MainAdminProjectsEdit extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',
@@ -137,9 +138,9 @@ export default class MainAdminGroupsEdit extends VueBase {
       href: () => this.moveToMainAdminOverview(),
     },
     {
-      text: 'Groups',
+      text: 'Projects',
       disabled: false,
-      href: () => this.moveToMainAdminGroups(),
+      href: () => this.moveToMainAdminProjects(),
     },
     {
       text: 'Edit',
@@ -160,8 +161,8 @@ export default class MainAdminGroupsEdit extends VueBase {
   ];
 
   detailItems = [] as Array<object>;
-  current = new GroupItem();
-  original = new GroupItem();
+  current = new ProjectItem();
+  original = new ProjectItem();
 
   modified = false;
   showSubmitLoading = false;
@@ -172,14 +173,18 @@ export default class MainAdminGroupsEdit extends VueBase {
     return this.$route.params.group;
   }
 
-  created() {
-    this.requestGroup();
+  get project(): string {
+    return this.$route.params.project;
   }
 
-  requestGroup() {
-    this.$api2.getGroupsPgroup(this.group)
+  created() {
+    this.requestProject();
+  }
+
+  requestProject() {
+    this.$api2.getProjectsPgroupPproject(this.group, this.project)
         .then(body => {
-          this.updateGroup(body);
+          this.updateProject(body);
         })
         .catch(error => {
           this.toastRequestFailure(error);
@@ -187,14 +192,15 @@ export default class MainAdminGroupsEdit extends VueBase {
         });
   }
 
-  updateGroup(group: GroupA) {
+  updateProject(group: ProjectA) {
     const name = group.name || '';
     const description = group.description || '';
     const features = group.features || [];
     const createdAt = group.created_at || '';
     const updatedAt = group.updated_at || '';
 
-    this.current.slug = this.group;
+    this.current.group = this.group;
+    this.current.slug = this.project;
     this.current.name = name;
     this.current.description = description;
     this.current.features = features;
@@ -213,24 +219,24 @@ export default class MainAdminGroupsEdit extends VueBase {
     ];
   }
 
-  inputCurrent(value: GroupItem) {
+  inputCurrent(value: ProjectItem) {
     this.current = value;
     this.modified = !_.isEqual(this.original, this.current);
   }
 
-  onClickOk(event: GroupItem) {
+  onClickOk(event: ProjectItem) {
     const body = {
       name: event.name,
       description: event.description,
       features: event.features,
-    } as UpdateGroupQ;
+    } as UpdateProjectQ;
 
     this.showSubmitLoading = true;
-    this.$api2.patchGroupsPgroup(this.group, body)
+    this.$api2.patchProjectsPgroupPproject(this.group, this.project, body)
         .then(() => {
           this.showSubmitLoading = false;
           this.toastRequestSuccess();
-          this.requestGroup();
+          this.requestProject();
         })
         .catch(error => {
           this.showSubmitLoading = false;
@@ -252,12 +258,12 @@ export default class MainAdminGroupsEdit extends VueBase {
 
   onClickDeleteOk() {
     this.showDeleteLoading = true;
-    this.$api2.deleteGroupsGroup(this.group)
+    this.$api2.deleteProjectsPgroupProject(this.group, this.project)
         .then(() => {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;
           this.toastRequestSuccess();
-          this.moveToMainAdminGroups();
+          this.moveToMainAdminProjects();
         })
         .catch(error => {
           this.showDeleteLoading = false;

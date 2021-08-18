@@ -11,6 +11,8 @@ export const Names = {
     mainAdminLamdas: 'MainAdminLamdas',
     mainAdminOverview: 'MainAdminOverview',
     mainAdminProjects: 'MainAdminProjects',
+    mainAdminProjectsNew: 'MainAdminProjectsNew',
+    mainAdminProjectsEdit: 'MainAdminProjectsEdit',
     mainAdminTasks: 'MainAdminTasks',
     mainAdminUsersEdit: 'MainAdminUsersEdit',
     mainAdminUsersNew: 'MainAdminUsersNew',

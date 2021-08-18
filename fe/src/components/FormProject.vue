@@ -1,54 +1,58 @@
 <i18n lang="yaml">
 en:
   label:
+    group: "Group"
     slug: "Slug"
     name: "Name"
     description: "Description"
     features: "Features"
   hint:
-    slug: "Group slug to be used in the URL."
-    name: "The name of the group as it is displayed on the screen."
-    description: "A specific description of the group."
-    features: "A list of features to apply to the group."
+    group: "The slug of the group."
+    slug: "Project slug to be used in the URL."
+    name: "The name of the project as it is displayed on the screen."
+    description: "A specific description of the project."
+    features: "A list of features to apply to the project."
   visibility:
     label: "Visibility level"
-    hint: "Who will be able to see this group?"
+    hint: "Who will be able to see this project?"
     private:
       label: "Private"
-      hint: "The group and its projects can only be viewed by members."
+      hint: "Project access must be granted explicitly to each user."
     internal:
       label: "Internal"
-      hint: "The group and any internal projects can be viewed by any logged in user."
+      hint: "The project can be accessed by any logged in user."
     public:
       label: "Public"
-      hint: "The group and any public projects can be viewed without any authentication."
+      hint: "The project can be accessed without any authentication."
   no_matching: "No results matching \"{search}\". Press {key} to create a new one."
   cancel: "Cancel"
   submit: "Submit"
 
 ko:
   label:
+    group: "그룹"
     slug: "슬러그"
     name: "이름"
     description: "설명"
     features: "기능"
   hint:
-    slug: "URL에 사용될 그룹 슬러그."
-    name: "화면에 출력되는 그룹명."
-    description: "그룹의 구체적인 설명."
-    features: "그룹에 적용할 기능 목록 입니다."
+    group: "그룹의 슬러그."
+    slug: "URL에 사용될 프로젝트 슬러그."
+    name: "화면에 출력되는 프로젝트명."
+    description: "프로젝트의 구체적인 설명."
+    features: "프로젝트에 적용할 기능 목록 입니다."
   visibility:
     label: "가시성 수준"
     hint: "누가 이 그룹을 볼 수 있나요?"
     private:
       label: "비공개"
-      hint: "그룹 및 프로젝트는 회원만 볼 수 있습니다."
+      hint: "프로젝트 접근 권한은 각 사용자에게 명시적으로 부여되어야 합니다."
     internal:
       label: "내부"
-      hint: "그룹 및 모든 내부 프로젝트는 로그인한 모든 사용자가 볼 수 있습니다."
+      hint: "로그인한 모든 사용자가 프로젝트에 접근할 수 있습니다."
     public:
       label: "공개"
-      hint: "그룹 및 모든 공개 프로젝트는 인증 없이 볼 수 있습니다."
+      hint: "인증 없이 프로젝트에 접근할 수 있습니다."
   no_matching: "\"{search}\" 와 일치하는 결과가 없습니다. {key} 키를 눌러 추가할 수 있습니다."
   cancel: "취소"
   submit: "제출"
@@ -57,17 +61,32 @@ ko:
 <template>
   <v-form ref="form" v-model="valid">
 
+    <p :class="subtitleClass">{{ $t('label.group') }}</p>
+    <v-select
+        dense
+        menu-props="auto"
+        :items="groupItems"
+        :value="value.group"
+        @change="inputGroup"
+        :rules="rules.groupSlug"
+        :loading="loadingGroups"
+        :disabled="disableGroup || loadingGroups"
+        :filled="disableGroup"
+        :persistent-hint="!disableGroup"
+        :hide-details="disableGroup"
+        :hint="$t('hint.group')"
+    ></v-select>
+
     <p :class="subtitleClass">{{ $t('label.slug') }}</p>
     <v-text-field
         dense
         :value="value.slug"
         @input="inputSlug"
-        :rules="rules.slug"
+        :rules="rules.projectSlug"
         :disabled="disableSlug"
         :filled="disableSlug"
         :persistent-hint="!disableSlug"
         :hide-details="disableSlug"
-        :prefix="slugPrefix"
         :hint="$t('hint.slug')"
     ></v-text-field>
 
@@ -145,7 +164,7 @@ ko:
 import {Component, Prop, Ref, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {VForm} from 'vuetify/lib/components/VForm';
-import {GROUP_SLUG_RULES} from '@/rules';
+import {GROUP_SLUG_RULES, PROJECT_SLUG_RULES} from '@/rules';
 
 const SUBTITLE_CLASSES = [
   'text-subtitle-2',
@@ -155,13 +174,15 @@ const SUBTITLE_CLASSES = [
 ];
 const SUBTITLE_CLASS = SUBTITLE_CLASSES.join(' ');
 
-export class GroupItem {
+export class ProjectItem {
+  group = '';
   slug = '';
   name = '';
   description = '';
   features = [] as Array<string>;
 
   fromObject(obj?: any) {
+    this.group = obj?.group || '';
     this.slug = obj?.slug || '';
     this.name = obj?.name || '';
     this.description = obj?.description || '';
@@ -170,14 +191,18 @@ export class GroupItem {
 }
 
 @Component
-export default class FormGroup extends VueBase {
+export default class FormProject extends VueBase {
   private readonly subtitleClass = SUBTITLE_CLASS
   private readonly rules = {
-    slug: GROUP_SLUG_RULES,
+    groupSlug: GROUP_SLUG_RULES,
+    projectSlug: PROJECT_SLUG_RULES,
   };
 
   @Prop({type: Boolean})
   readonly loading!: boolean;
+
+  @Prop({type: Boolean})
+  readonly disableGroup!: boolean;
 
   @Prop({type: Boolean})
   readonly disableSlug!: boolean;
@@ -200,14 +225,39 @@ export default class FormGroup extends VueBase {
   @Prop({type: Array})
   readonly featureItems!: Array<string>;
 
-  @Prop({type: Object, default: () => new GroupItem()})
-  readonly value!: GroupItem;
+  @Prop({type: Object, default: () => new ProjectItem()})
+  readonly value!: ProjectItem;
 
   @Ref()
   readonly form!: VForm;
 
   valid = false;
   searchFeature = '';
+  groupItems = [] as Array<string>;
+  loadingGroups = false;
+
+  created() {
+    this.loadingGroups = true;
+    this.$api2.getGroups()
+        .then((groups) => {
+          this.groupItems = groups.map(g => g.slug);
+          this.loadingGroups = false;
+
+          // Select group.
+          if (typeof this.$route.params.group !== 'undefined') {
+            this.value.group = this.$route.params.group;
+          }
+        })
+        .catch(error => {
+          this.loadingGroups = false;
+          this.toastRequestFailure(error);
+        });
+  }
+
+  inputGroup(event: string) {
+    this.value.group = event;
+    this.input();
+  }
 
   inputSlug(event: string) {
     this.value.slug = event;
@@ -227,11 +277,6 @@ export default class FormGroup extends VueBase {
   inputFeatures(event: Array<string>) {
     this.value.features = event;
     this.input();
-  }
-
-  get slugPrefix(): string {
-    const origin = window.location.origin;
-    return origin + (origin[origin.length-1] === '/' ? '' : '/')
   }
 
   get disableSubmit(): boolean {
