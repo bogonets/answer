@@ -139,6 +139,18 @@ export default class VueBase extends Vue {
         this.moveTo(this.routeNames.mainAdminGroupsEdit, {group});
     }
 
+    moveToMainAdminPermissions() {
+        this.moveTo(this.routeNames.mainAdminPermissions);
+    }
+
+    moveToMainAdminPermissionsEdit(perm: string) {
+        this.moveTo(this.routeNames.mainAdminPermissionsEdit, {perm});
+    }
+
+    moveToMainAdminPermissionsNew() {
+        this.moveTo(this.routeNames.mainAdminPermissionsNew);
+    }
+
     moveToMainAdminProjects() {
         this.moveTo(this.routeNames.mainAdminProjects);
     }

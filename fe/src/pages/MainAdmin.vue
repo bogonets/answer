@@ -5,6 +5,7 @@ en:
   users: "Users"
   groups: "Groups"
   projects: "Projects"
+  permissions: "Permissions"
   tasks: "Tasks"
   lambdas: "Lambdas"
   features: "Features"
@@ -16,6 +17,7 @@ ko:
   users: "사용자"
   groups: "그룹"
   projects: "프로젝트"
+  permissions: "권한"
   tasks: "태스크"
   lambdas: "람다 관리"
   features: "기능 설정"
@@ -88,6 +90,15 @@ ko:
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('projects') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click.stop="onClickPermissions">
+            <v-list-item-icon>
+              <v-icon>mdi-key-change</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('permissions') }}
             </v-list-item-title>
           </v-list-item>
 
@@ -169,6 +180,10 @@ export default class MainAdmin extends VueBase {
 
   onClickProjects() {
     this.moveToMainAdminProjects();
+  }
+
+  onClickPermissions() {
+    this.moveToMainAdminPermissions();
   }
 
   onClickTasks() {
