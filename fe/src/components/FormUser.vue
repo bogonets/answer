@@ -56,7 +56,8 @@ ko:
         dense
         type="text"
         autocomplete="off"
-        v-model="current.username"
+        :value="value.username"
+        @input="inputUsername"
         :rules="rules.username"
         :disabled="disableUsername"
         :filled="disableUsername"
@@ -72,7 +73,8 @@ ko:
           persistent-hint
           type="password"
           autocomplete="off"
-          v-model="current.password"
+          :value="value.password"
+          @input="inputPassword"
           :rules="rules.password"
           :hint="$t('hint.password')"
       ></v-text-field>
@@ -84,7 +86,8 @@ ko:
           type="password"
           autocomplete="off"
           ref="confirmPasswordField"
-          v-model="confirmPassword"
+          :value="confirmPassword"
+          @input="inputConfirmPassword"
           :rules="rules.confirmPassword"
           :hint="$t('hint.confirmPassword')"
       ></v-text-field>
@@ -95,7 +98,8 @@ ko:
       <v-text-field
           dense
           persistent-hint
-          v-model="current.nickname"
+          :value="value.nickname"
+          @input="inputNickname"
           :hint="$t('hint.nickname')"
       ></v-text-field>
 
@@ -103,7 +107,8 @@ ko:
       <v-text-field
           dense
           persistent-hint
-          v-model="current.email"
+          :value="value.email"
+          @input="inputEmail"
           :rules="rules.email"
           :hint="$t('hint.email')"
       ></v-text-field>
@@ -112,7 +117,8 @@ ko:
       <v-text-field
           dense
           persistent-hint
-          v-model="current.phone1"
+          :value="value.phone1"
+          @input="inputPhone1"
           :rules="rules.phone"
           :hint="$t('hint.phone1')"
       ></v-text-field>
@@ -121,7 +127,8 @@ ko:
       <v-text-field
           dense
           persistent-hint
-          v-model="current.phone2"
+          :value="value.phone2"
+          @input="inputPhone2"
           :rules="rules.phone"
           :hint="$t('hint.phone2')"
       ></v-text-field>
@@ -134,7 +141,11 @@ ko:
       </div>
       <v-spacer></v-spacer>
       <div>
-        <v-switch inset v-model="current.isAdmin"></v-switch>
+        <v-switch
+            inset
+            :value="value.isAdmin"
+            @change="changeIsAdmin"
+        ></v-switch>
       </div>
     </v-row>
 
@@ -163,7 +174,7 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop, Watch, Emit, Ref} from 'vue-property-decorator';
+import {Component, Prop, Emit, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {VForm} from 'vuetify/lib/components/VForm';
 import {VTextField} from 'vuetify/lib/components/VTextField';
@@ -238,7 +249,7 @@ export default class FormUser extends VueBase {
   @Prop({type: Boolean})
   readonly hideSubmitButton!: boolean;
 
-  @Prop({type: Object})
+  @Prop({type: Object, default: () => new UserItem()})
   readonly value!: UserItem;
 
   @Ref()
@@ -248,21 +259,51 @@ export default class FormUser extends VueBase {
   readonly confirmPasswordField!: VTextField;
 
   valid = false;
-  current = new UserItem();
   confirmPassword = '';
 
-  @Watch('value')
-  onChangeValue(value: UserItem) {
-    this.current = value;
+  inputUsername(event: string) {
+    this.value.username = event;
+    this.input();
   }
 
-  @Watch('current.password')
-  onChangePassword() {
+  inputPassword(event: string) {
+    this.value.password = event;
     this.validateConfirmPasswordField();
+    this.input();
+  }
+
+  inputConfirmPassword(event: string) {
+    this.confirmPassword = event;
+    this.input();
+  }
+
+  inputNickname(event: string) {
+    this.value.nickname = event;
+    this.input();
+  }
+
+  inputEmail(event: string) {
+    this.value.email = event;
+    this.input();
+  }
+
+  inputPhone1(event: string) {
+    this.value.phone1 = event;
+    this.input();
+  }
+
+  inputPhone2(event: string) {
+    this.value.phone2 = event;
+    this.input();
+  }
+
+  changeIsAdmin(event: null | boolean) {
+    this.value.isAdmin = !!event;
+    this.input();
   }
 
   confirmPasswordRule(value: string): boolean | string {
-    return this.current.password == value || this.$t('msg.confirm_password').toString();
+    return this.value.password == value || this.$t('msg.confirm_password').toString();
   }
 
   validateConfirmPasswordField() {
@@ -270,7 +311,7 @@ export default class FormUser extends VueBase {
   }
 
   get disableSubmit(): boolean {
-    const samePassword = this.current.password === this.confirmPassword;
+    const samePassword = this.value.password === this.confirmPassword;
     return this.loading || !(this.valid && samePassword) || this.disableSubmitButton;
   }
 
@@ -290,17 +331,17 @@ export default class FormUser extends VueBase {
 
   @Emit()
   input() {
-    return this.current;
+    return this.value;
   }
 
   @Emit()
   cancel() {
-    return this.current;
+    return this.value;
   }
 
   @Emit()
   ok() {
-    return this.current;
+    return this.value;
   }
 }
 </script>

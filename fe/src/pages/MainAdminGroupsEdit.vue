@@ -189,12 +189,10 @@ export default class MainAdminGroupsEdit extends VueBase {
     const createdAt = group.created_at || '';
     const updatedAt = group.updated_at || '';
 
-    this.current = {
-      slug: this.group,
-      name: name,
-      description: description,
-      features: features,
-    } as GroupItem;
+    this.current.slug = this.group;
+    this.current.name = name;
+    this.current.description = description;
+    this.current.features = features;
 
     this.detailItems = [
       {

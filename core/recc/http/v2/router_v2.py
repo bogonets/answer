@@ -296,8 +296,8 @@ class RouterV2:
         if not body.password:
             raise HTTPBadRequest(reason="Not exists `password` field")
 
-        body.strip_insensitive()
-        body.empty_is_none_insensitive()
+        body.strip()
+        body.empty_is_none()
 
         await self.context.signup(
             username=body.username,
@@ -343,6 +343,8 @@ class RouterV2:
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def patch_users_puser(self, user: str, body: UpdateUserQ) -> None:
+        body.strip()
+        body.empty_is_none()
         await self.context.update_user(
             user,
             nickname=body.nickname,

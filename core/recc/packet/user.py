@@ -29,6 +29,27 @@ class UpdateUserQ:
     is_admin: Optional[bool] = None
     extra: Optional[Any] = None
 
+    def strip(self):
+        if self.nickname:
+            self.nickname.strip()
+        if self.email:
+            self.email.strip()
+        if self.phone1:
+            self.phone1.strip()
+        if self.phone2:
+            self.phone2.strip()
+
+    def empty_is_none(self):
+        if not self.nickname:
+            self.nickname = None
+        if not self.email:
+            self.email = None
+        if not self.phone1:
+            self.phone1 = None
+        if not self.phone2:
+            self.phone2 = None
+        if not self.extra:
+            self.extra = None
 
 @dataclass
 class SigninA:
@@ -52,7 +73,11 @@ class SignupQ:
     def encrypt_password(password: str, encoding="utf-8") -> str:
         return sha256(password.encode(encoding=encoding)).hexdigest()
 
-    def strip_insensitive(self):
+    def strip(self):
+        if self.username:
+            self.username.strip()
+        if self.password:
+            self.password.strip()
         if self.nickname:
             self.nickname.strip()
         if self.email:
@@ -62,7 +87,7 @@ class SignupQ:
         if self.phone2:
             self.phone2.strip()
 
-    def empty_is_none_insensitive(self):
+    def empty_is_none(self):
         if not self.nickname:
             self.nickname = None
         if not self.email:
@@ -71,8 +96,6 @@ class SignupQ:
             self.phone1 = None
         if not self.phone2:
             self.phone2 = None
-        if not self.is_admin:
-            self.is_admin = None
         if not self.extra:
             self.extra = None
 

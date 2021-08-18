@@ -195,15 +195,13 @@ export default class MainAdminUsersEdit extends VueBase {
     const updatedAt = user.updated_at || '';
     const lastLogin = user.last_login || '';
 
-    this.current = {
-      username: this.username,
-      password: '',
-      nickname: nickname,
-      email: email,
-      phone1: phone1,
-      phone2: phone2,
-      isAdmin: isAdmin,
-    } as UserItem;
+    this.current.username = this.username;
+    this.current.password = '';
+    this.current.nickname = nickname;
+    this.current.email = email;
+    this.current.phone1 = phone1;
+    this.current.phone2 = phone2;
+    this.current.isAdmin = isAdmin;
 
     this.detailItems = [
       {

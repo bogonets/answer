@@ -60,7 +60,8 @@ ko:
     <p :class="subtitleClass">{{ $t('label.slug') }}</p>
     <v-text-field
         dense
-        v-model="current.slug"
+        :value="value.slug"
+        @input="inputSlug"
         :rules="rules.slug"
         :disabled="disableSlug"
         :filled="disableSlug"
@@ -74,7 +75,8 @@ ko:
     <v-text-field
         dense
         persistent-hint
-        v-model="current.name"
+        :value="value.name"
+        @input="inputName"
         :hint="$t('hint.name')"
     ></v-text-field>
 
@@ -83,7 +85,8 @@ ko:
         dense
         auto-grow
         persistent-hint
-        v-model="current.description"
+        :value="value.description"
+        @input="inputDescription"
         :hint="$t('hint.description')"
     ></v-textarea>
 
@@ -94,7 +97,8 @@ ko:
         multiple
         small-chips
         persistent-hint
-        v-model="current.features"
+        :value="value.features"
+        @input="inputFeatures"
         :items="featureItems"
         :hint="$t('hint.features')"
         :search-input.sync="searchFeature"
@@ -138,7 +142,7 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop, Watch, Ref, Emit} from 'vue-property-decorator';
+import {Component, Prop, Ref, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {VForm} from 'vuetify/lib/components/VForm';
 import {GROUP_SLUG_RULES} from '@/rules';
@@ -196,19 +200,38 @@ export default class FormGroup extends VueBase {
   @Prop({type: Array})
   readonly featureItems!: Array<string>;
 
-  @Prop({type: Object})
+  @Prop({type: Object, default: () => new GroupItem()})
   readonly value!: GroupItem;
 
   @Ref()
   readonly form!: VForm;
 
   valid = false;
-  current = new GroupItem();
   searchFeature = '';
 
-  @Watch('value')
-  onChangeValue(value: GroupItem) {
-    this.current = value;
+  // @Watch('value')
+  // onChangeValue(value: GroupItem) {
+  //   this.current = value;
+  // }
+
+  inputSlug(event: string) {
+    this.value.slug = event;
+    this.input();
+  }
+
+  inputName(event: string) {
+    this.value.name = event;
+    this.input();
+  }
+
+  inputDescription(event: string) {
+    this.value.description = event;
+    this.input();
+  }
+
+  inputFeatures(event: Array<string>) {
+    this.value.features = event;
+    this.input();
   }
 
   get slugPrefix(): string {
@@ -236,17 +259,17 @@ export default class FormGroup extends VueBase {
 
   @Emit()
   input() {
-    return this.current;
+    return this.value;
   }
 
   @Emit()
   cancel() {
-    return this.current;
+    return this.value;
   }
 
   @Emit()
   ok() {
-    return this.current;
+    return this.value;
   }
 }
 </script>
