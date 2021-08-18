@@ -209,11 +209,6 @@ export default class FormGroup extends VueBase {
   valid = false;
   searchFeature = '';
 
-  // @Watch('value')
-  // onChangeValue(value: GroupItem) {
-  //   this.current = value;
-  // }
-
   inputSlug(event: string) {
     this.value.slug = event;
     this.input();

@@ -46,7 +46,9 @@ ko:
       <form-group
           disable-slug
           hide-cancel-button
-          v-model="current"
+          :disable-submit-button="!modified"
+          :value="current"
+          @input="inputCurrent"
           :loading="showSubmitLoading"
           @ok="onClickOk"
       ></form-group>
@@ -118,6 +120,7 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormGroup, {GroupItem} from '@/components/FormGroup.vue';
 import {GroupA, UpdateGroupQ} from '@/packet/group';
+import * as _ from 'lodash';
 
 @Component({
   components: {
@@ -158,7 +161,9 @@ export default class MainAdminGroupsEdit extends VueBase {
 
   detailItems = [] as Array<object>;
   current = new GroupItem();
+  original = new GroupItem();
 
+  modified = false;
   showSubmitLoading = false;
   showDeleteDialog = false;
   showDeleteLoading = false;
@@ -193,6 +198,8 @@ export default class MainAdminGroupsEdit extends VueBase {
     this.current.name = name;
     this.current.description = description;
     this.current.features = features;
+    this.original.fromObject(this.current);
+    this.modified = !_.isEqual(this.original, this.current);
 
     this.detailItems = [
       {
@@ -204,6 +211,11 @@ export default class MainAdminGroupsEdit extends VueBase {
         value: updatedAt,
       },
     ];
+  }
+
+  inputCurrent(value: GroupItem) {
+    this.current = value;
+    this.modified = !_.isEqual(this.original, this.current);
   }
 
   onClickOk(event: GroupItem) {

@@ -49,7 +49,9 @@ ko:
           disable-username
           hide-password
           hide-cancel-button
-          v-model="current"
+          :disable-submit-button="!modified"
+          :value="current"
+          @input="inputCurrent"
           :loading="showSubmitLoading"
           @ok="onClickOk"
       ></form-user>
@@ -121,6 +123,7 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormUser, {UserItem} from '@/components/FormUser.vue';
 import {UserA, UpdateUserQ} from '@/packet/user';
+import * as _ from 'lodash';
 
 @Component({
   components: {
@@ -161,7 +164,9 @@ export default class MainAdminUsersEdit extends VueBase {
 
   detailItems = [] as Array<object>;
   current = new UserItem();
+  original = new UserItem();
 
+  modified = false;
   showSubmitLoading = false;
   showDeleteDialog = false;
   showDeleteLoading = false;
@@ -202,6 +207,8 @@ export default class MainAdminUsersEdit extends VueBase {
     this.current.phone1 = phone1;
     this.current.phone2 = phone2;
     this.current.isAdmin = isAdmin;
+    this.original.fromObject(this.current);
+    this.modified = !_.isEqual(this.original, this.current);
 
     this.detailItems = [
       {
@@ -217,6 +224,11 @@ export default class MainAdminUsersEdit extends VueBase {
         value: lastLogin,
       },
     ];
+  }
+
+  inputCurrent(value: UserItem) {
+    this.current = value;
+    this.modified = !_.isEqual(this.original, this.current);
   }
 
   onClickOk(event: UserItem) {
