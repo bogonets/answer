@@ -29,7 +29,7 @@ class ContextGroup(ContextBase):
         if uid is None:
             uid = await self.database.get_group_uid_by_slug(slug)
             if caching:
-                self.cache.set_group(slug, uid)
+                self.cache.set_group(uid, slug)
         return uid
 
     async def get_group_slug(self, uid: int, caching=True) -> str:
@@ -37,7 +37,7 @@ class ContextGroup(ContextBase):
         if slug is None:
             slug = await self.database.get_group_slug_by_uid(uid)
             if caching:
-                self.cache.set_group(slug, uid)
+                self.cache.set_group(uid, slug)
         return slug
 
     async def update_group_slug(self, uid: int, slug: str) -> None:

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+from unittest import main
 from datetime import datetime, timedelta
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
@@ -299,6 +299,24 @@ class PgPermissionTestCase(PostgresqlTestCase):
         self.assertIsNone(u5p3.uid)
         self.assertIsNone(u5p4.uid)
 
+    async def test_features(self):
+        name1 = "name1"
+        features1 = ["a", "b"]
+        await self.db.create_permission(name1, features=features1)
+        perm1 = await self.db.get_permission_by_name(name1)
+        self.assertEqual(name1, perm1.name)
+        self.assertEqual(features1, perm1.features)
+
+        features2 = ["c", "d", "e"]
+        await self.db.update_permission_features_by_uid(perm1.uid, features2)
+        perm2 = await self.db.get_permission_by_name(name1)
+        self.assertEqual(features2, perm2.features)
+
+        features3 = ["f"]
+        await self.db.update_permission_features_by_name(name1, features3)
+        perm3 = await self.db.get_permission_by_name(name1)
+        self.assertEqual(features3, perm3.features)
+
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

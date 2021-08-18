@@ -22,6 +22,10 @@ class Cache:
     _project_uid_to_group_uid: Dict[int, int] = dict()
     _group_uid_and_project_slug_to_project_uid: Dict[Tuple[int, str], int] = dict()
 
+    # Permission
+    _permission_name_to_uid: Dict[str, int] = dict()
+    _permission_uid_to_name: Dict[int, str] = dict()
+
     def __init__(
         self,
         cs_type: str,
@@ -154,3 +158,31 @@ class Cache:
 
         key = (group_uid, project_slug)
         self._group_uid_and_project_slug_to_project_uid[key] = project_uid
+
+    # ----------------------
+    # permission name -> uid
+    # ----------------------
+
+    @property
+    def permission_name_to_uid(self):
+        return self._permission_name_to_uid
+
+    @property
+    def permission_uid_to_name(self):
+        return self._permission_uid_to_name
+
+    def exists_permission_name(self, name: str) -> bool:
+        return name in self._permission_name_to_uid
+
+    def exists_permission_uid(self, uid: int) -> bool:
+        return uid in self._permission_uid_to_name
+
+    def get_permission_uid(self, name: str) -> Optional[int]:
+        return self._permission_name_to_uid.get(name)
+
+    def get_permission_name(self, uid: int) -> Optional[str]:
+        return self._permission_uid_to_name.get(uid)
+
+    def set_permission(self, uid: int, name: str) -> None:
+        self._permission_name_to_uid[name] = uid
+        self._permission_uid_to_name[uid] = name

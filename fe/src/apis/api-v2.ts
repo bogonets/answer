@@ -7,6 +7,7 @@ import AxiosLib, {
 import {ConfigA, UpdateConfigValueQ} from '@/packet/config';
 import {GroupA, CreateGroupQ, UpdateGroupQ} from '@/packet/group';
 import {InfoA, CreateInfoQ, UpdateInfoQ} from '@/packet/info';
+import {PermissionA, CreatePermissionQ, UpdatePermissionQ} from '@/packet/permission';
 import {TemplateA} from '@/packet/template';
 import {ProjectA, CreateProjectQ, UpdateProjectQ} from '@/packet/project';
 import {SystemOverviewA} from '@/packet/system';
@@ -337,5 +338,29 @@ export default class ApiV2 {
 
     deleteProjectsPgroupProject(group: string, project: string) {
         return this.delete(`/projects/${group}/${project}`);
+    }
+
+    // -----------
+    // Permissions
+    // -----------
+
+    getPermissions() {
+        return this.get<Array<PermissionA>>('/permissions');
+    }
+
+    postPermissions(body: CreatePermissionQ) {
+        return this.post('/permissions', body);
+    }
+
+    getPermissionsPperm(perm: string) {
+        return this.get<PermissionA>(`/permissions/${perm}`);
+    }
+
+    patchPermissionsPperm(perm: string, body: UpdatePermissionQ) {
+        return this.patch(`/permissions/${perm}`, body);
+    }
+
+    deletePermissionsPperm(perm: string) {
+        return this.delete(`/permissions/${perm}`);
     }
 }

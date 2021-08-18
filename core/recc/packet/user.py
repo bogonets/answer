@@ -51,6 +51,7 @@ class UpdateUserQ:
         if not self.extra:
             self.extra = None
 
+
 @dataclass
 class SigninA:
     access: str

@@ -73,7 +73,6 @@ onlytext
 orjson
 osom
 outname
-pgroup
 posod
 proj
 projname
@@ -108,8 +107,12 @@ yamlparse
 zoneinfo
 
 # Parameter prefix ('p')
+# ./core/recc/http/http_path_keys.py
 
+pgroup
 pkey
+pname
+pperm
 pproject
 puser
 pval

@@ -16,6 +16,7 @@ class DbPermission(metaclass=ABCMeta):
         self,
         name: str,
         description: Optional[str] = None,
+        features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
         r_layout=False,
         w_layout=False,
@@ -39,6 +40,7 @@ class DbPermission(metaclass=ABCMeta):
         uid: int,
         name: Optional[str] = None,
         description: Optional[str] = None,
+        features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
         r_layout: Optional[bool] = None,
         w_layout: Optional[bool] = None,
@@ -69,6 +71,18 @@ class DbPermission(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def update_permission_features_by_uid(
+        self, uid: int, features: List[str], updated_at=datetime.utcnow()
+    ) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def update_permission_features_by_name(
+        self, name: str, features: List[str], updated_at=datetime.utcnow()
+    ) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def update_permission_extra_by_uid(
         self, uid: int, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -86,6 +100,14 @@ class DbPermission(metaclass=ABCMeta):
 
     @abstractmethod
     async def delete_permission_by_name(self, name: str) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_permission_uid_by_name(self, name: str) -> int:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_permission_name_by_uid(self, uid: int) -> str:
         raise NotImplementedError
 
     @abstractmethod

@@ -11,10 +11,14 @@ from recc.database.postgresql.query.permission import (
     INSERT_PERMISSION,
     UPDATE_PERMISSION_DESCRIPTION_BY_UID,
     UPDATE_PERMISSION_DESCRIPTION_BY_NAME,
+    UPDATE_PERMISSION_FEATURES_BY_UID,
+    UPDATE_PERMISSION_FEATURES_BY_NAME,
     UPDATE_PERMISSION_EXTRA_BY_UID,
     UPDATE_PERMISSION_EXTRA_BY_NAME,
     DELETE_PERMISSION_BY_UID,
     DELETE_PERMISSION_BY_NAME,
+    SELECT_PERMISSION_UID_BY_NAME,
+    SELECT_PERMISSION_NAME_BY_UID,
     SELECT_PERMISSION_BY_UID,
     SELECT_PERMISSION_BY_NAME,
     SELECT_PERMISSION_ALL,
@@ -29,6 +33,7 @@ class PgPermission(DbPermission, PgBase):
         self,
         name: str,
         description: Optional[str] = None,
+        features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
         r_layout=False,
         w_layout=False,
@@ -48,6 +53,7 @@ class PgPermission(DbPermission, PgBase):
             INSERT_PERMISSION,
             name,
             description,
+            features,
             extra,
             r_layout,
             w_layout,
@@ -71,6 +77,7 @@ class PgPermission(DbPermission, PgBase):
         uid: int,
         name: Optional[str] = None,
         description: Optional[str] = None,
+        features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
         r_layout: Optional[bool] = None,
         w_layout: Optional[bool] = None,
@@ -90,6 +97,7 @@ class PgPermission(DbPermission, PgBase):
             uid=uid,
             name=name,
             description=description,
+            features=features,
             extra=extra,
             r_layout=r_layout,
             w_layout=w_layout,
@@ -128,6 +136,24 @@ class PgPermission(DbPermission, PgBase):
         logger.info(f"update_permission_description_by_name({params_msg}) ok.")
 
     @overrides
+    async def update_permission_features_by_uid(
+        self, uid: int, features: List[str], updated_at=datetime.utcnow()
+    ) -> None:
+        query = UPDATE_PERMISSION_FEATURES_BY_UID
+        await self.execute(query, uid, features, updated_at)
+        params_msg = f"uid={uid}"
+        logger.info(f"update_permission_features_by_uid({params_msg}) ok.")
+
+    @overrides
+    async def update_permission_features_by_name(
+        self, name: str, features: List[str], updated_at=datetime.utcnow()
+    ) -> None:
+        query = UPDATE_PERMISSION_FEATURES_BY_NAME
+        await self.execute(query, name, features, updated_at)
+        params_msg = f"name={name}"
+        logger.info(f"update_permission_features_by_name({params_msg}) ok.")
+
+    @overrides
     async def update_permission_extra_by_uid(
         self, uid: int, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
@@ -160,13 +186,34 @@ class PgPermission(DbPermission, PgBase):
         logger.info(f"delete_permission_by_name({params_msg}) ok.")
 
     @overrides
+    async def get_permission_uid_by_name(self, name: str) -> int:
+        query = SELECT_PERMISSION_UID_BY_NAME
+        row = await self.fetch_row(query, name)
+        params_msg = f"name={name}"
+        if not row:
+            raise RuntimeError(f"Not found permission: {params_msg}")
+        result = int(row["uid"])
+        logger.info(f"get_permission_uid_by_name({params_msg}) -> {result}")
+        return result
+
+    @overrides
+    async def get_permission_name_by_uid(self, uid: int) -> str:
+        query = SELECT_PERMISSION_NAME_BY_UID
+        row = await self.fetch_row(query, uid)
+        params_msg = f"uid={uid}"
+        if not row:
+            raise RuntimeError(f"Not found permission: {params_msg}")
+        result = str(row["name"])
+        logger.info(f"get_permission_name_by_uid({params_msg}) -> {result}")
+        return result
+
+    @overrides
     async def get_permission_by_uid(self, uid: int) -> Permission:
         query = SELECT_PERMISSION_BY_UID
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
         if not row:
             raise RuntimeError(f"Not found permission: {params_msg}")
-        assert len(row) == 17
         result = Permission(**dict(row))
         result.uid = uid
         logger.info(f"get_permission_by_uid({params_msg}) ok.")
@@ -179,7 +226,6 @@ class PgPermission(DbPermission, PgBase):
         params_msg = f"name={name}"
         if not row:
             raise RuntimeError(f"Not found permission: {params_msg}")
-        assert len(row) == 17
         result = Permission(**dict(row))
         result.name = name
         logger.info(f"get_permission_by_name({params_msg}) ok.")
@@ -206,7 +252,6 @@ class PgPermission(DbPermission, PgBase):
         params_msg = f"user_uid={user_uid},project_uid={project_uid}"
         if not row:
             raise RuntimeError(f"Not found permission: {params_msg}")
-        assert len(row) == 18
         result = Permission(**dict(row))
         logger.info(f"get_project_permission_by_uid({params_msg}) ok.")
         return result

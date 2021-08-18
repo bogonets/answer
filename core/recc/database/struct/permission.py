@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any
+from typing import Optional, List, Any
 from datetime import datetime
 from dataclasses import dataclass
 
@@ -10,6 +10,7 @@ class Permission:
     uid: Optional[int] = None
     name: Optional[str] = None
     description: Optional[str] = None
+    features: Optional[List[str]] = None
     extra: Optional[Any] = None
     r_layout: Optional[bool] = None
     w_layout: Optional[bool] = None

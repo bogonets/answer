@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any, Optional, List
 from re import sub as re_sub
 from recc.variables.database import (
     TABLE_USER,
@@ -110,16 +110,25 @@ SAFE_INSERT_PERMISSION_DEFAULTS = (
 
 INSERT_PERMISSION = f"""
 INSERT INTO {TABLE_PERMISSION} (
-    name, description, extra,
-    r_layout, w_layout,
-    r_storage, w_storage,
-    r_manager, w_manager,
-    r_graph, w_graph,
-    r_member, w_member,
-    r_setting, w_setting,
+    name,
+    description,
+    features,
+    extra,
+    r_layout,
+    w_layout,
+    r_storage,
+    w_storage,
+    r_manager,
+    w_manager,
+    r_graph,
+    w_graph,
+    r_member,
+    w_member,
+    r_setting,
+    w_setting,
     created_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17
 );
 """
 
@@ -136,6 +145,18 @@ WHERE uid=$1;
 UPDATE_PERMISSION_DESCRIPTION_BY_NAME = f"""
 UPDATE {TABLE_PERMISSION}
 SET description=$2, updated_at=$3
+WHERE name LIKE $1;
+"""
+
+UPDATE_PERMISSION_FEATURES_BY_UID = f"""
+UPDATE {TABLE_PERMISSION}
+SET features=$2, updated_at=$3
+WHERE uid=$1;
+"""
+
+UPDATE_PERMISSION_FEATURES_BY_NAME = f"""
+UPDATE {TABLE_PERMISSION}
+SET features=$2, updated_at=$3
 WHERE name LIKE $1;
 """
 
@@ -156,6 +177,7 @@ def get_update_permission_query_by_uid(
     uid: int,
     name: Optional[str] = None,
     description: Optional[str] = None,
+    features: Optional[List[str]] = None,
     extra: Optional[Any] = None,
     r_layout: Optional[bool] = None,
     w_layout: Optional[bool] = None,
@@ -176,6 +198,7 @@ def get_update_permission_query_by_uid(
         if_none_skip=True,
         name=name,
         description=description,
+        features=features,
         extra=extra,
         r_layout=r_layout,
         w_layout=w_layout,
@@ -237,44 +260,32 @@ FROM {TABLE_PERMISSION}
 WHERE name LIKE '{MAINTAINER_PERMISSION_NAME}';
 """
 
+SELECT_PERMISSION_UID_BY_NAME = f"""
+SELECT uid
+FROM {TABLE_PERMISSION}
+WHERE name LIKE $1;
+"""
+
+SELECT_PERMISSION_NAME_BY_UID = f"""
+SELECT name
+FROM {TABLE_PERMISSION}
+WHERE uid=$1;
+"""
+
 SELECT_PERMISSION_BY_UID = f"""
-SELECT
-    name, description, extra,
-    r_layout, w_layout,
-    r_storage, w_storage,
-    r_manager, w_manager,
-    r_graph, w_graph,
-    r_member, w_member,
-    r_setting, w_setting,
-    created_at, updated_at
+SELECT *
 FROM {TABLE_PERMISSION}
 WHERE uid=$1;
 """
 
 SELECT_PERMISSION_BY_NAME = f"""
-SELECT
-    uid, description, extra,
-    r_layout, w_layout,
-    r_storage, w_storage,
-    r_manager, w_manager,
-    r_graph, w_graph,
-    r_member, w_member,
-    r_setting, w_setting,
-    created_at, updated_at
+SELECT *
 FROM {TABLE_PERMISSION}
 WHERE name LIKE $1;
 """
 
 SELECT_PERMISSION_ALL = f"""
-SELECT
-    uid, name, description, extra,
-    r_layout, w_layout,
-    r_storage, w_storage,
-    r_manager, w_manager,
-    r_graph, w_graph,
-    r_member, w_member,
-    r_setting, w_setting,
-    created_at, updated_at
+SELECT *
 FROM {TABLE_PERMISSION};
 """
 

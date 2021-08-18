@@ -30,6 +30,7 @@ infos = "/infos"
 init = "/init"
 overview = "/overview"
 password = "/password"
+permissions = "/permissions"
 projects = "/projects"
 public = "/public"
 self = "/self"
@@ -50,6 +51,8 @@ def _param_path(key: str) -> str:
 # Params (Use the prefix 'p')
 pgroup = _param_path(p.group)
 pkey = _param_path(p.key)
+pname = _param_path(p.name)
+pperm = _param_path(p.perm)
 pproject = _param_path(p.project)
 puser = _param_path(p.user)
 
@@ -66,10 +69,17 @@ api_heartbeat = api + heartbeat
 configs_pkey = configs + pkey
 groups_pgroup = groups + pgroup
 infos_pkey = infos + pkey
+permissions_pperm = permissions + pperm
 projects_pgroup_pproject = projects + pgroup + pproject
-self_extra = self + extra
-self_password = self + password
 signup_admin = signup + admin
 state_already = state + already
 system_overview = system + overview
 users_puser = users + puser
+
+# Mixin (api/v2/self sub)
+self_extra = self + extra
+self_groups = self + groups
+self_groups_pgroup = self + groups + pgroup
+self_password = self + password
+self_projects = self + projects
+self_projects_pgroup_pproject = self + projects + pgroup + pproject

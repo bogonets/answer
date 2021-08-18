@@ -11,6 +11,7 @@ from aiohttp.web_exceptions import (
     HTTPBadRequest,
     HTTPServiceUnavailable,
 )
+from recc.access_control.abac.attributes import aa
 from recc.log.logging import recc_http_logger as logger
 from recc.core.context import Context
 from recc.http.v2.router_v2_public import RouterV2Public
@@ -21,13 +22,12 @@ from recc.http import http_cache_keys as c
 from recc.http import http_urls as u
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
-from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
-from recc.packet.user import UpdatePasswordQ
 from recc.packet.info import InfoA, CreateInfoQ, UpdateInfoQ
+from recc.packet.permission import PermissionA, CreatePermissionQ, UpdatePermissionQ
+from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.system import SystemOverviewA
 from recc.packet.template import TemplateA
-from recc.packet.user import UserA, UpdateUserQ, SignupQ
-from recc.access_control.abac.attributes import aa
+from recc.packet.user import UserA, UpdateUserQ, SignupQ, UpdatePasswordQ
 
 
 class RouterV2:
@@ -83,11 +83,25 @@ class RouterV2:
     def _get_routes(self) -> List[AbstractRouteDef]:
         # fmt: off
         return [
-            # self
+            # self/profile
             web.get(u.self, self.get_self),
             web.get(u.self_extra, self.get_self_extra),
             web.patch(u.self_extra, self.patch_self_extra),
             web.patch(u.self_password, self.patch_self_password),
+
+            # self/groups
+            web.get(u.self_groups, self.get_self_groups),
+            web.post(u.self_groups, self.post_self_groups),
+            web.get(u.self_groups_pgroup, self.get_self_groups_pgroup),
+            web.patch(u.self_groups_pgroup, self.patch_self_groups_pgroup),
+            web.delete(u.self_groups_pgroup, self.delete_self_groups_pgroup),
+
+            # self/projects
+            web.get(u.self_projects, self.get_self_projects),
+            web.post(u.self_projects, self.post_self_projects),
+            web.get(u.self_projects_pgroup_pproject, self.get_self_projects_pgroup_pproject),  # noqa
+            web.patch(u.self_projects_pgroup_pproject, self.patch_self_projects_pgroup_pproject),  # noqa
+            web.delete(u.self_projects_pgroup_pproject, self.delete_self_projects_pgroup_pproject),  # noqa
 
             # configs
             web.get(u.configs, self.get_configs),
@@ -127,6 +141,13 @@ class RouterV2:
             web.get(u.projects_pgroup_pproject, self.get_projects_pgroup_pproject),
             web.patch(u.projects_pgroup_pproject, self.patch_projects_pgroup_pproject),
             web.delete(u.projects_pgroup_pproject, self.delete_projects_pgroup_pproject),  # noqa
+
+            # permissions
+            web.get(u.permissions, self.get_permissions),
+            web.post(u.permissions, self.post_permissions),
+            web.get(u.permissions_pperm, self.get_permissions_pperm),
+            web.patch(u.permissions_pperm, self.patch_permissions_pperm),
+            web.delete(u.permissions_pperm, self.delete_permissions_pperm),
         ]
         # fmt: on
 
@@ -176,6 +197,54 @@ class RouterV2:
         except ValueError as e:
             raise HTTPBadRequest(reason=str(e))
         await self.context.change_password(hs.audience, body.after)
+
+    # -----------
+    # self/groups
+    # -----------
+
+    @parameter_matcher()
+    async def get_self_groups(self, hs: HttpSession) -> None:
+        raise NotImplementedError
+
+    @parameter_matcher()
+    async def post_self_groups(self, hs: HttpSession) -> None:
+        raise NotImplementedError
+
+    @parameter_matcher()
+    async def get_self_groups_pgroup(self, hs: HttpSession) -> None:
+        raise NotImplementedError
+
+    @parameter_matcher()
+    async def patch_self_groups_pgroup(self, hs: HttpSession) -> None:
+        raise NotImplementedError
+
+    @parameter_matcher()
+    async def delete_self_groups_pgroup(self, hs: HttpSession) -> None:
+        raise NotImplementedError
+
+    # -------------
+    # self/projects
+    # -------------
+
+    @parameter_matcher()
+    async def get_self_projects(self, hs: HttpSession) -> None:
+        raise NotImplementedError
+
+    @parameter_matcher()
+    async def post_self_projects(self, hs: HttpSession) -> None:
+        raise NotImplementedError
+
+    @parameter_matcher()
+    async def get_self_projects_pgroup_pproject(self, hs: HttpSession) -> None:
+        raise NotImplementedError
+
+    @parameter_matcher()
+    async def patch_self_projects_pgroup_pproject(self, hs: HttpSession) -> None:
+        raise NotImplementedError
+
+    @parameter_matcher()
+    async def delete_self_projects_pgroup_pproject(self, hs: HttpSession) -> None:
+        raise NotImplementedError
 
     # -------
     # Configs
@@ -489,3 +558,113 @@ class RouterV2:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
         await self.context.delete_project(project_uid)
+
+    # -----------
+    # Permissions
+    # -----------
+
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def get_permissions(self) -> List[PermissionA]:
+        result = list()
+        for permission in await self.context.get_permissions():
+            assert permission.name is not None
+            item = PermissionA(
+                name=permission.name,
+                description=permission.description,
+                features=permission.features,
+                extra=permission.extra,
+                r_layout=permission.r_layout,
+                w_layout=permission.w_layout,
+                r_storage=permission.r_storage,
+                w_storage=permission.w_storage,
+                r_manager=permission.r_manager,
+                w_manager=permission.w_manager,
+                r_graph=permission.r_graph,
+                w_graph=permission.w_graph,
+                r_member=permission.r_member,
+                w_member=permission.w_member,
+                r_setting=permission.r_setting,
+                w_setting=permission.w_setting,
+                created_at=permission.created_at,
+                updated_at=permission.updated_at,
+            )
+            result.append(item)
+        return result
+
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def post_permissions(self, body: CreatePermissionQ) -> None:
+        if not body.name:
+            raise HTTPBadRequest(reason="Not exists `name` field")
+
+        body.normalize_booleans()
+
+        await self.context.create_permission(
+            name=body.name,
+            description=body.description,
+            features=body.features,
+            extra=body.extra,
+            r_layout=body.r_layout,
+            w_layout=body.w_layout,
+            r_storage=body.r_storage,
+            w_storage=body.w_storage,
+            r_manager=body.r_manager,
+            w_manager=body.w_manager,
+            r_graph=body.r_graph,
+            w_graph=body.w_graph,
+            r_member=body.r_member,
+            w_member=body.w_member,
+            r_setting=body.r_setting,
+            w_setting=body.w_setting,
+        )
+
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def get_permissions_pperm(self, perm: str) -> PermissionA:
+        db_permission = await self.context.get_permission_by_name(perm)
+        assert db_permission.name is not None
+        return PermissionA(
+            name=db_permission.name,
+            description=db_permission.description,
+            features=db_permission.features,
+            extra=db_permission.extra,
+            r_layout=db_permission.r_layout,
+            w_layout=db_permission.w_layout,
+            r_storage=db_permission.r_storage,
+            w_storage=db_permission.w_storage,
+            r_manager=db_permission.r_manager,
+            w_manager=db_permission.w_manager,
+            r_graph=db_permission.r_graph,
+            w_graph=db_permission.w_graph,
+            r_member=db_permission.r_member,
+            w_member=db_permission.w_member,
+            r_setting=db_permission.r_setting,
+            w_setting=db_permission.w_setting,
+            created_at=db_permission.created_at,
+            updated_at=db_permission.updated_at,
+        )
+
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def patch_permissions_pperm(self, perm: str, body: UpdatePermissionQ) -> None:
+        uid = await self.context.get_permission_uid(perm)
+        await self.context.update_permission_by_uid(
+            uid,
+            name=body.name,
+            description=body.description,
+            features=body.features,
+            extra=body.extra,
+            r_layout=body.r_layout,
+            w_layout=body.w_layout,
+            r_storage=body.r_storage,
+            w_storage=body.w_storage,
+            r_manager=body.r_manager,
+            w_manager=body.w_manager,
+            r_graph=body.r_graph,
+            w_graph=body.w_graph,
+            r_member=body.r_member,
+            w_member=body.w_member,
+            r_setting=body.r_setting,
+            w_setting=body.w_setting,
+        )
+
+    @parameter_matcher(acl={aa.HasAdmin})
+    async def delete_permissions_pperm(self, perm: str) -> None:
+        await self.context.delete_permission_by_name(perm)

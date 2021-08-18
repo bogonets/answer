@@ -10,6 +10,7 @@ from recc.http import http_urls as u
 from recc.http import http_path_keys as p
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.info import InfoA, CreateInfoQ
+from recc.packet.permission import PermissionA, CreatePermissionQ, UpdatePermissionQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.system import SystemOverviewA
 
@@ -169,27 +170,103 @@ class RouterV2TestCase(AsyncTestCase):
             group=project1.group_slug, project=project1.project_slug
         )
         update = UpdateProjectQ(name="name1")
-        response5 = await self.tester.patch(path, data=update)
-        self.assertEqual(200, response5.status)
+        response4 = await self.tester.patch(path, data=update)
+        self.assertEqual(200, response4.status)
 
-        response4 = await self.tester.get(path, cls=ProjectA)
+        response5 = await self.tester.get(path, cls=ProjectA)
+        self.assertEqual(200, response5.status)
+        response5_data = response5.data
+        self.assertIsNotNone(response5_data)
+        self.assertIsInstance(response5_data, ProjectA)
+        self.assertEqual(project1.group_slug, response5_data.group_slug)
+        self.assertEqual(project1.project_slug, response5_data.project_slug)
+        self.assertEqual(update.name, response5_data.name)
+
+        response6 = await self.tester.delete(path)
+        self.assertEqual(200, response6.status)
+
+        response7 = await self.tester.get(v2_path(u.projects), cls=List[ProjectA])
+        self.assertEqual(200, response7.status)
+        response7_data = response7.data
+        self.assertIsNotNone(response7_data)
+        self.assertIsInstance(response7_data, list)
+        self.assertEqual(0, len(response7_data))
+
+    async def test_permission(self):
+        perm1 = CreatePermissionQ(name="perm1", r_storage=True)
+        response1 = await self.tester.post(v2_path(u.permissions), data=perm1)
+        self.assertEqual(200, response1.status)
+
+        response2 = await self.tester.get(v2_path(u.permissions), cls=List[PermissionA])
+        self.assertEqual(200, response2.status)
+        response2_data = response2.data
+        self.assertIsNotNone(response2_data)
+        self.assertIsInstance(response2_data, list)
+        after_creation_num_permissions = len(response2_data)
+        response2_datas = list(filter(lambda x: x.name == perm1.name, response2_data))
+        response2_data0 = response2_datas[0]
+        self.assertIsInstance(response2_data0, PermissionA)
+        self.assertEqual(perm1.name, response2_data0.name)
+        self.assertIsNone(response2_data0.description)
+        self.assertIsNone(response2_data0.features)
+        self.assertIsNone(response2_data0.extra)
+        self.assertFalse(response2_data0.r_layout)
+        self.assertFalse(response2_data0.w_layout)
+        self.assertTrue(response2_data0.r_storage)
+        self.assertFalse(response2_data0.w_storage)
+        self.assertFalse(response2_data0.r_manager)
+        self.assertFalse(response2_data0.w_manager)
+        self.assertFalse(response2_data0.r_graph)
+        self.assertFalse(response2_data0.w_graph)
+        self.assertFalse(response2_data0.r_member)
+        self.assertFalse(response2_data0.w_member)
+        self.assertFalse(response2_data0.r_setting)
+        self.assertFalse(response2_data0.w_setting)
+        self.assertIsNotNone(response2_data0.created_at)
+        self.assertIsNone(response2_data0.updated_at)
+
+        perm2_name = "perm2"
+        path1 = v2_path(u.permissions_pperm).format(perm=perm1.name)
+        update = UpdatePermissionQ(name=perm2_name, w_layout=True)
+        response3 = await self.tester.patch(path1, data=update)
+        self.assertEqual(200, response3.status)
+
+        path2 = v2_path(u.permissions_pperm).format(perm=perm2_name)
+        response4 = await self.tester.get(path2, cls=PermissionA)
         self.assertEqual(200, response4.status)
         response4_data = response4.data
         self.assertIsNotNone(response4_data)
-        self.assertIsInstance(response4_data, ProjectA)
-        self.assertEqual(project1.group_slug, response4_data.group_slug)
-        self.assertEqual(project1.project_slug, response4_data.project_slug)
+        self.assertIsInstance(response4_data, PermissionA)
         self.assertEqual(update.name, response4_data.name)
+        self.assertIsNone(response4_data.description)
+        self.assertIsNone(response4_data.features)
+        self.assertIsNone(response4_data.extra)
+        self.assertFalse(response4_data.r_layout)
+        self.assertTrue(response4_data.w_layout)
+        self.assertTrue(response4_data.r_storage)
+        self.assertFalse(response4_data.w_storage)
+        self.assertFalse(response4_data.r_manager)
+        self.assertFalse(response4_data.w_manager)
+        self.assertFalse(response4_data.r_graph)
+        self.assertFalse(response4_data.w_graph)
+        self.assertFalse(response4_data.r_member)
+        self.assertFalse(response4_data.w_member)
+        self.assertFalse(response4_data.r_setting)
+        self.assertFalse(response4_data.w_setting)
+        self.assertIsNotNone(response4_data.created_at)
+        self.assertIsNotNone(response4_data.updated_at)
 
-        response5 = await self.tester.delete(path)
+        response5 = await self.tester.delete(path2)
         self.assertEqual(200, response5.status)
 
-        response6 = await self.tester.get(v2_path(u.projects), cls=List[ProjectA])
+        response6 = await self.tester.get(v2_path(u.permissions), cls=List[PermissionA])
         self.assertEqual(200, response6.status)
         response6_data = response6.data
         self.assertIsNotNone(response6_data)
         self.assertIsInstance(response6_data, list)
-        self.assertEqual(0, len(response6_data))
+
+        expect_num_permissions = len(response6_data) + 1
+        self.assertEqual(after_creation_num_permissions, expect_num_permissions)
 
     async def test_system_overview(self):
         path = v2_path(u.system_overview)
