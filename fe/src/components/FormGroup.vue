@@ -33,7 +33,7 @@ ko:
     description: "설명"
     features: "기능"
   hint:
-    slug: "URL에 사용될 그룹 슬러그."
+    slug: "URL 경로에 사용될 그룹 슬러그."
     name: "화면에 출력되는 그룹명."
     description: "그룹의 구체적인 설명."
     features: "그룹에 적용할 기능 목록 입니다."
@@ -189,6 +189,9 @@ export default class FormGroup extends VueBase {
   readonly disableValidate!: boolean;
 
   @Prop({type: Boolean})
+  readonly hideOriginPrefix!: boolean;
+
+  @Prop({type: Boolean})
   readonly hideButtons!: boolean;
 
   @Prop({type: Boolean})
@@ -229,7 +232,10 @@ export default class FormGroup extends VueBase {
     this.input();
   }
 
-  get slugPrefix(): string {
+  get slugPrefix(): undefined | string {
+    if (this.hideOriginPrefix) {
+      return undefined;
+    }
     const origin = window.location.origin;
     return origin + (origin[origin.length-1] === '/' ? '' : '/')
   }

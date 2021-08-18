@@ -22,6 +22,7 @@ ko:
         :subheader="$t('subheader')"
     >
       <form-group
+          hide-origin-prefix
           :loading="submitLoading"
           @cancel="onClickCancel"
           @ok="onClickOk"

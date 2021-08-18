@@ -162,8 +162,8 @@ export default class MainAdminUsers extends VueBase {
           this.showLoading = false;
         })
         .catch(error => {
-          console.error(error);
           this.showLoading = false;
+          this.toastRequestFailure(error);
         });
   }
 

@@ -46,6 +46,7 @@ ko:
       <form-group
           disable-slug
           hide-cancel-button
+          hide-origin-prefix
           :disable-submit-button="!modified"
           :value="current"
           @input="inputCurrent"

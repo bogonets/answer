@@ -5,9 +5,10 @@ en:
   search_label: "You can filter by project name or description"
   new_project: "New Project"
   headers:
-    name: "Project"
+    group: "Group"
+    slug: "Slug"
+    name: "Name"
     description: "Description"
-    features: "Features"
     created_at: "Created at"
     updated_at: "Updated at"
   loading: "Loading... Please wait"
@@ -19,9 +20,10 @@ ko:
   search_label: "프로젝트명 또는 상세정보를 필터링할 수 있습니다."
   new_project: "새로운 프로젝트"
   headers:
-    name: "프로젝트명"
+    group: "그룹"
+    slug: "슬러그"
+    name: "이름"
     description: "상세"
-    features: "기능"
     created_at: "생성일"
     updated_at: "갱신일"
   loading: "불러오는중 입니다... 잠시만 기다려 주세요."
@@ -36,7 +38,7 @@ ko:
 
     <v-data-table
         :headers="headers"
-        :items="users"
+        :items="tableItems"
         :search="filterText"
         :loading="showLoading"
         :loading-text="$t('loading')"
@@ -83,8 +85,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import aProjectTable from '@/components/Table/aProjectTable.vue';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-
-const ANONYMOUS_GROUP = '-';
+import {ProjectA} from '@/packet/project';
 
 @Component({
   components: {
@@ -93,18 +94,34 @@ const ANONYMOUS_GROUP = '-';
   }
 })
 export default class MainProjects extends VueBase {
-
+  /**
+   * @deprecated
+   */
   private readonly enableLegacy = false;
+
   private readonly navigationItems = [
     {
       text: 'Projects',
       disabled: true,
     },
   ];
+
   private readonly headers = [
     {
+      text: this.$t('headers.group').toString(),
+      align: 'left',
+      filterable: true,
+      value: 'group_slug',
+    },
+    {
+      text: this.$t('headers.slug').toString(),
+      align: 'left',
+      filterable: true,
+      value: 'project_slug',
+    },
+    {
       text: this.$t('headers.name').toString(),
-      align: 'start',
+      align: 'center',
       filterable: true,
       value: 'name',
     },
@@ -115,39 +132,44 @@ export default class MainProjects extends VueBase {
       value: 'description',
     },
     {
-      text: this.$t('headers.features').toString(),
-      align: 'end',
-      filterable: false,
-      value: 'features',
-    },
-    {
       text: this.$t('headers.created_at').toString(),
-      align: 'end',
+      align: 'center',
       filterable: false,
       value: 'created_at',
     },
     {
       text: this.$t('headers.updated_at').toString(),
-      align: 'end',
+      align: 'center',
       filterable: false,
       value: 'updated_at',
+    },
+    {
+      text: this.$t('headers.actions').toString(),
+      align: 'center',
+      filterable: false,
+      sortable: false,
+      value: 'actions',
     },
   ];
 
   filterText = '';
-  users: object = [];
+  tableItems = [] as Array<ProjectA>;
   showLoading = true;
 
   mounted() {
+    this.updateItems();
+  }
+
+  updateItems() {
+    this.showLoading = true;
     this.$api2.getProjects()
-        .then(response => {
-          console.info(response);
-          this.users = response;
+        .then(items => {
+          this.tableItems = items;
           this.showLoading = false;
         })
         .catch(error => {
-          console.error(error);
           this.showLoading = false;
+          this.toastRequestFailure(error);
         });
   }
 
@@ -155,14 +177,20 @@ export default class MainProjects extends VueBase {
     return utc?.split('T')[0] || '';
   }
 
-  onClickRow(item) {
-    // Legacy code:
-    this.$store.commit('project/setSelectProject', { name: item.name });
-    this.moveToMainProject(ANONYMOUS_GROUP, item.name);
+  /**
+   * @deprecated
+   */
+  private legacySelectProject(name) {
+    this.$store.commit('project/setSelectProject', {name});
   }
 
   onClickNewProject() {
     this.moveToMainProjectsNew();
+  }
+
+  onClickRow(item: ProjectA) {
+    this.legacySelectProject(item.project_slug);
+    this.moveToMainProject(item.group_slug, item.project_slug);
   }
 }
 </script>

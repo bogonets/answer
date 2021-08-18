@@ -37,7 +37,7 @@ ko:
     features: "기능"
   hint:
     group: "그룹의 슬러그."
-    slug: "URL에 사용될 프로젝트 슬러그."
+    slug: "URL 경로에 사용될 프로젝트 슬러그."
     name: "화면에 출력되는 프로젝트명."
     description: "프로젝트의 구체적인 설명."
     features: "프로젝트에 적용할 기능 목록 입니다."
