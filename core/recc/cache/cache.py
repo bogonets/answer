@@ -1,31 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from threading import Lock
 from typing import Optional, Dict, Tuple
-from recc.cache.cache_store_interface import CacheStoreInterface
 from recc.cache.cache_store import create_cache_store
+
+ProjectKey = Tuple[int, str]
 
 
 class Cache:
-
-    _store: CacheStoreInterface
-
-    # User
-    _username_to_uid: Dict[str, int] = dict()
-    _uid_to_username: Dict[int, str] = dict()
-
-    # Group
-    _group_slug_to_uid: Dict[str, int] = dict()
-    _group_uid_to_slug: Dict[int, str] = dict()
-
-    # Project
-    _project_uid_to_slug: Dict[int, str] = dict()
-    _project_uid_to_group_uid: Dict[int, int] = dict()
-    _group_uid_and_project_slug_to_project_uid: Dict[Tuple[int, str], int] = dict()
-
-    # Permission
-    _permission_name_to_uid: Dict[str, int] = dict()
-    _permission_uid_to_name: Dict[int, str] = dict()
-
     def __init__(
         self,
         cs_type: str,
@@ -35,6 +17,27 @@ class Cache:
         **kwargs,
     ):
         self._store = create_cache_store(cs_type, cs_host, cs_port, cs_pw, **kwargs)
+
+        # User
+        self._user_lock = Lock()
+        self._username_to_uid: Dict[str, int] = dict()
+        self._uid_to_username: Dict[int, str] = dict()
+
+        # Group
+        self._group_lock = Lock()
+        self._group_slug_to_uid: Dict[str, int] = dict()
+        self._group_uid_to_slug: Dict[int, str] = dict()
+
+        # Project
+        self._project_lock = Lock()
+        self._project_uid_to_slug: Dict[int, str] = dict()
+        self._project_uid_to_group_uid: Dict[int, int] = dict()
+        self._project_key_to_project_uid: Dict[ProjectKey, int] = dict()
+
+        # Permission
+        self._permission_lock = Lock()
+        self._permission_name_to_uid: Dict[str, int] = dict()
+        self._permission_uid_to_name: Dict[int, str] = dict()
 
     # ------------
     # Store bypass
@@ -65,124 +68,109 @@ class Cache:
     # username -> uid
     # ---------------
 
-    @property
-    def username_to_uid(self):
-        return self._username_to_uid
-
-    @property
-    def uid_to_username(self):
-        return self._uid_to_username
-
     def exists_username(self, username: str) -> bool:
-        return username in self._username_to_uid
+        with self._user_lock:
+            return username in self._username_to_uid
 
     def exists_user_uid(self, user_uid: int) -> bool:
-        return user_uid in self._uid_to_username
+        with self._user_lock:
+            return user_uid in self._uid_to_username
 
     def get_user_uid(self, username: str) -> Optional[int]:
-        return self._username_to_uid.get(username)
+        with self._user_lock:
+            return self._username_to_uid.get(username)
 
     def get_username(self, user_uid: int) -> Optional[str]:
-        return self._uid_to_username.get(user_uid)
+        with self._user_lock:
+            return self._uid_to_username.get(user_uid)
 
     def set_user(self, username: str, user_uid: int) -> None:
-        self._username_to_uid[username] = user_uid
-        self._uid_to_username[user_uid] = username
+        with self._user_lock:
+            self._username_to_uid[username] = user_uid
+            self._uid_to_username[user_uid] = username
 
     # -----------------
     # group slug -> uid
     # -----------------
 
-    @property
-    def group_slug_to_uid(self):
-        return self._group_slug_to_uid
-
-    @property
-    def group_uid_to_slug(self):
-        return self._group_uid_to_slug
-
     def exists_group_slug(self, group_slug: str) -> bool:
-        return group_slug in self._group_slug_to_uid
+        with self._group_lock:
+            return group_slug in self._group_slug_to_uid
 
     def exists_group_uid(self, group_uid: int) -> bool:
-        return group_uid in self._group_uid_to_slug
+        with self._group_lock:
+            return group_uid in self._group_uid_to_slug
 
     def get_group_uid(self, group_slug: str) -> Optional[int]:
-        return self._group_slug_to_uid.get(group_slug)
+        with self._group_lock:
+            return self._group_slug_to_uid.get(group_slug)
 
     def get_group_slug(self, group_uid: int) -> Optional[str]:
-        return self._group_uid_to_slug.get(group_uid)
+        with self._group_lock:
+            return self._group_uid_to_slug.get(group_uid)
 
     def set_group(self, group_uid: int, group_slug: str) -> None:
-        self._group_slug_to_uid[group_slug] = group_uid
-        self._group_uid_to_slug[group_uid] = group_slug
+        with self._group_lock:
+            self._group_slug_to_uid[group_slug] = group_uid
+            self._group_uid_to_slug[group_uid] = group_slug
 
     # -------------------
     # project slug -> uid
     # -------------------
 
-    @property
-    def project_uid_to_slug(self):
-        return self._project_uid_to_slug
-
-    @property
-    def project_uid_to_group_uid(self):
-        return self._project_uid_to_group_uid
-
-    @property
-    def group_uid_and_project_slug_to_project_uid(self):
-        return self._group_uid_and_project_slug_to_project_uid
-
     def exists_project_uid(self, project_uid: int) -> bool:
-        return project_uid in self._project_uid_to_group_uid
+        with self._project_lock:
+            return project_uid in self._project_uid_to_group_uid
 
     def exists_group_uid_and_project_slug(
         self, group_uid: int, project_slug: str
     ) -> bool:
-        key = (group_uid, project_slug)
-        return key in self._group_uid_and_project_slug_to_project_uid
+        with self._project_lock:
+            key = (group_uid, project_slug)
+            return key in self._project_key_to_project_uid
 
     def get_group_uid_by_project_uid(self, project_uid: int) -> Optional[int]:
-        return self._project_uid_to_group_uid.get(project_uid)
+        with self._project_lock:
+            return self._project_uid_to_group_uid.get(project_uid)
 
     def get_project_slug(self, project_uid: int) -> Optional[str]:
-        return self._project_uid_to_slug.get(project_uid)
+        with self._project_lock:
+            return self._project_uid_to_slug.get(project_uid)
 
     def get_project_uid(self, group_uid: int, project_slug: str) -> Optional[int]:
-        key = (group_uid, project_slug)
-        return self._group_uid_and_project_slug_to_project_uid.get(key)
+        with self._project_lock:
+            key = (group_uid, project_slug)
+            return self._project_key_to_project_uid.get(key)
 
     def set_project(self, project_uid: int, group_uid: int, project_slug: str) -> None:
-        self._project_uid_to_slug[project_uid] = project_slug
-        self._project_uid_to_group_uid[project_uid] = group_uid
+        with self._project_lock:
+            self._project_uid_to_slug[project_uid] = project_slug
+            self._project_uid_to_group_uid[project_uid] = group_uid
 
-        key = (group_uid, project_slug)
-        self._group_uid_and_project_slug_to_project_uid[key] = project_uid
+            key = (group_uid, project_slug)
+            self._project_key_to_project_uid[key] = project_uid
 
     # ----------------------
     # permission name -> uid
     # ----------------------
 
-    @property
-    def permission_name_to_uid(self):
-        return self._permission_name_to_uid
-
-    @property
-    def permission_uid_to_name(self):
-        return self._permission_uid_to_name
-
     def exists_permission_name(self, name: str) -> bool:
-        return name in self._permission_name_to_uid
+        with self._permission_lock:
+            return name in self._permission_name_to_uid
 
     def exists_permission_uid(self, uid: int) -> bool:
-        return uid in self._permission_uid_to_name
+        with self._permission_lock:
+            return uid in self._permission_uid_to_name
 
     def get_permission_uid(self, name: str) -> Optional[int]:
-        return self._permission_name_to_uid.get(name)
+        with self._permission_lock:
+            return self._permission_name_to_uid.get(name)
 
     def get_permission_name(self, uid: int) -> Optional[str]:
-        return self._permission_uid_to_name.get(uid)
+        with self._permission_lock:
+            return self._permission_uid_to_name.get(uid)
 
     def set_permission(self, uid: int, name: str) -> None:
-        self._permission_name_to_uid[name] = uid
-        self._permission_uid_to_name[uid] = name
+        with self._permission_lock:
+            self._permission_name_to_uid[name] = uid
+            self._permission_uid_to_name[uid] = name

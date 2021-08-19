@@ -14,8 +14,9 @@ class ContextProject(ContextBase):
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
-    ) -> None:
-        await self.database.insert_project(
+        owner_uid: Optional[int] = None,
+    ) -> int:
+        project_uid = await self.database.insert_project(
             group_uid=group_uid,
             slug=slug,
             name=name,
@@ -23,6 +24,10 @@ class ContextProject(ContextBase):
             features=features,
             extra=extra,
         )
+        if owner_uid is not None:
+            permission_uid = self.database.get_maintainer_permission_uid()
+            self.database.insert_project_member(project_uid, owner_uid, permission_uid)
+        return project_uid
 
     async def update_project(
         self,

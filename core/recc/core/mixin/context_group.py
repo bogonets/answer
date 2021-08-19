@@ -13,14 +13,19 @@ class ContextGroup(ContextBase):
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
         extra: Any = None,
-    ) -> None:
-        await self.database.insert_group(
+        owner_uid: Optional[int] = None,
+    ) -> int:
+        group_uid = await self.database.insert_group(
             slug=slug,
             name=name,
             description=description,
             features=features,
             extra=extra,
         )
+        if owner_uid is not None:
+            permission_uid = self.database.get_maintainer_permission_uid()
+            self.database.insert_group_member(group_uid, owner_uid, permission_uid)
+        return group_uid
 
     async def update_group(
         self,
