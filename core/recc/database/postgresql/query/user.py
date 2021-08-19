@@ -40,13 +40,13 @@ INSERT INTO {TABLE_USER} (
 # UPDATE #
 ##########
 
-UPDATE_USER_LAST_LOGIN_BY_USERNAME = f"""
+UPDATE_USER_LAST_LOGIN_BY_UID = f"""
 UPDATE
     {TABLE_USER}
 SET
     last_login=$2
 WHERE
-    username LIKE $1;
+    uid=$1;
 """
 
 UPDATE_USER_PASSWORD_AND_SALT_BY_UID = f"""
@@ -60,17 +60,6 @@ WHERE
     uid=$1;
 """
 
-UPDATE_USER_PASSWORD_AND_SALT_BY_USERNAME = f"""
-UPDATE
-    {TABLE_USER}
-SET
-    password=$2,
-    salt=$3,
-    updated_at=$4
-WHERE
-    username LIKE $1;
-"""
-
 UPDATE_USER_EXTRA_BY_UID = f"""
 UPDATE
     {TABLE_USER}
@@ -81,19 +70,10 @@ WHERE
     uid=$1;
 """
 
-UPDATE_USER_EXTRA_BY_USERNAME = f"""
-UPDATE
-    {TABLE_USER}
-SET
-    extra=$2,
-    updated_at=$3
-WHERE
-    username LIKE $1;
-"""
 
-
-def get_update_user_query_by_username(
-    username: str,
+def get_update_user_query_by_uid(
+    uid: int,
+    username: Optional[str] = None,
     nickname: Optional[str] = None,
     email: Optional[str] = None,
     phone1: Optional[str] = None,
@@ -105,6 +85,7 @@ def get_update_user_query_by_username(
     assert updated_at is not None
     builder = UpdateBuilder(
         if_none_skip=True,
+        username=username,
         nickname=nickname,
         email=email,
         phone1=phone1,
@@ -113,7 +94,7 @@ def get_update_user_query_by_username(
         extra=extra,
         updated_at=updated_at,
     )
-    builder.where().eq(username=username)
+    builder.where().eq(uid=uid)
     return builder.build(TABLE_USER)
 
 
@@ -128,89 +109,59 @@ WHERE
     uid=$1;
 """
 
-DELETE_USER_BY_USERNAME = f"""
-DELETE FROM
-    {TABLE_USER}
-WHERE
-    username LIKE $1;
-"""
-
 ##########
 # SELECT #
 ##########
 
 SELECT_USER_USERNAME_BY_UID = f"""
-SELECT
-    username
-FROM
-    {TABLE_USER}
-WHERE
-    uid=$1;
+SELECT username
+FROM {TABLE_USER}
+WHERE uid=$1;
 """
 
 SELECT_USER_UID_BY_USERNAME = f"""
-SELECT
-    uid
-FROM
-    {TABLE_USER}
-WHERE
-    username LIKE $1;
+SELECT uid
+FROM {TABLE_USER}
+WHERE username LIKE $1;
 """
 
-SELECT_USER_PASSWORD_AND_SALT_BY_USERNAME = f"""
-SELECT
-    password,
-    salt
-FROM
-    {TABLE_USER}
-WHERE
-    username LIKE $1;
+EXISTS_USER_BY_USERNAME = f"""
+SELECT exists(
+    SELECT uid
+    FROM {TABLE_USER}
+    WHERE username LIKE $1
+);
 """
 
-SELECT_USER_EXTRA_BY_USERNAME = f"""
-SELECT
-    extra
-FROM
-    {TABLE_USER}
-WHERE
-    username LIKE $1;
+SELECT_USER_PASSWORD_AND_SALT_BY_UID = f"""
+SELECT password, salt
+FROM {TABLE_USER}
+WHERE uid=$1;
+"""
+
+SELECT_USER_EXTRA_BY_UID = f"""
+SELECT extra
+FROM {TABLE_USER}
+WHERE uid=$1;
 """
 
 SELECT_USER_BY_UID = f"""
-SELECT
-    *
-FROM
-    {TABLE_USER}
-WHERE
-    uid=$1;
-"""
-
-SELECT_USER_BY_USERNAME = f"""
-SELECT
-    *
-FROM
-    {TABLE_USER}
-WHERE
-    username LIKE $1;
+SELECT *
+FROM {TABLE_USER}
+WHERE uid=$1;
 """
 
 SELECT_USER_ALL = f"""
-SELECT
-    *
-FROM
-    {TABLE_USER};
+SELECT *
+FROM {TABLE_USER};
 """
 
 SELECT_USER_ADMIN_COUNT = f"""
-SELECT
-    count
-FROM
-    {VIEW_USER_ADMIN_COUNT};
+SELECT count
+FROM {VIEW_USER_ADMIN_COUNT};
 """
 
 SELECT_USER_COUNT = f"""
-SELECT
-    count(uid) AS count
-FROM
-    {TABLE_USER};
+SELECT count(uid) AS count
+FROM {TABLE_USER};
 """

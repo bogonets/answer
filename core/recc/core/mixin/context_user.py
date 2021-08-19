@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import os
+from os import urandom
 from typing import Optional, List, Tuple, Any
 from recc.crypto.password import encrypt_password
 from recc.session.session import Session
 from recc.database.struct.user import PassInfo, User
 from recc.core.mixin.context_base import ContextBase
-from recc.packet.user import SignupQ
 from recc.variables.database import (
     PASSWORD_HEX_STR_SIZE,
     SALT_BYTE,
@@ -20,7 +19,7 @@ def salting_password(hashed_password: str) -> PassInfo:
         msg2 = f"length is not {PASSWORD_HEX_STR_SIZE} characters."
         raise ValueError(f"{msg1} {msg2}")
 
-    salt = os.urandom(SALT_BYTE)
+    salt = urandom(SALT_BYTE)
     salted_password = encrypt_password(hashed_password, salt)
 
     db_pw = salted_password.hex()
@@ -74,14 +73,22 @@ class ContextUser(ContextBase):
             extra=extra,
         )
 
-    async def signup_guest(self, request: SignupQ) -> None:
+    async def signup_guest(
+        self,
+        username: str,
+        hashed_password: str,
+        nickname: Optional[str] = None,
+        email: Optional[str] = None,
+        phone1: Optional[str] = None,
+        phone2: Optional[str] = None,
+    ) -> None:
         await self.signup(
-            username=request.username,
-            hashed_password=request.password,
-            nickname=request.nickname,
-            email=request.email,
-            phone1=request.phone1,
-            phone2=request.phone2,
+            username=username,
+            hashed_password=hashed_password,
+            nickname=nickname,
+            email=email,
+            phone1=phone1,
+            phone2=phone2,
             is_admin=False,
         )
 
@@ -97,7 +104,8 @@ class ContextUser(ContextBase):
             msg2 = f"length is not {PASSWORD_HEX_STR_SIZE} characters."
             raise ValueError(f"{msg1} {msg2}")
 
-        saved_pass = await self.database.get_user_password_and_salt(username)
+        user_uid = await self.get_user_uid(username)
+        saved_pass = await self.database.get_user_password_and_salt_by_uid(user_uid)
         saved_password = saved_pass.password
         saved_salt = saved_pass.salt
         salt = bytes.fromhex(saved_salt)
@@ -106,37 +114,27 @@ class ContextUser(ContextBase):
         return saved_password == salted_password.hex()
 
     async def signin(self, username: str) -> Tuple[str, str]:
-        if not username:
-            raise ValueError("The `username` argument is empty.")
-
-        await self.database.update_user_last_login_by_username(username)
+        user_uid = await self.get_user_uid(username)
+        await self.database.update_user_last_login_by_uid(user_uid)
         return self.session_factory.create_tokens(username)
 
-    async def login(self, username: str) -> Tuple[str, str]:
-        if not username:
-            raise ValueError("The `username` argument is empty.")
-
-        return await self.signin(username)
-
     async def change_password(self, username: str, hashed_password: str) -> None:
-        if not username:
-            raise ValueError("The `username` argument is empty.")
-
+        user_uid = await self.get_user_uid(username)
         pass_info = salting_password(hashed_password)
-        await self.database.update_user_password_and_salt_by_username(
-            username, pass_info.password, pass_info.salt
+        await self.database.update_user_password_and_salt_by_uid(
+            user_uid, pass_info.password, pass_info.salt
         )
 
     async def remove_user(self, username: str) -> None:
-        if not username:
-            raise ValueError("The `username` argument is empty.")
+        user_uid = await self.get_user_uid(username)
 
         # TODO: Remove related datas. e.g. group_member, project_member
-        await self.database.delete_user_by_name(username)
+        await self.database.delete_user_by_uid(user_uid)
 
     async def update_user(
         self,
-        username: str,
+        uid: int,
+        username: Optional[str] = None,
         nickname: Optional[str] = None,
         email: Optional[str] = None,
         phone1: Optional[str] = None,
@@ -144,11 +142,9 @@ class ContextUser(ContextBase):
         is_admin: Optional[bool] = None,
         extra: Optional[Any] = None,
     ) -> None:
-        if not username:
-            raise ValueError("The `username` argument is empty.")
-
-        await self.database.update_user_by_username(
-            username,
+        await self.database.update_user_by_uid(
+            uid=uid,
+            username=username,
             nickname=nickname,
             email=email,
             phone1=phone1,
@@ -158,9 +154,8 @@ class ContextUser(ContextBase):
         )
 
     async def update_user_extra(self, username: str, extra: Any) -> None:
-        if not username:
-            raise ValueError("The `username` argument is empty.")
-        await self.database.update_user_extra_by_username(username, extra)
+        user_uid = await self.get_user_uid(username)
+        await self.database.update_user_extra_by_uid(user_uid, extra)
 
     async def renew_access_token(self, token: str) -> str:
         return self.session_factory.renew_access_token(token)
@@ -168,28 +163,11 @@ class ContextUser(ContextBase):
     async def get_access_session(self, token: str) -> Session:
         return self.session_factory.decode_access(token)
 
-    async def get_user_by_uid(self, uid: int, remove_sensitive=True) -> User:
+    async def get_user(self, uid: int, remove_sensitive=True) -> User:
         result = await self.database.get_user_by_uid(uid)
         if remove_sensitive:
             result.remove_sensitive()
         return result
-
-    async def get_user_by_username(self, username: str, remove_sensitive=True) -> User:
-        if not username:
-            raise ValueError("The `username` argument is empty.")
-        uid = await self.get_user_uid(username)
-        return await self.get_user_by_uid(uid, remove_sensitive)
-
-    async def get_self(self, session: Session, remove_sensitive=True) -> User:
-        return await self.get_user_by_username(session.audience, remove_sensitive)
-
-    async def get_user_extra(self, username: str) -> Any:
-        if not username:
-            raise ValueError("The `username` argument is empty.")
-        return await self.database.get_user_extra(username)
-
-    async def get_self_extra(self, session: Session) -> Any:
-        return await self.get_user_extra(session.audience)
 
     async def get_users(self, remove_sensitive=True) -> List[User]:
         result = list()
@@ -200,7 +178,5 @@ class ContextUser(ContextBase):
         return result
 
     async def exist_user(self, username: str) -> bool:
-        if not username:
-            raise ValueError("The `username` argument is empty.")
-
-        return await self.database.exist_user(username)
+        # Do not use cache's uid.
+        return await self.database.exist_user_by_username(username)

@@ -28,8 +28,8 @@ class DbUser(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_user_last_login_by_username(
-        self, username: str, last_login=datetime.utcnow()
+    async def update_user_last_login_by_uid(
+        self, uid: int, last_login=datetime.utcnow()
     ) -> None:
         raise NotImplementedError
 
@@ -40,27 +40,16 @@ class DbUser(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_user_password_and_salt_by_username(
-        self, username: str, password: str, salt: str, updated_at=datetime.utcnow()
-    ) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
     async def update_user_extra_by_uid(
         self, uid: int, extra: Any, updated_at=datetime.utcnow()
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def update_user_extra_by_username(
-        self, username: str, extra: Any, updated_at=datetime.utcnow()
-    ) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def update_user_by_username(
+    async def update_user_by_uid(
         self,
-        username: str,
+        uid: int,
+        username: Optional[str] = None,
         nickname: Optional[str] = None,
         email: Optional[str] = None,
         phone1: Optional[str] = None,
@@ -76,10 +65,6 @@ class DbUser(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def delete_user_by_name(self, username: str) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
     async def get_user_username_by_uid(self, uid: int) -> str:
         raise NotImplementedError
 
@@ -88,23 +73,19 @@ class DbUser(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def exist_user(self, username: str) -> bool:
+    async def exist_user_by_username(self, username: str) -> bool:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_user_password_and_salt(self, username: str) -> PassInfo:
+    async def get_user_password_and_salt_by_uid(self, uid: int) -> PassInfo:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_user_extra(self, username: str) -> Any:
+    async def get_user_extra_by_uid(self, uid: int) -> Any:
         raise NotImplementedError
 
     @abstractmethod
     async def get_user_by_uid(self, uid: int) -> User:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def get_user_by_username(self, username: str) -> User:
         raise NotImplementedError
 
     @abstractmethod

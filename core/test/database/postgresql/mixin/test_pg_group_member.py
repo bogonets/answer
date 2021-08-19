@@ -18,8 +18,12 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
         user2_name = "user2"
         await self.db.create_user(user1_name, "pass1", "salt1")
         await self.db.create_user(user2_name, "pass2", "salt2")
-        self.user1 = await self.db.get_user_by_username(user1_name)
-        self.user2 = await self.db.get_user_by_username(user2_name)
+
+        self.user1_uid = await self.db.get_user_uid_by_username(user1_name)
+        self.user2_uid = await self.db.get_user_uid_by_username(user2_name)
+
+        self.user1 = await self.db.get_user_by_uid(self.user1_uid)
+        self.user2 = await self.db.get_user_by_uid(self.user2_uid)
 
     async def test_create_and_get(self):
         await self.db.create_group_member(self.anonymous, self.user1.uid, self.guest)

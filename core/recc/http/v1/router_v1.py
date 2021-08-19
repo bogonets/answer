@@ -319,7 +319,9 @@ class RouterV1:
         username = session.audience
         logger.info(f"on_get_users(session={username})")
 
-        session_user = await self.context.get_self(session)
+        audience_uid = await self.context.get_user_uid(session.audience)
+        session_user = await self.context.get_user(audience_uid)
+
         if not session_user.is_admin:
             raise HTTPUnauthorized(reason="Administrator privileges are required")
 
@@ -364,8 +366,9 @@ class RouterV1:
         email = json.get("email")
         phone1 = json.get("telephone")
         logger.info(f"on_set_user(session={username},new_user={user_id})")
+        user_uid = await self.context.get_user_uid(user_id)
         await self.context.update_user(
-            user_id,
+            uid=user_uid,
             email=email,
             phone1=phone1,
         )
@@ -378,7 +381,8 @@ class RouterV1:
         test_username = request.match_info[k_user]
         logger.info(f"on_exist_user(session={username},test={test_username})")
 
-        session_user = await self.context.get_self(session)
+        audience_uid = await self.context.get_user_uid(session.audience)
+        session_user = await self.context.get_user(audience_uid)
         if not session_user.is_admin:
             raise HTTPUnauthorized(reason="Administrator privileges are required")
 
@@ -392,13 +396,16 @@ class RouterV1:
         request_username = request.match_info[k_user]
         logger.info(f"on_get_user(session={username},user={request_username})")
 
-        session_user = await self.context.get_self(session)
+        audience_uid = await self.context.get_user_uid(session.audience)
+        session_user = await self.context.get_user(audience_uid)
+
         if session.audience == request_username:
             user = session_user
         else:
             if not session_user.is_admin:
                 raise HTTPUnauthorized(reason="Administrator privileges are required")
-            user = await self.context.get_user_by_username(request_username)
+            user_uid = await self.context.get_user_uid(request_username)
+            user = await self.context.get_user(user_uid)
 
         result = self._user_to_v1_dict(user)
         return response_ok_without_detail(name, {"obj": result, "t": "get-user"})

@@ -154,11 +154,18 @@ class PgPermissionTestCase(PostgresqlTestCase):
         await self.db.create_user(user3_name, "pass", "salt")
         await self.db.create_user(user4_name, "pass", "salt")
         await self.db.create_user(user5_name, "pass", "salt")
-        user1 = await self.db.get_user_by_username(user1_name)
-        user2 = await self.db.get_user_by_username(user2_name)
-        user3 = await self.db.get_user_by_username(user3_name)
-        user4 = await self.db.get_user_by_username(user4_name)
-        user5 = await self.db.get_user_by_username(user5_name)
+
+        user1_uid = await self.db.get_user_uid_by_username(user1_name)
+        user2_uid = await self.db.get_user_uid_by_username(user2_name)
+        user3_uid = await self.db.get_user_uid_by_username(user3_name)
+        user4_uid = await self.db.get_user_uid_by_username(user4_name)
+        user5_uid = await self.db.get_user_uid_by_username(user5_name)
+
+        user1 = await self.db.get_user_by_uid(user1_uid)
+        user2 = await self.db.get_user_by_uid(user2_uid)
+        user3 = await self.db.get_user_by_uid(user3_uid)
+        user4 = await self.db.get_user_by_uid(user4_uid)
+        user5 = await self.db.get_user_by_uid(user5_uid)
 
         group1_name = "group1"
         group2_name = "group2"

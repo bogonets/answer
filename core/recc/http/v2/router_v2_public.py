@@ -70,10 +70,17 @@ class RouterV2Public:
         return await self._already()
 
     @parameter_matcher()
-    async def post_signup(self, signup: SignupQ) -> None:
+    async def post_signup(self, body: SignupQ) -> None:
         if not self.context.config.public_signup:
             raise HTTPServiceUnavailable(reason="You cannot signup without permission")
-        await self.context.signup_guest(signup)
+        await self.context.signup_guest(
+            username=body.username,
+            hashed_password=body.password,
+            nickname=body.nickname,
+            email=body.email,
+            phone1=body.phone1,
+            phone2=body.phone2,
+        )
 
     @parameter_matcher()
     async def post_signup_admin(self, signup: SignupQ) -> None:
@@ -93,7 +100,8 @@ class RouterV2Public:
             raise HTTPBadRequest(reason=str(e))
 
         access, refresh = await self.context.signin(username)
-        db_user = await self.context.get_user_by_username(username)
+        user_uid = await self.context.get_user_uid(username)
+        db_user = await self.context.get_user(user_uid)
         assert db_user.username is not None
         user = UserA(
             username=db_user.username,

@@ -56,7 +56,11 @@ class RouterV2:
             authorization = request.headers[AUTHORIZATION]
             bearer = BearerAuth.decode_from_authorization_header(authorization)
             session = await self.context.get_access_session(bearer.token)
-            session_user = await self.context.get_self(session, remove_sensitive=False)
+
+            audience_uid = await self.context.get_user_uid(session.audience)
+            session_user = await self.context.get_user(
+                audience_uid, remove_sensitive=False
+            )
 
             request[c.session] = session
             request[c.http_session] = HttpSession(session, session_user)
@@ -174,7 +178,7 @@ class RouterV2:
     @parameter_matcher()
     async def patch_self(self, hs: HttpSession, body: UpdateUserQ) -> None:
         await self.context.update_user(
-            hs.username,
+            uid=hs.uid,
             email=body.email,
             phone1=body.phone1,
             phone2=body.phone2,
@@ -396,7 +400,8 @@ class RouterV2:
                 last_login=hs.last_login,
             )
         else:
-            db_user = await self.context.get_user_by_username(user)
+            user_uid = await self.context.get_user_uid(user)
+            db_user = await self.context.get_user(user_uid)
             assert db_user.username
             return UserA(
                 username=db_user.username,
@@ -415,8 +420,9 @@ class RouterV2:
     async def patch_users_puser(self, user: str, body: UpdateUserQ) -> None:
         body.strip()
         body.empty_is_none()
+        user_uid = await self.context.get_user_uid(user)
         await self.context.update_user(
-            user,
+            uid=user_uid,
             nickname=body.nickname,
             email=body.email,
             phone1=body.phone1,
