@@ -1,54 +1,34 @@
 <i18n lang="yaml">
 en:
   label:
-    slug: "Slug"
     name: "Name"
     description: "Description"
     features: "Features"
+    permissions: "Permissions"
   hint:
-    slug: "Group slug to be used in the URL."
-    name: "The name of the group as it is displayed on the screen."
-    description: "A specific description of the group."
-    features: "A list of features to apply to the group."
-  visibility:
-    label: "Visibility level"
-    hint: "Who will be able to see this group?"
-    private:
-      label: "Private"
-      hint: "The group and its projects can only be viewed by members."
-    internal:
-      label: "Internal"
-      hint: "The group and any internal projects can be viewed by any logged in user."
-    public:
-      label: "Public"
-      hint: "The group and any public projects can be viewed without any authentication."
+    name: "The name of the permission as it is displayed on the screen."
+    description: "A specific description of the permission."
+    features: "A list of features to apply to the permission."
   no_matching: "No results matching \"{search}\". Press {key} to create a new one."
   cancel: "Cancel"
   submit: "Submit"
 
 ko:
   label:
-    slug: "슬러그"
     name: "이름"
     description: "설명"
     features: "기능"
+    permissions: "권한"
   hint:
-    slug: "URL 경로에 사용될 그룹 슬러그."
-    name: "화면에 출력되는 그룹명."
-    description: "그룹의 구체적인 설명."
-    features: "그룹에 적용할 기능 목록 입니다."
-  visibility:
-    label: "가시성 수준"
-    hint: "누가 이 그룹을 볼 수 있나요?"
-    private:
-      label: "비공개"
-      hint: "그룹 및 프로젝트는 회원만 볼 수 있습니다."
-    internal:
-      label: "내부"
-      hint: "그룹 및 모든 내부 프로젝트는 로그인한 모든 사용자가 볼 수 있습니다."
-    public:
-      label: "공개"
-      hint: "그룹 및 모든 공개 프로젝트는 인증 없이 볼 수 있습니다."
+    name: "화면에 출력되는 권한명."
+    description: "프로젝트의 구체적인 설명."
+    features: "프로젝트에 적용할 기능 목록 입니다."
+    layout: "레이아웃"
+    storage: "저장소"
+    manager: "관리자"
+    graph: "그래프"
+    member: "회원"
+    setting: "설정"
   no_matching: "\"{search}\" 와 일치하는 결과가 없습니다. {key} 키를 눌러 추가할 수 있습니다."
   cancel: "취소"
   submit: "제출"
@@ -57,26 +37,13 @@ ko:
 <template>
   <v-form ref="form" v-model="valid">
 
-    <p :class="subtitleClass">{{ $t('label.slug') }}</p>
-    <v-text-field
-        dense
-        :value="value.slug"
-        @input="inputSlug"
-        :rules="rules.slug"
-        :disabled="disableSlug"
-        :filled="disableSlug"
-        :persistent-hint="!disableSlug"
-        :hide-details="disableSlug"
-        :prefix="slugPrefix"
-        :hint="$t('hint.slug')"
-    ></v-text-field>
-
     <p :class="subtitleClass">{{ $t('label.name') }}</p>
     <v-text-field
         dense
         persistent-hint
         :value="value.name"
         @input="inputName"
+        :rules="rules.name"
         :hint="$t('hint.name')"
     ></v-text-field>
 
@@ -117,6 +84,16 @@ ko:
       </template>
     </v-combobox>
 
+    <p :class="subtitleClass">{{ $t('label.permissions') }}</p>
+    <v-card flat outlined class="mb-4">
+      <v-card-text class="pa-0">
+        <table-permissions
+            :value="value"
+            @input="inputPerms"
+        ></table-permissions>
+      </v-card-text>
+    </v-card>
+
     <v-row v-if="!hideButtons" class="mt-2" no-gutters>
       <v-spacer></v-spacer>
       <v-btn
@@ -144,36 +121,43 @@ ko:
 <script lang="ts">
 import {Component, Prop, Ref, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import TablePermissions, {Perms} from '@/components/TablePermissions.vue';
 import {VForm} from 'vuetify/lib/components/VForm';
-import {GROUP_SLUG_RULES} from '@/rules';
+import {PERMISSION_NAME_RULES} from '@/rules';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {CAPTION_CLASS} from '@/styles/caption';
 
-export class GroupItem {
-  slug = '';
+export class PermissionItem extends Perms {
   name = '';
   description = '';
   features = [] as Array<string>;
 
   fromObject(obj?: any) {
-    this.slug = obj?.slug || '';
     this.name = obj?.name || '';
     this.description = obj?.description || '';
     this.features = obj?.features || [];
+    super.fromObject(obj);
   }
 }
 
-@Component
-export default class FormGroup extends VueBase {
+@Component({
+  components: {
+    TablePermissions,
+  }
+})
+export default class FormPermission extends VueBase {
   private readonly subtitleClass = SUBTITLE_CLASS;
   private readonly captionClass = CAPTION_CLASS;
 
   private readonly rules = {
-    slug: GROUP_SLUG_RULES,
+    name: PERMISSION_NAME_RULES,
   };
 
   @Prop({type: Boolean})
   readonly loading!: boolean;
+
+  @Prop({type: Boolean})
+  readonly disableGroup!: boolean;
 
   @Prop({type: Boolean})
   readonly disableSlug!: boolean;
@@ -183,9 +167,6 @@ export default class FormGroup extends VueBase {
 
   @Prop({type: Boolean})
   readonly disableValidate!: boolean;
-
-  @Prop({type: Boolean})
-  readonly hideOriginPrefix!: boolean;
 
   @Prop({type: Boolean})
   readonly hideButtons!: boolean;
@@ -199,19 +180,15 @@ export default class FormGroup extends VueBase {
   @Prop({type: Array})
   readonly featureItems!: Array<string>;
 
-  @Prop({type: Object, default: () => new GroupItem()})
-  readonly value!: GroupItem;
+  @Prop({type: Object, default: () => new PermissionItem()})
+  readonly value!: PermissionItem;
 
   @Ref()
   readonly form!: VForm;
 
   valid = false;
   searchFeature = '';
-
-  inputSlug(event: string) {
-    this.value.slug = event;
-    this.input();
-  }
+  perms = new PermissionItem();
 
   inputName(event: string) {
     this.value.name = event;
@@ -228,12 +205,9 @@ export default class FormGroup extends VueBase {
     this.input();
   }
 
-  get slugPrefix(): undefined | string {
-    if (this.hideOriginPrefix) {
-      return undefined;
-    }
-    const origin = window.location.origin;
-    return origin + (origin[origin.length-1] === '/' ? '' : '/')
+  inputPerms(event: Perms) {
+    (this.value as Perms).fromObject(event);
+    this.input();
   }
 
   get disableSubmit(): boolean {
@@ -270,3 +244,6 @@ export default class FormGroup extends VueBase {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+</style>

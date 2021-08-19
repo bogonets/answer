@@ -179,14 +179,7 @@ import VueBase from '@/base/VueBase';
 import {VForm} from 'vuetify/lib/components/VForm';
 import {VTextField} from 'vuetify/lib/components/VTextField';
 import {USERNAME_RULES, PASSWORD_RULES, PHONE_RULES, EMAIL_RULES} from '@/rules';
-
-const SUBTITLE_CLASSES = [
-  'text-subtitle-2',
-  'text--secondary',
-  'font-weight-bold',
-  'my-2',
-];
-const SUBTITLE_CLASS = SUBTITLE_CLASSES.join(' ');
+import {SUBTITLE_CLASS} from '@/styles/subtitle';
 
 export class UserItem {
   username = '';
@@ -210,7 +203,8 @@ export class UserItem {
 
 @Component
 export default class FormUser extends VueBase {
-  private readonly subtitleClass = SUBTITLE_CLASS
+  private readonly subtitleClass = SUBTITLE_CLASS;
+
   private readonly rules = {
     username: USERNAME_RULES,
     password: PASSWORD_RULES,

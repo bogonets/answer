@@ -16,6 +16,10 @@ export const GROUP_SLUG_RULES = [
     slugFormat,
 ];
 
+export const PERMISSION_NAME_RULES = [
+    requiredField,
+];
+
 export const PROJECT_SLUG_RULES = [
     requiredField,
     slugFormat,

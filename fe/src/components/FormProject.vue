@@ -124,7 +124,7 @@ ko:
     >
       <template v-slot:no-data>
         <p>
-          <i18n class="py-1 px-4 text-caption text--secondary" path="no_matching" tag="span">
+          <i18n :class="captionClass" path="no_matching" tag="span">
             <template #search>
               <strong>{{ searchFeature }}</strong>
             </template>
@@ -165,14 +165,8 @@ import {Component, Prop, Ref, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {VForm} from 'vuetify/lib/components/VForm';
 import {GROUP_SLUG_RULES, PROJECT_SLUG_RULES} from '@/rules';
-
-const SUBTITLE_CLASSES = [
-  'text-subtitle-2',
-  'text--secondary',
-  'font-weight-bold',
-  'my-2',
-];
-const SUBTITLE_CLASS = SUBTITLE_CLASSES.join(' ');
+import {SUBTITLE_CLASS} from '@/styles/subtitle';
+import {CAPTION_CLASS} from '@/styles/caption';
 
 export class ProjectItem {
   group = '';
@@ -192,7 +186,9 @@ export class ProjectItem {
 
 @Component
 export default class FormProject extends VueBase {
-  private readonly subtitleClass = SUBTITLE_CLASS
+  private readonly subtitleClass = SUBTITLE_CLASS;
+  private readonly captionClass = CAPTION_CLASS;
+
   private readonly rules = {
     groupSlug: GROUP_SLUG_RULES,
     projectSlug: PROJECT_SLUG_RULES,

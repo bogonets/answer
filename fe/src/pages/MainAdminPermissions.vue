@@ -15,7 +15,7 @@ en:
 
 ko:
   search_label: "이름 또는 설명을 필터링할 수 있습니다."
-  new_item: "새로운 프로젝트"
+  new_item: "새로운 권한"
   headers:
     group: "그룹"
     slug: "슬러그"
