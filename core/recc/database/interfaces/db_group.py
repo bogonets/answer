@@ -12,7 +12,7 @@ class DbGroup(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    async def create_group(
+    async def insert_group(
         self,
         slug: str,
         name: Optional[str] = None,

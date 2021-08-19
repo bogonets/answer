@@ -61,7 +61,7 @@ class ContextUser(ContextBase):
         if not username:
             raise ValueError("The `username` argument is empty.")
         pass_info = salting_password(hashed_password)
-        return await self.database.create_user(
+        return await self.database.insert_user(
             username,
             pass_info.password,
             pass_info.salt,

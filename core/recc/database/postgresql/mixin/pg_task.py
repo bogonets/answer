@@ -29,7 +29,7 @@ from recc.database.postgresql.query.task import (
 
 class PgTask(DbTask, PgBase):
     @overrides
-    async def create_task(
+    async def insert_task(
         self,
         project_uid: int,
         slug: str,
@@ -65,7 +65,7 @@ class PgTask(DbTask, PgBase):
             created_at,
         )
         params_msg = f"project_uid={project_uid},name={name}"
-        logger.info(f"create_task({params_msg}) ok.")
+        logger.info(f"insert_task({params_msg}) ok.")
 
     @overrides
     async def update_task_description_by_uid(

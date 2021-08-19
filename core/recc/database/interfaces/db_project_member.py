@@ -11,7 +11,7 @@ class DbProjectMember(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    async def create_project_member(
+    async def insert_project_member(
         self, project_uid: int, user_uid: int, permission_uid: int
     ) -> None:
         raise NotImplementedError

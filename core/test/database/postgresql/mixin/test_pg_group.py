@@ -21,8 +21,8 @@ class PgGroupTestCase(PostgresqlTestCase):
         desc2 = "description2"
         created_at1 = datetime.utcnow() + timedelta(days=1)
         created_at2 = datetime.utcnow() + timedelta(days=2)
-        await self.db.create_group(slug1, name1, desc1, created_at=created_at1)
-        await self.db.create_group(slug2, name2, desc2, created_at=created_at2)
+        await self.db.insert_group(slug1, name1, desc1, created_at=created_at1)
+        await self.db.insert_group(slug2, name2, desc2, created_at=created_at2)
         group1_uid = await self.db.get_group_uid_by_slug(slug1)
         group2_uid = await self.db.get_group_uid_by_slug(slug2)
         group1 = await self.db.get_group_by_uid(group1_uid)
@@ -54,7 +54,7 @@ class PgGroupTestCase(PostgresqlTestCase):
     async def test_update(self):
         slug1 = "slug1"
         name1 = "name1"
-        await self.db.create_group(slug1, name1)
+        await self.db.insert_group(slug1, name1)
         group1_uid = await self.db.get_group_uid_by_slug(slug1)
 
         desc1 = "description1"
@@ -77,7 +77,7 @@ class PgGroupTestCase(PostgresqlTestCase):
 
     async def test_delete(self):
         slug1 = "group1"
-        await self.db.create_group(slug1)
+        await self.db.insert_group(slug1)
         group1_uid = await self.db.get_group_uid_by_slug(slug1)
 
         groups1 = await self.db.get_groups()

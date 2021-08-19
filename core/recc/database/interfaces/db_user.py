@@ -12,7 +12,7 @@ class DbUser(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    async def create_user(
+    async def insert_user(
         self,
         username: str,
         password: str,

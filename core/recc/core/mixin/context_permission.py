@@ -25,7 +25,7 @@ class ContextPermission(ContextBase):
         r_setting=False,
         w_setting=False,
     ) -> None:
-        await self.database.create_permission(
+        await self.database.insert_permission(
             name=name,
             description=description,
             features=features,

@@ -12,7 +12,7 @@ class DbInfo(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    async def create_info(
+    async def insert_info(
         self,
         key: str,
         value: str,

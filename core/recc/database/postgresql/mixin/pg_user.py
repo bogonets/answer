@@ -28,7 +28,7 @@ from recc.database.postgresql.query.user import (
 
 class PgUser(DbUser, PgBase):
     @overrides
-    async def create_user(
+    async def insert_user(
         self,
         username: str,
         password: str,
@@ -58,7 +58,7 @@ class PgUser(DbUser, PgBase):
         params_msg = f"username={username}"
         if is_admin:
             params_msg += ",admin"
-        logger.info(f"create_user({params_msg}) ok.")
+        logger.info(f"insert_user({params_msg}) ok.")
 
     @overrides
     async def update_user_last_login_by_uid(

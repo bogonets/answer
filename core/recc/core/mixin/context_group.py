@@ -14,7 +14,7 @@ class ContextGroup(ContextBase):
         features: Optional[List[str]] = None,
         extra: Any = None,
     ) -> None:
-        await self.database.create_group(
+        await self.database.insert_group(
             slug=slug,
             name=name,
             description=description,

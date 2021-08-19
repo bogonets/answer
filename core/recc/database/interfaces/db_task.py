@@ -12,7 +12,7 @@ class DbTask(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    async def create_task(
+    async def insert_task(
         self,
         project_uid: int,
         slug: str,

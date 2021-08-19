@@ -19,7 +19,7 @@ from recc.database.postgresql.query.group_member import (
 
 class PgGroupMember(DbGroupMember, PgBase):
     @overrides
-    async def create_group_member(
+    async def insert_group_member(
         self, group_uid: int, user_uid: int, permission_uid: int
     ) -> None:
         query = INSERT_GROUP_MEMBER
@@ -27,7 +27,7 @@ class PgGroupMember(DbGroupMember, PgBase):
         params_msg1 = f"group_uid={group_uid},user_uid={user_uid}"
         params_msg2 = f"permission_uid={permission_uid}"
         params_msg = f"{params_msg1},{params_msg2}"
-        logger.info(f"create_group_member({params_msg}) ok.")
+        logger.info(f"insert_group_member({params_msg}) ok.")
 
     @overrides
     async def update_group_member_permission(

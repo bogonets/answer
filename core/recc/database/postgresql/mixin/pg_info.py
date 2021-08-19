@@ -21,7 +21,7 @@ from recc.database.postgresql.query.info import (
 
 class PgInfo(DbInfo, PgBase):
     @overrides
-    async def create_info(
+    async def insert_info(
         self,
         key: str,
         value: str,
@@ -33,7 +33,7 @@ class PgInfo(DbInfo, PgBase):
         except UniqueViolationError:
             raise KeyError(f"The `{key}` key already exists")
         params_msg = f"key={key},value={value}"
-        logger.info(f"create_info({params_msg}) ok")
+        logger.info(f"insert_info({params_msg}) ok")
 
     @overrides
     async def update_info_value_by_key(

@@ -23,7 +23,7 @@ from recc.database.postgresql.query.layout import (
 
 class PgLayout(DbLayout, PgBase):
     @overrides
-    async def create_layout(
+    async def insert_layout(
         self,
         project_uid: int,
         name: str,
@@ -34,7 +34,7 @@ class PgLayout(DbLayout, PgBase):
         query = INSERT_LAYOUT
         await self.execute(query, project_uid, name, description, extra, created_at)
         params_msg = f"project_uid={project_uid},name={name}"
-        logger.info(f"create_layout({params_msg}) ok.")
+        logger.info(f"insert_layout({params_msg}) ok.")
 
     @overrides
     async def update_layout_description_by_uid(

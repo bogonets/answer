@@ -10,7 +10,7 @@ class PgLayoutTestCase(PostgresqlTestCase):
         await super().setUp()
 
         self.project_slug = "project"
-        await self.db.create_project(self.anonymous_group_uid, self.project_slug)
+        await self.db.insert_project(self.anonymous_group_uid, self.project_slug)
         self.project_uid = await self.db.get_project_uid_by_group_uid_and_slug(
             self.anonymous_group_uid, self.project_slug
         )
@@ -21,8 +21,8 @@ class PgLayoutTestCase(PostgresqlTestCase):
         name2 = "layout2"
         created_at1 = datetime.utcnow() + timedelta(days=1)
         created_at2 = datetime.utcnow() + timedelta(days=2)
-        await self.db.create_layout(self.project.uid, name1, created_at=created_at1)
-        await self.db.create_layout(self.project.uid, name2, created_at=created_at2)
+        await self.db.insert_layout(self.project.uid, name1, created_at=created_at1)
+        await self.db.insert_layout(self.project.uid, name2, created_at=created_at2)
         layout1 = await self.db.get_layout_by_name(self.project.uid, name1)
         layout2 = await self.db.get_layout_by_name(self.project.uid, name2)
 
@@ -47,8 +47,8 @@ class PgLayoutTestCase(PostgresqlTestCase):
     async def test_update_description(self):
         name1 = "layout1"
         name2 = "layout2"
-        await self.db.create_layout(self.project.uid, name1)
-        await self.db.create_layout(self.project.uid, name2)
+        await self.db.insert_layout(self.project.uid, name1)
+        await self.db.insert_layout(self.project.uid, name2)
         layout1_uid = (await self.db.get_layout_by_name(self.project.uid, name1)).uid
 
         desc1 = "description1"
@@ -70,8 +70,8 @@ class PgLayoutTestCase(PostgresqlTestCase):
     async def test_update_extra(self):
         name1 = "layout1"
         name2 = "layout2"
-        await self.db.create_layout(self.project.uid, name1)
-        await self.db.create_layout(self.project.uid, name2)
+        await self.db.insert_layout(self.project.uid, name1)
+        await self.db.insert_layout(self.project.uid, name2)
         layout1_uid = (await self.db.get_layout_by_name(self.project.uid, name1)).uid
 
         extra1 = {"a": 1, "b": 2}
@@ -93,8 +93,8 @@ class PgLayoutTestCase(PostgresqlTestCase):
     async def test_delete(self):
         name1 = "layout1"
         name2 = "layout2"
-        await self.db.create_layout(self.project.uid, name1)
-        await self.db.create_layout(self.project.uid, name2)
+        await self.db.insert_layout(self.project.uid, name1)
+        await self.db.insert_layout(self.project.uid, name2)
         layout1_uid = (await self.db.get_layout_by_name(self.project.uid, name1)).uid
 
         layouts1 = await self.db.get_layout_by_project_uid(self.project.uid)

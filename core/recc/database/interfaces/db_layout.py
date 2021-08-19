@@ -12,7 +12,7 @@ class DbLayout(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    async def create_layout(
+    async def insert_layout(
         self,
         project_uid: int,
         name: str,

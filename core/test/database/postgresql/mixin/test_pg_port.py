@@ -10,14 +10,14 @@ class PgPortTestCase(PostgresqlTestCase):
         await super().setUp()
 
         self.project_slug = "project"
-        await self.db.create_project(self.anonymous_group_uid, self.project_slug)
+        await self.db.insert_project(self.anonymous_group_uid, self.project_slug)
         self.project_uid = await self.db.get_project_uid_by_group_uid_and_slug(
             self.anonymous_group_uid, self.project_slug
         )
         self.project = await self.db.get_project_by_uid(self.project_uid)
 
         self.task_slug = "task"
-        await self.db.create_task(self.project.uid, self.task_slug)
+        await self.db.insert_task(self.project.uid, self.task_slug)
         self.task = await self.db.get_task_by_slug(self.project.uid, self.task_slug)
 
     async def test_create_and_get(self):
@@ -25,8 +25,8 @@ class PgPortTestCase(PostgresqlTestCase):
         number2 = 200
         created_at1 = datetime.utcnow() + timedelta(days=1)
         created_at2 = datetime.utcnow() + timedelta(days=2)
-        await self.db.create_port(number1, created_at=created_at1)
-        await self.db.create_port(
+        await self.db.insert_port(number1, created_at=created_at1)
+        await self.db.insert_port(
             number2,
             self.anonymous_group_uid,
             self.project.uid,
@@ -64,7 +64,7 @@ class PgPortTestCase(PostgresqlTestCase):
 
     async def test_update_description(self):
         number = 100
-        await self.db.create_port(number)
+        await self.db.insert_port(number)
 
         desc = "description"
         updated_at = datetime.utcnow()
@@ -76,7 +76,7 @@ class PgPortTestCase(PostgresqlTestCase):
 
     async def test_update_extra(self):
         number = 100
-        await self.db.create_port(number)
+        await self.db.insert_port(number)
 
         extra = {"a": 1, "b": 2}
         updated_at = datetime.utcnow()
@@ -89,7 +89,7 @@ class PgPortTestCase(PostgresqlTestCase):
     async def test_update(self):
         number = 100
         created_at = datetime.utcnow()
-        await self.db.create_port(number, created_at=created_at)
+        await self.db.insert_port(number, created_at=created_at)
         port1 = await self.db.get_port_by_number(number)
         self.assertEqual(number, port1.number)
         self.assertIsNone(port1.group_uid)
@@ -127,8 +127,8 @@ class PgPortTestCase(PostgresqlTestCase):
     async def test_delete(self):
         number1 = 100
         number2 = 200
-        await self.db.create_port(number1)
-        await self.db.create_port(number2)
+        await self.db.insert_port(number1)
+        await self.db.insert_port(number2)
         self.assertEqual(2, len(await self.db.get_ports()))
         await self.db.delete_port_by_number(number1)
         await self.db.delete_port_by_number(number2)

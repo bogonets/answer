@@ -23,7 +23,7 @@ from recc.database.postgresql.query.port import (
 
 class PgPort(DbPort, PgBase):
     @overrides
-    async def create_port(
+    async def insert_port(
         self,
         number: int,
         group_uid: Optional[int] = None,
@@ -45,7 +45,7 @@ class PgPort(DbPort, PgBase):
             created_at,
         )
         params_msg = f"number={number}"
-        logger.info(f"create_port({params_msg}) ok.")
+        logger.info(f"insert_port({params_msg}) ok.")
 
     @overrides
     async def update_port_description_by_number(

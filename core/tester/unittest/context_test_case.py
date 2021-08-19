@@ -31,7 +31,7 @@ class ContextTestCase(AsyncTestCase):
         self.group_slug = group.slug
         self.project_name = "test_project"
         self.task_name = "test_task"
-        await self.context.database.create_project(group_uid, self.project_name)
+        await self.context.database.insert_project(group_uid, self.project_name)
 
         self.client = await self.context.run_task(
             self.group_slug, self.project_name, self.task_name,

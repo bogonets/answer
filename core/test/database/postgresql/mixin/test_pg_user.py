@@ -18,7 +18,7 @@ class PgUserTestCase(PostgresqlTestCase):
         is_admin = False
         created_at = datetime.utcnow()
 
-        await self.db.create_user(
+        await self.db.insert_user(
             username,
             password,
             salt,
@@ -50,7 +50,7 @@ class PgUserTestCase(PostgresqlTestCase):
         username = "admin"
         password = "password"
         salt = "salt"
-        await self.db.create_user(username, password, salt)
+        await self.db.insert_user(username, password, salt)
 
         last_login = datetime.utcnow() + timedelta(days=2)
         user_uid = await self.db.get_user_uid_by_username(username)
@@ -64,7 +64,7 @@ class PgUserTestCase(PostgresqlTestCase):
         username = "admin"
         password = "password"
         salt = "salt"
-        await self.db.create_user(username, password, salt)
+        await self.db.insert_user(username, password, salt)
         user_uid = await self.db.get_user_uid_by_username(username)
         pass_info = await self.db.get_user_password_and_salt_by_uid(user_uid)
         self.assertEqual(password, pass_info.password)
@@ -74,7 +74,7 @@ class PgUserTestCase(PostgresqlTestCase):
         username = "admin"
         password = "password"
         salt = "salt"
-        await self.db.create_user(username, password, salt)
+        await self.db.insert_user(username, password, salt)
 
         extra = {"key1": 100, "key2": 200}
         updated_at = datetime.utcnow() + timedelta(days=1)
@@ -92,7 +92,7 @@ class PgUserTestCase(PostgresqlTestCase):
         username = "admin"
         password = "password"
         salt = "salt"
-        await self.db.create_user(username, password, salt)
+        await self.db.insert_user(username, password, salt)
 
         update_phone2 = "010-0000-0001"
         updated_at = datetime.utcnow() + timedelta(days=3)
@@ -115,7 +115,7 @@ class PgUserTestCase(PostgresqlTestCase):
         username = "admin"
         password = "password"
         salt = "salt"
-        await self.db.create_user(username, password, salt)
+        await self.db.insert_user(username, password, salt)
 
         self.assertTrue(await self.db.exist_user_by_username(username))
         user_uid = await self.db.get_user_uid_by_username(username)
@@ -129,7 +129,7 @@ class PgUserTestCase(PostgresqlTestCase):
         username = "admin"
         self.assertFalse(await self.db.exist_user_by_username(username))
         self.assertFalse(await self.db.exists_admin_user())
-        await self.db.create_user(username, "1234", "__unknown_salt__", is_admin=True)
+        await self.db.insert_user(username, "1234", "__unknown_salt__", is_admin=True)
         self.assertTrue(await self.db.exist_user_by_username(username))
         self.assertTrue(await self.db.exists_admin_user())
         self.assertTrue(await self.db.exists_admin_user())

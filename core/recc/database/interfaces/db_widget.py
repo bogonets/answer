@@ -12,7 +12,7 @@ class DbWidget(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    async def create_widget(
+    async def insert_widget(
         self,
         layout_uid: int,
         name: str,

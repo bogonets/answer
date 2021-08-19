@@ -9,7 +9,7 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
         await super().setUp()
 
         self.project_slug = "project"
-        await self.db.create_project(self.anonymous_group_uid, self.project_slug)
+        await self.db.insert_project(self.anonymous_group_uid, self.project_slug)
         self.project_uid = await self.db.get_project_uid_by_group_uid_and_slug(
             self.anonymous_group_uid, self.project_slug
         )
@@ -22,8 +22,8 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
 
         user1_name = "user1"
         user2_name = "user2"
-        await self.db.create_user(user1_name, "pass1", "salt1")
-        await self.db.create_user(user2_name, "pass2", "salt2")
+        await self.db.insert_user(user1_name, "pass1", "salt1")
+        await self.db.insert_user(user2_name, "pass2", "salt2")
 
         user1_uid = await self.db.get_user_uid_by_username(user1_name)
         user2_uid = await self.db.get_user_uid_by_username(user2_name)
@@ -31,10 +31,10 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
         self.user2 = await self.db.get_user_by_uid(user2_uid)
 
     async def test_create_and_get(self):
-        await self.db.create_project_member(
+        await self.db.insert_project_member(
             self.project.uid, self.user1.uid, self.guest
         )
-        await self.db.create_project_member(
+        await self.db.insert_project_member(
             self.project.uid, self.user2.uid, self.reporter
         )
 
@@ -49,10 +49,10 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
         self.assertEqual(self.reporter, member2.permission_uid)
 
     async def test_update_permission(self):
-        await self.db.create_project_member(
+        await self.db.insert_project_member(
             self.project.uid, self.user1.uid, self.guest
         )
-        await self.db.create_project_member(
+        await self.db.insert_project_member(
             self.project.uid, self.user2.uid, self.reporter
         )
         await self.db.update_project_member_permission(
@@ -68,10 +68,10 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
         self.assertEqual(self.operator, member2.permission_uid)
 
     async def test_project_members(self):
-        await self.db.create_project_member(
+        await self.db.insert_project_member(
             self.project.uid, self.user1.uid, self.guest
         )
-        await self.db.create_project_member(
+        await self.db.insert_project_member(
             self.project.uid, self.user2.uid, self.reporter
         )
 
@@ -83,10 +83,10 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
         self.assertEqual(2, len(projects3))
 
     async def test_delete(self):
-        await self.db.create_project_member(
+        await self.db.insert_project_member(
             self.project.uid, self.user1.uid, self.guest
         )
-        await self.db.create_project_member(
+        await self.db.insert_project_member(
             self.project.uid, self.user2.uid, self.reporter
         )
         self.assertEqual(2, len(await self.db.get_project_members()))

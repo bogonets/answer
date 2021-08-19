@@ -18,7 +18,7 @@ class PgProjectTestCase(PostgresqlTestCase):
         slug1 = "slug1"
         name1 = "name1"
         created_at1 = datetime.utcnow() + timedelta(days=1)
-        await self.db.create_project(
+        await self.db.insert_project(
             self.group.uid, slug1, name1, created_at=created_at1
         )
 
@@ -43,7 +43,7 @@ class PgProjectTestCase(PostgresqlTestCase):
 
     async def test_update_project(self):
         slug1 = "project1"
-        await self.db.create_project(self.group.uid, slug1)
+        await self.db.insert_project(self.group.uid, slug1)
         project1_uid = await self.db.get_project_uid_by_group_uid_and_slug(
             self.group.uid, slug1
         )
@@ -68,7 +68,7 @@ class PgProjectTestCase(PostgresqlTestCase):
 
     async def test_delete(self):
         slug1 = "project1"
-        await self.db.create_project(self.group.uid, slug1)
+        await self.db.insert_project(self.group.uid, slug1)
         project1_uid = await self.db.get_project_uid_by_group_uid_and_slug(
             self.group.uid, slug1
         )

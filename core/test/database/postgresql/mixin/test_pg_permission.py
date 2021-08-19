@@ -13,10 +13,10 @@ class PgPermissionTestCase(PostgresqlTestCase):
         desc2 = "description2"
         created_at1 = datetime.utcnow() + timedelta(days=1)
         created_at2 = datetime.utcnow() + timedelta(days=2)
-        await self.db.create_permission(
+        await self.db.insert_permission(
             name1, desc1, w_graph=True, w_member=True, created_at=created_at1
         )
-        await self.db.create_permission(
+        await self.db.insert_permission(
             name2, desc2, r_layout=True, r_storage=True, created_at=created_at2
         )
         permission1_uid = await self.db.get_permission_uid_by_name(name1)
@@ -67,7 +67,7 @@ class PgPermissionTestCase(PostgresqlTestCase):
 
     async def test_update_permission(self):
         name1 = "permission1"
-        await self.db.create_permission(name1)
+        await self.db.insert_permission(name1)
         permission1_uid = await self.db.get_permission_uid_by_name(name1)
         permission1 = await self.db.get_permission_by_uid(permission1_uid)
         self.assertEqual(name1, permission1.name)
@@ -121,7 +121,7 @@ class PgPermissionTestCase(PostgresqlTestCase):
 
     async def test_delete(self):
         name1 = "permission1"
-        await self.db.create_permission(name1)
+        await self.db.insert_permission(name1)
         permission1_uid = await self.db.get_permission_uid_by_name(name1)
 
         permissions1 = await self.db.get_permissions()
@@ -149,11 +149,11 @@ class PgPermissionTestCase(PostgresqlTestCase):
         user3_name = "user3"
         user4_name = "user4"
         user5_name = "user5"
-        await self.db.create_user(user1_name, "pass", "salt")
-        await self.db.create_user(user2_name, "pass", "salt")
-        await self.db.create_user(user3_name, "pass", "salt")
-        await self.db.create_user(user4_name, "pass", "salt")
-        await self.db.create_user(user5_name, "pass", "salt")
+        await self.db.insert_user(user1_name, "pass", "salt")
+        await self.db.insert_user(user2_name, "pass", "salt")
+        await self.db.insert_user(user3_name, "pass", "salt")
+        await self.db.insert_user(user4_name, "pass", "salt")
+        await self.db.insert_user(user5_name, "pass", "salt")
 
         user1_uid = await self.db.get_user_uid_by_username(user1_name)
         user2_uid = await self.db.get_user_uid_by_username(user2_name)
@@ -169,8 +169,8 @@ class PgPermissionTestCase(PostgresqlTestCase):
 
         group1_name = "group1"
         group2_name = "group2"
-        await self.db.create_group(group1_name)
-        await self.db.create_group(group2_name)
+        await self.db.insert_group(group1_name)
+        await self.db.insert_group(group2_name)
 
         group1_uid = await self.db.get_group_uid_by_slug(group1_name)
         group2_uid = await self.db.get_group_uid_by_slug(group2_name)
@@ -181,10 +181,10 @@ class PgPermissionTestCase(PostgresqlTestCase):
         project2_name = "project2"
         project3_name = "project3"
         project4_name = "project4"
-        await self.db.create_project(group1.uid, project1_name)
-        await self.db.create_project(group1.uid, project2_name)
-        await self.db.create_project(group2.uid, project3_name)
-        await self.db.create_project(group2.uid, project4_name)
+        await self.db.insert_project(group1.uid, project1_name)
+        await self.db.insert_project(group1.uid, project2_name)
+        await self.db.insert_project(group2.uid, project3_name)
+        await self.db.insert_project(group2.uid, project4_name)
 
         project1_uid = await self.db.get_project_uid_by_group_uid_and_slug(
             group1.uid, project1_name
@@ -214,19 +214,19 @@ class PgPermissionTestCase(PostgresqlTestCase):
         # user3 -> group1 < project1
         # user4 -> group2 > project3
         # user5 -> -
-        await self.db.create_project_member(project1.uid, user1.uid, guest_uid)
-        await self.db.create_project_member(project2.uid, user1.uid, guest_uid)
-        await self.db.create_project_member(project3.uid, user1.uid, guest_uid)
-        await self.db.create_project_member(project4.uid, user1.uid, guest_uid)
+        await self.db.insert_project_member(project1.uid, user1.uid, guest_uid)
+        await self.db.insert_project_member(project2.uid, user1.uid, guest_uid)
+        await self.db.insert_project_member(project3.uid, user1.uid, guest_uid)
+        await self.db.insert_project_member(project4.uid, user1.uid, guest_uid)
 
-        await self.db.create_group_member(group1.uid, user2.uid, reporter_uid)
-        await self.db.create_group_member(group2.uid, user2.uid, reporter_uid)
+        await self.db.insert_group_member(group1.uid, user2.uid, reporter_uid)
+        await self.db.insert_group_member(group2.uid, user2.uid, reporter_uid)
 
-        await self.db.create_group_member(group1.uid, user3.uid, guest_uid)
-        await self.db.create_project_member(project1.uid, user3.uid, operator_uid)
+        await self.db.insert_group_member(group1.uid, user3.uid, guest_uid)
+        await self.db.insert_project_member(project1.uid, user3.uid, operator_uid)
 
-        await self.db.create_group_member(group2.uid, user4.uid, maintainer_uid)
-        await self.db.create_project_member(project3.uid, user4.uid, guest_uid)
+        await self.db.insert_group_member(group2.uid, user4.uid, maintainer_uid)
+        await self.db.insert_project_member(project3.uid, user4.uid, guest_uid)
 
         u1p1 = await self.db.get_project_permission_by_uid(user1.uid, project1.uid)
         u1p2 = await self.db.get_project_permission_by_uid(user1.uid, project2.uid)
@@ -273,7 +273,7 @@ class PgPermissionTestCase(PostgresqlTestCase):
     async def test_features(self):
         name1 = "name1"
         features1 = ["a", "b"]
-        await self.db.create_permission(name=name1, features=features1)
+        await self.db.insert_permission(name=name1, features=features1)
         uid1 = await self.db.get_permission_uid_by_name(name1)
         perm1 = await self.db.get_permission_by_uid(uid1)
         self.assertEqual(name1, perm1.name)

@@ -17,7 +17,7 @@ class ContextLayout(ContextBase):
             anonymous_group_uid, project_name
         )
         assert project.uid is not None
-        await self.database.create_layout(project.uid, layout_name)
+        await self.database.insert_layout(project.uid, layout_name)
         if extra is not None:
             await self.database.update_layout_extra_by_name(
                 project.uid, layout_name, extra

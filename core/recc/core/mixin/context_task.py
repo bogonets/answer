@@ -84,7 +84,7 @@ class ContextTask(ContextBase):
             task_uid = await self.database.get_task_uid_by_slug(project_uid, task)
             await self.database.update_task_by_uid(task_uid, **kwargs)  # UPDATE
         except BaseException:  # noqa
-            await self.database.create_task(project_uid, task, **kwargs)  # INSERT
+            await self.database.insert_task(project_uid, task, **kwargs)  # INSERT
 
     async def run_task(
         self,

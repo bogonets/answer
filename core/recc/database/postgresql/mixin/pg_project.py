@@ -21,7 +21,7 @@ from recc.database.postgresql.query.project import (
 
 class PgProject(DbProject, PgBase):
     @overrides
-    async def create_project(
+    async def insert_project(
         self,
         group_uid: int,
         slug: str,
@@ -43,7 +43,7 @@ class PgProject(DbProject, PgBase):
             created_at,
         )
         params_msg = f"group_uid={group_uid},slug={slug}"
-        logger.info(f"create_project({params_msg}) ok.")
+        logger.info(f"insert_project({params_msg}) ok.")
 
     @overrides
     async def update_project_by_uid(

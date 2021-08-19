@@ -21,7 +21,7 @@ from recc.database.postgresql.query.permission import (
 
 class PgPermission(DbPermission, PgBase):
     @overrides
-    async def create_permission(
+    async def insert_permission(
         self,
         name: str,
         description: Optional[str] = None,
@@ -61,7 +61,7 @@ class PgPermission(DbPermission, PgBase):
             w_setting,
             created_at,
         )
-        logger.info(f"create_permission(name={name}) ok.")
+        logger.info(f"insert_permission(name={name}) ok.")
 
     @overrides
     async def update_permission_by_uid(

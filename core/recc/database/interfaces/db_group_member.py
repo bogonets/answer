@@ -11,7 +11,7 @@ class DbGroupMember(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    async def create_group_member(
+    async def insert_group_member(
         self, group_uid: int, user_uid: int, permission_uid: int
     ) -> None:
         raise NotImplementedError

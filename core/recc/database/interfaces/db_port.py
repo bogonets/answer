@@ -12,7 +12,7 @@ class DbPort(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    async def create_port(
+    async def insert_port(
         self,
         number: int,
         group_uid: Optional[int] = None,

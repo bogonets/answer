@@ -12,7 +12,7 @@ class DbProject(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    async def create_project(
+    async def insert_project(
         self,
         group_uid: int,
         slug: str,

@@ -14,7 +14,7 @@ class ContextInfo(ContextBase):
     async def create_info(self, key: str, val: str, force=False) -> None:
         if not force and not valid_user_creatable(key):
             raise KeyError(f"Non-creatable info: {key}")
-        await self.database.create_info(key, val)
+        await self.database.insert_info(key, val)
 
     async def update_info(self, key: str, val: str, force=False) -> None:
         if not force and not valid_user_modifiable(key):

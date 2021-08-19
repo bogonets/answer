@@ -15,7 +15,7 @@ class ContextProject(ContextBase):
         features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
     ) -> None:
-        await self.database.create_project(
+        await self.database.insert_project(
             group_uid=group_uid,
             slug=slug,
             name=name,

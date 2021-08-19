@@ -12,7 +12,7 @@ class DbPermission(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    async def create_permission(
+    async def insert_permission(
         self,
         name: str,
         description: Optional[str] = None,

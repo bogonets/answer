@@ -21,7 +21,7 @@ from recc.database.postgresql.query.group import (
 
 class PgGroup(DbGroup, PgBase):
     @overrides
-    async def create_group(
+    async def insert_group(
         self,
         slug: str,
         name: Optional[str] = None,
@@ -33,7 +33,7 @@ class PgGroup(DbGroup, PgBase):
         query = INSERT_GROUP
         await self.execute(query, slug, name, description, features, extra, created_at)
         params_msg = f"slug={slug}"
-        logger.info(f"create_group({params_msg}) ok.")
+        logger.info(f"insert_group({params_msg}) ok.")
 
     @overrides
     async def update_group_by_uid(
