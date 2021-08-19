@@ -29,11 +29,14 @@ class PgGroup(DbGroup, PgBase):
         features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
-    ) -> None:
+    ) -> int:
         query = INSERT_GROUP
-        await self.execute(query, slug, name, description, features, extra, created_at)
+        uid = await self.fetch_val(
+            query, slug, name, description, features, extra, created_at
+        )
         params_msg = f"slug={slug}"
-        logger.info(f"insert_group({params_msg}) ok.")
+        logger.info(f"insert_group({params_msg}) -> {uid}")
+        return uid
 
     @overrides
     async def update_group_by_uid(

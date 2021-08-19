@@ -7,10 +7,13 @@ from recc.variables.database import TABLE_GROUP_MEMBER
 ##########
 
 INSERT_GROUP_MEMBER = f"""
-INSERT INTO {TABLE_GROUP_MEMBER}
-    (group_uid, user_uid, permission_uid)
-VALUES
-    ($1, $2, $3);
+INSERT INTO {TABLE_GROUP_MEMBER} (
+    group_uid,
+    user_uid,
+    permission_uid
+) VALUES (
+    $1, $2, $3
+);
 """
 
 ##########

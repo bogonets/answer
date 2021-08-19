@@ -24,7 +24,7 @@ class DbUser(metaclass=ABCMeta):
         is_admin=False,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
-    ) -> None:
+    ) -> int:
         raise NotImplementedError
 
     @abstractmethod

@@ -14,10 +14,14 @@ from recc.database.query_builder import UpdateBuilder, BuildResult
 ##########
 
 SAFE_INSERT_GROUP_ANONYMOUS = f"""
-INSERT INTO {TABLE_GROUP}
-    (slug, description, created_at)
-SELECT
-    '{ANONYMOUS_GROUP_SLUG}', '{ANONYMOUS_GROUP_DESCRIPTION}', $1
+INSERT INTO {TABLE_GROUP} (
+    slug,
+    description,
+    created_at
+) SELECT
+    '{ANONYMOUS_GROUP_SLUG}',
+    '{ANONYMOUS_GROUP_DESCRIPTION}',
+    $1
 WHERE
     NOT EXISTS(
         SELECT uid
@@ -36,7 +40,7 @@ INSERT INTO {TABLE_GROUP} (
     created_at
 ) VALUES (
     $1, $2, $3, $4, $5, $6
-);
+) RETURNING uid;
 """
 
 ##########

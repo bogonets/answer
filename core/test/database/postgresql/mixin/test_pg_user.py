@@ -18,7 +18,7 @@ class PgUserTestCase(PostgresqlTestCase):
         is_admin = False
         created_at = datetime.utcnow()
 
-        await self.db.insert_user(
+        result_uid = await self.db.insert_user(
             username,
             password,
             salt,
@@ -30,8 +30,9 @@ class PgUserTestCase(PostgresqlTestCase):
             extra=extra,
             created_at=created_at,
         )
-
         user_uid = await self.db.select_user_uid_by_username(username)
+        self.assertEqual(result_uid, user_uid)
+
         user = await self.db.select_user_by_uid(user_uid)
         self.assertEqual(user_uid, user.uid)
         self.assertEqual(username, user.username)

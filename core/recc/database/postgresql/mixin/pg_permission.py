@@ -40,8 +40,8 @@ class PgPermission(DbPermission, PgBase):
         r_setting=False,
         w_setting=False,
         created_at=datetime.utcnow(),
-    ) -> None:
-        await self.execute(
+    ) -> int:
+        uid = await self.fetch_val(
             INSERT_PERMISSION,
             name,
             description,
@@ -61,7 +61,8 @@ class PgPermission(DbPermission, PgBase):
             w_setting,
             created_at,
         )
-        logger.info(f"insert_permission(name={name}) ok.")
+        logger.info(f"insert_permission(name={name}) -> {uid}")
+        return uid
 
     @overrides
     async def update_permission_by_uid(

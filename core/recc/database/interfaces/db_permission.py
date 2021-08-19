@@ -31,7 +31,7 @@ class DbPermission(metaclass=ABCMeta):
         r_setting=False,
         w_setting=False,
         created_at=datetime.utcnow(),
-    ) -> None:
+    ) -> int:
         raise NotImplementedError
 
     @abstractmethod

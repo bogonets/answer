@@ -29,12 +29,14 @@ class ContextTestCase(AsyncTestCase):
         group_uid = self.context.database.get_anonymous_group_uid()
         group = await self.context.database.select_group_by_uid(group_uid)
         self.group_slug = group.slug
-        self.project_name = "test_project"
-        self.task_name = "test_task"
-        await self.context.database.insert_project(group_uid, self.project_name)
+        self.project_slug = "test_project"
+        self.task_slug = "test_task"
 
+        self.project_uid = await self.context.database.insert_project(
+            group_uid, self.project_slug
+        )
         self.client = await self.context.run_task(
-            self.group_slug, self.project_name, self.task_name,
+            self.group_slug, self.project_slug, self.task_slug,
         )
 
     async def setUp(self):
@@ -47,7 +49,7 @@ class ContextTestCase(AsyncTestCase):
     async def _teardown(self):
         try:
             logs = await self.context.log_task(
-                self.group_slug, self.project_name, self.task_name
+                self.group_slug, self.project_slug, self.task_slug
             )
             messages: str
             if isinstance(logs, bytes):
@@ -64,7 +66,7 @@ class ContextTestCase(AsyncTestCase):
             print("Task logging error:", e)
 
         await self.context.remove_task(
-            self.group_slug, self.project_name, self.task_name
+            self.group_slug, self.project_slug, self.task_slug
         )
         await self.context.close()
         self.temp_dir.cleanup()

@@ -19,7 +19,7 @@ class DbLayout(metaclass=ABCMeta):
         description: Optional[str] = None,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
-    ) -> None:
+    ) -> int:
         raise NotImplementedError
 
     @abstractmethod

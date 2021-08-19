@@ -28,7 +28,7 @@ class DbTask(metaclass=ABCMeta):
         base_image_name: Optional[str] = None,
         publish_ports: Optional[Dict[str, Any]] = None,
         created_at=datetime.utcnow(),
-    ) -> None:
+    ) -> int:
         raise NotImplementedError
 
     @abstractmethod

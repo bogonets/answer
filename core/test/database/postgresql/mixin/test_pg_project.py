@@ -18,7 +18,7 @@ class PgProjectTestCase(PostgresqlTestCase):
         slug1 = "slug1"
         name1 = "name1"
         created_at1 = datetime.utcnow() + timedelta(days=1)
-        await self.db.insert_project(
+        result1_uid = await self.db.insert_project(
             self.group.uid, slug1, name1, created_at=created_at1
         )
 
@@ -28,6 +28,8 @@ class PgProjectTestCase(PostgresqlTestCase):
         project1_uid = await self.db.select_project_uid_by_group_uid_and_slug(
             self.group.uid, slug1
         )
+        self.assertEqual(project1_uid, result1_uid)
+
         project1 = await self.db.select_project_by_uid(project1_uid)
         self.assertEqual(self.group.uid, project1.group_uid)
         self.assertEqual(slug1, project1.slug)

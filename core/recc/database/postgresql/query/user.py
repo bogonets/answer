@@ -33,7 +33,7 @@ INSERT INTO {TABLE_USER} (
     $8,
     $9,
     $10
-);
+) RETURNING uid;
 """
 
 ##########

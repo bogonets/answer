@@ -21,7 +21,7 @@ class DbProject(metaclass=ABCMeta):
         features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
-    ) -> None:
+    ) -> int:
         raise NotImplementedError
 
     @abstractmethod

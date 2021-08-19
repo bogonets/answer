@@ -30,9 +30,9 @@ class PgProject(DbProject, PgBase):
         features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
-    ) -> None:
+    ) -> int:
         query = INSERT_PROJECT
-        await self.execute(
+        uid = await self.fetch_val(
             query,
             group_uid,
             slug,
@@ -43,7 +43,8 @@ class PgProject(DbProject, PgBase):
             created_at,
         )
         params_msg = f"group_uid={group_uid},slug={slug}"
-        logger.info(f"insert_project({params_msg}) ok.")
+        logger.info(f"insert_project({params_msg}) -> {uid}")
+        return uid
 
     @overrides
     async def update_project_by_uid(

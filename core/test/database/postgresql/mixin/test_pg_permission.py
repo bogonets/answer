@@ -13,14 +13,16 @@ class PgPermissionTestCase(PostgresqlTestCase):
         desc2 = "description2"
         created_at1 = datetime.utcnow() + timedelta(days=1)
         created_at2 = datetime.utcnow() + timedelta(days=2)
-        await self.db.insert_permission(
+        result1_uid = await self.db.insert_permission(
             name1, desc1, w_graph=True, w_member=True, created_at=created_at1
         )
-        await self.db.insert_permission(
+        result2_uid = await self.db.insert_permission(
             name2, desc2, r_layout=True, r_storage=True, created_at=created_at2
         )
         permission1_uid = await self.db.select_permission_uid_by_name(name1)
         permission2_uid = await self.db.select_permission_uid_by_name(name2)
+        self.assertEqual(result1_uid, permission1_uid)
+        self.assertEqual(result2_uid, permission2_uid)
         permission1 = await self.db.select_permission_by_uid(permission1_uid)
         permission2 = await self.db.select_permission_by_uid(permission2_uid)
         self.assertEqual(name1, permission1.name)

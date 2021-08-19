@@ -40,9 +40,9 @@ class PgUser(DbUser, PgBase):
         is_admin=False,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
-    ) -> None:
+    ) -> int:
         query = INSERT_USER
-        await self.execute(
+        uit = await self.fetch_val(
             query,
             username,
             password,
@@ -58,7 +58,8 @@ class PgUser(DbUser, PgBase):
         params_msg = f"username={username}"
         if is_admin:
             params_msg += ",admin"
-        logger.info(f"insert_user({params_msg}) ok.")
+        logger.info(f"insert_user({params_msg}) -> {uit}")
+        return uit
 
     @overrides
     async def update_user_last_login_by_uid(

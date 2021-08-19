@@ -16,12 +16,8 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
 
         user1_name = "user1"
         user2_name = "user2"
-        await self.db.insert_user(user1_name, "pass1", "salt1")
-        await self.db.insert_user(user2_name, "pass2", "salt2")
-
-        self.user1_uid = await self.db.select_user_uid_by_username(user1_name)
-        self.user2_uid = await self.db.select_user_uid_by_username(user2_name)
-
+        self.user1_uid = await self.db.insert_user(user1_name, "pass1", "salt1")
+        self.user2_uid = await self.db.insert_user(user2_name, "pass2", "salt2")
         self.user1 = await self.db.select_user_by_uid(self.user1_uid)
         self.user2 = await self.db.select_user_by_uid(self.user2_uid)
 

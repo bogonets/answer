@@ -11,8 +11,7 @@ class PgTaskTestCase(PostgresqlTestCase):
         await super().setUp()
 
         self.project_slug = "project"
-        await self.db.insert_project(self.anonymous_group_uid, self.project_slug)
-        self.project_uid = await self.db.select_project_uid_by_group_uid_and_slug(
+        self.project_uid = await self.db.insert_project(
             self.anonymous_group_uid, self.project_slug
         )
         self.project = await self.db.select_project_by_uid(self.project_uid)
@@ -45,14 +44,16 @@ class PgTaskTestCase(PostgresqlTestCase):
         name2 = "name2"
         created_at1 = datetime.utcnow() + timedelta(days=1)
         created_at2 = datetime.utcnow() + timedelta(days=2)
-        await self.db.insert_task(
+        result1_uid = await self.db.insert_task(
             self.project.uid, slug1, name1, created_at=created_at1
         )
-        await self.db.insert_task(
+        result2_uid = await self.db.insert_task(
             self.project.uid, slug2, name2, created_at=created_at2
         )
         task1 = await self.db.select_task_by_slug(self.project.uid, slug1)
         task2 = await self.db.select_task_by_slug(self.project.uid, slug2)
+        self.assertEqual(result1_uid, task1.uid)
+        self.assertEqual(result2_uid, task2.uid)
 
         self.assertEqual(self.project.uid, task1.project_uid)
         self.assertEqual(self.project.uid, task2.project_uid)

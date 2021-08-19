@@ -30,11 +30,14 @@ class PgWidget(DbWidget, PgBase):
         description: Optional[str] = None,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
-    ) -> None:
+    ) -> int:
         query = INSERT_WIDGET
-        await self.execute(query, layout_uid, name, description, extra, created_at)
+        uid = await self.fetch_val(
+            query, layout_uid, name, description, extra, created_at
+        )
         params_msg = f"layout_uid={layout_uid},name={name}"
-        logger.info(f"insert_widget({params_msg}) ok.")
+        logger.info(f"insert_widget({params_msg}) -> {uid}")
+        return uid
 
     @overrides
     async def update_widget_description_by_uid(

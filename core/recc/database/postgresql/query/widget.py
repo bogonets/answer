@@ -8,10 +8,15 @@ from recc.variables.database import TABLE_WIDGET
 ##########
 
 INSERT_WIDGET = f"""
-INSERT INTO {TABLE_WIDGET}
-    (layout_uid, name, description, extra, created_at)
-VALUES
-    ($1, $2, $3, $4, $5);
+INSERT INTO {TABLE_WIDGET} (
+    layout_uid,
+    name,
+    description,
+    extra,
+    created_at
+) VALUES (
+    $1, $2, $3, $4, $5
+) RETURNING uid;
 """
 
 ##########

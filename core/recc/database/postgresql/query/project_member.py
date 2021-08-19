@@ -8,10 +8,13 @@ from recc.variables.database import TABLE_PROJECT_MEMBER
 ##########
 
 INSERT_PROJECT_MEMBER = f"""
-INSERT INTO {TABLE_PROJECT_MEMBER}
-    (project_uid, user_uid, permission_uid)
-VALUES
-    ($1, $2, $3);
+INSERT INTO {TABLE_PROJECT_MEMBER} (
+    project_uid,
+    user_uid,
+    permission_uid
+) VALUES (
+    $1, $2, $3
+);
 """
 
 ##########

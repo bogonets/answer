@@ -10,27 +10,32 @@ class PgWidgetTestCase(PostgresqlTestCase):
         await super().setUp()
 
         self.project_slug = "project"
-        await self.db.insert_project(self.anonymous_group_uid, self.project_slug)
-        self.project_uid = await self.db.select_project_uid_by_group_uid_and_slug(
+        self.project_uid = await self.db.insert_project(
             self.anonymous_group_uid, self.project_slug
         )
         self.project = await self.db.select_project_by_uid(self.project_uid)
 
         self.layout_name = "layout"
-        await self.db.insert_layout(self.project.uid, self.layout_name)
-        self.layout = await self.db.select_layout_by_name(
+        self.layout_uid = await self.db.insert_layout(
             self.project.uid, self.layout_name
         )
+        self.layout = await self.db.select_layout_by_uid(self.layout_uid)
 
     async def test_create_and_get(self):
         name1 = "widget1"
         name2 = "widget2"
         created_at1 = datetime.utcnow() + timedelta(days=1)
         created_at2 = datetime.utcnow() + timedelta(days=2)
-        await self.db.insert_widget(self.layout.uid, name1, created_at=created_at1)
-        await self.db.insert_widget(self.layout.uid, name2, created_at=created_at2)
+        result1_uid = await self.db.insert_widget(
+            self.layout.uid, name1, created_at=created_at1
+        )
+        result2_uid = await self.db.insert_widget(
+            self.layout.uid, name2, created_at=created_at2
+        )
         widget1 = await self.db.select_widget_by_name(self.layout.uid, name1)
         widget2 = await self.db.select_widget_by_name(self.layout.uid, name2)
+        self.assertEqual(result1_uid, widget1.uid)
+        self.assertEqual(result2_uid, widget2.uid)
 
         self.assertEqual(self.layout.uid, widget1.layout_uid)
         self.assertEqual(self.layout.uid, widget2.layout_uid)

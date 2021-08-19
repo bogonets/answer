@@ -8,10 +8,15 @@ from recc.variables.database import TABLE_LAYOUT
 ##########
 
 INSERT_LAYOUT = f"""
-INSERT INTO {TABLE_LAYOUT}
-    (project_uid, name, description, extra, created_at)
-VALUES
-    ($1, $2, $3, $4, $5);
+INSERT INTO {TABLE_LAYOUT} (
+    project_uid,
+    name,
+    description,
+    extra,
+    created_at
+) VALUES (
+    $1, $2, $3, $4, $5
+) RETURNING uid;
 """
 
 ##########

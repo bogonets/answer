@@ -45,9 +45,9 @@ class PgTask(DbTask, PgBase):
         base_image_name: Optional[str] = None,
         publish_ports: Optional[Dict[str, Any]] = None,
         created_at=datetime.utcnow(),
-    ) -> None:
+    ) -> int:
         query = INSERT_TASK
-        await self.execute(
+        uid = await self.fetch_val(
             query,
             project_uid,
             slug,
@@ -65,7 +65,8 @@ class PgTask(DbTask, PgBase):
             created_at,
         )
         params_msg = f"project_uid={project_uid},name={name}"
-        logger.info(f"insert_task({params_msg}) ok.")
+        logger.info(f"insert_task({params_msg}) -> {uid}")
+        return uid
 
     @overrides
     async def update_task_description_by_uid(

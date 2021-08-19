@@ -21,10 +21,16 @@ class PgGroupTestCase(PostgresqlTestCase):
         desc2 = "description2"
         created_at1 = datetime.utcnow() + timedelta(days=1)
         created_at2 = datetime.utcnow() + timedelta(days=2)
-        await self.db.insert_group(slug1, name1, desc1, created_at=created_at1)
-        await self.db.insert_group(slug2, name2, desc2, created_at=created_at2)
+        result1_uid = await self.db.insert_group(
+            slug1, name1, desc1, created_at=created_at1
+        )
+        result2_uid = await self.db.insert_group(
+            slug2, name2, desc2, created_at=created_at2
+        )
         group1_uid = await self.db.select_group_uid_by_slug(slug1)
         group2_uid = await self.db.select_group_uid_by_slug(slug2)
+        self.assertEqual(group1_uid, result1_uid)
+        self.assertEqual(group2_uid, result2_uid)
         group1 = await self.db.select_group_by_uid(group1_uid)
         group2 = await self.db.select_group_by_uid(group2_uid)
         self.assertEqual(slug1, group1.slug)

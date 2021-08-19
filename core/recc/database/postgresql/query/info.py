@@ -13,8 +13,13 @@ from recc.util.version import database_version
 
 SAFE_INSERT_INFO_DB_VERSION = f"""
 INSERT INTO {TABLE_INFO} (
-    key, value, created_at
-) SELECT '{RECC_DB_VERSION_KEY}', '{database_version}', $1
+    key,
+    value,
+    created_at
+) SELECT
+    '{RECC_DB_VERSION_KEY}',
+    '{database_version}',
+    $1
 WHERE
     NOT EXISTS(
         SELECT value
@@ -24,20 +29,27 @@ WHERE
 """
 
 INSERT_INFO = f"""
-INSERT INTO {TABLE_INFO}
-    (key, value, created_at)
-VALUES
-    ($1, $2, $3);
+INSERT INTO {TABLE_INFO} (
+    key,
+    value,
+    created_at
+) VALUES (
+    $1, $2, $3
+);
 """
 
 UPSERT_INFO = f"""
-INSERT INTO {TABLE_INFO}
-    (key, value, created_at)
-VALUES
-    ($1, $2, $3)
-ON CONFLICT (key) DO
-UPDATE SET
-    value=$2, updated_at=$3;
+INSERT INTO {TABLE_INFO} (
+    key,
+    value,
+    created_at
+) VALUES (
+    $1, $2, $3
+) ON CONFLICT (
+    key
+) DO UPDATE SET
+    value=$2,
+    updated_at=$3;
 """
 
 ##########

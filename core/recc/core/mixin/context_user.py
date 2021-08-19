@@ -57,7 +57,7 @@ class ContextUser(ContextBase):
         phone2: Optional[str] = None,
         is_admin=False,
         extra: Optional[Any] = None,
-    ) -> None:
+    ) -> int:
         if not username:
             raise ValueError("The `username` argument is empty.")
         pass_info = salting_password(hashed_password)

@@ -30,11 +30,14 @@ class PgLayout(DbLayout, PgBase):
         description: Optional[str] = None,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
-    ) -> None:
+    ) -> int:
         query = INSERT_LAYOUT
-        await self.execute(query, project_uid, name, description, extra, created_at)
+        uid = await self.fetch_val(
+            query, project_uid, name, description, extra, created_at
+        )
         params_msg = f"project_uid={project_uid},name={name}"
-        logger.info(f"insert_layout({params_msg}) ok.")
+        logger.info(f"insert_layout({params_msg}) -> {uid}")
+        return uid
 
     @overrides
     async def update_layout_description_by_uid(
