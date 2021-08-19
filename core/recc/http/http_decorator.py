@@ -19,7 +19,7 @@ from recc.serialization.serialize import serialize_default
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.http_payload import payload_to_object, request_payload_to_class
 from recc.http.http_response import get_accept_type, get_encoding, create_response
-from recc.http.http_session import HttpSession
+from recc.session.session_ex import SessionEx
 from recc.http.http_status import (
     STATUS_BAD_REQUEST,
     STATUS_UNAUTHORIZED,
@@ -60,10 +60,10 @@ def _is_serializable_class(obj: type) -> bool:
     return False
 
 
-def _test_permission(hs: HttpSession, acl: Set[aa]) -> None:
+def _test_permission(session: SessionEx, acl: Set[aa]) -> None:
     for ac in acl:
         if ac == aa.HasAdmin:
-            if not hs.user.is_admin:
+            if not session.is_admin:
                 raise HTTPUnauthorized(reason="Administrator privileges are required")
 
 
@@ -90,9 +90,9 @@ async def _parameter_matcher_main(
             very_verbose_debugging = True
 
     if acl:
-        if c.http_session not in request:
-            raise HTTPUnauthorized(reason=f"Not exists {c.http_session}")
-        _test_permission(request[c.http_session], acl if acl else set())
+        if c.session not in request:
+            raise HTTPUnauthorized(reason=f"Not exists {c.session}")
+        _test_permission(request[c.session], acl if acl else set())
 
     if len(keys) >= 2:
         for key in keys[1:]:
@@ -128,10 +128,10 @@ async def _parameter_matcher_main(
                 continue
 
             # HttpSession
-            if issubclass(type_origin, HttpSession):
-                if c.http_session not in request:
-                    raise HTTPUnauthorized(reason=f"Not exists {c.http_session}")
-                update_arguments.append(request[c.http_session])
+            if issubclass(type_origin, SessionEx):
+                if c.session not in request:
+                    raise HTTPUnauthorized(reason=f"Not exists {c.session}")
+                update_arguments.append(request[c.session])
                 continue
 
             # Path

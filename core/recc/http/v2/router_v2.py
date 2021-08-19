@@ -17,7 +17,7 @@ from recc.core.context import Context
 from recc.http.v2.router_v2_public import RouterV2Public
 from recc.http.header.bearer_auth import BearerAuth
 from recc.http.http_decorator import parameter_matcher
-from recc.http.http_session import HttpSession
+from recc.session.session_ex import SessionEx
 from recc.http import http_cache_keys as c
 from recc.http import http_urls as u
 from recc.packet.config import ConfigA, UpdateConfigValueQ
@@ -56,14 +56,14 @@ class RouterV2:
             authorization = request.headers[AUTHORIZATION]
             bearer = BearerAuth.decode_from_authorization_header(authorization)
             session = await self.context.get_access_session(bearer.token)
-
             audience_uid = await self.context.get_user_uid(session.audience)
-            session_user = await self.context.get_user(
-                audience_uid, remove_sensitive=False
+            db_user = await self.context.get_user(audience_uid)
+            request[c.session] = SessionEx(
+                session,
+                audience_uid,
+                True if db_user.is_admin else False,
+                db_user.extra,
             )
-
-            request[c.session] = session
-            request[c.http_session] = HttpSession(session, session_user)
         except BaseException as e:
             logger.exception(e)
             error_message = str(e)
@@ -161,24 +161,26 @@ class RouterV2:
     # ----
 
     @parameter_matcher()
-    async def get_self(self, hs: HttpSession) -> UserA:
+    async def get_self(self, session: SessionEx) -> UserA:
+        db_user = await self.context.get_user(session.uid)
+        assert db_user.username is not None
         return UserA(
-            username=hs.username,
-            nickname=hs.nickname,
-            email=hs.email,
-            phone1=hs.phone1,
-            phone2=hs.phone2,
-            is_admin=hs.is_admin,
-            extra=hs.extra,
-            created_at=hs.created_at,
-            updated_at=hs.updated_at,
-            last_login=hs.last_login,
+            username=db_user.username,
+            nickname=db_user.nickname,
+            email=db_user.email,
+            phone1=db_user.phone1,
+            phone2=db_user.phone2,
+            is_admin=db_user.is_admin,
+            extra=db_user.extra,
+            created_at=db_user.created_at,
+            updated_at=db_user.updated_at,
+            last_login=db_user.last_login,
         )
 
     @parameter_matcher()
-    async def patch_self(self, hs: HttpSession, body: UpdateUserQ) -> None:
+    async def patch_self(self, session: SessionEx, body: UpdateUserQ) -> None:
         await self.context.update_user(
-            uid=hs.uid,
+            uid=session.uid,
             email=body.email,
             phone1=body.phone1,
             phone2=body.phone2,
@@ -187,44 +189,47 @@ class RouterV2:
         )
 
     @parameter_matcher()
-    async def get_self_extra(self, hs: HttpSession) -> Any:
-        return hs.extra
+    async def get_self_extra(self, session: SessionEx) -> Any:
+        db_user = await self.context.get_user(session.uid)
+        return db_user.extra
 
     @parameter_matcher()
-    async def patch_self_extra(self, hs: HttpSession, body: Dict[str, Any]) -> None:
-        await self.context.update_user_extra(hs.audience, body)
+    async def patch_self_extra(self, session: SessionEx, body: Dict[str, Any]) -> None:
+        await self.context.update_user_extra(session.audience, body)
 
     @parameter_matcher()
-    async def patch_self_password(self, hs: HttpSession, body: UpdatePasswordQ) -> None:
+    async def patch_self_password(
+        self, session: SessionEx, body: UpdatePasswordQ
+    ) -> None:
         try:
-            if not self.context.challenge_password(hs.audience, body.before):
+            if not self.context.challenge_password(session.audience, body.before):
                 raise HTTPUnauthorized(reason="The password is incorrect.")
         except ValueError as e:
             raise HTTPBadRequest(reason=str(e))
-        await self.context.change_password(hs.audience, body.after)
+        await self.context.change_password(session.audience, body.after)
 
     # -----------
     # self/groups
     # -----------
 
     @parameter_matcher()
-    async def get_self_groups(self, hs: HttpSession) -> None:
+    async def get_self_groups(self, session: SessionEx) -> None:
         raise NotImplementedError
 
     @parameter_matcher()
-    async def post_self_groups(self, hs: HttpSession) -> None:
+    async def post_self_groups(self, session: SessionEx) -> None:
         raise NotImplementedError
 
     @parameter_matcher()
-    async def get_self_groups_pgroup(self, hs: HttpSession) -> None:
+    async def get_self_groups_pgroup(self, session: SessionEx) -> None:
         raise NotImplementedError
 
     @parameter_matcher()
-    async def patch_self_groups_pgroup(self, hs: HttpSession) -> None:
+    async def patch_self_groups_pgroup(self, session: SessionEx) -> None:
         raise NotImplementedError
 
     @parameter_matcher()
-    async def delete_self_groups_pgroup(self, hs: HttpSession) -> None:
+    async def delete_self_groups_pgroup(self, session: SessionEx) -> None:
         raise NotImplementedError
 
     # -------------
@@ -232,23 +237,23 @@ class RouterV2:
     # -------------
 
     @parameter_matcher()
-    async def get_self_projects(self, hs: HttpSession) -> None:
+    async def get_self_projects(self, session: SessionEx) -> None:
         raise NotImplementedError
 
     @parameter_matcher()
-    async def post_self_projects(self, hs: HttpSession) -> None:
+    async def post_self_projects(self, session: SessionEx) -> None:
         raise NotImplementedError
 
     @parameter_matcher()
-    async def get_self_projects_pgroup_pproject(self, hs: HttpSession) -> None:
+    async def get_self_projects_pgroup_pproject(self, session: SessionEx) -> None:
         raise NotImplementedError
 
     @parameter_matcher()
-    async def patch_self_projects_pgroup_pproject(self, hs: HttpSession) -> None:
+    async def patch_self_projects_pgroup_pproject(self, session: SessionEx) -> None:
         raise NotImplementedError
 
     @parameter_matcher()
-    async def delete_self_projects_pgroup_pproject(self, hs: HttpSession) -> None:
+    async def delete_self_projects_pgroup_pproject(self, session: SessionEx) -> None:
         raise NotImplementedError
 
     # -------
@@ -385,36 +390,22 @@ class RouterV2:
         )
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def get_users_puser(self, hs: HttpSession, user: str) -> UserA:
-        if hs.audience == user:
-            return UserA(
-                username=hs.username,
-                nickname=hs.nickname,
-                email=hs.email,
-                phone1=hs.phone1,
-                phone2=hs.phone2,
-                is_admin=hs.is_admin,
-                extra=hs.extra,
-                created_at=hs.created_at,
-                updated_at=hs.updated_at,
-                last_login=hs.last_login,
-            )
-        else:
-            user_uid = await self.context.get_user_uid(user)
-            db_user = await self.context.get_user(user_uid)
-            assert db_user.username
-            return UserA(
-                username=db_user.username,
-                nickname=db_user.nickname,
-                email=db_user.email,
-                phone1=db_user.phone1,
-                phone2=db_user.phone2,
-                is_admin=db_user.is_admin,
-                extra=db_user.extra,
-                created_at=db_user.created_at,
-                updated_at=db_user.updated_at,
-                last_login=db_user.last_login,
-            )
+    async def get_users_puser(self, user: str) -> UserA:
+        user_uid = await self.context.get_user_uid(user)
+        db_user = await self.context.get_user(user_uid)
+        assert db_user.username
+        return UserA(
+            username=db_user.username,
+            nickname=db_user.nickname,
+            email=db_user.email,
+            phone1=db_user.phone1,
+            phone2=db_user.phone2,
+            is_admin=db_user.is_admin,
+            extra=db_user.extra,
+            created_at=db_user.created_at,
+            updated_at=db_user.updated_at,
+            last_login=db_user.last_login,
+        )
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def patch_users_puser(self, user: str, body: UpdateUserQ) -> None:
@@ -523,7 +514,7 @@ class RouterV2:
         return result
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def post_projects(self, body: CreateProjectQ) -> None:
+    async def post_projects(self, session: SessionEx, body: CreateProjectQ) -> None:
         group_uid = await self.context.get_group_uid(body.group_slug)
         await self.context.create_project(
             group_uid=group_uid,
@@ -532,6 +523,7 @@ class RouterV2:
             description=body.description,
             features=body.features,
             extra=body.extra,
+            owner_uid=session.uid,
         )
 
     @parameter_matcher(acl={aa.HasAdmin})
