@@ -178,7 +178,6 @@ class ContextUser(ContextBase):
     async def update_user_extra(self, username: str, extra: Any) -> None:
         if not username:
             raise ValueError("The `username` argument is empty.")
-
         await self.database.update_user_extra_by_username(username, extra)
 
     async def renew_access_token(self, token: str) -> str:
@@ -187,17 +186,20 @@ class ContextUser(ContextBase):
     async def get_access_session(self, token: str) -> Session:
         return self.session_factory.decode_access(token)
 
-    async def get_user(self, username: str, remove_sensitive=True) -> User:
-        if not username:
-            raise ValueError("The `username` argument is empty.")
-
-        result = await self.database.get_user_by_username(username)
+    async def get_user_by_uid(self, uid: int, remove_sensitive=True) -> User:
+        result = await self.database.get_user_by_uid(uid)
         if remove_sensitive:
             result.remove_sensitive()
         return result
 
+    async def get_user_by_username(self, username: str, remove_sensitive=True) -> User:
+        if not username:
+            raise ValueError("The `username` argument is empty.")
+        uid = await self.get_user_uid(username)
+        return await self.get_user_by_uid(uid, remove_sensitive)
+
     async def get_self(self, session: Session, remove_sensitive=True) -> User:
-        return await self.get_user(session.audience, remove_sensitive)
+        return await self.get_user_by_username(session.audience, remove_sensitive)
 
     async def get_user_extra(self, username: str) -> Any:
         if not username:

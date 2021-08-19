@@ -21,6 +21,7 @@ from recc.database.postgresql.query.user import (
     SELECT_USER_USERNAME_BY_UID,
     SELECT_USER_UID_BY_USERNAME,
     SELECT_USER_PASSWORD_AND_SALT_BY_USERNAME,
+    SELECT_USER_BY_UID,
     SELECT_USER_BY_USERNAME,
     SELECT_USER_EXTRA_BY_USERNAME,
     SELECT_USER_ALL,
@@ -200,6 +201,17 @@ class PgUser(DbUser, PgBase):
         return result
 
     @overrides
+    async def get_user_by_uid(self, uid: int) -> User:
+        query = SELECT_USER_BY_UID
+        row = await self.fetch_row(query, uid)
+        params_msg = f"uid={uid}"
+        if not row:
+            raise RuntimeError(f"Not found user: {params_msg}")
+        result = User(**dict(row))
+        logger.info(f"get_user_by_uid({params_msg}) ok.")
+        return result
+
+    @overrides
     async def get_user_by_username(self, username: str) -> User:
         query = SELECT_USER_BY_USERNAME
         row = await self.fetch_row(query, username)
@@ -207,7 +219,6 @@ class PgUser(DbUser, PgBase):
         if not row:
             raise RuntimeError(f"Not found user: {params_msg}")
         result = User(**dict(row))
-        result.username = username
         logger.info(f"get_user_by_username({params_msg}) ok.")
         return result
 

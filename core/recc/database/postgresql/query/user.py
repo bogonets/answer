@@ -176,6 +176,15 @@ WHERE
     username LIKE $1;
 """
 
+SELECT_USER_BY_UID = f"""
+SELECT
+    *
+FROM
+    {TABLE_USER}
+WHERE
+    uid=$1;
+"""
+
 SELECT_USER_BY_USERNAME = f"""
 SELECT
     *

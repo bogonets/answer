@@ -398,7 +398,7 @@ class RouterV1:
         else:
             if not session_user.is_admin:
                 raise HTTPUnauthorized(reason="Administrator privileges are required")
-            user = await self.context.get_user(request_username)
+            user = await self.context.get_user_by_username(request_username)
 
         result = self._user_to_v1_dict(user)
         return response_ok_without_detail(name, {"obj": result, "t": "get-user"})

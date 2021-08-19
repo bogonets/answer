@@ -136,42 +136,6 @@ INSERT INTO {TABLE_PERMISSION} (
 # UPDATE #
 ##########
 
-UPDATE_PERMISSION_DESCRIPTION_BY_UID = f"""
-UPDATE {TABLE_PERMISSION}
-SET description=$2, updated_at=$3
-WHERE uid=$1;
-"""
-
-UPDATE_PERMISSION_DESCRIPTION_BY_NAME = f"""
-UPDATE {TABLE_PERMISSION}
-SET description=$2, updated_at=$3
-WHERE name LIKE $1;
-"""
-
-UPDATE_PERMISSION_FEATURES_BY_UID = f"""
-UPDATE {TABLE_PERMISSION}
-SET features=$2, updated_at=$3
-WHERE uid=$1;
-"""
-
-UPDATE_PERMISSION_FEATURES_BY_NAME = f"""
-UPDATE {TABLE_PERMISSION}
-SET features=$2, updated_at=$3
-WHERE name LIKE $1;
-"""
-
-UPDATE_PERMISSION_EXTRA_BY_UID = f"""
-UPDATE {TABLE_PERMISSION}
-SET extra=$2, updated_at=$3
-WHERE uid=$1;
-"""
-
-UPDATE_PERMISSION_EXTRA_BY_NAME = f"""
-UPDATE {TABLE_PERMISSION}
-SET extra=$2, updated_at=$3
-WHERE name LIKE $1;
-"""
-
 
 def get_update_permission_query_by_uid(
     uid: int,
@@ -227,11 +191,6 @@ DELETE FROM {TABLE_PERMISSION}
 WHERE uid=$1;
 """
 
-DELETE_PERMISSION_BY_NAME = f"""
-DELETE FROM {TABLE_PERMISSION}
-WHERE name LIKE $1;
-"""
-
 ##########
 # SELECT #
 ##########
@@ -276,12 +235,6 @@ SELECT_PERMISSION_BY_UID = f"""
 SELECT *
 FROM {TABLE_PERMISSION}
 WHERE uid=$1;
-"""
-
-SELECT_PERMISSION_BY_NAME = f"""
-SELECT *
-FROM {TABLE_PERMISSION}
-WHERE name LIKE $1;
 """
 
 SELECT_PERMISSION_ALL = f"""

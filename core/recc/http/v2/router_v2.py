@@ -57,6 +57,7 @@ class RouterV2:
             bearer = BearerAuth.decode_from_authorization_header(authorization)
             session = await self.context.get_access_session(bearer.token)
             session_user = await self.context.get_self(session, remove_sensitive=False)
+
             request[c.session] = session
             request[c.http_session] = HttpSession(session, session_user)
         except BaseException as e:
@@ -395,7 +396,7 @@ class RouterV2:
                 last_login=hs.last_login,
             )
         else:
-            db_user = await self.context.get_user(user)
+            db_user = await self.context.get_user_by_username(user)
             assert db_user.username
             return UserA(
                 username=db_user.username,
@@ -595,9 +596,7 @@ class RouterV2:
     async def post_permissions(self, body: CreatePermissionQ) -> None:
         if not body.name:
             raise HTTPBadRequest(reason="Not exists `name` field")
-
         body.normalize_booleans()
-
         await self.context.create_permission(
             name=body.name,
             description=body.description,
@@ -619,7 +618,8 @@ class RouterV2:
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def get_permissions_pperm(self, perm: str) -> PermissionA:
-        db_permission = await self.context.get_permission_by_name(perm)
+        uid = await self.context.get_permission_uid(perm)
+        db_permission = await self.context.get_permission(uid)
         assert db_permission.name is not None
         return PermissionA(
             name=db_permission.name,
@@ -645,7 +645,7 @@ class RouterV2:
     @parameter_matcher(acl={aa.HasAdmin})
     async def patch_permissions_pperm(self, perm: str, body: UpdatePermissionQ) -> None:
         uid = await self.context.get_permission_uid(perm)
-        await self.context.update_permission_by_uid(
+        await self.context.update_permission(
             uid,
             name=body.name,
             description=body.description,
@@ -667,4 +667,5 @@ class RouterV2:
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def delete_permissions_pperm(self, perm: str) -> None:
-        await self.context.delete_permission_by_name(perm)
+        uid = await self.context.get_permission_uid(perm)
+        await self.context.delete_permission(uid)

@@ -93,7 +93,7 @@ class RouterV2Public:
             raise HTTPBadRequest(reason=str(e))
 
         access, refresh = await self.context.signin(username)
-        db_user = await self.context.get_user(username)
+        db_user = await self.context.get_user_by_username(username)
         assert db_user.username is not None
         user = UserA(
             username=db_user.username,

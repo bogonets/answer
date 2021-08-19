@@ -9,18 +9,10 @@ from recc.database.interfaces.db_permission import DbPermission
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.permission import (
     INSERT_PERMISSION,
-    UPDATE_PERMISSION_DESCRIPTION_BY_UID,
-    UPDATE_PERMISSION_DESCRIPTION_BY_NAME,
-    UPDATE_PERMISSION_FEATURES_BY_UID,
-    UPDATE_PERMISSION_FEATURES_BY_NAME,
-    UPDATE_PERMISSION_EXTRA_BY_UID,
-    UPDATE_PERMISSION_EXTRA_BY_NAME,
     DELETE_PERMISSION_BY_UID,
-    DELETE_PERMISSION_BY_NAME,
     SELECT_PERMISSION_UID_BY_NAME,
     SELECT_PERMISSION_NAME_BY_UID,
     SELECT_PERMISSION_BY_UID,
-    SELECT_PERMISSION_BY_NAME,
     SELECT_PERMISSION_ALL,
     SELECT_BEST_PERMISSION_OF_PROJECT_NO_COMMENT,
     get_update_permission_query_by_uid,
@@ -118,72 +110,11 @@ class PgPermission(DbPermission, PgBase):
         logger.info(f"update_permission_by_uid({params_msg}) ok.")
 
     @overrides
-    async def update_permission_description_by_uid(
-        self, uid: int, description: str, updated_at=datetime.utcnow()
-    ) -> None:
-        query = UPDATE_PERMISSION_DESCRIPTION_BY_UID
-        await self.execute(query, uid, description, updated_at)
-        params_msg = f"uid={uid}"
-        logger.info(f"update_permission_description_by_uid({params_msg}) ok.")
-
-    @overrides
-    async def update_permission_description_by_name(
-        self, name: str, description: str, updated_at=datetime.utcnow()
-    ) -> None:
-        query = UPDATE_PERMISSION_DESCRIPTION_BY_NAME
-        await self.execute(query, name, description, updated_at)
-        params_msg = f"name={name}"
-        logger.info(f"update_permission_description_by_name({params_msg}) ok.")
-
-    @overrides
-    async def update_permission_features_by_uid(
-        self, uid: int, features: List[str], updated_at=datetime.utcnow()
-    ) -> None:
-        query = UPDATE_PERMISSION_FEATURES_BY_UID
-        await self.execute(query, uid, features, updated_at)
-        params_msg = f"uid={uid}"
-        logger.info(f"update_permission_features_by_uid({params_msg}) ok.")
-
-    @overrides
-    async def update_permission_features_by_name(
-        self, name: str, features: List[str], updated_at=datetime.utcnow()
-    ) -> None:
-        query = UPDATE_PERMISSION_FEATURES_BY_NAME
-        await self.execute(query, name, features, updated_at)
-        params_msg = f"name={name}"
-        logger.info(f"update_permission_features_by_name({params_msg}) ok.")
-
-    @overrides
-    async def update_permission_extra_by_uid(
-        self, uid: int, extra: Any, updated_at=datetime.utcnow()
-    ) -> None:
-        query = UPDATE_PERMISSION_EXTRA_BY_UID
-        await self.execute(query, uid, extra, updated_at)
-        params_msg = f"uid={uid}"
-        logger.info(f"update_permission_extra_by_uid({params_msg}) ok.")
-
-    @overrides
-    async def update_permission_extra_by_name(
-        self, name: str, extra: Any, updated_at=datetime.utcnow()
-    ) -> None:
-        query = UPDATE_PERMISSION_EXTRA_BY_NAME
-        await self.execute(query, name, extra, updated_at)
-        params_msg = f"name={name}"
-        logger.info(f"update_permission_extra_by_name({params_msg}) ok.")
-
-    @overrides
     async def delete_permission_by_uid(self, uid: int) -> None:
         query = DELETE_PERMISSION_BY_UID
         await self.execute(query, uid)
         params_msg = f"uid={uid}"
         logger.info(f"delete_permission_by_uid({params_msg}) ok.")
-
-    @overrides
-    async def delete_permission_by_name(self, name: str) -> None:
-        query = DELETE_PERMISSION_BY_NAME
-        await self.execute(query, name)
-        params_msg = f"name={name}"
-        logger.info(f"delete_permission_by_name({params_msg}) ok.")
 
     @overrides
     async def get_permission_uid_by_name(self, name: str) -> int:
@@ -217,18 +148,6 @@ class PgPermission(DbPermission, PgBase):
         result = Permission(**dict(row))
         result.uid = uid
         logger.info(f"get_permission_by_uid({params_msg}) ok.")
-        return result
-
-    @overrides
-    async def get_permission_by_name(self, name: str) -> Permission:
-        query = SELECT_PERMISSION_BY_NAME
-        row = await self.fetch_row(query, name)
-        params_msg = f"name={name}"
-        if not row:
-            raise RuntimeError(f"Not found permission: {params_msg}")
-        result = Permission(**dict(row))
-        result.name = name
-        logger.info(f"get_permission_by_name({params_msg}) ok.")
         return result
 
     @overrides
