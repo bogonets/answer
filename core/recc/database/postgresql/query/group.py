@@ -27,57 +27,21 @@ WHERE
 """
 
 INSERT_GROUP = f"""
-INSERT INTO {TABLE_GROUP}
-    (slug, name, description, features, extra, created_at)
-VALUES
-    ($1, $2, $3, $4, $5, $6);
+INSERT INTO {TABLE_GROUP} (
+    slug,
+    name,
+    description,
+    features,
+    extra,
+    created_at
+) VALUES (
+    $1, $2, $3, $4, $5, $6
+);
 """
 
 ##########
 # UPDATE #
 ##########
-
-UPDATE_GROUP_SLUG_BY_UID = f"""
-UPDATE {TABLE_GROUP}
-SET slug=$2, updated_at=$3
-WHERE uid=$1;
-"""
-
-UPDATE_GROUP_DESCRIPTION_BY_UID = f"""
-UPDATE {TABLE_GROUP}
-SET description=$2, updated_at=$3
-WHERE uid=$1;
-"""
-
-UPDATE_GROUP_DESCRIPTION_BY_SLUG = f"""
-UPDATE {TABLE_GROUP}
-SET description=$2, updated_at=$3
-WHERE slug LIKE $1;
-"""
-
-UPDATE_GROUP_EXTRA_BY_UID = f"""
-UPDATE {TABLE_GROUP}
-SET extra=$2, updated_at=$3
-WHERE uid=$1;
-"""
-
-UPDATE_GROUP_EXTRA_BY_SLUG = f"""
-UPDATE {TABLE_GROUP}
-SET extra=$2, updated_at=$3
-WHERE slug LIKE $1;
-"""
-
-UPDATE_GROUP_FEATURES_BY_UID = f"""
-UPDATE {TABLE_GROUP}
-SET features=$2, updated_at=$3
-WHERE uid=$1;
-"""
-
-UPDATE_GROUP_FEATURES_BY_SLUG = f"""
-UPDATE {TABLE_GROUP}
-SET features=$2, updated_at=$3
-WHERE slug LIKE $1;
-"""
 
 
 def get_update_group_query_by_uid(
@@ -103,27 +67,6 @@ def get_update_group_query_by_uid(
     return builder.build(TABLE_GROUP)
 
 
-def get_update_group_query_by_slug(
-    slug: str,
-    name: Optional[str] = None,
-    description: Optional[str] = None,
-    features: Optional[List[str]] = None,
-    extra: Optional[Any] = None,
-    updated_at=datetime.utcnow(),
-) -> BuildResult:
-    assert updated_at is not None
-    builder = UpdateBuilder(
-        if_none_skip=True,
-        name=name,
-        description=description,
-        features=features,
-        extra=extra,
-        updated_at=updated_at,
-    )
-    builder.where().eq(slug=slug)
-    return builder.build(TABLE_GROUP)
-
-
 ##########
 # DELETE #
 ##########
@@ -131,11 +74,6 @@ def get_update_group_query_by_slug(
 DELETE_GROUP_BY_UID = f"""
 DELETE FROM {TABLE_GROUP}
 WHERE uid=$1;
-"""
-
-DELETE_GROUP_BY_SLUG = f"""
-DELETE FROM {TABLE_GROUP}
-WHERE slug LIKE $1;
 """
 
 ##########
@@ -166,20 +104,12 @@ FROM {TABLE_GROUP}
 WHERE uid=$1;
 """
 
-SELECT_GROUP_BY_SLUG = f"""
-SELECT *
-FROM {TABLE_GROUP}
-WHERE slug LIKE $1;
-"""
-
 SELECT_GROUP_ALL = f"""
 SELECT *
 FROM {TABLE_GROUP};
 """
 
 SELECT_GROUP_COUNT = f"""
-SELECT
-    count(uid) AS count
-FROM
-    {TABLE_GROUP};
+SELECT count(uid) AS count
+FROM {TABLE_GROUP};
 """

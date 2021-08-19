@@ -463,7 +463,8 @@ class RouterV2:
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def get_groups_pgroup(self, group: str) -> GroupA:
-        db_group = await self.context.get_group_by_slug(group)
+        group_uid = await self.context.get_group_uid(group)
+        db_group = await self.context.get_group(group_uid)
         assert db_group.slug is not None
         return GroupA(
             slug=db_group.slug,
@@ -477,8 +478,9 @@ class RouterV2:
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def patch_groups_pgroup(self, group: str, body: UpdateGroupQ) -> None:
-        await self.context.update_group_by_slug(
-            slug=group,
+        group_uid = await self.context.get_group_uid(group)
+        await self.context.update_group(
+            uid=group_uid,
             name=body.name,
             description=body.description,
             features=body.features,
@@ -487,7 +489,8 @@ class RouterV2:
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def delete_groups_pgroup(self, group: str) -> None:
-        await self.context.delete_group_by_slug(group)
+        group_uid = await self.context.get_group_uid(group)
+        await self.context.delete_group(group_uid)
 
     # --------
     # Projects

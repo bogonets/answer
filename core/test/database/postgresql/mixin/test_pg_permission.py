@@ -164,8 +164,11 @@ class PgPermissionTestCase(PostgresqlTestCase):
         group2_name = "group2"
         await self.db.create_group(group1_name)
         await self.db.create_group(group2_name)
-        group1 = await self.db.get_group_by_slug(group1_name)
-        group2 = await self.db.get_group_by_slug(group2_name)
+
+        group1_uid = await self.db.get_group_uid_by_slug(group1_name)
+        group2_uid = await self.db.get_group_uid_by_slug(group2_name)
+        group1 = await self.db.get_group_by_uid(group1_uid)
+        group2 = await self.db.get_group_by_uid(group2_uid)
 
         project1_name = "project1"
         project2_name = "project2"
