@@ -175,10 +175,24 @@ class PgPermissionTestCase(PostgresqlTestCase):
         await self.db.create_project(group1.uid, project2_name)
         await self.db.create_project(group2.uid, project3_name)
         await self.db.create_project(group2.uid, project4_name)
-        project1 = await self.db.get_project_by_slug(group1.uid, project1_name)
-        project2 = await self.db.get_project_by_slug(group1.uid, project2_name)
-        project3 = await self.db.get_project_by_slug(group2.uid, project3_name)
-        project4 = await self.db.get_project_by_slug(group2.uid, project4_name)
+
+        project1_uid = await self.db.get_project_uid_by_group_uid_and_slug(
+            group1.uid, project1_name
+        )
+        project2_uid = await self.db.get_project_uid_by_group_uid_and_slug(
+            group1.uid, project2_name
+        )
+        project3_uid = await self.db.get_project_uid_by_group_uid_and_slug(
+            group2.uid, project3_name
+        )
+        project4_uid = await self.db.get_project_uid_by_group_uid_and_slug(
+            group2.uid, project4_name
+        )
+
+        project1 = await self.db.get_project_by_uid(project1_uid)
+        project2 = await self.db.get_project_by_uid(project2_uid)
+        project3 = await self.db.get_project_by_uid(project3_uid)
+        project4 = await self.db.get_project_by_uid(project4_uid)
 
         guest_uid = self.guest_permission_uid
         reporter_uid = self.reporter_permission_uid

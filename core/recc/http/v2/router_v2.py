@@ -515,9 +515,10 @@ class RouterV2:
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def post_projects(self, body: CreateProjectQ) -> None:
+        group_uid = await self.context.get_group_uid(body.group_slug)
         await self.context.create_project(
-            group=body.group_slug,
-            project=body.project_slug,
+            group_uid=group_uid,
+            slug=body.project_slug,
             name=body.name,
             description=body.description,
             features=body.features,
@@ -547,7 +548,7 @@ class RouterV2:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
         await self.context.update_project(
-            project_uid=project_uid,
+            uid=project_uid,
             name=body.name,
             description=body.description,
             features=body.features,

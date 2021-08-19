@@ -44,24 +44,6 @@ class ContextPermission(ContextBase):
             w_setting=w_setting,
         )
 
-    async def get_permission_uid(self, name: str, caching=True) -> int:
-        if not name:
-            raise ValueError("The `name` argument is empty.")
-        uid = self.cache.get_permission_uid(name)
-        if uid is None:
-            uid = await self.database.get_permission_uid_by_name(name)
-            if caching:
-                self.cache.set_permission(uid, name)
-        return uid
-
-    async def get_permission_name(self, uid: int, caching=True) -> str:
-        slug = self.cache.get_permission_name(uid)
-        if slug is None:
-            slug = await self.database.get_permission_name_by_uid(uid)
-            if caching:
-                self.cache.set_permission(uid, slug)
-        return slug
-
     async def update_permission(
         self,
         uid: int,

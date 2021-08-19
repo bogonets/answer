@@ -25,7 +25,10 @@ INSERT INTO {TABLE_PERMISSION} (
     name,
     r_layout,
     created_at
-) SELECT '{GUEST_PERMISSION_NAME}', True, $1
+) SELECT
+    '{GUEST_PERMISSION_NAME}',
+    True,
+    $1
 WHERE
     NOT EXISTS(
         SELECT uid
@@ -42,7 +45,13 @@ INSERT INTO {TABLE_PERMISSION} (
     r_manager,
     r_graph,
     created_at
-) SELECT '{REPORTER_PERMISSION_NAME}', True, True, True, True, $1
+) SELECT
+    '{REPORTER_PERMISSION_NAME}',
+    True,
+    True,
+    True,
+    True,
+    $1
 WHERE
     NOT EXISTS(
         SELECT uid
@@ -54,17 +63,25 @@ WHERE
 SAFE_INSERT_PERMISSION_OPERATOR = f"""
 INSERT INTO {TABLE_PERMISSION} (
     name,
-    r_layout, w_layout,
-    r_storage, w_storage,
-    r_manager, w_manager,
-    r_graph, w_graph,
+    r_layout,
+    w_layout,
+    r_storage,
+    w_storage,
+    r_manager,
+    w_manager,
+    r_graph,
+    w_graph,
     created_at
 ) SELECT
     '{OPERATOR_PERMISSION_NAME}',
-    True, True,
-    True, True,
-    True, True,
-    True, True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
     $1
 WHERE
     NOT EXISTS(
@@ -77,21 +94,33 @@ WHERE
 SAFE_INSERT_PERMISSION_MAINTAINER = f"""
 INSERT INTO {TABLE_PERMISSION} (
     name,
-    r_layout, w_layout,
-    r_storage, w_storage,
-    r_manager, w_manager,
-    r_graph, w_graph,
-    r_member, w_member,
-    r_setting, w_setting,
+    r_layout,
+    w_layout,
+    r_storage,
+    w_storage,
+    r_manager,
+    w_manager,
+    r_graph,
+    w_graph,
+    r_member,
+    w_member,
+    r_setting,
+    w_setting,
     created_at
 ) SELECT
     '{MAINTAINER_PERMISSION_NAME}',
-    True, True,
-    True, True,
-    True, True,
-    True, True,
-    True, True,
-    True, True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
     $1
 WHERE
     NOT EXISTS(

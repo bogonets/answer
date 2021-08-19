@@ -80,7 +80,7 @@ class DbUser(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_user_username_by_uid(self, uid: str) -> str:
+    async def get_user_username_by_uid(self, uid: int) -> str:
         raise NotImplementedError
 
     @abstractmethod

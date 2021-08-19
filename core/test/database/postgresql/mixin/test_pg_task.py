@@ -12,9 +12,10 @@ class PgTaskTestCase(PostgresqlTestCase):
 
         self.project_slug = "project"
         await self.db.create_project(self.anonymous_group_uid, self.project_slug)
-        self.project = await self.db.get_project_by_slug(
+        self.project_uid = await self.db.get_project_uid_by_group_uid_and_slug(
             self.anonymous_group_uid, self.project_slug
         )
+        self.project = await self.db.get_project_by_uid(self.project_uid)
 
     async def test_none_exists_get(self):
         group = ANONYMOUS_GROUP_SLUG

@@ -149,7 +149,7 @@ class PgUser(DbUser, PgBase):
         logger.info(f"delete_user_by_name({params_msg}) ok.")
 
     @overrides
-    async def get_user_username_by_uid(self, uid: str) -> str:
+    async def get_user_username_by_uid(self, uid: int) -> str:
         query = SELECT_USER_USERNAME_BY_UID
         row = await self.fetch_row(query, uid)
         result = row["username"]

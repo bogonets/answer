@@ -9,11 +9,12 @@ class PgWidgetTestCase(PostgresqlTestCase):
     async def setUp(self):
         await super().setUp()
 
-        self.project_name = "project"
-        await self.db.create_project(self.anonymous_group_uid, self.project_name)
-        self.project = await self.db.get_project_by_slug(
-            self.anonymous_group_uid, self.project_name
+        self.project_slug = "project"
+        await self.db.create_project(self.anonymous_group_uid, self.project_slug)
+        self.project_uid = await self.db.get_project_uid_by_group_uid_and_slug(
+            self.anonymous_group_uid, self.project_slug
         )
+        self.project = await self.db.get_project_by_uid(self.project_uid)
 
         self.layout_name = "layout"
         await self.db.create_layout(self.project.uid, self.layout_name)

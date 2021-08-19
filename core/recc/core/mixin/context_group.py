@@ -22,24 +22,6 @@ class ContextGroup(ContextBase):
             extra=extra,
         )
 
-    async def get_group_uid(self, slug: str, caching=True) -> int:
-        if not slug:
-            raise ValueError("The `slug` argument is empty.")
-        uid = self.cache.get_group_uid(slug)
-        if uid is None:
-            uid = await self.database.get_group_uid_by_slug(slug)
-            if caching:
-                self.cache.set_group(uid, slug)
-        return uid
-
-    async def get_group_slug(self, uid: int, caching=True) -> str:
-        slug = self.cache.get_group_slug(uid)
-        if slug is None:
-            slug = await self.database.get_group_slug_by_uid(uid)
-            if caching:
-                self.cache.set_group(uid, slug)
-        return slug
-
     async def update_group_slug(self, uid: int, slug: str) -> None:
         await self.database.update_group_slug_by_uid(uid, slug)
 

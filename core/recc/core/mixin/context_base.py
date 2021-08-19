@@ -126,3 +126,76 @@ class ContextBase:
         """
         assert self._ports is not None
         return self._ports
+
+    # ----------------
+    # Database caching
+    # ----------------
+
+    async def get_user_uid(self, username: str, caching=True) -> int:
+        if not username:
+            raise ValueError("The `username` argument is empty.")
+        uid = self.cache.get_user_uid(username)
+        if uid is None:
+            uid = await self.database.get_user_uid_by_username(username)
+            if caching:
+                self.cache.set_user(username, uid)
+        return uid
+
+    async def get_username(self, user_uid: int, caching=True) -> str:
+        username = self.cache.get_username(user_uid)
+        if username is None:
+            username = await self.database.get_user_username_by_uid(user_uid)
+            if caching:
+                self.cache.set_user(username, user_uid)
+        return username
+
+    async def get_group_uid(self, group_slug: str, caching=True) -> int:
+        if not group_slug:
+            raise ValueError("The `group_slug` argument is empty.")
+        uid = self.cache.get_group_uid(group_slug)
+        if uid is None:
+            uid = await self.database.get_group_uid_by_slug(group_slug)
+            if caching:
+                self.cache.set_group(uid, group_slug)
+        return uid
+
+    async def get_group_slug(self, group_uid: int, caching=True) -> str:
+        slug = self.cache.get_group_slug(group_uid)
+        if slug is None:
+            slug = await self.database.get_group_slug_by_uid(group_uid)
+            if caching:
+                self.cache.set_group(group_uid, slug)
+        return slug
+
+    async def get_project_uid(
+        self, group_uid: int, project_slug: str, caching=True
+    ) -> int:
+        if not project_slug:
+            raise ValueError("The `project_slug` argument is empty.")
+
+        uid = self.cache.get_project_uid(group_uid, project_slug)
+        if uid is None:
+            uid = await self.database.get_project_uid_by_group_uid_and_slug(
+                group_uid, project_slug
+            )
+            if caching:
+                self.cache.set_project(uid, group_uid, project_slug)
+        return uid
+
+    async def get_permission_uid(self, permission_name: str, caching=True) -> int:
+        if not permission_name:
+            raise ValueError("The `permission_name` argument is empty.")
+        uid = self.cache.get_permission_uid(permission_name)
+        if uid is None:
+            uid = await self.database.get_permission_uid_by_name(permission_name)
+            if caching:
+                self.cache.set_permission(uid, permission_name)
+        return uid
+
+    async def get_permission_name(self, permission_uid: int, caching=True) -> str:
+        slug = self.cache.get_permission_name(permission_uid)
+        if slug is None:
+            slug = await self.database.get_permission_name_by_uid(permission_uid)
+            if caching:
+                self.cache.set_permission(permission_uid, slug)
+        return slug

@@ -11,9 +11,10 @@ class PgPortTestCase(PostgresqlTestCase):
 
         self.project_slug = "project"
         await self.db.create_project(self.anonymous_group_uid, self.project_slug)
-        self.project = await self.db.get_project_by_slug(
+        self.project_uid = await self.db.get_project_uid_by_group_uid_and_slug(
             self.anonymous_group_uid, self.project_slug
         )
+        self.project = await self.db.get_project_by_uid(self.project_uid)
 
         self.task_slug = "task"
         await self.db.create_task(self.project.uid, self.task_slug)

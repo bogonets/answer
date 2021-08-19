@@ -25,46 +25,6 @@ class DbProject(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_project_description_by_uid(
-        self, uid: int, description: str, updated_at=datetime.utcnow()
-    ) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def update_project_description_by_slug(
-        self, group_uid: int, slug: str, description: str, updated_at=datetime.utcnow()
-    ) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def update_project_extra_by_uid(
-        self, uid: int, extra: Any, updated_at=datetime.utcnow()
-    ) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def update_project_extra_by_slug(
-        self, group_uid: int, slug: str, extra: Any, updated_at=datetime.utcnow()
-    ) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def update_project_features_by_uid(
-        self, uid: int, features: Any, updated_at=datetime.utcnow()
-    ) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def update_project_features_by_slug(
-        self,
-        group_uid: int,
-        slug: str,
-        features: List[str],
-        updated_at=datetime.utcnow(),
-    ) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
     async def update_project_by_uid(
         self,
         uid: Optional[int] = None,
@@ -82,10 +42,6 @@ class DbProject(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def delete_project_by_slug(self, group_uid: int, slug: str) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
     async def get_project_uid_by_group_uid_and_slug(
         self, group_uid: int, slug: str
     ) -> int:
@@ -100,27 +56,7 @@ class DbProject(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_project_by_slug(self, group_uid: int, slug: str) -> Project:
-        raise NotImplementedError
-
-    @abstractmethod
     async def get_project_by_group_uid(self, group_uid: int) -> List[Project]:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def get_project_by_group_slug(self, group_slug: str) -> List[Project]:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def get_project_by_fullpath(
-        self, group_slug: str, project_slug: str
-    ) -> Project:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def get_project_uid_by_fullpath(
-        self, group_slug: str, project_slug: str
-    ) -> int:
         raise NotImplementedError
 
     @abstractmethod

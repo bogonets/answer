@@ -432,7 +432,8 @@ class RouterV1:
         username = session.audience
         logger.info(f"on_get_projects(session={username})")
 
-        projects = await self.context.get_projects(GLOBAL_GROUP)
+        group_uid = await self.context.get_group_uid(GLOBAL_GROUP)
+        projects = await self.context.get_projects(group_uid)
         result = [self._project_to_v1_dict(project) for project in projects]
         return response_ok_without_detail(name, {"t": name, "obj": result})
 
@@ -456,7 +457,11 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_get_project(session={username},project={projname})")
 
-        project = await self.context.get_project_by_fullpath(GLOBAL_GROUP, projname)
+        group_name = GLOBAL_GROUP
+        group_uid = await self.context.get_group_uid(group_name)
+        project_uid = await self.context.get_project_uid(group_uid, projname)
+        project = await self.context.get_project(project_uid)
+
         result = self._project_to_v1_dict(project)
         return response_ok_without_detail(name, result)
 
@@ -467,7 +472,8 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_create_project(session={username},project={projname})")
 
-        await self.context.create_project(GLOBAL_GROUP, projname)
+        group_uid = await self.context.get_group_uid(GLOBAL_GROUP)
+        await self.context.create_project(group_uid, projname)
         return response_ok_without_detail(name)
 
     async def on_delete_project(self, request: Request):
@@ -477,7 +483,10 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_delete_project(session={username},project={projname})")
 
-        await self.context.delete_project_by_fullpath(GLOBAL_GROUP, projname)
+        group_uid = await self.context.get_group_uid(GLOBAL_GROUP)
+        project_uid = await self.context.get_project_uid(group_uid, projname)
+
+        await self.context.delete_project(project_uid)
         return response_ok_without_detail(name)
 
     async def on_create_layout(self, request: Request):
@@ -587,7 +596,9 @@ class RouterV1:
         logger.info(f"on_get_graph(session={username},project={projname})")
 
         group_name = ANONYMOUS_GROUP_SLUG
-        project = await self.context.get_project_by_fullpath(group_name, projname)
+        group_uid = await self.context.get_group_uid(group_name)
+        project_uid = await self.context.get_project_uid(group_uid, projname)
+        project = await self.context.get_project(project_uid)
         return response_ok_without_detail(name, {"obj": project.extra, "t": name})
 
     async def on_set_graph(self, request: Request):

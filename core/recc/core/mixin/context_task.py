@@ -78,7 +78,8 @@ class ContextTask(ContextBase):
     async def upsert_task_db(
         self, group: str, project: str, task: str, **kwargs
     ) -> None:
-        project_uid = await self.database.get_project_uid_by_fullpath(group, project)
+        group_uid = await self.get_group_uid(group)
+        project_uid = await self.get_project_uid(group_uid, project)
         try:
             task_uid = await self.database.get_task_uid_by_slug(project_uid, task)
             await self.database.update_task_by_uid(task_uid, **kwargs)  # UPDATE
@@ -369,10 +370,6 @@ class ContextTask(ContextBase):
     async def get_tasks(
         self, group_name: str, project_name: str
     ) -> List[ContainerInfo]:
-        group = await self.database.get_group_by_slug(group_name)
-        project = await self.database.get_project_by_slug(group.uid, project_name)
-        assert group.uid is not None
-        assert project.uid is not None
         return await self.container.get_tasks(group_name, project_name)
 
     async def set_graph_with_extra_v1(
@@ -381,10 +378,8 @@ class ContextTask(ContextBase):
         project_name: str,
         extra: Any,
     ) -> None:
-        group = await self.database.get_group_by_slug(group_name)
-        project = await self.database.get_project_by_slug(group.uid, project_name)
-        assert group.uid is not None
-        assert project.uid is not None
+        group_uid = await self.get_group_uid(group_name)
+        project_uid = await self.get_project_uid(group_uid, project_name)
 
         if not isinstance(extra, dict):
             raise TypeError("extra must be of type `dict`")
@@ -402,7 +397,7 @@ class ContextTask(ContextBase):
             logger.info(f"Removed container: {c.name}")
 
         # Clear task data.
-        for t in await self.database.get_task_by_project_uid(project.uid):
+        for t in await self.database.get_task_by_project_uid(project_uid):
             await self.database.delete_task_by_uid(t.uid)
             logger.info(f"Removed task from database: {t.name}")
 
@@ -411,7 +406,7 @@ class ContextTask(ContextBase):
             await client.upload_templates(self.storage.compress_templates())
             await client.set_task_blueprint(task)
 
-        await self.database.update_project_extra_by_uid(project.uid, extra)
+        await self.database.update_project_by_uid(project_uid, extra=extra)
 
     async def send_signal_v1(
         self,
