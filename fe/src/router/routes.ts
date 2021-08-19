@@ -18,6 +18,7 @@ import MainAdminLamdas from '@/pages/MainAdminLamdas.vue';
 import MainAdminOverview from '@/pages/MainAdminOverview.vue';
 import MainAdminPermissions from '@/pages/MainAdminPermissions.vue';
 import MainAdminPermissionsNew from '@/pages/MainAdminPermissionsNew.vue';
+import MainAdminPermissionsEdit from '@/pages/MainAdminPermissionsEdit.vue';
 import MainAdminProjects from '@/pages/MainAdminProjects.vue';
 import MainAdminProjectsNew from '@/pages/MainAdminProjectsNew.vue';
 import MainAdminProjectsEdit from '@/pages/MainAdminProjectsEdit.vue';
@@ -109,11 +110,11 @@ export const mainAdminChildren = [
         component: MainAdminPermissionsNew,
         name: Names.mainAdminPermissionsNew,
     },
-    // {
-    //     path: 'permissions/edit',
-    //     component: MainAdminPermissionsEdit,
-    //     name: Names.mainAdminPermissionsEdit,
-    // },
+    {
+        path: 'permissions/edit',
+        component: MainAdminPermissionsEdit,
+        name: Names.mainAdminPermissionsEdit,
+    },
     {
         path: 'projects',
         component: MainAdminProjects,

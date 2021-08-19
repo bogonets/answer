@@ -40,10 +40,13 @@ ko:
     <p :class="subtitleClass">{{ $t('label.name') }}</p>
     <v-text-field
         dense
-        persistent-hint
         :value="value.name"
         @input="inputName"
         :rules="rules.name"
+        :disabled="disableName"
+        :filled="disableName"
+        :persistent-hint="!disableName"
+        :hide-details="disableName"
         :hint="$t('hint.name')"
     ></v-text-field>
 
@@ -157,10 +160,7 @@ export default class FormPermission extends VueBase {
   readonly loading!: boolean;
 
   @Prop({type: Boolean})
-  readonly disableGroup!: boolean;
-
-  @Prop({type: Boolean})
-  readonly disableSlug!: boolean;
+  readonly disableName!: boolean;
 
   @Prop({type: Boolean})
   readonly disableSubmitButton!: boolean;
