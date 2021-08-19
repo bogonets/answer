@@ -54,21 +54,21 @@ class DbPort(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_port_by_number(self, number: int) -> Port:
+    async def select_port_by_number(self, number: int) -> Port:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_port_by_group_uid(self, group_uid: int) -> List[Port]:
+    async def select_port_by_group_uid(self, group_uid: int) -> List[Port]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_port_by_project_uid(self, project_uid: int) -> List[Port]:
+    async def select_port_by_project_uid(self, project_uid: int) -> List[Port]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_port_by_task_uid(self, task_uid: int) -> List[Port]:
+    async def select_port_by_task_uid(self, task_uid: int) -> List[Port]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_ports(self) -> List[Port]:
+    async def select_ports(self) -> List[Port]:
         raise NotImplementedError

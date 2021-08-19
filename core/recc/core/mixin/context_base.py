@@ -109,7 +109,7 @@ class ContextBase:
         return self._database.is_open()
 
     async def get_database_version(self) -> str:
-        return await self.database.get_database_version()
+        return await self.database.select_database_version()
 
     @property
     def tasks(self):
@@ -136,7 +136,7 @@ class ContextBase:
             raise ValueError("The `username` argument is empty.")
         uid = self.cache.get_user_uid(username)
         if uid is None:
-            uid = await self.database.get_user_uid_by_username(username)
+            uid = await self.database.select_user_uid_by_username(username)
             if caching:
                 self.cache.set_user(username, uid)
         return uid
@@ -144,7 +144,7 @@ class ContextBase:
     async def get_username(self, user_uid: int, caching=True) -> str:
         username = self.cache.get_username(user_uid)
         if username is None:
-            username = await self.database.get_user_username_by_uid(user_uid)
+            username = await self.database.select_user_username_by_uid(user_uid)
             if caching:
                 self.cache.set_user(username, user_uid)
         return username
@@ -154,7 +154,7 @@ class ContextBase:
             raise ValueError("The `group_slug` argument is empty.")
         uid = self.cache.get_group_uid(group_slug)
         if uid is None:
-            uid = await self.database.get_group_uid_by_slug(group_slug)
+            uid = await self.database.select_group_uid_by_slug(group_slug)
             if caching:
                 self.cache.set_group(uid, group_slug)
         return uid
@@ -162,7 +162,7 @@ class ContextBase:
     async def get_group_slug(self, group_uid: int, caching=True) -> str:
         slug = self.cache.get_group_slug(group_uid)
         if slug is None:
-            slug = await self.database.get_group_slug_by_uid(group_uid)
+            slug = await self.database.select_group_slug_by_uid(group_uid)
             if caching:
                 self.cache.set_group(group_uid, slug)
         return slug
@@ -175,7 +175,7 @@ class ContextBase:
 
         uid = self.cache.get_project_uid(group_uid, project_slug)
         if uid is None:
-            uid = await self.database.get_project_uid_by_group_uid_and_slug(
+            uid = await self.database.select_project_uid_by_group_uid_and_slug(
                 group_uid, project_slug
             )
             if caching:
@@ -187,7 +187,7 @@ class ContextBase:
             raise ValueError("The `permission_name` argument is empty.")
         uid = self.cache.get_permission_uid(permission_name)
         if uid is None:
-            uid = await self.database.get_permission_uid_by_name(permission_name)
+            uid = await self.database.select_permission_uid_by_name(permission_name)
             if caching:
                 self.cache.set_permission(uid, permission_name)
         return uid
@@ -195,7 +195,7 @@ class ContextBase:
     async def get_permission_name(self, permission_uid: int, caching=True) -> str:
         slug = self.cache.get_permission_name(permission_uid)
         if slug is None:
-            slug = await self.database.get_permission_name_by_uid(permission_uid)
+            slug = await self.database.select_permission_name_by_uid(permission_uid)
             if caching:
                 self.cache.set_permission(permission_uid, slug)
         return slug

@@ -29,7 +29,7 @@ class ContextLayout(ContextBase):
             anonymous_group_uid, project_name
         )
         assert project.uid is not None
-        return await self.database.get_layout_by_project_uid(project.uid)
+        return await self.database.select_layout_by_project_uid(project.uid)
 
     async def get_layout(self, project_name: str, layout_name: str) -> Layout:
         anonymous_group_uid = self.database.get_anonymous_group_uid()
@@ -37,7 +37,7 @@ class ContextLayout(ContextBase):
             anonymous_group_uid, project_name
         )
         assert project.uid is not None
-        return await self.database.get_layout_by_name(project.uid, layout_name)
+        return await self.database.select_layout_by_name(project.uid, layout_name)
 
     async def exists_layout(self, project_name: str, layout_name: str) -> bool:
         try:

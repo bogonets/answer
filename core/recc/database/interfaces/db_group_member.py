@@ -27,17 +27,19 @@ class DbGroupMember(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_group_member(self, group_uid: int, user_uid: int) -> GroupMember:
+    async def select_group_member(self, group_uid: int, user_uid: int) -> GroupMember:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_group_member_by_group_uid(self, group_uid: int) -> List[GroupMember]:
+    async def select_group_member_by_group_uid(
+        self, group_uid: int
+    ) -> List[GroupMember]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_group_member_by_user_uid(self, user_uid: int) -> List[GroupMember]:
+    async def select_group_member_by_user_uid(self, user_uid: int) -> List[GroupMember]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_group_members(self) -> List[GroupMember]:
+    async def select_group_members(self) -> List[GroupMember]:
         raise NotImplementedError

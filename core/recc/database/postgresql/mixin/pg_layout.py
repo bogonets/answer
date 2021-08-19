@@ -88,34 +88,32 @@ class PgLayout(DbLayout, PgBase):
         logger.info(f"delete_layout_by_name({params_msg}) ok.")
 
     @overrides
-    async def get_layout_by_uid(self, uid: int) -> Layout:
+    async def select_layout_by_uid(self, uid: int) -> Layout:
         query = SELECT_LAYOUT_BY_UID
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
         if not row:
             raise RuntimeError(f"Not found layout: {params_msg}")
-        assert len(row) == 6
         result = Layout(**dict(row))
         result.uid = uid
-        logger.info(f"get_layout_by_uid({params_msg}) ok.")
+        logger.info(f"select_layout_by_uid({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_layout_by_name(self, project_uid: int, name: str) -> Layout:
+    async def select_layout_by_name(self, project_uid: int, name: str) -> Layout:
         query = SELECT_LAYOUT_BY_PROJECT_ID_AND_NAME
         row = await self.fetch_row(query, project_uid, name)
         params_msg = f"project_uid={project_uid},name={name}"
         if not row:
             raise RuntimeError(f"Not found layout: {params_msg}")
-        assert len(row) == 5
         result = Layout(**dict(row))
         result.project_uid = project_uid
         result.name = name
-        logger.info(f"get_layout_by_name({params_msg}) ok.")
+        logger.info(f"select_layout_by_name({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_layout_by_project_uid(self, project_uid: int) -> List[Layout]:
+    async def select_layout_by_project_uid(self, project_uid: int) -> List[Layout]:
         result: List[Layout] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -126,5 +124,5 @@ class PgLayout(DbLayout, PgBase):
                     result.append(item)
         params_msg = f"project_uid={project_uid}"
         result_msg = f"{len(result)} layout"
-        logger.info(f"get_layout_by_project_uid({params_msg}) -> {result_msg}")
+        logger.info(f"select_layout_by_project_uid({params_msg}) -> {result_msg}")
         return result

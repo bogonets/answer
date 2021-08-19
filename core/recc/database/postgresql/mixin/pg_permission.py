@@ -117,29 +117,29 @@ class PgPermission(DbPermission, PgBase):
         logger.info(f"delete_permission_by_uid({params_msg}) ok.")
 
     @overrides
-    async def get_permission_uid_by_name(self, name: str) -> int:
+    async def select_permission_uid_by_name(self, name: str) -> int:
         query = SELECT_PERMISSION_UID_BY_NAME
         row = await self.fetch_row(query, name)
         params_msg = f"name={name}"
         if not row:
             raise RuntimeError(f"Not found permission: {params_msg}")
         result = int(row["uid"])
-        logger.info(f"get_permission_uid_by_name({params_msg}) -> {result}")
+        logger.info(f"select_permission_uid_by_name({params_msg}) -> {result}")
         return result
 
     @overrides
-    async def get_permission_name_by_uid(self, uid: int) -> str:
+    async def select_permission_name_by_uid(self, uid: int) -> str:
         query = SELECT_PERMISSION_NAME_BY_UID
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
         if not row:
             raise RuntimeError(f"Not found permission: {params_msg}")
         result = str(row["name"])
-        logger.info(f"get_permission_name_by_uid({params_msg}) -> {result}")
+        logger.info(f"select_permission_name_by_uid({params_msg}) -> {result}")
         return result
 
     @overrides
-    async def get_permission_by_uid(self, uid: int) -> Permission:
+    async def select_permission_by_uid(self, uid: int) -> Permission:
         query = SELECT_PERMISSION_BY_UID
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
@@ -147,11 +147,11 @@ class PgPermission(DbPermission, PgBase):
             raise RuntimeError(f"Not found permission: {params_msg}")
         result = Permission(**dict(row))
         result.uid = uid
-        logger.info(f"get_permission_by_uid({params_msg}) ok.")
+        logger.info(f"select_permission_by_uid({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_permissions(self) -> List[Permission]:
+    async def select_permissions(self) -> List[Permission]:
         result: List[Permission] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -159,11 +159,11 @@ class PgPermission(DbPermission, PgBase):
                 async for row in conn.cursor(query):
                     result.append(Permission(**dict(row)))
         result_msg = f"{len(result)} permissions"
-        logger.info(f"get_permissions() -> {result_msg}")
+        logger.info(f"select_permissions() -> {result_msg}")
         return result
 
     @overrides
-    async def get_project_permission_by_uid(
+    async def select_project_permission_by_uid(
         self, user_uid: int, project_uid: int
     ) -> Permission:
         query = SELECT_BEST_PERMISSION_OF_PROJECT_NO_COMMENT
@@ -172,5 +172,5 @@ class PgPermission(DbPermission, PgBase):
         if not row:
             raise RuntimeError(f"Not found permission: {params_msg}")
         result = Permission(**dict(row))
-        logger.info(f"get_project_permission_by_uid({params_msg}) ok.")
+        logger.info(f"select_project_permission_by_uid({params_msg}) ok.")
         return result

@@ -15,7 +15,7 @@ class ContextPort(ContextBase):
             pass
 
     async def update_ports_from_database(self) -> None:
-        ports = await self.database.get_ports()
+        ports = await self.database.select_ports()
         for port in ports:
             self._alloc_port(port.number)
 

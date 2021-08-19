@@ -11,14 +11,14 @@ class PgPortTestCase(PostgresqlTestCase):
 
         self.project_slug = "project"
         await self.db.insert_project(self.anonymous_group_uid, self.project_slug)
-        self.project_uid = await self.db.get_project_uid_by_group_uid_and_slug(
+        self.project_uid = await self.db.select_project_uid_by_group_uid_and_slug(
             self.anonymous_group_uid, self.project_slug
         )
-        self.project = await self.db.get_project_by_uid(self.project_uid)
+        self.project = await self.db.select_project_by_uid(self.project_uid)
 
         self.task_slug = "task"
         await self.db.insert_task(self.project.uid, self.task_slug)
-        self.task = await self.db.get_task_by_slug(self.project.uid, self.task_slug)
+        self.task = await self.db.select_task_by_slug(self.project.uid, self.task_slug)
 
     async def test_create_and_get(self):
         number1 = 100
@@ -33,7 +33,7 @@ class PgPortTestCase(PostgresqlTestCase):
             self.task.uid,
             created_at=created_at2,
         )
-        port1 = await self.db.get_port_by_number(number1)
+        port1 = await self.db.select_port_by_number(number1)
         self.assertEqual(number1, port1.number)
         self.assertIsNone(port1.group_uid)
         self.assertIsNone(port1.project_uid)
@@ -43,7 +43,7 @@ class PgPortTestCase(PostgresqlTestCase):
         self.assertEqual(created_at1, port1.created_at)
         self.assertIsNone(port1.updated_at)
 
-        ports2 = await self.db.get_port_by_group_uid(self.anonymous_group_uid)
+        ports2 = await self.db.select_port_by_group_uid(self.anonymous_group_uid)
         self.assertEqual(1, len(ports2))
         port2 = ports2[0]
         self.assertEqual(number2, port2.number)
@@ -55,8 +55,8 @@ class PgPortTestCase(PostgresqlTestCase):
         self.assertEqual(created_at2, port2.created_at)
         self.assertIsNone(port2.updated_at)
 
-        ports2_2 = await self.db.get_port_by_project_uid(self.project.uid)
-        ports2_3 = await self.db.get_port_by_task_uid(self.task.uid)
+        ports2_2 = await self.db.select_port_by_project_uid(self.project.uid)
+        ports2_3 = await self.db.select_port_by_task_uid(self.task.uid)
         self.assertEqual(1, len(ports2_2))
         self.assertEqual(1, len(ports2_3))
         self.assertEqual(port2, ports2_2[0])
@@ -70,7 +70,7 @@ class PgPortTestCase(PostgresqlTestCase):
         updated_at = datetime.utcnow()
         await self.db.update_port_description_by_number(number, desc, updated_at)
 
-        port = await self.db.get_port_by_number(number)
+        port = await self.db.select_port_by_number(number)
         self.assertEqual(desc, port.description)
         self.assertEqual(updated_at, port.updated_at)
 
@@ -82,7 +82,7 @@ class PgPortTestCase(PostgresqlTestCase):
         updated_at = datetime.utcnow()
         await self.db.update_port_extra_by_number(number, extra, updated_at)
 
-        port = await self.db.get_port_by_number(number)
+        port = await self.db.select_port_by_number(number)
         self.assertEqual(extra, port.extra)
         self.assertEqual(updated_at, port.updated_at)
 
@@ -90,7 +90,7 @@ class PgPortTestCase(PostgresqlTestCase):
         number = 100
         created_at = datetime.utcnow()
         await self.db.insert_port(number, created_at=created_at)
-        port1 = await self.db.get_port_by_number(number)
+        port1 = await self.db.select_port_by_number(number)
         self.assertEqual(number, port1.number)
         self.assertIsNone(port1.group_uid)
         self.assertIsNone(port1.project_uid)
@@ -114,7 +114,7 @@ class PgPortTestCase(PostgresqlTestCase):
             updated_at=updated_at,
         )
 
-        port2 = await self.db.get_port_by_number(number)
+        port2 = await self.db.select_port_by_number(number)
         self.assertEqual(number, port2.number)
         self.assertEqual(group_uid, port2.group_uid)
         self.assertEqual(project_uid, port2.project_uid)
@@ -129,10 +129,10 @@ class PgPortTestCase(PostgresqlTestCase):
         number2 = 200
         await self.db.insert_port(number1)
         await self.db.insert_port(number2)
-        self.assertEqual(2, len(await self.db.get_ports()))
+        self.assertEqual(2, len(await self.db.select_ports()))
         await self.db.delete_port_by_number(number1)
         await self.db.delete_port_by_number(number2)
-        self.assertEqual(0, len(await self.db.get_ports()))
+        self.assertEqual(0, len(await self.db.select_ports()))
 
 
 if __name__ == "__main__":

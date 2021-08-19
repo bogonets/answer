@@ -6,7 +6,7 @@ from recc.packet.system import SystemOverviewA
 
 class ContextSystem(ContextBase):
     async def get_system_overview(self) -> SystemOverviewA:
-        users = await self.database.get_users_count()
-        groups = await self.database.get_groups_count()
-        projects = await self.database.get_projects_count()
+        users = await self.database.select_users_count()
+        groups = await self.database.select_groups_count()
+        projects = await self.database.select_projects_count()
         return SystemOverviewA(users, groups, projects)

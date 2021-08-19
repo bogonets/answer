@@ -37,13 +37,13 @@ class DbInfo(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_info_by_key(self, key: str) -> Info:
+    async def select_info_by_key(self, key: str) -> Info:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_infos(self) -> List[Info]:
+    async def select_infos(self) -> List[Info]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_database_version(self) -> str:
+    async def select_database_version(self) -> str:
         raise NotImplementedError

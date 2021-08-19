@@ -31,8 +31,8 @@ class PgUserTestCase(PostgresqlTestCase):
             created_at=created_at,
         )
 
-        user_uid = await self.db.get_user_uid_by_username(username)
-        user = await self.db.get_user_by_uid(user_uid)
+        user_uid = await self.db.select_user_uid_by_username(username)
+        user = await self.db.select_user_by_uid(user_uid)
         self.assertEqual(user_uid, user.uid)
         self.assertEqual(username, user.username)
         self.assertEqual(nickname, user.nickname)
@@ -43,7 +43,7 @@ class PgUserTestCase(PostgresqlTestCase):
         self.assertEqual(created_at, user.created_at)
         self.assertIsNone(user.updated_at)
         self.assertIsNone(user.last_login)
-        username2 = await self.db.get_user_username_by_uid(user_uid)
+        username2 = await self.db.select_user_username_by_uid(user_uid)
         self.assertEqual(username, username2)
 
     async def test_last_login(self):
@@ -53,11 +53,11 @@ class PgUserTestCase(PostgresqlTestCase):
         await self.db.insert_user(username, password, salt)
 
         last_login = datetime.utcnow() + timedelta(days=2)
-        user_uid = await self.db.get_user_uid_by_username(username)
+        user_uid = await self.db.select_user_uid_by_username(username)
         await self.db.update_user_last_login_by_uid(user_uid, last_login)
 
-        user_uid = await self.db.get_user_uid_by_username(username)
-        user = await self.db.get_user_by_uid(user_uid)
+        user_uid = await self.db.select_user_uid_by_username(username)
+        user = await self.db.select_user_by_uid(user_uid)
         self.assertEqual(last_login, user.last_login)
 
     async def test_get_password(self):
@@ -65,8 +65,8 @@ class PgUserTestCase(PostgresqlTestCase):
         password = "password"
         salt = "salt"
         await self.db.insert_user(username, password, salt)
-        user_uid = await self.db.get_user_uid_by_username(username)
-        pass_info = await self.db.get_user_password_and_salt_by_uid(user_uid)
+        user_uid = await self.db.select_user_uid_by_username(username)
+        pass_info = await self.db.select_user_password_and_salt_by_uid(user_uid)
         self.assertEqual(password, pass_info.password)
         self.assertEqual(salt, pass_info.salt)
 
@@ -79,12 +79,12 @@ class PgUserTestCase(PostgresqlTestCase):
         extra = {"key1": 100, "key2": 200}
         updated_at = datetime.utcnow() + timedelta(days=1)
 
-        user_uid = await self.db.get_user_uid_by_username(username)
+        user_uid = await self.db.select_user_uid_by_username(username)
         await self.db.update_user_extra_by_uid(user_uid, extra, updated_at)
-        user_extra = await self.db.get_user_extra_by_uid(user_uid)
+        user_extra = await self.db.select_user_extra_by_uid(user_uid)
         self.assertEqual(extra, user_extra)
 
-        user = await self.db.get_user_by_uid(user_uid)
+        user = await self.db.select_user_by_uid(user_uid)
         self.assertEqual(extra, user.extra)
         self.assertEqual(updated_at, user.updated_at)
 
@@ -96,12 +96,12 @@ class PgUserTestCase(PostgresqlTestCase):
 
         update_phone2 = "010-0000-0001"
         updated_at = datetime.utcnow() + timedelta(days=3)
-        user_uid = await self.db.get_user_uid_by_username(username)
+        user_uid = await self.db.select_user_uid_by_username(username)
         await self.db.update_user_by_uid(
             uid=user_uid, phone2=update_phone2, updated_at=updated_at
         )
 
-        users = await self.db.get_users()
+        users = await self.db.select_users()
         self.assertEqual(1, len(users))
         user = users[0]
 
@@ -117,22 +117,22 @@ class PgUserTestCase(PostgresqlTestCase):
         salt = "salt"
         await self.db.insert_user(username, password, salt)
 
-        self.assertTrue(await self.db.exist_user_by_username(username))
-        user_uid = await self.db.get_user_uid_by_username(username)
+        self.assertTrue(await self.db.select_user_exists_by_username(username))
+        user_uid = await self.db.select_user_uid_by_username(username)
         await self.db.delete_user_by_uid(user_uid)
-        self.assertFalse(await self.db.exist_user_by_username(username))
+        self.assertFalse(await self.db.select_user_exists_by_username(username))
 
     async def test_exists_admin_user(self):
-        self.assertFalse(await self.db.exists_admin_user())
+        self.assertFalse(await self.db.select_exists_admin_user())
 
     async def test_signup_admin_user(self):
         username = "admin"
-        self.assertFalse(await self.db.exist_user_by_username(username))
-        self.assertFalse(await self.db.exists_admin_user())
+        self.assertFalse(await self.db.select_user_exists_by_username(username))
+        self.assertFalse(await self.db.select_exists_admin_user())
         await self.db.insert_user(username, "1234", "__unknown_salt__", is_admin=True)
-        self.assertTrue(await self.db.exist_user_by_username(username))
-        self.assertTrue(await self.db.exists_admin_user())
-        self.assertTrue(await self.db.exists_admin_user())
+        self.assertTrue(await self.db.select_user_exists_by_username(username))
+        self.assertTrue(await self.db.select_exists_admin_user())
+        self.assertTrue(await self.db.select_exists_admin_user())
 
 
 if __name__ == "__main__":

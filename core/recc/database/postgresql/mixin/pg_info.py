@@ -61,20 +61,19 @@ class PgInfo(DbInfo, PgBase):
         logger.info(f"delete_task_by_uid({params_msg}) ok.")
 
     @overrides
-    async def get_info_by_key(self, key: str) -> Info:
+    async def select_info_by_key(self, key: str) -> Info:
         query = SELECT_INFO_BY_KEY
         row = await self.fetch_row(query, key)
         params_msg = f"key={key}"
         if not row:
             raise RuntimeError(f"Not found info: {params_msg}")
-        assert len(row) == 3
         result = Info(**dict(row))
         result.key = key
-        logger.info(f"get_info_by_key({params_msg}) ok.")
+        logger.info(f"select_info_by_key({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_infos(self) -> List[Info]:
+    async def select_infos(self) -> List[Info]:
         result: List[Info] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -82,14 +81,14 @@ class PgInfo(DbInfo, PgBase):
                 async for row in conn.cursor(query):
                     result.append(Info(**dict(row)))
         result_msg = f"{len(result)} infos"
-        logger.info(f"get_infos() -> {result_msg}")
+        logger.info(f"select_infos() -> {result_msg}")
         return result
 
     @overrides
-    async def get_database_version(self) -> str:
+    async def select_database_version(self) -> str:
         query = SELECT_INFO_DB_VERSION
         row = await self.fetch_row(query)
         assert row and len(row) == 1
         result = str(row.get("version", ""))
-        logger.info(f"get_database_version() -> '{result}'")
+        logger.info(f"select_database_version() -> '{result}'")
         return result

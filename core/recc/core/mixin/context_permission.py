@@ -88,13 +88,13 @@ class ContextPermission(ContextBase):
         await self.database.delete_permission_by_uid(uid)
 
     async def get_permission(self, uid: int, remove_sensitive=True) -> Permission:
-        result = await self.database.get_permission_by_uid(uid)
+        result = await self.database.select_permission_by_uid(uid)
         if remove_sensitive:
             result.remove_sensitive()
         return result
 
     async def get_permissions(self, remove_sensitive=True) -> List[Permission]:
-        permissions = await self.database.get_permissions()
+        permissions = await self.database.select_permissions()
         if remove_sensitive:
             for permission in permissions:
                 permission.remove_sensitive()

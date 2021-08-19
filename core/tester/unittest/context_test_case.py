@@ -27,7 +27,7 @@ class ContextTestCase(AsyncTestCase):
         self.context.storage.refresh_templates()
 
         group_uid = self.context.database.get_anonymous_group_uid()
-        group = await self.context.database.get_group_by_uid(group_uid)
+        group = await self.context.database.select_group_by_uid(group_uid)
         self.group_slug = group.slug
         self.project_name = "test_project"
         self.task_name = "test_task"

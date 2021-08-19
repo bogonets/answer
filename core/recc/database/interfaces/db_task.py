@@ -111,29 +111,29 @@ class DbTask(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_task_by_uid(self, uid: int) -> Task:
+    async def select_task_by_uid(self, uid: int) -> Task:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_task_by_slug(self, project_uid: int, slug: str) -> Task:
+    async def select_task_by_slug(self, project_uid: int, slug: str) -> Task:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_task_uid_by_slug(self, project_uid: int, slug: str) -> int:
+    async def select_task_uid_by_slug(self, project_uid: int, slug: str) -> int:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_task_by_project_uid(self, project_uid: int) -> List[Task]:
+    async def select_task_by_project_uid(self, project_uid: int) -> List[Task]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_task_by_fullpath(
+    async def select_task_by_fullpath(
         self, group_slug: str, project_slug: str, task_slug: str
     ) -> Task:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_task_uid_by_fullpath(
+    async def select_task_uid_by_fullpath(
         self, group_slug: str, project_slug: str, task_slug: str
     ) -> int:
         raise NotImplementedError

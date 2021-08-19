@@ -17,7 +17,7 @@ from recc.database.postgresql.query.user import (
     SELECT_USER_COUNT,
     SELECT_USER_USERNAME_BY_UID,
     SELECT_USER_UID_BY_USERNAME,
-    EXISTS_USER_BY_USERNAME,
+    SELECT_USER_EXISTS_BY_USERNAME,
     SELECT_USER_PASSWORD_AND_SALT_BY_UID,
     SELECT_USER_BY_UID,
     SELECT_USER_EXTRA_BY_UID,
@@ -123,48 +123,48 @@ class PgUser(DbUser, PgBase):
         logger.info(f"delete_user_by_uid({params_msg}) ok.")
 
     @overrides
-    async def get_user_username_by_uid(self, uid: int) -> str:
+    async def select_user_username_by_uid(self, uid: int) -> str:
         query = SELECT_USER_USERNAME_BY_UID
         row = await self.fetch_row(query, uid)
         result = row["username"]
         params_msg = f"uid={uid}"
         result_msg = f"username={result}"
-        logger.info(f"get_user_username_by_uid({params_msg}) -> {result_msg}")
+        logger.info(f"select_user_username_by_uid({params_msg}) -> {result_msg}")
         return result
 
     @overrides
-    async def get_user_uid_by_username(self, username: str) -> int:
+    async def select_user_uid_by_username(self, username: str) -> int:
         query = SELECT_USER_UID_BY_USERNAME
         row = await self.fetch_row(query, username)
         result = row["uid"]
         params_msg = f"username={username}"
         result_msg = f"uid={result}"
-        logger.info(f"get_user_uid_by_username({params_msg}) -> {result_msg}")
+        logger.info(f"select_user_uid_by_username({params_msg}) -> {result_msg}")
         return result
 
     @overrides
-    async def exist_user_by_username(self, username: str) -> bool:
-        query = EXISTS_USER_BY_USERNAME
+    async def select_user_exists_by_username(self, username: str) -> bool:
+        query = SELECT_USER_EXISTS_BY_USERNAME
         row = await self.fetch_row(query, username)
         result = row["exists"]
         assert isinstance(result, bool)
         params_msg = f"username={username}"
-        logger.info(f"exist_user_by_username({params_msg}) -> {result}")
+        logger.info(f"select_user_exists_by_username({params_msg}) -> {result}")
         return result
 
     @overrides
-    async def get_user_password_and_salt_by_uid(self, uid: int) -> PassInfo:
+    async def select_user_password_and_salt_by_uid(self, uid: int) -> PassInfo:
         query = SELECT_USER_PASSWORD_AND_SALT_BY_UID
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
         if not row:
             raise RuntimeError(f"Not found user: {params_msg}")
         assert len(row) == 2
-        logger.info(f"get_user_password_and_salt_by_uid({params_msg}) ok.")
+        logger.info(f"select_user_password_and_salt_by_uid({params_msg}) ok.")
         return PassInfo(**dict(row))
 
     @overrides
-    async def get_user_extra_by_uid(self, uid: int) -> Any:
+    async def select_user_extra_by_uid(self, uid: int) -> Any:
         query = SELECT_USER_EXTRA_BY_UID
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
@@ -172,22 +172,22 @@ class PgUser(DbUser, PgBase):
             raise RuntimeError(f"Not found user: {params_msg}")
         assert len(row) == 1
         result = row.get("extra", None)
-        logger.info(f"get_user_extra_by_uid({params_msg}) ok.")
+        logger.info(f"select_user_extra_by_uid({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_user_by_uid(self, uid: int) -> User:
+    async def select_user_by_uid(self, uid: int) -> User:
         query = SELECT_USER_BY_UID
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
         if not row:
             raise RuntimeError(f"Not found user: {params_msg}")
         result = User(**dict(row))
-        logger.info(f"get_user_by_uid({params_msg}) ok.")
+        logger.info(f"select_user_by_uid({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_users(self) -> List[User]:
+    async def select_users(self) -> List[User]:
         result: List[User] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -195,32 +195,32 @@ class PgUser(DbUser, PgBase):
                 async for row in conn.cursor(query):
                     result.append(User(**dict(row)))
         result_msg = f"{len(result)} users"
-        logger.info(f"get_users() -> {result_msg}")
+        logger.info(f"select_users() -> {result_msg}")
         return result
 
     @overrides
-    async def get_users_count(self) -> int:
+    async def select_users_count(self) -> int:
         query = SELECT_USER_COUNT
         row = await self.fetch_row(query)
         assert row and len(row) == 1
         result = int(row.get("count", 0))
-        logger.info(f"get_users_count() -> {result}")
+        logger.info(f"select_users_count() -> {result}")
         return result
 
     @overrides
-    async def get_admin_count(self) -> int:
+    async def select_admin_count(self) -> int:
         query = SELECT_USER_ADMIN_COUNT
         row = await self.fetch_row(query)
         assert row and len(row) == 1
         result = int(row.get("count", 0))
-        logger.info(f"get_admin_count() -> {result}")
+        logger.info(f"select_admin_count() -> {result}")
         return result
 
     @overrides
-    async def exists_admin_user(self) -> bool:
+    async def select_exists_admin_user(self) -> bool:
         query = SELECT_USER_ADMIN_COUNT
         row = await self.fetch_row(query)
         assert row and len(row) == 1
         result = bool(row.get("count", 0) >= 1)
-        logger.info(f"exist_admin_user() -> {result}")
+        logger.info(f"select_exists_admin_user() -> {result}")
         return result

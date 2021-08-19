@@ -59,13 +59,13 @@ class DbLayout(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_layout_by_uid(self, uid: int) -> Layout:
+    async def select_layout_by_uid(self, uid: int) -> Layout:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_layout_by_name(self, project_uid: int, name: str) -> Layout:
+    async def select_layout_by_name(self, project_uid: int, name: str) -> Layout:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_layout_by_project_uid(self, project_uid: int) -> List[Layout]:
+    async def select_layout_by_project_uid(self, project_uid: int) -> List[Layout]:
         raise NotImplementedError

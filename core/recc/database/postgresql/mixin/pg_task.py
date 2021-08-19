@@ -199,7 +199,7 @@ class PgTask(DbTask, PgBase):
         logger.info(f"delete_task_by_slug({params_msg}) ok.")
 
     @overrides
-    async def get_task_by_uid(self, uid: int) -> Task:
+    async def select_task_by_uid(self, uid: int) -> Task:
         query = SELECT_TASK_BY_UID
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
@@ -207,11 +207,11 @@ class PgTask(DbTask, PgBase):
             raise RuntimeError(f"Not found task: {params_msg}")
         result = Task(**dict(row))
         assert result.uid == uid
-        logger.info(f"get_task_by_uid({params_msg}) ok.")
+        logger.info(f"select_task_by_uid({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_task_by_slug(self, project_uid: int, slug: str) -> Task:
+    async def select_task_by_slug(self, project_uid: int, slug: str) -> Task:
         query = SELECT_TASK_BY_PROJECT_ID_AND_SLUG
         row = await self.fetch_row(query, project_uid, slug)
         params_msg = f"project_uid={project_uid},slug={slug}"
@@ -220,11 +220,11 @@ class PgTask(DbTask, PgBase):
         result = Task(**dict(row))
         assert result.project_uid == project_uid
         assert result.slug == slug
-        logger.info(f"get_task_by_slug({params_msg}) ok.")
+        logger.info(f"select_task_by_slug({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_task_uid_by_slug(self, project_uid: int, slug: str) -> int:
+    async def select_task_uid_by_slug(self, project_uid: int, slug: str) -> int:
         query = SELECT_TASK_UID_BY_PROJECT_ID_AND_SLUG
         row = await self.fetch_row(query, project_uid, slug)
         params_msg = f"project_uid={project_uid},slug={slug}"
@@ -233,11 +233,11 @@ class PgTask(DbTask, PgBase):
         result = row.get("uid")
         if result is None:
             raise RuntimeError(f"Not found task: {params_msg}")
-        logger.info(f"get_task_uid_by_slug({params_msg}) -> {result}")
+        logger.info(f"select_task_uid_by_slug({params_msg}) -> {result}")
         return result
 
     @overrides
-    async def get_task_by_project_uid(self, project_uid: int) -> List[Task]:
+    async def select_task_by_project_uid(self, project_uid: int) -> List[Task]:
         result: List[Task] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -248,11 +248,11 @@ class PgTask(DbTask, PgBase):
                     result.append(item)
         params_msg = f"project_uid={project_uid}"
         result_msg = f"{len(result)} task"
-        logger.info(f"get_task_by_project_uid({params_msg}) -> {result_msg}")
+        logger.info(f"select_task_by_project_uid({params_msg}) -> {result_msg}")
         return result
 
     @overrides
-    async def get_task_by_fullpath(
+    async def select_task_by_fullpath(
         self, group_slug: str, project_slug: str, task_slug: str
     ) -> Task:
         query = SELECT_TASK_BY_FULLPATH
@@ -264,11 +264,11 @@ class PgTask(DbTask, PgBase):
             raise RuntimeError(f"Not found task: {params_msg}")
         result = Task(**dict(row))
         assert result.slug == task_slug
-        logger.info(f"get_task_by_fullpath({params_msg}) ok.")
+        logger.info(f"select_task_by_fullpath({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_task_uid_by_fullpath(
+    async def select_task_uid_by_fullpath(
         self, group_slug: str, project_slug: str, task_slug: str
     ) -> int:
         query = SELECT_TASK_UID_BY_FULLPATH
@@ -279,5 +279,5 @@ class PgTask(DbTask, PgBase):
         result = row.get("uid")
         if result is None:
             raise RuntimeError(f"Not found task: {params_msg}")
-        logger.info(f"get_task_uid_by_fullpath({params_msg}) -> {result}")
+        logger.info(f"select_task_uid_by_fullpath({params_msg}) -> {result}")
         return result

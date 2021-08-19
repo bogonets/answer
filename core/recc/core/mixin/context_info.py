@@ -27,7 +27,7 @@ class ContextInfo(ContextBase):
         await self.database.delete_info_by_key(key)
 
     async def get_infos(self) -> List[Info]:
-        return await self.database.get_infos()
+        return await self.database.select_infos()
 
     async def get_info(self, key: str) -> Info:
-        return await self.database.get_info_by_key(key)
+        return await self.database.select_info_by_key(key)

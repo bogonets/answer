@@ -55,13 +55,13 @@ class DbWidget(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_widget_by_uid(self, uid: int) -> Widget:
+    async def select_widget_by_uid(self, uid: int) -> Widget:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_widget_by_name(self, layout_uid: int, name: str) -> Widget:
+    async def select_widget_by_name(self, layout_uid: int, name: str) -> Widget:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_widget_by_layout_uid(self, layout_uid: int) -> List[Widget]:
+    async def select_widget_by_layout_uid(self, layout_uid: int) -> List[Widget]:
         raise NotImplementedError

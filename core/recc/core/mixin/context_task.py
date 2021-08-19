@@ -81,7 +81,7 @@ class ContextTask(ContextBase):
         group_uid = await self.get_group_uid(group)
         project_uid = await self.get_project_uid(group_uid, project)
         try:
-            task_uid = await self.database.get_task_uid_by_slug(project_uid, task)
+            task_uid = await self.database.select_task_uid_by_slug(project_uid, task)
             await self.database.update_task_by_uid(task_uid, **kwargs)  # UPDATE
         except BaseException:  # noqa
             await self.database.insert_task(project_uid, task, **kwargs)  # INSERT
@@ -397,7 +397,7 @@ class ContextTask(ContextBase):
             logger.info(f"Removed container: {c.name}")
 
         # Clear task data.
-        for t in await self.database.get_task_by_project_uid(project_uid):
+        for t in await self.database.select_task_by_project_uid(project_uid):
             await self.database.delete_task_by_uid(t.uid)
             logger.info(f"Removed task from database: {t.name}")
 

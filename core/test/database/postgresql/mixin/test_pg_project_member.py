@@ -10,10 +10,10 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
 
         self.project_slug = "project"
         await self.db.insert_project(self.anonymous_group_uid, self.project_slug)
-        self.project_uid = await self.db.get_project_uid_by_group_uid_and_slug(
+        self.project_uid = await self.db.select_project_uid_by_group_uid_and_slug(
             self.anonymous_group_uid, self.project_slug
         )
-        self.project = await self.db.get_project_by_uid(self.project_uid)
+        self.project = await self.db.select_project_by_uid(self.project_uid)
 
         self.guest = self.guest_permission_uid
         self.reporter = self.reporter_permission_uid
@@ -25,10 +25,10 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
         await self.db.insert_user(user1_name, "pass1", "salt1")
         await self.db.insert_user(user2_name, "pass2", "salt2")
 
-        user1_uid = await self.db.get_user_uid_by_username(user1_name)
-        user2_uid = await self.db.get_user_uid_by_username(user2_name)
-        self.user1 = await self.db.get_user_by_uid(user1_uid)
-        self.user2 = await self.db.get_user_by_uid(user2_uid)
+        user1_uid = await self.db.select_user_uid_by_username(user1_name)
+        user2_uid = await self.db.select_user_uid_by_username(user2_name)
+        self.user1 = await self.db.select_user_by_uid(user1_uid)
+        self.user2 = await self.db.select_user_by_uid(user2_uid)
 
     async def test_create_and_get(self):
         await self.db.insert_project_member(
@@ -38,8 +38,8 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
             self.project.uid, self.user2.uid, self.reporter
         )
 
-        member1 = await self.db.get_project_member(self.project.uid, self.user1.uid)
-        member2 = await self.db.get_project_member(self.project.uid, self.user2.uid)
+        member1 = await self.db.select_project_member(self.project.uid, self.user1.uid)
+        member2 = await self.db.select_project_member(self.project.uid, self.user2.uid)
 
         self.assertEqual(self.project.uid, member1.project_uid)
         self.assertEqual(self.project.uid, member2.project_uid)
@@ -62,8 +62,8 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
             self.project.uid, self.user2.uid, self.operator
         )
 
-        member1 = await self.db.get_project_member(self.project.uid, self.user1.uid)
-        member2 = await self.db.get_project_member(self.project.uid, self.user2.uid)
+        member1 = await self.db.select_project_member(self.project.uid, self.user1.uid)
+        member2 = await self.db.select_project_member(self.project.uid, self.user2.uid)
         self.assertEqual(self.maintainer, member1.permission_uid)
         self.assertEqual(self.operator, member2.permission_uid)
 
@@ -75,9 +75,9 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
             self.project.uid, self.user2.uid, self.reporter
         )
 
-        projects1 = await self.db.get_project_member_by_project_uid(self.project.uid)
-        projects2 = await self.db.get_project_member_by_user_uid(self.user2.uid)
-        projects3 = await self.db.get_project_members()
+        projects1 = await self.db.select_project_member_by_project_uid(self.project.uid)
+        projects2 = await self.db.select_project_member_by_user_uid(self.user2.uid)
+        projects3 = await self.db.select_project_members()
         self.assertEqual(2, len(projects1))
         self.assertEqual(1, len(projects2))
         self.assertEqual(2, len(projects3))
@@ -89,10 +89,10 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
         await self.db.insert_project_member(
             self.project.uid, self.user2.uid, self.reporter
         )
-        self.assertEqual(2, len(await self.db.get_project_members()))
+        self.assertEqual(2, len(await self.db.select_project_members()))
         await self.db.delete_project_member(self.project.uid, self.user1.uid)
         await self.db.delete_project_member(self.project.uid, self.user2.uid)
-        self.assertEqual(0, len(await self.db.get_project_members()))
+        self.assertEqual(0, len(await self.db.select_project_members()))
 
 
 if __name__ == "__main__":

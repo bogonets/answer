@@ -48,7 +48,7 @@ class PgProjectMember(DbProjectMember, PgBase):
         logger.info(f"delete_project_member({params_msg}) ok.")
 
     @overrides
-    async def get_project_member(
+    async def select_project_member(
         self, project_uid: int, user_uid: int
     ) -> ProjectMember:
         query = SELECT_PROJECT_MEMBER_BY_PROJECT_UID_AND_USER_UID
@@ -60,11 +60,11 @@ class PgProjectMember(DbProjectMember, PgBase):
         result = ProjectMember(**dict(row))
         result.project_uid = project_uid
         result.user_uid = user_uid
-        logger.info(f"get_project_member({params_msg}) ok.")
+        logger.info(f"select_project_member({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_project_member_by_project_uid(
+    async def select_project_member_by_project_uid(
         self, project_uid: int
     ) -> List[ProjectMember]:
         result: List[ProjectMember] = list()
@@ -76,11 +76,11 @@ class PgProjectMember(DbProjectMember, PgBase):
                     item.project_uid = project_uid
                     result.append(item)
         result_msg = f"{len(result)} project members"
-        logger.info(f"get_project_member_by_project_uid() -> {result_msg}")
+        logger.info(f"select_project_member_by_project_uid() -> {result_msg}")
         return result
 
     @overrides
-    async def get_project_member_by_user_uid(
+    async def select_project_member_by_user_uid(
         self, user_uid: int
     ) -> List[ProjectMember]:
         result: List[ProjectMember] = list()
@@ -92,11 +92,11 @@ class PgProjectMember(DbProjectMember, PgBase):
                     item.user_uid = user_uid
                     result.append(item)
         result_msg = f"{len(result)} project members"
-        logger.info(f"get_project_member_by_user_uid() -> {result_msg}")
+        logger.info(f"select_project_member_by_user_uid() -> {result_msg}")
         return result
 
     @overrides
-    async def get_project_members(self) -> List[ProjectMember]:
+    async def select_project_members(self) -> List[ProjectMember]:
         result: List[ProjectMember] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -104,5 +104,5 @@ class PgProjectMember(DbProjectMember, PgBase):
                 async for row in conn.cursor(query):
                     result.append(ProjectMember(**dict(row)))
         result_msg = f"{len(result)} project members"
-        logger.info(f"get_project_members() -> {result_msg}")
+        logger.info(f"select_project_members() -> {result_msg}")
         return result

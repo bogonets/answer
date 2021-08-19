@@ -65,41 +65,41 @@ class DbUser(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_user_username_by_uid(self, uid: int) -> str:
+    async def select_user_username_by_uid(self, uid: int) -> str:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_user_uid_by_username(self, username: str) -> int:
+    async def select_user_uid_by_username(self, username: str) -> int:
         raise NotImplementedError
 
     @abstractmethod
-    async def exist_user_by_username(self, username: str) -> bool:
+    async def select_user_exists_by_username(self, username: str) -> bool:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_user_password_and_salt_by_uid(self, uid: int) -> PassInfo:
+    async def select_user_password_and_salt_by_uid(self, uid: int) -> PassInfo:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_user_extra_by_uid(self, uid: int) -> Any:
+    async def select_user_extra_by_uid(self, uid: int) -> Any:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_user_by_uid(self, uid: int) -> User:
+    async def select_user_by_uid(self, uid: int) -> User:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_users(self) -> List[User]:
+    async def select_users(self) -> List[User]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_users_count(self) -> int:
+    async def select_users_count(self) -> int:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_admin_count(self) -> int:
+    async def select_admin_count(self) -> int:
         raise NotImplementedError
 
     @abstractmethod
-    async def exists_admin_user(self) -> bool:
+    async def select_exists_admin_user(self) -> bool:
         raise NotImplementedError

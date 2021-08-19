@@ -39,13 +39,13 @@ class ContextGroup(ContextBase):
         await self.database.delete_group_by_uid(uid)
 
     async def get_group(self, uid: int, remove_sensitive=True) -> Group:
-        result = await self.database.get_group_by_uid(uid)
+        result = await self.database.select_group_by_uid(uid)
         if remove_sensitive:
             result.remove_sensitive()
         return result
 
     async def get_groups(self, remove_sensitive=True) -> List[Group]:
-        groups = await self.database.get_groups()
+        groups = await self.database.select_groups()
         if remove_sensitive:
             for group in groups:
                 group.remove_sensitive()

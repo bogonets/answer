@@ -41,11 +41,11 @@ class ContextUser(ContextBase):
         # After being created in the DB, there is no scenario that can be removed.
         if self._already_admin_user:
             return True
-        self._already_admin_user = await self.database.exists_admin_user()
+        self._already_admin_user = await self.database.select_exists_admin_user()
         return self._already_admin_user
 
     async def get_admin_count(self) -> int:
-        return await self.database.get_admin_count()
+        return await self.database.select_admin_count()
 
     async def signup(
         self,
@@ -105,7 +105,7 @@ class ContextUser(ContextBase):
             raise ValueError(f"{msg1} {msg2}")
 
         user_uid = await self.get_user_uid(username)
-        saved_pass = await self.database.get_user_password_and_salt_by_uid(user_uid)
+        saved_pass = await self.database.select_user_password_and_salt_by_uid(user_uid)
         saved_password = saved_pass.password
         saved_salt = saved_pass.salt
         salt = bytes.fromhex(saved_salt)
@@ -164,14 +164,14 @@ class ContextUser(ContextBase):
         return self.session_factory.decode_access(token)
 
     async def get_user(self, uid: int, remove_sensitive=True) -> User:
-        result = await self.database.get_user_by_uid(uid)
+        result = await self.database.select_user_by_uid(uid)
         if remove_sensitive:
             result.remove_sensitive()
         return result
 
     async def get_users(self, remove_sensitive=True) -> List[User]:
         result = list()
-        for user in await self.database.get_users():
+        for user in await self.database.select_users():
             if remove_sensitive:
                 user.remove_sensitive()
             result.append(user)
@@ -179,4 +179,4 @@ class ContextUser(ContextBase):
 
     async def exist_user(self, username: str) -> bool:
         # Do not use cache's uid.
-        return await self.database.exist_user_by_username(username)
+        return await self.database.select_user_exists_by_username(username)

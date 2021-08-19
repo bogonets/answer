@@ -27,23 +27,23 @@ class DbProjectMember(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_project_member(
+    async def select_project_member(
         self, project_uid: int, user_uid: int
     ) -> ProjectMember:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_project_member_by_project_uid(
+    async def select_project_member_by_project_uid(
         self, project_uid: int
     ) -> List[ProjectMember]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_project_member_by_user_uid(
+    async def select_project_member_by_user_uid(
         self, user_uid: int
     ) -> List[ProjectMember]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_project_members(self) -> List[ProjectMember]:
+    async def select_project_members(self) -> List[ProjectMember]:
         raise NotImplementedError

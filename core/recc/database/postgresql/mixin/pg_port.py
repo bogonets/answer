@@ -97,7 +97,7 @@ class PgPort(DbPort, PgBase):
         logger.info(f"delete_port_by_number({params_msg}) ok.")
 
     @overrides
-    async def get_port_by_number(self, number: int) -> Port:
+    async def select_port_by_number(self, number: int) -> Port:
         query = SELECT_PORT_BY_NUMBER
         row = await self.fetch_row(query, number)
         params_msg = f"number={number}"
@@ -106,11 +106,11 @@ class PgPort(DbPort, PgBase):
         assert len(row) == 7
         result = Port(**dict(row))
         result.number = number
-        logger.info(f"get_port_by_number({params_msg}) ok.")
+        logger.info(f"select_port_by_number({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_port_by_group_uid(self, group_uid: int) -> List[Port]:
+    async def select_port_by_group_uid(self, group_uid: int) -> List[Port]:
         result: List[Port] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -121,11 +121,11 @@ class PgPort(DbPort, PgBase):
                     result.append(item)
         params_msg = f"group_uid={group_uid}"
         result_msg = f"{len(result)} port"
-        logger.info(f"get_port_by_group_uid({params_msg}) -> {result_msg}")
+        logger.info(f"select_port_by_group_uid({params_msg}) -> {result_msg}")
         return result
 
     @overrides
-    async def get_port_by_project_uid(self, project_uid: int) -> List[Port]:
+    async def select_port_by_project_uid(self, project_uid: int) -> List[Port]:
         result: List[Port] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -136,11 +136,11 @@ class PgPort(DbPort, PgBase):
                     result.append(item)
         params_msg = f"project_uid={project_uid}"
         result_msg = f"{len(result)} port"
-        logger.info(f"get_port_by_project_uid({params_msg}) -> {result_msg}")
+        logger.info(f"select_port_by_project_uid({params_msg}) -> {result_msg}")
         return result
 
     @overrides
-    async def get_port_by_task_uid(self, task_uid: int) -> List[Port]:
+    async def select_port_by_task_uid(self, task_uid: int) -> List[Port]:
         result: List[Port] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -151,11 +151,11 @@ class PgPort(DbPort, PgBase):
                     result.append(item)
         params_msg = f"task_uid={task_uid}"
         result_msg = f"{len(result)} port"
-        logger.info(f"get_port_by_task_uid({params_msg}) -> {result_msg}")
+        logger.info(f"select_port_by_task_uid({params_msg}) -> {result_msg}")
         return result
 
     @overrides
-    async def get_ports(self) -> List[Port]:
+    async def select_ports(self) -> List[Port]:
         result: List[Port] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -163,5 +163,5 @@ class PgPort(DbPort, PgBase):
                 async for row in conn.cursor(query):
                     result.append(Port(**dict(row)))
         result_msg = f"{len(result)} port"
-        logger.info(f"get_ports() -> {result_msg}")
+        logger.info(f"select_ports() -> {result_msg}")
         return result

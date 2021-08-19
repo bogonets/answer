@@ -87,7 +87,7 @@ class PgWidget(DbWidget, PgBase):
         logger.info(f"delete_widget_by_name({params_msg}) ok.")
 
     @overrides
-    async def get_widget_by_uid(self, uid: int) -> Widget:
+    async def select_widget_by_uid(self, uid: int) -> Widget:
         query = SELECT_WIDGET_BY_UID
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
@@ -96,11 +96,11 @@ class PgWidget(DbWidget, PgBase):
         assert len(row) == 6
         result = Widget(**dict(row))
         result.uid = uid
-        logger.info(f"get_widget_by_uid({params_msg}) ok.")
+        logger.info(f"select_widget_by_uid({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_widget_by_name(self, layout_uid: int, name: str) -> Widget:
+    async def select_widget_by_name(self, layout_uid: int, name: str) -> Widget:
         query = SELECT_WIDGET_BY_LAYOUT_ID_AND_NAME
         row = await self.fetch_row(query, layout_uid, name)
         params_msg = f"layout_uid={layout_uid},name={name}"
@@ -110,11 +110,11 @@ class PgWidget(DbWidget, PgBase):
         result = Widget(**dict(row))
         result.layout_uid = layout_uid
         result.name = name
-        logger.info(f"get_widget_by_name({params_msg}) ok.")
+        logger.info(f"select_widget_by_name({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_widget_by_layout_uid(self, layout_uid: int) -> List[Widget]:
+    async def select_widget_by_layout_uid(self, layout_uid: int) -> List[Widget]:
         result: List[Widget] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -125,5 +125,5 @@ class PgWidget(DbWidget, PgBase):
                     result.append(item)
         params_msg = f"layout_uid={layout_uid}"
         result_msg = f"{len(result)} widget"
-        logger.info(f"get_widget_by_layout_uid({params_msg}) -> {result_msg}")
+        logger.info(f"select_widget_by_layout_uid({params_msg}) -> {result_msg}")
         return result

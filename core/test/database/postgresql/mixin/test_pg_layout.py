@@ -11,10 +11,10 @@ class PgLayoutTestCase(PostgresqlTestCase):
 
         self.project_slug = "project"
         await self.db.insert_project(self.anonymous_group_uid, self.project_slug)
-        self.project_uid = await self.db.get_project_uid_by_group_uid_and_slug(
+        self.project_uid = await self.db.select_project_uid_by_group_uid_and_slug(
             self.anonymous_group_uid, self.project_slug
         )
-        self.project = await self.db.get_project_by_uid(self.project_uid)
+        self.project = await self.db.select_project_by_uid(self.project_uid)
 
     async def test_create_and_get(self):
         name1 = "layout1"
@@ -23,8 +23,8 @@ class PgLayoutTestCase(PostgresqlTestCase):
         created_at2 = datetime.utcnow() + timedelta(days=2)
         await self.db.insert_layout(self.project.uid, name1, created_at=created_at1)
         await self.db.insert_layout(self.project.uid, name2, created_at=created_at2)
-        layout1 = await self.db.get_layout_by_name(self.project.uid, name1)
-        layout2 = await self.db.get_layout_by_name(self.project.uid, name2)
+        layout1 = await self.db.select_layout_by_name(self.project.uid, name1)
+        layout2 = await self.db.select_layout_by_name(self.project.uid, name2)
 
         self.assertEqual(self.project.uid, layout1.project_uid)
         self.assertEqual(self.project.uid, layout2.project_uid)
@@ -39,8 +39,8 @@ class PgLayoutTestCase(PostgresqlTestCase):
         self.assertIsNone(layout1.updated_at)
         self.assertIsNone(layout2.updated_at)
 
-        layout1_2nd = await self.db.get_layout_by_uid(layout1.uid)
-        layout2_2nd = await self.db.get_layout_by_uid(layout2.uid)
+        layout1_2nd = await self.db.select_layout_by_uid(layout1.uid)
+        layout2_2nd = await self.db.select_layout_by_uid(layout2.uid)
         self.assertEqual(layout1, layout1_2nd)
         self.assertEqual(layout2, layout2_2nd)
 
@@ -49,7 +49,7 @@ class PgLayoutTestCase(PostgresqlTestCase):
         name2 = "layout2"
         await self.db.insert_layout(self.project.uid, name1)
         await self.db.insert_layout(self.project.uid, name2)
-        layout1_uid = (await self.db.get_layout_by_name(self.project.uid, name1)).uid
+        layout1_uid = (await self.db.select_layout_by_name(self.project.uid, name1)).uid
 
         desc1 = "description1"
         desc2 = "description2"
@@ -60,8 +60,8 @@ class PgLayoutTestCase(PostgresqlTestCase):
             self.project.uid, name2, desc2, updated_at2
         )
 
-        layout1 = await self.db.get_layout_by_name(self.project.uid, name1)
-        layout2 = await self.db.get_layout_by_name(self.project.uid, name2)
+        layout1 = await self.db.select_layout_by_name(self.project.uid, name1)
+        layout2 = await self.db.select_layout_by_name(self.project.uid, name2)
         self.assertEqual(desc1, layout1.description)
         self.assertEqual(desc2, layout2.description)
         self.assertEqual(updated_at1, layout1.updated_at)
@@ -72,7 +72,7 @@ class PgLayoutTestCase(PostgresqlTestCase):
         name2 = "layout2"
         await self.db.insert_layout(self.project.uid, name1)
         await self.db.insert_layout(self.project.uid, name2)
-        layout1_uid = (await self.db.get_layout_by_name(self.project.uid, name1)).uid
+        layout1_uid = (await self.db.select_layout_by_name(self.project.uid, name1)).uid
 
         extra1 = {"a": 1, "b": 2}
         extra2 = {"c": 3, "d": 4}
@@ -83,8 +83,8 @@ class PgLayoutTestCase(PostgresqlTestCase):
             self.project.uid, name2, extra2, updated_at2
         )
 
-        layout1 = await self.db.get_layout_by_name(self.project.uid, name1)
-        layout2 = await self.db.get_layout_by_name(self.project.uid, name2)
+        layout1 = await self.db.select_layout_by_name(self.project.uid, name1)
+        layout2 = await self.db.select_layout_by_name(self.project.uid, name2)
         self.assertEqual(extra1, layout1.extra)
         self.assertEqual(extra2, layout2.extra)
         self.assertEqual(updated_at1, layout1.updated_at)
@@ -95,15 +95,15 @@ class PgLayoutTestCase(PostgresqlTestCase):
         name2 = "layout2"
         await self.db.insert_layout(self.project.uid, name1)
         await self.db.insert_layout(self.project.uid, name2)
-        layout1_uid = (await self.db.get_layout_by_name(self.project.uid, name1)).uid
+        layout1_uid = (await self.db.select_layout_by_name(self.project.uid, name1)).uid
 
-        layouts1 = await self.db.get_layout_by_project_uid(self.project.uid)
+        layouts1 = await self.db.select_layout_by_project_uid(self.project.uid)
         self.assertEqual(2, len(layouts1))
 
         await self.db.delete_layout_by_uid(layout1_uid)
         await self.db.delete_layout_by_name(self.project.uid, name2)
 
-        layouts2 = await self.db.get_layout_by_project_uid(self.project.uid)
+        layouts2 = await self.db.select_layout_by_project_uid(self.project.uid)
         self.assertEqual(0, len(layouts2))
 
 

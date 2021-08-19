@@ -41,21 +41,21 @@ class DbGroup(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_group_uid_by_slug(self, slug: str) -> int:
+    async def select_group_uid_by_slug(self, slug: str) -> int:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_group_slug_by_uid(self, uid: int) -> str:
+    async def select_group_slug_by_uid(self, uid: int) -> str:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_group_by_uid(self, uid: int) -> Group:
+    async def select_group_by_uid(self, uid: int) -> Group:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_groups(self) -> List[Group]:
+    async def select_groups(self) -> List[Group]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_groups_count(self) -> int:
+    async def select_groups_count(self) -> int:
         raise NotImplementedError

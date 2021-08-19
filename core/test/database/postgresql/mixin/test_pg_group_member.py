@@ -19,18 +19,18 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
         await self.db.insert_user(user1_name, "pass1", "salt1")
         await self.db.insert_user(user2_name, "pass2", "salt2")
 
-        self.user1_uid = await self.db.get_user_uid_by_username(user1_name)
-        self.user2_uid = await self.db.get_user_uid_by_username(user2_name)
+        self.user1_uid = await self.db.select_user_uid_by_username(user1_name)
+        self.user2_uid = await self.db.select_user_uid_by_username(user2_name)
 
-        self.user1 = await self.db.get_user_by_uid(self.user1_uid)
-        self.user2 = await self.db.get_user_by_uid(self.user2_uid)
+        self.user1 = await self.db.select_user_by_uid(self.user1_uid)
+        self.user2 = await self.db.select_user_by_uid(self.user2_uid)
 
     async def test_create_and_get(self):
         await self.db.insert_group_member(self.anonymous, self.user1.uid, self.guest)
         await self.db.insert_group_member(self.anonymous, self.user2.uid, self.reporter)
 
-        member1 = await self.db.get_group_member(self.anonymous, self.user1.uid)
-        member2 = await self.db.get_group_member(self.anonymous, self.user2.uid)
+        member1 = await self.db.select_group_member(self.anonymous, self.user1.uid)
+        member2 = await self.db.select_group_member(self.anonymous, self.user2.uid)
 
         self.assertEqual(self.anonymous, member1.group_uid)
         self.assertEqual(self.anonymous, member2.group_uid)
@@ -49,8 +49,8 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
             self.anonymous, self.user2.uid, self.operator
         )
 
-        member1 = await self.db.get_group_member(self.anonymous, self.user1.uid)
-        member2 = await self.db.get_group_member(self.anonymous, self.user2.uid)
+        member1 = await self.db.select_group_member(self.anonymous, self.user1.uid)
+        member2 = await self.db.select_group_member(self.anonymous, self.user2.uid)
         self.assertEqual(self.maintainer, member1.permission_uid)
         self.assertEqual(self.operator, member2.permission_uid)
 
@@ -58,9 +58,9 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
         await self.db.insert_group_member(self.anonymous, self.user1.uid, self.guest)
         await self.db.insert_group_member(self.anonymous, self.user2.uid, self.reporter)
 
-        groups1 = await self.db.get_group_member_by_group_uid(self.anonymous)
-        groups2 = await self.db.get_group_member_by_user_uid(self.user2.uid)
-        groups3 = await self.db.get_group_members()
+        groups1 = await self.db.select_group_member_by_group_uid(self.anonymous)
+        groups2 = await self.db.select_group_member_by_user_uid(self.user2.uid)
+        groups3 = await self.db.select_group_members()
         self.assertEqual(2, len(groups1))
         self.assertEqual(1, len(groups2))
         self.assertEqual(2, len(groups3))
@@ -68,10 +68,10 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
     async def test_delete(self):
         await self.db.insert_group_member(self.anonymous, self.user1.uid, self.guest)
         await self.db.insert_group_member(self.anonymous, self.user2.uid, self.reporter)
-        self.assertEqual(2, len(await self.db.get_group_members()))
+        self.assertEqual(2, len(await self.db.select_group_members()))
         await self.db.delete_group_member(self.anonymous, self.user1.uid)
         await self.db.delete_group_member(self.anonymous, self.user2.uid)
-        self.assertEqual(0, len(await self.db.get_group_members()))
+        self.assertEqual(0, len(await self.db.select_group_members()))
 
 
 if __name__ == "__main__":

@@ -11,14 +11,14 @@ class PgWidgetTestCase(PostgresqlTestCase):
 
         self.project_slug = "project"
         await self.db.insert_project(self.anonymous_group_uid, self.project_slug)
-        self.project_uid = await self.db.get_project_uid_by_group_uid_and_slug(
+        self.project_uid = await self.db.select_project_uid_by_group_uid_and_slug(
             self.anonymous_group_uid, self.project_slug
         )
-        self.project = await self.db.get_project_by_uid(self.project_uid)
+        self.project = await self.db.select_project_by_uid(self.project_uid)
 
         self.layout_name = "layout"
         await self.db.insert_layout(self.project.uid, self.layout_name)
-        self.layout = await self.db.get_layout_by_name(
+        self.layout = await self.db.select_layout_by_name(
             self.project.uid, self.layout_name
         )
 
@@ -29,8 +29,8 @@ class PgWidgetTestCase(PostgresqlTestCase):
         created_at2 = datetime.utcnow() + timedelta(days=2)
         await self.db.insert_widget(self.layout.uid, name1, created_at=created_at1)
         await self.db.insert_widget(self.layout.uid, name2, created_at=created_at2)
-        widget1 = await self.db.get_widget_by_name(self.layout.uid, name1)
-        widget2 = await self.db.get_widget_by_name(self.layout.uid, name2)
+        widget1 = await self.db.select_widget_by_name(self.layout.uid, name1)
+        widget2 = await self.db.select_widget_by_name(self.layout.uid, name2)
 
         self.assertEqual(self.layout.uid, widget1.layout_uid)
         self.assertEqual(self.layout.uid, widget2.layout_uid)
@@ -45,8 +45,8 @@ class PgWidgetTestCase(PostgresqlTestCase):
         self.assertIsNone(widget1.updated_at)
         self.assertIsNone(widget2.updated_at)
 
-        widget1_2nd = await self.db.get_widget_by_uid(widget1.uid)
-        widget2_2nd = await self.db.get_widget_by_uid(widget2.uid)
+        widget1_2nd = await self.db.select_widget_by_uid(widget1.uid)
+        widget2_2nd = await self.db.select_widget_by_uid(widget2.uid)
         self.assertEqual(widget1, widget1_2nd)
         self.assertEqual(widget2, widget2_2nd)
 
@@ -55,7 +55,7 @@ class PgWidgetTestCase(PostgresqlTestCase):
         name2 = "widget2"
         await self.db.insert_widget(self.layout.uid, name1)
         await self.db.insert_widget(self.layout.uid, name2)
-        widget1_uid = (await self.db.get_widget_by_name(self.layout.uid, name1)).uid
+        widget1_uid = (await self.db.select_widget_by_name(self.layout.uid, name1)).uid
 
         desc1 = "description1"
         desc2 = "description2"
@@ -66,8 +66,8 @@ class PgWidgetTestCase(PostgresqlTestCase):
             self.layout.uid, name2, desc2, updated_at2
         )
 
-        widget1 = await self.db.get_widget_by_name(self.layout.uid, name1)
-        widget2 = await self.db.get_widget_by_name(self.layout.uid, name2)
+        widget1 = await self.db.select_widget_by_name(self.layout.uid, name1)
+        widget2 = await self.db.select_widget_by_name(self.layout.uid, name2)
         self.assertEqual(desc1, widget1.description)
         self.assertEqual(desc2, widget2.description)
         self.assertEqual(updated_at1, widget1.updated_at)
@@ -78,7 +78,7 @@ class PgWidgetTestCase(PostgresqlTestCase):
         name2 = "widget2"
         await self.db.insert_widget(self.layout.uid, name1)
         await self.db.insert_widget(self.layout.uid, name2)
-        widget1_uid = (await self.db.get_widget_by_name(self.layout.uid, name1)).uid
+        widget1_uid = (await self.db.select_widget_by_name(self.layout.uid, name1)).uid
 
         extra1 = {"a": 1, "b": 2}
         extra2 = {"c": 3, "d": 4}
@@ -89,8 +89,8 @@ class PgWidgetTestCase(PostgresqlTestCase):
             self.layout.uid, name2, extra2, updated_at2
         )
 
-        widget1 = await self.db.get_widget_by_name(self.layout.uid, name1)
-        widget2 = await self.db.get_widget_by_name(self.layout.uid, name2)
+        widget1 = await self.db.select_widget_by_name(self.layout.uid, name1)
+        widget2 = await self.db.select_widget_by_name(self.layout.uid, name2)
         self.assertEqual(extra1, widget1.extra)
         self.assertEqual(extra2, widget2.extra)
         self.assertEqual(updated_at1, widget1.updated_at)
@@ -101,15 +101,15 @@ class PgWidgetTestCase(PostgresqlTestCase):
         name2 = "widget2"
         await self.db.insert_widget(self.layout.uid, name1)
         await self.db.insert_widget(self.layout.uid, name2)
-        widget1_uid = (await self.db.get_widget_by_name(self.layout.uid, name1)).uid
+        widget1_uid = (await self.db.select_widget_by_name(self.layout.uid, name1)).uid
 
-        widgets1 = await self.db.get_widget_by_layout_uid(self.layout.uid)
+        widgets1 = await self.db.select_widget_by_layout_uid(self.layout.uid)
         self.assertEqual(2, len(widgets1))
 
         await self.db.delete_widget_by_uid(widget1_uid)
         await self.db.delete_widget_by_name(self.layout.uid, name2)
 
-        widgets2 = await self.db.get_widget_by_layout_uid(self.layout.uid)
+        widgets2 = await self.db.select_widget_by_layout_uid(self.layout.uid)
         self.assertEqual(0, len(widgets2))
 
 

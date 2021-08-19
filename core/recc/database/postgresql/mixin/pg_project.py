@@ -76,7 +76,7 @@ class PgProject(DbProject, PgBase):
         logger.info(f"delete_project_by_uid(uid={uid}) ok.")
 
     @overrides
-    async def get_project_uid_by_group_uid_and_slug(
+    async def select_project_uid_by_group_uid_and_slug(
         self, group_uid: int, slug: str
     ) -> int:
         query = SELECT_PROJECT_UID_BY_GROUP_UID_AND_SLUG
@@ -87,11 +87,12 @@ class PgProject(DbProject, PgBase):
         result = row.get("uid")
         if result is None:
             raise RuntimeError(f"Not found project: {params_msg}")
-        logger.info(f"get_project_uid_by_group_uid_and_slug({params_msg}) -> {result}")
+        msg = f"select_project_uid_by_group_uid_and_slug({params_msg}) -> {result}"
+        logger.info(msg)
         return result
 
     @overrides
-    async def get_projects(self) -> List[Project]:
+    async def select_projects(self) -> List[Project]:
         result: List[Project] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -99,11 +100,11 @@ class PgProject(DbProject, PgBase):
                 async for row in conn.cursor(query):
                     result.append(Project(**dict(row)))
         result_msg = f"{len(result)} project"
-        logger.info(f"get_projects() -> {result_msg}")
+        logger.info(f"select_projects() -> {result_msg}")
         return result
 
     @overrides
-    async def get_project_by_uid(self, uid: int) -> Project:
+    async def select_project_by_uid(self, uid: int) -> Project:
         query = SELECT_PROJECT_BY_UID
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
@@ -111,11 +112,11 @@ class PgProject(DbProject, PgBase):
             raise RuntimeError(f"Not found project: {params_msg}")
         result = Project(**dict(row))
         assert result.uid == uid
-        logger.info(f"get_project_by_uid({params_msg}) ok.")
+        logger.info(f"select_project_by_uid({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_project_by_group_uid(self, group_uid: int) -> List[Project]:
+    async def select_project_by_group_uid(self, group_uid: int) -> List[Project]:
         result: List[Project] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -126,14 +127,14 @@ class PgProject(DbProject, PgBase):
                     result.append(item)
         params_msg = f"group_uid={group_uid}"
         result_msg = f"{len(result)} project"
-        logger.info(f"get_project_by_group_uid({params_msg}) -> {result_msg}")
+        logger.info(f"select_project_by_group_uid({params_msg}) -> {result_msg}")
         return result
 
     @overrides
-    async def get_projects_count(self) -> int:
+    async def select_projects_count(self) -> int:
         query = SELECT_PROJECT_COUNT
         row = await self.fetch_row(query)
         assert row and len(row) == 1
         result = int(row.get("count", 0))
-        logger.info(f"get_projects_count() -> {result}")
+        logger.info(f"select_projects_count() -> {result}")
         return result

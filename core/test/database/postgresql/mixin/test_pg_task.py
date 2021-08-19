@@ -12,10 +12,10 @@ class PgTaskTestCase(PostgresqlTestCase):
 
         self.project_slug = "project"
         await self.db.insert_project(self.anonymous_group_uid, self.project_slug)
-        self.project_uid = await self.db.get_project_uid_by_group_uid_and_slug(
+        self.project_uid = await self.db.select_project_uid_by_group_uid_and_slug(
             self.anonymous_group_uid, self.project_slug
         )
-        self.project = await self.db.get_project_by_uid(self.project_uid)
+        self.project = await self.db.select_project_by_uid(self.project_uid)
 
     async def test_none_exists_get(self):
         group = ANONYMOUS_GROUP_SLUG
@@ -25,18 +25,18 @@ class PgTaskTestCase(PostgresqlTestCase):
         await self.db.insert_task(self.project.uid, slug)
 
         with self.assertRaises(RuntimeError):
-            await self.db.get_task_by_fullpath(unknown, project, slug)
+            await self.db.select_task_by_fullpath(unknown, project, slug)
         with self.assertRaises(RuntimeError):
-            await self.db.get_task_by_fullpath(group, unknown, slug)
+            await self.db.select_task_by_fullpath(group, unknown, slug)
         with self.assertRaises(RuntimeError):
-            await self.db.get_task_by_fullpath(group, project, unknown)
+            await self.db.select_task_by_fullpath(group, project, unknown)
 
         with self.assertRaises(RuntimeError):
-            await self.db.get_task_uid_by_fullpath(unknown, project, slug)
+            await self.db.select_task_uid_by_fullpath(unknown, project, slug)
         with self.assertRaises(RuntimeError):
-            await self.db.get_task_uid_by_fullpath(group, unknown, slug)
+            await self.db.select_task_uid_by_fullpath(group, unknown, slug)
         with self.assertRaises(RuntimeError):
-            await self.db.get_task_uid_by_fullpath(group, project, unknown)
+            await self.db.select_task_uid_by_fullpath(group, project, unknown)
 
     async def test_create_and_get(self):
         slug1 = "slug1"
@@ -51,8 +51,8 @@ class PgTaskTestCase(PostgresqlTestCase):
         await self.db.insert_task(
             self.project.uid, slug2, name2, created_at=created_at2
         )
-        task1 = await self.db.get_task_by_slug(self.project.uid, slug1)
-        task2 = await self.db.get_task_by_slug(self.project.uid, slug2)
+        task1 = await self.db.select_task_by_slug(self.project.uid, slug1)
+        task2 = await self.db.select_task_by_slug(self.project.uid, slug2)
 
         self.assertEqual(self.project.uid, task1.project_uid)
         self.assertEqual(self.project.uid, task2.project_uid)
@@ -79,25 +79,25 @@ class PgTaskTestCase(PostgresqlTestCase):
         self.assertIsNone(task1.updated_at)
         self.assertIsNone(task2.updated_at)
 
-        task1_2nd = await self.db.get_task_by_uid(task1.uid)
-        task2_2nd = await self.db.get_task_by_uid(task2.uid)
+        task1_2nd = await self.db.select_task_by_uid(task1.uid)
+        task2_2nd = await self.db.select_task_by_uid(task2.uid)
         self.assertEqual(task1, task1_2nd)
         self.assertEqual(task2, task2_2nd)
 
         group = ANONYMOUS_GROUP_SLUG
         project = self.project_slug
-        task1_3rd = await self.db.get_task_by_fullpath(group, project, slug1)
-        task2_3rd = await self.db.get_task_by_fullpath(group, project, slug2)
+        task1_3rd = await self.db.select_task_by_fullpath(group, project, slug1)
+        task2_3rd = await self.db.select_task_by_fullpath(group, project, slug2)
         self.assertEqual(task1, task1_3rd)
         self.assertEqual(task2, task2_3rd)
 
-        task1_4th_uid = await self.db.get_task_uid_by_fullpath(group, project, slug1)
-        task2_4th_uid = await self.db.get_task_uid_by_fullpath(group, project, slug2)
+        task1_4th_uid = await self.db.select_task_uid_by_fullpath(group, project, slug1)
+        task2_4th_uid = await self.db.select_task_uid_by_fullpath(group, project, slug2)
         self.assertEqual(task1.uid, task1_4th_uid)
         self.assertEqual(task2.uid, task2_4th_uid)
 
-        task1_5th_uid = await self.db.get_task_uid_by_slug(self.project.uid, slug1)
-        task2_5th_uid = await self.db.get_task_uid_by_slug(self.project.uid, slug2)
+        task1_5th_uid = await self.db.select_task_uid_by_slug(self.project.uid, slug1)
+        task2_5th_uid = await self.db.select_task_uid_by_slug(self.project.uid, slug2)
         self.assertEqual(task1.uid, task1_5th_uid)
         self.assertEqual(task2.uid, task2_5th_uid)
 
@@ -106,7 +106,7 @@ class PgTaskTestCase(PostgresqlTestCase):
         slug2 = "task2"
         await self.db.insert_task(self.project.uid, slug1)
         await self.db.insert_task(self.project.uid, slug2)
-        task1_uid = (await self.db.get_task_by_slug(self.project.uid, slug1)).uid
+        task1_uid = (await self.db.select_task_by_slug(self.project.uid, slug1)).uid
 
         desc1 = "description1"
         desc2 = "description2"
@@ -117,8 +117,8 @@ class PgTaskTestCase(PostgresqlTestCase):
             self.project.uid, slug2, desc2, updated_at2
         )
 
-        task1 = await self.db.get_task_by_slug(self.project.uid, slug1)
-        task2 = await self.db.get_task_by_slug(self.project.uid, slug2)
+        task1 = await self.db.select_task_by_slug(self.project.uid, slug1)
+        task2 = await self.db.select_task_by_slug(self.project.uid, slug2)
         self.assertEqual(desc1, task1.description)
         self.assertEqual(desc2, task2.description)
         self.assertEqual(updated_at1, task1.updated_at)
@@ -129,7 +129,7 @@ class PgTaskTestCase(PostgresqlTestCase):
         slug2 = "task2"
         await self.db.insert_task(self.project.uid, slug1)
         await self.db.insert_task(self.project.uid, slug2)
-        task1_uid = (await self.db.get_task_by_slug(self.project.uid, slug1)).uid
+        task1_uid = (await self.db.select_task_by_slug(self.project.uid, slug1)).uid
 
         extra1 = {"a": 1, "b": 2}
         extra2 = {"c": 3, "d": 4}
@@ -140,8 +140,8 @@ class PgTaskTestCase(PostgresqlTestCase):
             self.project.uid, slug2, extra2, updated_at2
         )
 
-        task1 = await self.db.get_task_by_slug(self.project.uid, slug1)
-        task2 = await self.db.get_task_by_slug(self.project.uid, slug2)
+        task1 = await self.db.select_task_by_slug(self.project.uid, slug1)
+        task2 = await self.db.select_task_by_slug(self.project.uid, slug2)
         self.assertEqual(extra1, task1.extra)
         self.assertEqual(extra2, task2.extra)
         self.assertEqual(updated_at1, task1.updated_at)
@@ -152,7 +152,7 @@ class PgTaskTestCase(PostgresqlTestCase):
         slug2 = "task2"
         await self.db.insert_task(self.project.uid, slug1)
         await self.db.insert_task(self.project.uid, slug2)
-        task1_uid = (await self.db.get_task_by_slug(self.project.uid, slug1)).uid
+        task1_uid = (await self.db.select_task_by_slug(self.project.uid, slug1)).uid
 
         auth_algorithm1 = "algorithm1"
         auth_algorithm2 = "algorithm2"
@@ -178,8 +178,8 @@ class PgTaskTestCase(PostgresqlTestCase):
             updated_at2,
         )
 
-        task1 = await self.db.get_task_by_slug(self.project.uid, slug1)
-        task2 = await self.db.get_task_by_slug(self.project.uid, slug2)
+        task1 = await self.db.select_task_by_slug(self.project.uid, slug1)
+        task2 = await self.db.select_task_by_slug(self.project.uid, slug2)
         self.assertEqual(auth_algorithm1, task1.auth_algorithm)
         self.assertEqual(auth_algorithm2, task2.auth_algorithm)
         self.assertEqual(private_key1, task1.private_key)
@@ -192,7 +192,7 @@ class PgTaskTestCase(PostgresqlTestCase):
     async def test_update_task_by_uid(self):
         slug1 = "task1"
         await self.db.insert_task(self.project.uid, slug1)
-        task_uid = (await self.db.get_task_by_slug(self.project.uid, slug1)).uid
+        task_uid = (await self.db.select_task_by_slug(self.project.uid, slug1)).uid
 
         slug2 = "slug2"
         name = "name"
@@ -225,7 +225,7 @@ class PgTaskTestCase(PostgresqlTestCase):
             updated_at=updated_at,
         )
 
-        task = await self.db.get_task_by_uid(task_uid)
+        task = await self.db.select_task_by_uid(task_uid)
         self.assertEqual(slug2, task.slug)
         self.assertEqual(name, task.name)
         self.assertEqual(description, task.description)
@@ -243,15 +243,15 @@ class PgTaskTestCase(PostgresqlTestCase):
         slug2 = "task2"
         await self.db.insert_task(self.project.uid, slug1)
         await self.db.insert_task(self.project.uid, slug2)
-        task1_uid = (await self.db.get_task_by_slug(self.project.uid, slug1)).uid
+        task1_uid = (await self.db.select_task_by_slug(self.project.uid, slug1)).uid
 
-        tasks1 = await self.db.get_task_by_project_uid(self.project.uid)
+        tasks1 = await self.db.select_task_by_project_uid(self.project.uid)
         self.assertEqual(2, len(tasks1))
 
         await self.db.delete_task_by_uid(task1_uid)
         await self.db.delete_task_by_slug(self.project.uid, slug2)
 
-        tasks2 = await self.db.get_task_by_project_uid(self.project.uid)
+        tasks2 = await self.db.select_task_by_project_uid(self.project.uid)
         self.assertEqual(0, len(tasks2))
 
 

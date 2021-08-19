@@ -48,7 +48,7 @@ class PgGroupMember(DbGroupMember, PgBase):
         logger.info(f"delete_group_member({params_msg}) ok.")
 
     @overrides
-    async def get_group_member(self, group_uid: int, user_uid: int) -> GroupMember:
+    async def select_group_member(self, group_uid: int, user_uid: int) -> GroupMember:
         query = SELECT_GROUP_MEMBER_BY_GROUP_UID_AND_USER_UID
         row = await self.fetch_row(query, group_uid, user_uid)
         params_msg = f"group_uid={group_uid},user_uid={user_uid}"
@@ -58,11 +58,13 @@ class PgGroupMember(DbGroupMember, PgBase):
         result = GroupMember(**dict(row))
         result.group_uid = group_uid
         result.user_uid = user_uid
-        logger.info(f"get_group_member({params_msg}) ok.")
+        logger.info(f"select_group_member({params_msg}) ok.")
         return result
 
     @overrides
-    async def get_group_member_by_group_uid(self, group_uid: int) -> List[GroupMember]:
+    async def select_group_member_by_group_uid(
+        self, group_uid: int
+    ) -> List[GroupMember]:
         result: List[GroupMember] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -72,11 +74,11 @@ class PgGroupMember(DbGroupMember, PgBase):
                     item.group_uid = group_uid
                     result.append(item)
         result_msg = f"{len(result)} group members"
-        logger.info(f"get_group_member_by_group_uid() -> {result_msg}")
+        logger.info(f"select_group_member_by_group_uid() -> {result_msg}")
         return result
 
     @overrides
-    async def get_group_member_by_user_uid(self, user_uid: int) -> List[GroupMember]:
+    async def select_group_member_by_user_uid(self, user_uid: int) -> List[GroupMember]:
         result: List[GroupMember] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -86,11 +88,11 @@ class PgGroupMember(DbGroupMember, PgBase):
                     item.user_uid = user_uid
                     result.append(item)
         result_msg = f"{len(result)} group members"
-        logger.info(f"get_group_member_by_user_uid() -> {result_msg}")
+        logger.info(f"select_group_member_by_user_uid() -> {result_msg}")
         return result
 
     @overrides
-    async def get_group_members(self) -> List[GroupMember]:
+    async def select_group_members(self) -> List[GroupMember]:
         result: List[GroupMember] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -98,5 +100,5 @@ class PgGroupMember(DbGroupMember, PgBase):
                 async for row in conn.cursor(query):
                     result.append(GroupMember(**dict(row)))
         result_msg = f"{len(result)} group members"
-        logger.info(f"get_group_members() -> {result_msg}")
+        logger.info(f"select_group_members() -> {result_msg}")
         return result

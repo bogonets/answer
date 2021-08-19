@@ -46,16 +46,16 @@ class ContextProject(ContextBase):
         remove_sensitive=True,
     ) -> List[Project]:
         if not group_uid:
-            projects = await self.database.get_projects()
+            projects = await self.database.select_projects()
         else:
-            projects = await self.database.get_project_by_group_uid(group_uid)
+            projects = await self.database.select_project_by_group_uid(group_uid)
         if remove_sensitive:
             for project in projects:
                 project.remove_sensitive()
         return projects
 
     async def get_project(self, uid: int, remove_sensitive=True) -> Project:
-        project = await self.database.get_project_by_uid(uid)
+        project = await self.database.select_project_by_uid(uid)
         if remove_sensitive:
             project.remove_sensitive()
         return project
