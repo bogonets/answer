@@ -31,13 +31,15 @@ class DbGroupMember(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def select_group_member_by_group_uid(
+    async def select_group_members_by_group_uid(
         self, group_uid: int
     ) -> List[GroupMember]:
         raise NotImplementedError
 
     @abstractmethod
-    async def select_group_member_by_user_uid(self, user_uid: int) -> List[GroupMember]:
+    async def select_group_members_by_user_uid(
+        self, user_uid: int
+    ) -> List[GroupMember]:
         raise NotImplementedError
 
     @abstractmethod

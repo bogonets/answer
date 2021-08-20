@@ -64,7 +64,7 @@ class PgProjectMember(DbProjectMember, PgBase):
         return result
 
     @overrides
-    async def select_project_member_by_project_uid(
+    async def select_project_members_by_project_uid(
         self, project_uid: int
     ) -> List[ProjectMember]:
         result: List[ProjectMember] = list()
@@ -80,7 +80,7 @@ class PgProjectMember(DbProjectMember, PgBase):
         return result
 
     @overrides
-    async def select_project_member_by_user_uid(
+    async def select_project_members_by_user_uid(
         self, user_uid: int
     ) -> List[ProjectMember]:
         result: List[ProjectMember] = list()

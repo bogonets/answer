@@ -9,10 +9,11 @@ from recc.variables.database import (
     TABLE_PERMISSION,
     TABLE_GROUP_MEMBER,
     TABLE_PROJECT_MEMBER,
-    GUEST_PERMISSION_NAME,
-    REPORTER_PERMISSION_NAME,
-    OPERATOR_PERMISSION_NAME,
-    MAINTAINER_PERMISSION_NAME,
+    PERMISSION_NAME_GUEST,
+    PERMISSION_NAME_REPORTER,
+    PERMISSION_NAME_OPERATOR,
+    PERMISSION_NAME_MAINTAINER,
+    PERMISSION_NAME_OWNER,
 )
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
@@ -26,14 +27,14 @@ INSERT INTO {TABLE_PERMISSION} (
     r_layout,
     created_at
 ) SELECT
-    '{GUEST_PERMISSION_NAME}',
+    '{PERMISSION_NAME_GUEST}',
     True,
     $1
 WHERE
     NOT EXISTS(
         SELECT uid
         FROM {TABLE_PERMISSION}
-        WHERE name LIKE '{GUEST_PERMISSION_NAME}'
+        WHERE name LIKE '{PERMISSION_NAME_GUEST}'
     );
 """
 
@@ -46,7 +47,7 @@ INSERT INTO {TABLE_PERMISSION} (
     r_graph,
     created_at
 ) SELECT
-    '{REPORTER_PERMISSION_NAME}',
+    '{PERMISSION_NAME_REPORTER}',
     True,
     True,
     True,
@@ -56,7 +57,7 @@ WHERE
     NOT EXISTS(
         SELECT uid
         FROM {TABLE_PERMISSION}
-        WHERE name LIKE '{REPORTER_PERMISSION_NAME}'
+        WHERE name LIKE '{PERMISSION_NAME_REPORTER}'
     );
 """
 
@@ -73,7 +74,7 @@ INSERT INTO {TABLE_PERMISSION} (
     w_graph,
     created_at
 ) SELECT
-    '{OPERATOR_PERMISSION_NAME}',
+    '{PERMISSION_NAME_OPERATOR}',
     True,
     True,
     True,
@@ -87,7 +88,7 @@ WHERE
     NOT EXISTS(
         SELECT uid
         FROM {TABLE_PERMISSION}
-        WHERE name LIKE '{OPERATOR_PERMISSION_NAME}'
+        WHERE name LIKE '{PERMISSION_NAME_OPERATOR}'
     );
 """
 
@@ -108,7 +109,7 @@ INSERT INTO {TABLE_PERMISSION} (
     w_setting,
     created_at
 ) SELECT
-    '{MAINTAINER_PERMISSION_NAME}',
+    '{PERMISSION_NAME_MAINTAINER}',
     True,
     True,
     True,
@@ -126,7 +127,46 @@ WHERE
     NOT EXISTS(
         SELECT uid
         FROM {TABLE_PERMISSION}
-        WHERE name LIKE '{MAINTAINER_PERMISSION_NAME}'
+        WHERE name LIKE '{PERMISSION_NAME_MAINTAINER}'
+    );
+"""
+
+SAFE_INSERT_PERMISSION_OWNER = f"""
+INSERT INTO {TABLE_PERMISSION} (
+    name,
+    r_layout,
+    w_layout,
+    r_storage,
+    w_storage,
+    r_manager,
+    w_manager,
+    r_graph,
+    w_graph,
+    r_member,
+    w_member,
+    r_setting,
+    w_setting,
+    created_at
+) SELECT
+    '{PERMISSION_NAME_OWNER}',
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    $1
+WHERE
+    NOT EXISTS(
+        SELECT uid
+        FROM {TABLE_PERMISSION}
+        WHERE name LIKE '{PERMISSION_NAME_OWNER}'
     );
 """
 
@@ -135,6 +175,7 @@ SAFE_INSERT_PERMISSION_DEFAULTS = (
     SAFE_INSERT_PERMISSION_REPORTER,
     SAFE_INSERT_PERMISSION_OPERATOR,
     SAFE_INSERT_PERMISSION_MAINTAINER,
+    SAFE_INSERT_PERMISSION_OWNER,
 )
 
 INSERT_PERMISSION = f"""
@@ -227,25 +268,31 @@ WHERE uid=$1;
 SELECT_PERMISSION_GUEST_UID = f"""
 SELECT uid
 FROM {TABLE_PERMISSION}
-WHERE name LIKE '{GUEST_PERMISSION_NAME}';
+WHERE name LIKE '{PERMISSION_NAME_GUEST}';
 """
 
 SELECT_PERMISSION_REPORTER_UID = f"""
 SELECT uid
 FROM {TABLE_PERMISSION}
-WHERE name LIKE '{REPORTER_PERMISSION_NAME}';
+WHERE name LIKE '{PERMISSION_NAME_REPORTER}';
 """
 
 SELECT_PERMISSION_OPERATOR_UID = f"""
 SELECT uid
 FROM {TABLE_PERMISSION}
-WHERE name LIKE '{OPERATOR_PERMISSION_NAME}';
+WHERE name LIKE '{PERMISSION_NAME_OPERATOR}';
 """
 
 SELECT_PERMISSION_MAINTAINER_UID = f"""
 SELECT uid
 FROM {TABLE_PERMISSION}
-WHERE name LIKE '{MAINTAINER_PERMISSION_NAME}';
+WHERE name LIKE '{PERMISSION_NAME_MAINTAINER}';
+"""
+
+SELECT_PERMISSION_OWNER_UID = f"""
+SELECT uid
+FROM {TABLE_PERMISSION}
+WHERE name LIKE '{PERMISSION_NAME_OWNER}';
 """
 
 SELECT_PERMISSION_UID_BY_NAME = f"""

@@ -62,7 +62,7 @@ class PgGroupMember(DbGroupMember, PgBase):
         return result
 
     @overrides
-    async def select_group_member_by_group_uid(
+    async def select_group_members_by_group_uid(
         self, group_uid: int
     ) -> List[GroupMember]:
         result: List[GroupMember] = list()
@@ -78,7 +78,9 @@ class PgGroupMember(DbGroupMember, PgBase):
         return result
 
     @overrides
-    async def select_group_member_by_user_uid(self, user_uid: int) -> List[GroupMember]:
+    async def select_group_members_by_user_uid(
+        self, user_uid: int
+    ) -> List[GroupMember]:
         result: List[GroupMember] = list()
         async with self.conn() as conn:
             async with conn.transaction():

@@ -75,8 +75,10 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
             self.project.uid, self.user2.uid, self.reporter
         )
 
-        projects1 = await self.db.select_project_member_by_project_uid(self.project.uid)
-        projects2 = await self.db.select_project_member_by_user_uid(self.user2.uid)
+        projects1 = await self.db.select_project_members_by_project_uid(
+            self.project.uid
+        )
+        projects2 = await self.db.select_project_members_by_user_uid(self.user2.uid)
         projects3 = await self.db.select_project_members()
         self.assertEqual(2, len(projects1))
         self.assertEqual(1, len(projects2))

@@ -128,22 +128,24 @@ class PgPermissionTestCase(PostgresqlTestCase):
 
         permissions1 = await self.db.select_permissions()
         permissions1_ids = [g.uid for g in permissions1]
-        self.assertEqual(5, len(permissions1_ids))
+        self.assertEqual(6, len(permissions1_ids))
         self.assertIn(self.guest_permission_uid, permissions1_ids)
         self.assertIn(self.reporter_permission_uid, permissions1_ids)
         self.assertIn(self.operator_permission_uid, permissions1_ids)
         self.assertIn(self.maintainer_permission_uid, permissions1_ids)
+        self.assertIn(self.owner_permission_uid, permissions1_ids)
         self.assertIn(permission1_uid, permissions1_ids)
 
         await self.db.delete_permission_by_uid(permission1_uid)
 
         permissions2 = await self.db.select_permissions()
         permissions2_ids = [g.uid for g in permissions2]
-        self.assertEqual(4, len(permissions2_ids))
+        self.assertEqual(5, len(permissions2_ids))
         self.assertIn(self.guest_permission_uid, permissions2_ids)
         self.assertIn(self.reporter_permission_uid, permissions2_ids)
         self.assertIn(self.operator_permission_uid, permissions2_ids)
         self.assertIn(self.maintainer_permission_uid, permissions2_ids)
+        self.assertIn(self.owner_permission_uid, permissions1_ids)
 
     async def test_project_permission(self):
         user1_name = "user1"

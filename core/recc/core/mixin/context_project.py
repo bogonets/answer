@@ -28,7 +28,7 @@ class ContextProject(ContextBase):
             extra=extra,
         )
         if owner_uid is not None:
-            permission_uid = self.database.get_maintainer_permission_uid()
+            permission_uid = self.database.get_owner_permission_uid()
             self.database.insert_project_member(project_uid, owner_uid, permission_uid)
         return project_uid
 

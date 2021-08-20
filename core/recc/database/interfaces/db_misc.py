@@ -40,3 +40,7 @@ class DbMisc(metaclass=ABCMeta):
     @abstractmethod
     def get_maintainer_permission_uid(self) -> int:
         raise NotImplementedError
+
+    @abstractmethod
+    def get_owner_permission_uid(self) -> int:
+        raise NotImplementedError

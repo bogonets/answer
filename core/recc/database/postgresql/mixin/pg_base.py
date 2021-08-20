@@ -26,6 +26,7 @@ class PgBase:
     _reporter_permission_uid: Optional[int]
     _operator_permission_uid: Optional[int]
     _maintainer_permission_uid: Optional[int]
+    _owner_permission_uid: Optional[int]
 
     class _Connection:
         """

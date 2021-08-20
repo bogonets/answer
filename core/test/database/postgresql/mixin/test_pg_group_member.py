@@ -54,8 +54,8 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
         await self.db.insert_group_member(self.anonymous, self.user1.uid, self.guest)
         await self.db.insert_group_member(self.anonymous, self.user2.uid, self.reporter)
 
-        groups1 = await self.db.select_group_member_by_group_uid(self.anonymous)
-        groups2 = await self.db.select_group_member_by_user_uid(self.user2.uid)
+        groups1 = await self.db.select_group_members_by_group_uid(self.anonymous)
+        groups2 = await self.db.select_group_members_by_user_uid(self.user2.uid)
         groups3 = await self.db.select_group_members()
         self.assertEqual(2, len(groups1))
         self.assertEqual(1, len(groups2))

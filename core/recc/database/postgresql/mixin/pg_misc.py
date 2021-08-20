@@ -19,6 +19,7 @@ from recc.database.postgresql.query.permission import (
     SELECT_PERMISSION_REPORTER_UID,
     SELECT_PERMISSION_OPERATOR_UID,
     SELECT_PERMISSION_MAINTAINER_UID,
+    SELECT_PERMISSION_OWNER_UID,
 )
 from recc.log.logging import recc_database_logger as logger
 
@@ -61,6 +62,9 @@ class PgMisc(DbMisc, PgBase):
     async def _get_maintainer_permission_uid(self) -> int:
         return await self._fetch_uid(SELECT_PERMISSION_MAINTAINER_UID)
 
+    async def _get_owner_permission_uid(self) -> int:
+        return await self._fetch_uid(SELECT_PERMISSION_OWNER_UID)
+
     @overrides
     async def update_cache(self) -> None:
         self._anonymous_group_uid = await self._get_anonymous_group_uid()
@@ -68,6 +72,7 @@ class PgMisc(DbMisc, PgBase):
         self._reporter_permission_uid = await self._get_reporter_permission_uid()
         self._operator_permission_uid = await self._get_operator_permission_uid()
         self._maintainer_permission_uid = await self._get_maintainer_permission_uid()
+        self._owner_permission_uid = await self._get_owner_permission_uid()
         logger.info("PgDb.update_cache() ok.")
 
     @overrides
@@ -99,3 +104,9 @@ class PgMisc(DbMisc, PgBase):
         if self._maintainer_permission_uid is None:
             raise RuntimeError("The cache has not been updated")
         return self._maintainer_permission_uid
+
+    @overrides
+    def get_owner_permission_uid(self) -> int:
+        if self._owner_permission_uid is None:
+            raise RuntimeError("The cache has not been updated")
+        return self._owner_permission_uid

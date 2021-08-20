@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from typing import Any, List, Optional
-from recc.variables.database import TABLE_PROJECT, VISIBILITY_LEVEL_PRIVATE
+from recc.variables.database import TABLE_PROJECT
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
 

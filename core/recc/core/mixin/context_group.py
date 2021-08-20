@@ -65,3 +65,14 @@ class ContextGroup(ContextBase):
             for group in groups:
                 group.remove_sensitive()
         return groups
+
+    async def get_user_groups(
+        self,
+        user_uid: int,
+        remove_sensitive=True,
+    ) -> List[Group]:
+        groups = await self.database.select_group_members_by_group_uid()
+        if remove_sensitive:
+            for group in groups:
+                group.remove_sensitive()
+        return groups
