@@ -9,6 +9,7 @@ from aiohttp.web_exceptions import (
     HTTPNotFound,
     HTTPUnauthorized,
     HTTPBadRequest,
+    HTTPForbidden,
     HTTPServiceUnavailable,
 )
 from recc.access_control.abac.attributes import aa
@@ -29,6 +30,7 @@ from recc.packet.system import SystemOverviewA
 from recc.packet.template import TemplateA
 from recc.packet.user import UserA, UpdateUserQ, SignupQ, UpdatePasswordQ
 from recc.database.struct.group import Group
+from recc.database.struct.project import Project
 
 
 class RouterV2:
@@ -251,40 +253,144 @@ class RouterV2:
         )
 
     @parameter_matcher()
-    async def get_self_groups_pgroup(self, group: str, session: SessionEx) -> GroupA:
-        raise NotImplementedError
+    async def get_self_groups_pgroup(self, session: SessionEx, group: str) -> GroupA:
+        group_uid = await self.context.get_group_uid(group)
+        permission = await self.context.get_group_permission(
+            session.uid, group_uid, remove_sensitive=False
+        )
+        if permission.uid is None:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+        db_group = await self.context.get_group(group_uid)
+        return self._group_to_answer(db_group)
 
     @parameter_matcher()
-    async def patch_self_groups_pgroup(self, group: str, session: SessionEx) -> None:
-        raise NotImplementedError
+    async def patch_self_groups_pgroup(
+        self, session: SessionEx, group: str, body: UpdateGroupQ
+    ) -> None:
+        group_uid = await self.context.get_group_uid(group)
+        permission = await self.context.get_group_permission(
+            session.uid, group_uid, remove_sensitive=False
+        )
+        if permission.uid is None or not permission.w_setting:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+        await self.context.update_group(
+            uid=group_uid,
+            name=body.name,
+            description=body.description,
+            features=body.features,
+            visibility=body.visibility,
+            extra=body.extra,
+        )
 
     @parameter_matcher()
-    async def delete_self_groups_pgroup(self, group: str, session: SessionEx) -> None:
-        raise NotImplementedError
+    async def delete_self_groups_pgroup(self, session: SessionEx, group: str) -> None:
+        group_uid = await self.context.get_group_uid(group)
+        permission = await self.context.get_group_permission(
+            session.uid, group_uid, remove_sensitive=False
+        )
+        if permission.uid is None or not permission.w_setting:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+        await self.context.delete_group(group_uid)
 
     # -------------
     # self/projects
     # -------------
 
-    @parameter_matcher()
-    async def get_self_projects(self, session: SessionEx) -> None:
-        raise NotImplementedError
+    @staticmethod
+    def _project_to_answer(
+        project: Project, group_slug: str, project_slug: str
+    ) -> ProjectA:
+        return ProjectA(
+            group_slug=group_slug,
+            project_slug=project_slug,
+            name=project.name,
+            description=project.description,
+            features=project.features,
+            visibility=project.visibility,
+            extra=project.extra,
+            created_at=project.created_at,
+            updated_at=project.updated_at,
+        )
 
     @parameter_matcher()
-    async def post_self_projects(self, session: SessionEx) -> None:
-        raise NotImplementedError
+    async def get_self_projects(self, session: SessionEx) -> List[ProjectA]:
+        result = list()
+        for project in await self.context.get_projects_by_user(
+            session.uid, remove_sensitive=False
+        ):
+            assert project.uid is not None
+            assert project.group_uid is not None
+            assert project.slug is not None
+            group_slug = await self.context.get_group_slug(project.group_uid)
+            result.append(self._project_to_answer(project, group_slug, project.slug))
+        return result
 
     @parameter_matcher()
-    async def get_self_projects_pgroup_pproject(self, session: SessionEx) -> None:
-        raise NotImplementedError
+    async def post_self_projects(
+        self, session: SessionEx, body: CreateProjectQ
+    ) -> None:
+        group_uid = await self.context.get_group_uid(body.group_slug)
+
+        # TODO: Check the maximum number of groups that can be created.
+
+        await self.context.create_project(
+            group_uid=group_uid,
+            slug=body.project_slug,
+            name=body.name,
+            description=body.description,
+            features=body.features,
+            visibility=body.get_visibility(),
+            extra=body.extra,
+            owner_uid=session.uid,
+        )
 
     @parameter_matcher()
-    async def patch_self_projects_pgroup_pproject(self, session: SessionEx) -> None:
-        raise NotImplementedError
+    async def get_self_projects_pgroup_pproject(
+        self, session: SessionEx, group: str, project: str
+    ) -> ProjectA:
+        group_uid = await self.context.get_group_uid(group)
+        project_uid = await self.context.get_project_uid(group_uid, project)
+        permission = await self.context.get_project_permission(
+            session.uid, project_uid, remove_sensitive=False
+        )
+        if permission.uid is None:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+
+        db_project = await self.context.get_project(project_uid)
+        return self._project_to_answer(db_project, group, project)
 
     @parameter_matcher()
-    async def delete_self_projects_pgroup_pproject(self, session: SessionEx) -> None:
-        raise NotImplementedError
+    async def patch_self_projects_pgroup_pproject(
+        self, session: SessionEx, group: str, project: str, body: UpdateProjectQ
+    ) -> None:
+        group_uid = await self.context.get_group_uid(group)
+        project_uid = await self.context.get_project_uid(group_uid, project)
+        permission = await self.context.get_project_permission(
+            session.uid, project_uid, remove_sensitive=False
+        )
+        if permission.uid is None or not permission.w_setting:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+        await self.context.update_project(
+            uid=project_uid,
+            name=body.name,
+            description=body.description,
+            features=body.features,
+            visibility=body.visibility,
+            extra=body.extra,
+        )
+
+    @parameter_matcher()
+    async def delete_self_projects_pgroup_pproject(
+        self, session: SessionEx, group: str, project: str
+    ) -> None:
+        group_uid = await self.context.get_group_uid(group)
+        project_uid = await self.context.get_project_uid(group_uid, project)
+        permission = await self.context.get_project_permission(
+            session.uid, project_uid, remove_sensitive=False
+        )
+        if permission.uid is None or not permission.w_setting:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+        await self.context.delete_project(project_uid)
 
     # -------
     # Configs
@@ -484,17 +590,7 @@ class RouterV2:
     async def get_groups_pgroup(self, group: str) -> GroupA:
         group_uid = await self.context.get_group_uid(group)
         db_group = await self.context.get_group(group_uid)
-        assert db_group.slug is not None
-        return GroupA(
-            slug=db_group.slug,
-            name=db_group.name,
-            description=db_group.description,
-            features=db_group.features,
-            visibility=db_group.visibility,
-            extra=db_group.extra,
-            created_at=db_group.created_at,
-            updated_at=db_group.updated_at,
-        )
+        return self._group_to_answer(db_group)
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def patch_groups_pgroup(self, group: str, body: UpdateGroupQ) -> None:
@@ -525,18 +621,7 @@ class RouterV2:
             assert project.group_uid is not None
             assert project.slug is not None
             group_slug = await self.context.get_group_slug(project.group_uid)
-            item = ProjectA(
-                group_slug=group_slug,
-                project_slug=project.slug,
-                name=project.name,
-                description=project.description,
-                features=project.features,
-                visibility=project.visibility,
-                extra=project.extra,
-                created_at=project.created_at,
-                updated_at=project.updated_at,
-            )
-            result.append(item)
+            result.append(self._project_to_answer(project, group_slug, project.slug))
         return result
 
     @parameter_matcher(acl={aa.HasAdmin})
@@ -558,17 +643,7 @@ class RouterV2:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
         db_project = await self.context.get_project(project_uid)
-        return ProjectA(
-            group_slug=group,
-            project_slug=project,
-            name=db_project.name,
-            description=db_project.description,
-            features=db_project.features,
-            visibility=db_project.visibility,
-            extra=db_project.extra,
-            created_at=db_project.created_at,
-            updated_at=db_project.updated_at,
-        )
+        return self._project_to_answer(db_project, group, project)
 
     @parameter_matcher(acl={aa.HasAdmin})
     async def patch_projects_pgroup_pproject(

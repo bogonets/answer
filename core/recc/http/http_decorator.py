@@ -10,6 +10,7 @@ from aiohttp.web_response import Response
 from aiohttp.web_exceptions import (
     HTTPException,
     HTTPBadRequest,
+    HTTPForbidden,
     HTTPUnauthorized,
 )
 from recc.core.context import Context
@@ -64,7 +65,7 @@ def _test_permission(session: SessionEx, acl: Set[aa]) -> None:
     for ac in acl:
         if ac == aa.HasAdmin:
             if not session.is_admin:
-                raise HTTPUnauthorized(reason="Administrator privileges are required")
+                raise HTTPForbidden(reason="Administrator privileges are required")
 
 
 async def _parameter_matcher_main(
@@ -127,7 +128,7 @@ async def _parameter_matcher_main(
                 update_arguments.append(request[c.session])
                 continue
 
-            # HttpSession
+            # SessionEx
             if issubclass(type_origin, SessionEx):
                 if c.session not in request:
                     raise HTTPUnauthorized(reason=f"Not exists {c.session}")
