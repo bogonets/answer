@@ -75,6 +75,7 @@ export default class MainAdminProjectsNew extends VueBase {
       name: event.name,
       description: event.description,
       features: event.features,
+      visibility: event.visibility,
     } as CreateProjectQ;
 
     this.submitLoading = true;

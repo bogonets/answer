@@ -6,15 +6,15 @@ en:
     name: "Name"
     description: "Description"
     features: "Features"
+    visibility: "Visibility level"
   hint:
     group: "The slug of the group."
     slug: "Project slug to be used in the URL."
     name: "The name of the project as it is displayed on the screen."
     description: "A specific description of the project."
     features: "A list of features to apply to the project."
+    visibility: "Who will be able to see this project?"
   visibility:
-    label: "Visibility level"
-    hint: "Who will be able to see this project?"
     private:
       label: "Private"
       hint: "Project access must be granted explicitly to each user."
@@ -35,15 +35,15 @@ ko:
     name: "이름"
     description: "설명"
     features: "기능"
+    visibility: "가시성 수준"
   hint:
     group: "그룹의 슬러그."
     slug: "URL 경로에 사용될 프로젝트 슬러그."
     name: "화면에 출력되는 프로젝트명."
     description: "프로젝트의 구체적인 설명."
     features: "프로젝트에 적용할 기능 목록 입니다."
+    visibility: "누가 이 그룹을 볼 수 있나요?"
   visibility:
-    label: "가시성 수준"
-    hint: "누가 이 그룹을 볼 수 있나요?"
     private:
       label: "비공개"
       hint: "프로젝트 접근 권한은 각 사용자에게 명시적으로 부여되어야 합니다."
@@ -136,6 +136,14 @@ ko:
       </template>
     </v-combobox>
 
+    <p :class="subtitleClass" class="mb-1">{{ $t('label.visibility') }}</p>
+    <p class="text-caption text--secondary mb-1">{{ $t('hint.visibility') }}</p>
+    <radio-visibility
+        class="mt-0"
+        :value="value.visibility"
+        @input="inputVisibility"
+    ></radio-visibility>
+
     <v-row v-if="!hideButtons" class="mt-2" no-gutters>
       <v-spacer></v-spacer>
       <v-btn
@@ -163,6 +171,7 @@ ko:
 <script lang="ts">
 import {Component, Prop, Ref, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import RadioVisibility from '@/components/RadioVisibility.vue';
 import {VForm} from 'vuetify/lib/components/VForm';
 import {GROUP_SLUG_RULES, PROJECT_SLUG_RULES} from '@/rules';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
@@ -174,6 +183,7 @@ export class ProjectItem {
   name = '';
   description = '';
   features = [] as Array<string>;
+  visibility = 0;
 
   fromObject(obj?: any) {
     this.group = obj?.group || '';
@@ -181,10 +191,15 @@ export class ProjectItem {
     this.name = obj?.name || '';
     this.description = obj?.description || '';
     this.features = obj?.features || [];
+    this.visibility = obj?.visibility || 0;
   }
 }
 
-@Component
+@Component({
+  components: {
+    RadioVisibility,
+  }
+})
 export default class FormProject extends VueBase {
   private readonly subtitleClass = SUBTITLE_CLASS;
   private readonly captionClass = CAPTION_CLASS;
@@ -272,6 +287,11 @@ export default class FormProject extends VueBase {
 
   inputFeatures(event: Array<string>) {
     this.value.features = event;
+    this.input();
+  }
+
+  inputVisibility(event: number) {
+    this.value.visibility = event;
     this.input();
   }
 

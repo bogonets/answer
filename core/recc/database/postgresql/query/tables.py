@@ -33,6 +33,7 @@ from recc.variables.database import (
     TASK_NUMA_MEMORY_NODES_STR_SIZE,
     TASK_BASE_IMAGE_STR_SIZE,
     FEATURE_NAME_STR_SIZE,
+    VISIBILITY_LEVEL_PRIVATE,
 )
 
 # -----------
@@ -78,6 +79,7 @@ CREATE TABLE IF NOT EXISTS {TABLE_GROUP} (
     name VARCHAR({GROUP_NAME_STR_SIZE}),
     description TEXT,
     features VARCHAR({FEATURE_NAME_STR_SIZE})[],
+    visibility INTEGER NOT NULL DEFAULT {VISIBILITY_LEVEL_PRIVATE},
     extra JSONB,
 
     created_at TIMESTAMP NOT NULL,
@@ -128,6 +130,7 @@ CREATE TABLE IF NOT EXISTS {TABLE_PROJECT} (
     name VARCHAR({PROJECT_NAME_STR_SIZE}),
     description TEXT,
     features VARCHAR({FEATURE_NAME_STR_SIZE})[],
+    visibility INTEGER NOT NULL DEFAULT {VISIBILITY_LEVEL_PRIVATE},
     extra JSONB,
 
     created_at TIMESTAMP NOT NULL,

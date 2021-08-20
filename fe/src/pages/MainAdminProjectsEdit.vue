@@ -196,6 +196,7 @@ export default class MainAdminProjectsEdit extends VueBase {
     const name = group.name || '';
     const description = group.description || '';
     const features = group.features || [];
+    const visibility = group.visibility || 0;
     const createdAt = group.created_at || '';
     const updatedAt = group.updated_at || '';
 
@@ -204,6 +205,7 @@ export default class MainAdminProjectsEdit extends VueBase {
     this.current.name = name;
     this.current.description = description;
     this.current.features = features;
+    this.current.visibility = visibility;
     this.original.fromObject(this.current);
     this.modified = !_.isEqual(this.original, this.current);
 
@@ -229,6 +231,7 @@ export default class MainAdminProjectsEdit extends VueBase {
       name: event.name,
       description: event.description,
       features: event.features,
+      visibility: event.visibility,
     } as UpdateProjectQ;
 
     this.showSubmitLoading = true;

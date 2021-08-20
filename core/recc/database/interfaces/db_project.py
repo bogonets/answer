@@ -4,6 +4,7 @@ from typing import Any, Optional, List
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from recc.database.struct.project import Project
+from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 
 
 class DbProject(metaclass=ABCMeta):
@@ -19,6 +20,7 @@ class DbProject(metaclass=ABCMeta):
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
+        visibility=VISIBILITY_LEVEL_PRIVATE,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
     ) -> int:
@@ -32,6 +34,7 @@ class DbProject(metaclass=ABCMeta):
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
+        visibility: Optional[int] = None,
         extra: Optional[Any] = None,
         updated_at=datetime.utcnow(),
     ) -> None:

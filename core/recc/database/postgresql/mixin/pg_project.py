@@ -4,6 +4,7 @@ from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
 from recc.log.logging import recc_database_logger as logger
+from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 from recc.database.struct.project import Project
 from recc.database.interfaces.db_project import DbProject
 from recc.database.postgresql.mixin.pg_base import PgBase
@@ -28,6 +29,7 @@ class PgProject(DbProject, PgBase):
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
+        visibility=VISIBILITY_LEVEL_PRIVATE,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
     ) -> int:
@@ -39,6 +41,7 @@ class PgProject(DbProject, PgBase):
             name,
             description,
             features,
+            visibility,
             extra,
             created_at,
         )
@@ -54,6 +57,7 @@ class PgProject(DbProject, PgBase):
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
+        visibility: Optional[int] = None,
         extra: Optional[Any] = None,
         updated_at=datetime.utcnow(),
     ) -> None:
@@ -63,6 +67,7 @@ class PgProject(DbProject, PgBase):
             name=name,
             description=description,
             features=features,
+            visibility=visibility,
             extra=extra,
             updated_at=updated_at,
         )

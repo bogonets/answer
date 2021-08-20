@@ -3,6 +3,7 @@
 from typing import List, Optional, Any
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.group import Group
+from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 
 
 class ContextGroup(ContextBase):
@@ -12,6 +13,7 @@ class ContextGroup(ContextBase):
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
+        visibility=VISIBILITY_LEVEL_PRIVATE,
         extra: Any = None,
         owner_uid: Optional[int] = None,
     ) -> int:
@@ -20,6 +22,7 @@ class ContextGroup(ContextBase):
             name=name,
             description=description,
             features=features,
+            visibility=visibility,
             extra=extra,
         )
         if owner_uid is not None:
@@ -34,10 +37,17 @@ class ContextGroup(ContextBase):
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
+        visibility: Optional[int] = None,
         extra: Optional[Any] = None,
     ) -> None:
         await self.database.update_group_by_uid(
-            uid, slug, name, description, features, extra
+            uid=uid,
+            slug=slug,
+            name=name,
+            description=description,
+            features=features,
+            visibility=visibility,
+            extra=extra,
         )
 
     async def delete_group(self, uid: int) -> None:

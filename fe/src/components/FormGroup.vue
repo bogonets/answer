@@ -5,23 +5,13 @@ en:
     name: "Name"
     description: "Description"
     features: "Features"
+    visibility: "Visibility level"
   hint:
     slug: "Group slug to be used in the URL."
     name: "The name of the group as it is displayed on the screen."
     description: "A specific description of the group."
     features: "A list of features to apply to the group."
-  visibility:
-    label: "Visibility level"
-    hint: "Who will be able to see this group?"
-    private:
-      label: "Private"
-      hint: "The group and its projects can only be viewed by members."
-    internal:
-      label: "Internal"
-      hint: "The group and any internal projects can be viewed by any logged in user."
-    public:
-      label: "Public"
-      hint: "The group and any public projects can be viewed without any authentication."
+    visibility: "Who will be able to see this group?"
   no_matching: "No results matching \"{search}\". Press {key} to create a new one."
   cancel: "Cancel"
   submit: "Submit"
@@ -32,23 +22,13 @@ ko:
     name: "이름"
     description: "설명"
     features: "기능"
+    visibility: "가시성 수준"
   hint:
     slug: "URL 경로에 사용될 그룹 슬러그."
     name: "화면에 출력되는 그룹명."
     description: "그룹의 구체적인 설명."
     features: "그룹에 적용할 기능 목록 입니다."
-  visibility:
-    label: "가시성 수준"
-    hint: "누가 이 그룹을 볼 수 있나요?"
-    private:
-      label: "비공개"
-      hint: "그룹 및 프로젝트는 회원만 볼 수 있습니다."
-    internal:
-      label: "내부"
-      hint: "그룹 및 모든 내부 프로젝트는 로그인한 모든 사용자가 볼 수 있습니다."
-    public:
-      label: "공개"
-      hint: "그룹 및 모든 공개 프로젝트는 인증 없이 볼 수 있습니다."
+    visibility: "누가 이 그룹을 볼 수 있나요?"
   no_matching: "\"{search}\" 와 일치하는 결과가 없습니다. {key} 키를 눌러 추가할 수 있습니다."
   cancel: "취소"
   submit: "제출"
@@ -117,6 +97,14 @@ ko:
       </template>
     </v-combobox>
 
+    <p :class="subtitleClass" class="mb-1">{{ $t('label.visibility') }}</p>
+    <p class="text-caption text--secondary mb-1">{{ $t('hint.visibility') }}</p>
+    <radio-visibility
+        class="mt-0"
+        :value="value.visibility"
+        @input="inputVisibility"
+    ></radio-visibility>
+
     <v-row v-if="!hideButtons" class="mt-2" no-gutters>
       <v-spacer></v-spacer>
       <v-btn
@@ -144,6 +132,7 @@ ko:
 <script lang="ts">
 import {Component, Prop, Ref, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import RadioVisibility from '@/components/RadioVisibility.vue';
 import {VForm} from 'vuetify/lib/components/VForm';
 import {GROUP_SLUG_RULES} from '@/rules';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
@@ -154,16 +143,22 @@ export class GroupItem {
   name = '';
   description = '';
   features = [] as Array<string>;
+  visibility = 0;
 
   fromObject(obj?: any) {
     this.slug = obj?.slug || '';
     this.name = obj?.name || '';
     this.description = obj?.description || '';
     this.features = obj?.features || [];
+    this.visibility = obj?.visibility || 0;
   }
 }
 
-@Component
+@Component({
+  components: {
+    RadioVisibility,
+  }
+})
 export default class FormGroup extends VueBase {
   private readonly subtitleClass = SUBTITLE_CLASS;
   private readonly captionClass = CAPTION_CLASS;
@@ -225,6 +220,11 @@ export default class FormGroup extends VueBase {
 
   inputFeatures(event: Array<string>) {
     this.value.features = event;
+    this.input();
+  }
+
+  inputVisibility(event: number) {
+    this.value.visibility = event;
     this.input();
   }
 

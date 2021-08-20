@@ -3,6 +3,7 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from dataclasses import dataclass
+from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 
 
 @dataclass
@@ -12,6 +13,7 @@ class ProjectA:
     name: Optional[str] = None
     description: Optional[str] = None
     features: Optional[List[str]] = None
+    visibility: Optional[int] = None
     extra: Optional[Any] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
@@ -24,7 +26,13 @@ class CreateProjectQ:
     name: Optional[str] = None
     description: Optional[str] = None
     features: Optional[List[str]] = None
+    visibility: Optional[int] = None
     extra: Optional[Any] = None
+
+    def get_visibility(self) -> int:
+        if self.visibility is not None:
+            return self.visibility
+        return VISIBILITY_LEVEL_PRIVATE
 
 
 @dataclass
@@ -32,4 +40,5 @@ class UpdateProjectQ:
     name: Optional[str] = None
     description: Optional[str] = None
     features: Optional[List[str]] = None
+    visibility: Optional[int] = None
     extra: Optional[Any] = None

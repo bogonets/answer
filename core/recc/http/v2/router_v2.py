@@ -440,6 +440,7 @@ class RouterV2:
                 name=group.name,
                 description=group.description,
                 features=group.features,
+                visibility=group.visibility,
                 extra=group.extra,
                 created_at=group.created_at,
                 updated_at=group.updated_at,
@@ -456,6 +457,7 @@ class RouterV2:
             name=body.name,
             description=body.description,
             features=body.features,
+            visibility=body.get_visibility(),
         )
 
     @parameter_matcher(acl={aa.HasAdmin})
@@ -468,6 +470,7 @@ class RouterV2:
             name=db_group.name,
             description=db_group.description,
             features=db_group.features,
+            visibility=db_group.visibility,
             extra=db_group.extra,
             created_at=db_group.created_at,
             updated_at=db_group.updated_at,
@@ -481,6 +484,7 @@ class RouterV2:
             name=body.name,
             description=body.description,
             features=body.features,
+            visibility=body.visibility,
             extra=body.extra,
         )
 
@@ -500,15 +504,17 @@ class RouterV2:
             assert project.uid is not None
             assert project.group_uid is not None
             assert project.slug is not None
+            group_slug = await self.context.get_group_slug(project.group_uid)
             item = ProjectA(
-                await self.context.get_group_slug(project.group_uid),
-                project.slug,
-                project.name,
-                project.description,
-                project.features,
-                project.extra,
-                project.created_at,
-                project.updated_at,
+                group_slug=group_slug,
+                project_slug=project.slug,
+                name=project.name,
+                description=project.description,
+                features=project.features,
+                visibility=project.visibility,
+                extra=project.extra,
+                created_at=project.created_at,
+                updated_at=project.updated_at,
             )
             result.append(item)
         return result
@@ -522,6 +528,7 @@ class RouterV2:
             name=body.name,
             description=body.description,
             features=body.features,
+            visibility=body.get_visibility(),
             extra=body.extra,
             owner_uid=session.uid,
         )
@@ -537,6 +544,7 @@ class RouterV2:
             name=db_project.name,
             description=db_project.description,
             features=db_project.features,
+            visibility=db_project.visibility,
             extra=db_project.extra,
             created_at=db_project.created_at,
             updated_at=db_project.updated_at,
@@ -553,6 +561,7 @@ class RouterV2:
             name=body.name,
             description=body.description,
             features=body.features,
+            visibility=body.visibility,
             extra=body.extra,
         )
 

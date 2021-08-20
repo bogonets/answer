@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from typing import Any, List, Optional
-from recc.variables.database import TABLE_PROJECT
+from recc.variables.database import TABLE_PROJECT, VISIBILITY_LEVEL_PRIVATE
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
 
@@ -17,10 +17,11 @@ INSERT INTO {TABLE_PROJECT} (
     name,
     description,
     features,
+    visibility,
     extra,
     created_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
+    $1, $2, $3, $4, $5, $6, $7, $8
 ) RETURNING uid;
 """
 
@@ -35,6 +36,7 @@ def get_update_project_query_by_uid(
     name: Optional[str] = None,
     description: Optional[str] = None,
     features: Optional[List[str]] = None,
+    visibility: Optional[int] = None,
     extra: Optional[Any] = None,
     updated_at: Optional[datetime] = None,
 ) -> BuildResult:
@@ -45,6 +47,7 @@ def get_update_project_query_by_uid(
         name=name,
         description=description,
         features=features,
+        visibility=visibility,
         extra=extra,
         updated_at=updated_at,
     )

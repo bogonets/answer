@@ -4,6 +4,7 @@ from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
 from recc.log.logging import recc_database_logger as logger
+from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 from recc.database.struct.group import Group
 from recc.database.interfaces.db_group import DbGroup
 from recc.database.postgresql.mixin.pg_base import PgBase
@@ -27,12 +28,13 @@ class PgGroup(DbGroup, PgBase):
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
+        visibility=VISIBILITY_LEVEL_PRIVATE,
         extra: Optional[Any] = None,
         created_at=datetime.utcnow(),
     ) -> int:
         query = INSERT_GROUP
         uid = await self.fetch_val(
-            query, slug, name, description, features, extra, created_at
+            query, slug, name, description, features, visibility, extra, created_at
         )
         params_msg = f"slug={slug}"
         logger.info(f"insert_group({params_msg}) -> {uid}")
@@ -46,6 +48,7 @@ class PgGroup(DbGroup, PgBase):
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
+        visibility: Optional[int] = None,
         extra: Optional[Any] = None,
         updated_at=datetime.utcnow(),
     ) -> None:
@@ -55,6 +58,7 @@ class PgGroup(DbGroup, PgBase):
             name=name,
             description=description,
             features=features,
+            visibility=visibility,
             extra=extra,
             updated_at=updated_at,
         )

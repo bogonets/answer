@@ -3,6 +3,7 @@
 from typing import List, Optional, Any
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.project import Project
+from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 
 
 class ContextProject(ContextBase):
@@ -13,6 +14,7 @@ class ContextProject(ContextBase):
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
+        visibility=VISIBILITY_LEVEL_PRIVATE,
         extra: Optional[Any] = None,
         owner_uid: Optional[int] = None,
     ) -> int:
@@ -22,6 +24,7 @@ class ContextProject(ContextBase):
             name=name,
             description=description,
             features=features,
+            visibility=visibility,
             extra=extra,
         )
         if owner_uid is not None:
@@ -35,6 +38,7 @@ class ContextProject(ContextBase):
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
+        visibility: Optional[int] = None,
         extra: Optional[Any] = None,
     ) -> None:
         await self.database.update_project_by_uid(
@@ -42,6 +46,7 @@ class ContextProject(ContextBase):
             name=name,
             description=description,
             features=features,
+            visibility=visibility,
             extra=extra,
         )
 

@@ -6,6 +6,7 @@ from recc.variables.database import (
     TABLE_GROUP,
     ANONYMOUS_GROUP_SLUG,
     ANONYMOUS_GROUP_DESCRIPTION,
+    VISIBILITY_LEVEL_PRIVATE,
 )
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
@@ -17,10 +18,12 @@ SAFE_INSERT_GROUP_ANONYMOUS = f"""
 INSERT INTO {TABLE_GROUP} (
     slug,
     description,
+    visibility,
     created_at
 ) SELECT
     '{ANONYMOUS_GROUP_SLUG}',
     '{ANONYMOUS_GROUP_DESCRIPTION}',
+    {VISIBILITY_LEVEL_PRIVATE},
     $1
 WHERE
     NOT EXISTS(
@@ -36,10 +39,11 @@ INSERT INTO {TABLE_GROUP} (
     name,
     description,
     features,
+    visibility,
     extra,
     created_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6
+    $1, $2, $3, $4, $5, $6, $7
 ) RETURNING uid;
 """
 
@@ -54,6 +58,7 @@ def get_update_group_query_by_uid(
     name: Optional[str] = None,
     description: Optional[str] = None,
     features: Optional[List[str]] = None,
+    visibility: Optional[int] = None,
     extra: Optional[Any] = None,
     updated_at=datetime.utcnow(),
 ) -> BuildResult:
@@ -64,6 +69,7 @@ def get_update_group_query_by_uid(
         name=name,
         description=description,
         features=features,
+        visibility=visibility,
         extra=extra,
         updated_at=updated_at,
     )

@@ -90,6 +90,7 @@ ko:
           @input="inputConfirmPassword"
           :rules="rules.confirmPassword"
           :hint="$t('hint.confirmPassword')"
+          @keypress.enter.stop="onEnterConfirm"
       ></v-text-field>
     </div>
 
@@ -164,7 +165,7 @@ ko:
           color="primary"
           :loading="loading"
           :disabled="disableSubmit"
-          @click="submit"
+          @click="onSubmit"
       >
         {{ $t('submit') }}
       </v-btn>
@@ -313,7 +314,14 @@ export default class FormUser extends VueBase {
     this.form['validate']();
   }
 
-  submit() {
+  onEnterConfirm() {
+    if (this.disableSubmit) {
+      return;
+    }
+    this.onSubmit();
+  }
+
+  onSubmit() {
     if (!this.disableValidate) {
       this.formValidate();
       if (!this.valid) {
