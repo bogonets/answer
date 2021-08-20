@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from recc.variables.database import TABLE_GROUP_MEMBER
+from recc.variables.database import TABLE_GROUP, TABLE_GROUP_MEMBER
 
 ##########
 # INSERT #
@@ -60,4 +60,15 @@ WHERE user_uid=$1;
 SELECT_GROUP_MEMBER_ALL = f"""
 SELECT group_uid, user_uid, permission_uid
 FROM {TABLE_GROUP_MEMBER};
+"""
+
+SELECT_GROUP_MEMBER_JOIN_GROUP_BY_USER_UID = f"""
+WITH gm AS (
+    SELECT *
+    FROM {TABLE_GROUP_MEMBER}
+    WHERE user_uid=$1
+)
+SELECT *
+FROM gm
+INNER JOIN {TABLE_GROUP} g ON gm.group_uid=g.uid;
 """

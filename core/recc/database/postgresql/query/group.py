@@ -4,9 +4,10 @@ from typing import Optional, Any, List
 from datetime import datetime
 from recc.variables.database import (
     TABLE_GROUP,
+    TABLE_GROUP_MEMBER,
     ANONYMOUS_GROUP_SLUG,
     ANONYMOUS_GROUP_DESCRIPTION,
-    VISIBILITY_LEVEL_PRIVATE,
+    VISIBILITY_LEVEL_PUBLIC,
 )
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
@@ -23,7 +24,7 @@ INSERT INTO {TABLE_GROUP} (
 ) SELECT
     '{ANONYMOUS_GROUP_SLUG}',
     '{ANONYMOUS_GROUP_DESCRIPTION}',
-    {VISIBILITY_LEVEL_PRIVATE},
+    {VISIBILITY_LEVEL_PUBLIC},
     $1
 WHERE
     NOT EXISTS(
@@ -86,6 +87,18 @@ DELETE FROM {TABLE_GROUP}
 WHERE uid=$1;
 """
 
+SAFE_DELETE_GROUP_BY_UID = f"""
+BEGIN;
+
+DELETE FROM {TABLE_GROUP_MEMBER}
+WHERE group_uid=$1;
+
+DELETE FROM {TABLE_GROUP}
+WHERE uid=$1;
+
+COMMIT;
+"""
+
 ##########
 # SELECT #
 ##########
@@ -112,6 +125,12 @@ SELECT_GROUP_BY_UID = f"""
 SELECT *
 FROM {TABLE_GROUP}
 WHERE uid=$1;
+"""
+
+SELECT_GROUP_BY_BELOW_VISIBILITY = f"""
+SELECT *
+FROM {TABLE_GROUP}
+WHERE visibility>=$1;
 """
 
 SELECT_GROUP_ALL = f"""

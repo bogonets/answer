@@ -10,11 +10,12 @@ from recc.database.interfaces.db_group import DbGroup
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.group import (
     INSERT_GROUP,
-    DELETE_GROUP_BY_UID,
+    SAFE_DELETE_GROUP_BY_UID,
     SELECT_GROUP_UID_BY_SLUG,
     SELECT_GROUP_SLUG_BY_UID,
     SELECT_GROUP_BY_UID,
     SELECT_GROUP_ALL,
+    SELECT_GROUP_BY_BELOW_VISIBILITY,
     SELECT_GROUP_COUNT,
     get_update_group_query_by_uid,
 )
@@ -68,8 +69,8 @@ class PgGroup(DbGroup, PgBase):
 
     @overrides
     async def delete_group_by_uid(self, uid: int) -> None:
-        query = DELETE_GROUP_BY_UID
-        await self.execute(query, uid)
+        query = SAFE_DELETE_GROUP_BY_UID.replace("$1", str(uid))
+        await self.execute(query)
         params_msg = f"uid={uid}"
         logger.info(f"delete_group_by_uid({params_msg}) ok.")
 
@@ -107,6 +108,20 @@ class PgGroup(DbGroup, PgBase):
         result = Group(**dict(row))
         result.uid = uid
         logger.info(f"select_group_by_uid({params_msg}) ok.")
+        return result
+
+    @overrides
+    async def select_groups_by_below_visibility(self, visibility: int) -> List[Group]:
+        result: List[Group] = list()
+        async with self.conn() as conn:
+            async with conn.transaction():
+                query = SELECT_GROUP_BY_BELOW_VISIBILITY
+                async for row in conn.cursor(query, visibility):
+                    result.append(Group(**dict(row)))
+        params_msg = f"visibility={visibility}"
+        result_msg = f"{len(result)} groups"
+        msg = f"select_groups_by_less_equal_visibility({params_msg}) -> {result_msg}"
+        logger.info(msg)
         return result
 
     @overrides

@@ -9,7 +9,7 @@ from recc.database.interfaces.db_permission import DbPermission
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.permission import (
     INSERT_PERMISSION,
-    DELETE_PERMISSION_BY_UID,
+    SAFE_DELETE_PERMISSION_BY_UID,
     SELECT_PERMISSION_UID_BY_NAME,
     SELECT_PERMISSION_NAME_BY_UID,
     SELECT_PERMISSION_BY_UID,
@@ -112,8 +112,8 @@ class PgPermission(DbPermission, PgBase):
 
     @overrides
     async def delete_permission_by_uid(self, uid: int) -> None:
-        query = DELETE_PERMISSION_BY_UID
-        await self.execute(query, uid)
+        query = SAFE_DELETE_PERMISSION_BY_UID.replace("$1", str(uid))
+        await self.execute(query)
         params_msg = f"uid={uid}"
         logger.info(f"delete_permission_by_uid({params_msg}) ok.")
 

@@ -2,6 +2,11 @@
 
 from unittest import main
 from datetime import datetime, timedelta
+from recc.variables.database import (
+    VISIBILITY_LEVEL_PRIVATE,
+    VISIBILITY_LEVEL_INTERNAL,
+    VISIBILITY_LEVEL_PUBLIC,
+)
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
@@ -68,6 +73,44 @@ class PgProjectTestCase(PostgresqlTestCase):
         self.assertEqual(extra1, project1.extra)
         self.assertEqual(updated_at1, project1.updated_at)
 
+    async def test_visibility(self):
+        slug1 = "project1"
+        slug2 = "project2"
+        slug3 = "project3"
+        private_uid = await self.db.insert_project(
+            self.group.uid, slug1, visibility=VISIBILITY_LEVEL_PRIVATE
+        )
+        internal_uid = await self.db.insert_project(
+            self.group.uid, slug2, visibility=VISIBILITY_LEVEL_INTERNAL
+        )
+        public_uid = await self.db.insert_project(
+            self.group.uid, slug3, visibility=VISIBILITY_LEVEL_PUBLIC
+        )
+
+        projects1 = await self.db.select_projects_by_below_visibility(
+            VISIBILITY_LEVEL_PRIVATE
+        )
+        projects2 = await self.db.select_projects_by_below_visibility(
+            VISIBILITY_LEVEL_INTERNAL
+        )
+        projects3 = await self.db.select_projects_by_below_visibility(
+            VISIBILITY_LEVEL_PUBLIC
+        )
+
+        projects1_uid = list(map(lambda x: x.uid, projects1))
+        projects2_uid = list(map(lambda x: x.uid, projects2))
+        projects3_uid = list(map(lambda x: x.uid, projects3))
+
+        self.assertEqual(3, len(projects1_uid))
+        self.assertIn(private_uid, projects1_uid)
+        self.assertIn(internal_uid, projects1_uid)
+        self.assertIn(public_uid, projects1_uid)
+        self.assertEqual(2, len(projects2_uid))
+        self.assertIn(internal_uid, projects2_uid)
+        self.assertIn(public_uid, projects2_uid)
+        self.assertEqual(1, len(projects3_uid))
+        self.assertIn(public_uid, projects3_uid)
+
     async def test_delete(self):
         slug1 = "project1"
         await self.db.insert_project(self.group.uid, slug1)
@@ -75,12 +118,12 @@ class PgProjectTestCase(PostgresqlTestCase):
             self.group.uid, slug1
         )
 
-        projects1 = await self.db.select_project_by_group_uid(self.group.uid)
+        projects1 = await self.db.select_projects_by_group_uid(self.group.uid)
         self.assertEqual(1, len(projects1))
 
         await self.db.delete_project_by_uid(project1_uid)
 
-        projects2 = await self.db.select_project_by_group_uid(self.group.uid)
+        projects2 = await self.db.select_projects_by_group_uid(self.group.uid)
         self.assertEqual(0, len(projects2))
 
 

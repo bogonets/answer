@@ -28,8 +28,10 @@ class ContextProject(ContextBase):
             extra=extra,
         )
         if owner_uid is not None:
-            permission_uid = self.database.get_owner_permission_uid()
-            self.database.insert_project_member(project_uid, owner_uid, permission_uid)
+            owner_permission_uid = self.database.get_owner_permission_uid()
+            await self.database.insert_project_member(
+                project_uid, owner_uid, owner_permission_uid
+            )
         return project_uid
 
     async def update_project(
@@ -58,7 +60,7 @@ class ContextProject(ContextBase):
         if not group_uid:
             projects = await self.database.select_projects()
         else:
-            projects = await self.database.select_project_by_group_uid(group_uid)
+            projects = await self.database.select_projects_by_group_uid(group_uid)
         if remove_sensitive:
             for project in projects:
                 project.remove_sensitive()

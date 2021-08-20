@@ -51,15 +51,21 @@ class DbProject(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def select_projects(self) -> List[Project]:
-        raise NotImplementedError
-
-    @abstractmethod
     async def select_project_by_uid(self, uid: int) -> Project:
         raise NotImplementedError
 
     @abstractmethod
-    async def select_project_by_group_uid(self, group_uid: int) -> List[Project]:
+    async def select_projects_by_group_uid(self, group_uid: int) -> List[Project]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def select_projects_by_below_visibility(
+        self, visibility: int
+    ) -> List[Project]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def select_projects(self) -> List[Project]:
         raise NotImplementedError
 
     @abstractmethod

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+from unittest import main
+from recc.database.struct.project_join_member import ProjectJoinMember
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
@@ -84,6 +85,23 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
         self.assertEqual(1, len(projects2))
         self.assertEqual(2, len(projects3))
 
+    async def test_group_members_join_group(self):
+        test_user = self.user1.uid
+        fake_user = self.user2.uid
+
+        await self.db.insert_project_member(self.project.uid, test_user, self.guest)
+        await self.db.insert_project_member(self.project.uid, fake_user, self.reporter)
+
+        projects = await self.db.select_project_members_join_project_by_user_uid(
+            test_user
+        )
+        self.assertEqual(1, len(projects))
+        project0 = projects[0]
+        self.assertIsInstance(project0, ProjectJoinMember)
+        self.assertEqual(self.project.uid, project0.project_uid)
+        self.assertEqual(test_user, project0.user_uid)
+        self.assertEqual(self.guest, project0.permission_uid)
+
     async def test_delete(self):
         await self.db.insert_project_member(
             self.project.uid, self.user1.uid, self.guest
@@ -98,4 +116,4 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

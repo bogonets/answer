@@ -10,11 +10,12 @@ from recc.database.interfaces.db_project import DbProject
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.project import (
     INSERT_PROJECT,
-    DELETE_PROJECT_BY_UID,
+    SAFE_DELETE_PROJECT_BY_UID,
     SELECT_PROJECT_UID_BY_GROUP_UID_AND_SLUG,
     SELECT_PROJECT_ALL,
     SELECT_PROJECT_BY_UID,
     SELECT_PROJECT_BY_GROUP_ID,
+    SELECT_PROJECT_BY_BELOW_VISIBILITY,
     SELECT_PROJECT_COUNT,
     get_update_project_query_by_uid,
 )
@@ -77,8 +78,8 @@ class PgProject(DbProject, PgBase):
 
     @overrides
     async def delete_project_by_uid(self, uid: int) -> None:
-        query = DELETE_PROJECT_BY_UID
-        await self.execute(query, uid)
+        query = SAFE_DELETE_PROJECT_BY_UID.replace("$1", str(uid))
+        await self.execute(query)
         logger.info(f"delete_project_by_uid(uid={uid}) ok.")
 
     @overrides
@@ -98,18 +99,6 @@ class PgProject(DbProject, PgBase):
         return result
 
     @overrides
-    async def select_projects(self) -> List[Project]:
-        result: List[Project] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_PROJECT_ALL
-                async for row in conn.cursor(query):
-                    result.append(Project(**dict(row)))
-        result_msg = f"{len(result)} project"
-        logger.info(f"select_projects() -> {result_msg}")
-        return result
-
-    @overrides
     async def select_project_by_uid(self, uid: int) -> Project:
         query = SELECT_PROJECT_BY_UID
         row = await self.fetch_row(query, uid)
@@ -122,7 +111,7 @@ class PgProject(DbProject, PgBase):
         return result
 
     @overrides
-    async def select_project_by_group_uid(self, group_uid: int) -> List[Project]:
+    async def select_projects_by_group_uid(self, group_uid: int) -> List[Project]:
         result: List[Project] = list()
         async with self.conn() as conn:
             async with conn.transaction():
@@ -134,6 +123,34 @@ class PgProject(DbProject, PgBase):
         params_msg = f"group_uid={group_uid}"
         result_msg = f"{len(result)} project"
         logger.info(f"select_project_by_group_uid({params_msg}) -> {result_msg}")
+        return result
+
+    @overrides
+    async def select_projects_by_below_visibility(
+        self, visibility: int
+    ) -> List[Project]:
+        result: List[Project] = list()
+        async with self.conn() as conn:
+            async with conn.transaction():
+                query = SELECT_PROJECT_BY_BELOW_VISIBILITY
+                async for row in conn.cursor(query, visibility):
+                    result.append(Project(**dict(row)))
+        params_msg = f"visibility={visibility}"
+        result_msg = f"{len(result)} project"
+        msg = f"select_projects_by_less_equal_visibility({params_msg}) -> {result_msg}"
+        logger.info(msg)
+        return result
+
+    @overrides
+    async def select_projects(self) -> List[Project]:
+        result: List[Project] = list()
+        async with self.conn() as conn:
+            async with conn.transaction():
+                query = SELECT_PROJECT_ALL
+                async for row in conn.cursor(query):
+                    result.append(Project(**dict(row)))
+        result_msg = f"{len(result)} project"
+        logger.info(f"select_projects() -> {result_msg}")
         return result
 
     @overrides

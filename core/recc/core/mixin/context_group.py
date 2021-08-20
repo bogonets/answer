@@ -26,8 +26,10 @@ class ContextGroup(ContextBase):
             extra=extra,
         )
         if owner_uid is not None:
-            permission_uid = self.database.get_maintainer_permission_uid()
-            self.database.insert_group_member(group_uid, owner_uid, permission_uid)
+            owner_permission_uid = self.database.get_owner_permission_uid()
+            await self.database.insert_group_member(
+                group_uid, owner_uid, owner_permission_uid
+            )
         return group_uid
 
     async def update_group(

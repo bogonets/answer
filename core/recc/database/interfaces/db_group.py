@@ -56,6 +56,10 @@ class DbGroup(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def select_groups_by_below_visibility(self, visibility: int) -> List[Group]:
+        raise NotImplementedError
+
+    @abstractmethod
     async def select_groups(self) -> List[Group]:
         raise NotImplementedError
 

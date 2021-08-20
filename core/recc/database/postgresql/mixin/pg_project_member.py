@@ -4,6 +4,7 @@ from typing import List
 from overrides import overrides
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.project_member import ProjectMember
+from recc.database.struct.project_join_member import ProjectJoinMember
 from recc.database.interfaces.db_project_member import DbProjectMember
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.project_member import (
@@ -14,6 +15,7 @@ from recc.database.postgresql.query.project_member import (
     SELECT_PROJECT_MEMBER_BY_PROJECT_UID,
     SELECT_PROJECT_MEMBER_BY_USER_UID,
     SELECT_PROJECT_MEMBER_ALL,
+    SELECT_PROJECT_MEMBER_JOIN_PROJECT_BY_USER_UID,
 )
 
 
@@ -105,4 +107,20 @@ class PgProjectMember(DbProjectMember, PgBase):
                     result.append(ProjectMember(**dict(row)))
         result_msg = f"{len(result)} project members"
         logger.info(f"select_project_members() -> {result_msg}")
+        return result
+
+    @overrides
+    async def select_project_members_join_project_by_user_uid(
+        self, user_uid: int
+    ) -> List[ProjectJoinMember]:
+        result: List[ProjectJoinMember] = list()
+        async with self.conn() as conn:
+            async with conn.transaction():
+                query = SELECT_PROJECT_MEMBER_JOIN_PROJECT_BY_USER_UID
+                async for row in conn.cursor(query, user_uid):
+                    result.append(ProjectJoinMember(**dict(row)))
+        result_msg = f"{len(result)} project members"
+        logger.info(
+            f"select_project_members_join_project_by_user_uid() -> {result_msg}"
+        )
         return result

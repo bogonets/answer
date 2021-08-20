@@ -69,6 +69,7 @@ ko:
               <v-card-text v-if="isReady">
                 <v-form>
                   <v-text-field
+                      autofocus
                       type="text"
                       ref="usernameField"
                       v-model="currentUsername"

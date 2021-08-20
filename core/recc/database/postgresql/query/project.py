@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from typing import Any, List, Optional
-from recc.variables.database import TABLE_PROJECT
+from recc.variables.database import TABLE_PROJECT, TABLE_PROJECT_MEMBER
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
 
@@ -64,6 +64,18 @@ DELETE FROM {TABLE_PROJECT}
 WHERE uid=$1;
 """
 
+SAFE_DELETE_PROJECT_BY_UID = f"""
+BEGIN;
+
+DELETE FROM {TABLE_PROJECT_MEMBER}
+WHERE project_uid=$1;
+
+DELETE FROM {TABLE_PROJECT}
+WHERE uid=$1;
+
+COMMIT;
+"""
+
 ##########
 # SELECT #
 ##########
@@ -72,11 +84,6 @@ SELECT_PROJECT_UID_BY_GROUP_UID_AND_SLUG = f"""
 SELECT uid
 FROM {TABLE_PROJECT}
 WHERE group_uid=$1 AND slug LIKE $2;
-"""
-
-SELECT_PROJECT_ALL = f"""
-SELECT *
-FROM {TABLE_PROJECT};
 """
 
 SELECT_PROJECT_BY_UID = f"""
@@ -89,6 +96,17 @@ SELECT_PROJECT_BY_GROUP_ID = f"""
 SELECT *
 FROM {TABLE_PROJECT}
 WHERE group_uid=$1;
+"""
+
+SELECT_PROJECT_BY_BELOW_VISIBILITY = f"""
+SELECT *
+FROM {TABLE_PROJECT}
+WHERE visibility>=$1;
+"""
+
+SELECT_PROJECT_ALL = f"""
+SELECT *
+FROM {TABLE_PROJECT};
 """
 
 SELECT_PROJECT_COUNT = f"""

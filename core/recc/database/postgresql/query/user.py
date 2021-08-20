@@ -2,7 +2,12 @@
 
 from datetime import datetime
 from typing import Any, Optional
-from recc.variables.database import TABLE_USER, VIEW_USER_ADMIN_COUNT
+from recc.variables.database import (
+    TABLE_USER,
+    TABLE_GROUP_MEMBER,
+    TABLE_PROJECT_MEMBER,
+    VIEW_USER_ADMIN_COUNT,
+)
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
 
@@ -103,10 +108,23 @@ def get_update_user_query_by_uid(
 ##########
 
 DELETE_USER_BY_UID = f"""
-DELETE FROM
-    {TABLE_USER}
-WHERE
-    uid=$1;
+DELETE FROM {TABLE_USER}
+WHERE uid=$1;
+"""
+
+SAFE_DELETE_USER_BY_UID = f"""
+BEGIN;
+
+DELETE FROM {TABLE_PROJECT_MEMBER}
+WHERE user_uid=$1;
+
+DELETE FROM {TABLE_GROUP_MEMBER}
+WHERE user_uid=$1;
+
+DELETE FROM {TABLE_USER}
+WHERE uid=$1;
+
+COMMIT;
 """
 
 ##########

@@ -2,8 +2,14 @@
 
 from unittest import main
 from datetime import datetime, timedelta
+from recc.variables.database import (
+    ANONYMOUS_GROUP_SLUG,
+    ANONYMOUS_GROUP_DESCRIPTION,
+    VISIBILITY_LEVEL_PRIVATE,
+    VISIBILITY_LEVEL_INTERNAL,
+    VISIBILITY_LEVEL_PUBLIC,
+)
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
-from recc.variables.database import ANONYMOUS_GROUP_SLUG, ANONYMOUS_GROUP_DESCRIPTION
 
 
 class PgGroupTestCase(PostgresqlTestCase):
@@ -80,6 +86,47 @@ class PgGroupTestCase(PostgresqlTestCase):
         self.assertEqual(extra1, group1.extra)
         self.assertEqual(features1, group1.features)
         self.assertEqual(updated_at1, group1.updated_at)
+
+    async def test_visibility(self):
+        slug1 = "group1"
+        slug2 = "group2"
+        slug3 = "group3"
+        private_uid = await self.db.insert_group(
+            slug1, visibility=VISIBILITY_LEVEL_PRIVATE
+        )
+        internal_uid = await self.db.insert_group(
+            slug2, visibility=VISIBILITY_LEVEL_INTERNAL
+        )
+        public_uid = await self.db.insert_group(
+            slug3, visibility=VISIBILITY_LEVEL_PUBLIC
+        )
+
+        groups1 = await self.db.select_groups_by_below_visibility(
+            VISIBILITY_LEVEL_PRIVATE
+        )
+        groups2 = await self.db.select_groups_by_below_visibility(
+            VISIBILITY_LEVEL_INTERNAL
+        )
+        groups3 = await self.db.select_groups_by_below_visibility(
+            VISIBILITY_LEVEL_PUBLIC
+        )
+
+        groups1_uid = list(map(lambda x: x.uid, groups1))
+        groups2_uid = list(map(lambda x: x.uid, groups2))
+        groups3_uid = list(map(lambda x: x.uid, groups3))
+
+        self.assertEqual(4, len(groups1_uid))
+        self.assertIn(private_uid, groups1_uid)
+        self.assertIn(internal_uid, groups1_uid)
+        self.assertIn(public_uid, groups1_uid)
+        self.assertIn(self.anonymous_group_uid, groups1_uid)
+        self.assertEqual(3, len(groups2_uid))
+        self.assertIn(internal_uid, groups2_uid)
+        self.assertIn(public_uid, groups2_uid)
+        self.assertIn(self.anonymous_group_uid, groups2_uid)
+        self.assertEqual(2, len(groups3_uid))
+        self.assertIn(public_uid, groups3_uid)
+        self.assertIn(self.anonymous_group_uid, groups3_uid)
 
     async def test_delete(self):
         slug1 = "group1"

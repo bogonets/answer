@@ -127,8 +127,6 @@ class ContextUser(ContextBase):
 
     async def remove_user(self, username: str) -> None:
         user_uid = await self.get_user_uid(username)
-
-        # TODO: Remove related datas. e.g. group_member, project_member
         await self.database.delete_user_by_uid(user_uid)
 
     async def update_user(

@@ -12,7 +12,7 @@ from recc.database.postgresql.query.user import (
     UPDATE_USER_LAST_LOGIN_BY_UID,
     UPDATE_USER_PASSWORD_AND_SALT_BY_UID,
     UPDATE_USER_EXTRA_BY_UID,
-    DELETE_USER_BY_UID,
+    SAFE_DELETE_USER_BY_UID,
     SELECT_USER_ADMIN_COUNT,
     SELECT_USER_COUNT,
     SELECT_USER_USERNAME_BY_UID,
@@ -118,8 +118,8 @@ class PgUser(DbUser, PgBase):
 
     @overrides
     async def delete_user_by_uid(self, uid: int) -> None:
-        query = DELETE_USER_BY_UID
-        await self.execute(query, uid)
+        query = SAFE_DELETE_USER_BY_UID.replace("$1", str(uid))
+        await self.execute(query)
         params_msg = f"uid={uid}"
         logger.info(f"delete_user_by_uid({params_msg}) ok.")
 

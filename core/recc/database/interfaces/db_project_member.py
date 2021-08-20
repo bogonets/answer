@@ -3,6 +3,7 @@
 from typing import List
 from abc import ABCMeta, abstractmethod
 from recc.database.struct.project_member import ProjectMember
+from recc.database.struct.project_join_member import ProjectJoinMember
 
 
 class DbProjectMember(metaclass=ABCMeta):
@@ -46,4 +47,10 @@ class DbProjectMember(metaclass=ABCMeta):
 
     @abstractmethod
     async def select_project_members(self) -> List[ProjectMember]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def select_project_members_join_project_by_user_uid(
+        self, user_uid: int
+    ) -> List[ProjectJoinMember]:
         raise NotImplementedError

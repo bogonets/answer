@@ -3,6 +3,7 @@
 from typing import List
 from abc import ABCMeta, abstractmethod
 from recc.database.struct.group_member import GroupMember
+from recc.database.struct.group_join_member import GroupJoinMember
 
 
 class DbGroupMember(metaclass=ABCMeta):
@@ -44,4 +45,10 @@ class DbGroupMember(metaclass=ABCMeta):
 
     @abstractmethod
     async def select_group_members(self) -> List[GroupMember]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def select_group_members_join_group_by_user_uid(
+        self, user_uid: int
+    ) -> List[GroupJoinMember]:
         raise NotImplementedError

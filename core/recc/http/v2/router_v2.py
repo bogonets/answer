@@ -449,7 +449,7 @@ class RouterV2:
         return result
 
     @parameter_matcher(acl={aa.HasAdmin})
-    async def post_groups(self, body: CreateGroupQ) -> None:
+    async def post_groups(self, session: SessionEx, body: CreateGroupQ) -> None:
         if not body.slug:
             raise HTTPBadRequest(reason="Not exists `slug` field")
         await self.context.create_group(
@@ -458,6 +458,7 @@ class RouterV2:
             description=body.description,
             features=body.features,
             visibility=body.get_visibility(),
+            owner_uid=session.uid,
         )
 
     @parameter_matcher(acl={aa.HasAdmin})
