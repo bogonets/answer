@@ -72,3 +72,14 @@ SELECT *
 FROM gm
 INNER JOIN {TABLE_GROUP} g ON gm.group_uid=g.uid;
 """
+
+SELECT_GROUP_MEMBER_JOIN_GROUP_BY_USER_UID_AND_GROUP_UID = f"""
+WITH gm AS (
+    SELECT *
+    FROM {TABLE_GROUP_MEMBER}
+    WHERE user_uid=$1 AND group_uid=$2
+)
+SELECT *
+FROM gm
+INNER JOIN {TABLE_GROUP} g ON gm.group_uid=g.uid;
+"""

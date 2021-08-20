@@ -3,7 +3,8 @@
 from typing import List, Optional, Any
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.group import Group
-from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
+from recc.database.struct.group_join_member import GroupJoinMember
+from recc.variables.database import VISIBILITY_LEVEL_PRIVATE, VISIBILITY_LEVEL_INTERNAL
 
 
 class ContextGroup(ContextBase):
@@ -68,12 +69,23 @@ class ContextGroup(ContextBase):
                 group.remove_sensitive()
         return groups
 
-    async def get_user_groups(
+    async def get_groups_for_accessible(self, remove_sensitive=True) -> List[Group]:
+        groups = await self.database.select_groups_by_below_visibility(
+            VISIBILITY_LEVEL_INTERNAL
+        )
+        if remove_sensitive:
+            for group in groups:
+                group.remove_sensitive()
+        return groups
+
+    async def get_groups_by_user(
         self,
         user_uid: int,
         remove_sensitive=True,
-    ) -> List[Group]:
-        groups = await self.database.select_group_members_by_group_uid()
+    ) -> List[GroupJoinMember]:
+        groups = await self.database.select_group_members_join_group_by_user_uid(
+            user_uid
+        )
         if remove_sensitive:
             for group in groups:
                 group.remove_sensitive()

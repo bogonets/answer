@@ -16,6 +16,7 @@ from recc.database.postgresql.query.project_member import (
     SELECT_PROJECT_MEMBER_BY_USER_UID,
     SELECT_PROJECT_MEMBER_ALL,
     SELECT_PROJECT_MEMBER_JOIN_PROJECT_BY_USER_UID,
+    SELECT_PROJECT_MEMBER_JOIN_PROJECT_BY_USER_UID_PROJECT_UID,
 )
 
 
@@ -123,4 +124,18 @@ class PgProjectMember(DbProjectMember, PgBase):
         logger.info(
             f"select_project_members_join_project_by_user_uid() -> {result_msg}"
         )
+        return result
+
+    @overrides
+    async def select_project_member_join_project_by_user_uid_and_project_uid(
+        self, user_uid: int, project_uid: int
+    ) -> ProjectJoinMember:
+        query = SELECT_PROJECT_MEMBER_JOIN_PROJECT_BY_USER_UID_PROJECT_UID
+        row = await self.fetch_row(query, user_uid, project_uid)
+        params_msg = f"user_uid={user_uid},project_uid={project_uid}"
+        if not row:
+            raise RuntimeError(f"Not found project member: {params_msg}")
+        result = ProjectJoinMember(**dict(row))
+        func_name = "select_project_member_join_project_by_user_uid_and_project_uid"
+        logger.info(f"{func_name}({params_msg}) ok.")
         return result

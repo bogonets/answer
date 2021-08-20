@@ -3,7 +3,8 @@
 from typing import List, Optional, Any
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.project import Project
-from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
+from recc.database.struct.project_join_member import ProjectJoinMember
+from recc.variables.database import VISIBILITY_LEVEL_PRIVATE, VISIBILITY_LEVEL_INTERNAL
 
 
 class ContextProject(ContextBase):
@@ -52,6 +53,9 @@ class ContextProject(ContextBase):
             extra=extra,
         )
 
+    async def delete_project(self, uid: int) -> None:
+        await self.database.delete_project_by_uid(uid)
+
     async def get_projects(
         self,
         group_uid: Optional[int] = None,
@@ -72,5 +76,24 @@ class ContextProject(ContextBase):
             project.remove_sensitive()
         return project
 
-    async def delete_project(self, uid: int) -> None:
-        await self.database.delete_project_by_uid(uid)
+    async def get_projects_for_accessible(self, remove_sensitive=True) -> List[Project]:
+        projects = await self.database.select_projects_by_below_visibility(
+            VISIBILITY_LEVEL_INTERNAL
+        )
+        if remove_sensitive:
+            for project in projects:
+                project.remove_sensitive()
+        return projects
+
+    async def get_projects_by_user(
+        self,
+        user_uid: int,
+        remove_sensitive=True,
+    ) -> List[ProjectJoinMember]:
+        projects = await self.database.select_project_members_join_project_by_user_uid(
+            user_uid
+        )
+        if remove_sensitive:
+            for project in projects:
+                project.remove_sensitive()
+        return projects

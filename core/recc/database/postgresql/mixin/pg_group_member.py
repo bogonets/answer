@@ -16,6 +16,7 @@ from recc.database.postgresql.query.group_member import (
     SELECT_GROUP_MEMBER_BY_USER_UID,
     SELECT_GROUP_MEMBER_ALL,
     SELECT_GROUP_MEMBER_JOIN_GROUP_BY_USER_UID,
+    SELECT_GROUP_MEMBER_JOIN_GROUP_BY_USER_UID_AND_GROUP_UID,
 )
 
 
@@ -119,4 +120,18 @@ class PgGroupMember(DbGroupMember, PgBase):
                     result.append(GroupJoinMember(**dict(row)))
         result_msg = f"{len(result)} group members"
         logger.info(f"select_group_members_join_group_by_user_uid() -> {result_msg}")
+        return result
+
+    @overrides
+    async def select_group_member_join_group_by_user_uid_and_group_uid(
+        self, user_uid: int, group_uid: int
+    ) -> GroupJoinMember:
+        query = SELECT_GROUP_MEMBER_JOIN_GROUP_BY_USER_UID_AND_GROUP_UID
+        row = await self.fetch_row(query, user_uid, group_uid)
+        params_msg = f"user_uid={user_uid},group_uid={group_uid}"
+        if not row:
+            raise RuntimeError(f"Not found group member: {params_msg}")
+        result = GroupJoinMember(**dict(row))
+        func_name = "select_group_member_join_group_by_user_uid_and_group_uid"
+        logger.info(f"{func_name}({params_msg}) ok.")
         return result

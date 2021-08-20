@@ -77,6 +77,11 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
         self.assertEqual(test_user, group0.user_uid)
         self.assertEqual(self.guest, group0.permission_uid)
 
+        group1 = await self.db.select_group_member_join_group_by_user_uid_and_group_uid(
+            test_user, self.anonymous
+        )
+        self.assertEqual(group0, group1)
+
     async def test_delete(self):
         await self.db.insert_group_member(self.anonymous, self.user1.uid, self.guest)
         await self.db.insert_group_member(self.anonymous, self.user2.uid, self.reporter)

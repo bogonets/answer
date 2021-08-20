@@ -52,3 +52,9 @@ class DbGroupMember(metaclass=ABCMeta):
         self, user_uid: int
     ) -> List[GroupJoinMember]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def select_group_member_join_group_by_user_uid_and_group_uid(
+        self, user_uid: int, group_uid: int
+    ) -> GroupJoinMember:
+        raise NotImplementedError

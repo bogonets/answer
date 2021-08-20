@@ -54,3 +54,9 @@ class DbProjectMember(metaclass=ABCMeta):
         self, user_uid: int
     ) -> List[ProjectJoinMember]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def select_project_member_join_project_by_user_uid_and_project_uid(
+        self, user_uid: int, project_uid: int
+    ) -> ProjectJoinMember:
+        raise NotImplementedError

@@ -102,6 +102,11 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
         self.assertEqual(test_user, project0.user_uid)
         self.assertEqual(self.guest, project0.permission_uid)
 
+        project1 = await self.db.select_project_member_join_project_by_user_uid_and_project_uid(  # noqa
+            test_user, self.project.uid
+        )
+        self.assertEqual(project0, project1)
+
     async def test_delete(self):
         await self.db.insert_project_member(
             self.project.uid, self.user1.uid, self.guest

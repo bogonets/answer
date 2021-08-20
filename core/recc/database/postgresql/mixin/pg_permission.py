@@ -15,6 +15,8 @@ from recc.database.postgresql.query.permission import (
     SELECT_PERMISSION_BY_UID,
     SELECT_PERMISSION_ALL,
     SELECT_BEST_PERMISSION_OF_PROJECT_NO_COMMENT,
+    SELECT_PERMISSION_BY_USER_UID_AND_GROUP_UID,
+    SELECT_PERMISSION_BY_USER_UID_AND_PROJECT_UID,
     get_update_permission_query_by_uid,
 )
 
@@ -164,7 +166,7 @@ class PgPermission(DbPermission, PgBase):
         return result
 
     @overrides
-    async def select_project_permission_by_uid(
+    async def select_best_project_permission(
         self, user_uid: int, project_uid: int
     ) -> Permission:
         query = SELECT_BEST_PERMISSION_OF_PROJECT_NO_COMMENT
@@ -174,4 +176,30 @@ class PgPermission(DbPermission, PgBase):
             raise RuntimeError(f"Not found permission: {params_msg}")
         result = Permission(**dict(row))
         logger.info(f"select_project_permission_by_uid({params_msg}) ok.")
+        return result
+
+    @overrides
+    async def select_permission_by_user_uid_and_group_uid(
+        self, user_uid: int, group_uid: int
+    ) -> Permission:
+        query = SELECT_PERMISSION_BY_USER_UID_AND_GROUP_UID
+        row = await self.fetch_row(query, user_uid, group_uid)
+        params_msg = f"user_uid={user_uid},group_uid={group_uid}"
+        if not row:
+            raise RuntimeError(f"Not found permission: {params_msg}")
+        result = Permission(**dict(row))
+        logger.info(f"select_permission_by_user_uid_and_group_uid({params_msg}) ok.")
+        return result
+
+    @overrides
+    async def select_permission_by_user_uid_and_project_uid(
+        self, user_uid: int, project_uid: int
+    ) -> Permission:
+        query = SELECT_PERMISSION_BY_USER_UID_AND_PROJECT_UID
+        row = await self.fetch_row(query, user_uid, project_uid)
+        params_msg = f"user_uid={user_uid},project_uid={project_uid}"
+        if not row:
+            raise RuntimeError(f"Not found permission: {params_msg}")
+        result = Permission(**dict(row))
+        logger.info(f"select_permission_by_user_uid_and_project_uid({params_msg}) ok.")
         return result

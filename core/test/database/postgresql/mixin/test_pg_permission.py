@@ -147,6 +147,40 @@ class PgPermissionTestCase(PostgresqlTestCase):
         self.assertIn(self.maintainer_permission_uid, permissions2_ids)
         self.assertIn(self.owner_permission_uid, permissions1_ids)
 
+    async def test_group_member_permission(self):
+        username1 = "username1"
+        user1_uid = await self.db.insert_user(username1, "pass", "salt")
+        group1_name = "group1"
+        group1_uid = await self.db.insert_group(group1_name)
+        await self.db.insert_group_member(
+            group1_uid, user1_uid, self.reporter_permission_uid
+        )
+
+        permission = await self.db.select_permission_by_user_uid_and_group_uid(
+            user1_uid, group1_uid
+        )
+        self.assertEqual(self.reporter_permission_uid, permission.uid)
+
+    async def test_project_member_permission(self):
+        username1 = "username1"
+        user1_uid = await self.db.insert_user(username1, "pass", "salt")
+        group1_name = "group1"
+        group1_uid = await self.db.insert_group(group1_name)
+        await self.db.insert_group_member(
+            group1_uid, user1_uid, self.reporter_permission_uid
+        )
+
+        project1_name = "project1"
+        project1_uid = await self.db.insert_project(group1_uid, project1_name)
+        await self.db.insert_project_member(
+            project1_uid, user1_uid, self.maintainer_permission_uid
+        )
+
+        permission = await self.db.select_permission_by_user_uid_and_project_uid(
+            user1_uid, project1_uid
+        )
+        self.assertEqual(self.maintainer_permission_uid, permission.uid)
+
     async def test_project_permission(self):
         user1_name = "user1"
         user2_name = "user2"
@@ -232,26 +266,26 @@ class PgPermissionTestCase(PostgresqlTestCase):
         await self.db.insert_group_member(group2.uid, user4.uid, maintainer_uid)
         await self.db.insert_project_member(project3.uid, user4.uid, guest_uid)
 
-        u1p1 = await self.db.select_project_permission_by_uid(user1.uid, project1.uid)
-        u1p2 = await self.db.select_project_permission_by_uid(user1.uid, project2.uid)
-        u1p3 = await self.db.select_project_permission_by_uid(user1.uid, project3.uid)
-        u1p4 = await self.db.select_project_permission_by_uid(user1.uid, project4.uid)
-        u2p1 = await self.db.select_project_permission_by_uid(user2.uid, project1.uid)
-        u2p2 = await self.db.select_project_permission_by_uid(user2.uid, project2.uid)
-        u2p3 = await self.db.select_project_permission_by_uid(user2.uid, project3.uid)
-        u2p4 = await self.db.select_project_permission_by_uid(user2.uid, project4.uid)
-        u3p1 = await self.db.select_project_permission_by_uid(user3.uid, project1.uid)
-        u3p2 = await self.db.select_project_permission_by_uid(user3.uid, project2.uid)
-        u3p3 = await self.db.select_project_permission_by_uid(user3.uid, project3.uid)
-        u3p4 = await self.db.select_project_permission_by_uid(user3.uid, project4.uid)
-        u4p1 = await self.db.select_project_permission_by_uid(user4.uid, project1.uid)
-        u4p2 = await self.db.select_project_permission_by_uid(user4.uid, project2.uid)
-        u4p3 = await self.db.select_project_permission_by_uid(user4.uid, project3.uid)
-        u4p4 = await self.db.select_project_permission_by_uid(user4.uid, project4.uid)
-        u5p1 = await self.db.select_project_permission_by_uid(user5.uid, project1.uid)
-        u5p2 = await self.db.select_project_permission_by_uid(user5.uid, project2.uid)
-        u5p3 = await self.db.select_project_permission_by_uid(user5.uid, project3.uid)
-        u5p4 = await self.db.select_project_permission_by_uid(user5.uid, project4.uid)
+        u1p1 = await self.db.select_best_project_permission(user1.uid, project1.uid)
+        u1p2 = await self.db.select_best_project_permission(user1.uid, project2.uid)
+        u1p3 = await self.db.select_best_project_permission(user1.uid, project3.uid)
+        u1p4 = await self.db.select_best_project_permission(user1.uid, project4.uid)
+        u2p1 = await self.db.select_best_project_permission(user2.uid, project1.uid)
+        u2p2 = await self.db.select_best_project_permission(user2.uid, project2.uid)
+        u2p3 = await self.db.select_best_project_permission(user2.uid, project3.uid)
+        u2p4 = await self.db.select_best_project_permission(user2.uid, project4.uid)
+        u3p1 = await self.db.select_best_project_permission(user3.uid, project1.uid)
+        u3p2 = await self.db.select_best_project_permission(user3.uid, project2.uid)
+        u3p3 = await self.db.select_best_project_permission(user3.uid, project3.uid)
+        u3p4 = await self.db.select_best_project_permission(user3.uid, project4.uid)
+        u4p1 = await self.db.select_best_project_permission(user4.uid, project1.uid)
+        u4p2 = await self.db.select_best_project_permission(user4.uid, project2.uid)
+        u4p3 = await self.db.select_best_project_permission(user4.uid, project3.uid)
+        u4p4 = await self.db.select_best_project_permission(user4.uid, project4.uid)
+        u5p1 = await self.db.select_best_project_permission(user5.uid, project1.uid)
+        u5p2 = await self.db.select_best_project_permission(user5.uid, project2.uid)
+        u5p3 = await self.db.select_best_project_permission(user5.uid, project3.uid)
+        u5p4 = await self.db.select_best_project_permission(user5.uid, project4.uid)
 
         self.assertEqual(guest_uid, u1p1.uid)
         self.assertEqual(guest_uid, u1p2.uid)

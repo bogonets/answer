@@ -99,3 +99,23 @@ class ContextPermission(ContextBase):
             for permission in permissions:
                 permission.remove_sensitive()
         return permissions
+
+    async def get_group_permission(
+        self, user_uid: int, group_uid: int, remove_sensitive=True
+    ) -> Permission:
+        permission = await self.database.select_permission_by_user_uid_and_group_uid(
+            user_uid, group_uid
+        )
+        if remove_sensitive:
+            permission.remove_sensitive()
+        return permission
+
+    async def get_project_permission(
+        self, user_uid: int, project_uid: int, remove_sensitive=True
+    ) -> Permission:
+        permission = await self.database.select_permission_by_user_uid_and_project_uid(
+            user_uid, project_uid
+        )
+        if remove_sensitive:
+            permission.remove_sensitive()
+        return permission

@@ -73,3 +73,14 @@ SELECT *
 FROM pm
 INNER JOIN {TABLE_PROJECT} p ON pm.project_uid=p.uid;
 """
+
+SELECT_PROJECT_MEMBER_JOIN_PROJECT_BY_USER_UID_PROJECT_UID = f"""
+WITH pm AS (
+    SELECT *
+    FROM {TABLE_PROJECT_MEMBER}
+    WHERE user_uid=$1 AND project_uid=$2
+)
+SELECT *
+FROM pm
+INNER JOIN {TABLE_PROJECT} p ON pm.project_uid=p.uid;
+"""

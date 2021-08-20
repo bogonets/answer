@@ -28,6 +28,7 @@ from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.system import SystemOverviewA
 from recc.packet.template import TemplateA
 from recc.packet.user import UserA, UpdateUserQ, SignupQ, UpdatePasswordQ
+from recc.database.struct.group import Group
 
 
 class RouterV2:
@@ -212,24 +213,53 @@ class RouterV2:
     # self/groups
     # -----------
 
+    @staticmethod
+    def _group_to_answer(group: Group) -> GroupA:
+        assert group.slug is not None
+        return GroupA(
+            slug=group.slug,
+            name=group.name,
+            description=group.description,
+            features=group.features,
+            visibility=group.visibility,
+            extra=group.extra,
+            created_at=group.created_at,
+            updated_at=group.updated_at,
+        )
+
     @parameter_matcher()
-    async def get_self_groups(self, session: SessionEx) -> None:
+    async def get_self_groups(self, session: SessionEx) -> List[GroupA]:
+        result = list()
+        for group in await self.context.get_groups_by_user(session.uid):
+            result.append(self._group_to_answer(group))
+        return result
+
+    @parameter_matcher()
+    async def post_self_groups(self, session: SessionEx, body: CreateGroupQ) -> None:
+        if not body.slug:
+            raise HTTPBadRequest(reason="Not exists `slug` field")
+
+        # TODO: Check the maximum number of groups that can be created.
+
+        await self.context.create_group(
+            slug=body.slug,
+            name=body.name,
+            description=body.description,
+            features=body.features,
+            visibility=body.get_visibility(),
+            owner_uid=session.uid,
+        )
+
+    @parameter_matcher()
+    async def get_self_groups_pgroup(self, group: str, session: SessionEx) -> GroupA:
         raise NotImplementedError
 
     @parameter_matcher()
-    async def post_self_groups(self, session: SessionEx) -> None:
+    async def patch_self_groups_pgroup(self, group: str, session: SessionEx) -> None:
         raise NotImplementedError
 
     @parameter_matcher()
-    async def get_self_groups_pgroup(self, session: SessionEx) -> None:
-        raise NotImplementedError
-
-    @parameter_matcher()
-    async def patch_self_groups_pgroup(self, session: SessionEx) -> None:
-        raise NotImplementedError
-
-    @parameter_matcher()
-    async def delete_self_groups_pgroup(self, session: SessionEx) -> None:
+    async def delete_self_groups_pgroup(self, group: str, session: SessionEx) -> None:
         raise NotImplementedError
 
     # -------------
@@ -434,18 +464,7 @@ class RouterV2:
     async def get_groups(self) -> List[GroupA]:
         result = list()
         for group in await self.context.get_groups():
-            assert group.slug is not None
-            item = GroupA(
-                slug=group.slug,
-                name=group.name,
-                description=group.description,
-                features=group.features,
-                visibility=group.visibility,
-                extra=group.extra,
-                created_at=group.created_at,
-                updated_at=group.updated_at,
-            )
-            result.append(item)
+            result.append(self._group_to_answer(group))
         return result
 
     @parameter_matcher(acl={aa.HasAdmin})

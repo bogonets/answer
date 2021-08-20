@@ -360,3 +360,25 @@ ORDER BY u.uid, p.uid;
 SELECT_BEST_PERMISSION_OF_PROJECT_NO_COMMENT = re_sub(
     r"^  +--.*\n", "", SELECT_BEST_PERMISSION_OF_PROJECT
 )
+
+SELECT_PERMISSION_BY_USER_UID_AND_GROUP_UID = f"""
+WITH gm AS (
+    SELECT permission_uid
+    FROM {TABLE_GROUP_MEMBER}
+    WHERE user_uid=$1 AND group_uid=$2
+)
+SELECT p.*
+FROM gm
+INNER JOIN {TABLE_PERMISSION} p ON gm.permission_uid=p.uid;
+"""
+
+SELECT_PERMISSION_BY_USER_UID_AND_PROJECT_UID = f"""
+WITH pm AS (
+    SELECT permission_uid
+    FROM {TABLE_PROJECT_MEMBER}
+    WHERE user_uid=$1 AND project_uid=$2
+)
+SELECT p.*
+FROM pm
+INNER JOIN {TABLE_PERMISSION} p ON pm.permission_uid=p.uid;
+"""
