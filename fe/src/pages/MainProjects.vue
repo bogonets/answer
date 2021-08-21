@@ -37,6 +37,7 @@ ko:
     <v-divider></v-divider>
 
     <v-data-table
+        class="row-pointer"
         :headers="headers"
         :items="tableItems"
         :search="filterText"
@@ -194,3 +195,9 @@ export default class MainProjects extends VueBase {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.row-pointer::v-deep tr {
+  cursor: pointer;
+}
+</style>

@@ -11,7 +11,6 @@ from aiohttp.hdrs import (
     CONTENT_LENGTH,
 )
 from aiohttp.web_exceptions import HTTPBadRequest, HTTPLengthRequired
-from recc.log.logging import recc_http_logger as logger
 from recc.mime.mime_type import (
     MimeType,
     MIME_APPLICATION_JSON,
@@ -28,15 +27,10 @@ from recc.serialization.deserialize import deserialize_default
 _T = TypeVar("_T")
 
 
-def payload_to_object(headers: CIMultiDictProxy[str], payload: str) -> Any:
+def header_logging_message(headers: CIMultiDictProxy[str]) -> str:
     content_type = headers.get(CONTENT_TYPE)
     content_encoding = headers.get(CONTENT_ENCODING)
     content_length = headers.get(CONTENT_LENGTH)
-
-    if content_type is None:
-        raise HTTPBadRequest(reason="Empty content-type header")
-    if content_length is None or int(content_length) <= 0:
-        raise HTTPLengthRequired()
 
     msg_buffer = StringIO()
     if content_type:
@@ -45,9 +39,17 @@ def payload_to_object(headers: CIMultiDictProxy[str], payload: str) -> Any:
         msg_buffer.write(f"Content-Encoding: {content_encoding}\n")
     if content_length:
         msg_buffer.write(f"Content-Length: {content_length}")
-    msg = msg_buffer.getvalue()
-    if msg:
-        logger.debug("Request content headers:\n" + msg)
+    return msg_buffer.getvalue()
+
+
+def payload_to_object(headers: CIMultiDictProxy[str], payload: str) -> Any:
+    content_type = headers.get(CONTENT_TYPE)
+    content_length = headers.get(CONTENT_LENGTH)
+
+    if content_type is None:
+        raise HTTPBadRequest(reason="Empty content-type header")
+    if content_length is None or int(content_length) <= 0:
+        raise HTTPLengthRequired()
 
     # Skip the content decoding process.
 

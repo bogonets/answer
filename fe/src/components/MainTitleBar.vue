@@ -16,7 +16,7 @@ ko:
     <v-btn plain small text color="primary" @click="moveProjects">
       {{ $t('projects') }}
     </v-btn>
-    <v-btn plain small text disabled color="primary" @click="moveGroups">
+    <v-btn plain small text color="primary" @click="moveGroups">
       {{ $t('groups') }}
     </v-btn>
 
@@ -46,14 +46,10 @@ export default class MainTitleBar extends VueBase {
 
   moveProjects() {
     this.moveToMainProjects();
-    const location = '/main/projects';
-    if (this.$router.currentRoute.path !== location) {
-      this.$router.push(location);
-    }
   }
 
   moveGroups() {
-    // EMPTY.
+    this.moveToMainGroups();
   }
 }
 </script>

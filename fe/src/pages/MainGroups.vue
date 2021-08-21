@@ -1,31 +1,29 @@
 <i18n lang="yaml">
 en:
-  title: "Group Management"
-  subtitle: "You can add, edit and remove groups."
-  search_label: "You can filter by group name or description"
-  new_group: "New Group"
+  search_label: "You can filter by name or description."
+  new_item: "New Group"
   headers:
-    name: "Group"
+    slug: "Slug"
+    name: "Name"
     description: "Description"
-    features: "Features"
     created_at: "Created at"
     updated_at: "Updated at"
+    actions: "Actions"
   loading: "Loading... Please wait"
-  empty_group: "Empty Group"
+  empty_items: "Empty Groups"
 
 ko:
-  title: "그룹 관리"
-  subtitle: "프로젝트를 추가하거나 편집 및 제거할 수 있습니다."
-  search_label: "그룹명 또는 상세정보를 필터링할 수 있습니다."
-  new_group: "새로운 그룹"
+  search_label: "이름 또는 설명을 필터링할 수 있습니다."
+  new_item: "새로운 그룹"
   headers:
-    name: "그룹명"
-    description: "상세"
-    features: "기능"
+    slug: "슬러그"
+    name: "이름"
+    description: "설명"
     created_at: "생성일"
-    updated_at: "갱신일"
+    updated_at: "수정일"
+    actions: "관리"
   loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-  empty_group: "그룹이 존재하지 않습니다."
+  empty_items: "그룹이 존재하지 않습니다."
 </i18n>
 
 <template>
@@ -34,6 +32,7 @@ ko:
     <v-divider></v-divider>
 
     <v-data-table
+        class="row-pointer"
         :headers="headers"
         :items="users"
         :search="filterText"
@@ -88,78 +87,72 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
   }
 })
 export default class MainGroups extends VueBase {
+  private readonly navigationItems = [
+    {
+      text: 'Groups',
+      disabled: true,
+    },
+  ];
 
-  readonly enableLegacy = false;
+  private readonly headers = [
+    {
+      text: this.$t('headers.slug').toString(),
+      align: 'left',
+      filterable: true,
+      value: 'slug',
+    },
+    {
+      text: this.$t('headers.name').toString(),
+      align: 'center',
+      filterable: true,
+      value: 'name',
+    },
+    {
+      text: this.$t('headers.description').toString(),
+      align: 'center',
+      filterable: true,
+      value: 'description',
+    },
+    {
+      text: this.$t('headers.created_at').toString(),
+      align: 'center',
+      filterable: false,
+      value: 'created_at',
+    },
+    {
+      text: this.$t('headers.updated_at').toString(),
+      align: 'center',
+      filterable: false,
+      value: 'updated_at',
+    },
+    {
+      text: this.$t('headers.actions').toString(),
+      align: 'center',
+      filterable: false,
+      sortable: false,
+      value: 'actions',
+    },
+  ];
 
-  navigationItems: object = [];
-  filterText = "";
-  headers: object = [];
+  filterText = '';
   users: object = [];
   showLoading = true;
 
-  created() {
-    this.navigationItems = [
-      {
-        text: 'Groups',
-        disabled: true,
-      },
-    ];
-    this.headers = [
-      {
-        text: this.$t('headers.name').toString(),
-        align: 'start',
-        filterable: true,
-        value: 'name',
-      },
-      {
-        text: this.$t('headers.description').toString(),
-        align: 'center',
-        filterable: true,
-        value: 'description',
-      },
-      {
-        text: this.$t('headers.features').toString(),
-        align: 'end',
-        filterable: false,
-        value: 'features',
-      },
-      {
-        text: this.$t('headers.created_at').toString(),
-        align: 'end',
-        filterable: false,
-        value: 'created_at',
-      },
-      {
-        text: this.$t('headers.updated_at').toString(),
-        align: 'end',
-        filterable: false,
-        value: 'updated_at',
-      },
-    ]
-  }
-
   mounted() {
-    // this.$api2.getGroups()
-    //     .then(response => {
-    //       console.info(response);
-    //       this.users = response;
-    //       this.showLoading = false;
-    //     })
-    //     .catch(error => {
-    //       console.error(error);
-    //       this.showLoading = false;
-    //     });
+    this.$api2.getSelfGroups()
+        .then(response => {
+          console.info(response);
+          this.users = response;
+          this.showLoading = false;
+        })
+        .catch(error => {
+          console.error(error);
+          this.showLoading = false;
+        });
   }
 
   utcToDate(utc: undefined | string): string {
-    // Note: Parsing of strings with `Date.parse` is strongly discouraged due to browser
-    // differences and inconsistencies.
-    if (utc === undefined) {
-      return '';
-    }
-
-    // Example: 2021-07-24T08:24:29.315870
-    return utc.split('T')[0];
+    return utc?.split('T')[0] || '';
   }
 
   onClickRow(item) {
@@ -170,3 +163,9 @@ export default class MainGroups extends VueBase {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.row-pointer::v-deep tr {
+  cursor: pointer;
+}
+</style>

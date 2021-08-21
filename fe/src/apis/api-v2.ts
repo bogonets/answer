@@ -212,6 +212,58 @@ export default class ApiV2 {
         return this.patch('/self/password', body);
     }
 
+    // ------
+    // Self/Groups
+    // ------
+
+    getSelfGroups() {
+        return this.get<Array<GroupA>>('/self/groups');
+    }
+
+    postSelfGroups(body: CreateGroupQ) {
+        return this.post('/self/groups', body);
+    }
+
+    getSelfGroupsPgroup(group: string) {
+        return this.get<GroupA>(`/self/groups/${group}`);
+    }
+
+    patchSelfGroupsPgroup(group: string, body: UpdateGroupQ) {
+        return this.patch(`/self/groups/${group}`, body);
+    }
+
+    deleteSelfGroupsGroup(group: string) {
+        return this.delete(`/self/groups/${group}`);
+    }
+
+    // --------
+    // Self/Projects
+    // --------
+
+    getSelfProjects() {
+        return this.get<Array<ProjectA>>('/self/projects');
+    }
+
+    postSelfProjects(body: CreateProjectQ) {
+        return this.post('/self/projects', body);
+    }
+
+    getSelfProjectsPgroupPproject(group: string, project: string) {
+        return this.get<ProjectA>(`/self/projects/${group}/${project}`);
+    }
+
+    patchSelfProjectsPgroupPproject(
+        group: string,
+        project: string,
+        body: UpdateProjectQ,
+    ) {
+        return this.patch(`/self/projects/${group}/${project}`, body);
+    }
+
+    deleteSelfProjectsPgroupProject(group: string, project: string) {
+        return this.delete(`/self/projects/${group}/${project}`);
+    }
+
     // -------
     // Configs
     // -------
