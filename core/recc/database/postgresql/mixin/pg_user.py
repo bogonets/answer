@@ -137,8 +137,10 @@ class PgUser(DbUser, PgBase):
     async def select_user_uid_by_username(self, username: str) -> int:
         query = SELECT_USER_UID_BY_USERNAME
         row = await self.fetch_row(query, username)
-        result = row["uid"]
         params_msg = f"username={username}"
+        if not row:
+            raise RuntimeError(f"Not found user: {params_msg}")
+        result = row["uid"]
         result_msg = f"uid={result}"
         logger.info(f"select_user_uid_by_username({params_msg}) -> {result_msg}")
         return result
@@ -147,6 +149,7 @@ class PgUser(DbUser, PgBase):
     async def select_user_exists_by_username(self, username: str) -> bool:
         query = SELECT_USER_EXISTS_BY_USERNAME
         row = await self.fetch_row(query, username)
+        assert row and len(row) == 1
         result = row["exists"]
         assert isinstance(result, bool)
         params_msg = f"username={username}"
@@ -204,7 +207,8 @@ class PgUser(DbUser, PgBase):
         query = SELECT_USER_COUNT
         row = await self.fetch_row(query)
         assert row and len(row) == 1
-        result = int(row.get("count", 0))
+        result = row.get("count", 0)
+        assert isinstance(result, int)
         logger.info(f"select_users_count() -> {result}")
         return result
 
@@ -213,7 +217,8 @@ class PgUser(DbUser, PgBase):
         query = SELECT_USER_ADMIN_COUNT
         row = await self.fetch_row(query)
         assert row and len(row) == 1
-        result = int(row.get("count", 0))
+        result = row.get("count", 0)
+        assert isinstance(result, int)
         logger.info(f"select_admin_count() -> {result}")
         return result
 

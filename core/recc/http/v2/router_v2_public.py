@@ -96,6 +96,9 @@ class RouterV2Public:
         try:
             if not await self.context.challenge_password(username, password):
                 raise HTTPUnauthorized(reason="The password is incorrect")
+        except RuntimeError as e:
+            # maybe `not found user`
+            raise HTTPBadRequest(reason=str(e))
         except ValueError as e:
             raise HTTPBadRequest(reason=str(e))
 

@@ -309,39 +309,56 @@ class HttpAppTester(EmptyHttpAppCallback):
         self._access_token = login_data["accessToken"]
         self._refresh_token = login_data["refreshToken"]
 
-    async def run_v2_admin_signin(
+    async def signup(self, username: str, password: str) -> None:
+        config_stash = self.context.config.public_signup
+        try:
+            self.context.config.public_signup = True
+            signup = SignupQ(username, SignupQ.encrypt_password(password))
+            response = await self.post(v2_public_path(u.signup), data=signup)
+            if response.status != 200:
+                raise RuntimeError(f"Signup status error: {response.status}")
+        finally:
+            self.context.config.public_signup = config_stash
+
+    async def signup_admin(self, username: str, password: str) -> None:
+        signup = SignupQ(username, SignupQ.encrypt_password(password))
+        response = await self.post(v2_public_path(u.signup_admin), data=signup)
+        if response.status == HTTPStatus.SERVICE_UNAVAILABLE:
+            pass
+        elif response.status != HTTPStatus.OK:
+            raise RuntimeError(f"Signup status error: {response.status}")
+
+    async def signup_default_admin(self):
+        await self.signup_admin(DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_PASSWORD)
+
+    async def signin(self, username: str, password: str, save_session=False) -> SigninA:
+        auth = BasicAuth(username, SignupQ.encrypt_password(password))
+        headers = {str(AUTHORIZATION): auth.encode()}
+        response = await self.post(
+            v2_public_path(u.signin), headers=headers, cls=SigninA
+        )
+        if response.status != HTTPStatus.OK:
+            raise RuntimeError(f"Login status error: {response.status}")
+        result = response.data
+        assert result is not None
+        assert result.user is not None
+        assert isinstance(result, SigninA)
+        if save_session:
+            self._username = username
+            self._password = password
+            self._access_token = result.access
+            self._refresh_token = result.refresh
+        return result
+
+    async def admin_signup_and_in(
         self,
         username=DEFAULT_ADMIN_USERNAME,
         password=DEFAULT_ADMIN_PASSWORD,
+        save_session=True,
     ) -> None:
         if not username:
             raise ValueError("A `username` argument is required.")
         if not password:
             raise ValueError("A `password` argument is required.")
-
-        self._username = username
-        self._password = password
-        assert self._username
-        assert self._password
-
-        hashed_pw = SignupQ.encrypt_password(self._password)
-        signup = SignupQ(self._username, hashed_pw)
-        signup_response = await self.post(v2_public_path(u.signup_admin), data=signup)
-
-        if signup_response.status == HTTPStatus.SERVICE_UNAVAILABLE:
-            pass
-        elif signup_response.status != HTTPStatus.OK:
-            raise RuntimeError(f"Signup status error: {signup_response.status}")
-
-        auth = BasicAuth(self._username, hashed_pw)
-        signin_headers = {str(AUTHORIZATION): auth.encode()}
-        signin_response = await self.post(v2_public_path(u.signin), signin_headers)
-        if signin_response.status != HTTPStatus.OK:
-            raise RuntimeError(f"Login status error: {signin_response.status}")
-
-        signin = deserialize_default(signin_response.data, SigninA)
-        assert signin.user is not None
-        assert isinstance(signin, SigninA)
-        assert self._username == signin.user.username
-        self._access_token = signin.access
-        self._refresh_token = signin.refresh
+        await self.signup_admin(username, password)
+        await self.signin(username, password, save_session=save_session)

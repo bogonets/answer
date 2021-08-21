@@ -15,43 +15,15 @@ from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.system import SystemOverviewA
 
 
-class RouterV2TestCase(AsyncTestCase):
+class RouterV2AdminTestCase(AsyncTestCase):
     async def setUp(self):
         self.tester = HttpAppTester(self.loop)
         await self.tester.setup()
         await self.tester.wait_startup()
-        await self.tester.run_v2_admin_signin()
+        await self.tester.admin_signup_and_in()
 
     async def tearDown(self):
         await self.tester.teardown()
-
-    async def test_self(self):
-        response = await self.tester.get(v2_path(u.self))
-        self.assertEqual(200, response.status)
-        self.assertIn("username", response.data)
-
-    async def test_self_extra(self):
-        response = await self.tester.get(v2_path(u.self_extra))
-        self.assertEqual(200, response.status)
-        self.assertIsNone(response.data)
-
-        # First Handshake.
-        data = {"unknown": 0, "test": "aaa"}
-        response = await self.tester.patch(v2_path(u.self_extra), data=data)
-        self.assertEqual(200, response.status)
-
-        response2 = await self.tester.get(v2_path(u.self_extra))
-        self.assertEqual(200, response2.status)
-        self.assertEqual(data, response2.data)
-
-        # Second Handshake.
-        data2 = {"bbb": "ccc", "ddd": "eee"}
-        response3 = await self.tester.patch(v2_path(u.self_extra), data=data2)
-        self.assertEqual(200, response3.status)
-
-        response4 = await self.tester.get(v2_path(u.self_extra))
-        self.assertEqual(200, response4.status)
-        self.assertEqual(data2, response4.data)
 
     async def test_infos(self):
         response1 = await self.tester.get(v2_path(u.infos), cls=List[InfoA])

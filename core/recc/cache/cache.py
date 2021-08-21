@@ -78,11 +78,11 @@ class Cache:
 
     def get_user_uid(self, username: str) -> Optional[int]:
         with self._user_lock:
-            return self._username_to_uid.get(username)
+            return self._username_to_uid.get(username, None)
 
     def get_username(self, user_uid: int) -> Optional[str]:
         with self._user_lock:
-            return self._uid_to_username.get(user_uid)
+            return self._uid_to_username.get(user_uid, None)
 
     def set_user(self, username: str, user_uid: int) -> None:
         with self._user_lock:
@@ -103,11 +103,11 @@ class Cache:
 
     def get_group_uid(self, group_slug: str) -> Optional[int]:
         with self._group_lock:
-            return self._group_slug_to_uid.get(group_slug)
+            return self._group_slug_to_uid.get(group_slug, None)
 
     def get_group_slug(self, group_uid: int) -> Optional[str]:
         with self._group_lock:
-            return self._group_uid_to_slug.get(group_uid)
+            return self._group_uid_to_slug.get(group_uid, None)
 
     def set_group(self, group_uid: int, group_slug: str) -> None:
         with self._group_lock:
@@ -131,16 +131,16 @@ class Cache:
 
     def get_group_uid_by_project_uid(self, project_uid: int) -> Optional[int]:
         with self._project_lock:
-            return self._project_uid_to_group_uid.get(project_uid)
+            return self._project_uid_to_group_uid.get(project_uid, None)
 
     def get_project_slug(self, project_uid: int) -> Optional[str]:
         with self._project_lock:
-            return self._project_uid_to_slug.get(project_uid)
+            return self._project_uid_to_slug.get(project_uid, None)
 
     def get_project_uid(self, group_uid: int, project_slug: str) -> Optional[int]:
         with self._project_lock:
             key = (group_uid, project_slug)
-            return self._project_key_to_project_uid.get(key)
+            return self._project_key_to_project_uid.get(key, None)
 
     def set_project(self, project_uid: int, group_uid: int, project_slug: str) -> None:
         with self._project_lock:
@@ -164,11 +164,11 @@ class Cache:
 
     def get_permission_uid(self, name: str) -> Optional[int]:
         with self._permission_lock:
-            return self._permission_name_to_uid.get(name)
+            return self._permission_name_to_uid.get(name, None)
 
     def get_permission_name(self, uid: int) -> Optional[str]:
         with self._permission_lock:
-            return self._permission_uid_to_name.get(uid)
+            return self._permission_uid_to_name.get(uid, None)
 
     def set_permission(self, uid: int, name: str) -> None:
         with self._permission_lock:

@@ -35,7 +35,7 @@ class RouterV2PublicTestCase(AsyncTestCase):
         self.assertFalse(response.data)
 
     async def test_admin_signin(self):
-        await self.tester.run_v2_admin_signin()
+        await self.tester.admin_signup_and_in()
 
     async def test_signup_and_signin(self):
         self.assertFalse(self.tester.context.config.public_signup)

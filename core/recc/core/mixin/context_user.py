@@ -105,6 +105,8 @@ class ContextUser(ContextBase):
             raise ValueError(f"{msg1} {msg2}")
 
         user_uid = await self.get_user_uid(username)
+        if user_uid is None:
+            raise RuntimeError(f"Not found user: {username}")
         saved_pass = await self.database.select_user_password_and_salt_by_uid(user_uid)
         saved_password = saved_pass.password
         saved_salt = saved_pass.salt
