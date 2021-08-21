@@ -310,6 +310,10 @@ class HttpAppTester(EmptyHttpAppCallback):
         self._refresh_token = login_data["refreshToken"]
 
     async def signup(self, username: str, password: str) -> None:
+        if not username:
+            raise ValueError("A `username` argument is required.")
+        if not password:
+            raise ValueError("A `password` argument is required.")
         config_stash = self.context.config.public_signup
         try:
             self.context.config.public_signup = True
@@ -350,11 +354,8 @@ class HttpAppTester(EmptyHttpAppCallback):
             self._refresh_token = result.refresh
         return result
 
-    async def admin_signup_and_in(
-        self,
-        username=DEFAULT_ADMIN_USERNAME,
-        password=DEFAULT_ADMIN_PASSWORD,
-        save_session=True,
+    async def signup_and_in(
+        self, username: str, password: str, save_session=True
     ) -> None:
         if not username:
             raise ValueError("A `username` argument is required.")
@@ -362,3 +363,10 @@ class HttpAppTester(EmptyHttpAppCallback):
             raise ValueError("A `password` argument is required.")
         await self.signup_admin(username, password)
         await self.signin(username, password, save_session=save_session)
+
+    async def signup_and_in_default_admin(self, save_session=True) -> None:
+        await self.signup_and_in(
+            username=DEFAULT_ADMIN_USERNAME,
+            password=DEFAULT_ADMIN_PASSWORD,
+            save_session=save_session,
+        )

@@ -20,7 +20,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.tester = HttpAppTester(self.loop)
         await self.tester.setup()
         await self.tester.wait_startup()
-        await self.tester.admin_signup_and_in()
+        await self.tester.signup_and_in_default_admin()
 
     async def tearDown(self):
         await self.tester.teardown()

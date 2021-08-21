@@ -5,7 +5,7 @@ from recc.variables.http import URL_PATH_SEPARATOR
 from recc.http import http_urls as u
 
 
-def join_urls(*paths) -> str:
+def join_urls(*paths: str) -> str:
     assert paths
 
     def _join(x: str, y: str) -> str:
@@ -23,13 +23,16 @@ def join_urls(*paths) -> str:
     return reduce(_join, paths, u.root)
 
 
-def v1_path(*paths) -> str:
-    return join_urls(u.api_v1, *paths)
+def v1_path(*paths: str, **kwargs: str) -> str:
+    path = join_urls(u.api_v1, *paths)
+    return path.format(**kwargs) if kwargs else path
 
 
-def v2_path(*paths) -> str:
-    return join_urls(u.api_v2, *paths)
+def v2_path(*paths: str, **kwargs: str) -> str:
+    path = join_urls(u.api_v2, *paths)
+    return path.format(**kwargs) if kwargs else path
 
 
-def v2_public_path(*paths) -> str:
-    return join_urls(u.api_v2_public, *paths)
+def v2_public_path(*paths: str, **kwargs: str) -> str:
+    path = join_urls(u.api_v2_public, *paths)
+    return path.format(**kwargs) if kwargs else path
