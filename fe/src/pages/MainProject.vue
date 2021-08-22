@@ -291,19 +291,19 @@ export default class MainProject extends VueBase {
   }
 
   onClickAirjoyTables() {
-    // this.moveToMainProjectAirjoyManage();
+    this.moveToMainProjectAirjoyTables();
   }
 
   onClickAirjoyStatistics() {
-    // this.moveToMainProjectAirjoyGraph();
+    this.moveToMainProjectAirjoyStatistics();
   }
 
   onClickAirjoyMonitoring() {
-    // this.moveToMainProjectAirjoyMonitor();
+    this.moveToMainProjectAirjoyMonitoring();
   }
 
   onClickAirjoyUsers() {
-    // this.moveToMainProjectAuth();
+    this.moveToMainProjectMembers();
   }
 }
 </script>

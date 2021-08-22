@@ -2,6 +2,10 @@ import {Vue, Watch} from 'vue-property-decorator';
 import {RawLocation} from 'vue-router';
 import {Names} from '@/router/names';
 import SimpleToast from '@/components/SimpleToast.vue';
+import MainProjectMembers from "@/components/external/airjoy/AuthManagement.vue";
+import AirJoyManage from "@/components/external/airjoy/AirJoyManage.vue";
+import AirJoyGraph from "@/components/external/airjoy/AirJoyGraph.vue";
+import AirJoyMonitor from "@/components/external/airjoy/AirjoyMonitor.vue";
 
 export default class VueBase extends Vue {
 
@@ -257,6 +261,26 @@ export default class VueBase extends Vue {
         };
         this.moveTo(this.routeNames.mainProject, params);
     }
+
+    // --- refactoring begin ---
+
+    moveToMainProjectMembers() {
+        this.moveTo(this.routeNames.mainProjectMembers);
+    }
+
+    moveToMainProjectAirjoyTables() {
+        this.moveTo(this.routeNames.mainProjectAirjoyTables);
+    }
+
+    moveToMainProjectAirjoyStatistics() {
+        this.moveTo(this.routeNames.mainProjectAirjoyStatistics);
+    }
+
+    moveToMainProjectAirjoyMonitoring() {
+        this.moveTo(this.routeNames.mainProjectAirjoyMonitoring);
+    }
+
+    // --- refactoring end ---
 
     moveToMain() {
         this.moveTo(this.routeNames.main);

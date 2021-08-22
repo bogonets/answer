@@ -47,6 +47,11 @@ import Signin from '@/pages/Signin.vue';
 import SignupAdmin from '@/pages/SignupAdmin.vue';
 import Signup from '@/pages/Signup.vue';
 
+import MainProjectMembers from '@/components/external/airjoy/AuthManagement.vue';
+import AirJoyManage from '@/components/external/airjoy/AirJoyManage.vue';
+import AirJoyGraph from '@/components/external/airjoy/AirJoyGraph.vue';
+import AirJoyMonitor from '@/components/external/airjoy/AirjoyMonitor.vue';
+
 export const mainAccountChildren = [
     {
         path: '',
@@ -200,11 +205,6 @@ export const mainProjectChildren = [
         name: Names.mainProjectConfigs,
     },
     // {
-    //     path: 'auth_management',
-    //     component: AuthManagement,
-    //     name: AuthManagement.name,
-    // },
-    // {
     //     path: 'guide_layout',
     //     component: GuideLayout,
     //     name: Names.mainProjectGuideLayout,
@@ -224,21 +224,26 @@ export const mainProjectChildren = [
     //     component: VisualMain,
     //     name: VisualMain.name,
     // },
-    // {
-    //     path: 'airjoy_manage',
-    //     component: AirJoyManage,
-    //     name: AirJoyManage.name,
-    // },
-    // {
-    //     path: 'airjoy_graph',
-    //     component: AirJoyGraph,
-    //     name: AirJoyGraph.name,
-    // },
-    // {
-    //     path: 'airjoy_monitor',
-    //     component: AirJoyMonitor,
-    //     name: AirJoyMonitor.name,
-    // },
+    {
+        path: 'auth_management',
+        component: MainProjectMembers,
+        name: Names.mainProjectMembers,
+    },
+    {
+        path: 'airjoy_manage',
+        component: AirJoyManage,
+        name: Names.mainProjectAirjoyTables,
+    },
+    {
+        path: 'airjoy_graph',
+        component: AirJoyGraph,
+        name: Names.mainProjectAirjoyStatistics,
+    },
+    {
+        path: 'airjoy_monitor',
+        component: AirJoyMonitor,
+        name: Names.mainProjectAirjoyMonitoring,
+    },
 ];
 
 export const mainChildren = [
