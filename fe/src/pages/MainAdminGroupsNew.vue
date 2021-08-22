@@ -4,6 +4,7 @@
     <v-divider></v-divider>
 
     <form-group-new
+        request-type="admin"
         @cancel="onClickCancel"
         @request:success="onRequestSuccess"
     ></form-group-new>

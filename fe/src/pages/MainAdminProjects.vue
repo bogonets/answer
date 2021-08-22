@@ -4,10 +4,12 @@
     <v-divider></v-divider>
 
     <table-projects
+        request-type="admin"
         @click:new="onClickNew"
         @click:edit="onClickEdit"
         @click:move="onClickMove"
     ></table-projects>
+
   </v-container>
 </template>
 
@@ -15,8 +17,8 @@
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import {ProjectA} from '@/packet/project';
 import TableProjects from '@/components/TableProjects.vue';
+import {ProjectA} from '@/packet/project';
 
 @Component({
   components: {

@@ -176,6 +176,10 @@ import {VForm} from 'vuetify/lib/components/VForm';
 import {GROUP_SLUG_RULES, PROJECT_SLUG_RULES} from '@/rules';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {CAPTION_CLASS} from '@/styles/caption';
+import {GroupA} from "@/packet/group";
+
+const REQUEST_TYPE_SELF = 'self';
+const REQUEST_TYPE_ADMIN = 'admin';
 
 export class ProjectItem {
   group = '';
@@ -208,6 +212,9 @@ export default class FormProject extends VueBase {
     groupSlug: GROUP_SLUG_RULES,
     projectSlug: PROJECT_SLUG_RULES,
   };
+
+  @Prop({type: String, default: REQUEST_TYPE_SELF})
+  readonly requestType!: string;
 
   @Prop({type: Boolean})
   readonly loading!: boolean;
@@ -248,21 +255,53 @@ export default class FormProject extends VueBase {
   loadingGroups = false;
 
   created() {
-    this.loadingGroups = true;
-    this.$api2.getGroups()
-        .then((groups) => {
-          this.groupItems = groups.map(g => g.slug);
-          this.loadingGroups = false;
+    this.requestGroups();
+  }
 
-          // Select group.
-          if (typeof this.$route.params.group !== 'undefined') {
-            this.value.group = this.$route.params.group;
-          }
+  private requestGroups() {
+    this.loadingGroups = true;
+    if (this.requestType === REQUEST_TYPE_SELF) {
+      this.requestSelfGroups();
+    } else if (this.requestType === REQUEST_TYPE_ADMIN) {
+      this.requestAdminGroups();
+    } else {
+      throw Error(`Unknown request type: ${this.requestType}`);
+    }
+  }
+
+  private requestAdminGroups() {
+    this.$api2.getGroups()
+        .then(groups => {
+          this.onGroupsSuccess(groups);
         })
         .catch(error => {
-          this.loadingGroups = false;
-          this.toastRequestFailure(error);
+          this.onGroupsFailure(error);
         });
+  }
+
+  private requestSelfGroups() {
+    this.$api2.getSelfGroups()
+        .then(groups => {
+          this.onGroupsSuccess(groups);
+        })
+        .catch(error => {
+          this.onGroupsFailure(error);
+        });
+  }
+
+  private onGroupsSuccess(groups: Array<GroupA>) {
+    this.groupItems = groups.map(g => g.slug);
+    this.loadingGroups = false;
+
+    // Select group.
+    if (typeof this.$route.params.group !== 'undefined') {
+      this.value.group = this.$route.params.group;
+    }
+  }
+
+  private onGroupsFailure(error) {
+    this.loadingGroups = false;
+    this.toastRequestFailure(error);
   }
 
   inputGroup(event: string) {

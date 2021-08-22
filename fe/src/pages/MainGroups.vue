@@ -4,17 +4,19 @@
     <v-divider></v-divider>
 
       <table-groups
+          request-type="self"
           hide-action-edit
           hide-action-move
           clickable-row
           @click:new="onClickNew"
           @click:row="onClickRow"
       ></table-groups>
+
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import TableGroups from '@/components/TableGroups.vue';

@@ -132,7 +132,7 @@ export default class TableProjects extends VueBase {
         align: 'left',
         filterable: true,
         sortable: true,
-        value: 'slug',
+        value: 'project_slug',
       },
       {
         text: this.$t('headers.name').toString(),

@@ -1,6 +1,5 @@
 <template>
-  <a-project-table v-if="enableLegacy"></a-project-table>
-  <v-container v-else>
+  <v-container>
     <toolbar-navigation :items="navigationItems"></toolbar-navigation>
     <v-divider></v-divider>
 
@@ -8,33 +7,28 @@
         hide-action-edit
         hide-action-move
         clickable-row
+        request-type="self"
         @click:new="onClickNew"
         @click:row="onClickRow"
     ></table-projects>
+
   </v-container>
 </template>
 
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import aProjectTable from '@/components/Table/aProjectTable.vue';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import TableProjects from "@/components/TableProjects.vue";
 import {ProjectA} from '@/packet/project';
 
 @Component({
   components: {
-    aProjectTable,
     ToolbarNavigation,
     TableProjects,
   }
 })
 export default class MainProjects extends VueBase {
-  /**
-   * @deprecated
-   */
-  private readonly enableLegacy = false;
-
   private readonly navigationItems = [
     {
       text: 'Projects',
