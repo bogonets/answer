@@ -203,6 +203,10 @@ export default class VueBase extends Vue {
         this.moveTo(this.routeNames.mainGroups);
     }
 
+    moveToMainGroupsNew() {
+        this.moveTo(this.routeNames.mainGroupsNew);
+    }
+
     moveToMainProjectConfigs() {
         this.moveTo(this.routeNames.mainProjectConfigs);
     }

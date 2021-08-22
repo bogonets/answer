@@ -30,6 +30,7 @@ import MainAdmin from '@/pages/MainAdmin.vue';
 import MainDashboard from '@/pages/MainDashboard.vue';
 import MainDevTools from '@/pages/MainDevTools.vue';
 import MainGroups from '@/pages/MainGroups.vue';
+import MainGroupsNew from '@/pages/MainGroupsNew.vue';
 import MainProjectConfigs from '@/pages/MainProjectConfigs.vue';
 import MainProjectDashboard from '@/pages/MainProjectDashboard.vue';
 import MainProjectFiles from '@/pages/MainProjectFiles.vue';
@@ -290,6 +291,11 @@ export const mainChildren = [
         path: 'groups',
         component: MainGroups,
         name: Names.mainGroups,
+    },
+    {
+        path: 'groups/new',
+        component: MainGroupsNew,
+        name: Names.mainGroupsNew,
     },
 ];
 

@@ -23,17 +23,12 @@ import FormGroupNew from '@/components/FormGroupNew.vue';
     FormGroupNew,
   }
 })
-export default class MainAdminGroupsNew extends VueBase {
+export default class MainGroupsNew extends VueBase {
   private readonly navigationItems = [
-    {
-      text: 'Admin',
-      disabled: false,
-      href: () => this.moveToMainAdminOverview(),
-    },
     {
       text: 'Groups',
       disabled: false,
-      href: () => this.moveToMainAdminGroups(),
+      href: () => this.moveToMainGroups(),
     },
     {
       text: 'New',
@@ -46,7 +41,7 @@ export default class MainAdminGroupsNew extends VueBase {
   }
 
   onRequestSuccess() {
-    this.moveToMainAdminGroups();
+    this.moveToMainGroups();
   }
 }
 </script>

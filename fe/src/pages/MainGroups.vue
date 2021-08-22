@@ -35,6 +35,7 @@ export default class MainGroups extends VueBase {
   ];
 
   onClickNew() {
+    this.moveToMainGroupsNew();
   }
 
   onClickRow(item: GroupA) {

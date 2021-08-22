@@ -24,6 +24,7 @@ export const Names = {
     mainDashboard: 'MainDashboard',
     mainDevTools: 'MainDevTools',
     mainGroups: 'MainGroups',
+    mainGroupsNew: 'MainGroupsNew',
     mainProjectConfigs: 'MainProjectConfigs',
     mainProjectDashboard: 'MainProjectDashboard',
     mainProjectFiles: 'MainProjectFiles',
