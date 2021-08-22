@@ -42,9 +42,3 @@ export default class MainGroups extends VueBase {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.row-pointer::v-deep tr {
-  cursor: pointer;
-}
-</style>
