@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import MainTitleBar from '@/components/MainTitleBar.vue';
 

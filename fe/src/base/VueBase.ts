@@ -227,8 +227,11 @@ export default class VueBase extends Vue {
         this.moveTo(this.routeNames.mainProjectsNew);
     }
 
-    moveToMainProjects() {
-        this.moveTo(this.routeNames.mainProjects);
+    moveToMainProjects(group?: string) {
+        const params = {
+            group: group || this.$route.params.group,
+        };
+        this.moveTo(this.routeNames.mainProjects, params);
     }
 
     moveToMainProjectTables() {
@@ -249,8 +252,8 @@ export default class VueBase extends Vue {
 
     moveToMainProject(group?: string, project?: string) {
         const params = {
-            group: group || this.$route.query.group,
-            project: project || this.$route.query.project,
+            group: group || this.$route.params.group,
+            project: project || this.$route.params.project,
         };
         this.moveTo(this.routeNames.mainProject, params);
     }

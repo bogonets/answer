@@ -27,9 +27,7 @@ ko:
   >
     <template v-slot:activator="{ on, attrs }">
       <v-btn icon v-bind="attrs" v-on="on">
-        <v-icon role="img" aria-hidden="false">
-          {{ icons.accountCircle }}
-        </v-icon>
+        <v-icon>mdi-account-circle</v-icon>
       </v-btn>
     </template>
 
@@ -48,9 +46,7 @@ ko:
 
       <v-list-item @click="onClickAccountConfig">
         <v-list-item-icon>
-          <v-icon role="img" aria-hidden="false">
-            {{ icons.accountCogOutline }}
-          </v-icon>
+          <v-icon>mdi-account-cog-outline</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>{{ $t('user_setting') }}</v-list-item-title>
@@ -59,9 +55,7 @@ ko:
 
       <v-list-item v-if="hasAdminPermission" @click="onClickAdminConfig">
         <v-list-item-icon>
-          <v-icon role="img" aria-hidden="false">
-            {{ icons.cogOutline }}
-          </v-icon>
+          <v-icon>mdi-cog-outline</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>{{ $t('admin_setting') }}</v-list-item-title>
@@ -73,9 +67,7 @@ ko:
           @click="onClickDevelopmentTools"
       >
         <v-list-item-icon>
-          <v-icon role="img" aria-hidden="false">
-            {{ icons.devTo }}
-          </v-icon>
+          <v-icon>mdi-dev-to</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>{{ $t('development_tools') }}</v-list-item-title>
@@ -84,9 +76,7 @@ ko:
 
       <v-list-item @click="onClickAboutAnswer">
         <v-list-item-icon>
-          <v-icon role="img" aria-hidden="false">
-            {{ icons.informationOutline }}
-          </v-icon>
+          <v-icon>mdi-information-outline</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>{{ $t('about_answer') }}</v-list-item-title>
@@ -97,9 +87,7 @@ ko:
 
       <v-list-item @click="onClickLogout">
         <v-list-item-icon>
-          <v-icon role="img" aria-hidden="false">
-            {{ icons.logout }}
-          </v-icon>
+          <v-icon>mdi-logout</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>{{ $t('signout') }}</v-list-item-title>
@@ -110,31 +98,11 @@ ko:
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import {
-  mdiAccountCircle,
-  mdiAccountCogOutline,
-  mdiCogOutline,
-  mdiDevTo,
-  mdiLogout,
-  mdiInformationOutline,
-} from '@mdi/js';
 
 @Component
 export default class MenuAccount extends VueBase {
-
-  readonly icons = {
-    accountCircle: mdiAccountCircle,
-    accountCogOutline: mdiAccountCogOutline,
-    cogOutline: mdiCogOutline,
-    devTo: mdiDevTo,
-    informationOutline: mdiInformationOutline,
-    logout: mdiLogout,
-  };
-
-  // Computed
-
   get hasAdminPermission(): boolean {
     return this.$localStore.user.is_admin || false;
   }

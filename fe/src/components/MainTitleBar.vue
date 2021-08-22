@@ -13,24 +13,30 @@ ko:
     <v-btn plain small @click="moveDashboard">
       <title-logo-small></title-logo-small>
     </v-btn>
-    <v-btn plain small text color="primary" @click="moveProjects">
-      {{ $t('projects') }}
-    </v-btn>
-    <v-btn plain small text color="primary" @click="moveGroups">
+
+    <v-btn v-if="false" plain small text color="primary" @click="moveGroups">
       {{ $t('groups') }}
     </v-btn>
 
+    <v-btn v-if="false" plain small text color="primary" @click="moveProjects">
+      {{ $t('projects') }}
+    </v-btn>
+
     <v-spacer></v-spacer>
+
+    <v-btn icon v-bind="attrs" v-on="on">
+      <v-icon>mdi-bell</v-icon>
+    </v-btn>
 
     <menu-account></menu-account>
   </v-app-bar>
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import MenuAccount from '@/components/MenuAccount.vue';
-import TitleLogoSmall from "@/components/TitleLogoSmall.vue";
+import TitleLogoSmall from '@/components/TitleLogoSmall.vue';
 
 @Component({
   components: {
@@ -39,17 +45,17 @@ import TitleLogoSmall from "@/components/TitleLogoSmall.vue";
   }
 })
 export default class MainTitleBar extends VueBase {
-
   moveDashboard() {
-    // EMPTY.
+    // this.moveToMainDashboard();
+    this.moveToMainGroups();
   }
 
   moveProjects() {
-    this.moveToMainProjects();
+    // this.moveToMainProjects();
   }
 
   moveGroups() {
-    this.moveToMainGroups();
+    // this.moveToMainGroups();
   }
 }
 </script>

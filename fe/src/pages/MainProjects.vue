@@ -31,6 +31,11 @@ import {ProjectA} from '@/packet/project';
 export default class MainProjects extends VueBase {
   private readonly navigationItems = [
     {
+      text: 'Groups',
+      disabled: true,
+      href: () => this.moveToMainGroups(),
+    },
+    {
       text: 'Projects',
       disabled: true,
     },

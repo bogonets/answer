@@ -245,7 +245,7 @@ export const mainChildren = [
     {
         path: '',
         name: Names.main,
-        redirect: 'dashboard',
+        redirect: 'groups',
     },
     {
         path: 'dashboard',

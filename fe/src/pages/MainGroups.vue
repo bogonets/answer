@@ -5,11 +5,11 @@
 
       <table-groups
           request-type="self"
-          hide-action-edit
           hide-action-move
           clickable-row
           @click:new="onClickNew"
           @click:row="onClickRow"
+          @click:edit="onClickEdit"
       ></table-groups>
 
   </v-container>
@@ -41,6 +41,10 @@ export default class MainGroups extends VueBase {
   }
 
   onClickRow(item: GroupA) {
+    this.moveToMainProjects(item.slug);
+  }
+
+  onClickEdit(item: GroupA) {
     const group_slug = item.slug;
   }
 }
