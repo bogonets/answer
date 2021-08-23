@@ -180,7 +180,7 @@ export default class MainAdminUsersEdit extends VueBase {
   }
 
   requestUser() {
-    this.$api2.getUsersPuser(this.username)
+    this.$api2.getAdminUsersPuser(this.username)
         .then(body => {
           this.updateUser(body);
         })
@@ -241,7 +241,7 @@ export default class MainAdminUsersEdit extends VueBase {
     } as UpdateUserQ;
 
     this.showSubmitLoading = true;
-    this.$api2.patchUsersPuser(this.username, body)
+    this.$api2.patchAdminUsersPuser(this.username, body)
         .then(() => {
           this.showSubmitLoading = false;
           this.toastRequestSuccess();
@@ -267,7 +267,7 @@ export default class MainAdminUsersEdit extends VueBase {
 
   onClickDeleteOk() {
     this.showDeleteLoading = true;
-    this.$api2.deleteUsersPuser(this.username)
+    this.$api2.deleteAdminUsersPuser(this.username)
         .then(() => {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;

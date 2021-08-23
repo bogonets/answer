@@ -95,7 +95,7 @@ export default class FormProjectNew extends VueBase {
   }
 
   requestPostProjects(body: CreateProjectQ) {
-    this.$api2.postProjects(body)
+    this.$api2.postAdminProjects(body)
         .then(() => {
           this.requestSuccess();
         })
@@ -105,7 +105,7 @@ export default class FormProjectNew extends VueBase {
   }
 
   requestPostSelfProjects(body: CreateProjectQ) {
-    this.$api2.postSelfProjects(body)
+    this.$api2.postMainProjects(body)
         .then(() => {
           this.requestSuccess();
         })

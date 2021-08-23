@@ -245,7 +245,7 @@ export default class MainAdminInfos extends VueBase {
 
   updateInfos() {
     this.showLoading = true;
-    this.$api2.getInfos()
+    this.$api2.getAdminInfos()
         .then((infos) => {
           this.infos = infos;
           this.showLoading = false;
@@ -283,7 +283,7 @@ export default class MainAdminInfos extends VueBase {
   onClickAddInfoOk(event) {
     this.showAddInfoDialog = false;
     const body = {key: event.key, value: event.value} as CreateInfoQ
-    this.$api2.postInfos(body)
+    this.$api2.postAdminInfos(body)
         .then(() => {
           this.updateInfos();
           this.toastRequestSuccess();
@@ -310,7 +310,7 @@ export default class MainAdminInfos extends VueBase {
   onClickEditInfoOk(event) {
     this.showEditInfoDialog = false;
     const body = {value: event.value} as UpdateInfoQ;
-    this.$api2.patchInfosPkey(event.key, body)
+    this.$api2.patchAdminInfosPkey(event.key, body)
         .then(() => {
           this.updateInfos();
           this.toastRequestSuccess();
@@ -335,7 +335,7 @@ export default class MainAdminInfos extends VueBase {
 
   onClickDeleteInfoOk() {
     this.showDeleteLoading = true;
-    this.$api2.deleteInfo(this.deleteCandidateKey)
+    this.$api2.deleteAdminInfo(this.deleteCandidateKey)
         .then(() => {
           this.showDeleteInfoDialog = false;
           this.showDeleteLoading = false;

@@ -95,7 +95,7 @@ export default class FormGroupNew extends VueBase {
   }
 
   requestPostGroups(body: CreateGroupQ) {
-    this.$api2.postGroups(body)
+    this.$api2.postAdminGroups(body)
         .then(() => {
           this.requestSuccess();
         })
@@ -105,7 +105,7 @@ export default class FormGroupNew extends VueBase {
   }
 
   requestPostSelfGroups(body: CreateGroupQ) {
-    this.$api2.postSelfGroups(body)
+    this.$api2.postMainGroups(body)
         .then(() => {
           this.requestSuccess();
         })

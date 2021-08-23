@@ -128,7 +128,7 @@ export default class MainAdminConfigs extends VueBase {
 
   updateConfigs() {
     this.showLoading = true;
-    this.$api2.getConfigs()
+    this.$api2.getAdminConfigs()
         .then((infos) => {
           this.configs = infos;
           this.showLoading = false;

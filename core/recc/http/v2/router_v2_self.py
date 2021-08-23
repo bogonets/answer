@@ -2,6 +2,7 @@
 
 from typing import List, Any, Dict
 from aiohttp import web
+from aiohttp.hdrs import METH_OPTIONS
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_exceptions import (
@@ -22,7 +23,7 @@ class RouterV2Self:
 
     def __init__(self, context: Context):
         self._context = context
-        self._app = web.Application(middlewares=[self.middleware])
+        self._app = web.Application()
         self._app.add_routes(self._routes())
 
     @property
@@ -32,10 +33,6 @@ class RouterV2Self:
     @property
     def context(self) -> Context:
         return self._context
-
-    @web.middleware
-    async def middleware(self, request: Request, handler):
-        return await handler(request)
 
     # noinspection PyTypeChecker
     def _routes(self) -> List[AbstractRouteDef]:

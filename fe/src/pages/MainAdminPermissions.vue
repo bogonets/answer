@@ -146,7 +146,7 @@ export default class MainAdminPermissions extends VueBase {
 
   updateItems() {
     this.showLoading = true;
-    this.$api2.getPermissions()
+    this.$api2.getAdminPermissions()
         .then(items => {
           this.tableItems = items;
           this.showLoading = false;

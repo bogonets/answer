@@ -10,7 +10,7 @@ describe('ApiV2', () => {
   let api = new ApiV2(getReccServerAddress());
 
   test('version', async () => {
-    const version_text = await api.getVersion();
+    const version_text = await api.getPublicVersion();
     const versions = version_text.split("-");
     const semantic_version = versions[0]
         .split(".")
@@ -23,7 +23,7 @@ describe('ApiV2', () => {
 
   test('heartbeat', async () => {
     let result: boolean | undefined = undefined;
-    await api.getHeartbeat()
+    await api.getPublicHeartbeat()
         .then(() => {
             result = true;
         })
@@ -34,7 +34,7 @@ describe('ApiV2', () => {
   });
 
   test('already', async () => {
-    const result = await api.already();
+    const result = await api.getPublicStateAlready();
     expect(typeof result).toEqual('boolean');
   });
 });

@@ -177,7 +177,7 @@ export default class MainAdminPermissionsEdit extends VueBase {
   }
 
   requestPermission() {
-    this.$api2.getPermissionsPperm(this.perm)
+    this.$api2.getAdminPermissionsPperm(this.perm)
         .then(body => {
           this.updatePermission(body);
         })
@@ -261,7 +261,7 @@ export default class MainAdminPermissionsEdit extends VueBase {
     } as UpdatePermissionQ;
 
     this.showSubmitLoading = true;
-    this.$api2.patchPermissionsPperm(this.perm, body)
+    this.$api2.patchAdminPermissionsPperm(this.perm, body)
         .then(() => {
           this.showSubmitLoading = false;
           this.toastRequestSuccess();
@@ -287,7 +287,7 @@ export default class MainAdminPermissionsEdit extends VueBase {
 
   onClickDeleteOk() {
     this.showDeleteLoading = true;
-    this.$api2.deletePermissionsPperm(this.perm)
+    this.$api2.deleteAdminPermissionsPperm(this.perm)
         .then(() => {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;

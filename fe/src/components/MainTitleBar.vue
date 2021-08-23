@@ -24,7 +24,7 @@ ko:
 
     <v-spacer></v-spacer>
 
-    <v-btn icon v-bind="attrs" v-on="on">
+    <v-btn icon>
       <v-icon>mdi-bell</v-icon>
     </v-btn>
 

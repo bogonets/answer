@@ -288,20 +288,20 @@ export default class Signin extends VueBase {
 
   updateCurrentSettingsFromUserExtra(extra: UserExtra) {
     if (extra.dark === undefined) {
-      console.warn('[LoginPage] Not exists user\'s extra.dark information.');
+      console.warn('Not exists user\'s extra.dark information.');
     } else {
       const dark = extra.dark;
-      console.debug(`[LoginPage] User's extra.dark is ${dark}`);
+      console.debug(`User's extra.dark is ${dark}`);
       if (this.$vuetify.theme.dark != dark) {
         this.$vuetify.theme.dark = dark
       }
     }
 
     if (extra.lang === undefined) {
-      console.warn('[LoginPage] Not exists user\'s extra.lang information.');
+      console.warn('Not exists user\'s extra.lang information.');
     } else {
       const lang = extra.lang;
-      console.debug(`[LoginPage] User's extra.lang is ${lang}`);
+      console.debug(`User's extra.lang is ${lang}`);
       if (this.$vuetify.lang.current != lang) {
         this.$vuetify.lang.current = lang;
         this.$i18n.locale = lang;
@@ -312,7 +312,7 @@ export default class Signin extends VueBase {
   testInit() {
     this.updateState(LoginPageState.Connecting);
 
-    this.$api2.already()
+    this.$api2.getPublicStateAlready()
         .then(result => {
           if (result) {
             this.updateState(LoginPageState.ReadyForWait);
@@ -424,7 +424,7 @@ export default class Signin extends VueBase {
     console.debug(`User ${username} is trying to login ...`);
     this.showLoading = true;
 
-    this.$api2.signin(username, password)
+    this.$api2.postSignin(username, password)
         .then(response => {
           console.debug(`Login for user ${username} was successful !!`);
 
@@ -440,7 +440,7 @@ export default class Signin extends VueBase {
           if (user.extra) {
             this.updateCurrentSettingsFromUserExtra(user.extra);
           } else {
-            console.warn('[LoginPage] Not exists user\'s extra information.');
+            console.warn('Not exists user\'s extra information.');
           }
 
           this.moveToMain();

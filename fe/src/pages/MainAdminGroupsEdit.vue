@@ -178,7 +178,7 @@ export default class MainAdminGroupsEdit extends VueBase {
   }
 
   requestGroup() {
-    this.$api2.getGroupsPgroup(this.group)
+    this.$api2.getAdminGroupsPgroup(this.group)
         .then(body => {
           this.updateGroup(body);
         })
@@ -230,7 +230,7 @@ export default class MainAdminGroupsEdit extends VueBase {
     } as UpdateGroupQ;
 
     this.showSubmitLoading = true;
-    this.$api2.patchGroupsPgroup(this.group, body)
+    this.$api2.patchAdminGroupsPgroup(this.group, body)
         .then(() => {
           this.showSubmitLoading = false;
           this.toastRequestSuccess();
@@ -256,7 +256,7 @@ export default class MainAdminGroupsEdit extends VueBase {
 
   onClickDeleteOk() {
     this.showDeleteLoading = true;
-    this.$api2.deleteGroupsGroup(this.group)
+    this.$api2.deleteAdminGroupsGroup(this.group)
         .then(() => {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;

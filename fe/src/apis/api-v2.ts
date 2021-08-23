@@ -138,27 +138,27 @@ export default class ApiV2 {
     // Public
     // ------
 
-    getHeartbeat() {
+    getPublicHeartbeat() {
         return this.get('/public/heartbeat');
     }
 
-    getVersion() {
+    getPublicVersion() {
         return this.get<string>('/public/version');
     }
 
-    already() {
+    getPublicStateAlready() {
         return this.get<boolean>('/public/state/already');
     }
 
-    signup(body: SignupQ) {
+    postPublicSignup(body: SignupQ) {
         return this.post('/public/signup', body);
     }
 
-    signupAdmin(body: SignupQ) {
+    postPublicSignupAdmin(body: SignupQ) {
         return this.post('/public/signup/admin', body);
     }
 
-    signin(username: string, password: string, updateDefaultAuth = true) {
+    postSignin(username: string, password: string, updateDefaultAuth = true) {
         const auth = {
             username: username,
             password: encryptSha256(password),
@@ -212,207 +212,207 @@ export default class ApiV2 {
         return this.patch('/self/password', body);
     }
 
-    // ------
-    // Self/Groups
-    // ------
+    // -----------
+    // Main/Groups
+    // -----------
 
-    getSelfGroups() {
-        return this.get<Array<GroupA>>('/self/groups');
+    getMainGroups() {
+        return this.get<Array<GroupA>>('/main/groups');
     }
 
-    postSelfGroups(body: CreateGroupQ) {
-        return this.post('/self/groups', body);
+    postMainGroups(body: CreateGroupQ) {
+        return this.post('/main/groups', body);
     }
 
-    getSelfGroupsPgroup(group: string) {
-        return this.get<GroupA>(`/self/groups/${group}`);
+    getMainGroupsPgroup(group: string) {
+        return this.get<GroupA>(`/main/groups/${group}`);
     }
 
-    patchSelfGroupsPgroup(group: string, body: UpdateGroupQ) {
-        return this.patch(`/self/groups/${group}`, body);
+    patchMainGroupsPgroup(group: string, body: UpdateGroupQ) {
+        return this.patch(`/main/groups/${group}`, body);
     }
 
-    deleteSelfGroupsGroup(group: string) {
-        return this.delete(`/self/groups/${group}`);
+    deleteMainGroupsGroup(group: string) {
+        return this.delete(`/main/groups/${group}`);
     }
 
-    // --------
-    // Self/Projects
-    // --------
+    // -------------
+    // Main/Projects
+    // -------------
 
-    getSelfProjects() {
-        return this.get<Array<ProjectA>>('/self/projects');
+    getMainProjects() {
+        return this.get<Array<ProjectA>>('/main/projects');
     }
 
-    postSelfProjects(body: CreateProjectQ) {
-        return this.post('/self/projects', body);
+    postMainProjects(body: CreateProjectQ) {
+        return this.post('/main/projects', body);
     }
 
-    getSelfProjectsPgroupPproject(group: string, project: string) {
-        return this.get<ProjectA>(`/self/projects/${group}/${project}`);
+    getMainProjectsPgroupPproject(group: string, project: string) {
+        return this.get<ProjectA>(`/main/projects/${group}/${project}`);
     }
 
-    patchSelfProjectsPgroupPproject(
+    patchMainProjectsPgroupPproject(
         group: string,
         project: string,
         body: UpdateProjectQ,
     ) {
-        return this.patch(`/self/projects/${group}/${project}`, body);
+        return this.patch(`/main/projects/${group}/${project}`, body);
     }
 
-    deleteSelfProjectsPgroupProject(group: string, project: string) {
-        return this.delete(`/self/projects/${group}/${project}`);
+    deleteMainProjectsPgroupProject(group: string, project: string) {
+        return this.delete(`/main/projects/${group}/${project}`);
     }
 
-    // -------
-    // Configs
-    // -------
+    // -------------
+    // Admin/Configs
+    // -------------
 
-    getConfigs() {
-        return this.get<Array<ConfigA>>('/configs');
+    getAdminConfigs() {
+        return this.get<Array<ConfigA>>('/admin/configs');
     }
 
-    getConfigsPkey(key: string) {
-        return this.get<ConfigA>(`/configs/${key}`);
+    getAdminConfigsPkey(key: string) {
+        return this.get<ConfigA>(`/admin/configs/${key}`);
     }
 
-    patchConfigsPkey(key: string, body: UpdateConfigValueQ) {
-        return this.patch(`/configs/${key}`, body);
-    }
-
-    // -----
-    // Infos
-    // -----
-
-    getInfos() {
-        return this.get<Array<InfoA>>('/infos');
-    }
-
-    postInfos(body: CreateInfoQ) {
-        return this.post('/infos', body);
-    }
-
-    getInfosPkey(key: string) {
-        return this.get<InfoA>(`/infos/${key}`);
-    }
-
-    patchInfosPkey(key: string, body: UpdateInfoQ) {
-        return this.patch(`/infos/${key}`, body);
-    }
-
-    deleteInfo(key: string) {
-        return this.delete(`/infos/${key}`);
-    }
-
-    // ------
-    // System
-    // ------
-
-    getSystemOverview() {
-        return this.get<SystemOverviewA>('/system/overview');
-    }
-
-    // ---------
-    // Templates
-    // ---------
-
-    getTemplates() {
-        return this.get<Array<TemplateA>>(`/templates`);
-    }
-
-    // -----
-    // Users
-    // -----
-
-    getUsers() {
-        return this.get<Array<UserA>>('/users');
-    }
-
-    postUsers(body: SignupQ) {
-        return this.post('/users', body);
-    }
-
-    getUsersPuser(user: string) {
-        return this.get<UserA>(`/users/${user}`);
-    }
-
-    patchUsersPuser(user: string, body: UpdateUserQ) {
-        return this.patch(`/users/${user}`, body);
-    }
-
-    deleteUsersPuser(user: string) {
-        return this.delete(`/users/${user}`);
-    }
-
-    // ------
-    // Groups
-    // ------
-
-    getGroups() {
-        return this.get<Array<GroupA>>('/groups');
-    }
-
-    postGroups(body: CreateGroupQ) {
-        return this.post('/groups', body);
-    }
-
-    getGroupsPgroup(group: string) {
-        return this.get<GroupA>(`/groups/${group}`);
-    }
-
-    patchGroupsPgroup(group: string, body: UpdateGroupQ) {
-        return this.patch(`/groups/${group}`, body);
-    }
-
-    deleteGroupsGroup(group: string) {
-        return this.delete(`/groups/${group}`);
-    }
-
-    // --------
-    // Projects
-    // --------
-
-    getProjects() {
-        return this.get<Array<ProjectA>>('/projects');
-    }
-
-    postProjects(body: CreateProjectQ) {
-        return this.post('/projects', body);
-    }
-
-    getProjectsPgroupPproject(group: string, project: string) {
-        return this.get<ProjectA>(`/projects/${group}/${project}`);
-    }
-
-    patchProjectsPgroupPproject(group: string, project: string, body: UpdateProjectQ) {
-        return this.patch(`/projects/${group}/${project}`, body);
-    }
-
-    deleteProjectsPgroupProject(group: string, project: string) {
-        return this.delete(`/projects/${group}/${project}`);
+    patchAdminConfigsPkey(key: string, body: UpdateConfigValueQ) {
+        return this.patch(`/admin/configs/${key}`, body);
     }
 
     // -----------
-    // Permissions
+    // Admin/Infos
     // -----------
 
-    getPermissions() {
-        return this.get<Array<PermissionA>>('/permissions');
+    getAdminInfos() {
+        return this.get<Array<InfoA>>('/admin/infos');
     }
 
-    postPermissions(body: CreatePermissionQ) {
-        return this.post('/permissions', body);
+    postAdminInfos(body: CreateInfoQ) {
+        return this.post('/admin/infos', body);
     }
 
-    getPermissionsPperm(perm: string) {
-        return this.get<PermissionA>(`/permissions/${perm}`);
+    getAdminInfosPkey(key: string) {
+        return this.get<InfoA>(`/admin/infos/${key}`);
     }
 
-    patchPermissionsPperm(perm: string, body: UpdatePermissionQ) {
-        return this.patch(`/permissions/${perm}`, body);
+    patchAdminInfosPkey(key: string, body: UpdateInfoQ) {
+        return this.patch(`/admin/infos/${key}`, body);
     }
 
-    deletePermissionsPperm(perm: string) {
-        return this.delete(`/permissions/${perm}`);
+    deleteAdminInfo(key: string) {
+        return this.delete(`/admin/infos/${key}`);
+    }
+
+    // ------------
+    // Admin/System
+    // ------------
+
+    getAdminSystemOverview() {
+        return this.get<SystemOverviewA>('/admin/system/overview');
+    }
+
+    // ---------------
+    // Admin/Templates
+    // ---------------
+
+    getAdminTemplates() {
+        return this.get<Array<TemplateA>>(`/admin/templates`);
+    }
+
+    // -----------
+    // Admin/Users
+    // -----------
+
+    getAdminUsers() {
+        return this.get<Array<UserA>>('/admin/users');
+    }
+
+    postAdminUsers(body: SignupQ) {
+        return this.post('/admin/users', body);
+    }
+
+    getAdminUsersPuser(user: string) {
+        return this.get<UserA>(`/admin/users/${user}`);
+    }
+
+    patchAdminUsersPuser(user: string, body: UpdateUserQ) {
+        return this.patch(`/admin/users/${user}`, body);
+    }
+
+    deleteAdminUsersPuser(user: string) {
+        return this.delete(`/admin/users/${user}`);
+    }
+
+    // ------------
+    // Admin/Groups
+    // ------------
+
+    getAdminGroups() {
+        return this.get<Array<GroupA>>('/admin/groups');
+    }
+
+    postAdminGroups(body: CreateGroupQ) {
+        return this.post('/admin/groups', body);
+    }
+
+    getAdminGroupsPgroup(group: string) {
+        return this.get<GroupA>(`/admin/groups/${group}`);
+    }
+
+    patchAdminGroupsPgroup(group: string, body: UpdateGroupQ) {
+        return this.patch(`/admin/groups/${group}`, body);
+    }
+
+    deleteAdminGroupsGroup(group: string) {
+        return this.delete(`/admin/groups/${group}`);
+    }
+
+    // --------------
+    // Admin/Projects
+    // --------------
+
+    getAdminProjects() {
+        return this.get<Array<ProjectA>>('/admin/projects');
+    }
+
+    postAdminProjects(body: CreateProjectQ) {
+        return this.post('/admin/projects', body);
+    }
+
+    getAdminProjectsPgroupPproject(group: string, project: string) {
+        return this.get<ProjectA>(`/admin/projects/${group}/${project}`);
+    }
+
+    patchAdminProjectsPgroupPproject(group: string, project: string, body: UpdateProjectQ) {
+        return this.patch(`/admin/projects/${group}/${project}`, body);
+    }
+
+    deleteAdminProjectsPgroupProject(group: string, project: string) {
+        return this.delete(`/admin/projects/${group}/${project}`);
+    }
+
+    // -----------------
+    // Admin/Permissions
+    // -----------------
+
+    getAdminPermissions() {
+        return this.get<Array<PermissionA>>('/admin/permissions');
+    }
+
+    postAdminPermissions(body: CreatePermissionQ) {
+        return this.post('/admin/permissions', body);
+    }
+
+    getAdminPermissionsPperm(perm: string) {
+        return this.get<PermissionA>(`/admin/permissions/${perm}`);
+    }
+
+    patchAdminPermissionsPperm(perm: string, body: UpdatePermissionQ) {
+        return this.patch(`/admin/permissions/${perm}`, body);
+    }
+
+    deleteAdminPermissionsPperm(perm: string) {
+        return this.delete(`/admin/permissions/${perm}`);
     }
 }

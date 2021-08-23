@@ -1,4 +1,4 @@
-import {Vue, Watch} from 'vue-property-decorator';
+import {Vue, Component, Watch} from 'vue-property-decorator';
 import {RawLocation} from 'vue-router';
 import {Names} from '@/router/names';
 import SimpleToast from '@/components/SimpleToast.vue';
@@ -7,6 +7,7 @@ import AirJoyManage from "@/components/external/airjoy/AirJoyManage.vue";
 import AirJoyGraph from "@/components/external/airjoy/AirJoyGraph.vue";
 import AirJoyMonitor from "@/components/external/airjoy/AirjoyMonitor.vue";
 
+@Component
 export default class VueBase extends Vue {
 
     readonly routeNames = Names;

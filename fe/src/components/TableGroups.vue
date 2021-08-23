@@ -116,6 +116,24 @@ export default class TableGroups extends VueBase {
   filter = '';
   items = [] as Array<GroupA>;
 
+  created() {
+    this.requestItems();
+
+    if (this.hideActions) {
+      this.headers = this.createHeaders(false);
+    } else {
+      this.headers = this.createHeaders(true);
+    }
+  }
+
+  get hideTopBar(): boolean {
+    return this.hideFilterInput && this.hideNewItemButton;
+  }
+
+  get hideActions(): boolean {
+    return this.hideActionEdit && this.hideActionMove;
+  }
+
   createHeaders(includeActions = true) {
     const headers = [
       {
@@ -166,15 +184,7 @@ export default class TableGroups extends VueBase {
     return headers;
   }
 
-  get hideTopBar(): boolean {
-    return this.hideFilterInput && this.hideNewItemButton;
-  }
-
-  get hideActions(): boolean {
-    return this.hideActionEdit && this.hideActionMove;
-  }
-
-  created() {
+  requestItems() {
     if (this.requestType === REQUEST_TYPE_SELF) {
       this.requestSelfGroups();
     } else if (this.requestType === REQUEST_TYPE_ADMIN) {
@@ -182,42 +192,40 @@ export default class TableGroups extends VueBase {
     } else {
       throw Error(`Unknown request type: ${this.requestType}`);
     }
-
-    if (this.hideActions) {
-      this.headers = this.createHeaders(false);
-    } else {
-      this.headers = this.createHeaders(true);
-    }
   }
 
   requestSelfGroups() {
     this.loading = true;
-    this.$api2.getSelfGroups()
+    this.$api2.getMainGroups()
         .then(items => {
-          this.items = items;
-          this.loading = false;
+          this.onRequestSuccess(items);
         })
         .catch(error => {
-          this.loading = false;
-          if (this.hideToast) {
-            this.toastRequestFailure(error);
-          }
+          this.onRequestFailure(error);
         });
   }
 
   requestAdminGroups() {
     this.loading = true;
-    this.$api2.getGroups()
+    this.$api2.getAdminGroups()
         .then(items => {
-          this.items = items;
-          this.loading = false;
+          this.onRequestSuccess(items);
         })
         .catch(error => {
-          this.loading = false;
-          if (this.hideToast) {
-            this.toastRequestFailure(error);
-          }
+          this.onRequestFailure(error);
         });
+  }
+
+  onRequestSuccess(items: Array<GroupA>) {
+    this.loading = false;
+    this.items = items;
+  }
+
+  onRequestFailure(error) {
+    this.loading = false;
+    if (this.hideToast) {
+      this.toastRequestFailure(error);
+    }
   }
 
   get dataTableClass(): string {

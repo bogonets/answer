@@ -118,6 +118,24 @@ export default class TableProjects extends VueBase {
   filter = '';
   items = [] as Array<ProjectA>;
 
+  created() {
+    this.requestItems();
+
+    if (this.hideActions) {
+      this.headers = this.createHeaders(false);
+    } else {
+      this.headers = this.createHeaders(true);
+    }
+  }
+
+  get hideTopBar(): boolean {
+    return this.hideFilterInput && this.hideNewItemButton;
+  }
+
+  get hideActions(): boolean {
+    return this.hideActionEdit && this.hideActionMove;
+  }
+
   createHeaders(includeActions = true) {
     const headers = [
       {
@@ -175,15 +193,7 @@ export default class TableProjects extends VueBase {
     return headers;
   }
 
-  get hideTopBar(): boolean {
-    return this.hideFilterInput && this.hideNewItemButton;
-  }
-
-  get hideActions(): boolean {
-    return this.hideActionEdit && this.hideActionMove;
-  }
-
-  created() {
+  requestItems() {
     if (this.requestType === REQUEST_TYPE_SELF) {
       this.requestSelfProjects();
     } else if (this.requestType === REQUEST_TYPE_ADMIN) {
@@ -191,42 +201,39 @@ export default class TableProjects extends VueBase {
     } else {
       throw Error(`Unknown request type: ${this.requestType}`);
     }
-
-    if (this.hideActions) {
-      this.headers = this.createHeaders(false);
-    } else {
-      this.headers = this.createHeaders(true);
-    }
   }
 
   requestSelfProjects() {
-    this.loading = true;
-    this.$api2.getSelfProjects()
+    this.$api2.getMainProjects()
         .then(items => {
-          this.items = items;
-          this.loading = false;
+          this.onRequestSuccess(items);
         })
         .catch(error => {
-          this.loading = false;
-          if (this.hideToast) {
-            this.toastRequestFailure(error);
-          }
+          this.onRequestFailure(error);
         });
   }
 
   requestAdminProjects() {
     this.loading = true;
-    this.$api2.getProjects()
+    this.$api2.getAdminProjects()
         .then(items => {
-          this.items = items;
-          this.loading = false;
+          this.onRequestSuccess(items);
         })
         .catch(error => {
-          this.loading = false;
-          if (this.hideToast) {
-            this.toastRequestFailure(error);
-          }
+          this.onRequestFailure(error);
         });
+  }
+
+  onRequestSuccess(items: Array<ProjectA>) {
+    this.loading = false;
+    this.items = items;
+  }
+
+  onRequestFailure(error) {
+    this.loading = false;
+    if (this.hideToast) {
+      this.toastRequestFailure(error);
+    }
   }
 
   get dataTableClass(): string {

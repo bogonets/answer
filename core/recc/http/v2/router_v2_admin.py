@@ -12,7 +12,6 @@ from aiohttp.web_exceptions import (
 from recc.core.context import Context
 from recc.http.http_decorator import parameter_matcher
 from recc.session.session_ex import SessionEx
-from recc.http import http_cache_keys as c
 from recc.http import http_urls as u
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
@@ -33,7 +32,7 @@ class RouterV2Admin:
 
     def __init__(self, context: Context):
         self._context = context
-        self._app = web.Application(middlewares=[self.middleware])
+        self._app = web.Application()
         self._app.add_routes(self._routes())
 
     @property
@@ -44,18 +43,8 @@ class RouterV2Admin:
     def context(self) -> Context:
         return self._context
 
-    @staticmethod
-    def has_admin_privileges(request: Request) -> bool:
-        assert c.session in request
-        session = request[c.session]
-        assert isinstance(session, SessionEx)
-        return session.is_admin
-
     @web.middleware
     async def middleware(self, request: Request, handler):
-        if not self.has_admin_privileges(request):
-            raise HTTPForbidden(reason="Administrator privileges are required")
-
         return await handler(request)
 
     # noinspection PyTypeChecker

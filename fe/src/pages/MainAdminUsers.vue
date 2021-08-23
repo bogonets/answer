@@ -156,7 +156,7 @@ export default class MainAdminUsers extends VueBase {
   showLoading = true;
 
   mounted() {
-    this.$api2.getUsers()
+    this.$api2.getAdminUsers()
         .then(items => {
           this.tableItems = items;
           this.showLoading = false;

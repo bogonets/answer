@@ -87,7 +87,7 @@ export default class MainAdminPermissionsNew extends VueBase {
     } as CreatePermissionQ;
 
     this.submitLoading = true;
-    this.$api2.postPermissions(body)
+    this.$api2.postAdminPermissions(body)
         .then(() => {
           this.submitLoading = false;
           this.moveToMainAdminPermissions();

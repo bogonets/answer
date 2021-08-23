@@ -270,7 +270,7 @@ export default class FormProject extends VueBase {
   }
 
   private requestAdminGroups() {
-    this.$api2.getGroups()
+    this.$api2.getAdminGroups()
         .then(groups => {
           this.onGroupsSuccess(groups);
         })
@@ -280,7 +280,7 @@ export default class FormProject extends VueBase {
   }
 
   private requestSelfGroups() {
-    this.$api2.getSelfGroups()
+    this.$api2.getMainGroups()
         .then(groups => {
           this.onGroupsSuccess(groups);
         })

@@ -182,7 +182,7 @@ export default class MainAdminProjectsEdit extends VueBase {
   }
 
   requestProject() {
-    this.$api2.getProjectsPgroupPproject(this.group, this.project)
+    this.$api2.getAdminProjectsPgroupPproject(this.group, this.project)
         .then(body => {
           this.updateProject(body);
         })
@@ -235,7 +235,7 @@ export default class MainAdminProjectsEdit extends VueBase {
     } as UpdateProjectQ;
 
     this.showSubmitLoading = true;
-    this.$api2.patchProjectsPgroupPproject(this.group, this.project, body)
+    this.$api2.patchAdminProjectsPgroupPproject(this.group, this.project, body)
         .then(() => {
           this.showSubmitLoading = false;
           this.toastRequestSuccess();
@@ -261,7 +261,7 @@ export default class MainAdminProjectsEdit extends VueBase {
 
   onClickDeleteOk() {
     this.showDeleteLoading = true;
-    this.$api2.deleteProjectsPgroupProject(this.group, this.project)
+    this.$api2.deleteAdminProjectsPgroupProject(this.group, this.project)
         .then(() => {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;

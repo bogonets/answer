@@ -80,7 +80,7 @@ export default class MainAdminOverview extends VueBase {
   projects = 0;
 
   created() {
-    this.$api2.getSystemOverview()
+    this.$api2.getAdminSystemOverview()
         .then(response => {
           this.users = response.users || 0;
           this.groups = response.groups || 0;

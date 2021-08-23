@@ -154,7 +154,7 @@ export default class MainAdminLamdas extends VueBase {
 
   updateLamdas() {
     this.showLoading = true;
-    this.$api2.getTemplates()
+    this.$api2.getAdminTemplates()
         .then(lamdas => {
           this.totalLamdas = lamdas;
           this.showLoading = false;

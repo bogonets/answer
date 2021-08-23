@@ -57,7 +57,7 @@ export default class MainAdminUsersNew extends VueBase {
     } as SignupQ;
 
     this.showSignupLoading = true;
-    this.$api2.signup(body)
+    this.$api2.postPublicSignup(body)
         .then(() => {
           this.showSignupLoading = false;
           this.moveToBack();
