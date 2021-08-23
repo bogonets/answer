@@ -34,16 +34,6 @@ def salting_password(hashed_password: str) -> PassInfo:
 
 
 class ContextUser(ContextBase):
-
-    _already_admin_user = False
-
-    async def exists_admin_user(self) -> bool:
-        # After being created in the DB, there is no scenario that can be removed.
-        if self._already_admin_user:
-            return True
-        self._already_admin_user = await self.database.select_exists_admin_user()
-        return self._already_admin_user
-
     async def get_admin_count(self) -> int:
         return await self.database.select_admin_count()
 

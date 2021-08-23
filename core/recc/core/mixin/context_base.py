@@ -131,6 +131,15 @@ class ContextBase:
     # Database caching
     # ----------------
 
+    _initialized_database = False
+
+    async def is_initialized_database(self) -> bool:
+        # After being created in the DB, there is no scenario that can be removed.
+        if self._initialized_database:
+            return True
+        self._initialized_database = await self.database.select_exists_admin_user()
+        return self._initialized_database
+
     async def get_user_uid(self, username: str, caching=True) -> int:
         if not username:
             raise ValueError("The `username` argument is empty.")

@@ -111,6 +111,7 @@ zoneinfo
 
 pgroup
 pkey
+pmember
 pname
 pperm
 pproject

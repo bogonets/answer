@@ -25,7 +25,7 @@ class RouterV2Public:
     def __init__(self, context: Context):
         self._context = context
         self._app = web.Application(middlewares=[self.middleware])
-        self._app.add_routes(self._get_routes())
+        self._app.add_routes(self._routes())
 
     @property
     def app(self) -> web.Application:
@@ -40,7 +40,7 @@ class RouterV2Public:
         return await handler(request)
 
     # noinspection PyTypeChecker
-    def _get_routes(self) -> List[AbstractRouteDef]:
+    def _routes(self) -> List[AbstractRouteDef]:
         return [
             web.get(u.heartbeat, self.get_heartbeat),
             web.get(u.version, self.get_version),
@@ -50,12 +50,9 @@ class RouterV2Public:
             web.post(u.signin, self.post_signin),
         ]
 
-    # ---------------
-    # API v2 handlers
-    # ---------------
-
-    async def _already(self) -> bool:
-        return await self.context.exists_admin_user()
+    # --------
+    # Handlers
+    # --------
 
     @parameter_matcher()
     async def get_heartbeat(self) -> None:
@@ -67,7 +64,7 @@ class RouterV2Public:
 
     @parameter_matcher()
     async def get_state_already(self) -> bool:
-        return await self._already()
+        return await self.context.is_initialized_database()
 
     @parameter_matcher()
     async def post_signup(self, body: SignupQ) -> None:
@@ -84,7 +81,7 @@ class RouterV2Public:
 
     @parameter_matcher()
     async def post_signup_admin(self, signup: SignupQ) -> None:
-        if await self._already():
+        if await self.context.is_initialized_database():
             raise HTTPServiceUnavailable(reason="An admin account already exists")
         await self.context.signup_admin(signup.username, signup.password)
 

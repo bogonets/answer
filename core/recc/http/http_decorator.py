@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Any, Optional, Set, get_origin
+from typing import List, Any, get_origin
 from inspect import signature, isclass, iscoroutinefunction
 from functools import wraps
 from datetime import datetime
@@ -10,7 +10,6 @@ from aiohttp.web_response import Response
 from aiohttp.web_exceptions import (
     HTTPException,
     HTTPBadRequest,
-    HTTPForbidden,
     HTTPUnauthorized,
 )
 from recc.core.context import Context
@@ -27,7 +26,6 @@ from recc.http.http_status import (
     STATUS_INTERNAL_SERVER_ERROR,
 )
 from recc.http import http_cache_keys as c
-from recc.access_control.abac.attributes import aa
 from recc.variables.http import VERY_VERBOSE_DEBUGGING
 
 CONTEXT_METHOD_NAME = "context"
@@ -61,18 +59,22 @@ def _is_serializable_class(obj: type) -> bool:
     return False
 
 
-def _test_permission(session: SessionEx, acl: Set[aa]) -> None:
-    for ac in acl:
-        if ac == aa.HasAdmin:
-            if not session.is_admin:
-                raise HTTPForbidden(reason="Administrator privileges are required")
+# def _test_permission(session: SessionEx, acl: Set[aa]) -> None:
+#     for ac in acl:
+#         if ac == aa.HasAdmin:
+#             if not session.is_admin:
+#                 raise HTTPForbidden(reason="Administrator privileges are required")
+#
+#     # if acl:
+#     #     if c.session not in request:
+#     #         raise HTTPUnauthorized(reason=f"Not exists {c.session}")
+#     #     _test_permission(request[c.session], acl if acl else set())
 
 
 async def _parameter_matcher_main(
     func,
     obj: Any,
     request: Request,
-    acl: Optional[Set[aa]] = None,
 ) -> Response:
     accept = get_accept_type(request)
     encoding = get_encoding(request)
@@ -89,11 +91,6 @@ async def _parameter_matcher_main(
         config = context.config
         if config.developer and config.verbose >= VERY_VERBOSE_DEBUGGING:
             very_verbose_debugging = True
-
-    if acl:
-        if c.session not in request:
-            raise HTTPUnauthorized(reason=f"Not exists {c.session}")
-        _test_permission(request[c.session], acl if acl else set())
 
     if len(keys) >= 2:
         for key in keys[1:]:
@@ -181,7 +178,7 @@ async def _parameter_matcher_main(
     raise NotImplementedError
 
 
-def parameter_matcher(acl: Optional[Set[aa]] = None):
+def parameter_matcher():
     def _wrap(func):
         @wraps(func)
         async def __wrap(obj, request: Request) -> Response:
@@ -198,7 +195,7 @@ def parameter_matcher(acl: Optional[Set[aa]] = None):
             request_info = f"{remote} {method} {path} HTTP/{version[0]}.{version[1]}"
 
             try:
-                result = await _parameter_matcher_main(func, obj, request, acl)
+                result = await _parameter_matcher_main(func, obj, request)
             except HTTPException as e:
                 logger.error(e)
                 result = Response(

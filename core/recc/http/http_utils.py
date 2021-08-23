@@ -33,6 +33,21 @@ def v2_path(*paths: str, **kwargs: str) -> str:
     return path.format(**kwargs) if kwargs else path
 
 
+def v2_admin_path(*paths: str, **kwargs: str) -> str:
+    path = join_urls(u.api_v2_admin, *paths)
+    return path.format(**kwargs) if kwargs else path
+
+
+def v2_main_path(*paths: str, **kwargs: str) -> str:
+    path = join_urls(u.api_v2_main, *paths)
+    return path.format(**kwargs) if kwargs else path
+
+
 def v2_public_path(*paths: str, **kwargs: str) -> str:
     path = join_urls(u.api_v2_public, *paths)
+    return path.format(**kwargs) if kwargs else path
+
+
+def v2_self_path(*paths: str, **kwargs: str) -> str:
+    path = join_urls(u.api_v2_self, *paths)
     return path.format(**kwargs) if kwargs else path

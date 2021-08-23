@@ -19,7 +19,7 @@ app_favicon = app + favicon
 v1 = "/v1"
 v2 = "/v2"
 
-# Depth 3rd.
+# Depth 3rd ~.
 admin = "/admin"
 already = "/already"
 configs = "/configs"
@@ -28,6 +28,8 @@ groups = "/groups"
 heartbeat = "/heartbeat"
 infos = "/infos"
 init = "/init"
+main = "/main"
+members = "/members"
 overview = "/overview"
 password = "/password"
 permissions = "/permissions"
@@ -52,6 +54,7 @@ def _param_path(key: str) -> str:
 pgroup = _param_path(p.group)
 pkey = _param_path(p.key)
 pname = _param_path(p.name)
+pmember = _param_path(p.member)
 pperm = _param_path(p.perm)
 pproject = _param_path(p.project)
 puser = _param_path(p.user)
@@ -59,27 +62,26 @@ puser = _param_path(p.user)
 # Mixin for ROOT
 api_v1 = api + v1
 api_v2 = api + v2
+api_v2_admin = api + v2 + admin
+api_v2_main = api + v2 + main
 api_v2_public = api + v2 + public
+api_v2_self = api + v2 + self
 
-# Mixin (api prefix)
+# Mixin (/api)
 api_version = api + version
 api_heartbeat = api + heartbeat
 
-# Mixin (api/v2 sub)
+# Mixin (/api/v2)
 configs_pkey = configs + pkey
 groups_pgroup = groups + pgroup
+groups_pgroup_members = groups_pgroup + members
+groups_pgroup_members_pmember = groups_pgroup_members + pmember
 infos_pkey = infos + pkey
 permissions_pperm = permissions + pperm
 projects_pgroup_pproject = projects + pgroup + pproject
+projects_pgroup_pproject_members = projects_pgroup_pproject + members
+projects_pgroup_pproject_members_pmember = projects_pgroup_pproject_members + pmember
 signup_admin = signup + admin
 state_already = state + already
 system_overview = system + overview
 users_puser = users + puser
-
-# Mixin (api/v2/self sub)
-self_extra = self + extra
-self_groups = self + groups
-self_groups_pgroup = self + groups + pgroup
-self_password = self + password
-self_projects = self + projects
-self_projects_pgroup_pproject = self + projects + pgroup + pproject

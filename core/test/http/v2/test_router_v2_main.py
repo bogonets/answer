@@ -4,7 +4,7 @@ from unittest import main
 from typing import List
 from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
-from recc.http.http_utils import v2_path
+from recc.http.http_utils import v2_main_path
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
@@ -12,7 +12,7 @@ from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 
 
-class RouterV2SelfTestCase(AsyncTestCase):
+class RouterV2MainTestCase(AsyncTestCase):
     async def setUp(self):
         self.tester = HttpAppTester(self.loop)
         await self.tester.setup()
@@ -27,35 +27,7 @@ class RouterV2SelfTestCase(AsyncTestCase):
     async def tearDown(self):
         await self.tester.teardown()
 
-    async def test_self(self):
-        response = await self.tester.get(v2_path(u.self))
-        self.assertEqual(200, response.status)
-        self.assertIn("username", response.data)
-
-    async def test_self_extra(self):
-        response = await self.tester.get(v2_path(u.self_extra))
-        self.assertEqual(200, response.status)
-        self.assertIsNone(response.data)
-
-        # First Handshake.
-        data = {"unknown": 0, "test": "aaa"}
-        response = await self.tester.patch(v2_path(u.self_extra), data=data)
-        self.assertEqual(200, response.status)
-
-        response2 = await self.tester.get(v2_path(u.self_extra))
-        self.assertEqual(200, response2.status)
-        self.assertEqual(data, response2.data)
-
-        # Second Handshake.
-        data2 = {"bbb": "ccc", "ddd": "eee"}
-        response3 = await self.tester.patch(v2_path(u.self_extra), data=data2)
-        self.assertEqual(200, response3.status)
-
-        response4 = await self.tester.get(v2_path(u.self_extra))
-        self.assertEqual(200, response4.status)
-        self.assertEqual(data2, response4.data)
-
-    async def test_self_groups(self):
+    async def test_groups(self):
         slug1 = "group1"
         description1 = "description1"
         features1 = ["1", "2"]
@@ -66,11 +38,11 @@ class RouterV2SelfTestCase(AsyncTestCase):
             features=features1,
             visibility=visibility1,
         )
-        response1 = await self.tester.post(v2_path(u.self_groups), data=group1)
+        response1 = await self.tester.post(v2_main_path(u.groups), data=group1)
         self.assertEqual(200, response1.status)
         self.assertIsNone(response1.data)
 
-        response2 = await self.tester.get(v2_path(u.self_groups), cls=List[GroupA])
+        response2 = await self.tester.get(v2_main_path(u.groups), cls=List[GroupA])
         self.assertEqual(200, response2.status)
         self.assertIsNotNone(response2.data)
         self.assertIsInstance(response2.data, list)
@@ -82,7 +54,7 @@ class RouterV2SelfTestCase(AsyncTestCase):
         self.assertEqual(features1, response2_data0.features)
         self.assertEqual(visibility1, response2_data0.visibility)
 
-        path = v2_path(u.self_groups_pgroup, **{p.group: slug1})
+        path = v2_main_path(u.groups_pgroup, **{p.group: slug1})
         response3 = await self.tester.get(path, cls=GroupA)
         self.assertEqual(200, response3.status)
         self.assertIsNotNone(response3.data)
@@ -106,22 +78,22 @@ class RouterV2SelfTestCase(AsyncTestCase):
         response7 = await self.tester.delete(path)
         self.assertEqual(200, response7.status)
 
-        response8 = await self.tester.get(v2_path(u.self_groups), cls=List[GroupA])
+        response8 = await self.tester.get(v2_main_path(u.groups), cls=List[GroupA])
         self.assertEqual(200, response8.status)
         self.assertIsNotNone(response8.data)
         self.assertIsInstance(response8.data, list)
         self.assertEqual(0, len(response8.data))
 
-    async def test_self_projects(self):
+    async def test_projects(self):
         group1 = CreateGroupQ(slug="group1")
-        response1 = await self.tester.post(v2_path(u.self_groups), data=group1)
+        response1 = await self.tester.post(v2_main_path(u.groups), data=group1)
         self.assertEqual(200, response1.status)
 
         project1 = CreateProjectQ(group_slug=group1.slug, project_slug="project1")
-        response2 = await self.tester.post(v2_path(u.self_projects), data=project1)
+        response2 = await self.tester.post(v2_main_path(u.projects), data=project1)
         self.assertEqual(200, response2.status)
 
-        response3 = await self.tester.get(v2_path(u.self_projects), cls=List[ProjectA])
+        response3 = await self.tester.get(v2_main_path(u.projects), cls=List[ProjectA])
         self.assertEqual(200, response3.status)
         response3_data = response3.data
         self.assertIsNotNone(response3_data)
@@ -138,7 +110,7 @@ class RouterV2SelfTestCase(AsyncTestCase):
         self.assertIsNotNone(response3_data0.created_at)
         self.assertIsNone(response3_data0.updated_at)
 
-        path = v2_path(u.self_projects_pgroup_pproject).format(
+        path = v2_main_path(u.projects_pgroup_pproject).format(
             group=project1.group_slug, project=project1.project_slug
         )
         update = UpdateProjectQ(name="name1")
@@ -157,7 +129,7 @@ class RouterV2SelfTestCase(AsyncTestCase):
         response6 = await self.tester.delete(path)
         self.assertEqual(200, response6.status)
 
-        response7 = await self.tester.get(v2_path(u.self_projects), cls=List[ProjectA])
+        response7 = await self.tester.get(v2_main_path(u.projects), cls=List[ProjectA])
         self.assertEqual(200, response7.status)
         response7_data = response7.data
         self.assertIsNotNone(response7_data)

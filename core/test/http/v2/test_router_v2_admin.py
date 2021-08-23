@@ -5,7 +5,7 @@ from typing import List
 from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
 from recc.variables.database import RECC_DB_VERSION_KEY
-from recc.http.http_utils import v2_path
+from recc.http.http_utils import v2_admin_path
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
@@ -26,7 +26,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         await self.tester.teardown()
 
     async def test_infos(self):
-        response1 = await self.tester.get(v2_path(u.infos), cls=List[InfoA])
+        response1 = await self.tester.get(v2_admin_path(u.infos), cls=List[InfoA])
         self.assertEqual(200, response1.status)
         self.assertIsInstance(response1.data, list)
         version = list(filter(lambda x: x.key == RECC_DB_VERSION_KEY, response1.data))
@@ -34,11 +34,11 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertEqual(RECC_DB_VERSION_KEY, version[0].key)
 
         info1 = CreateInfoQ("key1", "value2")
-        response2 = await self.tester.post(v2_path(u.infos), data=info1)
+        response2 = await self.tester.post(v2_admin_path(u.infos), data=info1)
         self.assertEqual(200, response2.status)
         self.assertIsNone(response2.data)
 
-        path = v2_path(u.infos_pkey.format(**{p.key: info1.key}))
+        path = v2_admin_path(u.infos_pkey.format(**{p.key: info1.key}))
         response3 = await self.tester.get(path)
         self.assertEqual(200, response3.status)
         self.assertIsNotNone(response3.data)
@@ -50,12 +50,12 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertNotEqual(200, response5.status)
 
     async def test_users(self):
-        response = await self.tester.get(v2_path(u.users))
+        response = await self.tester.get(v2_admin_path(u.users))
         self.assertEqual(200, response.status)
         self.assertIsNotNone(response.data)
 
     async def test_groups(self):
-        response = await self.tester.get(v2_path(u.groups), cls=List[GroupA])
+        response = await self.tester.get(v2_admin_path(u.groups), cls=List[GroupA])
         self.assertEqual(200, response.status)
         self.assertIsNotNone(response.data)
         self.assertIsInstance(response.data, list)
@@ -69,11 +69,11 @@ class RouterV2AdminTestCase(AsyncTestCase):
             description="description1",
             features=["1", "2"],
         )
-        response2 = await self.tester.post(v2_path(u.groups), data=new_group1)
+        response2 = await self.tester.post(v2_admin_path(u.groups), data=new_group1)
         self.assertEqual(200, response2.status)
         self.assertIsNone(response2.data)
 
-        response3 = await self.tester.get(v2_path(u.groups), cls=List[GroupA])
+        response3 = await self.tester.get(v2_admin_path(u.groups), cls=List[GroupA])
         self.assertEqual(200, response3.status)
         self.assertIsNotNone(response3.data)
         self.assertIsInstance(response3.data, list)
@@ -84,7 +84,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertEqual(new_group1.description, group1.description)
         self.assertEqual(new_group1.features, group1.features)
 
-        path = v2_path(u.groups_pgroup.format(**{p.group: new_group1.slug}))
+        path = v2_admin_path(u.groups_pgroup.format(**{p.group: new_group1.slug}))
         response4 = await self.tester.get(path, cls=GroupA)
         self.assertEqual(200, response4.status)
         self.assertIsNotNone(response4.data)
@@ -106,7 +106,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         response7 = await self.tester.delete(path)
         self.assertEqual(200, response7.status)
 
-        response8 = await self.tester.get(v2_path(u.groups), cls=List[GroupA])
+        response8 = await self.tester.get(v2_admin_path(u.groups), cls=List[GroupA])
         self.assertEqual(200, response8.status)
         self.assertIsNotNone(response8.data)
         self.assertIsInstance(response8.data, list)
@@ -114,14 +114,14 @@ class RouterV2AdminTestCase(AsyncTestCase):
 
     async def test_projects(self):
         group1 = CreateGroupQ(slug="group1")
-        response1 = await self.tester.post(v2_path(u.groups), data=group1)
+        response1 = await self.tester.post(v2_admin_path(u.groups), data=group1)
         self.assertEqual(200, response1.status)
 
         project1 = CreateProjectQ(group_slug=group1.slug, project_slug="project1")
-        response2 = await self.tester.post(v2_path(u.projects), data=project1)
+        response2 = await self.tester.post(v2_admin_path(u.projects), data=project1)
         self.assertEqual(200, response2.status)
 
-        response3 = await self.tester.get(v2_path(u.projects), cls=List[ProjectA])
+        response3 = await self.tester.get(v2_admin_path(u.projects), cls=List[ProjectA])
         self.assertEqual(200, response3.status)
         response3_data = response3.data
         self.assertIsNotNone(response3_data)
@@ -138,7 +138,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertIsNotNone(response3_data0.created_at)
         self.assertIsNone(response3_data0.updated_at)
 
-        path = v2_path(u.projects_pgroup_pproject).format(
+        path = v2_admin_path(u.projects_pgroup_pproject).format(
             group=project1.group_slug, project=project1.project_slug
         )
         update = UpdateProjectQ(name="name1")
@@ -157,7 +157,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         response6 = await self.tester.delete(path)
         self.assertEqual(200, response6.status)
 
-        response7 = await self.tester.get(v2_path(u.projects), cls=List[ProjectA])
+        response7 = await self.tester.get(v2_admin_path(u.projects), cls=List[ProjectA])
         self.assertEqual(200, response7.status)
         response7_data = response7.data
         self.assertIsNotNone(response7_data)
@@ -166,10 +166,13 @@ class RouterV2AdminTestCase(AsyncTestCase):
 
     async def test_permission(self):
         perm1 = CreatePermissionQ(name="perm1", r_storage=True)
-        response1 = await self.tester.post(v2_path(u.permissions), data=perm1)
+        response1 = await self.tester.post(v2_admin_path(u.permissions), data=perm1)
         self.assertEqual(200, response1.status)
 
-        response2 = await self.tester.get(v2_path(u.permissions), cls=List[PermissionA])
+        response2 = await self.tester.get(
+            v2_admin_path(u.permissions),
+            cls=List[PermissionA],
+        )
         self.assertEqual(200, response2.status)
         response2_data = response2.data
         self.assertIsNotNone(response2_data)
@@ -198,12 +201,12 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertIsNone(response2_data0.updated_at)
 
         perm2_name = "perm2"
-        path1 = v2_path(u.permissions_pperm).format(perm=perm1.name)
+        path1 = v2_admin_path(u.permissions_pperm).format(perm=perm1.name)
         update = UpdatePermissionQ(name=perm2_name, w_layout=True)
         response3 = await self.tester.patch(path1, data=update)
         self.assertEqual(200, response3.status)
 
-        path2 = v2_path(u.permissions_pperm).format(perm=perm2_name)
+        path2 = v2_admin_path(u.permissions_pperm).format(perm=perm2_name)
         response4 = await self.tester.get(path2, cls=PermissionA)
         self.assertEqual(200, response4.status)
         response4_data = response4.data
@@ -231,7 +234,10 @@ class RouterV2AdminTestCase(AsyncTestCase):
         response5 = await self.tester.delete(path2)
         self.assertEqual(200, response5.status)
 
-        response6 = await self.tester.get(v2_path(u.permissions), cls=List[PermissionA])
+        response6 = await self.tester.get(
+            v2_admin_path(u.permissions),
+            cls=List[PermissionA],
+        )
         self.assertEqual(200, response6.status)
         response6_data = response6.data
         self.assertIsNotNone(response6_data)
@@ -241,7 +247,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertEqual(after_creation_num_permissions, expect_num_permissions)
 
     async def test_system_overview(self):
-        path = v2_path(u.system_overview)
+        path = v2_admin_path(u.system_overview)
         response = await self.tester.get(path, cls=SystemOverviewA)
         self.assertEqual(200, response.status)
         self.assertIsNotNone(response.data)
