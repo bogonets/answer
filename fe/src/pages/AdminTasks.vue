@@ -1,13 +1,15 @@
+<i18n lang="yaml">
+en:
+  title: "Tasks"
+
+ko:
+  title: "테스크 관리"
+</i18n>
+
 <template>
   <v-container>
     <toolbar-navigation :items="navigationItems"></toolbar-navigation>
     <v-divider></v-divider>
-
-    <form-project-new
-        request-type="admin"
-        @cancel="onClickCancel"
-        @request:success="onRequestSuccess"
-    ></form-project-new>
 
   </v-container>
 </template>
@@ -16,15 +18,13 @@
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import FormProjectNew from "@/components/FormProjectNew.vue";
 
 @Component({
   components: {
     ToolbarNavigation,
-    FormProjectNew,
   }
 })
-export default class MainAdminProjectsNew extends VueBase {
+export default class AdminTasks extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',
@@ -32,24 +32,9 @@ export default class MainAdminProjectsNew extends VueBase {
       href: () => this.moveToMainAdminOverview(),
     },
     {
-      text: 'Projects',
-      disabled: false,
-      href: () => this.moveToMainAdminProjects(),
-    },
-    {
-      text: 'New',
+      text: 'Tasks',
       disabled: true,
     },
   ];
-
-  submitLoading = false;
-
-  onClickCancel() {
-    this.moveToBack();
-  }
-
-  onRequestSuccess() {
-    this.moveToMainAdminProjects();
-  }
 }
 </script>

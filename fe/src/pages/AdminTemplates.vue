@@ -97,7 +97,7 @@ const STORAGE_TAB_INDEX = 2;
     ToolbarNavigation,
   }
 })
-export default class MainAdminLamdas extends VueBase {
+export default class AdminTemplates extends VueBase {
   private readonly itemsPerPage = ITEMS_PER_PAGE;
   private readonly navigationItems = [
     {

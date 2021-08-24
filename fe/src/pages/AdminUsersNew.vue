@@ -41,7 +41,7 @@ import {SignupQ} from '@/packet/user';
     FormUser,
   }
 })
-export default class MainAdminUsersNew extends VueBase {
+export default class AdminUsersNew extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',

@@ -1,37 +1,35 @@
 <i18n lang="yaml">
 en:
   header:
-    basic: "Edit user"
+    basic: "Edit project"
     detail: "Detail"
   subheader:
-    basic: "You can edit the user's basic properties."
-    detail: "Detailed information about this account."
+    basic: "You can edit the project's basic properties."
+    detail: "Detailed information about this project."
   label:
     created_at: "Created At"
     updated_at: "Updated At"
-    last_login: "Last signin"
-    delete: "Delete a user"
+    delete: "Delete a project"
   hint:
     delete: "Please be careful! It cannot be recovered."
-  delete_confirm: "Are you sure? Are you really removing this user?"
+  delete_confirm: "Are you sure? Are you really removing this project?"
   cancel: "Cancel"
   delete: "Delete"
 
 ko:
   header:
-    basic: "사용자 편집"
+    basic: "프로젝트 편집"
     detail: "상세 정보"
   subheader:
-    basic: "사용자의 기본 속성을 편집할 수 있습니다."
-    detail: "이 계정에 대한 자세한 정보입니다."
+    basic: "프로젝트의 기본 속성을 편집할 수 있습니다."
+    detail: "이 프로젝트에 대한 자세한 정보입니다."
   label:
-    created_at: "계정 생성일"
-    updated_at: "계정 갱신일"
-    last_login: "마지막 로그인"
-    delete: "사용자 제거"
+    created_at: "프로젝트 생성일"
+    updated_at: "프로젝트 갱신일"
+    delete: "프로젝트 제거"
   hint:
     delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
-  delete_confirm: "이 사용자를 정말 제거합니까?"
+  delete_confirm: "이 프로젝트를 정말 제거합니까?"
   cancel: "취소"
   delete: "제거"
 </i18n>
@@ -45,16 +43,16 @@ ko:
         :header="$t('header.basic')"
         :subheader="$t('subheader.basic')"
     >
-      <form-user
-          disable-username
-          hide-password
+      <form-project
+          disable-group
+          disable-slug
           hide-cancel-button
           :disable-submit-button="!modified"
           :value="current"
           @input="inputCurrent"
           :loading="showSubmitLoading"
           @ok="onClickOk"
-      ></form-user>
+      ></form-project>
     </left-title>
 
     <left-title
@@ -121,18 +119,18 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
-import FormUser, {UserItem} from '@/components/FormUser.vue';
-import {UserA, UpdateUserQ} from '@/packet/user';
+import FormProject, {ProjectItem} from '@/components/FormProject.vue';
+import {ProjectA, UpdateProjectQ} from '@/packet/project';
 import * as _ from 'lodash';
 
 @Component({
   components: {
     ToolbarNavigation,
     LeftTitle,
-    FormUser,
+    FormProject,
   }
 })
-export default class MainAdminUsersEdit extends VueBase {
+export default class AdminProjectsEdit extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',
@@ -140,9 +138,9 @@ export default class MainAdminUsersEdit extends VueBase {
       href: () => this.moveToMainAdminOverview(),
     },
     {
-      text: 'Users',
+      text: 'Projects',
       disabled: false,
-      href: () => this.moveToMainAdminUsers(),
+      href: () => this.moveToMainAdminProjects(),
     },
     {
       text: 'Edit',
@@ -163,26 +161,30 @@ export default class MainAdminUsersEdit extends VueBase {
   ];
 
   detailItems = [] as Array<object>;
-  current = new UserItem();
-  original = new UserItem();
+  current = new ProjectItem();
+  original = new ProjectItem();
 
   modified = false;
   showSubmitLoading = false;
   showDeleteDialog = false;
   showDeleteLoading = false;
 
-  get username(): string {
-    return this.$route.params.username;
+  get group(): string {
+    return this.$route.params.group;
+  }
+
+  get project(): string {
+    return this.$route.params.project;
   }
 
   created() {
-    this.requestUser();
+    this.requestProject();
   }
 
-  requestUser() {
-    this.$api2.getAdminUsersPuser(this.username)
+  requestProject() {
+    this.$api2.getAdminProjectsPgroupPproject(this.group, this.project)
         .then(body => {
-          this.updateUser(body);
+          this.updateProject(body);
         })
         .catch(error => {
           this.toastRequestFailure(error);
@@ -190,23 +192,20 @@ export default class MainAdminUsersEdit extends VueBase {
         });
   }
 
-  updateUser(user: UserA) {
-    const nickname = user.nickname || '';
-    const email = user.email || '';
-    const phone1 = user.phone1 || '';
-    const phone2 = user.phone2 || '';
-    const isAdmin = !!user.is_admin;
-    const createdAt = user.created_at || '';
-    const updatedAt = user.updated_at || '';
-    const lastLogin = user.last_login || '';
+  updateProject(group: ProjectA) {
+    const name = group.name || '';
+    const description = group.description || '';
+    const features = group.features || [];
+    const visibility = group.visibility || 0;
+    const createdAt = group.created_at || '';
+    const updatedAt = group.updated_at || '';
 
-    this.current.username = this.username;
-    this.current.password = '';
-    this.current.nickname = nickname;
-    this.current.email = email;
-    this.current.phone1 = phone1;
-    this.current.phone2 = phone2;
-    this.current.isAdmin = isAdmin;
+    this.current.group = this.group;
+    this.current.slug = this.project;
+    this.current.name = name;
+    this.current.description = description;
+    this.current.features = features;
+    this.current.visibility = visibility;
     this.original.fromObject(this.current);
     this.modified = !_.isEqual(this.original, this.current);
 
@@ -219,33 +218,28 @@ export default class MainAdminUsersEdit extends VueBase {
         name: this.$t('label.updated_at'),
         value: updatedAt,
       },
-      {
-        name: this.$t('label.last_login'),
-        value: lastLogin,
-      },
     ];
   }
 
-  inputCurrent(value: UserItem) {
+  inputCurrent(value: ProjectItem) {
     this.current = value;
     this.modified = !_.isEqual(this.original, this.current);
   }
 
-  onClickOk(event: UserItem) {
+  onClickOk(event: ProjectItem) {
     const body = {
-      nickname: event.nickname,
-      email: event.email,
-      phone1: event.phone1,
-      phone2: event.phone2,
-      is_admin: event.isAdmin,
-    } as UpdateUserQ;
+      name: event.name,
+      description: event.description,
+      features: event.features,
+      visibility: event.visibility,
+    } as UpdateProjectQ;
 
     this.showSubmitLoading = true;
-    this.$api2.patchAdminUsersPuser(this.username, body)
+    this.$api2.patchAdminProjectsPgroupPproject(this.group, this.project, body)
         .then(() => {
           this.showSubmitLoading = false;
           this.toastRequestSuccess();
-          this.requestUser();
+          this.requestProject();
         })
         .catch(error => {
           this.showSubmitLoading = false;
@@ -267,12 +261,12 @@ export default class MainAdminUsersEdit extends VueBase {
 
   onClickDeleteOk() {
     this.showDeleteLoading = true;
-    this.$api2.deleteAdminUsersPuser(this.username)
+    this.$api2.deleteAdminProjectsPgroupProject(this.group, this.project)
         .then(() => {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;
           this.toastRequestSuccess();
-          this.moveToMainAdminUsers();
+          this.moveToMainAdminProjects();
         })
         .catch(error => {
           this.showDeleteLoading = false;

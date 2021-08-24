@@ -1,35 +1,35 @@
 <i18n lang="yaml">
 en:
   header:
-    basic: "Edit group"
+    basic: "Edit permission"
     detail: "Detail"
   subheader:
-    basic: "You can edit the group's basic properties."
-    detail: "Detailed information about this group."
+    basic: "You can edit the permission's basic properties."
+    detail: "Detailed information about this permission."
   label:
     created_at: "Created At"
     updated_at: "Updated At"
-    delete: "Delete a group"
+    delete: "Delete a permission"
   hint:
     delete: "Please be careful! It cannot be recovered."
-  delete_confirm: "Are you sure? Are you really removing this group?"
+  delete_confirm: "Are you sure? Are you really removing this permission?"
   cancel: "Cancel"
   delete: "Delete"
 
 ko:
   header:
-    basic: "그룹 편집"
+    basic: "권한 편집"
     detail: "상세 정보"
   subheader:
-    basic: "그룹의 기본 속성을 편집할 수 있습니다."
-    detail: "이 그룹에 대한 자세한 정보입니다."
+    basic: "권한의 기본 속성을 편집할 수 있습니다."
+    detail: "이 권한에 대한 자세한 정보입니다."
   label:
-    created_at: "그룹 생성일"
-    updated_at: "그룹 갱신일"
-    delete: "그룹 제거"
+    created_at: "권한 생성일"
+    updated_at: "권한 갱신일"
+    delete: "권한 제거"
   hint:
     delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
-  delete_confirm: "이 그룹을 정말 제거합니까?"
+  delete_confirm: "이 권한를 정말 제거합니까?"
   cancel: "취소"
   delete: "제거"
 </i18n>
@@ -43,16 +43,15 @@ ko:
         :header="$t('header.basic')"
         :subheader="$t('subheader.basic')"
     >
-      <form-group
-          disable-slug
+      <form-permission
+          disable-name
           hide-cancel-button
-          hide-origin-prefix
           :disable-submit-button="!modified"
           :value="current"
           @input="inputCurrent"
           :loading="showSubmitLoading"
           @ok="onClickOk"
-      ></form-group>
+      ></form-permission>
     </left-title>
 
     <left-title
@@ -119,18 +118,18 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
-import FormGroup, {GroupItem} from '@/components/FormGroup.vue';
-import {GroupA, UpdateGroupQ} from '@/packet/group';
+import FormPermission, {PermissionItem} from '@/components/FormPermission.vue';
+import {PermissionA, UpdatePermissionQ} from '@/packet/permission';
 import * as _ from 'lodash';
 
 @Component({
   components: {
     ToolbarNavigation,
     LeftTitle,
-    FormGroup,
+    FormPermission,
   }
 })
-export default class MainAdminGroupsEdit extends VueBase {
+export default class AdminPermissionsEdit extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',
@@ -138,9 +137,9 @@ export default class MainAdminGroupsEdit extends VueBase {
       href: () => this.moveToMainAdminOverview(),
     },
     {
-      text: 'Groups',
+      text: 'Permissions',
       disabled: false,
-      href: () => this.moveToMainAdminGroups(),
+      href: () => this.moveToMainAdminPermissions(),
     },
     {
       text: 'Edit',
@@ -161,26 +160,26 @@ export default class MainAdminGroupsEdit extends VueBase {
   ];
 
   detailItems = [] as Array<object>;
-  current = new GroupItem();
-  original = new GroupItem();
+  current = new PermissionItem();
+  original = new PermissionItem();
 
   modified = false;
   showSubmitLoading = false;
   showDeleteDialog = false;
   showDeleteLoading = false;
 
-  get group(): string {
-    return this.$route.params.group;
+  get perm(): string {
+    return this.$route.params.perm;
   }
 
   created() {
-    this.requestGroup();
+    this.requestPermission();
   }
 
-  requestGroup() {
-    this.$api2.getAdminGroupsPgroup(this.group)
+  requestPermission() {
+    this.$api2.getAdminPermissionsPperm(this.perm)
         .then(body => {
-          this.updateGroup(body);
+          this.updatePermission(body);
         })
         .catch(error => {
           this.toastRequestFailure(error);
@@ -188,19 +187,40 @@ export default class MainAdminGroupsEdit extends VueBase {
         });
   }
 
-  updateGroup(group: GroupA) {
-    const name = group.name || '';
-    const description = group.description || '';
-    const features = group.features || [];
-    const visibility = group.visibility || 0;
-    const createdAt = group.created_at || '';
-    const updatedAt = group.updated_at || '';
+  updatePermission(permission: PermissionA) {
+    const name = permission.name || '';
+    const description = permission.description || '';
+    const features = permission.features || [];
+    const r_layout = permission.r_layout || false;
+    const w_layout = permission.w_layout || false;
+    const r_storage = permission.r_storage || false;
+    const w_storage = permission.w_storage || false;
+    const r_manager = permission.r_manager || false;
+    const w_manager = permission.w_manager || false;
+    const r_graph = permission.r_graph || false;
+    const w_graph = permission.w_graph || false;
+    const r_member = permission.r_member || false;
+    const w_member = permission.w_member || false;
+    const r_setting = permission.r_setting || false;
+    const w_setting = permission.w_setting || false;
+    const createdAt = permission.created_at || '';
+    const updatedAt = permission.updated_at || '';
 
-    this.current.slug = this.group;
     this.current.name = name;
     this.current.description = description;
     this.current.features = features;
-    this.current.visibility = visibility;
+    this.current.r_layout = r_layout;
+    this.current.w_layout = w_layout;
+    this.current.r_storage = r_storage;
+    this.current.w_storage = w_storage;
+    this.current.r_manager = r_manager;
+    this.current.w_manager = w_manager;
+    this.current.r_graph = r_graph;
+    this.current.w_graph = w_graph;
+    this.current.r_member = r_member;
+    this.current.w_member = w_member;
+    this.current.r_setting = r_setting;
+    this.current.w_setting = w_setting;
     this.original.fromObject(this.current);
     this.modified = !_.isEqual(this.original, this.current);
 
@@ -216,25 +236,36 @@ export default class MainAdminGroupsEdit extends VueBase {
     ];
   }
 
-  inputCurrent(value: GroupItem) {
+  inputCurrent(value: PermissionItem) {
     this.current = value;
     this.modified = !_.isEqual(this.original, this.current);
   }
 
-  onClickOk(event: GroupItem) {
+  onClickOk(event: PermissionItem) {
     const body = {
       name: event.name,
       description: event.description,
       features: event.features,
-      visibility: event.visibility,
-    } as UpdateGroupQ;
+      r_layout: event.r_layout,
+      w_layout: event.w_layout,
+      r_storage: event.r_storage,
+      w_storage: event.w_storage,
+      r_manager: event.r_manager,
+      w_manager: event.w_manager,
+      r_graph: event.r_graph,
+      w_graph: event.w_graph,
+      r_member: event.r_member,
+      w_member: event.w_member,
+      r_setting: event.r_setting,
+      w_setting: event.w_setting,
+    } as UpdatePermissionQ;
 
     this.showSubmitLoading = true;
-    this.$api2.patchAdminGroupsPgroup(this.group, body)
+    this.$api2.patchAdminPermissionsPperm(this.perm, body)
         .then(() => {
           this.showSubmitLoading = false;
           this.toastRequestSuccess();
-          this.requestGroup();
+          this.requestPermission();
         })
         .catch(error => {
           this.showSubmitLoading = false;
@@ -256,12 +287,12 @@ export default class MainAdminGroupsEdit extends VueBase {
 
   onClickDeleteOk() {
     this.showDeleteLoading = true;
-    this.$api2.deleteAdminGroupsGroup(this.group)
+    this.$api2.deleteAdminPermissionsPperm(this.perm)
         .then(() => {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;
           this.toastRequestSuccess();
-          this.moveToMainAdminGroups();
+          this.moveToMainAdminPermissions();
         })
         .catch(error => {
           this.showDeleteLoading = false;

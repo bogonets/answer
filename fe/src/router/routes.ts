@@ -9,24 +9,24 @@ import Error from '@/pages/Error.vue';
 import MainAbout from '@/pages/MainAbout.vue';
 import MainAccountAppearance from '@/pages/MainAccountAppearance.vue';
 import MainAccount from '@/pages/MainAccount.vue';
-import MainAdminInfos from '@/pages/MainAdminInfos.vue';
-import MainAdminConfigs from '@/pages/MainAdminConfigs.vue';
-import MainAdminGroups from '@/pages/MainAdminGroups.vue';
-import MainAdminGroupsEdit from '@/pages/MainAdminGroupsEdit.vue';
-import MainAdminGroupsNew from '@/pages/MainAdminGroupsNew.vue';
-import MainAdminLamdas from '@/pages/MainAdminLamdas.vue';
-import MainAdminOverview from '@/pages/MainAdminOverview.vue';
-import MainAdminPermissions from '@/pages/MainAdminPermissions.vue';
-import MainAdminPermissionsNew from '@/pages/MainAdminPermissionsNew.vue';
-import MainAdminPermissionsEdit from '@/pages/MainAdminPermissionsEdit.vue';
-import MainAdminProjects from '@/pages/MainAdminProjects.vue';
-import MainAdminProjectsNew from '@/pages/MainAdminProjectsNew.vue';
-import MainAdminProjectsEdit from '@/pages/MainAdminProjectsEdit.vue';
-import MainAdminTasks from '@/pages/MainAdminTasks.vue';
-import MainAdminUsers from '@/pages/MainAdminUsers.vue';
-import MainAdminUsersEdit from '@/pages/MainAdminUsersEdit.vue';
-import MainAdminUsersNew from '@/pages/MainAdminUsersNew.vue';
-import MainAdmin from '@/pages/MainAdmin.vue';
+import AdminInfos from '@/pages/AdminInfos.vue';
+import AdminConfigs from '@/pages/AdminConfigs.vue';
+import AdminGroups from '@/pages/AdminGroups.vue';
+import AdminGroupsEdit from '@/pages/AdminGroupsEdit.vue';
+import AdminGroupsNew from '@/pages/AdminGroupsNew.vue';
+import AdminTemplates from '@/pages/AdminTemplates.vue';
+import AdminOverview from '@/pages/AdminOverview.vue';
+import AdminPermissions from '@/pages/AdminPermissions.vue';
+import AdminPermissionsNew from '@/pages/AdminPermissionsNew.vue';
+import AdminPermissionsEdit from '@/pages/AdminPermissionsEdit.vue';
+import AdminProjects from '@/pages/AdminProjects.vue';
+import AdminProjectsNew from '@/pages/AdminProjectsNew.vue';
+import AdminProjectsEdit from '@/pages/AdminProjectsEdit.vue';
+import AdminTasks from '@/pages/AdminTasks.vue';
+import AdminUsers from '@/pages/AdminUsers.vue';
+import AdminUsersEdit from '@/pages/AdminUsersEdit.vue';
+import AdminUsersNew from '@/pages/AdminUsersNew.vue';
+import Admin from '@/pages/Admin.vue';
 import MainDashboard from '@/pages/MainDashboard.vue';
 import MainDevTools from '@/pages/MainDevTools.vue';
 import MainGroups from '@/pages/MainGroups.vue';
@@ -65,96 +65,96 @@ export const mainAccountChildren = [
     },
 ];
 
-export const mainAdminChildren = [
+export const adminChildren = [
     {
         path: '',
-        name: Names.mainAdmin,
+        name: Names.admin,
         redirect: 'overview',
     },
     {
         path: 'overview',
-        component: MainAdminOverview,
-        name: Names.mainAdminOverview,
+        component: AdminOverview,
+        name: Names.adminOverview,
     },
     {
         path: 'users',
-        component: MainAdminUsers,
-        name: Names.mainAdminUsers,
+        component: AdminUsers,
+        name: Names.adminUsers,
     },
     {
         path: 'users/new',
-        component: MainAdminUsersNew,
-        name: Names.mainAdminUsersNew,
+        component: AdminUsersNew,
+        name: Names.adminUsersNew,
     },
     {
         path: 'users/edit',
-        component: MainAdminUsersEdit,
-        name: Names.mainAdminUsersEdit,
+        component: AdminUsersEdit,
+        name: Names.adminUsersEdit,
     },
     {
         path: 'groups',
-        component: MainAdminGroups,
-        name: Names.mainAdminGroups,
+        component: AdminGroups,
+        name: Names.adminGroups,
     },
     {
         path: 'groups/new',
-        component: MainAdminGroupsNew,
-        name: Names.mainAdminGroupsNew,
+        component: AdminGroupsNew,
+        name: Names.adminGroupsNew,
     },
     {
         path: 'groups/edit',
-        component: MainAdminGroupsEdit,
-        name: Names.mainAdminGroupsEdit,
+        component: AdminGroupsEdit,
+        name: Names.adminGroupsEdit,
     },
     {
         path: 'permissions',
-        component: MainAdminPermissions,
-        name: Names.mainAdminPermissions,
+        component: AdminPermissions,
+        name: Names.adminPermissions,
     },
     {
         path: 'permissions/new',
-        component: MainAdminPermissionsNew,
-        name: Names.mainAdminPermissionsNew,
+        component: AdminPermissionsNew,
+        name: Names.adminPermissionsNew,
     },
     {
         path: 'permissions/edit',
-        component: MainAdminPermissionsEdit,
-        name: Names.mainAdminPermissionsEdit,
+        component: AdminPermissionsEdit,
+        name: Names.adminPermissionsEdit,
     },
     {
         path: 'projects',
-        component: MainAdminProjects,
-        name: Names.mainAdminProjects,
+        component: AdminProjects,
+        name: Names.adminProjects,
     },
     {
         path: 'projects/new',
-        component: MainAdminProjectsNew,
-        name: Names.mainAdminProjectsNew,
+        component: AdminProjectsNew,
+        name: Names.adminProjectsNew,
     },
     {
         path: 'projects/edit',
-        component: MainAdminProjectsEdit,
-        name: Names.mainAdminProjectsEdit,
+        component: AdminProjectsEdit,
+        name: Names.adminProjectsEdit,
     },
     {
         path: 'tasks',
-        component: MainAdminTasks,
-        name: Names.mainAdminTasks,
+        component: AdminTasks,
+        name: Names.adminTasks,
     },
     {
         path: 'configs',
-        component: MainAdminConfigs,
-        name: Names.mainAdminConfigs,
+        component: AdminConfigs,
+        name: Names.adminConfigs,
     },
     {
         path: 'infos',
-        component: MainAdminInfos,
-        name: Names.mainAdminInfos,
+        component: AdminInfos,
+        name: Names.adminInfos,
     },
     {
         path: 'lamdas',
-        component: MainAdminLamdas,
-        name: Names.mainAdminLamdas,
+        component: AdminTemplates,
+        name: Names.adminLamdas,
     },
 ]
 
@@ -262,11 +262,11 @@ export const mainChildren = [
         component: MainAccount,
         children: mainAccountChildren,
     },
-    {
-        path: 'admin',
-        component: MainAdmin,
-        children: mainAdminChildren,
-    },
+    // {
+    //     path: 'admin',
+    //     component: MainAdmin,
+    //     children: mainAdminChildren,
+    // },
     {
         path: 'dev',
         component: MainDevTools,
@@ -325,6 +325,12 @@ export const Routes = [
         component: Main,
         meta: {requiresAuth: true},
         children: mainChildren,
+    },
+    {
+        path: '/admin',
+        component: Admin,
+        meta: {requiresAuth: true},
+        children: adminChildren,
     },
     {
         path: '*',

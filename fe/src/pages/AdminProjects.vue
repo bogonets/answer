@@ -26,7 +26,7 @@ import {ProjectA} from '@/packet/project';
     TableProjects,
   }
 })
-export default class MainAdminProjects extends VueBase {
+export default class AdminProjects extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',

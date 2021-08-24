@@ -182,7 +182,7 @@ import {CreateInfoQ, UpdateInfoQ} from "@/packet/info";
     CardInfoNew: CardInfoNew,
   }
 })
-export default class MainAdminInfos extends VueBase {
+export default class AdminInfos extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',

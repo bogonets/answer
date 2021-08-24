@@ -109,75 +109,75 @@ export default class VueBase extends Vue {
     }
 
     moveToMainAdminEnvs() {
-        this.moveTo(this.routeNames.mainAdminInfos);
+        this.moveTo(this.routeNames.adminInfos);
     }
 
     moveToMainAdminFeatures() {
-        this.moveTo(this.routeNames.mainAdminConfigs);
+        this.moveTo(this.routeNames.adminConfigs);
     }
 
     moveToMainAdminGroups() {
-        this.moveTo(this.routeNames.mainAdminGroups);
+        this.moveTo(this.routeNames.adminGroups);
     }
 
     moveToMainAdminGroupsNew() {
-        this.moveTo(this.routeNames.mainAdminGroupsNew);
+        this.moveTo(this.routeNames.adminGroupsNew);
     }
 
     moveToMainAdminGroupsEdit(group: string) {
-        this.moveTo(this.routeNames.mainAdminGroupsEdit, {group});
+        this.moveTo(this.routeNames.adminGroupsEdit, {group});
     }
 
     moveToMainAdminPermissions() {
-        this.moveTo(this.routeNames.mainAdminPermissions);
+        this.moveTo(this.routeNames.adminPermissions);
     }
 
     moveToMainAdminPermissionsEdit(perm: string) {
-        this.moveTo(this.routeNames.mainAdminPermissionsEdit, {perm});
+        this.moveTo(this.routeNames.adminPermissionsEdit, {perm});
     }
 
     moveToMainAdminPermissionsNew() {
-        this.moveTo(this.routeNames.mainAdminPermissionsNew);
+        this.moveTo(this.routeNames.adminPermissionsNew);
     }
 
     moveToMainAdminProjects() {
-        this.moveTo(this.routeNames.mainAdminProjects);
+        this.moveTo(this.routeNames.adminProjects);
     }
 
     moveToMainAdminProjectsEdit(group: string, project: string) {
-        this.moveTo(this.routeNames.mainAdminProjectsEdit, {group, project});
+        this.moveTo(this.routeNames.adminProjectsEdit, {group, project});
     }
 
     moveToMainAdminProjectsNew(group?: string) {
-        this.moveTo(this.routeNames.mainAdminProjectsNew, {group});
+        this.moveTo(this.routeNames.adminProjectsNew, {group});
     }
 
     moveToMainAdminTasks() {
-        this.moveTo(this.routeNames.mainAdminTasks);
+        this.moveTo(this.routeNames.adminTasks);
     }
 
     moveToMainAdminTemplates() {
-        this.moveTo(this.routeNames.mainAdminLamdas);
+        this.moveTo(this.routeNames.adminLamdas);
     }
 
     moveToMainAdminOverview() {
-        this.moveTo(this.routeNames.mainAdminOverview);
+        this.moveTo(this.routeNames.adminOverview);
     }
 
     moveToMainAdminUsersEdit(username: string) {
-        this.moveTo(this.routeNames.mainAdminUsersEdit, {username: username});
+        this.moveTo(this.routeNames.adminUsersEdit, {username: username});
     }
 
     moveToMainAdminUsersNew() {
-        this.moveTo(this.routeNames.mainAdminUsersNew);
+        this.moveTo(this.routeNames.adminUsersNew);
     }
 
     moveToMainAdminUsers() {
-        this.moveTo(this.routeNames.mainAdminUsers);
+        this.moveTo(this.routeNames.adminUsers);
     }
 
     moveToMainAdmin() {
-        this.moveTo(this.routeNames.mainAdmin);
+        this.moveTo(this.routeNames.admin);
     }
 
     moveToMainDashboard() {

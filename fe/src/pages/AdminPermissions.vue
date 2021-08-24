@@ -1,34 +1,35 @@
 <i18n lang="yaml">
 en:
-  search_label: "You can filter by username or email."
-  new_item: "New User"
+  search_label: "You can filter by name or description."
+  new_item: "New Permission"
   headers:
-    username: "Username"
-    email: "E-Mail"
-    is_admin: "Admin"
+    group: "Group"
+    slug: "Slug"
+    name: "Name"
+    description: "Description"
     created_at: "Created at"
-    last_login: "Last sign-in"
+    updated_at: "Updated at"
     actions: "Actions"
   loading: "Loading... Please wait"
-  empty_item: "Empty User"
+  empty_items: "Empty Permissions"
 
 ko:
-  search_label: "사용자명 또는 이메일을 필터링할 수 있습니다."
-  new_item: "새로운 사용자"
+  search_label: "이름 또는 설명을 필터링할 수 있습니다."
+  new_item: "새로운 권한"
   headers:
-    username: "사용자명"
-    email: "이메일"
-    is_admin: "관리자"
+    group: "그룹"
+    slug: "슬러그"
+    name: "이름"
+    description: "설명"
     created_at: "생성일"
-    last_login: "마지막 로그인"
+    updated_at: "수정일"
     actions: "관리"
   loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-  empty_item: "사용자가 존재하지 않습니다."
+  empty_items: "프로젝트가 존재하지 않습니다."
 </i18n>
 
 <template>
   <v-container>
-
     <toolbar-navigation :items="navigationItems"></toolbar-navigation>
     <v-divider></v-divider>
 
@@ -39,10 +40,8 @@ ko:
         :loading="showLoading"
         :loading-text="$t('loading')"
     >
-
       <template v-slot:top>
         <v-toolbar flat>
-
           <v-text-field
               class="mr-4"
               v-model="filterText"
@@ -51,54 +50,46 @@ ko:
               single-line
               hide-details
           ></v-text-field>
-
           <v-btn color="primary" @click="onClickNew">
             {{ $t('new_item') }}
           </v-btn>
-
         </v-toolbar>
-      </template>
-
-      <template v-slot:item.is_admin="{ item }">
-        <v-icon dense v-if="!!item.is_admin">mdi-check</v-icon>
       </template>
 
       <template v-slot:item.created_at="{ item }">
         {{ utcToDate(item.created_at) }}
       </template>
 
-      <template v-slot:item.last_login="{ item }">
-        {{ utcToDate(item.last_login) }}
+      <template v-slot:item.updated_at="{ item }">
+        {{ utcToDate(item.updated_at) }}
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon small @click="onClickEdit(item)">
+        <v-icon small class="mr-2" @click="onClickEdit(item)">
           mdi-pencil
         </v-icon>
       </template>
 
       <template v-slot:no-data>
-        {{ $t('empty_item') }}
+        {{ $t('empty_items') }}
       </template>
-
     </v-data-table>
+
   </v-container>
 </template>
 
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import AppBarTitle from '@/components/AppBarTitle.vue';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import {UserA} from '@/packet/user';
+import {PermissionA} from '@/packet/permission';
 
 @Component({
   components: {
     ToolbarNavigation,
-    AppBarTitle
   }
 })
-export default class MainAdminUsers extends VueBase {
+export default class AdminPermissions extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',
@@ -106,29 +97,23 @@ export default class MainAdminUsers extends VueBase {
       href: () => this.moveToMainAdminOverview(),
     },
     {
-      text: 'Users',
+      text: 'Permissions',
       disabled: true,
     },
   ];
 
   private readonly headers = [
     {
-      text: this.$t('headers.username').toString(),
-      align: 'start',
-      filterable: true,
-      value: 'username',
-    },
-    {
-      text: this.$t('headers.email').toString(),
+      text: this.$t('headers.name').toString(),
       align: 'center',
       filterable: true,
-      value: 'email',
+      value: 'name',
     },
     {
-      text: this.$t('headers.is_admin').toString(),
+      text: this.$t('headers.description').toString(),
       align: 'center',
-      filterable: false,
-      value: 'is_admin',
+      filterable: true,
+      value: 'description',
     },
     {
       text: this.$t('headers.created_at').toString(),
@@ -137,10 +122,10 @@ export default class MainAdminUsers extends VueBase {
       value: 'created_at',
     },
     {
-      text: this.$t('headers.last_login').toString(),
+      text: this.$t('headers.updated_at').toString(),
       align: 'center',
       filterable: false,
-      value: 'last_login',
+      value: 'updated_at',
     },
     {
       text: this.$t('headers.actions').toString(),
@@ -149,14 +134,19 @@ export default class MainAdminUsers extends VueBase {
       sortable: false,
       value: 'actions',
     },
-  ]
+  ];
 
   filterText = '';
-  tableItems: Array<UserA> = [];
+  tableItems = [] as Array<PermissionA>;
   showLoading = true;
 
   mounted() {
-    this.$api2.getAdminUsers()
+    this.updateItems();
+  }
+
+  updateItems() {
+    this.showLoading = true;
+    this.$api2.getAdminPermissions()
         .then(items => {
           this.tableItems = items;
           this.showLoading = false;
@@ -172,11 +162,11 @@ export default class MainAdminUsers extends VueBase {
   }
 
   onClickNew() {
-    this.moveToMainAdminUsersNew();
+    this.moveToMainAdminPermissionsNew();
   }
 
-  onClickEdit(item: UserA) {
-    this.moveToMainAdminUsersEdit(item.username);
+  onClickEdit(item: PermissionA) {
+    this.moveToMainAdminPermissionsEdit(item.name);
   }
 }
 </script>

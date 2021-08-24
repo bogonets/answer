@@ -3,12 +3,11 @@
     <toolbar-navigation :items="navigationItems"></toolbar-navigation>
     <v-divider></v-divider>
 
-    <table-groups
+    <form-project-new
         request-type="admin"
-        @click:new="onClickNew"
-        @click:edit="onClickEdit"
-        @click:move="onClickMove"
-    ></table-groups>
+        @cancel="onClickCancel"
+        @request:success="onRequestSuccess"
+    ></form-project-new>
 
   </v-container>
 </template>
@@ -17,16 +16,15 @@
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import TableGroups from '@/components/TableGroups.vue';
-import {GroupA} from '@/packet/group';
+import FormProjectNew from "@/components/FormProjectNew.vue";
 
 @Component({
   components: {
     ToolbarNavigation,
-    TableGroups,
+    FormProjectNew,
   }
 })
-export default class MainAdminGroups extends VueBase {
+export default class AdminProjectsNew extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',
@@ -34,20 +32,24 @@ export default class MainAdminGroups extends VueBase {
       href: () => this.moveToMainAdminOverview(),
     },
     {
-      text: 'Groups',
+      text: 'Projects',
+      disabled: false,
+      href: () => this.moveToMainAdminProjects(),
+    },
+    {
+      text: 'New',
       disabled: true,
     },
   ];
 
-  onClickNew() {
-    this.moveToMainAdminGroupsNew();
+  submitLoading = false;
+
+  onClickCancel() {
+    this.moveToBack();
   }
 
-  onClickEdit(item: GroupA) {
-    this.moveToMainAdminGroupsEdit(item.slug);
-  }
-
-  onClickMove(item: GroupA) {
+  onRequestSuccess() {
+    this.moveToMainAdminProjects();
   }
 }
 </script>

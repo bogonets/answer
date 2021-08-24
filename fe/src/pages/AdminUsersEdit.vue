@@ -1,35 +1,37 @@
 <i18n lang="yaml">
 en:
   header:
-    basic: "Edit permission"
+    basic: "Edit user"
     detail: "Detail"
   subheader:
-    basic: "You can edit the permission's basic properties."
-    detail: "Detailed information about this permission."
+    basic: "You can edit the user's basic properties."
+    detail: "Detailed information about this account."
   label:
     created_at: "Created At"
     updated_at: "Updated At"
-    delete: "Delete a permission"
+    last_login: "Last signin"
+    delete: "Delete a user"
   hint:
     delete: "Please be careful! It cannot be recovered."
-  delete_confirm: "Are you sure? Are you really removing this permission?"
+  delete_confirm: "Are you sure? Are you really removing this user?"
   cancel: "Cancel"
   delete: "Delete"
 
 ko:
   header:
-    basic: "권한 편집"
+    basic: "사용자 편집"
     detail: "상세 정보"
   subheader:
-    basic: "권한의 기본 속성을 편집할 수 있습니다."
-    detail: "이 권한에 대한 자세한 정보입니다."
+    basic: "사용자의 기본 속성을 편집할 수 있습니다."
+    detail: "이 계정에 대한 자세한 정보입니다."
   label:
-    created_at: "권한 생성일"
-    updated_at: "권한 갱신일"
-    delete: "권한 제거"
+    created_at: "계정 생성일"
+    updated_at: "계정 갱신일"
+    last_login: "마지막 로그인"
+    delete: "사용자 제거"
   hint:
     delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
-  delete_confirm: "이 권한를 정말 제거합니까?"
+  delete_confirm: "이 사용자를 정말 제거합니까?"
   cancel: "취소"
   delete: "제거"
 </i18n>
@@ -43,15 +45,16 @@ ko:
         :header="$t('header.basic')"
         :subheader="$t('subheader.basic')"
     >
-      <form-permission
-          disable-name
+      <form-user
+          disable-username
+          hide-password
           hide-cancel-button
           :disable-submit-button="!modified"
           :value="current"
           @input="inputCurrent"
           :loading="showSubmitLoading"
           @ok="onClickOk"
-      ></form-permission>
+      ></form-user>
     </left-title>
 
     <left-title
@@ -118,18 +121,18 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
-import FormPermission, {PermissionItem} from '@/components/FormPermission.vue';
-import {PermissionA, UpdatePermissionQ} from '@/packet/permission';
+import FormUser, {UserItem} from '@/components/FormUser.vue';
+import {UserA, UpdateUserQ} from '@/packet/user';
 import * as _ from 'lodash';
 
 @Component({
   components: {
     ToolbarNavigation,
     LeftTitle,
-    FormPermission,
+    FormUser,
   }
 })
-export default class MainAdminPermissionsEdit extends VueBase {
+export default class AdminUsersEdit extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',
@@ -137,9 +140,9 @@ export default class MainAdminPermissionsEdit extends VueBase {
       href: () => this.moveToMainAdminOverview(),
     },
     {
-      text: 'Permissions',
+      text: 'Users',
       disabled: false,
-      href: () => this.moveToMainAdminPermissions(),
+      href: () => this.moveToMainAdminUsers(),
     },
     {
       text: 'Edit',
@@ -160,26 +163,26 @@ export default class MainAdminPermissionsEdit extends VueBase {
   ];
 
   detailItems = [] as Array<object>;
-  current = new PermissionItem();
-  original = new PermissionItem();
+  current = new UserItem();
+  original = new UserItem();
 
   modified = false;
   showSubmitLoading = false;
   showDeleteDialog = false;
   showDeleteLoading = false;
 
-  get perm(): string {
-    return this.$route.params.perm;
+  get username(): string {
+    return this.$route.params.username;
   }
 
   created() {
-    this.requestPermission();
+    this.requestUser();
   }
 
-  requestPermission() {
-    this.$api2.getAdminPermissionsPperm(this.perm)
+  requestUser() {
+    this.$api2.getAdminUsersPuser(this.username)
         .then(body => {
-          this.updatePermission(body);
+          this.updateUser(body);
         })
         .catch(error => {
           this.toastRequestFailure(error);
@@ -187,40 +190,23 @@ export default class MainAdminPermissionsEdit extends VueBase {
         });
   }
 
-  updatePermission(permission: PermissionA) {
-    const name = permission.name || '';
-    const description = permission.description || '';
-    const features = permission.features || [];
-    const r_layout = permission.r_layout || false;
-    const w_layout = permission.w_layout || false;
-    const r_storage = permission.r_storage || false;
-    const w_storage = permission.w_storage || false;
-    const r_manager = permission.r_manager || false;
-    const w_manager = permission.w_manager || false;
-    const r_graph = permission.r_graph || false;
-    const w_graph = permission.w_graph || false;
-    const r_member = permission.r_member || false;
-    const w_member = permission.w_member || false;
-    const r_setting = permission.r_setting || false;
-    const w_setting = permission.w_setting || false;
-    const createdAt = permission.created_at || '';
-    const updatedAt = permission.updated_at || '';
+  updateUser(user: UserA) {
+    const nickname = user.nickname || '';
+    const email = user.email || '';
+    const phone1 = user.phone1 || '';
+    const phone2 = user.phone2 || '';
+    const isAdmin = !!user.is_admin;
+    const createdAt = user.created_at || '';
+    const updatedAt = user.updated_at || '';
+    const lastLogin = user.last_login || '';
 
-    this.current.name = name;
-    this.current.description = description;
-    this.current.features = features;
-    this.current.r_layout = r_layout;
-    this.current.w_layout = w_layout;
-    this.current.r_storage = r_storage;
-    this.current.w_storage = w_storage;
-    this.current.r_manager = r_manager;
-    this.current.w_manager = w_manager;
-    this.current.r_graph = r_graph;
-    this.current.w_graph = w_graph;
-    this.current.r_member = r_member;
-    this.current.w_member = w_member;
-    this.current.r_setting = r_setting;
-    this.current.w_setting = w_setting;
+    this.current.username = this.username;
+    this.current.password = '';
+    this.current.nickname = nickname;
+    this.current.email = email;
+    this.current.phone1 = phone1;
+    this.current.phone2 = phone2;
+    this.current.isAdmin = isAdmin;
     this.original.fromObject(this.current);
     this.modified = !_.isEqual(this.original, this.current);
 
@@ -233,39 +219,33 @@ export default class MainAdminPermissionsEdit extends VueBase {
         name: this.$t('label.updated_at'),
         value: updatedAt,
       },
+      {
+        name: this.$t('label.last_login'),
+        value: lastLogin,
+      },
     ];
   }
 
-  inputCurrent(value: PermissionItem) {
+  inputCurrent(value: UserItem) {
     this.current = value;
     this.modified = !_.isEqual(this.original, this.current);
   }
 
-  onClickOk(event: PermissionItem) {
+  onClickOk(event: UserItem) {
     const body = {
-      name: event.name,
-      description: event.description,
-      features: event.features,
-      r_layout: event.r_layout,
-      w_layout: event.w_layout,
-      r_storage: event.r_storage,
-      w_storage: event.w_storage,
-      r_manager: event.r_manager,
-      w_manager: event.w_manager,
-      r_graph: event.r_graph,
-      w_graph: event.w_graph,
-      r_member: event.r_member,
-      w_member: event.w_member,
-      r_setting: event.r_setting,
-      w_setting: event.w_setting,
-    } as UpdatePermissionQ;
+      nickname: event.nickname,
+      email: event.email,
+      phone1: event.phone1,
+      phone2: event.phone2,
+      is_admin: event.isAdmin,
+    } as UpdateUserQ;
 
     this.showSubmitLoading = true;
-    this.$api2.patchAdminPermissionsPperm(this.perm, body)
+    this.$api2.patchAdminUsersPuser(this.username, body)
         .then(() => {
           this.showSubmitLoading = false;
           this.toastRequestSuccess();
-          this.requestPermission();
+          this.requestUser();
         })
         .catch(error => {
           this.showSubmitLoading = false;
@@ -287,12 +267,12 @@ export default class MainAdminPermissionsEdit extends VueBase {
 
   onClickDeleteOk() {
     this.showDeleteLoading = true;
-    this.$api2.deleteAdminPermissionsPperm(this.perm)
+    this.$api2.deleteAdminUsersPuser(this.username)
         .then(() => {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;
           this.toastRequestSuccess();
-          this.moveToMainAdminPermissions();
+          this.moveToMainAdminUsers();
         })
         .catch(error => {
           this.showDeleteLoading = false;

@@ -1,15 +1,14 @@
-<i18n lang="yaml">
-en:
-  title: "Tasks"
-
-ko:
-  title: "테스크 관리"
-</i18n>
-
 <template>
   <v-container>
     <toolbar-navigation :items="navigationItems"></toolbar-navigation>
     <v-divider></v-divider>
+
+    <table-groups
+        request-type="admin"
+        @click:new="onClickNew"
+        @click:edit="onClickEdit"
+        @click:move="onClickMove"
+    ></table-groups>
 
   </v-container>
 </template>
@@ -18,13 +17,16 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import TableGroups from '@/components/TableGroups.vue';
+import {GroupA} from '@/packet/group';
 
 @Component({
   components: {
     ToolbarNavigation,
+    TableGroups,
   }
 })
-export default class MainAdminTasks extends VueBase {
+export default class AdminGroups extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',
@@ -32,9 +34,20 @@ export default class MainAdminTasks extends VueBase {
       href: () => this.moveToMainAdminOverview(),
     },
     {
-      text: 'Tasks',
+      text: 'Groups',
       disabled: true,
     },
   ];
+
+  onClickNew() {
+    this.moveToMainAdminGroupsNew();
+  }
+
+  onClickEdit(item: GroupA) {
+    this.moveToMainAdminGroupsEdit(item.slug);
+  }
+
+  onClickMove(item: GroupA) {
+  }
 }
 </script>

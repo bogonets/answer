@@ -24,7 +24,7 @@ import FormGroupNew from '@/components/FormGroupNew.vue';
     FormGroupNew,
   }
 })
-export default class MainAdminGroupsNew extends VueBase {
+export default class AdminGroupsNew extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',

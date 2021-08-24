@@ -43,7 +43,7 @@ import {CreatePermissionQ} from '@/packet/permission';
     FormPermission,
   }
 })
-export default class MainAdminPermissionsNew extends VueBase {
+export default class AdminPermissionsNew extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',

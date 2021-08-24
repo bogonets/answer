@@ -1,35 +1,35 @@
 <i18n lang="yaml">
 en:
   header:
-    basic: "Edit project"
+    basic: "Edit group"
     detail: "Detail"
   subheader:
-    basic: "You can edit the project's basic properties."
-    detail: "Detailed information about this project."
+    basic: "You can edit the group's basic properties."
+    detail: "Detailed information about this group."
   label:
     created_at: "Created At"
     updated_at: "Updated At"
-    delete: "Delete a project"
+    delete: "Delete a group"
   hint:
     delete: "Please be careful! It cannot be recovered."
-  delete_confirm: "Are you sure? Are you really removing this project?"
+  delete_confirm: "Are you sure? Are you really removing this group?"
   cancel: "Cancel"
   delete: "Delete"
 
 ko:
   header:
-    basic: "프로젝트 편집"
+    basic: "그룹 편집"
     detail: "상세 정보"
   subheader:
-    basic: "프로젝트의 기본 속성을 편집할 수 있습니다."
-    detail: "이 프로젝트에 대한 자세한 정보입니다."
+    basic: "그룹의 기본 속성을 편집할 수 있습니다."
+    detail: "이 그룹에 대한 자세한 정보입니다."
   label:
-    created_at: "프로젝트 생성일"
-    updated_at: "프로젝트 갱신일"
-    delete: "프로젝트 제거"
+    created_at: "그룹 생성일"
+    updated_at: "그룹 갱신일"
+    delete: "그룹 제거"
   hint:
     delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
-  delete_confirm: "이 프로젝트를 정말 제거합니까?"
+  delete_confirm: "이 그룹을 정말 제거합니까?"
   cancel: "취소"
   delete: "제거"
 </i18n>
@@ -43,16 +43,16 @@ ko:
         :header="$t('header.basic')"
         :subheader="$t('subheader.basic')"
     >
-      <form-project
-          disable-group
+      <form-group
           disable-slug
           hide-cancel-button
+          hide-origin-prefix
           :disable-submit-button="!modified"
           :value="current"
           @input="inputCurrent"
           :loading="showSubmitLoading"
           @ok="onClickOk"
-      ></form-project>
+      ></form-group>
     </left-title>
 
     <left-title
@@ -119,18 +119,18 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
-import FormProject, {ProjectItem} from '@/components/FormProject.vue';
-import {ProjectA, UpdateProjectQ} from '@/packet/project';
+import FormGroup, {GroupItem} from '@/components/FormGroup.vue';
+import {GroupA, UpdateGroupQ} from '@/packet/group';
 import * as _ from 'lodash';
 
 @Component({
   components: {
     ToolbarNavigation,
     LeftTitle,
-    FormProject,
+    FormGroup,
   }
 })
-export default class MainAdminProjectsEdit extends VueBase {
+export default class AdminGroupsEdit extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',
@@ -138,9 +138,9 @@ export default class MainAdminProjectsEdit extends VueBase {
       href: () => this.moveToMainAdminOverview(),
     },
     {
-      text: 'Projects',
+      text: 'Groups',
       disabled: false,
-      href: () => this.moveToMainAdminProjects(),
+      href: () => this.moveToMainAdminGroups(),
     },
     {
       text: 'Edit',
@@ -161,8 +161,8 @@ export default class MainAdminProjectsEdit extends VueBase {
   ];
 
   detailItems = [] as Array<object>;
-  current = new ProjectItem();
-  original = new ProjectItem();
+  current = new GroupItem();
+  original = new GroupItem();
 
   modified = false;
   showSubmitLoading = false;
@@ -173,18 +173,14 @@ export default class MainAdminProjectsEdit extends VueBase {
     return this.$route.params.group;
   }
 
-  get project(): string {
-    return this.$route.params.project;
-  }
-
   created() {
-    this.requestProject();
+    this.requestGroup();
   }
 
-  requestProject() {
-    this.$api2.getAdminProjectsPgroupPproject(this.group, this.project)
+  requestGroup() {
+    this.$api2.getAdminGroupsPgroup(this.group)
         .then(body => {
-          this.updateProject(body);
+          this.updateGroup(body);
         })
         .catch(error => {
           this.toastRequestFailure(error);
@@ -192,7 +188,7 @@ export default class MainAdminProjectsEdit extends VueBase {
         });
   }
 
-  updateProject(group: ProjectA) {
+  updateGroup(group: GroupA) {
     const name = group.name || '';
     const description = group.description || '';
     const features = group.features || [];
@@ -200,8 +196,7 @@ export default class MainAdminProjectsEdit extends VueBase {
     const createdAt = group.created_at || '';
     const updatedAt = group.updated_at || '';
 
-    this.current.group = this.group;
-    this.current.slug = this.project;
+    this.current.slug = this.group;
     this.current.name = name;
     this.current.description = description;
     this.current.features = features;
@@ -221,25 +216,25 @@ export default class MainAdminProjectsEdit extends VueBase {
     ];
   }
 
-  inputCurrent(value: ProjectItem) {
+  inputCurrent(value: GroupItem) {
     this.current = value;
     this.modified = !_.isEqual(this.original, this.current);
   }
 
-  onClickOk(event: ProjectItem) {
+  onClickOk(event: GroupItem) {
     const body = {
       name: event.name,
       description: event.description,
       features: event.features,
       visibility: event.visibility,
-    } as UpdateProjectQ;
+    } as UpdateGroupQ;
 
     this.showSubmitLoading = true;
-    this.$api2.patchAdminProjectsPgroupPproject(this.group, this.project, body)
+    this.$api2.patchAdminGroupsPgroup(this.group, body)
         .then(() => {
           this.showSubmitLoading = false;
           this.toastRequestSuccess();
-          this.requestProject();
+          this.requestGroup();
         })
         .catch(error => {
           this.showSubmitLoading = false;
@@ -261,12 +256,12 @@ export default class MainAdminProjectsEdit extends VueBase {
 
   onClickDeleteOk() {
     this.showDeleteLoading = true;
-    this.$api2.deleteAdminProjectsPgroupProject(this.group, this.project)
+    this.$api2.deleteAdminGroupsGroup(this.group)
         .then(() => {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;
           this.toastRequestSuccess();
-          this.moveToMainAdminProjects();
+          this.moveToMainAdminGroups();
         })
         .catch(error => {
           this.showDeleteLoading = false;
