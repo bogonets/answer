@@ -3,6 +3,7 @@
 from typing import List, Optional, Any
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.project import Project
+from recc.database.struct.project_member import ProjectMember
 from recc.database.struct.project_join_member import ProjectJoinMember
 from recc.variables.database import VISIBILITY_LEVEL_PRIVATE, VISIBILITY_LEVEL_INTERNAL
 
@@ -97,3 +98,32 @@ class ContextProject(ContextBase):
             for project in projects:
                 project.remove_sensitive()
         return projects
+
+    async def get_project_members(self, project_uid: int) -> List[ProjectMember]:
+        return await self.database.select_project_members_by_project_uid(project_uid)
+
+    async def get_project_member(
+        self, project_uid: int, user_uid: int
+    ) -> ProjectMember:
+        return await self.database.select_project_member(project_uid, user_uid)
+
+    async def add_project_member(
+        self, project_uid: int, user_uid: int, permission_uid: int
+    ) -> None:
+        return await self.database.insert_project_member(
+            project_uid=project_uid,
+            user_uid=user_uid,
+            permission_uid=permission_uid,
+        )
+
+    async def update_project_member(
+        self, project_uid: int, user_uid: int, permission_uid: int
+    ) -> None:
+        return await self.database.update_project_member_permission(
+            project_uid=project_uid,
+            user_uid=user_uid,
+            permission_uid=permission_uid,
+        )
+
+    async def remove_project_member(self, project_uid: int, user_uid: int) -> None:
+        await self.database.delete_project_member(project_uid, user_uid)

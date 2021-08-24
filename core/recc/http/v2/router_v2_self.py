@@ -2,13 +2,8 @@
 
 from typing import List, Any, Dict
 from aiohttp import web
-from aiohttp.hdrs import METH_OPTIONS
 from aiohttp.web_routedef import AbstractRouteDef
-from aiohttp.web_request import Request
-from aiohttp.web_exceptions import (
-    HTTPUnauthorized,
-    HTTPBadRequest,
-)
+from aiohttp.web_exceptions import HTTPUnauthorized, HTTPBadRequest
 from recc.core.context import Context
 from recc.http.http_decorator import parameter_matcher
 from recc.http import http_urls as u

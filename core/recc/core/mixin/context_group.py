@@ -3,6 +3,7 @@
 from typing import List, Optional, Any
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.group import Group
+from recc.database.struct.group_member import GroupMember
 from recc.database.struct.group_join_member import GroupJoinMember
 from recc.variables.database import VISIBILITY_LEVEL_PRIVATE, VISIBILITY_LEVEL_INTERNAL
 
@@ -90,3 +91,30 @@ class ContextGroup(ContextBase):
             for group in groups:
                 group.remove_sensitive()
         return groups
+
+    async def get_group_members(self, group_uid: int) -> List[GroupMember]:
+        return await self.database.select_group_members_by_group_uid(group_uid)
+
+    async def get_group_member(self, group_uid: int, user_uid: int) -> GroupMember:
+        return await self.database.select_group_member(group_uid, user_uid)
+
+    async def add_group_member(
+        self, group_uid: int, user_uid: int, permission_uid: int
+    ) -> None:
+        return await self.database.insert_group_member(
+            group_uid=group_uid,
+            user_uid=user_uid,
+            permission_uid=permission_uid,
+        )
+
+    async def update_group_member(
+        self, group_uid: int, user_uid: int, permission_uid: int
+    ) -> None:
+        return await self.database.update_group_member_permission(
+            group_uid=group_uid,
+            user_uid=user_uid,
+            permission_uid=permission_uid,
+        )
+
+    async def remove_group_member(self, group_uid: int, user_uid: int) -> None:
+        await self.database.delete_group_member(group_uid, user_uid)

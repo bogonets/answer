@@ -2,9 +2,7 @@
 
 from typing import List
 from aiohttp import web
-from aiohttp.hdrs import METH_OPTIONS
 from aiohttp.web_routedef import AbstractRouteDef
-from aiohttp.web_request import Request
 from aiohttp.web_exceptions import (
     HTTPBadRequest,
     HTTPUnauthorized,

@@ -2,9 +2,7 @@
 
 from typing import List
 from aiohttp import web
-from aiohttp.hdrs import METH_OPTIONS
 from aiohttp.web_routedef import AbstractRouteDef
-from aiohttp.web_request import Request
 from aiohttp.web_exceptions import HTTPBadRequest, HTTPForbidden
 from recc.core.context import Context
 from recc.http.http_decorator import parameter_matcher
@@ -12,8 +10,11 @@ from recc.session.session_ex import SessionEx
 from recc.http import http_urls as u
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
+from recc.packet.member import MemberA, CreateMemberQ, UpdateMemberQ
+from recc.packet.permission import PermissionA
 from recc.packet.cvt.project import project_to_answer
 from recc.packet.cvt.group import group_to_answer
+from recc.packet.cvt.permission import permission_to_answer
 
 
 class RouterV2Main:
@@ -38,6 +39,9 @@ class RouterV2Main:
     def _routes(self) -> List[AbstractRouteDef]:
         # fmt: off
         return [
+            # Permissions
+            web.get(u.permissions, self.get_permissions),
+
             # Groups
             web.get(u.groups, self.get_groups),
             web.post(u.groups, self.post_groups),
@@ -67,6 +71,17 @@ class RouterV2Main:
             web.delete(u.projects_pgroup_pproject_members_pmember, self.delete_projects_pgroup_pproject_members_pmember),  # noqa
         ]
         # fmt: on
+
+    # -----------
+    # Permissions
+    # -----------
+
+    @parameter_matcher()
+    async def get_permissions(self) -> List[PermissionA]:
+        result = list()
+        for permission in await self.context.get_permissions():
+            result.append(permission_to_answer(permission))
+        return result
 
     # ------
     # Groups
@@ -140,24 +155,88 @@ class RouterV2Main:
     # -------------
 
     @parameter_matcher()
-    async def get_groups_pgroup_members(self) -> None:
-        raise NotImplementedError
+    async def get_groups_pgroup_members(
+        self, session: SessionEx, group: str
+    ) -> List[MemberA]:
+        group_uid = await self.context.get_group_uid(group)
+        permission = await self.context.get_group_permission(session.uid, group_uid)
+        if not permission.r_member:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+
+        members = await self.context.get_group_members(group_uid)
+        result = list()
+        for member in members:
+            assert member.user_uid is not None
+            assert member.permission_uid is not None
+            username = await self.context.get_username(member.user_uid)
+            permission_name = await self.context.get_permission_name(
+                member.permission_uid
+            )
+            result.append(MemberA(username, permission_name))
+        return result
 
     @parameter_matcher()
-    async def post_groups_pgroup_members(self) -> None:
-        raise NotImplementedError
+    async def post_groups_pgroup_members(
+        self, session: SessionEx, group: str, body: CreateMemberQ
+    ) -> None:
+        group_uid = await self.context.get_group_uid(group)
+        permission = await self.context.get_group_permission(session.uid, group_uid)
+        if not permission.w_member:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+
+        member_user_uid = await self.context.get_group_uid(body.username)
+        member_permission_uid = await self.context.get_permission_uid(body.permission)
+        await self.context.add_group_member(
+            group_uid, member_user_uid, member_permission_uid
+        )
 
     @parameter_matcher()
-    async def get_groups_pgroup_members_pmember(self) -> None:
-        raise NotImplementedError
+    async def get_groups_pgroup_members_pmember(
+        self, session: SessionEx, group: str, member: str
+    ) -> MemberA:
+        group_uid = await self.context.get_group_uid(group)
+        permission = await self.context.get_group_permission(session.uid, group_uid)
+        if not permission.r_member:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+
+        member_user_uid = await self.context.get_user_uid(member)
+        db_member = await self.context.get_group_member(group_uid, member_user_uid)
+        assert db_member.permission_uid is not None
+        member_permission_name = await self.context.get_permission_name(
+            db_member.permission_uid
+        )
+        return MemberA(member, member_permission_name)
 
     @parameter_matcher()
-    async def patch_groups_pgroup_members_pmember(self) -> None:
-        raise NotImplementedError
+    async def patch_groups_pgroup_members_pmember(
+        self,
+        session: SessionEx,
+        group: str,
+        member: str,
+        body: UpdateMemberQ,
+    ) -> None:
+        group_uid = await self.context.get_group_uid(group)
+        permission = await self.context.get_group_permission(session.uid, group_uid)
+        if not permission.w_member:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+
+        member_user_uid = await self.context.get_user_uid(member)
+        member_permission_uid = await self.context.get_permission_uid(body.permission)
+        await self.context.update_group_member(
+            group_uid, member_user_uid, member_permission_uid
+        )
 
     @parameter_matcher()
-    async def delete_groups_pgroup_members_pmember(self) -> None:
-        raise NotImplementedError
+    async def delete_groups_pgroup_members_pmember(
+        self, session: SessionEx, group: str, member: str
+    ) -> None:
+        group_uid = await self.context.get_group_uid(group)
+        permission = await self.context.get_group_permission(session.uid, group_uid)
+        if not permission.w_member:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+
+        member_user_uid = await self.context.get_user_uid(member)
+        await self.context.remove_group_member(group_uid, member_user_uid)
 
     # -------
     # Project
@@ -248,21 +327,91 @@ class RouterV2Main:
     # ---------------
 
     @parameter_matcher()
-    async def get_projects_pgroup_pproject_members(self) -> None:
-        raise NotImplementedError
+    async def get_projects_pgroup_pproject_members(
+        self, session: SessionEx, group: str, project: str
+    ) -> List[MemberA]:
+        group_uid = await self.context.get_group_uid(group)
+        project_uid = await self.context.get_project_uid(group_uid, project)
+        permission = await self.context.get_project_permission(session.uid, project_uid)
+        if not permission.r_member:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+
+        members = await self.context.get_project_members(project_uid)
+        result = list()
+        for member in members:
+            assert member.user_uid is not None
+            assert member.permission_uid is not None
+            username = await self.context.get_username(member.user_uid)
+            permission_name = await self.context.get_permission_name(
+                member.permission_uid
+            )
+            result.append(MemberA(username, permission_name))
+        return result
 
     @parameter_matcher()
-    async def post_projects_pgroup_pproject_members(self) -> None:
-        raise NotImplementedError
+    async def post_projects_pgroup_pproject_members(
+        self, session: SessionEx, group: str, project: str, body: CreateMemberQ
+    ) -> None:
+        group_uid = await self.context.get_group_uid(group)
+        project_uid = await self.context.get_project_uid(group_uid, project)
+        permission = await self.context.get_project_permission(session.uid, project_uid)
+        if not permission.w_member:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+
+        member_user_uid = await self.context.get_group_uid(body.username)
+        member_permission_uid = await self.context.get_permission_uid(body.permission)
+        await self.context.add_project_member(
+            project_uid, member_user_uid, member_permission_uid
+        )
 
     @parameter_matcher()
-    async def get_projects_pgroup_pproject_members_pmember(self) -> None:
-        raise NotImplementedError
+    async def get_projects_pgroup_pproject_members_pmember(
+        self, session: SessionEx, group: str, project: str, member: str
+    ) -> MemberA:
+        group_uid = await self.context.get_group_uid(group)
+        project_uid = await self.context.get_project_uid(group_uid, project)
+        permission = await self.context.get_project_permission(session.uid, project_uid)
+        if not permission.r_member:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+
+        member_user_uid = await self.context.get_user_uid(member)
+        db_member = await self.context.get_project_member(project_uid, member_user_uid)
+        assert db_member.permission_uid is not None
+        member_permission_name = await self.context.get_permission_name(
+            db_member.permission_uid
+        )
+        return MemberA(member, member_permission_name)
 
     @parameter_matcher()
-    async def patch_projects_pgroup_pproject_members_pmember(self) -> None:
-        raise NotImplementedError
+    async def patch_projects_pgroup_pproject_members_pmember(
+        self,
+        session: SessionEx,
+        group: str,
+        project: str,
+        member: str,
+        body: UpdateMemberQ,
+    ) -> None:
+        group_uid = await self.context.get_group_uid(group)
+        project_uid = await self.context.get_project_uid(group_uid, project)
+        permission = await self.context.get_project_permission(session.uid, project_uid)
+        if not permission.w_member:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+
+        member_user_uid = await self.context.get_user_uid(member)
+        member_permission_uid = await self.context.get_permission_uid(body.permission)
+        await self.context.update_project_member(
+            project_uid, member_user_uid, member_permission_uid
+        )
 
     @parameter_matcher()
-    async def delete_projects_pgroup_pproject_members_pmember(self) -> None:
-        raise NotImplementedError
+    async def delete_projects_pgroup_pproject_members_pmember(
+        self, session: SessionEx, group: str, project: str, member: str
+    ) -> None:
+        group_uid = await self.context.get_group_uid(group)
+        project_uid = await self.context.get_project_uid(group_uid, project)
+        permission = await self.context.get_project_permission(session.uid, project_uid)
+        if not permission.w_member:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+
+        member_user_uid = await self.context.get_user_uid(member)
+        await self.context.remove_project_member(project_uid, member_user_uid)

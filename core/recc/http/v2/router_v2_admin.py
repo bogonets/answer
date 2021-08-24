@@ -7,7 +7,6 @@ from aiohttp.web_request import Request
 from aiohttp.web_exceptions import (
     HTTPNotFound,
     HTTPBadRequest,
-    HTTPForbidden,
 )
 from recc.core.context import Context
 from recc.http.http_decorator import parameter_matcher
@@ -23,6 +22,7 @@ from recc.packet.template import TemplateA
 from recc.packet.user import UserA, UpdateUserQ, SignupQ
 from recc.database.struct.group import Group
 from recc.packet.cvt.project import project_to_answer
+from recc.packet.cvt.permission import permission_to_answer
 
 
 class RouterV2Admin:
@@ -397,28 +397,7 @@ class RouterV2Admin:
     async def get_permissions(self) -> List[PermissionA]:
         result = list()
         for permission in await self.context.get_permissions():
-            assert permission.name is not None
-            item = PermissionA(
-                name=permission.name,
-                description=permission.description,
-                features=permission.features,
-                extra=permission.extra,
-                r_layout=permission.r_layout,
-                w_layout=permission.w_layout,
-                r_storage=permission.r_storage,
-                w_storage=permission.w_storage,
-                r_manager=permission.r_manager,
-                w_manager=permission.w_manager,
-                r_graph=permission.r_graph,
-                w_graph=permission.w_graph,
-                r_member=permission.r_member,
-                w_member=permission.w_member,
-                r_setting=permission.r_setting,
-                w_setting=permission.w_setting,
-                created_at=permission.created_at,
-                updated_at=permission.updated_at,
-            )
-            result.append(item)
+            result.append(permission_to_answer(permission))
         return result
 
     @parameter_matcher()
@@ -449,27 +428,7 @@ class RouterV2Admin:
     async def get_permissions_pperm(self, perm: str) -> PermissionA:
         uid = await self.context.get_permission_uid(perm)
         db_permission = await self.context.get_permission(uid)
-        assert db_permission.name is not None
-        return PermissionA(
-            name=db_permission.name,
-            description=db_permission.description,
-            features=db_permission.features,
-            extra=db_permission.extra,
-            r_layout=db_permission.r_layout,
-            w_layout=db_permission.w_layout,
-            r_storage=db_permission.r_storage,
-            w_storage=db_permission.w_storage,
-            r_manager=db_permission.r_manager,
-            w_manager=db_permission.w_manager,
-            r_graph=db_permission.r_graph,
-            w_graph=db_permission.w_graph,
-            r_member=db_permission.r_member,
-            w_member=db_permission.w_member,
-            r_setting=db_permission.r_setting,
-            w_setting=db_permission.w_setting,
-            created_at=db_permission.created_at,
-            updated_at=db_permission.updated_at,
-        )
+        return permission_to_answer(db_permission)
 
     @parameter_matcher()
     async def patch_permissions_pperm(self, perm: str, body: UpdatePermissionQ) -> None:
