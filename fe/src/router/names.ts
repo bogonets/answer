@@ -2,7 +2,7 @@ export const Names = {
     errorNotFound: 'ErrorNotFound',
     about: 'About',
 
-    admin: 'Admin',
+    admin: 'RouterBarMainNaviAdmin',
     adminConfigs: 'AdminConfigs',
     adminGroups: 'AdminGroups',
     adminGroupsEdit: 'AdminGroupsEdit',
@@ -20,7 +20,7 @@ export const Names = {
     adminUsers: 'AdminUsers',
     adminUsersEdit: 'AdminUsersEdit',
     adminUsersNew: 'AdminUsersNew',
-    dev: 'Dev',
+    dev: 'RouterBarMainNaviDev',
 
     // REFACTORING BEGIN ---
     mainDashboard: 'MainDashboard',
@@ -41,16 +41,16 @@ export const Names = {
     mainProject: 'MainProject',
     // END ---
 
-    main: 'Main',
+    main: 'RouterBarMain',
     mainOverview: 'MainOverview',
-    mainGroup: 'MainGroup',
+    mainGroup: 'RouterNaviGroup',
     mainGroupMembers: 'MainGroupMembers',
     mainGroupProjects: 'MainGroupProjects',
     mainGroupSettings: 'mainGroupSettings',
     mainGroups: 'MainGroups',
     mainGroupsNew: 'MainGroupsNew',
 
-    self: 'Self',
+    self: 'RouterBarMainNaviSelf',
     selfAppearance: 'SelfAppearance',
 
     signin: 'Signin',

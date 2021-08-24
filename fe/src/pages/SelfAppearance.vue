@@ -97,7 +97,7 @@ import {UserExtra} from '@/packet/user';
 export default class SelfAppearance extends VueBase {
   private readonly navigationItems = [
     {
-      text: 'Self',
+      text: 'RouterBarMainNaviSelf.vue',
       disabled: false,
       href: () => this.moveToSelf(),
     },

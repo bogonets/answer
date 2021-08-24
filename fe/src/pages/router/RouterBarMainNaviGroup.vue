@@ -4,8 +4,8 @@
     </bar-main>
 
     <v-main>
-      <navi-self>
-      </navi-self>
+      <navi-group>
+      </navi-group>
 
       <router-view>
       </router-view>
@@ -17,14 +17,14 @@
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BarMain from '@/pages/bar/BarMain.vue';
-import NaviSelf from '@/pages/navigation/NaviSelf.vue';
+import NaviGroup from "@/pages/navigation/NaviGroup.vue";
 
 @Component({
   components: {
     BarMain,
-    NaviSelf,
+    NaviGroup,
   }
 })
-export default class Self extends VueBase {
+export default class RouterBarMainNaviGroup extends VueBase {
 }
 </script>

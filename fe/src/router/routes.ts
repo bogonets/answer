@@ -8,7 +8,7 @@ import Names from '@/router/names';
 import Error from '@/pages/Error.vue';
 import MainAbout from '@/pages/MainAbout.vue';
 import SelfAppearance from '@/pages/SelfAppearance.vue';
-import Self from '@/pages/Self.vue';
+import RouterBarMainNaviSelf from '@/pages/router/RouterBarMainNaviSelf.vue';
 import AdminInfos from '@/pages/AdminInfos.vue';
 import AdminConfigs from '@/pages/AdminConfigs.vue';
 import AdminGroups from '@/pages/AdminGroups.vue';
@@ -26,9 +26,9 @@ import AdminTasks from '@/pages/AdminTasks.vue';
 import AdminUsers from '@/pages/AdminUsers.vue';
 import AdminUsersEdit from '@/pages/AdminUsersEdit.vue';
 import AdminUsersNew from '@/pages/AdminUsersNew.vue';
-import Admin from '@/pages/Admin.vue';
+import RouterBarMainNaviAdmin from '@/pages/router/RouterBarMainNaviAdmin.vue';
 import MainDashboard from '@/pages/MainDashboard.vue';
-import Dev from '@/pages/Dev.vue';
+import RouterBarMainNaviDev from '@/pages/router/RouterBarMainNaviDev.vue';
 import MainGroups from '@/pages/MainGroups.vue';
 import MainGroupsNew from '@/pages/MainGroupsNew.vue';
 import MainProjectConfigs from '@/pages/MainProjectConfigs.vue';
@@ -42,7 +42,7 @@ import MainProjectTasks from '@/pages/MainProjectTasks.vue';
 import MainProjectVisualProgramming from '@/pages/MainProjectVisualProgramming.vue';
 import MainProjectVms from '@/pages/MainProjectVms.vue';
 import MainProject from '@/pages/MainProject.vue';
-import Main from '@/pages/Main.vue';
+import RouterBarMain from '@/pages/router/RouterBarMain.vue';
 import Signin from '@/pages/Signin.vue';
 import Init from '@/pages/Init.vue';
 import Signup from '@/pages/Signup.vue';
@@ -52,7 +52,7 @@ import AirJoyManage from '@/components/external/airjoy/AirJoyManage.vue';
 import AirJoyGraph from '@/components/external/airjoy/AirJoyGraph.vue';
 import AirJoyMonitor from '@/components/external/airjoy/AirjoyMonitor.vue';
 import MainOverview from '@/pages/MainOverview.vue';
-import MainGroup from '@/pages/MainGroup.vue';
+import RouterBarMainNaviGroup from '@/pages/router/RouterBarMainNaviGroup.vue';
 import MainGroupSettings from "@/pages/MainGroupSettings.vue";
 import MainGroupMembers from "@/pages/MainGroupMembers.vue";
 import MainGroupProjects from "@/pages/MainGroupProjects.vue";
@@ -279,7 +279,7 @@ export const mainChildren = [
     },
     {
         path: 'group/:group',
-        component: MainGroup,
+        component: RouterBarMainNaviGroup,
         children: mainGroupChildren,
     },
     // {
@@ -340,25 +340,25 @@ export const Routes = [
     },
     {
         path: '/main',
-        component: Main,
+        component: RouterBarMain,
         meta: {requiresAuth: true},
         children: mainChildren,
     },
     {
         path: '/self',
-        component: Self,
+        component: RouterBarMainNaviSelf,
         meta: {requiresAuth: true},
         children: selfChildren,
     },
     {
         path: '/admin',
-        component: Admin,
+        component: RouterBarMainNaviAdmin,
         meta: {requiresAuth: true},
         children: adminChildren,
     },
     {
         path: '/dev',
-        component: Dev,
+        component: RouterBarMainNaviDev,
         meta: {requiresAuth: true},
         name: Names.dev,
     },
