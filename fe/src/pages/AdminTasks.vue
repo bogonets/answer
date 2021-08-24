@@ -29,7 +29,7 @@ export default class AdminTasks extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToMainAdminOverview(),
+      href: () => this.moveToAdminOverview(),
     },
     {
       text: 'Tasks',

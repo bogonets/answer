@@ -134,12 +134,12 @@ export default class AdminPermissionsEdit extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToMainAdminOverview(),
+      href: () => this.moveToAdminOverview(),
     },
     {
       text: 'Permissions',
       disabled: false,
-      href: () => this.moveToMainAdminPermissions(),
+      href: () => this.moveToAdminPermissions(),
     },
     {
       text: 'Edit',
@@ -292,7 +292,7 @@ export default class AdminPermissionsEdit extends VueBase {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;
           this.toastRequestSuccess();
-          this.moveToMainAdminPermissions();
+          this.moveToAdminPermissions();
         })
         .catch(error => {
           this.showDeleteLoading = false;

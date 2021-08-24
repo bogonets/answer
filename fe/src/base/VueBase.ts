@@ -96,6 +96,84 @@ export default class VueBase extends Vue {
         })
     }
 
+    // -----
+    // Admin
+    // -----
+
+    moveToAdmin() {
+        this.moveTo(this.routeNames.admin);
+    }
+
+    moveToAdminConfigs() {
+        this.moveTo(this.routeNames.adminConfigs);
+    }
+
+    moveToAdminGroups() {
+        this.moveTo(this.routeNames.adminGroups);
+    }
+
+    moveToAdminGroupsNew() {
+        this.moveTo(this.routeNames.adminGroupsNew);
+    }
+
+    moveToAdminGroupsEdit(group: string) {
+        this.moveTo(this.routeNames.adminGroupsEdit, {group});
+    }
+
+    moveToAdminInfos() {
+        this.moveTo(this.routeNames.adminInfos);
+    }
+
+    moveToAdminOverview() {
+        this.moveTo(this.routeNames.adminOverview);
+    }
+
+    moveToAdminPermissions() {
+        this.moveTo(this.routeNames.adminPermissions);
+    }
+
+    moveToAdminPermissionsEdit(perm: string) {
+        this.moveTo(this.routeNames.adminPermissionsEdit, {perm});
+    }
+
+    moveToAdminPermissionsNew() {
+        this.moveTo(this.routeNames.adminPermissionsNew);
+    }
+
+    moveToAdminProjects() {
+        this.moveTo(this.routeNames.adminProjects);
+    }
+
+    moveToAdminProjectsEdit(group: string, project: string) {
+        this.moveTo(this.routeNames.adminProjectsEdit, {group, project});
+    }
+
+    moveToAdminProjectsNew(group?: string) {
+        this.moveTo(this.routeNames.adminProjectsNew, {group});
+    }
+
+    moveToAdminTasks() {
+        this.moveTo(this.routeNames.adminTasks);
+    }
+
+    moveToAdminTemplates() {
+        this.moveTo(this.routeNames.adminTemplates);
+    }
+
+    moveToAdminUsers() {
+        this.moveTo(this.routeNames.adminUsers);
+    }
+
+    moveToAdminUsersEdit(username: string) {
+        this.moveTo(this.routeNames.adminUsersEdit, {username: username});
+    }
+
+    moveToAdminUsersNew() {
+        this.moveTo(this.routeNames.adminUsersNew);
+    }
+
+    //
+
     moveToMainAbout() {
         this.moveTo(this.routeNames.mainAbout);
     }
@@ -107,79 +185,6 @@ export default class VueBase extends Vue {
     moveToMainAccount() {
         this.moveTo(this.routeNames.mainAccount);
     }
-
-    moveToMainAdminEnvs() {
-        this.moveTo(this.routeNames.adminInfos);
-    }
-
-    moveToMainAdminFeatures() {
-        this.moveTo(this.routeNames.adminConfigs);
-    }
-
-    moveToMainAdminGroups() {
-        this.moveTo(this.routeNames.adminGroups);
-    }
-
-    moveToMainAdminGroupsNew() {
-        this.moveTo(this.routeNames.adminGroupsNew);
-    }
-
-    moveToMainAdminGroupsEdit(group: string) {
-        this.moveTo(this.routeNames.adminGroupsEdit, {group});
-    }
-
-    moveToMainAdminPermissions() {
-        this.moveTo(this.routeNames.adminPermissions);
-    }
-
-    moveToMainAdminPermissionsEdit(perm: string) {
-        this.moveTo(this.routeNames.adminPermissionsEdit, {perm});
-    }
-
-    moveToMainAdminPermissionsNew() {
-        this.moveTo(this.routeNames.adminPermissionsNew);
-    }
-
-    moveToMainAdminProjects() {
-        this.moveTo(this.routeNames.adminProjects);
-    }
-
-    moveToMainAdminProjectsEdit(group: string, project: string) {
-        this.moveTo(this.routeNames.adminProjectsEdit, {group, project});
-    }
-
-    moveToMainAdminProjectsNew(group?: string) {
-        this.moveTo(this.routeNames.adminProjectsNew, {group});
-    }
-
-    moveToMainAdminTasks() {
-        this.moveTo(this.routeNames.adminTasks);
-    }
-
-    moveToMainAdminTemplates() {
-        this.moveTo(this.routeNames.adminLamdas);
-    }
-
-    moveToMainAdminOverview() {
-        this.moveTo(this.routeNames.adminOverview);
-    }
-
-    moveToMainAdminUsersEdit(username: string) {
-        this.moveTo(this.routeNames.adminUsersEdit, {username: username});
-    }
-
-    moveToMainAdminUsersNew() {
-        this.moveTo(this.routeNames.adminUsersNew);
-    }
-
-    moveToMainAdminUsers() {
-        this.moveTo(this.routeNames.adminUsers);
-    }
-
-    moveToMainAdmin() {
-        this.moveTo(this.routeNames.admin);
-    }
-
     moveToMainDashboard() {
         this.moveTo(this.routeNames.mainDashboard);
     }

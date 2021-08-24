@@ -137,12 +137,12 @@ export default class AdminUsersEdit extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToMainAdminOverview(),
+      href: () => this.moveToAdminOverview(),
     },
     {
       text: 'Users',
       disabled: false,
-      href: () => this.moveToMainAdminUsers(),
+      href: () => this.moveToAdminUsers(),
     },
     {
       text: 'Edit',
@@ -272,7 +272,7 @@ export default class AdminUsersEdit extends VueBase {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;
           this.toastRequestSuccess();
-          this.moveToMainAdminUsers();
+          this.moveToAdminUsers();
         })
         .catch(error => {
           this.showDeleteLoading = false;

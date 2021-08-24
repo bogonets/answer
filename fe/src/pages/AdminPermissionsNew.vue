@@ -48,12 +48,12 @@ export default class AdminPermissionsNew extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToMainAdminOverview(),
+      href: () => this.moveToAdminOverview(),
     },
     {
       text: 'Permissions',
       disabled: false,
-      href: () => this.moveToMainAdminPermissions(),
+      href: () => this.moveToAdminPermissions(),
     },
     {
       text: 'New',
@@ -90,7 +90,7 @@ export default class AdminPermissionsNew extends VueBase {
     this.$api2.postAdminPermissions(body)
         .then(() => {
           this.submitLoading = false;
-          this.moveToMainAdminPermissions();
+          this.moveToAdminPermissions();
           this.toastRequestSuccess();
         })
         .catch(error => {

@@ -135,12 +135,12 @@ export default class AdminProjectsEdit extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToMainAdminOverview(),
+      href: () => this.moveToAdminOverview(),
     },
     {
       text: 'Projects',
       disabled: false,
-      href: () => this.moveToMainAdminProjects(),
+      href: () => this.moveToAdminProjects(),
     },
     {
       text: 'Edit',
@@ -266,7 +266,7 @@ export default class AdminProjectsEdit extends VueBase {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;
           this.toastRequestSuccess();
-          this.moveToMainAdminProjects();
+          this.moveToAdminProjects();
         })
         .catch(error => {
           this.showDeleteLoading = false;

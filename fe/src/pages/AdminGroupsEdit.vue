@@ -135,12 +135,12 @@ export default class AdminGroupsEdit extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToMainAdminOverview(),
+      href: () => this.moveToAdminOverview(),
     },
     {
       text: 'Groups',
       disabled: false,
-      href: () => this.moveToMainAdminGroups(),
+      href: () => this.moveToAdminGroups(),
     },
     {
       text: 'Edit',
@@ -261,7 +261,7 @@ export default class AdminGroupsEdit extends VueBase {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;
           this.toastRequestSuccess();
-          this.moveToMainAdminGroups();
+          this.moveToAdminGroups();
         })
         .catch(error => {
           this.showDeleteLoading = false;

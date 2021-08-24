@@ -29,12 +29,12 @@ export default class AdminProjectsNew extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToMainAdminOverview(),
+      href: () => this.moveToAdminOverview(),
     },
     {
       text: 'Projects',
       disabled: false,
-      href: () => this.moveToMainAdminProjects(),
+      href: () => this.moveToAdminProjects(),
     },
     {
       text: 'New',
@@ -49,7 +49,7 @@ export default class AdminProjectsNew extends VueBase {
   }
 
   onRequestSuccess() {
-    this.moveToMainAdminProjects();
+    this.moveToAdminProjects();
   }
 }
 </script>

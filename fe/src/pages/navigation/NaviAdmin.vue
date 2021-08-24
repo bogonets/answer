@@ -176,63 +176,63 @@ export default class NaviAdmin extends VueBase {
   @Emit('click:overview')
   overview() {
     if (!this.noDefault) {
-      this.moveToMainAdminOverview();
+      this.moveToAdminOverview();
     }
   }
 
   @Emit('click:users')
   users() {
     if (!this.noDefault) {
-      this.moveToMainAdminUsers();
+      this.moveToAdminUsers();
     }
   }
 
   @Emit('click:groups')
   groups() {
     if (!this.noDefault) {
-      this.moveToMainAdminGroups();
+      this.moveToAdminGroups();
     }
   }
 
   @Emit('click:projects')
   projects() {
     if (!this.noDefault) {
-      this.moveToMainAdminProjects();
+      this.moveToAdminProjects();
     }
   }
 
   @Emit('click:permissions')
   permissions() {
     if (!this.noDefault) {
-      this.moveToMainAdminPermissions();
+      this.moveToAdminPermissions();
     }
   }
 
   @Emit('click:tasks')
   tasks() {
     if (!this.noDefault) {
-      this.moveToMainAdminTasks();
+      this.moveToAdminTasks();
     }
   }
 
   @Emit('click:templates')
   templates() {
     if (!this.noDefault) {
-      this.moveToMainAdminTemplates();
+      this.moveToAdminTemplates();
     }
   }
 
   @Emit('click:features')
   features() {
     if (!this.noDefault) {
-      this.moveToMainAdminFeatures();
+      this.moveToAdminConfigs();
     }
   }
 
   @Emit('click:envs')
   envs() {
     if (!this.noDefault) {
-      this.moveToMainAdminEnvs();
+      this.moveToAdminInfos();
     }
   }
 }

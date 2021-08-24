@@ -31,7 +31,7 @@ export default class AdminGroups extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToMainAdminOverview(),
+      href: () => this.moveToAdminOverview(),
     },
     {
       text: 'Groups',
@@ -40,11 +40,11 @@ export default class AdminGroups extends VueBase {
   ];
 
   onClickNew() {
-    this.moveToMainAdminGroupsNew();
+    this.moveToAdminGroupsNew();
   }
 
   onClickEdit(item: GroupA) {
-    this.moveToMainAdminGroupsEdit(item.slug);
+    this.moveToAdminGroupsEdit(item.slug);
   }
 
   onClickMove(item: GroupA) {

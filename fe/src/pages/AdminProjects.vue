@@ -31,7 +31,7 @@ export default class AdminProjects extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToMainAdminOverview(),
+      href: () => this.moveToAdminOverview(),
     },
     {
       text: 'Projects',
@@ -40,11 +40,11 @@ export default class AdminProjects extends VueBase {
   ];
 
   onClickNew() {
-    this.moveToMainAdminProjectsNew();
+    this.moveToAdminProjectsNew();
   }
 
   onClickEdit(item: ProjectA) {
-    this.moveToMainAdminProjectsEdit(item.group_slug, item.project_slug);
+    this.moveToAdminProjectsEdit(item.group_slug, item.project_slug);
   }
 
   onClickMove(item: ProjectA) {

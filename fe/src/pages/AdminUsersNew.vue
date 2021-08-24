@@ -46,12 +46,12 @@ export default class AdminUsersNew extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToMainAdminOverview(),
+      href: () => this.moveToAdminOverview(),
     },
     {
       text: 'Users',
       disabled: false,
-      href: () => this.moveToMainAdminUsers(),
+      href: () => this.moveToAdminUsers(),
     },
     {
       text: 'New',
@@ -80,7 +80,7 @@ export default class AdminUsersNew extends VueBase {
     this.$api2.postAdminUsers(body)
         .then(() => {
           this.submitLoading = false;
-          this.moveToMainAdminUsers();
+          this.moveToAdminUsers();
           this.toastRequestSuccess();
         })
         .catch(error => {

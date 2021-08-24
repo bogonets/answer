@@ -72,24 +72,9 @@ export const adminChildren = [
         redirect: 'overview',
     },
     {
-        path: 'overview',
-        component: AdminOverview,
-        name: Names.adminOverview,
-    },
-    {
-        path: 'users',
-        component: AdminUsers,
-        name: Names.adminUsers,
-    },
-    {
-        path: 'users/new',
-        component: AdminUsersNew,
-        name: Names.adminUsersNew,
-    },
-    {
-        path: 'users/edit',
-        component: AdminUsersEdit,
-        name: Names.adminUsersEdit,
+        path: 'configs',
+        component: AdminConfigs,
+        name: Names.adminConfigs,
     },
     {
         path: 'groups',
@@ -97,54 +82,14 @@ export const adminChildren = [
         name: Names.adminGroups,
     },
     {
-        path: 'groups/new',
-        component: AdminGroupsNew,
-        name: Names.adminGroupsNew,
-    },
-    {
         path: 'groups/edit',
         component: AdminGroupsEdit,
         name: Names.adminGroupsEdit,
     },
     {
-        path: 'permissions',
-        component: AdminPermissions,
-        name: Names.adminPermissions,
-    },
-    {
-        path: 'permissions/new',
-        component: AdminPermissionsNew,
-        name: Names.adminPermissionsNew,
-    },
-    {
-        path: 'permissions/edit',
-        component: AdminPermissionsEdit,
-        name: Names.adminPermissionsEdit,
-    },
-    {
-        path: 'projects',
-        component: AdminProjects,
-        name: Names.adminProjects,
-    },
-    {
-        path: 'projects/new',
-        component: AdminProjectsNew,
-        name: Names.adminProjectsNew,
-    },
-    {
-        path: 'projects/edit',
-        component: AdminProjectsEdit,
-        name: Names.adminProjectsEdit,
-    },
-    {
-        path: 'tasks',
-        component: AdminTasks,
-        name: Names.adminTasks,
-    },
-    {
-        path: 'configs',
-        component: AdminConfigs,
-        name: Names.adminConfigs,
+        path: 'groups/new',
+        component: AdminGroupsNew,
+        name: Names.adminGroupsNew,
     },
     {
         path: 'infos',
@@ -152,9 +97,64 @@ export const adminChildren = [
         name: Names.adminInfos,
     },
     {
-        path: 'lamdas',
+        path: 'overview',
+        component: AdminOverview,
+        name: Names.adminOverview,
+    },
+    {
+        path: 'permissions',
+        component: AdminPermissions,
+        name: Names.adminPermissions,
+    },
+    {
+        path: 'permissions/edit',
+        component: AdminPermissionsEdit,
+        name: Names.adminPermissionsEdit,
+    },
+    {
+        path: 'permissions/new',
+        component: AdminPermissionsNew,
+        name: Names.adminPermissionsNew,
+    },
+    {
+        path: 'projects',
+        component: AdminProjects,
+        name: Names.adminProjects,
+    },
+    {
+        path: 'projects/edit',
+        component: AdminProjectsEdit,
+        name: Names.adminProjectsEdit,
+    },
+    {
+        path: 'projects/new',
+        component: AdminProjectsNew,
+        name: Names.adminProjectsNew,
+    },
+    {
+        path: 'tasks',
+        component: AdminTasks,
+        name: Names.adminTasks,
+    },
+    {
+        path: 'templates',
         component: AdminTemplates,
-        name: Names.adminLamdas,
+        name: Names.adminTemplates,
+    },
+    {
+        path: 'users',
+        component: AdminUsers,
+        name: Names.adminUsers,
+    },
+    {
+        path: 'users/edit',
+        component: AdminUsersEdit,
+        name: Names.adminUsersEdit,
+    },
+    {
+        path: 'users/new',
+        component: AdminUsersNew,
+        name: Names.adminUsersNew,
     },
 ]
 

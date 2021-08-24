@@ -94,7 +94,7 @@ export default class AdminPermissions extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToMainAdminOverview(),
+      href: () => this.moveToAdminOverview(),
     },
     {
       text: 'Permissions',
@@ -162,11 +162,11 @@ export default class AdminPermissions extends VueBase {
   }
 
   onClickNew() {
-    this.moveToMainAdminPermissionsNew();
+    this.moveToAdminPermissionsNew();
   }
 
   onClickEdit(item: PermissionA) {
-    this.moveToMainAdminPermissionsEdit(item.name);
+    this.moveToAdminPermissionsEdit(item.name);
   }
 }
 </script>

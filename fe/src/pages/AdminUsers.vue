@@ -103,7 +103,7 @@ export default class AdminUsers extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToMainAdminOverview(),
+      href: () => this.moveToAdminOverview(),
     },
     {
       text: 'Users',
@@ -172,11 +172,11 @@ export default class AdminUsers extends VueBase {
   }
 
   onClickNew() {
-    this.moveToMainAdminUsersNew();
+    this.moveToAdminUsersNew();
   }
 
   onClickEdit(item: UserA) {
-    this.moveToMainAdminUsersEdit(item.username);
+    this.moveToAdminUsersEdit(item.username);
   }
 }
 </script>

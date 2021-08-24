@@ -67,7 +67,7 @@ export default class AdminOverview extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToMainAdminOverview(),
+      href: () => this.moveToAdminOverview(),
     },
     {
       text: 'Overview',
@@ -92,15 +92,15 @@ export default class AdminOverview extends VueBase {
   }
 
   onClickUsers() {
-    this.moveToMainAdminUsers();
+    this.moveToAdminUsers();
   }
 
   onClickGroups() {
-    this.moveToMainAdminGroups();
+    this.moveToAdminGroups();
   }
 
   onClickProjects() {
-    this.moveToMainAdminProjects();
+    this.moveToAdminProjects();
   }
 }
 </script>
