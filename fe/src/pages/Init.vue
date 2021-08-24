@@ -43,7 +43,7 @@ import {SignupQ} from '@/packet/user';
     FormUser,
   }
 })
-export default class MainAdminUsersNew extends VueBase {
+export default class Init extends VueBase {
   showSignupLoading = false;
 
   onClickCancel() {

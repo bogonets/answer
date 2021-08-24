@@ -14,7 +14,7 @@ ko:
       <title-logo-small></title-logo-small>
     </v-btn>
 
-    <v-btn v-if="false" plain small text color="primary" @click="moveGroups">
+    <v-btn v-if="false" plain small text color="primary" @click="onClickGroups">
       {{ $t('groups') }}
     </v-btn>
 
@@ -46,15 +46,15 @@ import TitleLogoSmall from '@/components/TitleLogoSmall.vue';
 })
 export default class BarMain extends VueBase {
   onClickLogo() {
-    this.moveToRoot();
+    this.moveToMain();
+  }
+
+  onClickGroups() {
+    this.moveToMainGroups();
   }
 
   moveProjects() {
     // this.moveToMainProjects();
-  }
-
-  moveGroups() {
-    // this.moveToMainGroups();
   }
 }
 </script>

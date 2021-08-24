@@ -1,4 +1,4 @@
-import {Vue, Component, Watch} from 'vue-property-decorator';
+import {Vue, Component, Watch, Emit} from 'vue-property-decorator';
 import {RawLocation} from 'vue-router';
 import {Names} from '@/router/names';
 import SimpleToast from '@/components/SimpleToast.vue';
@@ -196,16 +196,50 @@ export default class VueBase extends Vue {
     // Main
     // ----
 
+    moveToMain() {
+        this.moveTo(this.routeNames.main);
+    }
+
+    moveToMainGroups() {
+        this.moveTo(this.routeNames.mainGroups);
+    }
+
+    moveToMainGroup(group?: string) {
+        const params = {
+            group: group || this.$route.params.group,
+        };
+        this.moveTo(this.routeNames.mainGroup, params);
+    }
+
+    moveToMainGroupMembers(group?: string) {
+        const params = {
+            group: group || this.$route.params.group,
+        };
+        this.moveTo(this.routeNames.mainGroupMembers, params);
+    }
+
+    moveToMainGroupProjects(group?: string) {
+        const params = {
+            group: group || this.$route.params.group,
+        };
+        this.moveTo(this.routeNames.mainGroupProjects, params);
+    }
+
+    moveToMainGroupSettings(group?: string) {
+        const params = {
+            group: group || this.$route.params.group,
+        };
+        this.moveTo(this.routeNames.mainGroupSettings, params);
+    }
+
+    // ---------------------------------------------------------------------------------
+
     moveToMainDashboard() {
         this.moveTo(this.routeNames.mainDashboard);
     }
 
     moveToMainDevTools() {
         this.moveTo(this.routeNames.dev);
-    }
-
-    moveToMainGroups() {
-        this.moveTo(this.routeNames.mainGroups);
     }
 
     moveToMainGroupsNew() {
@@ -283,10 +317,6 @@ export default class VueBase extends Vue {
 
     // --- refactoring end ---
 
-    moveToMain() {
-        this.moveTo(this.routeNames.main);
-    }
-
     moveToSignin() {
         this.moveTo(this.routeNames.signin);
     }
@@ -296,7 +326,7 @@ export default class VueBase extends Vue {
     }
 
     moveToSignupAdmin() {
-        this.moveTo(this.routeNames.signupAdmin);
+        this.moveTo(this.routeNames.init);
     }
 
     moveToRoot() {

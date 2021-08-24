@@ -42,7 +42,7 @@ ko:
           :value="value"
           @change="input"
       >
-        <v-list-item link @click.stop="overview">
+        <v-list-item link @click.stop="appearance">
           <v-list-item-icon>
             <v-icon>mdi-eye</v-icon>
           </v-list-item-icon>
@@ -92,7 +92,7 @@ export default class MainAccount extends VueBase {
   }
 
   @Emit('click:appearance')
-  overview() {
+  appearance() {
     if (!this.noDefault) {
       this.moveToSelfAppearance();
     }

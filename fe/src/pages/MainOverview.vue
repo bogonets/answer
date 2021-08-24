@@ -5,6 +5,7 @@
 
       <table-groups
           request-type="self"
+          hide-new-item-button
           hide-action-edit
           hide-action-move
           clickable-row
@@ -29,24 +30,21 @@ import {GroupA} from '@/packet/group';
     TableGroups,
   }
 })
-export default class MainGroups extends VueBase {
+export default class MainOverview extends VueBase {
   private readonly navigationItems = [
     {
-      text: 'Groups',
+      text: 'Overview',
       disabled: true,
     },
   ];
 
   onClickNew() {
-    this.moveToMainGroupsNew();
   }
 
   onClickRow(item: GroupA) {
-    this.moveToMainGroup(item.slug);
   }
 
   onClickEdit(item: GroupA) {
-    this.moveToMainGroupSettings(item.slug);
   }
 }
 </script>

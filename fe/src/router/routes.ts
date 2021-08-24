@@ -44,13 +44,18 @@ import MainProjectVms from '@/pages/MainProjectVms.vue';
 import MainProject from '@/pages/MainProject.vue';
 import Main from '@/pages/Main.vue';
 import Signin from '@/pages/Signin.vue';
-import SignupAdmin from '@/pages/SignupAdmin.vue';
+import Init from '@/pages/Init.vue';
 import Signup from '@/pages/Signup.vue';
 
 import MainProjectMembers from '@/components/external/airjoy/AuthManagement.vue';
 import AirJoyManage from '@/components/external/airjoy/AirJoyManage.vue';
 import AirJoyGraph from '@/components/external/airjoy/AirJoyGraph.vue';
 import AirJoyMonitor from '@/components/external/airjoy/AirjoyMonitor.vue';
+import MainOverview from '@/pages/MainOverview.vue';
+import MainGroup from '@/pages/MainGroup.vue';
+import MainGroupSettings from "@/pages/MainGroupSettings.vue";
+import MainGroupMembers from "@/pages/MainGroupMembers.vue";
+import MainGroupProjects from "@/pages/MainGroupProjects.vue";
 
 export const adminChildren = [
     {
@@ -233,36 +238,34 @@ export const mainProjectChildren = [
     },
 ];
 
+export const mainGroupChildren = [
+    {
+        path: '',
+        name: Names.mainGroup,
+        redirect: 'projects',
+    },
+    {
+        path: 'members',
+        component: MainGroupMembers,
+        name: Names.mainGroupMembers,
+    },
+    {
+        path: 'projects',
+        component: MainGroupProjects,
+        name: Names.mainGroupProjects,
+    },
+    {
+        path: 'settings',
+        component: MainGroupSettings,
+        name: Names.mainGroupSettings,
+    },
+];
+
 export const mainChildren = [
     {
         path: '',
         name: Names.main,
         redirect: 'groups',
-    },
-    {
-        path: 'dashboard',
-        component: MainDashboard,
-        name: Names.mainDashboard,
-    },
-    {
-        path: 'about',
-        component: MainAbout,
-        name: Names.about,
-    },
-    {
-        path: 'projects',
-        component: MainProjects,
-        name: Names.mainProjects,
-    },
-    {
-        path: 'projects/new',
-        component: MainProjectsNew,
-        name: Names.mainProjectsNew,
-    },
-    {
-        path: 'project/:group/:project',
-        component: MainProject,
-        children: mainProjectChildren,
     },
     {
         path: 'groups',
@@ -274,6 +277,36 @@ export const mainChildren = [
         component: MainGroupsNew,
         name: Names.mainGroupsNew,
     },
+    {
+        path: 'group/:group',
+        component: MainGroup,
+        children: mainGroupChildren,
+    },
+    // {
+    //     path: 'dashboard',
+    //     component: MainDashboard,
+    //     name: Names.mainDashboard,
+    // },
+    // {
+    //     path: 'about',
+    //     component: MainAbout,
+    //     name: Names.about,
+    // },
+    // {
+    //     path: 'projects',
+    //     component: MainProjects,
+    //     name: Names.mainProjects,
+    // },
+    // {
+    //     path: 'projects/new',
+    //     component: MainProjectsNew,
+    //     name: Names.mainProjectsNew,
+    // },
+    // {
+    //     path: 'project/:group/:project',
+    //     component: MainProject,
+    //     children: mainProjectChildren,
+    // },
 ];
 
 export const selfChildren = [
@@ -301,9 +334,9 @@ export const Routes = [
         name: Names.signup,
     },
     {
-        path: '/signup/admin',
-        component: SignupAdmin,
-        name: Names.signupAdmin,
+        path: '/init',
+        component: Init,
+        name: Names.init,
     },
     {
         path: '/main',
@@ -314,6 +347,7 @@ export const Routes = [
     {
         path: '/self',
         component: Self,
+        meta: {requiresAuth: true},
         children: selfChildren,
     },
     {

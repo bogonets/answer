@@ -22,9 +22,8 @@ export const Names = {
     adminUsersNew: 'AdminUsersNew',
     dev: 'Dev',
 
+    // REFACTORING BEGIN ---
     mainDashboard: 'MainDashboard',
-    mainGroups: 'MainGroups',
-    mainGroupsNew: 'MainGroupsNew',
     mainProjectConfigs: 'MainProjectConfigs',
     mainProjectMembers: 'MainProjectMembers',
     mainProjectAirjoyTables: 'MainProjectAirjoyTables',
@@ -40,14 +39,23 @@ export const Names = {
     mainProjectVisualProgramming: 'MainProjectVisualProgramming',
     mainProjectVms: 'MainProjectVms',
     mainProject: 'MainProject',
+    // END ---
+
     main: 'Main',
+    mainOverview: 'MainOverview',
+    mainGroup: 'MainGroup',
+    mainGroupMembers: 'MainGroupMembers',
+    mainGroupProjects: 'MainGroupProjects',
+    mainGroupSettings: 'mainGroupSettings',
+    mainGroups: 'MainGroups',
+    mainGroupsNew: 'MainGroupsNew',
 
     self: 'Self',
     selfAppearance: 'SelfAppearance',
 
     signin: 'Signin',
     signup: 'Signup',
-    signupAdmin: 'SignupAdmin',
+    init: 'SignupAdmin',
 };
 
 export default Names;
