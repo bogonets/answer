@@ -159,6 +159,7 @@ export default class MainAdmin extends VueBase {
   miniNavigation = false;
 
   moveOverview() {
+    console.debug('moveOverview')
     this.moveToMainAdminOverview();
   }
 

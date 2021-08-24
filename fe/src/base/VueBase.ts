@@ -75,28 +75,12 @@ export default class VueBase extends Vue {
     // Router
     // ------
 
-    get currentRoutePath(): string {
-        return this.$router.currentRoute.path;
-    }
-
-    get currentRouteName(): string {
-        return this.$router.currentRoute.name || '';
-    }
-
-    get currentGroupName(): string {
-        return this.$route.params.group || '';
-    }
-
-    get currentProjectName(): string {
-        return this.$route.params.project || '';
-    }
-
     moveToBack() {
         this.$router.back();
     }
 
     moveTo(name: string, params?: object) {
-        if (this.currentRouteName === name) {
+        if (this.$router.currentRoute.name === name) {
             return;
         }
 

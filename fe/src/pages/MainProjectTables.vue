@@ -34,7 +34,7 @@ export default class MainProjectTables extends VueBase {
       href: () => this.moveToMainProjects(),
     },
     {
-      text: this.currentProjectName,
+      text: this.$route.params.project,
       disabled: false,
       href: () => this.moveToMainProjects(),
     },

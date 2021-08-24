@@ -53,7 +53,7 @@ ko:
             <v-avatar color="accent" size="24">{{ projectAvatar }}</v-avatar>
           </v-list-item-avatar>
           <v-list-item-title>
-            {{ currentProjectName }}
+            {{ $route.params.project }}
           </v-list-item-title>
           <v-btn icon @click.stop="onClickFoldNavigation">
             <v-icon>mdi-chevron-left</v-icon>
@@ -233,13 +233,13 @@ export default class MainProject extends VueBase {
   miniNavigation = false;
 
   get projectAvatar(): string {
-    return this.currentProjectName[0].toUpperCase();
+    return this.$route.params.project[0].toUpperCase();
   }
 
   mounted() {
     // Legacy code:
     this.$store.commit('drawer/setNaviShow', {bool: true});
-    this.$store.commit('project/setSelectProject', {name: this.currentProjectName});
+    this.$store.commit('project/setSelectProject', {name: this.$route.params.project});
     this.$store.commit('project/setViewNaviList', {menus: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]});
     this.$store.commit('signal/setLayoutMainSignal', {bool: true});
   }
