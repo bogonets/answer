@@ -184,7 +184,7 @@ class RouterV2Main:
         if not permission.w_member:
             raise HTTPForbidden(reason="You do not have valid permissions")
 
-        member_user_uid = await self.context.get_group_uid(body.username)
+        member_user_uid = await self.context.get_user_uid(body.username)
         member_permission_uid = await self.context.get_permission_uid(body.permission)
         await self.context.add_group_member(
             group_uid, member_user_uid, member_permission_uid
@@ -358,7 +358,7 @@ class RouterV2Main:
         if not permission.w_member:
             raise HTTPForbidden(reason="You do not have valid permissions")
 
-        member_user_uid = await self.context.get_group_uid(body.username)
+        member_user_uid = await self.context.get_user_uid(body.username)
         member_permission_uid = await self.context.get_permission_uid(body.permission)
         await self.context.add_project_member(
             project_uid, member_user_uid, member_permission_uid

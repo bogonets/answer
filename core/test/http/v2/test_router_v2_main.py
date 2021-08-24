@@ -9,7 +9,13 @@ from recc.http import http_urls as u
 from recc.http import http_path_keys as p
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
-from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
+from recc.packet.member import MemberA, CreateMemberQ, UpdateMemberQ
+from recc.variables.database import (
+    VISIBILITY_LEVEL_PRIVATE,
+    PERMISSION_NAME_GUEST,
+    PERMISSION_NAME_REPORTER,
+    PERMISSION_NAME_OWNER,
+)
 
 
 class RouterV2MainTestCase(AsyncTestCase):
@@ -84,6 +90,63 @@ class RouterV2MainTestCase(AsyncTestCase):
         self.assertIsInstance(response8.data, list)
         self.assertEqual(0, len(response8.data))
 
+    async def test_group_members(self):
+        another_username = "another1"
+        another_password = "12345678"
+        await self.tester.signup(another_username, another_password)
+
+        slug1 = "group1"
+        group1 = CreateGroupQ(slug=slug1)
+        response1 = await self.tester.post(v2_main_path(u.groups), data=group1)
+        self.assertEqual(200, response1.status)
+
+        path1 = v2_main_path(u.groups_pgroup_members, group=slug1)
+        response2 = await self.tester.get(path1, cls=List[MemberA])
+        self.assertEqual(200, response2.status)
+        response2_data = response2.data
+        self.assertIsInstance(response2_data, list)
+        self.assertEqual(1, len(response2_data))
+        response2_data0 = response2_data[0]
+        self.assertIsInstance(response2_data0, MemberA)
+        self.assertEqual(self.username, response2_data0.username)
+        self.assertEqual(PERMISSION_NAME_OWNER, response2_data0.permission)
+
+        member1 = CreateMemberQ(another_username, PERMISSION_NAME_REPORTER)
+        response3 = await self.tester.post(path1, data=member1)
+        self.assertEqual(200, response3.status)
+
+        response4 = await self.tester.get(path1, cls=List[MemberA])
+        self.assertEqual(200, response4.status)
+        self.assertEqual(2, len(response4.data))
+
+        path2 = v2_main_path(
+            u.groups_pgroup_members_pmember, group=slug1, member=another_username
+        )
+        response5 = await self.tester.get(path2, cls=MemberA)
+        self.assertEqual(200, response5.status)
+        response5_data = response5.data
+        self.assertIsInstance(response5_data, MemberA)
+        self.assertEqual(another_username, response5_data.username)
+        self.assertEqual(PERMISSION_NAME_REPORTER, response5_data.permission)
+
+        update1 = UpdateMemberQ(another_username, PERMISSION_NAME_GUEST)
+        response6 = await self.tester.patch(path2, data=update1)
+        self.assertEqual(200, response6.status)
+
+        response7 = await self.tester.get(path2, cls=MemberA)
+        self.assertEqual(200, response7.status)
+        response7_data = response7.data
+        self.assertIsInstance(response7_data, MemberA)
+        self.assertEqual(another_username, response7_data.username)
+        self.assertEqual(PERMISSION_NAME_GUEST, response7_data.permission)
+
+        response8 = await self.tester.delete(path2)
+        self.assertEqual(200, response8.status)
+
+        response9 = await self.tester.get(path1, cls=List[MemberA])
+        self.assertEqual(200, response9.status)
+        self.assertEqual(1, len(response9.data))
+
     async def test_projects(self):
         group1 = CreateGroupQ(slug="group1")
         response1 = await self.tester.post(v2_main_path(u.groups), data=group1)
@@ -135,6 +198,73 @@ class RouterV2MainTestCase(AsyncTestCase):
         self.assertIsNotNone(response7_data)
         self.assertIsInstance(response7_data, list)
         self.assertEqual(0, len(response7_data))
+
+    async def test_project_members(self):
+        another_username = "another1"
+        another_password = "12345678"
+        await self.tester.signup(another_username, another_password)
+
+        group1 = CreateGroupQ(slug="group1")
+        response1 = await self.tester.post(v2_main_path(u.groups), data=group1)
+        self.assertEqual(200, response1.status)
+
+        project1 = CreateProjectQ(group_slug=group1.slug, project_slug="project1")
+        response2 = await self.tester.post(v2_main_path(u.projects), data=project1)
+        self.assertEqual(200, response2.status)
+
+        path1 = v2_main_path(
+            u.projects_pgroup_pproject_members,
+            group=project1.group_slug,
+            project=project1.project_slug,
+        )
+        response3 = await self.tester.get(path1, cls=List[MemberA])
+        self.assertEqual(200, response3.status)
+        response3_data = response3.data
+        self.assertIsInstance(response3_data, list)
+        self.assertEqual(1, len(response3_data))
+        response3_data0 = response3_data[0]
+        self.assertIsInstance(response3_data0, MemberA)
+        self.assertEqual(self.username, response3_data0.username)
+        self.assertEqual(PERMISSION_NAME_OWNER, response3_data0.permission)
+
+        member1 = CreateMemberQ(another_username, PERMISSION_NAME_REPORTER)
+        response4 = await self.tester.post(path1, data=member1)
+        self.assertEqual(200, response4.status)
+
+        response5 = await self.tester.get(path1, cls=List[MemberA])
+        self.assertEqual(200, response5.status)
+        self.assertEqual(2, len(response5.data))
+
+        path2 = v2_main_path(
+            u.projects_pgroup_pproject_members_pmember,
+            group=project1.group_slug,
+            project=project1.project_slug,
+            member=another_username,
+        )
+        response6 = await self.tester.get(path2, cls=MemberA)
+        self.assertEqual(200, response6.status)
+        response6_data = response6.data
+        self.assertIsInstance(response6_data, MemberA)
+        self.assertEqual(another_username, response6_data.username)
+        self.assertEqual(PERMISSION_NAME_REPORTER, response6_data.permission)
+
+        update1 = UpdateMemberQ(another_username, PERMISSION_NAME_GUEST)
+        response7 = await self.tester.patch(path2, data=update1)
+        self.assertEqual(200, response7.status)
+
+        response8 = await self.tester.get(path2, cls=MemberA)
+        self.assertEqual(200, response8.status)
+        response8_data = response8.data
+        self.assertIsInstance(response8_data, MemberA)
+        self.assertEqual(another_username, response8_data.username)
+        self.assertEqual(PERMISSION_NAME_GUEST, response8_data.permission)
+
+        response9 = await self.tester.delete(path2)
+        self.assertEqual(200, response9.status)
+
+        response10 = await self.tester.get(path1, cls=List[MemberA])
+        self.assertEqual(200, response10.status)
+        self.assertEqual(1, len(response10.data))
 
 
 if __name__ == "__main__":
