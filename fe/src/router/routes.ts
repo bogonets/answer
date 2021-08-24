@@ -7,8 +7,8 @@ import Names from '@/router/names';
 
 import Error from '@/pages/Error.vue';
 import MainAbout from '@/pages/MainAbout.vue';
-import MainAccountAppearance from '@/pages/MainAccountAppearance.vue';
-import MainAccount from '@/pages/MainAccount.vue';
+import SelfAppearance from '@/pages/SelfAppearance.vue';
+import Self from '@/pages/Self.vue';
 import AdminInfos from '@/pages/AdminInfos.vue';
 import AdminConfigs from '@/pages/AdminConfigs.vue';
 import AdminGroups from '@/pages/AdminGroups.vue';
@@ -51,19 +51,6 @@ import MainProjectMembers from '@/components/external/airjoy/AuthManagement.vue'
 import AirJoyManage from '@/components/external/airjoy/AirJoyManage.vue';
 import AirJoyGraph from '@/components/external/airjoy/AirJoyGraph.vue';
 import AirJoyMonitor from '@/components/external/airjoy/AirjoyMonitor.vue';
-
-export const mainAccountChildren = [
-    {
-        path: '',
-        name: Names.mainAccount,
-        redirect: 'appearance',
-    },
-    {
-        path: 'appearance',
-        component: MainAccountAppearance,
-        name: Names.mainAccountAppearance,
-    },
-];
 
 export const adminChildren = [
     {
@@ -258,14 +245,9 @@ export const mainChildren = [
         name: Names.mainDashboard,
     },
     {
-        path: 'account',
-        component: MainAccount,
-        children: mainAccountChildren,
-    },
-    {
         path: 'about',
         component: MainAbout,
-        name: Names.mainAbout,
+        name: Names.about,
     },
     {
         path: 'projects',
@@ -294,6 +276,19 @@ export const mainChildren = [
     },
 ];
 
+export const selfChildren = [
+    {
+        path: '',
+        name: Names.self,
+        redirect: 'appearance',
+    },
+    {
+        path: 'appearance',
+        component: SelfAppearance,
+        name: Names.selfAppearance,
+    },
+];
+
 export const Routes = [
     {
         path: '/',
@@ -315,6 +310,11 @@ export const Routes = [
         component: Main,
         meta: {requiresAuth: true},
         children: mainChildren,
+    },
+    {
+        path: '/self',
+        component: Self,
+        children: selfChildren,
     },
     {
         path: '/admin',

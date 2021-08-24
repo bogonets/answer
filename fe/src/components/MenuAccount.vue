@@ -130,7 +130,7 @@ export default class MenuAccount extends VueBase {
   // Method.
 
   onClickAccountConfig() {
-    this.moveToMainAccountAppearance();
+    this.moveToSelfAppearance();
   }
 
   onClickAdminConfig() {
@@ -142,7 +142,7 @@ export default class MenuAccount extends VueBase {
   }
 
   onClickAboutAnswer() {
-    this.moveToMainAbout();
+    this.moveToAbout();
   }
 
   onClickLogout() {

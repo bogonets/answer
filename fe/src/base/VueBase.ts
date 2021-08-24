@@ -172,19 +172,30 @@ export default class VueBase extends Vue {
         this.moveTo(this.routeNames.adminUsersNew);
     }
 
-    //
+    // ----
+    // Self
+    // ----
 
-    moveToMainAbout() {
-        this.moveTo(this.routeNames.mainAbout);
+    moveToSelf() {
+        this.moveTo(this.routeNames.self);
     }
 
-    moveToMainAccountAppearance() {
-        this.moveTo(this.routeNames.mainAccountAppearance);
+    moveToSelfAppearance() {
+        this.moveTo(this.routeNames.selfAppearance);
     }
 
-    moveToMainAccount() {
-        this.moveTo(this.routeNames.mainAccount);
+    // -----
+    // About
+    // -----
+
+    moveToAbout() {
+        this.moveTo(this.routeNames.about);
     }
+
+    // ----
+    // Main
+    // ----
+
     moveToMainDashboard() {
         this.moveTo(this.routeNames.mainDashboard);
     }

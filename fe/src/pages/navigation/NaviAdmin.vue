@@ -25,128 +25,121 @@ ko:
 </i18n>
 
 <template>
-  <v-container>
+  <v-navigation-drawer
+      app
+      clipped
+      permanent
+      stateless
+      touchless
+      :mini-variant.sync="mini"
+  >
+    <v-list nav dense>
 
-    <v-navigation-drawer
-        app
-        clipped
-        permanent
-        stateless
-        touchless
-        :mini-variant.sync="mini"
-    >
-      <v-list nav dense>
+      <v-list-item link @click.stop="onClickFoldNavigation">
+        <v-list-item-icon>
+          <v-icon>mdi-cog-outline</v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>
+          {{ $t('title') }}
+        </v-list-item-title>
+        <v-btn icon @click.stop="onClickFoldNavigation">
+          <v-icon>mdi-chevron-left</v-icon>
+        </v-btn>
+      </v-list-item>
 
-        <v-list-item link @click.stop="onClickFoldNavigation">
+      <v-divider></v-divider>
+
+      <v-list-item-group
+          mandatory
+          color="primary"
+          :value="value"
+          @change="input"
+      >
+
+        <v-list-item link @click.stop="overview">
           <v-list-item-icon>
-            <v-icon>mdi-cog-outline</v-icon>
+            <v-icon>mdi-developer-board</v-icon>
           </v-list-item-icon>
           <v-list-item-title>
-            {{ $t('title') }}
+            {{ $t('overview') }}
           </v-list-item-title>
-          <v-btn icon @click.stop="onClickFoldNavigation">
-            <v-icon>mdi-chevron-left</v-icon>
-          </v-btn>
         </v-list-item>
 
-        <v-divider></v-divider>
+        <v-list-item link @click.stop="users">
+          <v-list-item-icon>
+            <v-icon>mdi-account</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('users') }}
+          </v-list-item-title>
+        </v-list-item>
 
-        <v-list-item-group
-            mandatory
-            color="primary"
-            :value="value"
-            @change="input"
-        >
+        <v-list-item link @click.stop="groups">
+          <v-list-item-icon>
+            <v-icon>mdi-account-group</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('groups') }}
+          </v-list-item-title>
+        </v-list-item>
 
-          <v-list-item link @click.stop="overview">
-            <v-list-item-icon>
-              <v-icon>mdi-developer-board</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>
-              {{ $t('overview') }}
-            </v-list-item-title>
-          </v-list-item>
+        <v-list-item link @click.stop="projects">
+          <v-list-item-icon>
+            <v-icon>mdi-clipboard-check-multiple</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('projects') }}
+          </v-list-item-title>
+        </v-list-item>
 
-          <v-list-item link @click.stop="users">
-            <v-list-item-icon>
-              <v-icon>mdi-account</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>
-              {{ $t('users') }}
-            </v-list-item-title>
-          </v-list-item>
+        <v-list-item link @click.stop="permissions">
+          <v-list-item-icon>
+            <v-icon>mdi-key-change</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('permissions') }}
+          </v-list-item-title>
+        </v-list-item>
 
-          <v-list-item link @click.stop="groups">
-            <v-list-item-icon>
-              <v-icon>mdi-account-group</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>
-              {{ $t('groups') }}
-            </v-list-item-title>
-          </v-list-item>
+        <v-list-item link @click.stop="tasks">
+          <v-list-item-icon>
+            <v-icon>mdi-monitor-multiple</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('tasks') }}
+          </v-list-item-title>
+        </v-list-item>
 
-          <v-list-item link @click.stop="projects">
-            <v-list-item-icon>
-              <v-icon>mdi-clipboard-check-multiple</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>
-              {{ $t('projects') }}
-            </v-list-item-title>
-          </v-list-item>
+        <v-list-item link @click.stop="templates">
+          <v-list-item-icon>
+            <v-icon>mdi-lambda</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('templates') }}
+          </v-list-item-title>
+        </v-list-item>
 
-          <v-list-item link @click.stop="permissions">
-            <v-list-item-icon>
-              <v-icon>mdi-key-change</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>
-              {{ $t('permissions') }}
-            </v-list-item-title>
-          </v-list-item>
+        <v-list-item link @click.stop="features">
+          <v-list-item-icon>
+            <v-icon>mdi-format-list-checks</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('features') }}
+          </v-list-item-title>
+        </v-list-item>
 
-          <v-list-item link @click.stop="tasks">
-            <v-list-item-icon>
-              <v-icon>mdi-monitor-multiple</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>
-              {{ $t('tasks') }}
-            </v-list-item-title>
-          </v-list-item>
+        <v-list-item link @click.stop="envs">
+          <v-list-item-icon>
+            <v-icon>mdi-cogs</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('envs') }}
+          </v-list-item-title>
+        </v-list-item>
 
-          <v-list-item link @click.stop="templates">
-            <v-list-item-icon>
-              <v-icon>mdi-lambda</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>
-              {{ $t('templates') }}
-            </v-list-item-title>
-          </v-list-item>
-
-          <v-list-item link @click.stop="features">
-            <v-list-item-icon>
-              <v-icon>mdi-format-list-checks</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>
-              {{ $t('features') }}
-            </v-list-item-title>
-          </v-list-item>
-
-          <v-list-item link @click.stop="envs">
-            <v-list-item-icon>
-              <v-icon>mdi-cogs</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>
-              {{ $t('envs') }}
-            </v-list-item-title>
-          </v-list-item>
-
-        </v-list-item-group>
-      </v-list>
-    </v-navigation-drawer>
-
-    <router-view>
-    </router-view>
-
-  </v-container>
+      </v-list-item-group>
+    </v-list>
+  </v-navigation-drawer>
 </template>
 
 <script lang="ts">

@@ -10,7 +10,7 @@ ko:
 
 <template>
   <v-app-bar app dense fixed clipped-left clipped-right>
-    <v-btn plain small @click="moveDashboard">
+    <v-btn plain small @click="onClickLogo">
       <title-logo-small></title-logo-small>
     </v-btn>
 
@@ -45,9 +45,8 @@ import TitleLogoSmall from '@/components/TitleLogoSmall.vue';
   }
 })
 export default class BarMain extends VueBase {
-  moveDashboard() {
-    // this.moveToMainDashboard();
-    this.moveToMainGroups();
+  onClickLogo() {
+    this.moveToRoot();
   }
 
   moveProjects() {

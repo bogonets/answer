@@ -1,8 +1,6 @@
 export const Names = {
     errorNotFound: 'ErrorNotFound',
-    mainAbout: 'MainAbout',
-    mainAccountAppearance: 'MainAccountAppearance',
-    mainAccount: 'MainAccount',
+    about: 'About',
 
     admin: 'Admin',
     adminConfigs: 'AdminConfigs',
@@ -22,7 +20,6 @@ export const Names = {
     adminUsers: 'AdminUsers',
     adminUsersEdit: 'AdminUsersEdit',
     adminUsersNew: 'AdminUsersNew',
-
     dev: 'Dev',
 
     mainDashboard: 'MainDashboard',
@@ -44,6 +41,10 @@ export const Names = {
     mainProjectVms: 'MainProjectVms',
     mainProject: 'MainProject',
     main: 'Main',
+
+    self: 'Self',
+    selfAppearance: 'SelfAppearance',
+
     signin: 'Signin',
     signup: 'Signup',
     signupAdmin: 'SignupAdmin',

@@ -94,12 +94,12 @@ import {UserExtra} from '@/packet/user';
     ListLanguages,
   }
 })
-export default class MainAccountAppearance extends VueBase {
+export default class SelfAppearance extends VueBase {
   private readonly navigationItems = [
     {
-      text: 'Account',
+      text: 'Self',
       disabled: false,
-      href: () => this.moveToMainAccountAppearance(),
+      href: () => this.moveToSelf(),
     },
     {
       text: 'Appearance',
