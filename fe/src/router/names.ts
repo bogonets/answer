@@ -23,8 +23,9 @@ export const Names = {
     adminUsers: 'AdminUsers.vue',
     admin: 'Admin.vue',
 
+    dev: 'Dev',
+
     mainDashboard: 'MainDashboard',
-    mainDevTools: 'MainDevTools',
     mainGroups: 'MainGroups',
     mainGroupsNew: 'MainGroupsNew',
     mainProjectConfigs: 'MainProjectConfigs',

@@ -157,7 +157,7 @@ import VueBase from '@/base/VueBase';
 export default class NaviAdmin extends VueBase {
 
   @Prop({type: Boolean, default: false})
-  readonly defaultBehavior!: boolean;
+  readonly noDefault!: boolean;
 
   @Prop({type: Number, default: 0})
   readonly value!: number;
@@ -175,63 +175,63 @@ export default class NaviAdmin extends VueBase {
 
   @Emit('click:overview')
   overview() {
-    if (this.defaultBehavior) {
+    if (!this.noDefault) {
       this.moveToMainAdminOverview();
     }
   }
 
   @Emit('click:users')
   users() {
-    if (this.defaultBehavior) {
+    if (!this.noDefault) {
       this.moveToMainAdminUsers();
     }
   }
 
   @Emit('click:groups')
   groups() {
-    if (this.defaultBehavior) {
+    if (!this.noDefault) {
       this.moveToMainAdminGroups();
     }
   }
 
   @Emit('click:projects')
   projects() {
-    if (this.defaultBehavior) {
+    if (!this.noDefault) {
       this.moveToMainAdminProjects();
     }
   }
 
   @Emit('click:permissions')
   permissions() {
-    if (this.defaultBehavior) {
+    if (!this.noDefault) {
       this.moveToMainAdminPermissions();
     }
   }
 
   @Emit('click:tasks')
   tasks() {
-    if (this.defaultBehavior) {
+    if (!this.noDefault) {
       this.moveToMainAdminTasks();
     }
   }
 
   @Emit('click:templates')
   templates() {
-    if (this.defaultBehavior) {
+    if (!this.noDefault) {
       this.moveToMainAdminTemplates();
     }
   }
 
   @Emit('click:features')
   features() {
-    if (this.defaultBehavior) {
+    if (!this.noDefault) {
       this.moveToMainAdminFeatures();
     }
   }
 
   @Emit('click:envs')
   envs() {
-    if (this.defaultBehavior) {
+    if (!this.noDefault) {
       this.moveToMainAdminEnvs();
     }
   }

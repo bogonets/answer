@@ -28,7 +28,7 @@ import AdminUsersEdit from '@/pages/AdminUsersEdit.vue';
 import AdminUsersNew from '@/pages/AdminUsersNew.vue';
 import Admin from '@/pages/Admin.vue';
 import MainDashboard from '@/pages/MainDashboard.vue';
-import MainDevTools from '@/pages/MainDevTools.vue';
+import Dev from '@/pages/Dev.vue';
 import MainGroups from '@/pages/MainGroups.vue';
 import MainGroupsNew from '@/pages/MainGroupsNew.vue';
 import MainProjectConfigs from '@/pages/MainProjectConfigs.vue';
@@ -262,16 +262,6 @@ export const mainChildren = [
         component: MainAccount,
         children: mainAccountChildren,
     },
-    // {
-    //     path: 'admin',
-    //     component: MainAdmin,
-    //     children: mainAdminChildren,
-    // },
-    {
-        path: 'dev',
-        component: MainDevTools,
-        name: Names.mainDevTools,
-    },
     {
         path: 'about',
         component: MainAbout,
@@ -331,6 +321,12 @@ export const Routes = [
         component: Admin,
         meta: {requiresAuth: true},
         children: adminChildren,
+    },
+    {
+        path: '/dev',
+        component: Dev,
+        meta: {requiresAuth: true},
+        name: Names.dev,
     },
     {
         path: '*',

@@ -185,7 +185,7 @@ export default class VueBase extends Vue {
     }
 
     moveToMainDevTools() {
-        this.moveTo(this.routeNames.mainDevTools);
+        this.moveTo(this.routeNames.dev);
     }
 
     moveToMainGroups() {

@@ -44,7 +44,7 @@ import TitleLogoSmall from '@/components/TitleLogoSmall.vue';
     MenuAccount,
   }
 })
-export default class MainTitleBar extends VueBase {
+export default class BarMain extends VueBase {
   moveDashboard() {
     // this.moveToMainDashboard();
     this.moveToMainGroups();

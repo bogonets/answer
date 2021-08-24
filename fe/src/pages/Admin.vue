@@ -1,12 +1,11 @@
 <template>
   <v-app>
-    <main-title-bar>
-    </main-title-bar>
+    <bar-main>
+    </bar-main>
 
     <v-main>
-      <navi-admin
-          default-behavior
-      ></navi-admin>
+      <navi-admin>
+      </navi-admin>
 
       <router-view>
       </router-view>
@@ -17,12 +16,12 @@
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import MainTitleBar from '@/components/MainTitleBar.vue';
+import BarMain from '@/pages/bar/BarMain.vue';
 import NaviAdmin from '@/pages/navigation/NaviAdmin.vue';
 
 @Component({
   components: {
-    MainTitleBar,
+    BarMain,
     NaviAdmin,
   }
 })

@@ -4,6 +4,10 @@
     </bar-main>
 
     <v-main>
+      <!--<navi-dev
+          default-behavior
+      ></navi-dev>-->
+
       <router-view>
       </router-view>
     </v-main>
@@ -20,6 +24,6 @@ import BarMain from '@/pages/bar/BarMain.vue';
     BarMain,
   }
 })
-export default class Main extends VueBase {
+export default class Dev extends VueBase {
 }
 </script>
