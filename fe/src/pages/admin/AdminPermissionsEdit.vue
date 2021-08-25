@@ -134,7 +134,7 @@ export default class AdminPermissionsEdit extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToAdminOverview(),
+      href: () => this.moveToAdmin(),
     },
     {
       text: 'Permissions',

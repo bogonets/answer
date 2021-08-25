@@ -43,5 +43,6 @@ export default class MainProjectVisualProgramming extends VueBase {
       disabled: true,
     },
   ];
+
 }
 </script>

@@ -67,7 +67,7 @@ const VENDER_HREF = 'https://www.bogonets.com';
     TitleLogo,
   }
 })
-export default class MainAbout extends VueBase {
+export default class RootAbout extends VueBase {
   get versionText(): string {
     const title = this.$t('title').toString();
     const version = this.$t('version').toString();

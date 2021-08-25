@@ -1,16 +1,11 @@
 <template>
-  <v-app>
-    <bar-main>
-    </bar-main>
+  <div>
+    <navi-dev>
+    </navi-dev>
 
-    <v-main>
-      <navi-dev>
-      </navi-dev>
-
-      <router-view>
-      </router-view>
-    </v-main>
-  </v-app>
+    <router-view>
+    </router-view>
+  </div>
 </template>
 
 <script lang="ts">
@@ -25,6 +20,6 @@ import NaviDev from '@/pages/navigation/NaviDev.vue';
     NaviDev,
   }
 })
-export default class RouterBarMainNaviDev extends VueBase {
+export default class RouterNaviDev extends VueBase {
 }
 </script>

@@ -259,51 +259,51 @@ export default class MainProject extends VueBase {
   }
 
   onClickDashboard() {
-    this.moveToMainProjectDashboard();
+    // this.moveToMainProjectDashboard();
   }
 
   onClickLayouts() {
-    this.moveToMainProjectLayouts();
+    // this.moveToMainProjectLayouts();
   }
 
   onClickFiles() {
-    this.moveToMainProjectFiles();
+    // this.moveToMainProjectFiles();
   }
 
   onClickTables() {
-    this.moveToMainProjectTables();
+    // this.moveToMainProjectTables();
   }
 
   onClickVms() {
-    this.moveToMainProjectVms();
+    // this.moveToMainProjectVms();
   }
 
   onClickTasks() {
-    this.moveToMainProjectTasks();
+    // this.moveToMainProjectTasks();
   }
 
   onClickVisualProgramming() {
-    this.moveToMainProjectVisualProgramming();
+    // this.moveToMainProjectVisualProgramming();
   }
 
   onClickConfigs() {
-    this.moveToMainProjectConfigs();
+    // this.moveToMainProjectConfigs();
   }
 
   onClickAirjoyTables() {
-    this.moveToMainProjectAirjoyTables();
+    // this.moveToMainProjectAirjoyTables();
   }
 
   onClickAirjoyStatistics() {
-    this.moveToMainProjectAirjoyStatistics();
+    // this.moveToMainProjectAirjoyStatistics();
   }
 
   onClickAirjoyMonitoring() {
-    this.moveToMainProjectAirjoyMonitoring();
+    // this.moveToMainProjectAirjoyMonitoring();
   }
 
   onClickAirjoyUsers() {
-    this.moveToMainProjectMembers();
+    // this.moveToMainProjectMembers();
   }
 }
 </script>

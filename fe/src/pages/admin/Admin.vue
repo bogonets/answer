@@ -62,15 +62,10 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
     ToolbarNavigation
   }
 })
-export default class AdminOverview extends VueBase {
+export default class Admin extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Admin',
-      disabled: false,
-      href: () => this.moveToAdminOverview(),
-    },
-    {
-      text: 'Overview',
       disabled: true,
     },
   ];

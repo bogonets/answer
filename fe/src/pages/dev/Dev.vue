@@ -8,6 +8,6 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 
 @Component
-export default class MainGroupMembers extends VueBase {
+export default class Dev extends VueBase {
 }
 </script>

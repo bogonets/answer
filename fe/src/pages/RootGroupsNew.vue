@@ -5,7 +5,6 @@
 
     <form-group-new
         request-type="self"
-        @cancel="onClickCancel"
         @request:success="onRequestSuccess"
     ></form-group-new>
 
@@ -24,12 +23,12 @@ import FormGroupNew from '@/components/FormGroupNew.vue';
     FormGroupNew,
   }
 })
-export default class MainGroupsNew extends VueBase {
+export default class RootGroupsNew extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Groups',
       disabled: false,
-      href: () => this.moveToMainGroups(),
+      href: () => this.moveToRootGroups(),
     },
     {
       text: 'New',
@@ -37,12 +36,8 @@ export default class MainGroupsNew extends VueBase {
     },
   ];
 
-  onClickCancel() {
-    this.moveToBack();
-  }
-
   onRequestSuccess() {
-    this.moveToMainGroups();
+    this.moveToRootGroups();
   }
 }
 </script>

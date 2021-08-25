@@ -103,7 +103,7 @@ export default class AdminUsers extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToAdminOverview(),
+      href: () => this.moveToAdmin(),
     },
     {
       text: 'Users',

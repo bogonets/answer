@@ -28,7 +28,7 @@ import {ProjectA} from "@/packet/project";
     TableProjects,
   }
 })
-export default class MainGroupProjects extends VueBase {
+export default class GroupProjects extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Groups',

@@ -1,16 +1,11 @@
 <template>
-  <v-app>
-    <bar-main>
-    </bar-main>
+  <div>
+    <navi-group>
+    </navi-group>
 
-    <v-main>
-      <navi-group>
-      </navi-group>
-
-      <router-view>
-      </router-view>
-    </v-main>
-  </v-app>
+    <router-view>
+    </router-view>
+  </div>
 </template>
 
 <script lang="ts">
@@ -25,6 +20,6 @@ import NaviGroup from "@/pages/navigation/NaviGroup.vue";
     NaviGroup,
   }
 })
-export default class RouterBarMainNaviGroup extends VueBase {
+export default class RouterNaviGroup extends VueBase {
 }
 </script>

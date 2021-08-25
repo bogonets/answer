@@ -1,9 +1,13 @@
 <i18n lang="yaml">
 en:
+  title: "DevTools"
   overview: "Overview"
+  envs: "Environment"
 
 ko:
+  title: "개발 도구"
   overview: "개요"
+  envs: "환경 변수"
 </i18n>
 
 <template>
@@ -47,6 +51,15 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
+        <v-list-item link @click.stop="envs">
+          <v-list-item-icon>
+            <v-icon>mdi-variable</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('envs') }}
+          </v-list-item-title>
+        </v-list-item>
+
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
@@ -79,7 +92,14 @@ export default class NaviDev extends VueBase {
   @Emit('click:overview')
   overview() {
     if (!this.noDefault) {
-      // ??
+      this.moveToDev();
+    }
+  }
+
+  @Emit('click:envs')
+  envs() {
+    if (!this.noDefault) {
+      this.moveToDevEnvs();
     }
   }
 }

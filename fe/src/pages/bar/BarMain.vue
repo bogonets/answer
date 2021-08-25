@@ -10,15 +10,17 @@ ko:
 
 <template>
   <v-app-bar app dense fixed clipped-left clipped-right>
+
     <v-btn plain small @click="onClickLogo">
-      <title-logo-small></title-logo-small>
+      <title-logo-small>
+      </title-logo-small>
     </v-btn>
 
-    <v-btn v-if="false" plain small text color="primary" @click="onClickGroups">
+    <v-btn plain small text color="primary" @click="onClickGroups">
       {{ $t('groups') }}
     </v-btn>
 
-    <v-btn v-if="false" plain small text color="primary" @click="moveProjects">
+    <v-btn v-if="false" plain small text color="primary" @click="onClickProjects">
       {{ $t('projects') }}
     </v-btn>
 
@@ -28,7 +30,9 @@ ko:
       <v-icon>mdi-bell</v-icon>
     </v-btn>
 
-    <menu-account></menu-account>
+    <menu-account>
+    </menu-account>
+
   </v-app-bar>
 </template>
 
@@ -46,15 +50,15 @@ import TitleLogoSmall from '@/components/TitleLogoSmall.vue';
 })
 export default class BarMain extends VueBase {
   onClickLogo() {
-    this.moveToMain();
+    this.moveToRoot();
   }
 
   onClickGroups() {
-    this.moveToMainGroups();
+    this.moveToRootGroups();
   }
 
-  moveProjects() {
-    // this.moveToMainProjects();
+  onClickProjects() {
+    // this.moveToProjects();
   }
 }
 </script>

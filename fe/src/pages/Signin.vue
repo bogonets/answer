@@ -107,7 +107,7 @@ ko:
                 <v-list-item>
                   <v-row align="center" justify="center">
                     <v-spacer></v-spacer>
-                    <a class="text-overline" @click="signup">
+                    <a class="text-overline" @click="onClickSignup">
                       {{ $t('signup') }}
                     </a>
                     <span class="mx-3"></span>
@@ -182,9 +182,9 @@ export default class Signin extends VueBase {
 
   // Lifecycle
 
-  mounted() {
+  created() {
     if (this.$localStore.alreadySession) {
-      this.moveToMain();
+      this.moveToRoot();
       return;
     }
 
@@ -320,7 +320,7 @@ export default class Signin extends VueBase {
               this.updateState(LoginPageState.Ready);
             }, this.waitMoment);
           } else {
-            this.moveToSignupAdmin();
+            this.moveToInit();
           }
         })
         .catch(error => {
@@ -443,7 +443,7 @@ export default class Signin extends VueBase {
             console.warn('Not exists user\'s extra information.');
           }
 
-          this.moveToMain();
+          this.moveToRoot();
         })
         .catch(error => {
           console.error(error);
@@ -453,7 +453,7 @@ export default class Signin extends VueBase {
         });
   }
 
-  signup() {
+  onClickSignup() {
     this.moveToSignup();
   }
 

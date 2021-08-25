@@ -109,7 +109,16 @@ export default class MainAccount extends VueBase {
   }
 
   get groupAvatar(): string {
-    return this.groupSlug[0].toUpperCase();
+    // return this.groupSlug[0].toUpperCase();
+    const name = this.$route.params.group;
+    if (name) {
+      return name[0].toUpperCase();
+    }
+    return '?';
+  }
+
+  mounted() {
+    console.log(`this.$route.params.group: ${this.$route.params.group}`);
   }
 
   onClickFoldNavigation() {
@@ -124,21 +133,21 @@ export default class MainAccount extends VueBase {
   @Emit('click:projects')
   projects() {
     if (!this.noDefault) {
-      this.moveToMainGroupProjects(this.$route.params.group);
+      this.moveToGroup(this.$route.params.group);
     }
   }
 
   @Emit('click:members')
   members() {
     if (!this.noDefault) {
-      this.moveToMainGroupMembers(this.$route.params.group);
+      this.moveToGroupMembers(this.$route.params.group);
     }
   }
 
   @Emit('click:settings')
   settings() {
     if (!this.noDefault) {
-      this.moveToMainGroupSettings(this.$route.params.group);
+      this.moveToGroupSettings(this.$route.params.group);
     }
   }
 }

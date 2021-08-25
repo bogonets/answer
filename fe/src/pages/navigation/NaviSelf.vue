@@ -2,11 +2,13 @@
 en:
   user:
     unknown: "[Unknown User]"
+  overview: "Overview"
   appearance: "Appearance"
 
 ko:
   user:
     unknown: "[알수없는 사용자]"
+  overview: "개요"
   appearance: "외관"
 </i18n>
 
@@ -42,6 +44,16 @@ ko:
           :value="value"
           @change="input"
       >
+
+        <v-list-item link @click.stop="overview">
+          <v-list-item-icon>
+            <v-icon>mdi-developer-board</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('overview') }}
+          </v-list-item-title>
+        </v-list-item>
+
         <v-list-item link @click.stop="appearance">
           <v-list-item-icon>
             <v-icon>mdi-eye</v-icon>
@@ -50,6 +62,7 @@ ko:
             {{ $t('appearance') }}
           </v-list-item-title>
         </v-list-item>
+
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
@@ -89,6 +102,13 @@ export default class MainAccount extends VueBase {
   @Emit()
   input(index: number) {
     return index;
+  }
+
+  @Emit('click:overview')
+  overview() {
+    if (!this.noDefault) {
+      this.moveToSelf();
+    }
   }
 
   @Emit('click:appearance')

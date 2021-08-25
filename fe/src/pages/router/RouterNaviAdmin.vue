@@ -1,16 +1,11 @@
 <template>
-  <v-app>
-    <bar-main>
-    </bar-main>
+  <div>
+    <navi-admin>
+    </navi-admin>
 
-    <v-main>
-      <navi-admin>
-      </navi-admin>
-
-      <router-view>
-      </router-view>
-    </v-main>
-  </v-app>
+    <router-view>
+    </router-view>
+  </div>
 </template>
 
 <script lang="ts">
@@ -25,6 +20,6 @@ import NaviAdmin from '@/pages/navigation/NaviAdmin.vue';
     NaviAdmin,
   }
 })
-export default class RouterBarMainNaviAdmin extends VueBase {
+export default class RouterNaviAdmin extends VueBase {
 }
 </script>

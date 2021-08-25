@@ -10,7 +10,6 @@
           clickable-row
           @click:new="onClickNew"
           @click:row="onClickRow"
-          @click:edit="onClickEdit"
       ></table-groups>
 
   </v-container>
@@ -29,7 +28,7 @@ import {GroupA} from '@/packet/group';
     TableGroups,
   }
 })
-export default class MainGroups extends VueBase {
+export default class RootGroups extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Groups',
@@ -38,15 +37,12 @@ export default class MainGroups extends VueBase {
   ];
 
   onClickNew() {
-    this.moveToMainGroupsNew();
+    this.moveToRootGroupsNew();
   }
 
   onClickRow(item: GroupA) {
-    this.moveToMainGroup(item.slug);
-  }
-
-  onClickEdit(item: GroupA) {
-    this.moveToMainGroupSettings(item.slug);
+    console.info(`onClickRow(${item.slug})`);
+    this.moveToGroup(item.slug);
   }
 }
 </script>

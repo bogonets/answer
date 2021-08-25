@@ -1,6 +1,6 @@
 <i18n lang="yaml">
 en:
-  title: "Admin Preference"
+  title: "Admin setting"
   overview: "Overview"
   users: "Users"
   groups: "Groups"
@@ -169,7 +169,7 @@ export default class NaviAdmin extends VueBase {
   @Emit('click:overview')
   overview() {
     if (!this.noDefault) {
-      this.moveToAdminOverview();
+      this.moveToAdmin();
     }
   }
 

@@ -2,7 +2,7 @@
 en:
   unknown_user: "Unknown"
   user_setting: "Account setting"
-  admin_setting: "Setting"
+  admin_setting: "Admin setting"
   development_tools: "DevTools"
   about_answer: "About Answer"
   signout: "Sign out"
@@ -130,19 +130,19 @@ export default class MenuAccount extends VueBase {
   // Method.
 
   onClickAccountConfig() {
-    this.moveToSelfAppearance();
+    this.moveToSelf();
   }
 
   onClickAdminConfig() {
-    this.moveToAdminOverview();
+    this.moveToAdmin();
   }
 
   onClickDevelopmentTools() {
-    this.moveToMainDevTools();
+    this.moveToDev();
   }
 
   onClickAboutAnswer() {
-    this.moveToAbout();
+    this.moveToRootAbout();
   }
 
   onClickLogout() {

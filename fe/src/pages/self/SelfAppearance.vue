@@ -84,7 +84,7 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ListLanguages, {LANGUAGES} from '@/components/ListLanguages.vue';
+import ListLanguages from '@/components/ListLanguages.vue';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import {UserExtra} from '@/packet/user';
 
@@ -97,7 +97,7 @@ import {UserExtra} from '@/packet/user';
 export default class SelfAppearance extends VueBase {
   private readonly navigationItems = [
     {
-      text: 'RouterBarMainNaviSelf.vue',
+      text: 'Account',
       disabled: false,
       href: () => this.moveToSelf(),
     },

@@ -19,6 +19,7 @@ ko:
   >
     <form-group
         hide-origin-prefix
+        hide-cancel-button
         :loading="submitLoading"
         @cancel="cancel"
         @ok="onClickOk"
@@ -61,7 +62,7 @@ export default class FormGroupNew extends VueBase {
   @Emit('request:success')
   requestSuccess() {
     this.submitLoading = false;
-    if (this.hideToast) {
+    if (!this.hideToast) {
       this.toastRequestSuccess();
     }
   }
@@ -69,7 +70,7 @@ export default class FormGroupNew extends VueBase {
   @Emit('request:failure')
   requestFailure(error) {
     this.submitLoading = false;
-    if (this.hideToast) {
+    if (!this.hideToast) {
       this.toastRequestFailure(error);
     }
     return error;
@@ -88,13 +89,13 @@ export default class FormGroupNew extends VueBase {
     if (this.requestType === REQUEST_TYPE_SELF) {
       this.requestPostSelfGroups(body);
     } else if (this.requestType === REQUEST_TYPE_ADMIN) {
-      this.requestPostGroups(body);
+      this.requestPostAdminGroups(body);
     } else {
       throw Error(`Unknown request type: ${this.requestType}`);
     }
   }
 
-  requestPostGroups(body: CreateGroupQ) {
+  requestPostAdminGroups(body: CreateGroupQ) {
     this.$api2.postAdminGroups(body)
         .then(() => {
           this.requestSuccess();

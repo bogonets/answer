@@ -135,7 +135,7 @@ export default class AdminGroupsEdit extends VueBase {
     {
       text: 'Admin',
       disabled: false,
-      href: () => this.moveToAdminOverview(),
+      href: () => this.moveToAdmin(),
     },
     {
       text: 'Groups',
