@@ -4,7 +4,8 @@
     <v-divider></v-divider>
 
     <table-groups
-        request-type="admin"
+        :loading="loading"
+        :items="items"
         @click:new="onClickNew"
         @click:edit="onClickEdit"
         @click:move="onClickMove"
@@ -38,6 +39,26 @@ export default class AdminGroups extends VueBase {
       disabled: true,
     },
   ];
+
+  loading = false;
+  items = [] as Array<GroupA>;
+
+  created() {
+    this.requestGroups()
+  }
+
+  requestGroups() {
+    this.loading = true;
+    this.$api2.getAdminGroups()
+        .then(items => {
+          this.loading = false;
+          this.items = items;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
 
   onClickNew() {
     this.moveToAdminGroupsNew();

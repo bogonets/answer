@@ -4,10 +4,11 @@
     <v-divider></v-divider>
 
       <table-groups
-          request-type="self"
           hide-action-edit
           hide-action-move
           clickable-row
+          :loading="loading"
+          :items="items"
           @click:new="onClickNew"
           @click:row="onClickRow"
       ></table-groups>
@@ -35,6 +36,26 @@ export default class RootGroups extends VueBase {
       disabled: true,
     },
   ];
+
+  loading = false;
+  items = [] as Array<GroupA>;
+
+  created() {
+    this.requestGroups()
+  }
+
+  requestGroups() {
+    this.loading = true;
+    this.$api2.getMainGroups()
+        .then(items => {
+          this.loading = false;
+          this.items = items;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
 
   onClickNew() {
     this.moveToRootGroupsNew();

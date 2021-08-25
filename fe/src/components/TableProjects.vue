@@ -187,7 +187,7 @@ export default class TableProjects extends VueBase {
   }
 
   get dataTableClass(): string {
-    if (this.clickableRow) {
+    if (this.items.length >= 1 && this.clickableRow) {
       return 'row-pointer';
     } else {
       return '';

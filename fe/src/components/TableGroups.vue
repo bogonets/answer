@@ -85,17 +85,8 @@ import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {GroupA} from '@/packet/group';
 
-const REQUEST_TYPE_SELF = 'self';
-const REQUEST_TYPE_ADMIN = 'admin';
-
 @Component
 export default class TableGroups extends VueBase {
-  @Prop({type: String, default: REQUEST_TYPE_SELF})
-  readonly requestType!: string;
-
-  @Prop({type: Boolean, default: false})
-  readonly hideToast!: boolean;
-
   @Prop({type: Boolean, default: false})
   readonly hideFilterInput!: boolean;
 
@@ -111,14 +102,16 @@ export default class TableGroups extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly clickableRow!: boolean;
 
+  @Prop({type: Boolean, default: false})
+  readonly loading!: boolean;
+
+  @Prop({type: Array, default: () => new Array<GroupA>()})
+  readonly items!: Array<GroupA>;
+
   headers = [] as Array<object>;
-  loading = false;
   filter = '';
-  items = [] as Array<GroupA>;
 
   created() {
-    this.requestItems();
-
     if (this.hideActions) {
       this.headers = this.createHeaders(false);
     } else {
@@ -184,52 +177,8 @@ export default class TableGroups extends VueBase {
     return headers;
   }
 
-  requestItems() {
-    if (this.requestType === REQUEST_TYPE_SELF) {
-      this.requestSelfGroups();
-    } else if (this.requestType === REQUEST_TYPE_ADMIN) {
-      this.requestAdminGroups();
-    } else {
-      throw Error(`Unknown request type: ${this.requestType}`);
-    }
-  }
-
-  requestSelfGroups() {
-    this.loading = true;
-    this.$api2.getMainGroups()
-        .then(items => {
-          this.onRequestSuccess(items);
-        })
-        .catch(error => {
-          this.onRequestFailure(error);
-        });
-  }
-
-  requestAdminGroups() {
-    this.loading = true;
-    this.$api2.getAdminGroups()
-        .then(items => {
-          this.onRequestSuccess(items);
-        })
-        .catch(error => {
-          this.onRequestFailure(error);
-        });
-  }
-
-  onRequestSuccess(items: Array<GroupA>) {
-    this.loading = false;
-    this.items = items;
-  }
-
-  onRequestFailure(error) {
-    this.loading = false;
-    if (this.hideToast) {
-      this.toastRequestFailure(error);
-    }
-  }
-
   get dataTableClass(): string {
-    if (this.clickableRow) {
+    if (this.items.length >= 1 && this.clickableRow) {
       return 'row-pointer';
     } else {
       return '';
