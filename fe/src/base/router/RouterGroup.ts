@@ -14,6 +14,11 @@ export default class RouterGroup extends Router {
         this.moveTo(groupNames.groupMembers, params);
     }
 
+    moveToGroupProjectsNew(group?: string) {
+        const params = {group: group || this.$route.params.group};
+        this.moveTo(groupNames.groupProjectsNew, params);
+    }
+
     moveToGroupSettings(group?: string) {
         const params = {group: group || this.$route.params.group};
         this.moveTo(groupNames.groupSettings, params);
