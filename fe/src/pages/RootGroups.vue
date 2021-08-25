@@ -63,7 +63,7 @@ export default class RootGroups extends VueBase {
 
   onClickRow(item: GroupA) {
     console.info(`onClickRow(${item.slug})`);
-    this.moveToGroup(item.slug);
+    this.moveToGroupProjects(item.slug);
   }
 }
 </script>

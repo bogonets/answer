@@ -1,5 +1,5 @@
 export const groupNames = {
-    group: 'group',
+    groupProjects: 'group',
     groupMembers: 'groupMembers',
     groupProjectsNew: 'groupProjectsNew',
     groupSettings: 'groupSettings',

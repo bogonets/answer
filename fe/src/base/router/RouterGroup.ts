@@ -4,14 +4,14 @@ import groupNames from '@/router/names/group';
 
 @Component
 export default class RouterGroup extends Router {
-    moveToGroup(group?: string) {
-        const params = {group: group || this.$route.params.group};
-        this.moveTo(groupNames.group, params);
-    }
-
     moveToGroupMembers(group?: string) {
         const params = {group: group || this.$route.params.group};
         this.moveTo(groupNames.groupMembers, params);
+    }
+
+    moveToGroupProjects(group?: string) {
+        const params = {group: group || this.$route.params.group};
+        this.moveTo(groupNames.groupProjects, params);
     }
 
     moveToGroupProjectsNew(group?: string) {

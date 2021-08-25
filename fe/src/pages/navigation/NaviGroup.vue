@@ -133,7 +133,7 @@ export default class MainAccount extends VueBase {
   @Emit('click:projects')
   projects() {
     if (!this.noDefault) {
-      this.moveToGroup(this.$route.params.group);
+      this.moveToGroupProjects(this.$route.params.group);
     }
   }
 

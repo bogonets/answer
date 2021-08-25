@@ -33,7 +33,7 @@ export default class GroupProjectsNew extends VueBase {
     {
       text: 'Projects',
       disabled: false,
-      href: () => this.moveToGroup(),
+      href: () => this.moveToGroupProjects(),
     },
     {
       text: 'New',
