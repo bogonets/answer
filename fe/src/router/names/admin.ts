@@ -1,10 +1,10 @@
 export const adminNames = {
-    admin: 'Admin',
     adminConfigs: 'AdminConfigs',
     adminGroups: 'AdminGroups',
     adminGroupsEdit: 'AdminGroupsEdit',
     adminGroupsNew: 'AdminGroupsNew',
     adminInfos: 'AdminInfos',
+    adminOverview: 'AdminOverview',
     adminPermissions: 'AdminPermissions',
     adminPermissionsEdit: 'AdminPermissionsEdit',
     adminPermissionsNew: 'AdminPermissionsNew',

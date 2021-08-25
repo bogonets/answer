@@ -5,7 +5,7 @@ import adminNames from "@/router/names/admin";
 @Component
 export default class RouterRoot extends Router {
     moveToAdmin() {
-        this.moveTo(adminNames.admin);
+        this.moveToAdminOverview();
     }
 
     moveToAdminConfigs() {
@@ -26,6 +26,10 @@ export default class RouterRoot extends Router {
 
     moveToAdminInfos() {
         this.moveTo(adminNames.adminInfos);
+    }
+
+    moveToAdminOverview() {
+        this.moveTo(adminNames.adminOverview);
     }
 
     moveToAdminPermissions() {

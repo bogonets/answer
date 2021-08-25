@@ -1,10 +1,10 @@
 import adminNames from '@/router/names/admin';
-import Admin from '@/pages/admin/Admin.vue';
 import AdminConfigs from '@/pages/admin/AdminConfigs.vue';
 import AdminGroups from '@/pages/admin/AdminGroups.vue';
 import AdminGroupsEdit from '@/pages/admin/AdminGroupsEdit.vue';
 import AdminGroupsNew from '@/pages/admin/AdminGroupsNew.vue';
 import AdminInfos from '@/pages/admin/AdminInfos.vue';
+import AdminOverview from '@/pages/admin/AdminOverview.vue';
 import AdminPermissions from '@/pages/admin/AdminPermissions.vue';
 import AdminPermissionsEdit from '@/pages/admin/AdminPermissionsEdit.vue';
 import AdminPermissionsNew from '@/pages/admin/AdminPermissionsNew.vue';
@@ -18,11 +18,6 @@ import AdminUsersEdit from '@/pages/admin/AdminUsersEdit.vue';
 import AdminUsersNew from '@/pages/admin/AdminUsersNew.vue';
 
 export const adminChildren = [
-    {
-        path: '',
-        name: adminNames.admin,
-        component: Admin,
-    },
     {
         path: 'configs',
         component: AdminConfigs,
@@ -47,6 +42,11 @@ export const adminChildren = [
         path: 'infos',
         component: AdminInfos,
         name: adminNames.adminInfos,
+    },
+    {
+        path: 'overview',
+        name: adminNames.adminOverview,
+        component: AdminOverview,
     },
     {
         path: 'permissions',

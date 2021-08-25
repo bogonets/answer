@@ -11,7 +11,7 @@ export const groupChildren = [
         name: groupNames.groupMembers,
     },
     {
-        path: ':group',
+        path: ':group/projects',
         component: GroupProjects,
         name: groupNames.groupProjects,
     },

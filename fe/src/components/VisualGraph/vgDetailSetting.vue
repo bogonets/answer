@@ -1072,7 +1072,7 @@ export default {
 
       rules: ["read_and_write", "initialize_only", "read_only"],
 
-      self: null,
+      selfOverview: null,
 
       alert_msg: null,
       alert_colors: {

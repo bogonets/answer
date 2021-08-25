@@ -4,6 +4,10 @@ import groupNames from '@/router/names/group';
 
 @Component
 export default class RouterGroup extends Router {
+    moveToGroup(group?: string) {
+        this.moveToGroupProjects(group);
+    }
+
     moveToGroupMembers(group?: string) {
         const params = {group: group || this.$route.params.group};
         this.moveTo(groupNames.groupMembers, params);

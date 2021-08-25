@@ -16,7 +16,7 @@ export default {
     },
 
     basic: {
-        admin: "Admin",
+        admin: "AdminOverview.vue",
         apply: "Apply",
         back: "Back",
         cancel: "Cancel",
@@ -325,7 +325,7 @@ export default {
     go_to_signup_admin: "Go to Administrator Sign up page.",
     is_not_existed_admin_go_to_signup_admin:
     "Administrator account does not exist and will be taken to the Admin sign-up page.",
-    admin: "Admin",
+    admin: "AdminOverview.vue",
     guest: "Guest",
     expired_time: "The period has expired.",
     setting: "Setting",

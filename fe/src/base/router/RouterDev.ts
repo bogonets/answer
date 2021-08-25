@@ -5,10 +5,14 @@ import devNames from '@/router/names/dev';
 @Component
 export default class RouterDev extends Router {
     moveToDev() {
-        this.moveTo(devNames.dev);
+        this.moveToDevOverview();
     }
 
     moveToDevEnvs() {
         this.moveTo(devNames.devEnvs);
+    }
+
+    moveToDevOverview() {
+        this.moveTo(devNames.devOverview);
     }
 }

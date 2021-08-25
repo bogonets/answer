@@ -1,6 +1,6 @@
 export const devNames = {
-    dev: 'dev',
     devEnvs: 'devEnvs',
+    devOverview: 'devOverview',
 };
 
 export default devNames;

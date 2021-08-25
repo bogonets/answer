@@ -1,17 +1,17 @@
 import devNames from '@/router/names/dev';
-import Dev from '@/pages/dev/Dev.vue';
 import DevEnvs from '@/pages/dev/DevEnvs.vue';
+import DevOverview from '@/pages/dev/DevOverview.vue';
 
 export const devChildren = [
-    {
-        path: '',
-        component: Dev,
-        name: devNames.dev,
-    },
     {
         path: 'envs',
         component: DevEnvs,
         name: devNames.devEnvs,
+    },
+    {
+        path: 'overview',
+        component: DevOverview,
+        name: devNames.devOverview,
     },
 ];
 

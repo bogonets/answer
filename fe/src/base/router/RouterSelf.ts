@@ -5,10 +5,14 @@ import selfNames from "@/router/names/self";
 @Component
 export default class RouterSelf extends Router {
     moveToSelf() {
-        this.moveTo(selfNames.self);
+        this.moveToSelfOverview();
     }
 
     moveToSelfAppearance() {
         this.moveTo(selfNames.selfAppearance);
+    }
+
+    moveToSelfOverview() {
+        this.moveTo(selfNames.selfOverview);
     }
 }

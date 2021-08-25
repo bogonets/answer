@@ -186,7 +186,7 @@ export default {
       conditional: false,
       propertySignal: false,
 
-      self: null,
+      selfOverview: null,
     };
   },
   computed: {},
