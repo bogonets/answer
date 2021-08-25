@@ -10,11 +10,13 @@ from recc.http import http_path_keys as p
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.member import MemberA, CreateMemberQ, UpdateMemberQ
+from recc.packet.permission import PermissionA
 from recc.variables.database import (
     VISIBILITY_LEVEL_PRIVATE,
     PERMISSION_NAME_GUEST,
     PERMISSION_NAME_REPORTER,
     PERMISSION_NAME_OWNER,
+    PERMISSION_NAMES,
 )
 
 
@@ -296,6 +298,40 @@ class RouterV2MainTestCase(AsyncTestCase):
         response10 = await self.tester.get(path1, cls=List[MemberA])
         self.assertEqual(200, response10.status)
         self.assertEqual(1, len(response10.data))
+
+    async def test_permissions(self):
+        response1 = await self.tester.get(v2_main_path(u.permissions))
+        self.assertEqual(200, response1.status)
+        response1_data = response1.data
+        self.assertIsInstance(response1_data, list)
+        self.assertEqual(len(PERMISSION_NAMES), len(response1_data))
+
+    async def test_group_and_project_permissions(self):
+        group1 = CreateGroupQ(slug="group1")
+        response1 = await self.tester.post(v2_main_path(u.groups), data=group1)
+        self.assertEqual(200, response1.status)
+
+        project1 = CreateProjectQ(group_slug=group1.slug, project_slug="project1")
+        response2 = await self.tester.post(v2_main_path(u.projects), data=project1)
+        self.assertEqual(200, response2.status)
+
+        path1 = v2_main_path(u.permissions_pgroup, group=group1.slug)
+        response3 = await self.tester.get(path1, cls=PermissionA)
+        self.assertEqual(200, response3.status)
+        response3_data = response3.data
+        self.assertIsInstance(response3_data, PermissionA)
+        self.assertEqual(PERMISSION_NAME_OWNER, response3_data.name)
+
+        path2 = v2_main_path(
+            u.permissions_pgroup_pproject,
+            group=project1.group_slug,
+            project=project1.project_slug,
+        )
+        response4 = await self.tester.get(path2, cls=PermissionA)
+        self.assertEqual(200, response4.status)
+        response4_data = response4.data
+        self.assertIsInstance(response4_data, PermissionA)
+        self.assertEqual(PERMISSION_NAME_OWNER, response4_data.name)
 
 
 if __name__ == "__main__":

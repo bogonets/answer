@@ -321,6 +321,22 @@ export default class ApiV2 {
         return this.delete(`/main/projects/${group}/${project}/members/${member}`);
     }
 
+    // ---------------
+    // Main/Permission
+    // ---------------
+
+    getMainPermissions() {
+        return this.get<Array<PermissionA>>('/main/permissions');
+    }
+
+    getMainPermissionsPgroup(group: string) {
+        return this.get<PermissionA>(`/main/permissions/${group}`);
+    }
+
+    getMainPermissionsPgroupPproject(group: string, project: string) {
+        return this.get<PermissionA>(`/main/permissions/${group}/${project}`);
+    }
+
     // -------------
     // Admin/Configs
     // -------------

@@ -39,9 +39,6 @@ class RouterV2Main:
     def _routes(self) -> List[AbstractRouteDef]:
         # fmt: off
         return [
-            # Permissions
-            web.get(u.permissions, self.get_permissions),
-
             # Groups
             web.get(u.groups, self.get_groups),
             web.post(u.groups, self.post_groups),
@@ -72,19 +69,13 @@ class RouterV2Main:
             web.get(u.projects_pgroup_pproject_members_pmember, self.get_projects_pgroup_pproject_members_pmember),  # noqa
             web.patch(u.projects_pgroup_pproject_members_pmember, self.patch_projects_pgroup_pproject_members_pmember),  # noqa
             web.delete(u.projects_pgroup_pproject_members_pmember, self.delete_projects_pgroup_pproject_members_pmember),  # noqa
+
+            # Permissions
+            web.get(u.permissions, self.get_permissions),
+            web.get(u.permissions_pgroup, self.get_permissions_pgroup),
+            web.get(u.permissions_pgroup_pproject, self.get_permissions_pgroup_pproject),  # noqa
         ]
         # fmt: on
-
-    # -----------
-    # Permissions
-    # -----------
-
-    @parameter_matcher()
-    async def get_permissions(self) -> List[PermissionA]:
-        result = list()
-        for permission in await self.context.get_permissions():
-            result.append(permission_to_answer(permission))
-        return result
 
     # ------
     # Groups
@@ -435,3 +426,37 @@ class RouterV2Main:
 
         member_user_uid = await self.context.get_user_uid(member)
         await self.context.remove_project_member(project_uid, member_user_uid)
+
+    # -----------
+    # Permissions
+    # -----------
+
+    @parameter_matcher()
+    async def get_permissions(self) -> List[PermissionA]:
+        result = list()
+        for permission in await self.context.get_permissions():
+            result.append(permission_to_answer(permission))
+        return result
+
+    @parameter_matcher()
+    async def get_permissions_pgroup(
+        self, session: SessionEx, group: str
+    ) -> PermissionA:
+        group_uid = await self.context.get_group_uid(group)
+        member = await self.context.get_group_member(group_uid, session.uid)
+        permission_uid = member.permission_uid
+        assert permission_uid is not None
+        permission = await self.context.get_permission(permission_uid)
+        return permission_to_answer(permission)
+
+    @parameter_matcher()
+    async def get_permissions_pgroup_pproject(
+        self, session: SessionEx, group: str, project: str
+    ) -> PermissionA:
+        group_uid = await self.context.get_group_uid(group)
+        project_uid = await self.context.get_project_uid(group_uid, project)
+        member = await self.context.get_project_member(project_uid, session.uid)
+        permission_uid = member.permission_uid
+        assert permission_uid is not None
+        permission = await self.context.get_permission(permission_uid)
+        return permission_to_answer(permission)
