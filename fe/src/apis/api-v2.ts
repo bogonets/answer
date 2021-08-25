@@ -10,6 +10,7 @@ import {InfoA, CreateInfoQ, UpdateInfoQ} from '@/packet/info';
 import {PermissionA, CreatePermissionQ, UpdatePermissionQ} from '@/packet/permission';
 import {TemplateA} from '@/packet/template';
 import {ProjectA, CreateProjectQ, UpdateProjectQ} from '@/packet/project';
+import {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
 import {SystemOverviewA} from '@/packet/system';
 import {
     UserA,
@@ -236,6 +237,38 @@ export default class ApiV2 {
         return this.delete(`/main/groups/${group}`);
     }
 
+    // -------------------
+    // Main/Groups/Members
+    // -------------------
+
+    getMainGroupsPgroupMembers(group: string) {
+        return this.get<Array<MemberA>>(`/main/groups/${group}/members`);
+    }
+
+    postMainGroupsPgroupMembers(group: string, body: CreateMemberQ) {
+        return this.post(`/main/groups/${group}/members`, body);
+    }
+
+    getMainGroupsPgroupMembersPmember(group: string, member: string) {
+        return this.get<MemberA>(`/main/groups/${group}/members/${member}`);
+    }
+
+    patchMainGroupsPgroupMembersPmember(group: string, member: string, body: UpdateMemberQ) {
+        return this.patch(`/main/groups/${group}/members/${member}`, body);
+    }
+
+    deleteMainGroupsPgroupMembersPmember(group: string, member: string) {
+        return this.delete(`/main/groups/${group}/members/${member}`);
+    }
+
+    // --------------------
+    // Main/Groups/Projects
+    // --------------------
+
+    getMainGroupsPgroupProjects(group: string) {
+        return this.get<Array<ProjectA>>(`/main/groups/${group}/projects`);
+    }
+
     // -------------
     // Main/Projects
     // -------------
@@ -262,6 +295,30 @@ export default class ApiV2 {
 
     deleteMainProjectsPgroupProject(group: string, project: string) {
         return this.delete(`/main/projects/${group}/${project}`);
+    }
+
+    // ---------------------
+    // Main/Projects/Members
+    // ---------------------
+
+    getMainProjectsPgroupPprojectMembers(group: string, project: string) {
+        return this.get<Array<MemberA>>(`/main/projects/${group}/${project}/members`);
+    }
+
+    postMainProjectsPgroupPprojectMembers(group: string, project: string, body: CreateMemberQ) {
+        return this.post(`/main/projects/${group}/${project}/members`, body);
+    }
+
+    getMainProjectsPgroupPprojectMembersPmember(group: string, project: string, member: string) {
+        return this.get<MemberA>(`/main/projects/${group}/${project}/members/${member}`);
+    }
+
+    patchMainProjectsPgroupPprojectMembersPmember(group: string, project: string, member: string, body: UpdateMemberQ) {
+        return this.patch(`/main/projects/${group}/${project}/members/${member}`, body);
+    }
+
+    deleteMainProjectsPgroupPprojectMembersPmember(group: string, project: string, member: string) {
+        return this.delete(`/main/projects/${group}/${project}/members/${member}`);
     }
 
     // -------------
