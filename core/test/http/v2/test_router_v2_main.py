@@ -147,6 +147,37 @@ class RouterV2MainTestCase(AsyncTestCase):
         self.assertEqual(200, response9.status)
         self.assertEqual(1, len(response9.data))
 
+    async def test_group_projects(self):
+        group1 = CreateGroupQ(slug="group1")
+        group2 = CreateGroupQ(slug="group2")
+        response1 = await self.tester.post(v2_main_path(u.groups), data=group1)
+        response2 = await self.tester.post(v2_main_path(u.groups), data=group2)
+        self.assertEqual(200, response1.status)
+        self.assertEqual(200, response2.status)
+
+        project1 = CreateProjectQ(group_slug=group1.slug, project_slug="project1")
+        project2 = CreateProjectQ(group_slug=group2.slug, project_slug="project2")
+        response3 = await self.tester.post(v2_main_path(u.projects), data=project1)
+        response4 = await self.tester.post(v2_main_path(u.projects), data=project2)
+        self.assertEqual(200, response3.status)
+        self.assertEqual(200, response4.status)
+
+        path1 = v2_main_path(u.groups_pgroup_projects, group=group1.slug)
+        path2 = v2_main_path(u.groups_pgroup_projects, group=group2.slug)
+        response5 = await self.tester.get(path1, cls=List[ProjectA])
+        response6 = await self.tester.get(path2, cls=List[ProjectA])
+        self.assertEqual(200, response5.status)
+        self.assertEqual(200, response6.status)
+
+        self.assertEqual(1, len(response5.data))
+        self.assertEqual(1, len(response6.data))
+        response5_data0 = response5.data[0]
+        response6_data0 = response6.data[0]
+        self.assertIsInstance(response5_data0, ProjectA)
+        self.assertIsInstance(response6_data0, ProjectA)
+        self.assertEqual(project1.project_slug, response5_data0.project_slug)
+        self.assertEqual(project2.project_slug, response6_data0.project_slug)
+
     async def test_projects(self):
         group1 = CreateGroupQ(slug="group1")
         response1 = await self.tester.post(v2_main_path(u.groups), data=group1)

@@ -76,6 +76,7 @@ configs_pkey = configs + pkey
 groups_pgroup = groups + pgroup
 groups_pgroup_members = groups_pgroup + members
 groups_pgroup_members_pmember = groups_pgroup_members + pmember
+groups_pgroup_projects = groups_pgroup + projects
 infos_pkey = infos + pkey
 permissions_pperm = permissions + pperm
 projects_pgroup_pproject = projects + pgroup + pproject

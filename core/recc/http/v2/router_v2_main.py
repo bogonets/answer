@@ -56,6 +56,9 @@ class RouterV2Main:
             web.patch(u.groups_pgroup_members_pmember, self.patch_groups_pgroup_members_pmember),  # noqa
             web.delete(u.groups_pgroup_members_pmember, self.delete_groups_pgroup_members_pmember),  # noqa
 
+            # Group projects
+            web.get(u.groups_pgroup_projects, self.get_groups_pgroup_projects),
+
             # Projects
             web.get(u.projects, self.get_projects),
             web.post(u.projects, self.post_projects),
@@ -237,6 +240,23 @@ class RouterV2Main:
 
         member_user_uid = await self.context.get_user_uid(member)
         await self.context.remove_group_member(group_uid, member_user_uid)
+
+    # --------------
+    # Group projects
+    # --------------
+
+    @parameter_matcher()
+    async def get_groups_pgroup_projects(self, group: str) -> List[ProjectA]:
+        group_uid = await self.context.get_group_uid(group)
+        result = list()
+        for project in await self.context.get_projects(
+            group_uid, remove_sensitive=False
+        ):
+            assert project.uid is not None
+            assert project.group_uid == group_uid
+            assert project.slug is not None
+            result.append(project_to_answer(project, group))
+        return result
 
     # -------
     # Project
