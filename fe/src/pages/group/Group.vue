@@ -7,7 +7,8 @@
         hide-action-edit
         hide-action-move
         clickable-row
-        request-type="self"
+        :loading="loading"
+        :items="items"
         @click:new="onClickNew"
         @click:row="onClickRow"
     ></table-projects>
@@ -33,13 +34,34 @@ export default class GroupProjects extends VueBase {
     {
       text: 'Groups',
       disabled: false,
-      href: () => this.moveToMainGroups(),
+      href: () => this.moveToRootGroups(),
     },
     {
       text: 'Projects',
       disabled: true,
     },
   ];
+
+  loading = false;
+  items = [] as Array<ProjectA>;
+
+  created() {
+    this.requestProjects()
+  }
+
+  requestProjects() {
+    const group = this.$route.params.group;
+    this.loading = true;
+    this.$api2.getMainGroupsPgroupProjects(group)
+        .then(items => {
+          this.loading = false;
+          this.items = items;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
 
   /**
    * @deprecated

@@ -87,17 +87,8 @@ import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {ProjectA} from '@/packet/project';
 
-const REQUEST_TYPE_SELF = 'self';
-const REQUEST_TYPE_ADMIN = 'admin';
-
 @Component
 export default class TableProjects extends VueBase {
-  @Prop({type: String, default: REQUEST_TYPE_SELF})
-  readonly requestType!: string;
-
-  @Prop({type: Boolean, default: false})
-  readonly hideToast!: boolean;
-
   @Prop({type: Boolean, default: false})
   readonly hideFilterInput!: boolean;
 
@@ -113,14 +104,16 @@ export default class TableProjects extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly clickableRow!: boolean;
 
+  @Prop({type: Boolean, default: false})
+  readonly loading!: boolean;
+
+  @Prop({type: Array, default: () => new Array<ProjectA>()})
+  readonly items!: Array<ProjectA>;
+
   headers = [] as Array<object>;
-  loading = false;
   filter = '';
-  items = [] as Array<ProjectA>;
 
   created() {
-    this.requestItems();
-
     if (this.hideActions) {
       this.headers = this.createHeaders(false);
     } else {
@@ -191,49 +184,6 @@ export default class TableProjects extends VueBase {
       })
     }
     return headers;
-  }
-
-  requestItems() {
-    if (this.requestType === REQUEST_TYPE_SELF) {
-      this.requestSelfProjects();
-    } else if (this.requestType === REQUEST_TYPE_ADMIN) {
-      this.requestAdminProjects();
-    } else {
-      throw Error(`Unknown request type: ${this.requestType}`);
-    }
-  }
-
-  requestSelfProjects() {
-    this.$api2.getMainProjects()
-        .then(items => {
-          this.onRequestSuccess(items);
-        })
-        .catch(error => {
-          this.onRequestFailure(error);
-        });
-  }
-
-  requestAdminProjects() {
-    this.loading = true;
-    this.$api2.getAdminProjects()
-        .then(items => {
-          this.onRequestSuccess(items);
-        })
-        .catch(error => {
-          this.onRequestFailure(error);
-        });
-  }
-
-  onRequestSuccess(items: Array<ProjectA>) {
-    this.loading = false;
-    this.items = items;
-  }
-
-  onRequestFailure(error) {
-    this.loading = false;
-    if (this.hideToast) {
-      this.toastRequestFailure(error);
-    }
   }
 
   get dataTableClass(): string {

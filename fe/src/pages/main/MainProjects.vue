@@ -7,7 +7,8 @@
         hide-action-edit
         hide-action-move
         clickable-row
-        request-type="self"
+        :loading="loading"
+        :items="items"
         @click:new="onClickNew"
         @click:row="onClickRow"
     ></table-projects>
@@ -40,6 +41,26 @@ export default class MainProjects extends VueBase {
       disabled: true,
     },
   ];
+
+  loading = false;
+  items = [] as Array<ProjectA>;
+
+  created() {
+    this.requestProjects()
+  }
+
+  requestProjects() {
+    this.loading = true;
+    this.$api2.getMainProjects()
+        .then(items => {
+          this.loading = false;
+          this.items = items;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
 
   /**
    * @deprecated

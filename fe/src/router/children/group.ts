@@ -5,17 +5,17 @@ import GroupSettings from '@/pages/group/GroupSettings.vue';
 
 export const groupChildren = [
     {
-        path: '',
+        path: ':group',
         component: Group,
         name: groupNames.group,
     },
     {
-        path: 'members',
+        path: ':group/members',
         component: GroupMembers,
         name: groupNames.groupMembers,
     },
     {
-        path: 'settings',
+        path: ':group/settings',
         component: GroupSettings,
         name: groupNames.groupSettings,
     },

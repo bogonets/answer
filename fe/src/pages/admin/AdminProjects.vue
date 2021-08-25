@@ -4,7 +4,8 @@
     <v-divider></v-divider>
 
     <table-projects
-        request-type="admin"
+        :loading="loading"
+        :items="items"
         @click:new="onClickNew"
         @click:edit="onClickEdit"
         @click:move="onClickMove"
@@ -38,6 +39,26 @@ export default class AdminProjects extends VueBase {
       disabled: true,
     },
   ];
+
+  loading = false;
+  items = [] as Array<ProjectA>;
+
+  created() {
+    this.requestProjects()
+  }
+
+  requestProjects() {
+    this.loading = true;
+    this.$api2.getAdminProjects()
+        .then(items => {
+          this.loading = false;
+          this.items = items;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
 
   onClickNew() {
     this.moveToAdminProjectsNew();
