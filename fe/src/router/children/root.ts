@@ -23,22 +23,22 @@ import RootAbout from '@/pages/RootAbout.vue';
 
 export const rootChildren = [
     {
-        path: '/init',
+        path: 'init',
         component: Init,
         name: rootNames.init,
     },
     {
-        path: '/signin',
+        path: 'signin',
         component: Signin,
         name: rootNames.signin,
     },
     {
-        path: '/signup',
+        path: 'signup',
         component: Signup,
         name: rootNames.signup,
     },
     {
-        path: '/',
+        path: '',
         component: RouterBarMain,
         meta: {requiresAuth: true},
         children: [
@@ -48,37 +48,37 @@ export const rootChildren = [
                 name: rootNames.root,
             },
             {
-                path: '/groups',
+                path: 'groups',
                 component: RootGroups,
                 name: rootNames.rootGroups,
             },
             {
-                path: '/groups/new',
+                path: 'groups/new',
                 component: RootGroupsNew,
                 name: rootNames.rootGroupsNew,
             },
             {
-                path: '/group',
+                path: 'group',
                 component: RouterNaviGroup,
                 children: groupChildren,
             },
             {
-                path: '/self',
+                path: 'self',
                 component: RouterNaviSelf,
                 children: selfChildren,
             },
             {
-                path: '/admin',
+                path: 'admin',
                 component: RouterNaviAdmin,
                 children: adminChildren,
             },
             {
-                path: '/dev',
+                path: 'dev',
                 component: RouterNaviDev,
                 children: devChildren,
             },
             {
-                path: '/about',
+                path: 'about',
                 component: RootAbout,
                 name: rootNames.rootAbout,
             },
