@@ -12,6 +12,9 @@ en:
     delete: "Delete a project"
   hint:
     delete: "Please be careful! It cannot be recovered."
+  msg:
+    no_group: "Not exists group slug."
+    no_project: "Not exists project slug."
   delete_confirm: "Are you sure? Are you really removing this project?"
   cancel: "Cancel"
   delete: "Delete"
@@ -29,6 +32,9 @@ ko:
     delete: "프로젝트 제거"
   hint:
     delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
+  msg:
+    no_group: "그룹 슬러그가 없습니다."
+    no_project: "프로젝트 슬러그가 없습니다."
   delete_confirm: "이 프로젝트를 정말 제거합니까?"
   cancel: "취소"
   delete: "제거"
@@ -48,9 +54,10 @@ ko:
           disable-slug
           hide-cancel-button
           :disable-submit-button="!modified"
+          :group-items="[this.group]"
           :value="current"
           @input="inputCurrent"
-          :loading="showSubmitLoading"
+          :loading-submit="loadingSubmit"
           @ok="onClickOk"
       ></form-project>
     </left-title>
@@ -104,7 +111,7 @@ ko:
           <v-btn @click="onClickDeleteCancel">
             {{ $t('cancel') }}
           </v-btn>
-          <v-btn :loading="showDeleteLoading" color="error" @click="onClickDeleteOk">
+          <v-btn :loading="loadingDelete" color="error" @click="onClickDeleteOk">
             {{ $t('delete') }}
           </v-btn>
         </v-card-actions>
@@ -165,26 +172,36 @@ export default class AdminProjectsEdit extends VueBase {
   original = new ProjectItem();
 
   modified = false;
-  showSubmitLoading = false;
+  loadingSubmit = false;
+  loadingDelete = false;
   showDeleteDialog = false;
-  showDeleteLoading = false;
 
-  get group(): string {
-    return this.$route.params.group;
-  }
-
-  get project(): string {
-    return this.$route.params.project;
-  }
+  group = '';
+  project = '';
 
   created() {
+    this.group = this.$route.params.group || '';
+    this.project = this.$route.params.project || '';
+
+    if (!this.group) {
+      this.toastError(this.$t('msg.no_group'));
+      this.moveToBack();
+      return;
+    }
+
+    if (!this.project) {
+      this.toastError(this.$t('msg.no_project'));
+      this.moveToBack();
+      return;
+    }
+
     this.requestProject();
   }
 
   requestProject() {
     this.$api2.getAdminProjectsPgroupPproject(this.group, this.project)
-        .then(body => {
-          this.updateProject(body);
+        .then(items => {
+          this.updateProject(items)
         })
         .catch(error => {
           this.toastRequestFailure(error);
@@ -192,13 +209,13 @@ export default class AdminProjectsEdit extends VueBase {
         });
   }
 
-  updateProject(group: ProjectA) {
-    const name = group.name || '';
-    const description = group.description || '';
-    const features = group.features || [];
-    const visibility = group.visibility || 0;
-    const createdAt = group.created_at || '';
-    const updatedAt = group.updated_at || '';
+  updateProject(items: ProjectA) {
+    const name = items.name || '';
+    const description = items.description || '';
+    const features = items.features || [];
+    const visibility = items.visibility || 0;
+    const createdAt = items.created_at || '';
+    const updatedAt = items.updated_at || '';
 
     this.current.group = this.group;
     this.current.slug = this.project;
@@ -234,15 +251,15 @@ export default class AdminProjectsEdit extends VueBase {
       visibility: event.visibility,
     } as UpdateProjectQ;
 
-    this.showSubmitLoading = true;
+    this.loadingSubmit = true;
     this.$api2.patchAdminProjectsPgroupPproject(this.group, this.project, body)
         .then(() => {
-          this.showSubmitLoading = false;
+          this.loadingSubmit = false;
           this.toastRequestSuccess();
           this.requestProject();
         })
         .catch(error => {
-          this.showSubmitLoading = false;
+          this.loadingSubmit = false;
           this.toastRequestFailure(error);
         });
   }
@@ -260,16 +277,16 @@ export default class AdminProjectsEdit extends VueBase {
   }
 
   onClickDeleteOk() {
-    this.showDeleteLoading = true;
+    this.loadingDelete = true;
     this.$api2.deleteAdminProjectsPgroupProject(this.group, this.project)
         .then(() => {
-          this.showDeleteLoading = false;
+          this.loadingDelete = false;
           this.showDeleteDialog = false;
           this.toastRequestSuccess();
           this.moveToAdminProjects();
         })
         .catch(error => {
-          this.showDeleteLoading = false;
+          this.loadingDelete = false;
           this.showDeleteDialog = false;
           this.toastRequestFailure(error);
         });

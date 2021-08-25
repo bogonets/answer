@@ -17,10 +17,14 @@ ko:
   >
     <form-project
         hide-origin-prefix
-        :request-type="requestType"
-        :loading="submitLoading"
-        @cancel="cancel"
-        @ok="onClickOk"
+        hide-cancel-button
+        :loading-groups="loadingGroups"
+        :loading-submit="loadingSubmit"
+        :disable-group="disableGroup"
+        :group-items="groupItems"
+        :feature-items="featureItems"
+        :init-group="initGroup"
+        @ok="ok"
     ></form-project>
   </left-title>
 </template>
@@ -33,9 +37,6 @@ import LeftTitle from "@/components/LeftTitle.vue";
 import FormProject, {ProjectItem} from '@/components/FormProject.vue';
 import {CreateProjectQ} from '@/packet/project';
 
-const REQUEST_TYPE_SELF = 'self';
-const REQUEST_TYPE_ADMIN = 'admin';
-
 @Component({
   components: {
     ToolbarNavigation,
@@ -44,38 +45,27 @@ const REQUEST_TYPE_ADMIN = 'admin';
   }
 })
 export default class FormProjectNew extends VueBase {
-  @Prop({type: String, default: REQUEST_TYPE_SELF})
-  readonly requestType!: string;
+  @Prop({type: Boolean})
+  readonly loadingGroups!: boolean;
 
-  @Prop({type: Boolean, default: false})
-  readonly hideToast!: boolean;
+  @Prop({type: Boolean})
+  readonly loadingSubmit!: boolean;
 
-  submitLoading = false;
+  @Prop({type: Boolean})
+  readonly disableGroup!: boolean;
+
+  @Prop({type: Array})
+  readonly groupItems!: Array<string>;
+
+  @Prop({type: Array})
+  readonly featureItems!: Array<string>;
+
+  @Prop({type: String})
+  readonly initGroup!: string;
 
   @Emit()
-  cancel() {
-    // EMPTY.
-  }
-
-  @Emit('request:success')
-  requestSuccess() {
-    this.submitLoading = false;
-    if (this.hideToast) {
-      this.toastRequestSuccess();
-    }
-  }
-
-  @Emit('request:failure')
-  requestFailure(error) {
-    this.submitLoading = false;
-    if (this.hideToast) {
-      this.toastRequestFailure(error);
-    }
-    return error;
-  }
-
-  onClickOk(event: ProjectItem) {
-    const body = {
+  ok(event: ProjectItem) {
+    return {
       group_slug: event.group,
       project_slug: event.slug,
       name: event.name,
@@ -83,35 +73,6 @@ export default class FormProjectNew extends VueBase {
       features: event.features,
       visibility: event.visibility,
     } as CreateProjectQ;
-
-    this.submitLoading = true;
-    if (this.requestType === REQUEST_TYPE_SELF) {
-      this.requestPostSelfProjects(body);
-    } else if (this.requestType === REQUEST_TYPE_ADMIN) {
-      this.requestPostProjects(body);
-    } else {
-      throw Error(`Unknown request type: ${this.requestType}`);
-    }
-  }
-
-  requestPostProjects(body: CreateProjectQ) {
-    this.$api2.postAdminProjects(body)
-        .then(() => {
-          this.requestSuccess();
-        })
-        .catch(error => {
-          this.requestFailure(error);
-        });
-  }
-
-  requestPostSelfProjects(body: CreateProjectQ) {
-    this.$api2.postMainProjects(body)
-        .then(() => {
-          this.requestSuccess();
-        })
-        .catch(error => {
-          this.requestFailure(error);
-        });
   }
 }
 </script>

@@ -4,9 +4,10 @@
     <v-divider></v-divider>
 
     <form-project-new
-        request-type="admin"
-        @cancel="onClickCancel"
-        @request:success="onRequestSuccess"
+        :loading-groups="loadingGroups"
+        :loading-submit="loadingSubmit"
+        :group-items="groupItems"
+        @ok="onClickOk"
     ></form-project-new>
 
   </v-container>
@@ -17,6 +18,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import FormProjectNew from "@/components/FormProjectNew.vue";
+import {CreateProjectQ} from "@/packet/project";
 
 @Component({
   components: {
@@ -42,14 +44,40 @@ export default class AdminProjectsNew extends VueBase {
     },
   ];
 
-  submitLoading = false;
+  loadingGroups = false;
+  loadingSubmit = false;
+  groupItems = [] as Array<string>;
 
-  onClickCancel() {
-    this.moveToBack();
+  created() {
+    this.requestGroups();
   }
 
-  onRequestSuccess() {
-    this.moveToAdminProjects();
+  requestGroups() {
+    this.loadingGroups = true;
+    this.$api2.getAdminGroups()
+        .then(items => {
+          this.loadingGroups = false;
+          this.groupItems = items.map(x => x.slug);
+        })
+        .catch(error => {
+          this.loadingGroups = false;
+          this.moveToBack();
+          this.toastRequestFailure(error);
+        });
+  }
+
+  onClickOk(event: CreateProjectQ) {
+    this.loadingSubmit = true;
+    this.$api2.postAdminProjects(event)
+        .then(() => {
+          this.loadingSubmit = false;
+          this.toastRequestSuccess();
+          this.moveToBack();
+        })
+        .catch(error => {
+          this.loadingSubmit = false;
+          this.toastRequestFailure(error);
+        });
   }
 }
 </script>

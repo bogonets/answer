@@ -22,8 +22,6 @@ export default class Router extends Vue {
             query: query,
         } as RawLocation;
 
-        console.log(`moveTo: ${rawLocation}`);
-        console.dir(rawLocation);
         this.$router.push(rawLocation).catch((reason: any) => {
             if (reason.name !== 'NavigationDuplicated') {
                 throw reason;

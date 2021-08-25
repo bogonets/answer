@@ -157,7 +157,7 @@ ko:
       <v-btn
           v-if="!hideSubmitButton"
           color="primary"
-          :loading="loading"
+          :loading="loadingSubmit"
           :disabled="disableSubmit"
           @click="onSubmit"
       >
@@ -176,10 +176,6 @@ import {VForm} from 'vuetify/lib/components/VForm';
 import {GROUP_SLUG_RULES, PROJECT_SLUG_RULES} from '@/rules';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {CAPTION_CLASS} from '@/styles/caption';
-import {GroupA} from "@/packet/group";
-
-const REQUEST_TYPE_SELF = 'self';
-const REQUEST_TYPE_ADMIN = 'admin';
 
 export class ProjectItem {
   group = '';
@@ -213,11 +209,11 @@ export default class FormProject extends VueBase {
     projectSlug: PROJECT_SLUG_RULES,
   };
 
-  @Prop({type: String, default: REQUEST_TYPE_SELF})
-  readonly requestType!: string;
+  @Prop({type: Boolean})
+  readonly loadingGroups!: boolean;
 
   @Prop({type: Boolean})
-  readonly loading!: boolean;
+  readonly loadingSubmit!: boolean;
 
   @Prop({type: Boolean})
   readonly disableGroup!: boolean;
@@ -241,7 +237,13 @@ export default class FormProject extends VueBase {
   readonly hideSubmitButton!: boolean;
 
   @Prop({type: Array})
+  readonly groupItems!: Array<string>;
+
+  @Prop({type: Array})
   readonly featureItems!: Array<string>;
+
+  @Prop({type: String})
+  readonly initGroup!: string;
 
   @Prop({type: Object, default: () => new ProjectItem()})
   readonly value!: ProjectItem;
@@ -251,57 +253,11 @@ export default class FormProject extends VueBase {
 
   valid = false;
   searchFeature = '';
-  groupItems = [] as Array<string>;
-  loadingGroups = false;
 
   created() {
-    this.requestGroups();
-  }
-
-  private requestGroups() {
-    this.loadingGroups = true;
-    if (this.requestType === REQUEST_TYPE_SELF) {
-      this.requestSelfGroups();
-    } else if (this.requestType === REQUEST_TYPE_ADMIN) {
-      this.requestAdminGroups();
-    } else {
-      throw Error(`Unknown request type: ${this.requestType}`);
+    if (!!this.initGroup) {
+      this.value.group = this.initGroup;
     }
-  }
-
-  private requestAdminGroups() {
-    this.$api2.getAdminGroups()
-        .then(groups => {
-          this.onGroupsSuccess(groups);
-        })
-        .catch(error => {
-          this.onGroupsFailure(error);
-        });
-  }
-
-  private requestSelfGroups() {
-    this.$api2.getMainGroups()
-        .then(groups => {
-          this.onGroupsSuccess(groups);
-        })
-        .catch(error => {
-          this.onGroupsFailure(error);
-        });
-  }
-
-  private onGroupsSuccess(groups: Array<GroupA>) {
-    this.groupItems = groups.map(g => g.slug);
-    this.loadingGroups = false;
-
-    // Select group.
-    if (typeof this.$route.params.group !== 'undefined') {
-      this.value.group = this.$route.params.group;
-    }
-  }
-
-  private onGroupsFailure(error) {
-    this.loadingGroups = false;
-    this.toastRequestFailure(error);
   }
 
   inputGroup(event: string) {
@@ -335,7 +291,7 @@ export default class FormProject extends VueBase {
   }
 
   get disableSubmit(): boolean {
-    return this.loading || !this.valid || this.disableSubmitButton;
+    return this.loadingSubmit || !this.valid || this.disableSubmitButton;
   }
 
   formValidate() {

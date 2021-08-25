@@ -4,8 +4,12 @@
     <v-divider></v-divider>
 
     <form-project-new
-        @cancel="onClickCancel"
-        @request:success="onRequestSuccess"
+        disable-group
+        :init-group="$route.params.group"
+        :loading-groups="loadingGroups"
+        :loading-submit="loadingSubmit"
+        :group-items="groupItems"
+        @ok="onClickOk"
     ></form-project-new>
 
   </v-container>
@@ -16,6 +20,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import FormProjectNew from "@/components/FormProjectNew.vue";
+import {CreateProjectQ} from "@/packet/project";
 
 @Component({
   components: {
@@ -41,12 +46,40 @@ export default class GroupProjectsNew extends VueBase {
     },
   ];
 
-  onClickCancel() {
-    this.moveToBack();
+  loadingGroups = false;
+  loadingSubmit = false;
+  groupItems = [] as Array<string>;
+
+  created() {
+    this.requestGroups();
   }
 
-  onRequestSuccess() {
-    this.moveToMainProjects();
+  requestGroups() {
+    this.loadingGroups = true;
+    this.$api2.getMainGroups()
+        .then(items => {
+          this.loadingGroups = false;
+          this.groupItems = items.map(x => x.slug);
+        })
+        .catch(error => {
+          this.loadingGroups = false;
+          this.moveToBack();
+          this.toastRequestFailure(error);
+        });
+  }
+
+  onClickOk(event: CreateProjectQ) {
+    this.loadingSubmit = true;
+    this.$api2.postMainProjects(event)
+        .then(() => {
+          this.loadingSubmit = false;
+          this.toastRequestSuccess();
+          this.moveToBack();
+        })
+        .catch(error => {
+          this.loadingSubmit = false;
+          this.toastRequestFailure(error);
+        });
   }
 }
 </script>
