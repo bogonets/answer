@@ -36,6 +36,11 @@ export default class GroupProjectsNew extends VueBase {
       href: () => this.moveToRootGroups(),
     },
     {
+      text: this.$route.params.group,
+      disabled: false,
+      href: () => this.moveToGroup(),
+    },
+    {
       text: 'Projects',
       disabled: false,
       href: () => this.moveToGroupProjects(),

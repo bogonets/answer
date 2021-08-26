@@ -341,7 +341,7 @@ export default class NaviMain extends VueBase {
   @Emit('click:settings')
   settings() {
     if (!this.noDefault) {
-      // this.moveToMainProjectConfigs();
+      this.moveToMainSettings();
     }
   }
 

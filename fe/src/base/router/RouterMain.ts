@@ -16,6 +16,14 @@ export default class RouterMain extends Router {
         this.moveTo(mainNames.mainDashboard, params);
     }
 
+    moveToMainSettings(group?: string, project?: string) {
+        const params = {
+            group: group || this.$route.params.group,
+            project: project || this.$route.params.project,
+        };
+        this.moveTo(mainNames.mainSettings, params);
+    }
+
     moveToMainVms(group?: string, project?: string) {
         const params = {
             group: group || this.$route.params.group,

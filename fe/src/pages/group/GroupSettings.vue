@@ -21,7 +21,7 @@
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import FormGroupEdit from "@/components/FormGroupEdit.vue";
+import FormGroupEdit from '@/components/FormGroupEdit.vue';
 import {GroupA, UpdateGroupQ} from '@/packet/group';
 
 @Component({
@@ -36,6 +36,11 @@ export default class GroupSettings extends VueBase {
       text: 'Groups',
       disabled: false,
       href: () => this.moveToRootGroups(),
+    },
+    {
+      text: this.$route.params.group,
+      disabled: false,
+      href: () => this.moveToGroup(),
     },
     {
       text: 'Settings',
@@ -93,7 +98,7 @@ export default class GroupSettings extends VueBase {
           this.loadingDelete = false;
           this.showDeleteDialog = false;
           this.toastRequestSuccess();
-          this.moveToAdminGroups();
+          this.moveToRootGroups();
         })
         .catch(error => {
           this.loadingDelete = false;

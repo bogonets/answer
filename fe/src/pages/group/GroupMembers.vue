@@ -42,6 +42,11 @@ export default class GroupMembers extends VueBase {
       href: () => this.moveToRootGroups(),
     },
     {
+      text: this.$route.params.group,
+      disabled: false,
+      href: () => this.moveToGroup(),
+    },
+    {
       text: 'Members',
       disabled: true,
     },
