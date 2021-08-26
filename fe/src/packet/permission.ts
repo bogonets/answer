@@ -56,3 +56,9 @@ export interface UpdatePermissionQ {
     r_setting?: boolean;
     w_setting?: boolean;
 }
+
+export const PERMISSION_NAME_GUEST = 'Guest';
+export const PERMISSION_NAME_REPORTER = 'Reporter';
+export const PERMISSION_NAME_OPERATOR = 'Operator';
+export const PERMISSION_NAME_MAINTAINER = 'Maintainer';
+export const PERMISSION_NAME_OWNER = 'Owner';

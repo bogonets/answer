@@ -120,7 +120,6 @@ ko:
 <script lang="ts">
 import {Component, Prop, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormGroup, {GroupItem} from '@/components/FormGroup.vue';
 import {GroupA, UpdateGroupQ} from '@/packet/group';
@@ -128,7 +127,6 @@ import * as _ from 'lodash';
 
 @Component({
   components: {
-    ToolbarNavigation,
     LeftTitle,
     FormGroup,
   }

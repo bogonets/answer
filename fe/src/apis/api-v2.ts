@@ -337,6 +337,14 @@ export default class ApiV2 {
         return this.get<PermissionA>(`/main/permissions/${group}/${project}`);
     }
 
+    // --------------
+    // Main/Usernames
+    // --------------
+
+    getMainUsernames() {
+        return this.get<Array<string>>('/main/usernames');
+    }
+
     // -------------
     // Admin/Configs
     // -------------
