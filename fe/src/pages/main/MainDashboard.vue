@@ -13,7 +13,7 @@ import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 @Component({
   components: {
     ToolbarNavigation,
-  },
+  }
 })
 export default class MainDashboard extends VueBase {
   private readonly navigationItems = [

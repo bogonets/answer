@@ -102,7 +102,7 @@ const FOOTER_HEIGHT = 200;
     ToolbarNavigation
   }
 })
-export default class MainProjectVms extends VueBase {
+export default class MainVms extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Projects',

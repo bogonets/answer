@@ -76,7 +76,7 @@ export default class GroupProjects extends VueBase {
 
   onClickRow(item: ProjectA) {
     this.legacySelectProject(item.project_slug);
-    this.moveToMainProject(item.group_slug, item.project_slug);
+    this.moveToMain(item.group_slug, item.project_slug);
   }
 }
 </script>

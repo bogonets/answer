@@ -1,6 +1,7 @@
 import adminChildren from '@/router/children/admin';
 import devChildren from '@/router/children/dev';
 import groupChildren from '@/router/children/group';
+import mainChildren from '@/router/children/main';
 import selfChildren from '@/router/children/self';
 
 import rootNames from '@/router/names/root';
@@ -9,6 +10,7 @@ import RouterBarMain from '@/pages/router/RouterBarMain.vue';
 import RouterNaviAdmin from '@/pages/router/RouterNaviAdmin.vue';
 import RouterNaviDev from '@/pages/router/RouterNaviDev.vue';
 import RouterNaviGroup from '@/pages/router/RouterNaviGroup.vue';
+import RouterNaviMain from '@/pages/router/RouterNaviMain.vue';
 import RouterNaviSelf from '@/pages/router/RouterNaviSelf.vue';
 
 import Root from '@/pages/Root.vue';
@@ -61,6 +63,11 @@ export const rootChildren = [
                 path: 'group',
                 component: RouterNaviGroup,
                 children: groupChildren,
+            },
+            {
+                path: 'main',
+                component: RouterNaviMain,
+                children: mainChildren,
             },
             {
                 path: 'self',

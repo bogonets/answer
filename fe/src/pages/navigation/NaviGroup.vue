@@ -67,7 +67,7 @@ ko:
 
         <v-list-item v-if="!hideSettings" link @click.stop="settings">
           <v-list-item-icon>
-            <v-icon>mdi-cogs</v-icon>
+            <v-icon>mdi-cog-outline</v-icon>
           </v-list-item-icon>
           <v-list-item-title>
             {{ $t('settings') }}
@@ -115,10 +115,6 @@ export default class MainAccount extends VueBase {
       return name[0].toUpperCase();
     }
     return '?';
-  }
-
-  mounted() {
-    console.log(`this.$route.params.group: ${this.$route.params.group}`);
   }
 
   onClickFoldNavigation() {

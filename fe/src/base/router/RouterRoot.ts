@@ -3,7 +3,7 @@ import Router from '@/base/router/Router';
 import rootNames from "@/router/names/root";
 
 @Component
-export default class RouterAdmin extends Router {
+export default class RouterRoot extends Router {
     moveToInit() {
         this.moveTo(rootNames.init);
     }
