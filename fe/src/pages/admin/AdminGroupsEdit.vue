@@ -1,37 +1,11 @@
 <i18n lang="yaml">
 en:
-  header:
-    basic: "Edit group"
-    detail: "Detail"
-  subheader:
-    basic: "You can edit the group's basic properties."
-    detail: "Detailed information about this group."
-  label:
-    created_at: "Created At"
-    updated_at: "Updated At"
-    delete: "Delete a group"
-  hint:
-    delete: "Please be careful! It cannot be recovered."
-  delete_confirm: "Are you sure? Are you really removing this group?"
-  cancel: "Cancel"
-  delete: "Delete"
+  msg:
+    no_group: "Not exists group slug."
 
 ko:
-  header:
-    basic: "그룹 편집"
-    detail: "상세 정보"
-  subheader:
-    basic: "그룹의 기본 속성을 편집할 수 있습니다."
-    detail: "이 그룹에 대한 자세한 정보입니다."
-  label:
-    created_at: "그룹 생성일"
-    updated_at: "그룹 갱신일"
-    delete: "그룹 제거"
-  hint:
-    delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
-  delete_confirm: "이 그룹을 정말 제거합니까?"
-  cancel: "취소"
-  delete: "제거"
+  msg:
+    no_group: "그룹 슬러그가 없습니다."
 </i18n>
 
 <template>
@@ -39,77 +13,16 @@ ko:
     <toolbar-navigation :items="navigationItems"></toolbar-navigation>
     <v-divider></v-divider>
 
-    <left-title
-        :header="$t('header.basic')"
-        :subheader="$t('subheader.basic')"
-    >
-      <form-group
-          disable-slug
-          hide-cancel-button
-          hide-origin-prefix
-          :disable-submit-button="!modified"
-          :value="current"
-          @input="inputCurrent"
-          :loading="showSubmitLoading"
-          @ok="onClickOk"
-      ></form-group>
-    </left-title>
-
-    <left-title
-        :header="$t('header.detail')"
-        :subheader="$t('subheader.detail')"
-    >
-      <v-card outlined>
-        <v-data-table
-            hide-default-header
-            hide-default-footer
-            :headers="detailHeaders"
-            :items="detailItems"
-            item-key="name"
-            class="elevation-1"
-        ></v-data-table>
-      </v-card>
-    </left-title>
-
-    <v-alert outlined prominent type="error" class="ma-4">
-      <v-row align="center" class="pl-4">
-        <v-col>
-          <v-row>
-            <h6 class="text-h6">{{ $t('label.delete') }}</h6>
-          </v-row>
-          <v-row>
-            <span class="text-body-2">{{ $t('hint.delete') }}</span>
-          </v-row>
-        </v-col>
-        <v-col class="shrink">
-          <v-btn color="error" @click.stop="onClickDelete">
-            {{ $t('delete') }}
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-alert>
-
-    <!-- Delete dialog. -->
-    <v-dialog v-model="showDeleteDialog" max-width="320">
-      <v-card>
-        <v-card-title class="text-h5 error--text">
-          {{ $t('label.delete') }}
-        </v-card-title>
-        <v-card-text>
-          {{ $t('delete_confirm') }}
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="onClickDeleteCancel">
-            {{ $t('cancel') }}
-          </v-btn>
-          <v-btn :loading="showDeleteLoading" color="error" @click="onClickDeleteOk">
-            {{ $t('delete') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <form-group-edit
+        :value="group"
+        :loading-submit="loadingSubmit"
+        :loading-delete="loadingDelete"
+        :show-delete-dialog="showDeleteDialog"
+        @ok="onClickOk"
+        @delete:show="onClickDelete"
+        @delete:cancel="onClickDeleteCancel"
+        @delete:ok="onClickDeleteOk"
+    ></form-group-edit>
 
   </v-container>
 </template>
@@ -118,16 +31,13 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
-import LeftTitle from '@/components/LeftTitle.vue';
-import FormGroup, {GroupItem} from '@/components/FormGroup.vue';
+import FormGroupEdit from "@/components/FormGroupEdit.vue";
 import {GroupA, UpdateGroupQ} from '@/packet/group';
-import * as _ from 'lodash';
 
 @Component({
   components: {
     ToolbarNavigation,
-    LeftTitle,
-    FormGroup,
+    FormGroupEdit,
   }
 })
 export default class AdminGroupsEdit extends VueBase {
@@ -148,39 +58,27 @@ export default class AdminGroupsEdit extends VueBase {
     },
   ];
 
-  private readonly detailHeaders = [
-    {
-      text: 'name',
-      value: 'name',
-      align: 'right',
-    },
-    {
-      text: 'value',
-      value: 'value',
-    },
-  ];
+  group_slug = '';
+  group = {} as GroupA;
 
-  detailItems = [] as Array<object>;
-  current = new GroupItem();
-  original = new GroupItem();
-
-  modified = false;
-  showSubmitLoading = false;
   showDeleteDialog = false;
-  showDeleteLoading = false;
-
-  get group(): string {
-    return this.$route.params.group;
-  }
+  loadingDelete = false;
+  loadingSubmit = false;
 
   created() {
+    this.group_slug = this.$route.params.group;
+    if (!this.group_slug) {
+      this.toastError(this.$t('msg.no_group'));
+      return;
+    }
+
     this.requestGroup();
   }
 
   requestGroup() {
-    this.$api2.getAdminGroupsPgroup(this.group)
-        .then(body => {
-          this.updateGroup(body);
+    this.$api2.getAdminGroupsPgroup(this.group_slug)
+        .then(item => {
+          this.group = item;
         })
         .catch(error => {
           this.toastRequestFailure(error);
@@ -188,63 +86,19 @@ export default class AdminGroupsEdit extends VueBase {
         });
   }
 
-  updateGroup(group: GroupA) {
-    const name = group.name || '';
-    const description = group.description || '';
-    const features = group.features || [];
-    const visibility = group.visibility || 0;
-    const createdAt = group.created_at || '';
-    const updatedAt = group.updated_at || '';
-
-    this.current.slug = this.group;
-    this.current.name = name;
-    this.current.description = description;
-    this.current.features = features;
-    this.current.visibility = visibility;
-    this.original.fromObject(this.current);
-    this.modified = !_.isEqual(this.original, this.current);
-
-    this.detailItems = [
-      {
-        name: this.$t('label.created_at'),
-        value: createdAt,
-      },
-      {
-        name: this.$t('label.updated_at'),
-        value: updatedAt,
-      },
-    ];
-  }
-
-  inputCurrent(value: GroupItem) {
-    this.current = value;
-    this.modified = !_.isEqual(this.original, this.current);
-  }
-
-  onClickOk(event: GroupItem) {
-    const body = {
-      name: event.name,
-      description: event.description,
-      features: event.features,
-      visibility: event.visibility,
-    } as UpdateGroupQ;
-
-    this.showSubmitLoading = true;
-    this.$api2.patchAdminGroupsPgroup(this.group, body)
+  onClickOk(event: UpdateGroupQ) {
+    this.loadingSubmit = true;
+    this.$api2.patchAdminGroupsPgroup(this.group_slug, event)
         .then(() => {
-          this.showSubmitLoading = false;
+          this.loadingSubmit = false;
           this.toastRequestSuccess();
           this.requestGroup();
         })
         .catch(error => {
-          this.showSubmitLoading = false;
+          this.loadingSubmit = false;
           this.toastRequestFailure(error);
         });
   }
-
-  // ------
-  // Delete
-  // ------
 
   onClickDelete() {
     this.showDeleteDialog = true;
@@ -255,16 +109,16 @@ export default class AdminGroupsEdit extends VueBase {
   }
 
   onClickDeleteOk() {
-    this.showDeleteLoading = true;
-    this.$api2.deleteAdminGroupsGroup(this.group)
+    this.loadingDelete = true;
+    this.$api2.deleteAdminGroupsGroup(this.group_slug)
         .then(() => {
-          this.showDeleteLoading = false;
+          this.loadingDelete = false;
           this.showDeleteDialog = false;
           this.toastRequestSuccess();
           this.moveToAdminGroups();
         })
         .catch(error => {
-          this.showDeleteLoading = false;
+          this.loadingDelete = false;
           this.showDeleteDialog = false;
           this.toastRequestFailure(error);
         });
