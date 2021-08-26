@@ -3,6 +3,7 @@
 from recc.http import http_path_keys as p
 
 # Depth root.
+empty = ""
 root = "/"
 
 # Depth 1st.

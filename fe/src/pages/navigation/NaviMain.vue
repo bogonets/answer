@@ -118,9 +118,8 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-divider></v-divider>
-
-        <v-list-item link @click.stop="vms">
+        <v-divider v-if="isVms"></v-divider>
+        <v-list-item v-if="isVms" link @click.stop="vms">
           <v-list-item-icon>
             <v-icon>mdi-cctv</v-icon>
           </v-list-item-icon>
@@ -129,9 +128,8 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-divider></v-divider>
-
-        <v-list-group :value="true" no-action>
+        <v-divider v-if="isAirjoy"></v-divider>
+        <v-list-group v-if="isAirjoy" :value="true" no-action>
           <template v-slot:activator>
             <v-list-item-icon>
               <v-icon>mdi-air-filter</v-icon>
@@ -159,34 +157,6 @@ ko:
             </v-list-item-title>
           </v-list-item>
         </v-list-group>
-
-
-<!--        <v-list-item link @click.stop="airjoyTables">-->
-<!--          <v-list-item-icon>-->
-<!--            <v-icon dense>fa-wind</v-icon>-->
-<!--          </v-list-item-icon>-->
-<!--          <v-list-item-title>-->
-<!--            {{ $t('airjoy.tables') }}-->
-<!--          </v-list-item-title>-->
-<!--        </v-list-item>-->
-
-<!--        <v-list-item link @click.stop="airjoyStatistics">-->
-<!--          <v-list-item-icon>-->
-<!--            <v-icon dense>fa-chart-bar</v-icon>-->
-<!--          </v-list-item-icon>-->
-<!--          <v-list-item-title>-->
-<!--            {{ $t('airjoy.statistics') }}-->
-<!--          </v-list-item-title>-->
-<!--        </v-list-item>-->
-
-<!--        <v-list-item link @click.stop="airjoyMonitoring">-->
-<!--          <v-list-item-icon>-->
-<!--            <v-icon dense>fa-border-all</v-icon>-->
-<!--          </v-list-item-icon>-->
-<!--          <v-list-item-title>-->
-<!--            {{ $t('airjoy.monitoring') }}-->
-<!--          </v-list-item-title>-->
-<!--        </v-list-item>-->
 
         <v-divider></v-divider>
 
@@ -216,6 +186,8 @@ ko:
 <script lang='ts'>
 import {Component, Emit, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import {UserA} from '@/packet/user';
+import {ProjectA, FEATURE_VMS, FEATURE_AIRJOY} from '@/packet/project';
 
 @Component
 export default class NaviMain extends VueBase {
@@ -234,6 +206,8 @@ export default class NaviMain extends VueBase {
 
   index = 0;
   mini = false;
+  project = {} as ProjectA;
+  user = {} as UserA;
 
   get projectSlug(): string {
     const name = this.$route.params.project;
@@ -249,6 +223,37 @@ export default class NaviMain extends VueBase {
       return name[0].toUpperCase();
     }
     return '?';
+  }
+
+  get features() {
+    return this.project?.features || [] as Array<string>;
+  }
+
+  get isVms() {
+    return this.features.findIndex(i => i == FEATURE_VMS) != -1;
+  }
+
+  get isAirjoy() {
+    return this.features.findIndex(i => i == FEATURE_AIRJOY) != -1;
+  }
+
+  created() {
+    (async () => {
+      await this.requestSetup();
+    })();
+  }
+
+  async requestSetup() {
+    try {
+      this.user = await this.$api2.getSelf();
+      this.project = await this.$api2.getMainProjectsPgroupPproject(
+          this.$route.params.group,
+          this.$route.params.project,
+      );
+    } catch (error) {
+      this.toastRequestFailure(error);
+      this.moveToBack();
+    }
   }
 
   /**

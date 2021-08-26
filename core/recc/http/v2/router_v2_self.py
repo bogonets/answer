@@ -32,6 +32,8 @@ class RouterV2Self:
     # noinspection PyTypeChecker
     def _routes(self) -> List[AbstractRouteDef]:
         return [
+            web.get(u.empty, self.get_root),
+            web.patch(u.empty, self.patch_root),
             web.get(u.root, self.get_root),
             web.patch(u.root, self.patch_root),
             web.get(u.extra, self.get_extra),
