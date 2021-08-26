@@ -1,13 +1,3 @@
-<i18n lang="yaml">
-en:
-  msg:
-    no_group: "Not exists group slug."
-
-ko:
-  msg:
-    no_group: "그룹 슬러그가 없습니다."
-</i18n>
-
 <template>
   <v-container>
     <toolbar-navigation :items="navigationItems"></toolbar-navigation>
@@ -58,7 +48,6 @@ export default class AdminGroupsEdit extends VueBase {
     },
   ];
 
-  group_slug = '';
   group = {} as GroupA;
 
   showDeleteDialog = false;
@@ -66,17 +55,11 @@ export default class AdminGroupsEdit extends VueBase {
   loadingSubmit = false;
 
   created() {
-    this.group_slug = this.$route.params.group;
-    if (!this.group_slug) {
-      this.toastError(this.$t('msg.no_group'));
-      return;
-    }
-
     this.requestGroup();
   }
 
   requestGroup() {
-    this.$api2.getAdminGroupsPgroup(this.group_slug)
+    this.$api2.getAdminGroupsPgroup(this.$route.params.group)
         .then(item => {
           this.group = item;
         })
@@ -88,7 +71,7 @@ export default class AdminGroupsEdit extends VueBase {
 
   onClickOk(event: UpdateGroupQ) {
     this.loadingSubmit = true;
-    this.$api2.patchAdminGroupsPgroup(this.group_slug, event)
+    this.$api2.patchAdminGroupsPgroup(this.$route.params.group, event)
         .then(() => {
           this.loadingSubmit = false;
           this.toastRequestSuccess();
@@ -110,7 +93,7 @@ export default class AdminGroupsEdit extends VueBase {
 
   onClickDeleteOk() {
     this.loadingDelete = true;
-    this.$api2.deleteAdminGroupsGroup(this.group_slug)
+    this.$api2.deleteAdminGroupsGroup(this.$route.params.group)
         .then(() => {
           this.loadingDelete = false;
           this.showDeleteDialog = false;
