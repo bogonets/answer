@@ -26,7 +26,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         await self.tester.setup()
         await self.tester.wait_startup()
 
-        self.username = "user1"
+        self.username = "main1"
         self.password = "1234"
         await self.tester.signup_default_admin()
         await self.tester.signup(self.username, self.password)
@@ -332,6 +332,23 @@ class RouterV2MainTestCase(AsyncTestCase):
         response4_data = response4.data
         self.assertIsInstance(response4_data, PermissionA)
         self.assertEqual(PERMISSION_NAME_OWNER, response4_data.name)
+
+    async def test_usernames(self):
+        user1_username = "user1"
+        user1_password = "11111"
+        await self.tester.signup(user1_username, user1_password)
+
+        user2_username = "user2"
+        user2_password = "22222"
+        await self.tester.signup(user2_username, user2_password)
+
+        response1 = await self.tester.get(v2_main_path(u.usernames), cls=List[str])
+        self.assertEqual(200, response1.status)
+        response1_data = response1.data
+        self.assertIsInstance(response1_data, list)
+        self.assertIn(self.username, response1_data)
+        self.assertIn(user1_username, response1_data)
+        self.assertIn(user2_username, response1_data)
 
 
 if __name__ == "__main__":

@@ -13,15 +13,16 @@ from recc.database.postgresql.query.user import (
     UPDATE_USER_PASSWORD_AND_SALT_BY_UID,
     UPDATE_USER_EXTRA_BY_UID,
     SAFE_DELETE_USER_BY_UID,
-    SELECT_USER_ADMIN_COUNT,
-    SELECT_USER_COUNT,
     SELECT_USER_USERNAME_BY_UID,
     SELECT_USER_UID_BY_USERNAME,
     SELECT_USER_EXISTS_BY_USERNAME,
     SELECT_USER_PASSWORD_AND_SALT_BY_UID,
-    SELECT_USER_BY_UID,
     SELECT_USER_EXTRA_BY_UID,
+    SELECT_USER_BY_UID,
     SELECT_USER_ALL,
+    SELECT_USER_USERNAME,
+    SELECT_USER_ADMIN_COUNT,
+    SELECT_USER_COUNT,
     get_update_user_query_by_uid,
 )
 
@@ -229,4 +230,16 @@ class PgUser(DbUser, PgBase):
         assert row and len(row) == 1
         result = bool(row.get("count", 0) >= 1)
         logger.info(f"select_exists_admin_user() -> {result}")
+        return result
+
+    @overrides
+    async def select_user_username(self) -> List[str]:
+        result: List[str] = list()
+        async with self.conn() as conn:
+            async with conn.transaction():
+                query = SELECT_USER_USERNAME
+                async for row in conn.cursor(query):
+                    result.append(row["username"])
+        result_msg = f"{len(result)} users"
+        logger.info(f"select_user_username() -> {result_msg}")
         return result

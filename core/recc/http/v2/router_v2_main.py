@@ -74,6 +74,9 @@ class RouterV2Main:
             web.get(u.permissions, self.get_permissions),
             web.get(u.permissions_pgroup, self.get_permissions_pgroup),
             web.get(u.permissions_pgroup_pproject, self.get_permissions_pgroup_pproject),  # noqa
+
+            # Users
+            web.get(u.usernames, self.get_usernames),
         ]
         # fmt: on
 
@@ -460,3 +463,7 @@ class RouterV2Main:
         assert permission_uid is not None
         permission = await self.context.get_permission(permission_uid)
         return permission_to_answer(permission)
+
+    @parameter_matcher()
+    async def get_usernames(self) -> List[str]:
+        return await self.context.get_usernames()

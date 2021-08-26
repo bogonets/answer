@@ -103,3 +103,7 @@ class DbUser(metaclass=ABCMeta):
     @abstractmethod
     async def select_exists_admin_user(self) -> bool:
         raise NotImplementedError
+
+    @abstractmethod
+    async def select_user_username(self) -> List[str]:
+        raise NotImplementedError

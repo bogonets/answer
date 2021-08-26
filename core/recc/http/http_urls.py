@@ -42,6 +42,7 @@ state = "/state"
 system = "/system"
 templates = "/templates"
 test = "/test"
+usernames = "/usernames"
 users = "/users"
 version = "/version"
 

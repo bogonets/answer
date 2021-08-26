@@ -167,6 +167,9 @@ class ContextUser(ContextBase):
             result.append(user)
         return result
 
+    async def get_usernames(self) -> List[str]:
+        return await self.database.select_user_username()
+
     async def exist_user(self, username: str) -> bool:
         # Do not use cache's uid.
         return await self.database.select_user_exists_by_username(username)
