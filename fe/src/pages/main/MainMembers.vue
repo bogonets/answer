@@ -21,7 +21,7 @@
   </v-container>
 </template>
 
-<script lang="ts">
+<script lang='ts'>
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
@@ -34,7 +34,7 @@ import {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
     FormInviteMemberEdit,
   }
 })
-export default class GroupMembers extends VueBase {
+export default class MainMembers extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Groups',
@@ -45,6 +45,11 @@ export default class GroupMembers extends VueBase {
       text: this.$route.params.group,
       disabled: false,
       href: () => this.moveToGroup(),
+    },
+    {
+      text: this.$route.params.project,
+      disabled: false,
+      href: () => this.moveToMain(),
     },
     {
       text: 'Members',
@@ -77,8 +82,9 @@ export default class GroupMembers extends VueBase {
       this.usernames = await this.$api2.getMainUsernames();
       const permissions = await this.$api2.getMainPermissions();
       this.permissions = permissions.map(i => i.name || '');
-      this.items = await this.$api2.getMainGroupsPgroupMembers(
-          this.$route.params.group
+      this.items = await this.$api2.getMainProjectsPgroupPprojectMembers(
+          this.$route.params.group,
+          this.$route.params.project,
       );
     } catch (error) {
       this.toastRequestFailure(error);
@@ -89,7 +95,10 @@ export default class GroupMembers extends VueBase {
 
   reloadMembers() {
     this.loadingMembers = true;
-    this.$api2.getMainGroupsPgroupMembers(this.$route.params.group)
+    this.$api2.getMainProjectsPgroupPprojectMembers(
+        this.$route.params.group,
+        this.$route.params.project,
+    )
         .then(items => {
           this.loadingMembers = false;
           this.items = items;
@@ -102,7 +111,11 @@ export default class GroupMembers extends VueBase {
 
   onClickInvite(event: CreateMemberQ) {
     this.loadingInvite = true;
-    this.$api2.postMainGroupsPgroupMembers(this.$route.params.group, event)
+    this.$api2.postMainProjectsPgroupPprojectMembers(
+        this.$route.params.group,
+        this.$route.params.project,
+        event,
+    )
         .then(() => {
           this.loadingInvite = false;
           this.toastRequestSuccess();
@@ -117,8 +130,9 @@ export default class GroupMembers extends VueBase {
   onChangeMember(event: UpdateMemberQ) {
     const member = event.username;
     this.loadingMembers = true;
-    this.$api2.patchMainGroupsPgroupMembersPmember(
+    this.$api2.patchMainProjectsPgroupPprojectMembersPmember(
         this.$route.params.group,
+        this.$route.params.project,
         member,
         event,
     )
@@ -144,7 +158,11 @@ export default class GroupMembers extends VueBase {
   onClickDeleteOk(item: MemberA) {
     const member = item.username;
     this.loadingDelete = true;
-    this.$api2.deleteMainGroupsPgroupMembersPmember(this.$route.params.group, member)
+    this.$api2.deleteMainProjectsPgroupPprojectMembersPmember(
+        this.$route.params.group,
+        this.$route.params.project,
+        member,
+    )
         .then(() => {
           this.loadingDelete = false;
           this.showDeleteDialog = false;

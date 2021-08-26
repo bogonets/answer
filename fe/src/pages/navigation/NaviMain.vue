@@ -335,6 +335,7 @@ export default class NaviMain extends VueBase {
   @Emit('click:members')
   members() {
     if (!this.noDefault) {
+      this.moveToMainMembers();
     }
   }
 

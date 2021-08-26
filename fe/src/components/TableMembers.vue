@@ -54,6 +54,7 @@ ko:
             solo
             flat
             outlined
+            rounded
             hide-details
             :disabled="item.permission === owner"
             v-model="item.permission"
@@ -196,6 +197,6 @@ export default class TableMembers extends VueBase {
 }
 
 .permission-select {
-  max-width: 140px;
+  max-width: 180px;
 }
 </style>

@@ -1,12 +1,15 @@
 export const mainNames = {
     mainDashboard: 'mainDashboard',
+    mainMembers: 'mainMembers',
+    mainSettings: 'mainSettings',
+    mainVms: 'mainVms',
+
+    // -- Not yet --
     mainLayouts: 'mainLayouts',
     mainFiles: 'mainFiles',
     mainTables: 'mainTables',
     mainTasks: 'mainTasks',
     mainVp: 'mainVp',
-    mainVms: 'mainVms',
-    mainSettings: 'mainSettings',
 };
 
 export default mainNames;
