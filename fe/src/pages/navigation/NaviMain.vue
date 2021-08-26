@@ -10,10 +10,10 @@ en:
   members: "Members"
   settings: "Settings"
   airjoy:
-    tables: "Airjoy Tables"
-    statistics: "Airjoy Statistics"
-    monitoring: "Airjoy Monitoring"
-    users: "Airjoy Users"
+    title: "AIRJOY"
+    summary: "Summary"
+    live: "Live"
+    chart: "Chart"
 
 ko:
   dashboard: "대시보드"
@@ -26,10 +26,10 @@ ko:
   members: "회원 관리"
   settings: "프로젝트 설정"
   airjoy:
-    tables: "에어조이 테이블"
-    statistics: "에어조이 통계"
-    monitoring: "에어조이 모니터링"
-    users: "에어조이 사용자 관리"
+    title: "에어조이"
+    summary: "요약"
+    live: "실시간"
+    chart: "차트"
 </i18n>
 
 <template>
@@ -131,41 +131,62 @@ ko:
 
         <v-divider></v-divider>
 
-        <v-list-item link @click.stop="airjoyTables">
-          <v-list-item-icon>
-            <v-icon dense>fa-wind</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('airjoy.tables') }}
-          </v-list-item-title>
-        </v-list-item>
+        <v-list-group :value="true" no-action>
+          <template v-slot:activator>
+            <v-list-item-icon>
+              <v-icon>mdi-air-filter</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('airjoy.title') }}
+            </v-list-item-title>
+          </template>
 
-        <v-list-item link @click.stop="airjoyStatistics">
-          <v-list-item-icon>
-            <v-icon dense>fa-chart-bar</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('airjoy.statistics') }}
-          </v-list-item-title>
-        </v-list-item>
+          <v-list-item link @click.stop="airjoySummary">
+            <v-list-item-title>
+              {{ $t('airjoy.summary') }}
+            </v-list-item-title>
+          </v-list-item>
 
-        <v-list-item link @click.stop="airjoyMonitoring">
-          <v-list-item-icon>
-            <v-icon dense>fa-border-all</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('airjoy.monitoring') }}
-          </v-list-item-title>
-        </v-list-item>
+          <v-list-item link @click.stop="airjoyLive">
+            <v-list-item-title>
+              {{ $t('airjoy.live') }}
+            </v-list-item-title>
+          </v-list-item>
 
-        <v-list-item link @click.stop="airjoyUsers">
-          <v-list-item-icon>
-            <v-icon dense>fa-users-cog</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('airjoy.users') }}
-          </v-list-item-title>
-        </v-list-item>
+          <v-list-item link @click.stop="airjoyChart">
+            <v-list-item-title>
+              {{ $t('airjoy.chart') }}
+            </v-list-item-title>
+          </v-list-item>
+        </v-list-group>
+
+
+<!--        <v-list-item link @click.stop="airjoyTables">-->
+<!--          <v-list-item-icon>-->
+<!--            <v-icon dense>fa-wind</v-icon>-->
+<!--          </v-list-item-icon>-->
+<!--          <v-list-item-title>-->
+<!--            {{ $t('airjoy.tables') }}-->
+<!--          </v-list-item-title>-->
+<!--        </v-list-item>-->
+
+<!--        <v-list-item link @click.stop="airjoyStatistics">-->
+<!--          <v-list-item-icon>-->
+<!--            <v-icon dense>fa-chart-bar</v-icon>-->
+<!--          </v-list-item-icon>-->
+<!--          <v-list-item-title>-->
+<!--            {{ $t('airjoy.statistics') }}-->
+<!--          </v-list-item-title>-->
+<!--        </v-list-item>-->
+
+<!--        <v-list-item link @click.stop="airjoyMonitoring">-->
+<!--          <v-list-item-icon>-->
+<!--            <v-icon dense>fa-border-all</v-icon>-->
+<!--          </v-list-item-icon>-->
+<!--          <v-list-item-title>-->
+<!--            {{ $t('airjoy.monitoring') }}-->
+<!--          </v-list-item-title>-->
+<!--        </v-list-item>-->
 
         <v-divider></v-divider>
 
@@ -323,31 +344,24 @@ export default class NaviMain extends VueBase {
   // Extension: AirJoy
   // -----------------
 
-  @Emit('click:airjoy-tables')
-  airjoyTables() {
+  @Emit('click:airjoy-summary')
+  airjoySummary() {
     if (!this.noDefault) {
       // this.moveToMainProjectAirjoyTables();
     }
   }
 
-  @Emit('click:airjoy-statistics')
-  airjoyStatistics() {
+  @Emit('click:airjoy-live')
+  airjoyLive() {
     if (!this.noDefault) {
       // this.moveToMainProjectAirjoyStatistics();
     }
   }
 
-  @Emit('click:airjoy-monitoring')
-  airjoyMonitoring() {
+  @Emit('click:airjoy-chart')
+  airjoyChart() {
     if (!this.noDefault) {
       // this.moveToMainProjectAirjoyMonitoring();
-    }
-  }
-
-  @Emit('click:airjoy-users')
-  airjoyUsers() {
-    if (!this.noDefault) {
-      // this.moveToMainProjectMembers();
     }
   }
 }
