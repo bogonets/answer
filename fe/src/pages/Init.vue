@@ -17,6 +17,7 @@ ko:
             <v-card-title>{{ $t('title') }}</v-card-title>
             <v-card-subtitle>{{ $t('subtitle') }}</v-card-subtitle>
             <form-user
+                hide-cancel-button
                 class="pa-4"
                 hide-access
                 hide-profile
@@ -46,10 +47,6 @@ import {SignupQ} from '@/packet/user';
 export default class Init extends VueBase {
   showSignupLoading = false;
 
-  onClickCancel() {
-    this.moveToBack();
-  }
-
   onClickOk(event: UserItem) {
     const body = {
       username: event.username,
@@ -60,7 +57,7 @@ export default class Init extends VueBase {
     this.$api2.postPublicSignupAdmin(body)
         .then(() => {
           this.showSignupLoading = false;
-          this.moveToBack();
+          this.moveToSignin();
           this.toastRequestSuccess();
         })
         .catch(error => {
