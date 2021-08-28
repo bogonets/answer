@@ -122,7 +122,7 @@ import {Component, Prop, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormGroup, {GroupItem} from '@/components/FormGroup.vue';
-import {GroupA, UpdateGroupQ} from '@/packet/group';
+import type {GroupA, UpdateGroupQ} from '@/packet/group';
 import * as _ from 'lodash';
 
 @Component({

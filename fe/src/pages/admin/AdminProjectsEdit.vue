@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <toolbar-navigation :items="navigationItems"></toolbar-navigation>
+    <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
     <form-project-edit
@@ -20,13 +20,13 @@
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import {ProjectA, UpdateProjectQ} from '@/packet/project';
 import FormProjectEdit from "@/components/FormProjectEdit.vue";
 
 @Component({
   components: {
-    ToolbarNavigation,
+    ToolbarBreadcrumbs,
     FormProjectEdit,
   }
 })

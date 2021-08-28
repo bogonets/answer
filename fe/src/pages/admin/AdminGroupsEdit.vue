@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <toolbar-navigation :items="navigationItems"></toolbar-navigation>
+    <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
     <form-group-edit
@@ -20,13 +20,13 @@
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import FormGroupEdit from "@/components/FormGroupEdit.vue";
 import {GroupA, UpdateGroupQ} from '@/packet/group';
 
 @Component({
   components: {
-    ToolbarNavigation,
+    ToolbarBreadcrumbs,
     FormGroupEdit,
   }
 })

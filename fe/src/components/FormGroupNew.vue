@@ -30,7 +30,6 @@ ko:
 <script lang="ts">
 import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import LeftTitle from "@/components/LeftTitle.vue";
 import FormGroup, {GroupItem} from '@/components/FormGroup.vue';
 import {CreateGroupQ} from '@/packet/group';
@@ -40,7 +39,6 @@ const REQUEST_TYPE_ADMIN = 'admin';
 
 @Component({
   components: {
-    ToolbarNavigation,
     LeftTitle,
     FormGroup,
   }

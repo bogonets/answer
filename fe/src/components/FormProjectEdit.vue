@@ -121,10 +121,17 @@ ko:
 <script lang="ts">
 import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import LeftTitle from "@/components/LeftTitle.vue";
-import {ProjectA, UpdateProjectQ} from "@/packet/project";
-import FormProject, {ProjectItem} from "@/components/FormProject.vue";
-import * as _ from "lodash";
+import LeftTitle from '@/components/LeftTitle.vue';
+import type {ProjectA, UpdateProjectQ} from '@/packet/project';
+import FormProject, {ProjectItem} from '@/components/FormProject.vue';
+import * as _ from 'lodash';
+
+export function createEmptyProjectA() {
+  return {
+    group_slug: '',
+    project_slug: '',
+  } as ProjectA;
+}
 
 @Component({
   components: {
@@ -133,7 +140,7 @@ import * as _ from "lodash";
   }
 })
 export default class FormProjectEdit extends VueBase {
-  @Prop({type: Object})
+  @Prop({type: Object, default: createEmptyProjectA})
   readonly value!: ProjectA;
 
   @Prop({type: Boolean, default: false})

@@ -24,7 +24,7 @@ import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 
 @Component
-export default class ToolbarNavigation extends VueBase {
+export default class ToolbarBreadcrumbs extends VueBase {
 
   @Prop({ type: Array, default: () => [] })
   readonly items!: Array<object>;

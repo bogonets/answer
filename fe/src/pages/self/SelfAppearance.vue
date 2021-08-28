@@ -33,7 +33,7 @@ ko:
 <template>
   <v-container>
 
-    <toolbar-navigation :items="navigationItems"></toolbar-navigation>
+    <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
     <v-list flat subheader three-line>
@@ -85,12 +85,12 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ListLanguages from '@/components/ListLanguages.vue';
-import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import {UserExtra} from '@/packet/user';
 
 @Component({
   components: {
-    ToolbarNavigation,
+    ToolbarBreadcrumbs,
     ListLanguages,
   }
 })

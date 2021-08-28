@@ -44,7 +44,7 @@ ko:
 
 <template>
   <v-container>
-    <toolbar-navigation :items="navigationItems"></toolbar-navigation>
+    <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
     <v-data-table
@@ -171,14 +171,14 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import CardInfoNew from '@/components/CardInfoNew.vue';
 import {isReccKey} from '@/rules/recc-info';
 import {CreateInfoQ, UpdateInfoQ} from "@/packet/info";
 
 @Component({
   components: {
-    ToolbarNavigation,
+    ToolbarBreadcrumbs,
     CardInfoNew: CardInfoNew,
   }
 })

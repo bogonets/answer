@@ -30,7 +30,7 @@ ko:
 
 <template>
   <v-container>
-    <toolbar-navigation :items="navigationItems"></toolbar-navigation>
+    <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
     <v-tabs v-model="tabIndex">
@@ -83,7 +83,7 @@ ko:
 <script lang="ts">
 import {Component, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import {TemplateA} from '@/packet/template';
 import * as _ from 'lodash';
 
@@ -94,7 +94,7 @@ const STORAGE_TAB_INDEX = 2;
 
 @Component({
   components: {
-    ToolbarNavigation,
+    ToolbarBreadcrumbs,
   }
 })
 export default class AdminTemplates extends VueBase {

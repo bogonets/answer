@@ -85,7 +85,11 @@ ko:
 <script lang="ts">
 import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import {ProjectA} from '@/packet/project';
+import type {ProjectA} from '@/packet/project';
+
+export function createEmptyProjects() {
+  return new Array<ProjectA>();
+}
 
 @Component
 export default class TableProjects extends VueBase {
@@ -107,7 +111,7 @@ export default class TableProjects extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly loading!: boolean;
 
-  @Prop({type: Array, default: () => new Array<ProjectA>()})
+  @Prop({type: Array, default: createEmptyProjects})
   readonly items!: Array<ProjectA>;
 
   headers = [] as Array<object>;

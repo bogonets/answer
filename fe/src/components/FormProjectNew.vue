@@ -32,14 +32,12 @@ ko:
 <script lang="ts">
 import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
 import LeftTitle from "@/components/LeftTitle.vue";
 import FormProject, {ProjectItem} from '@/components/FormProject.vue';
 import {CreateProjectQ} from '@/packet/project';
 
 @Component({
   components: {
-    ToolbarNavigation,
     LeftTitle,
     FormProject,
   }

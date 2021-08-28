@@ -30,7 +30,7 @@ ko:
 
 <template>
   <v-container>
-    <toolbar-navigation :items="navigationItems"></toolbar-navigation>
+    <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
     <v-data-table
@@ -81,12 +81,12 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import {PermissionA} from '@/packet/permission';
 
 @Component({
   components: {
-    ToolbarNavigation,
+    ToolbarBreadcrumbs,
   }
 })
 export default class AdminPermissions extends VueBase {

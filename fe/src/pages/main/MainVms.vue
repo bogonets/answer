@@ -92,14 +92,14 @@ ko:
 <script lang="ts">
 import {Component, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 
 const TOOLBAR_HEIGHT = 48;
 const FOOTER_HEIGHT = 200;
 
 @Component({
   components: {
-    ToolbarNavigation
+    ToolbarBreadcrumbs
   }
 })
 export default class MainVms extends VueBase {

@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <toolbar-navigation :items="navigationItems"></toolbar-navigation>
+    <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
     <form-invite-member-edit
@@ -24,13 +24,13 @@
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import FormInviteMemberEdit from '@/components/FormInviteMemberEdit.vue';
 import {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
 
 @Component({
   components: {
-    ToolbarNavigation,
+    ToolbarBreadcrumbs,
     FormInviteMemberEdit,
   }
 })

@@ -29,7 +29,7 @@ ko:
 <template>
   <v-container>
 
-    <toolbar-navigation :items="navigationItems"></toolbar-navigation>
+    <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
     <v-data-table
@@ -89,12 +89,12 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import AppBarTitle from '@/components/AppBarTitle.vue';
-import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import {UserA} from '@/packet/user';
 
 @Component({
   components: {
-    ToolbarNavigation,
+    ToolbarBreadcrumbs,
     AppBarTitle
   }
 })
