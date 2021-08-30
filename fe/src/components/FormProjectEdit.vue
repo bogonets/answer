@@ -45,7 +45,7 @@ ko:
           disable-slug
           hide-cancel-button
           :disable-submit-button="!modified"
-          :group-items="[this.group]"
+          :group-items="[this.groupSlug]"
           :value="current"
           @input="onUpdateCurrent"
           :loading-submit="loadingSubmit"
@@ -155,6 +155,10 @@ export default class FormProjectEdit extends VueBase {
   current = new ProjectItem();
   original = new ProjectItem();
   modified = false;
+
+  get groupSlug() {
+    return this.value?.group_slug || '';
+  }
 
   get createdAt() {
     return this.value?.created_at || '';
