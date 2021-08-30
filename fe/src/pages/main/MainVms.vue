@@ -13,7 +13,7 @@ ko:
 </i18n>
 
 <template>
-  <v-container class="pa-0 fill-width">
+  <div>
     <v-navigation-drawer
         app
         right
@@ -51,7 +51,11 @@ ko:
       </v-list>
     </v-navigation-drawer>
 
-    <v-container class="pa-0 fill-width d-flex flex-wrap" :style="contentStyle">
+    <view-port
+        class="d-flex flex-wrap"
+        :margin-top="toolbarHeight"
+        :margin-bottom="footerHeight"
+    >
       <v-card
           v-for="i in maxCards"
           :key="i"
@@ -73,9 +77,9 @@ ko:
           <v-img src="@/assets/logo/answer-logo-notext.svg" max-width="200px" max-height="200px" contain></v-img>
         </div>
       </v-card>
-    </v-container>
+    </view-port>
 
-    <v-footer absolute padless height="200px">
+    <v-footer absolute padless :height="footerHeight">
       <v-system-bar absolute>
         <v-icon>mdi-application</v-icon>
         <v-spacer></v-spacer>
@@ -86,60 +90,31 @@ ko:
       <v-col class="text-center" cols="12">Control Panel</v-col>
     </v-footer>
 
-  </v-container>
+  </div>
 </template>
 
 <script lang="ts">
-import {Component, Watch} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import ViewPort from "@/components/ViewPort.vue";
 
-const TOOLBAR_HEIGHT = 48;
-const FOOTER_HEIGHT = 200;
-
-@Component
+@Component({
+  components: {
+    ViewPort,
+  }
+})
 export default class MainVms extends VueBase {
-  contentWidth = window.innerWidth;
-  contentHeight = window.innerHeight;
+  readonly toolbarHeight = 48;
+  readonly footerHeight = 200;
 
   maxCards = 4;
   miniNavigation = false;
 
-  @Watch('contentWidth')
-  updateContentWidth(newVal: string, oldVal: string) {
-    console.debug(`Update content-width: ${oldVal} -> ${newVal}`);
-  }
-
-  @Watch('contentHeight')
-  updateContentHeight(newVal: string, oldVal: string) {
-    console.debug(`Update content-height: ${oldVal} -> ${newVal}`);
-  }
-
-  get contentStyle() {
-    return {height: `${this.contentHeight}px`};
-  }
-
   cardStyle(index: number) {
-    const halfHeight = this.contentHeight * 0.5;
     return {
       width: '50%',
       height: '50%',
     };
-  }
-
-  mounted() {
-    this.$nextTick(() => {
-      window.addEventListener('resize', this.onResize);
-      this.onResize();
-    })
-  }
-
-  beforeDestroy() {
-    window.removeEventListener('resize', this.onResize);
-  }
-
-  onResize() {
-    this.contentWidth = window.innerWidth;
-    this.contentHeight = window.innerHeight - TOOLBAR_HEIGHT - FOOTER_HEIGHT;
   }
 
   onClickFoldNavigation() {
@@ -154,12 +129,6 @@ export default class MainVms extends VueBase {
 <style lang="scss" scoped>
 .fill-width {
   max-width: 100%;
-}
-
-.absolute-position {
-  position: absolute;
-  //position: fixed;
-  //transform: translateX(0%);
 }
 
 .disconnected-background {
