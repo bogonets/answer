@@ -7,9 +7,11 @@
 <script lang="ts">
 import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
 
+const APP_BAR_HEIGHT = 48;
+
 @Component
 export default class ViewPort extends Vue {
-  @Prop({type: Number, default: 0})
+  @Prop({type: Number, default: APP_BAR_HEIGHT})
   readonly marginTop!: number;
 
   @Prop({type: Number, default: 0})

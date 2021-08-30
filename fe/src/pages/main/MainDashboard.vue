@@ -8,7 +8,7 @@
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import BreadcrumbMain from "@/pages/breadcrumb/BreadcrumbMain.vue";
+import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 
 @Component({
   components: {

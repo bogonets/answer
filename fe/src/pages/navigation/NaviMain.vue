@@ -307,7 +307,7 @@ export default class NaviMain extends VueBase {
   @Emit('click:tables')
   tables() {
     if (!this.noDefault) {
-      // this.moveToMainProjectTables();
+      this.moveToMainTables();
     }
   }
 

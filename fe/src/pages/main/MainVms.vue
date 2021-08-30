@@ -53,7 +53,6 @@ ko:
 
     <view-port
         class="d-flex flex-wrap"
-        :margin-top="toolbarHeight"
         :margin-bottom="footerHeight"
     >
       <v-card
@@ -96,7 +95,7 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ViewPort from "@/components/ViewPort.vue";
+import ViewPort from '@/components/ViewPort.vue';
 
 @Component({
   components: {
@@ -104,7 +103,6 @@ import ViewPort from "@/components/ViewPort.vue";
   }
 })
 export default class MainVms extends VueBase {
-  readonly toolbarHeight = 48;
   readonly footerHeight = 200;
 
   maxCards = 4;

@@ -2,6 +2,7 @@ import mainNames from '@/router/names/main';
 import MainDashboard from '@/pages/main/MainDashboard.vue';
 import MainMembers from '@/pages/main/MainMembers.vue';
 import MainSettings from '@/pages/main/MainSettings.vue';
+import MainTables from '@/pages/main/MainTables.vue';
 import MainVms from '@/pages/main/MainVms.vue';
 
 export const mainChildren = [
@@ -19,6 +20,11 @@ export const mainChildren = [
         path: ':group/:project/settings',
         component: MainSettings,
         name: mainNames.mainSettings,
+    },
+    {
+        path: ':group/:project/tables',
+        component: MainTables,
+        name: mainNames.mainTables,
     },
     {
         path: ':group/:project/vms',
