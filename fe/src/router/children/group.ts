@@ -6,22 +6,22 @@ import GroupSettings from '@/pages/group/GroupSettings.vue';
 
 export const groupChildren = [
     {
-        path: '/:group/members',
+        path: ':group/members',
         component: GroupMembers,
         name: groupNames.groupMembers,
     },
     {
-        path: '/:group/projects',
+        path: ':group/projects',
         component: GroupProjects,
         name: groupNames.groupProjects,
     },
     {
-        path: '/:group/projects/new',
+        path: ':group/projects/new',
         component: GroupProjectsNew,
         name: groupNames.groupProjectsNew,
     },
     {
-        path: '/:group/settings',
+        path: ':group/settings',
         component: GroupSettings,
         name: groupNames.groupSettings,
     },

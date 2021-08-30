@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
+    <breadcrumb-main name="Members"></breadcrumb-main>
     <v-divider></v-divider>
 
     <form-invite-member-edit
@@ -24,39 +24,17 @@
 <script lang='ts'>
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
+import BreadcrumbMain from "@/pages/breadcrumb/BreadcrumbMain.vue";
 import FormInviteMemberEdit from '@/components/FormInviteMemberEdit.vue';
 import {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
 
 @Component({
   components: {
-    ToolbarBreadcrumbs,
+    BreadcrumbMain,
     FormInviteMemberEdit,
   }
 })
 export default class MainMembers extends VueBase {
-  private readonly navigationItems = [
-    {
-      text: 'Groups',
-      disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
-    {
-      text: this.$route.params.group,
-      disabled: false,
-      href: () => this.moveToGroup(),
-    },
-    {
-      text: this.$route.params.project,
-      disabled: false,
-      href: () => this.moveToMain(),
-    },
-    {
-      text: 'Members',
-      disabled: true,
-    },
-  ];
-
   showDeleteDialog = false;
   loadingDelete = false;
   loadingInvite = false;

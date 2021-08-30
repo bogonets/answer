@@ -92,34 +92,12 @@ ko:
 <script lang="ts">
 import {Component, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 
 const TOOLBAR_HEIGHT = 48;
 const FOOTER_HEIGHT = 200;
 
-@Component({
-  components: {
-    ToolbarBreadcrumbs
-  }
-})
+@Component
 export default class MainVms extends VueBase {
-  private readonly navigationItems = [
-    {
-      text: 'Projects',
-      disabled: false,
-      href: () => this.moveToMainProjects(),
-    },
-    {
-      text: this.$route.params.project,
-      disabled: false,
-      href: () => this.moveToMainProjects(),
-    },
-    {
-      text: 'VMS',
-      disabled: true,
-    },
-  ];
-
   contentWidth = window.innerWidth;
   contentHeight = window.innerHeight;
 

@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
+    <breadcrumb-main name="Settings"></breadcrumb-main>
     <v-divider></v-divider>
 
     <form-project-edit
@@ -20,39 +20,17 @@
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
+import BreadcrumbMain from "@/pages/breadcrumb/BreadcrumbMain.vue";
 import FormProjectEdit from '@/components/FormProjectEdit.vue';
 import {ProjectA, UpdateProjectQ} from '@/packet/project';
 
 @Component({
   components: {
-    ToolbarBreadcrumbs,
+    BreadcrumbMain,
     FormProjectEdit,
   }
 })
 export default class MainSettings extends VueBase {
-  private readonly navigationItems = [
-    {
-      text: 'Groups',
-      disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
-    {
-      text: this.$route.params.group,
-      disabled: false,
-      href: () => this.moveToGroup(),
-    },
-    {
-      text: this.$route.params.project,
-      disabled: false,
-      href: () => this.moveToMain(),
-    },
-    {
-      text: 'Settings',
-      disabled: true,
-    },
-  ];
-
   project = {} as ProjectA;
 
   showDeleteDialog = false;

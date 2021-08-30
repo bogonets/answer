@@ -4,12 +4,12 @@ import DevOverview from '@/pages/dev/DevOverview.vue';
 
 export const devChildren = [
     {
-        path: '/envs',
+        path: 'envs',
         component: DevEnvs,
         name: devNames.devEnvs,
     },
     {
-        path: '/overview',
+        path: 'overview',
         component: DevOverview,
         name: devNames.devOverview,
     },

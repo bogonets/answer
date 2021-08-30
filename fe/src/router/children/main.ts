@@ -6,22 +6,22 @@ import MainVms from '@/pages/main/MainVms.vue';
 
 export const mainChildren = [
     {
-        path: '/:group/:project/overview',
+        path: ':group/:project/dashboard',
         component: MainDashboard,
         name: mainNames.mainDashboard,
     },
     {
-        path: '/:group/:project/members',
+        path: ':group/:project/members',
         component: MainMembers,
         name: mainNames.mainMembers,
     },
     {
-        path: '/:group/:project/settings',
+        path: ':group/:project/settings',
         component: MainSettings,
         name: mainNames.mainSettings,
     },
     {
-        path: '/:group/:project/vms',
+        path: ':group/:project/vms',
         component: MainVms,
         name: mainNames.mainVms,
     },

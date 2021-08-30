@@ -4,12 +4,12 @@ import SelfOverview from '@/pages/self/SelfOverview.vue';
 
 export const selfChildren = [
     {
-        path: '/appearance',
+        path: 'appearance',
         component: SelfAppearance,
         name: selfNames.selfAppearance,
     },
     {
-        path: '/overview',
+        path: 'overview',
         component: SelfOverview,
         name: selfNames.selfOverview,
     },
