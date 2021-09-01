@@ -21,7 +21,7 @@ ko:
 </i18n>
 
 <template>
-  <div class="grid-view">
+  <div class="grid-view" ref="view">
     <div class="grid-view--toolbar">
       <v-toolbar dense flat>
         <v-btn plain small @click="onClickView">
@@ -69,7 +69,7 @@ ko:
     </div>
 
     <div class="grid-view--table" ref="table">
-      <div class="grid-view--header">
+      <div class="grid-view--header" ref="header">
         <div class="grid-view--header-row">
           <div class="grid-view--header-drag"></div>
 
@@ -97,7 +97,7 @@ ko:
         </div>
       </div>
 
-      <div class="grid-view--body">
+      <div class="grid-view--body" ref="body">
         <div
             class="grid-view--body-row"
             v-for="item in items"
@@ -156,8 +156,17 @@ export default class GridView extends VueBase {
     dragVertical: mdiDragVertical
   };
 
-  @Ref()
-  readonly table!: HTMLDivElement;
+  @Ref('table')
+  readonly tableElement!: HTMLDivElement;
+
+  @Ref('view')
+  readonly viewElement!: HTMLDivElement;
+
+  @Ref('header')
+  readonly headerElement!: HTMLDivElement;
+
+  @Ref('body')
+  readonly bodyElement!: HTMLDivElement;
 
   headers = ["name", "sport"];
   items = [
@@ -171,23 +180,31 @@ export default class GridView extends VueBase {
   cursorElement?: HTMLDivElement;
   cursorId = -1;
 
-  getHeaderDataElement(header: string) {
-    const index = this.headers.indexOf(header);
-    return this.table
-        .getElementsByClassName('grid-view--header')[0]
-        .getElementsByClassName('grid-view--header-row')[0]
-        .getElementsByClassName('grid-view--header-data')[index];
+  getHeaderRowElement() {
+    return this.headerElement.getElementsByClassName('grid-view--header-row')[0];
   }
 
-  onMouseDownHeader(event: MouseEvent, header: string) {
+  getHeaderDataElement(header: string) {
+    const index = this.headers.indexOf(header);
+    const headerRow = this.getHeaderRowElement()
+    return headerRow.getElementsByClassName('grid-view--header-data')[index];
+  }
+
+  getBodyRowElements() {
+    return this.bodyElement.getElementsByClassName('grid-view--body-row');
+  }
+
+  getLastRowElement() {
+    if (this.items.length == 0) {
+      return this.getHeaderRowElement();
+    }
+    return this.getBodyRowElements()[this.items.length - 1];
+  }
+
+  getColumnRect(header: string) {
     const element = this.getHeaderDataElement(header);
     if (!element) {
       throw Error('Not found header element');
-    }
-
-    const parentElement = this.table.parentElement;
-    if (!parentElement) {
-      throw Error('The parent node of the table could not be found');
     }
 
     this.draggingHeader = header;
@@ -195,21 +212,35 @@ export default class GridView extends VueBase {
     document.addEventListener('mouseup', this.onMouseUp);
 
     const elementRect = element.getBoundingClientRect();
-    const tableRect = this.table.getBoundingClientRect();
-    const parentRect = parentElement.getBoundingClientRect();
-    const offsetX = (elementRect.x - parentRect.x);
-    const offsetY = (elementRect.y - parentRect.y);
+    const tableRect = this.tableElement.getBoundingClientRect();
+    const viewRect = this.viewElement.getBoundingClientRect();
+    const lastRect = this.getLastRowElement().getBoundingClientRect();
 
+    const x = elementRect.x - viewRect.x;
+    const y = elementRect.y - viewRect.y;
+    const width = elementRect.width;
+    const height = lastRect.bottom - tableRect.top;
+    return {x, y, width, height};
+  }
+
+  onMouseDownHeader(event: MouseEvent, header: string) {
+    this.draggingHeader = header;
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('mouseup', this.onMouseUp);
+
+    const rect = this.getColumnRect(header)
     this.cursorElement = document.createElement('div');
     this.cursorElement.style.position = 'absolute';
-    this.cursorElement.style.left = `${offsetX}px`;
-    this.cursorElement.style.top = `${offsetY}px`;
-
-    this.cursorElement.style.width = `${elementRect.width}px`;
-    this.cursorElement.style.height = `${tableRect.height}px`;
+    this.cursorElement.style.left = `${rect.x}px`;
+    this.cursorElement.style.top = `${rect.y}px`;
+    this.cursorElement.style.width = `${rect.width}px`;
+    this.cursorElement.style.height = `${rect.height}px`;
     this.cursorElement.style.background = `#55000022`;
 
-    parentElement.insertBefore(this.cursorElement, this.table);
+    this.viewElement.insertBefore(this.cursorElement, this.tableElement);
+  }
+
+  onMouseDownBodyDrag(event: MouseEvent, item) {
   }
 
   onMouseMove() {
