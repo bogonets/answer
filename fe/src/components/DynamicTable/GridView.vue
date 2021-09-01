@@ -69,35 +69,24 @@ ko:
     </div>
 
     <div class="grid-view--table">
-      <div class="grid-view--table-header" :class="gridViewTableHeaderClass">
-        <div class="grid-view--table-header-row">
-          <div
-              class="grid-view--table-header-row-drag"
-              :class="gridViewTableDragClass"
-          ></div>
+      <div :class="gridViewHeaderClass">
+        <div class="grid-view--header-row">
+          <div :class="gridViewHeaderDragClass"></div>
 
-          <div
-              class="grid-view--table-header-row-index"
-              :class="gridViewTableHeaderRowDataClass"
-          >
+          <div :class="gridViewHeaderIndexClass">
             {{ $t('header.id') }}
           </div>
 
           <template v-for="header in headers">
-            <div
-                class="grid-view--table-header-row-data"
-                :class="gridViewTableHeaderRowDataClass"
-                :key="`${header}-data`"
-            >
+            <div :class="gridViewHeaderDataClass" :key="`${header}-data`">
               {{ header }}
             </div>
 
             <div :key="`${header}-divider`">
-              <v-divider vertical></v-divider>
             </div>
           </template>
 
-          <div class="grid-view--table-header-row-add">
+          <div :class="gridViewHeaderAddClass">
             <v-btn plain icon small @click="onClickAddHeader">
               <v-icon small>mdi-plus</v-icon>
             </v-btn>
@@ -105,18 +94,15 @@ ko:
         </div>
       </div>
 
-      <div class="grid-view--table-body" :class="gridViewTableBodyClass">
+      <div :class="gridViewBodyClass">
         <div
-            class="grid-view--table-body-row"
+            class="grid-view--body-row"
             v-for="item in items"
             :key="item.id"
             @mouseenter="onEnterRowItem($event, item)"
             @mouseleave="onLeaveRowItem($event, item)"
         >
-          <div
-              class="grid-view--table-body-row-drag"
-              :class="gridViewTableDragClass"
-          >
+          <div :class="gridViewBodyDragClass">
             <svg
                 v-show="isShowDragIcon(item)"
                 xmlns="http://www.w3.org/2000/svg"
@@ -128,16 +114,12 @@ ko:
             </svg>
           </div>
 
-          <div
-              class="grid-view--table-body-row-index"
-              :class="gridViewTableBodyRowDataClass"
-          >
+          <div :class="gridViewBodyIndexClass">
             {{ item.id }}
           </div>
 
           <div
-              class="grid-view--table-body-row-data"
-              :class="gridViewTableBodyRowDataClass"
+              :class="gridViewBodyDataClass"
               v-for="header in headers"
               :key="header"
               @click="onClickCell(item)"
@@ -146,8 +128,8 @@ ko:
           </div>
         </div>
 
-        <div class="grid-view--table-body-row">
-          <div class="grid-view--table-body-row-add">
+        <div class="grid-view--body-row">
+          <div class="grid-view--body-add">
             <v-btn plain icon small @click="onClickAddItem">
               <v-icon small>mdi-plus</v-icon>
             </v-btn>
@@ -191,48 +173,78 @@ export default class GridView extends VueBase {
     }
   }
 
-  get backgroundHeaderClass() {
-    return ['grey', `${this.brightness}-4`].join(' ');
-  }
+  // ------------
+  // Header class
+  // ------------
 
-  get outlineClass() {
-    return `outline-grey-${this.brightness}`;
-  }
-
-  get outlineDragClass() {
-    return `outline-drag-grey-${this.brightness}`;
-  }
-
-  get gridViewTableHeaderClass() {
+  get gridViewHeaderClass() {
     return [
-      this.backgroundHeaderClass,
+      'grey',
+      `${this.brightness}-4`,
+      'grid-view--header',
       'text-subtitle-2',
       'text--secondary',
     ].join(' ');
   }
 
-  get gridViewTableBodyClass() {
+  get gridViewHeaderDragClass() {
     return [
+      `outline-grey-${this.brightness}`,
+      'grid-view--header-drag',
+    ].join(' ');
+  }
+
+  get gridViewHeaderIndexClass() {
+    return [
+      `outline-grey-${this.brightness}`,
+      'grid-view--header-index',
+    ].join(' ');
+  }
+
+  get gridViewHeaderDataClass() {
+    return [
+      `outline-grey-${this.brightness}`,
+      'grid-view--header-data',
+    ].join(' ');
+  }
+
+  get gridViewHeaderAddClass() {
+    return [
+      `outline-grey-${this.brightness}`,
+      'grid-view--header-add',
+    ].join(' ');
+  }
+
+  // ----------
+  // Body class
+  // ----------
+
+  get gridViewBodyClass() {
+    return [
+      'grid-view--body',
       'text-body-2',
       'text--secondary',
     ].join(' ');
   }
 
-  get gridViewTableDragClass() {
+  get gridViewBodyDragClass() {
     return [
-      this.outlineDragClass
+      `outline-grey-${this.brightness}`,
+      'grid-view--body-drag',
     ].join(' ');
   }
 
-  get gridViewTableHeaderRowDataClass() {
+  get gridViewBodyIndexClass() {
     return [
-        this.outlineClass
+      `outline-grey-${this.brightness}`,
+      'grid-view--body-index',
     ].join(' ');
   }
 
-  get gridViewTableBodyRowDataClass() {
+  get gridViewBodyDataClass() {
     return [
-      this.outlineClass
+      `outline-grey-${this.brightness}`,
+      'grid-view--body-data',
     ].join(' ');
   }
 
@@ -279,10 +291,31 @@ $color-grey-lighten-4: '#F5F5F5';
 $color-grey-lighten-3: '#EEEEEE';
 $color-grey-lighten-2: '#E0E0E0';
 $color-grey-lighten-1: '#BDBDBD';
+
 $color-grey-darken-1: '#757575';
 $color-grey-darken-2: '#616161';
 $color-grey-darken-3: '#424242';
 $color-grey-darken-4: '#212121';
+
+.outline-grey-darken {
+  border-color: $color-grey-darken-2;
+}
+
+.outline-grey-lighten {
+  border-color: $color-grey-lighten-2;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+@mixin flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
 
 @mixin cell-outline-drag {
   border-top-width: 0;
@@ -301,39 +334,7 @@ $color-grey-darken-4: '#212121';
   border-bottom-style: solid;
 }
 
-.outline-drag-grey-darken {
-  @include cell-outline-drag;
-  border-color: $color-grey-darken-3;
-}
-
-.outline-drag-grey-lighten {
-  @include cell-outline-drag;
-  border-color: $color-grey-lighten-3;
-}
-
-.outline-grey-darken {
-  @include cell-outline;
-  border-color: $color-grey-darken-3;
-}
-
-.outline-grey-lighten {
-  @include cell-outline;
-  border-color: $color-grey-lighten-3;
-}
-
-@mixin flex-column {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-}
-
-@mixin flex-row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-}
-
-@mixin field-drag-centering {
+@mixin cell-drag-centering {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -342,29 +343,29 @@ $color-grey-darken-4: '#212121';
   align-items: center;
 }
 
-@mixin field-index-centering {
+@mixin cell-index-centering {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-content: center;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
 }
 
-@mixin field-data-centering {
+@mixin cell-data-centering {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
 }
 
-@mixin field-index-sizing {
+@mixin cell-index-sizing {
   padding: 0 8px;
-  min-width: 32px;
+  min-width: 40px;
   min-height: 32px;
 }
 
-@mixin field-data-sizing {
+@mixin cell-data-sizing {
   padding: 0 10px;
   min-width: 100px;
   min-height: 32px;
@@ -388,56 +389,65 @@ $color-grey-darken-4: '#212121';
   .grid-view--table {
     @include flex-column;
 
-    .grid-view--table-header {
+    .grid-view--header {
       @include flex-column;
 
-      .grid-view--table-header-row {
+      .grid-view--header-row {
         @include flex-row;
 
-        .grid-view--table-header-row-drag {
+        .grid-view--header-drag {
           @include drag-vertical-sizing;
+          @include cell-drag-centering;
+          @include cell-outline-drag;
         }
 
-        .grid-view--table-header-row-index {
-          @include field-index-sizing;
-          @include field-index-centering;
+        .grid-view--header-index {
+          @include cell-index-sizing;
+          @include cell-index-centering;
+          @include cell-outline;
         }
 
-        .grid-view--table-header-row-data {
-          @include field-data-sizing;
-          @include field-data-centering;
+        .grid-view--header-data {
+          @include cell-data-sizing;
+          @include cell-data-centering;
+          @include cell-outline;
         }
 
-        .grid-view--table-header-row-add {
+        .grid-view--header-add {
+          @include cell-data-centering;
         }
       }
     }
 
-    .grid-view--table-body {
+    .grid-view--body {
       @include flex-column;
 
-      .grid-view--table-body-row {
+      .grid-view--body-row {
         @include flex-row;
 
-        .grid-view--table-body-row-drag {
+        .grid-view--body-drag {
           @include drag-vertical-sizing;
           @include drag-vertical-coloring;
-          @include field-drag-centering;
+          @include cell-drag-centering;
+          @include cell-outline-drag;
 
           cursor: grab;
         }
 
-        .grid-view--table-body-row-index {
-          @include field-index-sizing;
-          @include field-index-centering;
+        .grid-view--body-index {
+          @include cell-index-sizing;
+          @include cell-index-centering;
+          @include cell-outline;
         }
 
-        .grid-view--table-body-row-data {
-          @include field-data-sizing;
-          @include field-data-centering;
+        .grid-view--body-data {
+          @include cell-data-sizing;
+          @include cell-data-centering;
+          @include cell-outline;
         }
 
-        .grid-view--table-body-row-add {
+        .grid-view--body-add {
+          @include cell-data-centering;
         }
       }
     }
