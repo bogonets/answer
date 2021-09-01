@@ -69,16 +69,16 @@ ko:
     </div>
 
     <div class="grid-view--table">
-      <div :class="gridViewHeaderClass">
+      <div class="grid-view--header">
         <div class="grid-view--header-row">
-          <div :class="gridViewHeaderDragClass"></div>
+          <div class="grid-view--header-drag"></div>
 
-          <div :class="gridViewHeaderIndexClass">
+          <div class="grid-view--header-index">
             {{ $t('header.id') }}
           </div>
 
           <template v-for="header in headers">
-            <div :class="gridViewHeaderDataClass" :key="`${header}-data`">
+            <div class="grid-view--header-data" :key="`${header}-data`">
               {{ header }}
             </div>
 
@@ -86,7 +86,7 @@ ko:
             </div>
           </template>
 
-          <div :class="gridViewHeaderAddClass">
+          <div class="grid-view--header-add">
             <v-btn plain icon small @click="onClickAddHeader">
               <v-icon small>mdi-plus</v-icon>
             </v-btn>
@@ -94,7 +94,7 @@ ko:
         </div>
       </div>
 
-      <div :class="gridViewBodyClass">
+      <div class="grid-view--body">
         <div
             class="grid-view--body-row"
             v-for="item in items"
@@ -102,9 +102,8 @@ ko:
             @mouseenter="onEnterRowItem($event, item)"
             @mouseleave="onLeaveRowItem($event, item)"
         >
-          <div :class="gridViewBodyDragClass">
+          <div class="grid-view--body-drag">
             <svg
-                v-show="isShowDragIcon(item)"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="8 0 8 24"
                 role="img"
@@ -114,12 +113,12 @@ ko:
             </svg>
           </div>
 
-          <div :class="gridViewBodyIndexClass">
+          <div class="grid-view--body-index">
             {{ item.id }}
           </div>
 
           <div
-              :class="gridViewBodyDataClass"
+              class="grid-view--body-data"
               v-for="header in headers"
               :key="header"
               @click="onClickCell(item)"
@@ -165,89 +164,6 @@ export default class GridView extends VueBase {
 
   cursorId = -1;
 
-  get brightness() {
-    if (this.$vuetify.theme.dark) {
-      return 'darken';
-    } else {
-      return 'lighten';
-    }
-  }
-
-  // ------------
-  // Header class
-  // ------------
-
-  get gridViewHeaderClass() {
-    return [
-      'grey',
-      `${this.brightness}-4`,
-      'grid-view--header',
-      'text-subtitle-2',
-      'text--secondary',
-    ].join(' ');
-  }
-
-  get gridViewHeaderDragClass() {
-    return [
-      `outline-grey-${this.brightness}`,
-      'grid-view--header-drag',
-    ].join(' ');
-  }
-
-  get gridViewHeaderIndexClass() {
-    return [
-      `outline-grey-${this.brightness}`,
-      'grid-view--header-index',
-    ].join(' ');
-  }
-
-  get gridViewHeaderDataClass() {
-    return [
-      `outline-grey-${this.brightness}`,
-      'grid-view--header-data',
-    ].join(' ');
-  }
-
-  get gridViewHeaderAddClass() {
-    return [
-      `outline-grey-${this.brightness}`,
-      'grid-view--header-add',
-    ].join(' ');
-  }
-
-  // ----------
-  // Body class
-  // ----------
-
-  get gridViewBodyClass() {
-    return [
-      'grid-view--body',
-      'text-body-2',
-      'text--secondary',
-    ].join(' ');
-  }
-
-  get gridViewBodyDragClass() {
-    return [
-      `outline-grey-${this.brightness}`,
-      'grid-view--body-drag',
-    ].join(' ');
-  }
-
-  get gridViewBodyIndexClass() {
-    return [
-      `outline-grey-${this.brightness}`,
-      'grid-view--body-index',
-    ].join(' ');
-  }
-
-  get gridViewBodyDataClass() {
-    return [
-      `outline-grey-${this.brightness}`,
-      'grid-view--body-data',
-    ].join(' ');
-  }
-
   isShowDragIcon(item) {
     return item.id == this.cursorId;
   }
@@ -274,11 +190,11 @@ export default class GridView extends VueBase {
   }
 
   onEnterRowItem(event, item) {
-    this.cursorId = item.id;
+    // this.cursorId = item.id;
   }
 
   onLeaveRowItem(event, item) {
-    this.cursorId = -1;
+    // this.cursorId = -1;
   }
 
   onClickCell(item) {
@@ -287,22 +203,74 @@ export default class GridView extends VueBase {
 </script>
 
 <style lang="scss" scoped>
-$color-grey-lighten-4: '#F5F5F5';
-$color-grey-lighten-3: '#EEEEEE';
-$color-grey-lighten-2: '#E0E0E0';
-$color-grey-lighten-1: '#BDBDBD';
+@import '~vuetify/src/styles/styles.sass';
 
-$color-grey-darken-1: '#757575';
-$color-grey-darken-2: '#616161';
-$color-grey-darken-3: '#424242';
-$color-grey-darken-4: '#212121';
+$color-grey: map-get($colors, 'grey');
+$color-grey-base: map-get($color-grey, 'base');
+$color-grey-lighten-5: map-get($color-grey, 'lighten-5');
+$color-grey-lighten-4: map-get($color-grey, 'lighten-4');
+$color-grey-lighten-3: map-get($color-grey, 'lighten-3');
+$color-grey-lighten-2: map-get($color-grey, 'lighten-2');
+$color-grey-lighten-1: map-get($color-grey, 'lighten-1');
+$color-grey-darken-1: map-get($color-grey, 'darken-1');
+$color-grey-darken-2: map-get($color-grey, 'darken-2');
+$color-grey-darken-3: map-get($color-grey, 'darken-3');
+$color-grey-darken-4: map-get($color-grey, 'darken-4');
 
-.outline-grey-darken {
-  border-color: $color-grey-darken-2;
+$light-background: map-get($material-light, 'background');
+$light-color: map-deep-get($material-light, 'text', 'secondary');
+
+$dark-background: map-get($material-dark, 'background');
+$dark-color: map-deep-get($material-dark, 'text', 'secondary');
+
+@mixin get-text-style($name) {
+  font-size: map-deep-get($headings, $name, 'size') !important;
+  font-weight: map-deep-get($headings, $name, 'weight');
+  line-height: map-deep-get($headings, $name, 'line-height');
+  letter-spacing: map-deep-get($headings, $name, 'letter-spacing') !important;
+  font-family: map-deep-get($headings, $name, 'font-family') !important;
 }
 
-.outline-grey-lighten {
-  border-color: $color-grey-lighten-2;
+@mixin text-subtitle-2 {
+  @include get-text-style('subtitle-2');
+}
+
+@mixin text-body-2 {
+  @include get-text-style('body-2');
+}
+
+@mixin font-bold {
+  font-weight: map-get($font-weights, 'bold');
+}
+
+.theme--light.v-application {
+  .grid-view {
+    background: $light-background;
+    color: $light-color;
+
+    .grid-view--header {
+      background: $color-grey-lighten-4;
+    }
+  }
+
+  .outline {
+    border-color: $color-grey-lighten-2;
+  }
+}
+
+.theme--dark.v-application {
+  .grid-view {
+    background: $dark-background;
+    color: $dark-color;
+
+    .grid-view--header {
+      background: $color-grey-darken-4;
+    }
+  }
+
+  .outline {
+    border-color: $color-grey-darken-2;
+  }
 }
 
 @mixin flex-column {
@@ -334,7 +302,7 @@ $color-grey-darken-4: '#212121';
   border-bottom-style: solid;
 }
 
-@mixin cell-drag-centering {
+@mixin cell-drag-aligning {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -343,7 +311,7 @@ $color-grey-darken-4: '#212121';
   align-items: center;
 }
 
-@mixin cell-index-centering {
+@mixin cell-index-aligning {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -352,7 +320,7 @@ $color-grey-darken-4: '#212121';
   align-items: center;
 }
 
-@mixin cell-data-centering {
+@mixin cell-data-aligning {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -391,36 +359,38 @@ $color-grey-darken-4: '#212121';
 
     .grid-view--header {
       @include flex-column;
+      @include text-subtitle-2;
 
       .grid-view--header-row {
         @include flex-row;
 
         .grid-view--header-drag {
           @include drag-vertical-sizing;
-          @include cell-drag-centering;
+          @include cell-drag-aligning;
           @include cell-outline-drag;
         }
 
         .grid-view--header-index {
           @include cell-index-sizing;
-          @include cell-index-centering;
+          @include cell-index-aligning;
           @include cell-outline;
         }
 
         .grid-view--header-data {
           @include cell-data-sizing;
-          @include cell-data-centering;
+          @include cell-data-aligning;
           @include cell-outline;
         }
 
         .grid-view--header-add {
-          @include cell-data-centering;
+          @include cell-data-aligning;
         }
       }
     }
 
     .grid-view--body {
       @include flex-column;
+      @include text-body-2;
 
       .grid-view--body-row {
         @include flex-row;
@@ -428,7 +398,7 @@ $color-grey-darken-4: '#212121';
         .grid-view--body-drag {
           @include drag-vertical-sizing;
           @include drag-vertical-coloring;
-          @include cell-drag-centering;
+          @include cell-drag-aligning;
           @include cell-outline-drag;
 
           cursor: grab;
@@ -436,24 +406,40 @@ $color-grey-darken-4: '#212121';
 
         .grid-view--body-index {
           @include cell-index-sizing;
-          @include cell-index-centering;
+          @include cell-index-aligning;
           @include cell-outline;
         }
 
         .grid-view--body-data {
           @include cell-data-sizing;
-          @include cell-data-centering;
+          @include cell-data-aligning;
           @include cell-outline;
         }
 
         .grid-view--body-add {
-          @include cell-data-centering;
+          @include cell-data-aligning;
         }
       }
     }
   }
 
   .grid-view--footer {
+  }
+}
+
+.grid-view .grid-view--table .grid-view--body .grid-view--body-row {
+  .grid-view--body-drag {
+    svg {
+      visibility: hidden;
+    }
+  }
+}
+
+.grid-view .grid-view--table .grid-view--body .grid-view--body-row:hover {
+  .grid-view--body-drag {
+    svg {
+      visibility: visible;
+    }
   }
 }
 
