@@ -68,7 +68,7 @@ ko:
       <v-divider></v-divider>
     </div>
 
-    <div class="grid-view--table">
+    <div class="grid-view--table" ref="table">
       <div class="grid-view--header">
         <div class="grid-view--header-row">
           <div class="grid-view--header-drag"></div>
@@ -78,7 +78,10 @@ ko:
           </div>
 
           <template v-for="header in headers">
-            <div class="grid-view--header-data" :key="`${header}-data`">
+            <div
+                class="grid-view--header-data" :key="`${header}-data`"
+                @mousedown="onMouseDownHeader($event, header)"
+            >
               {{ header }}
             </div>
 
@@ -143,7 +146,7 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component} from 'vue-property-decorator';
+import {Component, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {mdiDragVertical} from '@mdi/js';
 
@@ -153,6 +156,9 @@ export default class GridView extends VueBase {
     dragVertical: mdiDragVertical
   };
 
+  @Ref()
+  readonly table!: HTMLDivElement;
+
   headers = ["name", "sport"];
   items = [
     { id: 1, name: "Abby", sport: "basket" },
@@ -160,12 +166,59 @@ export default class GridView extends VueBase {
     { id: 3, name: "Courtenay", sport: "volley" },
     { id: 4, name: "David", sport: "rugby" }
   ];
-  dragging = false;
 
+  draggingHeader = '';
+  cursorElement?: HTMLDivElement;
   cursorId = -1;
 
-  isShowDragIcon(item) {
-    return item.id == this.cursorId;
+  getHeaderDataElement(header: string) {
+    const index = this.headers.indexOf(header);
+    return this.table
+        .getElementsByClassName('grid-view--header')[0]
+        .getElementsByClassName('grid-view--header-row')[0]
+        .getElementsByClassName('grid-view--header-data')[index];
+  }
+
+  onMouseDownHeader(event: MouseEvent, header: string) {
+    const element = this.getHeaderDataElement(header);
+    if (!element) {
+      throw Error('Not found header element');
+    }
+
+    const parentElement = this.table.parentElement;
+    if (!parentElement) {
+      throw Error('The parent node of the table could not be found');
+    }
+
+    this.draggingHeader = header;
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('mouseup', this.onMouseUp);
+
+    const elementRect = element.getBoundingClientRect();
+    const tableRect = this.table.getBoundingClientRect();
+    const parentRect = parentElement.getBoundingClientRect();
+    const offsetX = (elementRect.x - parentRect.x);
+    const offsetY = (elementRect.y - parentRect.y);
+
+    this.cursorElement = document.createElement('div');
+    this.cursorElement.style.position = 'absolute';
+    this.cursorElement.style.left = `${offsetX}px`;
+    this.cursorElement.style.top = `${offsetY}px`;
+
+    this.cursorElement.style.width = `${elementRect.width}px`;
+    this.cursorElement.style.height = `${tableRect.height}px`;
+    this.cursorElement.style.background = `#55000022`;
+
+    parentElement.insertBefore(this.cursorElement, this.table);
+  }
+
+  onMouseMove() {
+  }
+
+  onMouseUp() {
+    this.draggingHeader = '';
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('mouseup', this.onMouseUp);
   }
 
   onClickView() {
@@ -401,7 +454,9 @@ $dark-color: map-deep-get($material-dark, 'text', 'secondary');
           @include cell-drag-aligning;
           @include cell-outline-drag;
 
-          cursor: grab;
+          //cursor: grab;
+          //cursor: -webkit-grab;
+          //cursor:-moz-grab;
         }
 
         .grid-view--body-index {
