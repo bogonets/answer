@@ -134,12 +134,10 @@ ko:
           </div>
         </div>
 
-        <div class="grid-view--body-row">
-          <div class="grid-view--body-add">
-            <v-btn plain icon small @click="onClickAddItem">
-              <v-icon small>mdi-plus</v-icon>
-            </v-btn>
-          </div>
+        <div class="grid-view--body-add">
+          <v-btn plain icon small @click="onClickAddItem">
+            <v-icon small>mdi-plus</v-icon>
+          </v-btn>
         </div>
       </div>
     </div>
@@ -187,12 +185,12 @@ export default class GridView extends VueBase {
   @Ref('body')
   readonly bodyElement!: HTMLDivElement;
 
-  headers = ["name", "sport"];
+  headers = ['name', 'sport', 'rank'];
   items = [
-    { id: 1, name: "Abby", sport: "basket" },
-    { id: 2, name: "Brooke", sport: "foot" },
-    { id: 3, name: "Courtenay", sport: "volley" },
-    { id: 4, name: "David", sport: "rugby" }
+    { id: 1, name: 'Abby', sport: 'basket', rank: 10 },
+    { id: 2, name: 'Brooke', sport: 'foot', rank: 20 },
+    { id: 3, name: 'Courtenay', sport: 'volley', rank: 30 },
+    { id: 4, name: 'David', sport: 'rugby', rank: 40 }
   ];
 
   draggingCandidateHeader = NO_INDEX;
@@ -201,29 +199,52 @@ export default class GridView extends VueBase {
   draggingHeader = NO_INDEX;
   draggingBody = NO_INDEX;
 
+  columnRects = [] as Array<DOMRect>;
+  rowRects = [] as Array<DOMRect>;
+
+  insertLineElement?: HTMLDivElement;
   cursorElement?: HTMLDivElement;
   cursorId = NO_INDEX;
+  cursorX = 0;
+  cursorY = 0;
+
+  get headerDataElements() {
+    return this.headerRowElement.getElementsByClassName('grid-view--header-data');
+  }
+
+  get bodyRowElements() {
+    return this.bodyElement.getElementsByClassName('grid-view--body-row');
+  }
 
   getHeaderDataElement(index: number) {
-    return this.headerRowElement.getElementsByClassName('grid-view--header-data')[index];
+    return this.headerDataElements[index];
   }
 
   getBodyRowElement(index: number) {
-    return this.bodyElement.getElementsByClassName('grid-view--body-row')[index];
+    return this.bodyRowElements[index];
+  }
+
+  getColumnElement(index: number) {
+    if (index == 0) {
+      return this.headerIndexElement;
+    }
+    return this.getHeaderDataElement(index - 1);
+  }
+
+  getRowElement(index: number) {
+    if (index == 0) {
+      return this.headerRowElement;
+    } else {
+      return this.getBodyRowElement(index - 1);
+    }
   }
 
   getLastColumnElement() {
-    if (this.headers.length == 0) {
-      return this.headerIndexElement;
-    }
-    return this.getHeaderDataElement(this.headers.length - 1);
+    return this.getColumnElement(this.headers.length);
   }
 
   getLastRowElement() {
-    if (this.items.length == 0) {
-      return this.headerRowElement;
-    }
-    return this.getBodyRowElement(this.items.length - 1);
+    return this.getRowElement(this.items.length);
   }
 
   getColumnRect(index: number) {
@@ -258,51 +279,305 @@ export default class GridView extends VueBase {
     return {x, y, width, height} as Rect;
   }
 
-  createGhostElement(rect: Rect) {
+  getInsertColumnRect(lineIndex: number) {
+    console.assert(this.headers.length >= lineIndex && lineIndex >= 0);
+    const element = this.getColumnElement(lineIndex);
+
+    const elementRect = element.getBoundingClientRect();
+    const tableRect = this.tableElement.getBoundingClientRect();
+    const viewRect = this.viewElement.getBoundingClientRect();
+    const lastRect = this.getLastRowElement().getBoundingClientRect();
+
+    const x = elementRect.x - viewRect.x + elementRect.width - 1;
+    const y = elementRect.y - viewRect.y;
+    const width = 1;
+    const height = lastRect.bottom - tableRect.top;
+    return {x, y, width, height} as Rect;
+  }
+
+  getInsertRowRect(lineIndex: number) {
+    console.assert(this.items.length >= lineIndex && lineIndex >= 0);
+    const element = this.getRowElement(lineIndex);
+
+    const elementRect = element.getBoundingClientRect();
+    const tableRect = this.tableElement.getBoundingClientRect();
+    const viewRect = this.viewElement.getBoundingClientRect();
+    const lastRect = this.getLastColumnElement().getBoundingClientRect();
+
+    const x = elementRect.x - viewRect.x;
+    const y = elementRect.y - viewRect.y + (lastRect.bottom - tableRect.top) - 1;
+    const width = elementRect.width;
+    const height = 1;
+    return {x, y, width, height} as Rect;
+  }
+
+  createAbsoluteDivElement(rect: Rect) {
     const element = document.createElement('div');
     element.style.position = 'absolute';
     element.style.left = `${rect.x}px`;
     element.style.top = `${rect.y}px`;
     element.style.width = `${rect.width}px`;
     element.style.height = `${rect.height}px`;
+    return element;
+  }
+
+  createGhostElement(rect: Rect) {
+    const element = this.createAbsoluteDivElement(rect);
     element.classList.add('grid-view--ghost');
     return element;
   }
 
+  createInsertLineElement(rect: Rect) {
+    const element = this.createAbsoluteDivElement(rect);
+    element.classList.add('grid-view--insert-line');
+    return element;
+  }
+
+  getColumnRects() {
+    const result = [] as Array<DOMRect>;
+    for (const element of this.headerDataElements) {
+      result.push(element.getBoundingClientRect());
+    }
+    return result;
+  }
+
+  getRowRects() {
+    const result = [] as Array<DOMRect>;
+    for (const element of this.bodyRowElements) {
+      result.push(element.getBoundingClientRect());
+    }
+    return result;
+  }
+
   onMouseDownHeader(event: MouseEvent, index: number) {
     this.draggingCandidateHeader = index;
+    this.cursorX = event.clientX;
+    this.cursorY = event.clientY;
+    this.columnRects = this.getColumnRects();
     document.addEventListener('mousemove', this.onMouseMoveHeader);
     document.addEventListener('mouseup', this.onMouseUpHeader);
-
-    this.cursorElement = this.createGhostElement(this.getColumnRect(index));
-    this.viewElement.insertBefore(this.cursorElement, this.tableElement);
   }
 
   onMouseDownBodyDrag(event: MouseEvent, index: number) {
     this.draggingCandidateBody = index;
+    this.cursorX = event.clientX;
+    this.cursorY = event.clientY;
+    this.rowRects = this.getRowRects();
     document.addEventListener('mousemove', this.onMouseMoveBody);
     document.addEventListener('mouseup', this.onMouseUpBody);
+  }
 
-    this.cursorElement = this.createGhostElement(this.getRowRect(index));
+  moveCursorElement(event: MouseEvent) {
+    if (!this.cursorElement) {
+      throw Error('`cursorElement` must exist');
+    }
+
+    const dx = event.clientX - this.cursorX;
+    const dy = event.clientY - this.cursorY;
+    this.cursorElement.style.top = `${this.cursorElement.offsetTop + dy}px`;
+    this.cursorElement.style.left = `${this.cursorElement.offsetLeft + dx}px`;
+    this.cursorX = event.clientX;
+    this.cursorY = event.clientY;
+  }
+
+  getColumnIndexByCursor(clientX: number) {
+    if (this.columnRects.length == 0) {
+      return 0;
+    }
+    if (clientX < this.columnRects[0].left) {
+      return 0;
+    }
+    for (const [index, rect] of this.columnRects.entries()) {
+      if (rect.left <= clientX && clientX < rect.right) {
+        const half = (rect.width * 0.5);
+        if (clientX <= rect.left + half) {
+          return index;
+        } else {
+          return index + 1;
+        }
+      }
+    }
+    return this.columnRects.length;
+  }
+
+  getRowIndexByCursor(clientY: number) {
+    if (this.rowRects.length == 0) {
+      return 0;
+    }
+    if (clientY < this.rowRects[0].top) {
+      return 0;
+    }
+    for (const [index, rect] of this.rowRects.entries()) {
+      if (rect.top <= clientY && clientY < rect.bottom) {
+        const half = (rect.height * 0.5);
+        if (clientY <= rect.top + half) {
+          return index;
+        } else {
+          return index + 1;
+        }
+      }
+    }
+    return this.rowRects.length;
+  }
+
+  moveInsertLineElementOfColumn(index: number) {
+    if (!this.insertLineElement) {
+      throw Error('`insertLineElement` must exist');
+    }
+    const lineRect = this.getInsertColumnRect(index);
+    this.insertLineElement.style.left = `${lineRect.x}px`;
+  }
+
+  moveInsertLineElementOfRow(index: number) {
+    if (!this.insertLineElement) {
+      throw Error('`insertLineElement` must exist');
+    }
+    const lineRect = this.getInsertRowRect(index);
+    this.insertLineElement.style.top = `${lineRect.y}px`;
+  }
+
+  startHeaderDragging(index: number) {
+    const rect = this.getColumnRect(index);
+    const lineRect = this.getInsertColumnRect(index);
+    this.cursorElement = this.createGhostElement(rect);
+    this.insertLineElement = this.createInsertLineElement(lineRect);
     this.viewElement.insertBefore(this.cursorElement, this.tableElement);
+    this.viewElement.insertBefore(this.insertLineElement, this.tableElement);
+  }
+
+  startBodyDragging(index: number) {
+    const rect = this.getRowRect(index);
+    const lineRect = this.getInsertRowRect(index);
+    this.cursorElement = this.createGhostElement(rect);
+    this.insertLineElement = this.createInsertLineElement(lineRect);
+    this.viewElement.insertBefore(this.cursorElement, this.tableElement);
+    this.viewElement.insertBefore(this.insertLineElement, this.tableElement);
   }
 
   onMouseMoveHeader(event: MouseEvent) {
+    if (this.draggingHeader == NO_INDEX) {
+      console.assert(this.draggingCandidateHeader != NO_INDEX);
+      this.draggingHeader = this.draggingCandidateHeader;
+      this.startHeaderDragging(this.draggingHeader);
+    }
+
+    this.moveCursorElement(event);
+    const insertLineIndex = this.getColumnIndexByCursor(event.clientX);
+    this.moveInsertLineElementOfColumn(insertLineIndex);
   }
 
   onMouseMoveBody(event: MouseEvent) {
+    if (this.draggingBody == NO_INDEX) {
+      console.assert(this.draggingCandidateBody != NO_INDEX);
+      this.draggingBody = this.draggingCandidateBody;
+      this.startBodyDragging(this.draggingBody);
+    }
+
+    this.moveCursorElement(event);
+    const insertLineIndex = this.getRowIndexByCursor(event.clientY);
+    this.moveInsertLineElementOfRow(insertLineIndex);
+  }
+
+  moveHeader(selectIndex: number, insertIndex: number) {
+    if (selectIndex == insertIndex || selectIndex + 1 == insertIndex) {
+      return;
+    }
+
+    const buffer = [] as Array<string>;
+    const selectItem = this.headers[selectIndex];
+
+    for (let i = 0; i < this.headers.length; i++) {
+      if (i == insertIndex) {
+        buffer.push(selectItem);
+      }
+      if (i == selectIndex) {
+        continue;
+      }
+      buffer.push(this.headers[i]);
+    }
+    if (this.headers.length == insertIndex) {
+      buffer.push(selectItem);
+    }
+
+    this.headers = buffer;
+  }
+
+  moveBody(selectIndex: number, insertIndex: number) {
+    if (selectIndex == insertIndex || selectIndex + 1 == insertIndex) {
+      return;
+    }
+
+    const buffer = [] as Array<any>;
+    const selectItem = this.items[selectIndex];
+
+    for (let i = 0; i < this.items.length; i++) {
+      if (i == insertIndex) {
+        buffer.push(selectItem);
+      }
+      if (i == selectIndex) {
+        continue;
+      }
+      buffer.push(this.items[i]);
+    }
+    if (this.items.length == insertIndex) {
+      buffer.push(selectItem);
+    }
+
+    this.items = buffer;
+  }
+
+  endHeaderDragging(event: MouseEvent) {
+    const selectIndex = this.draggingHeader;
+    const insertIndex = this.getColumnIndexByCursor(event.clientX);
+    this.moveHeader(selectIndex, insertIndex);
+
+    if (this.insertLineElement) {
+      this.viewElement.removeChild(this.insertLineElement);
+    }
+    if (this.cursorElement) {
+      this.viewElement.removeChild(this.cursorElement);
+    }
+
+    this.draggingCandidateHeader = NO_INDEX;
+    this.draggingHeader = NO_INDEX;
+    this.insertLineElement = undefined;
+    this.cursorElement = undefined;
+  }
+
+  endBodyDragging(event: MouseEvent) {
+    const selectIndex = this.draggingBody;
+    const insertIndex = this.getRowIndexByCursor(event.clientY);
+    this.moveBody(selectIndex, insertIndex);
+
+    if (this.insertLineElement) {
+      this.viewElement.removeChild(this.insertLineElement);
+    }
+    if (this.cursorElement) {
+      this.viewElement.removeChild(this.cursorElement);
+    }
+
+    this.draggingCandidateBody = NO_INDEX;
+    this.draggingBody = NO_INDEX;
+    this.insertLineElement = undefined;
+    this.cursorElement = undefined;
   }
 
   onMouseUpHeader(event: MouseEvent) {
-    this.draggingHeader = NO_INDEX;
     document.removeEventListener('mousemove', this.onMouseMoveHeader);
     document.removeEventListener('mouseup', this.onMouseUpHeader);
+
+    if (this.draggingHeader != NO_INDEX) {
+      this.endHeaderDragging(event);
+    }
   }
 
   onMouseUpBody(event: MouseEvent) {
-    this.draggingBody = NO_INDEX;
     document.removeEventListener('mousemove', this.onMouseMoveBody);
     document.removeEventListener('mouseup', this.onMouseUpBody);
+
+    if (this.draggingBody != NO_INDEX) {
+      this.endBodyDragging(event);
+    }
   }
 
   onClickView() {
@@ -344,9 +619,24 @@ export default class GridView extends VueBase {
 
 $ghost-transparent: 0.2;
 
+$color-blue: map-get($colors, 'blue');
+$color-blue-accent-1: map-get($color-blue, 'accent-1');
+$color-blue-accent-2: map-get($color-blue, 'accent-2');
+
+$color-light-blue: map-get($colors, 'light-blue');
+$color-light-blue-accent-3: map-get($color-blue, 'accent-3');
+$color-light-blue-accent-4: map-get($color-blue, 'accent-4');
+
 .theme--light.v-application {
   .grid-view--ghost {
     background: rgba(map-get($shades, 'black'), $ghost-transparent);
+  }
+
+  .grid-view--insert-line {
+    background: $color-light-blue-accent-4;
+    border-width: 1px;
+    border-style: solid;
+    border-color: $color-light-blue-accent-3;
   }
 }
 
@@ -354,6 +644,19 @@ $ghost-transparent: 0.2;
   .grid-view--ghost {
     background: rgba(map-get($shades, 'white'), $ghost-transparent);
   }
+
+  .grid-view--insert-line {
+    background: $color-blue-accent-1;
+    border-width: 1px;
+    border-style: solid;
+    border-color: $color-blue-accent-2;
+  }
+}
+
+.grid-view--ghost {
+  position: absolute;
+  user-select: none;
+  cursor: grabbing;
 }
 </style>
 
@@ -556,7 +859,7 @@ $dark-color: map-deep-get($material-dark, 'text', 'secondary');
           @include cell-drag-aligning;
           @include cell-outline-drag;
 
-          //cursor: grab;
+          cursor: grab;
           //cursor: -webkit-grab;
           //cursor:-moz-grab;
         }
@@ -572,10 +875,9 @@ $dark-color: map-deep-get($material-dark, 'text', 'secondary');
           @include cell-data-aligning;
           @include cell-outline;
         }
+      }
 
-        .grid-view--body-add {
-          @include cell-data-aligning;
-        }
+      .grid-view--body-add {
       }
     }
   }
