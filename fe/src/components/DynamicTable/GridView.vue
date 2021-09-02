@@ -70,17 +70,18 @@ ko:
 
     <div class="grid-view--table" ref="table">
       <div class="grid-view--header" ref="header">
-        <div class="grid-view--header-row">
-          <div class="grid-view--header-drag"></div>
+        <div class="grid-view--header-row" ref="headerRow">
+          <div class="grid-view--header-drag">
+          </div>
 
-          <div class="grid-view--header-index">
+          <div class="grid-view--header-index" ref="headerIndex">
             {{ $t('header.id') }}
           </div>
 
-          <template v-for="header in headers">
+          <template v-for="[index, header] in headers.entries()">
             <div
                 class="grid-view--header-data" :key="`${header}-data`"
-                @mousedown="onMouseDownHeader($event, header)"
+                @mousedown="onMouseDownHeader($event, index)"
             >
               {{ header }}
             </div>
@@ -100,12 +101,15 @@ ko:
       <div class="grid-view--body" ref="body">
         <div
             class="grid-view--body-row"
-            v-for="item in items"
+            v-for="[index, item] in items.entries()"
             :key="item.id"
             @mouseenter="onEnterRowItem($event, item)"
             @mouseleave="onLeaveRowItem($event, item)"
         >
-          <div class="grid-view--body-drag">
+          <div
+              class="grid-view--body-drag"
+              @mousedown="onMouseDownBodyDrag($event, index)"
+          >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="8 0 8 24"
@@ -150,6 +154,15 @@ import {Component, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {mdiDragVertical} from '@mdi/js';
 
+const NO_INDEX = -1;
+
+interface Rect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 @Component
 export default class GridView extends VueBase {
   readonly icons = {
@@ -165,6 +178,12 @@ export default class GridView extends VueBase {
   @Ref('header')
   readonly headerElement!: HTMLDivElement;
 
+  @Ref('headerIndex')
+  readonly headerIndexElement!: HTMLDivElement;
+
+  @Ref('headerRow')
+  readonly headerRowElement!: HTMLDivElement;
+
   @Ref('body')
   readonly bodyElement!: HTMLDivElement;
 
@@ -176,40 +195,40 @@ export default class GridView extends VueBase {
     { id: 4, name: "David", sport: "rugby" }
   ];
 
-  draggingHeader = '';
+  draggingCandidateHeader = NO_INDEX;
+  draggingCandidateBody = NO_INDEX;
+
+  draggingHeader = NO_INDEX;
+  draggingBody = NO_INDEX;
+
   cursorElement?: HTMLDivElement;
-  cursorId = -1;
+  cursorId = NO_INDEX;
 
-  getHeaderRowElement() {
-    return this.headerElement.getElementsByClassName('grid-view--header-row')[0];
+  getHeaderDataElement(index: number) {
+    return this.headerRowElement.getElementsByClassName('grid-view--header-data')[index];
   }
 
-  getHeaderDataElement(header: string) {
-    const index = this.headers.indexOf(header);
-    const headerRow = this.getHeaderRowElement()
-    return headerRow.getElementsByClassName('grid-view--header-data')[index];
+  getBodyRowElement(index: number) {
+    return this.bodyElement.getElementsByClassName('grid-view--body-row')[index];
   }
 
-  getBodyRowElements() {
-    return this.bodyElement.getElementsByClassName('grid-view--body-row');
+  getLastColumnElement() {
+    if (this.headers.length == 0) {
+      return this.headerIndexElement;
+    }
+    return this.getHeaderDataElement(this.headers.length - 1);
   }
 
   getLastRowElement() {
     if (this.items.length == 0) {
-      return this.getHeaderRowElement();
+      return this.headerRowElement;
     }
-    return this.getBodyRowElements()[this.items.length - 1];
+    return this.getBodyRowElement(this.items.length - 1);
   }
 
-  getColumnRect(header: string) {
-    const element = this.getHeaderDataElement(header);
-    if (!element) {
-      throw Error('Not found header element');
-    }
-
-    this.draggingHeader = header;
-    document.addEventListener('mousemove', this.onMouseMove);
-    document.addEventListener('mouseup', this.onMouseUp);
+  getColumnRect(index: number) {
+    console.assert(this.headers.length > index && index >= 0);
+    const element = this.getHeaderDataElement(index);
 
     const elementRect = element.getBoundingClientRect();
     const tableRect = this.tableElement.getBoundingClientRect();
@@ -220,36 +239,70 @@ export default class GridView extends VueBase {
     const y = elementRect.y - viewRect.y;
     const width = elementRect.width;
     const height = lastRect.bottom - tableRect.top;
-    return {x, y, width, height};
+    return {x, y, width, height} as Rect;
   }
 
-  onMouseDownHeader(event: MouseEvent, header: string) {
-    this.draggingHeader = header;
-    document.addEventListener('mousemove', this.onMouseMove);
-    document.addEventListener('mouseup', this.onMouseUp);
+  getRowRect(index: number) {
+    console.assert(this.items.length > index && index >= 0);
+    const element = this.getBodyRowElement(index);
 
-    const rect = this.getColumnRect(header)
-    this.cursorElement = document.createElement('div');
-    this.cursorElement.style.position = 'absolute';
-    this.cursorElement.style.left = `${rect.x}px`;
-    this.cursorElement.style.top = `${rect.y}px`;
-    this.cursorElement.style.width = `${rect.width}px`;
-    this.cursorElement.style.height = `${rect.height}px`;
-    this.cursorElement.style.background = `#55000022`;
+    const elementRect = element.getBoundingClientRect();
+    const tableRect = this.tableElement.getBoundingClientRect();
+    const viewRect = this.viewElement.getBoundingClientRect();
+    const lastRect = this.getLastColumnElement().getBoundingClientRect();
 
+    const x = elementRect.x - viewRect.x;
+    const y = elementRect.y - viewRect.y;
+    const width = lastRect.right - tableRect.left;
+    const height = elementRect.height;
+    return {x, y, width, height} as Rect;
+  }
+
+  createGhostElement(rect: Rect) {
+    const element = document.createElement('div');
+    element.style.position = 'absolute';
+    element.style.left = `${rect.x}px`;
+    element.style.top = `${rect.y}px`;
+    element.style.width = `${rect.width}px`;
+    element.style.height = `${rect.height}px`;
+    element.classList.add('grid-view--ghost');
+    return element;
+  }
+
+  onMouseDownHeader(event: MouseEvent, index: number) {
+    this.draggingCandidateHeader = index;
+    document.addEventListener('mousemove', this.onMouseMoveHeader);
+    document.addEventListener('mouseup', this.onMouseUpHeader);
+
+    this.cursorElement = this.createGhostElement(this.getColumnRect(index));
     this.viewElement.insertBefore(this.cursorElement, this.tableElement);
   }
 
-  onMouseDownBodyDrag(event: MouseEvent, item) {
+  onMouseDownBodyDrag(event: MouseEvent, index: number) {
+    this.draggingCandidateBody = index;
+    document.addEventListener('mousemove', this.onMouseMoveBody);
+    document.addEventListener('mouseup', this.onMouseUpBody);
+
+    this.cursorElement = this.createGhostElement(this.getRowRect(index));
+    this.viewElement.insertBefore(this.cursorElement, this.tableElement);
   }
 
-  onMouseMove() {
+  onMouseMoveHeader(event: MouseEvent) {
   }
 
-  onMouseUp() {
-    this.draggingHeader = '';
-    document.removeEventListener('mousemove', this.onMouseMove);
-    document.removeEventListener('mouseup', this.onMouseUp);
+  onMouseMoveBody(event: MouseEvent) {
+  }
+
+  onMouseUpHeader(event: MouseEvent) {
+    this.draggingHeader = NO_INDEX;
+    document.removeEventListener('mousemove', this.onMouseMoveHeader);
+    document.removeEventListener('mouseup', this.onMouseUpHeader);
+  }
+
+  onMouseUpBody(event: MouseEvent) {
+    this.draggingBody = NO_INDEX;
+    document.removeEventListener('mousemove', this.onMouseMoveBody);
+    document.removeEventListener('mouseup', this.onMouseUpBody);
   }
 
   onClickView() {
@@ -285,6 +338,24 @@ export default class GridView extends VueBase {
   }
 }
 </script>
+
+<style lang="scss">
+@import '~vuetify/src/styles/styles.sass';
+
+$ghost-transparent: 0.2;
+
+.theme--light.v-application {
+  .grid-view--ghost {
+    background: rgba(map-get($shades, 'black'), $ghost-transparent);
+  }
+}
+
+.theme--dark.v-application {
+  .grid-view--ghost {
+    background: rgba(map-get($shades, 'white'), $ghost-transparent);
+  }
+}
+</style>
 
 <style lang="scss" scoped>
 @import '~vuetify/src/styles/styles.sass';
