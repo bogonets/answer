@@ -1,154 +1,88 @@
 <i18n lang="yaml">
 en:
-  tools:
-    tables: "Tables"
-    views: "Views"
-    filter: "Filter"
-    sort: "Sort"
-    hide: "Hide Fields"
   header:
     id: "#"
 
 ko:
-  tools:
-    tables: "테이블"
-    views: "뷰"
-    filter: "필터"
-    sort: "정렬"
-    hide: "숨김"
   header:
     id: "#"
 </i18n>
 
 <template>
-  <div class="grid-view" ref="view">
-    <div class="grid-view--toolbar">
-      <v-toolbar dense flat>
-        <v-btn plain small @click="onClickView">
-          <v-icon left>
-            mdi-table
-          </v-icon>
-          {{ $t('tools.tables') }}
-        </v-btn>
-
-        <v-btn plain small @click="onClickView">
-          <v-icon left>
-            mdi-view-grid
-          </v-icon>
-          {{ $t('tools.views') }}
-        </v-btn>
-
-        <v-btn plain small @click="onClickFilter">
-          <v-icon left>
-            mdi-filter
-          </v-icon>
-          {{ $t('tools.filter') }}
-        </v-btn>
-
-        <v-btn plain small @click="onClickSort">
-          <v-icon left>
-            mdi-sort
-          </v-icon>
-          {{ $t('tools.sort') }}
-        </v-btn>
-
-        <v-btn plain small @click="onClickHide">
-          <v-icon left>
-            mdi-eye-off
-          </v-icon>
-          {{ $t('tools.hide') }}
-        </v-btn>
-
-        <v-btn icon plain small @click="onClickMore">
-          <v-icon>
-            mdi-dots-horizontal
-          </v-icon>
-        </v-btn>
-      </v-toolbar>
-      <v-divider></v-divider>
-    </div>
-
-    <div class="grid-view--table" ref="table">
-      <div class="grid-view--header" ref="header">
-        <div class="grid-view--header-row" ref="headerRow">
-          <div class="grid-view--header-drag">
-          </div>
-
-          <div class="grid-view--header-index" ref="headerIndex">
-            {{ $t('header.id') }}
-          </div>
-
-          <template v-for="[index, header] in headers.entries()">
-            <div class="grid-view--header-data" :key="`${header}-data`">
-              <div
-                  class="grid-view--header-data-content"
-                  @mousedown="onMouseDownHeader($event, index)"
-              >
-                {{ header }}
-              </div>
-
-              <div
-                  class="grid-view--header-data-resize"
-                  :key="`${header}-divider`"
-                  @mousedown="onMouseDownHeaderResize($event, index)"
-              >
-              </div>
-            </div>
-          </template>
-
-          <div class="grid-view--header-add">
-            <v-btn plain icon small @click="onClickAddHeader">
-              <v-icon small>mdi-plus</v-icon>
-            </v-btn>
-          </div>
+  <div class="grid-view" ref="table">
+    <div class="grid-view--header" ref="header">
+      <div class="grid-view--header-row" ref="headerRow">
+        <div class="grid-view--header-drag">
         </div>
-      </div>
 
-      <div class="grid-view--body" ref="body">
-        <div
-            class="grid-view--body-row"
-            v-for="[index, item] in items.entries()"
-            :key="item.id"
-            @mouseenter="onEnterRowItem($event, item)"
-            @mouseleave="onLeaveRowItem($event, item)"
-        >
-          <div
-              class="grid-view--body-drag"
-              @mousedown="onMouseDownBodyDrag($event, index)"
-          >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="8 0 8 24"
-                role="img"
-                aria-hidden="true"
+        <div class="grid-view--header-index" ref="headerIndex">
+          {{ $t('header.id') }}
+        </div>
+
+        <template v-for="[index, header] in headers.entries()">
+          <div class="grid-view--header-data" :key="`${header}-data`">
+            <div
+                class="grid-view--header-data-content"
+                @mousedown="onMouseDownHeader($event, index)"
             >
-              <path :d="icons.dragVertical"></path>
-            </svg>
-          </div>
+              {{ header }}
+            </div>
 
-          <div class="grid-view--body-index">
-            {{ item.id }}
+            <div
+                class="grid-view--header-data-resize"
+                :key="`${header}-divider`"
+                @mousedown="onMouseDownHeaderResize($event, index)"
+            >
+            </div>
           </div>
+        </template>
 
-          <div
-              class="grid-view--body-data"
-              v-for="header in headers"
-              :key="header"
-              @click="onClickCell(item)"
-          >
-            {{ item[header] }}
-          </div>
-        </div>
-
-        <div class="grid-view--body-add">
-          <v-btn plain icon small @click="onClickAddItem">
+        <div class="grid-view--header-add">
+          <v-btn plain icon small @click="onClickAddHeader">
             <v-icon small>mdi-plus</v-icon>
           </v-btn>
         </div>
       </div>
     </div>
 
-    <div class="grid-view--footer">
+    <div class="grid-view--body" ref="body">
+      <div
+          class="grid-view--body-row"
+          v-for="[index, item] in items.entries()"
+          :key="item.id"
+      >
+        <div
+            class="grid-view--body-drag"
+            @mousedown="onMouseDownBodyDrag($event, index)"
+        >
+          <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="8 0 8 24"
+              role="img"
+              aria-hidden="true"
+          >
+            <path :d="icons.dragVertical"></path>
+          </svg>
+        </div>
+
+        <div class="grid-view--body-index">
+          {{ item.id }}
+        </div>
+
+        <div
+            class="grid-view--body-data"
+            v-for="header in headers"
+            :key="header"
+        >
+          {{ item[header] }}
+        </div>
+      </div>
+
+      <div class="grid-view--body-add">
+        <v-btn plain icon small @click="onClickAddItem">
+          <v-icon small>mdi-plus</v-icon>
+        </v-btn>
+      </div>
     </div>
   </div>
 </template>
@@ -175,9 +109,6 @@ export default class GridView extends VueBase {
 
   @Ref('table')
   readonly tableElement!: HTMLDivElement;
-
-  @Ref('view')
-  readonly viewElement!: HTMLDivElement;
 
   @Ref('header')
   readonly headerElement!: HTMLDivElement;
@@ -287,11 +218,10 @@ export default class GridView extends VueBase {
 
     const elementRect = element.getBoundingClientRect();
     const tableRect = this.tableElement.getBoundingClientRect();
-    const viewRect = this.viewElement.getBoundingClientRect();
     const lastRect = this.getLastRowElement().getBoundingClientRect();
 
-    const x = elementRect.x - viewRect.x;
-    const y = elementRect.y - viewRect.y;
+    const x = elementRect.x - tableRect.x;
+    const y = elementRect.y - tableRect.y;
     const width = elementRect.width;
     const height = lastRect.bottom - tableRect.top;
     return {x, y, width, height} as Rect;
@@ -303,11 +233,10 @@ export default class GridView extends VueBase {
 
     const elementRect = element.getBoundingClientRect();
     const tableRect = this.tableElement.getBoundingClientRect();
-    const viewRect = this.viewElement.getBoundingClientRect();
     const lastRect = this.getLastColumnElement().getBoundingClientRect();
 
-    const x = elementRect.x - viewRect.x;
-    const y = elementRect.y - viewRect.y;
+    const x = elementRect.x - tableRect.x;
+    const y = elementRect.y - tableRect.y;
     const width = lastRect.right - tableRect.left;
     const height = elementRect.height;
     return {x, y, width, height} as Rect;
@@ -319,11 +248,10 @@ export default class GridView extends VueBase {
 
     const elementRect = element.getBoundingClientRect();
     const tableRect = this.tableElement.getBoundingClientRect();
-    const viewRect = this.viewElement.getBoundingClientRect();
     const lastRect = this.getLastRowElement().getBoundingClientRect();
 
-    const x = elementRect.x - viewRect.x + elementRect.width - 1;
-    const y = elementRect.y - viewRect.y;
+    const x = elementRect.x - tableRect.x + elementRect.width - 1;
+    const y = elementRect.y - tableRect.y;
     const width = 1;
     const height = lastRect.bottom - tableRect.top;
     return {x, y, width, height} as Rect;
@@ -335,11 +263,10 @@ export default class GridView extends VueBase {
 
     const elementRect = element.getBoundingClientRect();
     const tableRect = this.tableElement.getBoundingClientRect();
-    const viewRect = this.viewElement.getBoundingClientRect();
     const lastRect = this.getLastColumnElement().getBoundingClientRect();
 
-    const x = elementRect.x - viewRect.x;
-    const y = elementRect.y - viewRect.y + (lastRect.bottom - tableRect.top) - 1;
+    const x = elementRect.x - tableRect.x;
+    const y = elementRect.y - tableRect.y + (lastRect.bottom - tableRect.top) - 1;
     const width = elementRect.width;
     const height = 1;
     return {x, y, width, height} as Rect;
@@ -475,8 +402,8 @@ export default class GridView extends VueBase {
     const lineRect = this.getInsertColumnRect(index);
     this.cursorElement = this.createGhostElement(rect);
     this.insertLineElement = this.createInsertLineElement(lineRect);
-    this.viewElement.insertBefore(this.cursorElement, this.tableElement);
-    this.viewElement.insertBefore(this.insertLineElement, this.tableElement);
+    this.tableElement.insertBefore(this.cursorElement, null);
+    this.tableElement.insertBefore(this.insertLineElement, null);
   }
 
   startBodyDragging(index: number) {
@@ -484,8 +411,8 @@ export default class GridView extends VueBase {
     const lineRect = this.getInsertRowRect(index);
     this.cursorElement = this.createGhostElement(rect);
     this.insertLineElement = this.createInsertLineElement(lineRect);
-    this.viewElement.insertBefore(this.cursorElement, this.tableElement);
-    this.viewElement.insertBefore(this.insertLineElement, this.tableElement);
+    this.tableElement.insertBefore(this.cursorElement, null);
+    this.tableElement.insertBefore(this.insertLineElement, null);
   }
 
   onMouseMoveHeader(event: MouseEvent) {
@@ -566,10 +493,10 @@ export default class GridView extends VueBase {
     this.moveHeader(selectIndex, insertIndex);
 
     if (this.insertLineElement) {
-      this.viewElement.removeChild(this.insertLineElement);
+      this.tableElement.removeChild(this.insertLineElement);
     }
     if (this.cursorElement) {
-      this.viewElement.removeChild(this.cursorElement);
+      this.tableElement.removeChild(this.cursorElement);
     }
 
     this.draggingCandidateHeader = NO_INDEX;
@@ -584,10 +511,10 @@ export default class GridView extends VueBase {
     this.moveBody(selectIndex, insertIndex);
 
     if (this.insertLineElement) {
-      this.viewElement.removeChild(this.insertLineElement);
+      this.tableElement.removeChild(this.insertLineElement);
     }
     if (this.cursorElement) {
-      this.viewElement.removeChild(this.cursorElement);
+      this.tableElement.removeChild(this.cursorElement);
     }
 
     this.draggingCandidateBody = NO_INDEX;
@@ -673,36 +600,10 @@ export default class GridView extends VueBase {
     document.removeEventListener('mouseup', this.onMouseUpHeaderResize);
   }
 
-  onClickView() {
-  }
-
-  onClickFilter() {
-  }
-
-  onClickSort() {
-  }
-
-  onClickHide() {
-  }
-
-  onClickMore() {
-  }
-
   onClickAddHeader() {
   }
 
   onClickAddItem() {
-  }
-
-  onEnterRowItem(event, item) {
-    // this.cursorId = item.id;
-  }
-
-  onLeaveRowItem(event, item) {
-    // this.cursorId = -1;
-  }
-
-  onClickCell(item) {
   }
 }
 </script>
@@ -917,105 +818,96 @@ $color-blue-accent-4: map-deep-get($colors, 'blue', 'accent-4');
 
 .grid-view {
   @include flex-column;
+  position: relative; // It is necessary because 'div', which is 'absolute', is added.
 
-  .grid-view--toolbar {
-  }
-
-  .grid-view--table {
+  .grid-view--header {
     @include flex-column;
+    @include text-subtitle-2;
+    user-select: none;
 
-    .grid-view--header {
-      @include flex-column;
-      @include text-subtitle-2;
-      user-select: none;
+    .grid-view--header-row {
+      @include flex-row;
 
-      .grid-view--header-row {
-        @include flex-row;
-
-        .grid-view--header-drag {
-          @include drag-vertical-sizing;
-          @include cell-drag-aligning;
-          @include cell-outline-drag;
-        }
-
-        .grid-view--header-index {
-          @include cell-index-sizing;
-          @include cell-index-aligning;
-          @include cell-outline;
-        }
-
-        .grid-view--header-data {
-          @include cell-header-data-sizing;
-          @include cell-header-data-aligning;
-          @include cell-outline;
-
-          .grid-view--header-data-content {
-            @include cell-data-aligning;
-
-            padding-left: 8px;
-            width: 100%;
-            height: 100%;
-          }
-
-          .grid-view--header-data-resize {
-            width: 8px;
-            height: 29px;
-            border-radius: 6px;
-          }
-
-          .grid-view--header-data-resize:hover {
-            cursor: col-resize;
-            background: $color-blue-accent-4;
-          }
-        }
-
-        .grid-view--header-add {
-          @include cell-data-aligning;
-
-          margin-left: 4px;
-        }
+      .grid-view--header-drag {
+        @include drag-vertical-sizing;
+        @include cell-drag-aligning;
+        @include cell-outline-drag;
       }
-    }
 
-    .grid-view--body {
-      @include flex-column;
-      @include text-body-2;
+      .grid-view--header-index {
+        @include cell-index-sizing;
+        @include cell-index-aligning;
+        @include cell-outline;
+      }
 
-      .grid-view--body-row {
-        @include flex-row;
+      .grid-view--header-data {
+        @include cell-header-data-sizing;
+        @include cell-header-data-aligning;
+        @include cell-outline;
 
-        .grid-view--body-drag {
-          @include drag-vertical-sizing;
-          @include drag-vertical-coloring;
-          @include cell-drag-aligning;
-          @include cell-outline-drag;
-
-          cursor: grab;
-          //cursor: -webkit-grab;
-          //cursor:-moz-grab;
-        }
-
-        .grid-view--body-index {
-          @include cell-index-sizing;
-          @include cell-index-aligning;
-          @include cell-outline;
-        }
-
-        .grid-view--body-data {
-          @include cell-data-sizing;
+        .grid-view--header-data-content {
           @include cell-data-aligning;
-          @include cell-outline;
+
+          padding-left: 8px;
+          width: 100%;
+          height: 100%;
+        }
+
+        .grid-view--header-data-resize {
+          width: 8px;
+          height: 29px;
+          border-radius: 6px;
+        }
+
+        .grid-view--header-data-resize:hover {
+          cursor: col-resize;
+          background: $color-blue-accent-4;
         }
       }
 
-      .grid-view--body-add {
-        margin-top: 4px;
+      .grid-view--header-add {
+        @include cell-data-aligning;
+
         margin-left: 4px;
       }
     }
   }
 
-  .grid-view--footer {
+  .grid-view--body {
+    @include flex-column;
+    @include text-body-2;
+
+    .grid-view--body-row {
+      @include flex-row;
+
+      .grid-view--body-drag {
+        @include drag-vertical-sizing;
+        @include drag-vertical-coloring;
+        @include cell-drag-aligning;
+        @include cell-outline-drag;
+
+        cursor: grab;
+        //cursor: -webkit-grab;
+        //cursor:-moz-grab;
+      }
+
+      .grid-view--body-index {
+        @include cell-index-sizing;
+        @include cell-index-aligning;
+        @include cell-outline;
+      }
+
+      .grid-view--body-data {
+        @include cell-data-sizing;
+        @include cell-data-aligning;
+        @include cell-outline;
+      }
+    }
+
+    .grid-view--body-add {
+      margin-top: 4px;
+      margin-left: 4px;
+    }
   }
 }
 
