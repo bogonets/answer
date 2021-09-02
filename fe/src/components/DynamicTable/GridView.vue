@@ -79,14 +79,20 @@ ko:
           </div>
 
           <template v-for="[index, header] in headers.entries()">
-            <div
-                class="grid-view--header-data" :key="`${header}-data`"
-                @mousedown="onMouseDownHeader($event, index)"
-            >
-              {{ header }}
-            </div>
+            <div class="grid-view--header-data" :key="`${header}-data`">
+              <div
+                  class="grid-view--header-data-content"
+                  @mousedown="onMouseDownHeader($event, index)"
+              >
+                {{ header }}
+              </div>
 
-            <div :key="`${header}-divider`">
+              <div
+                  class="grid-view--header-data-resize"
+                  :key="`${header}-divider`"
+                  @mousedown="onMouseDownHeaderResize($event, index)"
+              >
+              </div>
             </div>
           </template>
 
@@ -186,6 +192,20 @@ export default class GridView extends VueBase {
   readonly bodyElement!: HTMLDivElement;
 
   headers = ['name', 'sport', 'rank'];
+  sizes = {
+    name: {
+      width: 0,
+      height: 0,
+    },
+    sport: {
+      width: 200,
+      height: 0,
+    },
+    rank: {
+      width: 300,
+      height: 0,
+    },
+  };
   items = [
     { id: 1, name: 'Abby', sport: 'basket', rank: 10 },
     { id: 2, name: 'Brooke', sport: 'foot', rank: 20 },
@@ -208,6 +228,14 @@ export default class GridView extends VueBase {
   cursorX = 0;
   cursorY = 0;
 
+  mounted() {
+    for (let i = 0; i < this.headers.length; ++i) {
+      const header = this.headers[i];
+      const size = this.sizes[header] ?? {width: 0, height: 0};
+      this.resizeColumn(size.width, i);
+    }
+  }
+
   get headerDataElements() {
     return this.headerRowElement.getElementsByClassName('grid-view--header-data');
   }
@@ -217,11 +245,17 @@ export default class GridView extends VueBase {
   }
 
   getHeaderDataElement(index: number) {
-    return this.headerDataElements[index];
+    return this.headerDataElements[index] as HTMLDivElement;
   }
 
   getBodyRowElement(index: number) {
-    return this.bodyRowElements[index];
+    return this.bodyRowElements[index] as HTMLDivElement;
+  }
+
+  getBodyRowDataElement(rowIndex: number, columnIndex: number) {
+    const row = this.getBodyRowElement(rowIndex);
+    const data = row.getElementsByClassName('grid-view--body-data');
+    return data[columnIndex] as HTMLDivElement;
   }
 
   getColumnElement(index: number) {
@@ -486,7 +520,7 @@ export default class GridView extends VueBase {
     const buffer = [] as Array<string>;
     const selectItem = this.headers[selectIndex];
 
-    for (let i = 0; i < this.headers.length; i++) {
+    for (let i = 0; i < this.headers.length; ++i) {
       if (i == insertIndex) {
         buffer.push(selectItem);
       }
@@ -510,7 +544,7 @@ export default class GridView extends VueBase {
     const buffer = [] as Array<any>;
     const selectItem = this.items[selectIndex];
 
-    for (let i = 0; i < this.items.length; i++) {
+    for (let i = 0; i < this.items.length; ++i) {
       if (i == insertIndex) {
         buffer.push(selectItem);
       }
@@ -578,6 +612,65 @@ export default class GridView extends VueBase {
     if (this.draggingBody != NO_INDEX) {
       this.endBodyDragging(event);
     }
+  }
+
+  // ------
+  // Resize
+  // ------
+
+  resizeCandidateHeader = NO_INDEX;
+  resizeHeader = NO_INDEX;
+  saveCursorX = 0;
+  saveWidth = 0;
+
+  onMouseDownHeaderResize(event: MouseEvent, index: number) {
+    this.resizeCandidateHeader = index;
+    this.saveCursorX = event.clientX;
+    const headerDataElement = this.getHeaderDataElement(index);
+    const headerDataRect = headerDataElement.getBoundingClientRect();
+    this.saveWidth = headerDataRect.width;
+    document.addEventListener('mousemove', this.onMouseMoveHeaderResize);
+    document.addEventListener('mouseup', this.onMouseUpHeaderResize);
+  }
+
+  getResizeWidth(event: MouseEvent) {
+    return this.saveWidth + (event.clientX - this.saveCursorX);
+  }
+
+  resizeColumn(width: number, index: number) {
+    const widthPixel = `${width}px`;
+    const headerElement = this.getHeaderDataElement(index);
+    headerElement.style.width = widthPixel;
+
+    for (let i = 0; i < this.items.length; ++i) {
+      const elem = this.getBodyRowDataElement(i, index);
+      elem.style.width = widthPixel;
+    }
+  }
+
+  onMouseMoveHeaderResize(event: MouseEvent) {
+    if (this.resizeHeader == NO_INDEX) {
+      console.assert(this.resizeCandidateHeader != NO_INDEX);
+      this.resizeHeader = this.resizeCandidateHeader;
+    }
+    const width = this.getResizeWidth(event);
+    this.resizeColumn(width, this.resizeHeader);
+  }
+
+  onMouseUpHeaderResize(event: MouseEvent) {
+    if (this.resizeHeader != NO_INDEX) {
+      const width = this.getResizeWidth(event);
+      this.resizeColumn(width, this.resizeHeader);
+
+      const index = this.resizeHeader;
+      const header = this.headers[index];
+      this.sizes[header].width = width;
+
+      this.resizeCandidateHeader = NO_INDEX;
+      this.resizeHeader = NO_INDEX;
+    }
+    document.removeEventListener('mousemove', this.onMouseMoveHeaderResize);
+    document.removeEventListener('mouseup', this.onMouseUpHeaderResize);
   }
 
   onClickView() {
@@ -681,6 +774,8 @@ $light-color: map-deep-get($material-light, 'text', 'secondary');
 $dark-background: map-get($material-dark, 'background');
 $dark-color: map-deep-get($material-dark, 'text', 'secondary');
 
+$color-blue-accent-4: map-deep-get($colors, 'blue', 'accent-4');
+
 @mixin get-text-style($name) {
   font-size: map-deep-get($headings, $name, 'size') !important;
   font-weight: map-deep-get($headings, $name, 'weight');
@@ -769,6 +864,14 @@ $dark-color: map-deep-get($material-dark, 'text', 'secondary');
   align-items: center;
 }
 
+@mixin cell-header-data-aligning {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
 @mixin cell-index-aligning {
   display: flex;
   flex-direction: row;
@@ -783,6 +886,12 @@ $dark-color: map-deep-get($material-dark, 'text', 'secondary');
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
+}
+
+@mixin cell-header-data-sizing {
+  padding: 0;
+  min-width: 100px;
+  min-height: 32px;
 }
 
 @mixin cell-index-sizing {
@@ -818,6 +927,7 @@ $dark-color: map-deep-get($material-dark, 'text', 'secondary');
     .grid-view--header {
       @include flex-column;
       @include text-subtitle-2;
+      user-select: none;
 
       .grid-view--header-row {
         @include flex-row;
@@ -835,13 +945,34 @@ $dark-color: map-deep-get($material-dark, 'text', 'secondary');
         }
 
         .grid-view--header-data {
-          @include cell-data-sizing;
-          @include cell-data-aligning;
+          @include cell-header-data-sizing;
+          @include cell-header-data-aligning;
           @include cell-outline;
+
+          .grid-view--header-data-content {
+            @include cell-data-aligning;
+
+            padding-left: 8px;
+            width: 100%;
+            height: 100%;
+          }
+
+          .grid-view--header-data-resize {
+            width: 8px;
+            height: 29px;
+            border-radius: 6px;
+          }
+
+          .grid-view--header-data-resize:hover {
+            cursor: col-resize;
+            background: $color-blue-accent-4;
+          }
         }
 
         .grid-view--header-add {
           @include cell-data-aligning;
+
+          margin-left: 4px;
         }
       }
     }
@@ -878,6 +1009,8 @@ $dark-color: map-deep-get($material-dark, 'text', 'secondary');
       }
 
       .grid-view--body-add {
+        margin-top: 4px;
+        margin-left: 4px;
       }
     }
   }
@@ -901,29 +1034,4 @@ $dark-color: map-deep-get($material-dark, 'text', 'secondary');
     }
   }
 }
-
-//.flip-list-move {
-//  transition: transform 0.5s;
-//}
-//
-//.no-move {
-//  transition: transform 0s;
-//}
-//
-//.ghost {
-//  opacity: 0.5;
-//  background: #c8ebfb;
-//}
-//
-//.list-group {
-//  min-height: 20px;
-//}
-//
-//.list-group-item {
-//  cursor: move;
-//}
-//
-//.list-group-item i {
-//  cursor: pointer;
-//}
 </style>

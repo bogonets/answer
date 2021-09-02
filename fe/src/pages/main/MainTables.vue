@@ -1,9 +1,7 @@
 <template>
   <div>
-    <view-port>
-      <grid-view>
-      </grid-view>
-    </view-port>
+    <grid-view>
+    </grid-view>
   </div>
 </template>
 
