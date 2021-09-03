@@ -129,6 +129,7 @@ export default class GridView extends VueBase {
   readonly bodyElement!: HTMLDivElement;
 
   headers = ['name', 'sport', 'rank'];
+
   sizes = {
     name: {
       width: 0,
@@ -143,6 +144,7 @@ export default class GridView extends VueBase {
       height: 0,
     },
   };
+
   items = [
     { id: 1, name: 'Abby', sport: 'basket', rank: 10 },
     { id: 2, name: 'Brooke', sport: 'foot', rank: 20 },
@@ -153,7 +155,7 @@ export default class GridView extends VueBase {
   draggingCandidateIndex = NO_INDEX;
   draggingIndex = NO_INDEX;
 
-  ranges = [] as Array<Range>;
+  visibleRanges = [] as Array<Range>;
 
   ghostElement?: HTMLDivElement;
   lineElement?: HTMLDivElement;
@@ -324,7 +326,7 @@ export default class GridView extends VueBase {
     this.draggingCandidateIndex = index;
     this.cursorX = event.clientX;
     this.cursorY = event.clientY;
-    this.ranges = this.getColumnRanges();
+    this.visibleRanges = this.getColumnRanges();
     document.addEventListener('mousemove', this.onMouseMoveColumn);
     document.addEventListener('mouseup', this.onMouseUpColumn);
   }
@@ -333,7 +335,7 @@ export default class GridView extends VueBase {
     this.draggingCandidateIndex = index;
     this.cursorX = event.clientX;
     this.cursorY = event.clientY;
-    this.ranges = this.getRowRanges();
+    this.visibleRanges = this.getRowRanges();
     document.addEventListener('mousemove', this.onMouseMoveRow);
     document.addEventListener('mouseup', this.onMouseUpRow);
   }
@@ -372,7 +374,7 @@ export default class GridView extends VueBase {
   }
 
   getRangeIndexByCursor(coordinatePosition: number) {
-    return GridView.getRangeIndexByCursor(this.ranges, coordinatePosition);
+    return GridView.getRangeIndexByCursor(this.visibleRanges, coordinatePosition);
   }
 
   moveColumnLineElement(index: number) {
@@ -683,6 +685,8 @@ $dark-color: map-deep-get($material-dark, 'text', 'secondary');
 
 $color-blue-accent-4: map-deep-get($colors, 'blue', 'accent-4');
 
+$cell-padding-size: 8px;
+
 @mixin get-text-style($name) {
   font-size: map-deep-get($headings, $name, 'size') !important;
   font-weight: map-deep-get($headings, $name, 'weight');
@@ -802,19 +806,19 @@ $color-blue-accent-4: map-deep-get($colors, 'blue', 'accent-4');
 }
 
 @mixin cell-index-sizing {
-  padding: 0 8px;
+  padding: 0 $cell-padding-size;
   min-width: 40px;
   min-height: 32px;
 }
 
 @mixin cell-data-sizing {
-  padding: 0 10px;
+  padding: 0 $cell-padding-size;
   min-width: 100px;
   min-height: 32px;
 }
 
 @mixin drag-vertical-sizing {
-  width: 10px;
+  width: $cell-padding-size;
   height: 32px;
 }
 
@@ -859,13 +863,13 @@ $color-blue-accent-4: map-deep-get($colors, 'blue', 'accent-4');
         .grid-view--header-data-content {
           @include cell-data-aligning;
 
-          padding-left: 8px;
+          padding-left: $cell-padding-size;
           width: 100%;
           height: 100%;
         }
 
         .grid-view--header-data-resize {
-          width: 8px;
+          width: $cell-padding-size;
           height: 29px;
           border-radius: 6px;
         }
