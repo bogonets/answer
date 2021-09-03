@@ -62,8 +62,10 @@ ko:
     </v-toolbar>
     <v-divider></v-divider>
 
-    <grid-view>
-    </grid-view>
+    <view-port :margin-top="viewPortMarginTop">
+      <grid-view>
+      </grid-view>
+    </view-port>
   </div>
 </template>
 
@@ -73,6 +75,10 @@ import VueBase from '@/base/VueBase';
 import ViewPort from '@/components/ViewPort.vue';
 import GridView from '@/components/DynamicTable/GridView.vue';
 
+const NAVIGATION_DENSE_HEIGHT = 48;
+const DIVIDER_HEIGHT = 1;
+const VIEW_PORT_MARGIN_TOP = (NAVIGATION_DENSE_HEIGHT * 2) + DIVIDER_HEIGHT;
+
 @Component({
   components: {
     ViewPort,
@@ -80,6 +86,8 @@ import GridView from '@/components/DynamicTable/GridView.vue';
   }
 })
 export default class MainTables extends VueBase {
+  private readonly viewPortMarginTop = VIEW_PORT_MARGIN_TOP;
+
   onClickView() {
   }
 

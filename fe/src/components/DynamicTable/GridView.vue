@@ -23,7 +23,7 @@ ko:
           <div class="grid-view--header-data" :key="`${header}-data`">
             <div
                 class="grid-view--header-data-content"
-                @mousedown="onMouseDownHeader($event, index)"
+                @mousedown="onMouseDownColumn($event, index)"
             >
               {{ header }}
             </div>
@@ -31,7 +31,7 @@ ko:
             <div
                 class="grid-view--header-data-resize"
                 :key="`${header}-divider`"
-                @mousedown="onMouseDownHeaderResize($event, index)"
+                @mousedown="onMouseDownColumnResize($event, index)"
             >
             </div>
           </div>
@@ -53,7 +53,7 @@ ko:
       >
         <div
             class="grid-view--body-drag"
-            @mousedown="onMouseDownBodyDrag($event, index)"
+            @mousedown="onMouseDownRow($event, index)"
         >
           <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -92,13 +92,19 @@ import {Component, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {mdiDragVertical} from '@mdi/js';
 
-const NO_INDEX = -1;
+export const NO_INDEX = -1;
+export const DEFAULT_MIN_WIDTH = 100;
 
-interface Rect {
+export interface Rect {
   x: number;
   y: number;
   width: number;
   height: number;
+}
+
+export interface Range {
+  begin: number;
+  end: number;
 }
 
 @Component
@@ -144,22 +150,24 @@ export default class GridView extends VueBase {
     { id: 4, name: 'David', sport: 'rugby', rank: 40 }
   ];
 
-  draggingCandidateHeader = NO_INDEX;
-  draggingCandidateBody = NO_INDEX;
+  draggingCandidateIndex = NO_INDEX;
+  draggingIndex = NO_INDEX;
 
-  draggingHeader = NO_INDEX;
-  draggingBody = NO_INDEX;
+  ranges = [] as Array<Range>;
 
-  columnRects = [] as Array<DOMRect>;
-  rowRects = [] as Array<DOMRect>;
+  ghostElement?: HTMLDivElement;
+  lineElement?: HTMLDivElement;
 
-  insertLineElement?: HTMLDivElement;
-  cursorElement?: HTMLDivElement;
-  cursorId = NO_INDEX;
   cursorX = 0;
   cursorY = 0;
 
+  originalWidthOfResizeCandidate = 0;  // Used only for resize feature.
+
   mounted() {
+    this.refreshTable();
+  }
+
+  refreshTable() {
     for (let i = 0; i < this.headers.length; ++i) {
       const header = this.headers[i];
       const size = this.sizes[header] ?? {width: 0, height: 0};
@@ -183,7 +191,7 @@ export default class GridView extends VueBase {
     return this.bodyRowElements[index] as HTMLDivElement;
   }
 
-  getBodyRowDataElement(rowIndex: number, columnIndex: number) {
+  getBodyDataElement(rowIndex: number, columnIndex: number) {
     const row = this.getBodyRowElement(rowIndex);
     const data = row.getElementsByClassName('grid-view--body-data');
     return data[columnIndex] as HTMLDivElement;
@@ -242,7 +250,7 @@ export default class GridView extends VueBase {
     return {x, y, width, height} as Rect;
   }
 
-  getInsertColumnRect(lineIndex: number) {
+  getColumnLineRect(lineIndex: number) {
     console.assert(this.headers.length >= lineIndex && lineIndex >= 0);
     const element = this.getColumnElement(lineIndex);
 
@@ -257,7 +265,7 @@ export default class GridView extends VueBase {
     return {x, y, width, height} as Rect;
   }
 
-  getInsertRowRect(lineIndex: number) {
+  getRowLineRect(lineIndex: number) {
     console.assert(this.items.length >= lineIndex && lineIndex >= 0);
     const element = this.getRowElement(lineIndex);
 
@@ -288,256 +296,239 @@ export default class GridView extends VueBase {
     return element;
   }
 
-  createInsertLineElement(rect: Rect) {
+  createLineElement(rect: Rect) {
     const element = this.createAbsoluteDivElement(rect);
     element.classList.add('grid-view--insert-line');
     return element;
   }
 
-  getColumnRects() {
-    const result = [] as Array<DOMRect>;
+  getColumnRanges() {
+    const result = [] as Array<Range>;
     for (const element of this.headerDataElements) {
-      result.push(element.getBoundingClientRect());
+      const rect = element.getBoundingClientRect();
+      result.push({begin: rect.left, end: rect.right} as Range);
     }
     return result;
   }
 
-  getRowRects() {
-    const result = [] as Array<DOMRect>;
+  getRowRanges() {
+    const result = [] as Array<Range>;
     for (const element of this.bodyRowElements) {
-      result.push(element.getBoundingClientRect());
+      const rect = element.getBoundingClientRect();
+      result.push({begin: rect.top, end: rect.bottom} as Range);
     }
     return result;
   }
 
-  onMouseDownHeader(event: MouseEvent, index: number) {
-    this.draggingCandidateHeader = index;
+  onMouseDownColumn(event: MouseEvent, index: number) {
+    this.draggingCandidateIndex = index;
     this.cursorX = event.clientX;
     this.cursorY = event.clientY;
-    this.columnRects = this.getColumnRects();
-    document.addEventListener('mousemove', this.onMouseMoveHeader);
-    document.addEventListener('mouseup', this.onMouseUpHeader);
+    this.ranges = this.getColumnRanges();
+    document.addEventListener('mousemove', this.onMouseMoveColumn);
+    document.addEventListener('mouseup', this.onMouseUpColumn);
   }
 
-  onMouseDownBodyDrag(event: MouseEvent, index: number) {
-    this.draggingCandidateBody = index;
+  onMouseDownRow(event: MouseEvent, index: number) {
+    this.draggingCandidateIndex = index;
     this.cursorX = event.clientX;
     this.cursorY = event.clientY;
-    this.rowRects = this.getRowRects();
-    document.addEventListener('mousemove', this.onMouseMoveBody);
-    document.addEventListener('mouseup', this.onMouseUpBody);
+    this.ranges = this.getRowRanges();
+    document.addEventListener('mousemove', this.onMouseMoveRow);
+    document.addEventListener('mouseup', this.onMouseUpRow);
   }
 
-  moveCursorElement(event: MouseEvent) {
-    if (!this.cursorElement) {
+  moveGhostElement(event: MouseEvent) {
+    if (!this.ghostElement) {
       throw Error('`cursorElement` must exist');
     }
 
     const dx = event.clientX - this.cursorX;
     const dy = event.clientY - this.cursorY;
-    this.cursorElement.style.top = `${this.cursorElement.offsetTop + dy}px`;
-    this.cursorElement.style.left = `${this.cursorElement.offsetLeft + dx}px`;
+    this.ghostElement.style.top = `${this.ghostElement.offsetTop + dy}px`;
+    this.ghostElement.style.left = `${this.ghostElement.offsetLeft + dx}px`;
     this.cursorX = event.clientX;
     this.cursorY = event.clientY;
   }
 
-  getColumnIndexByCursor(clientX: number) {
-    if (this.columnRects.length == 0) {
+  static getRangeIndexByCursor(ranges: Array<Range>, cursor: number) {
+    if (ranges.length == 0) {
       return 0;
     }
-    if (clientX < this.columnRects[0].left) {
+    if (cursor < ranges[0].begin) {
       return 0;
     }
-    for (const [index, rect] of this.columnRects.entries()) {
-      if (rect.left <= clientX && clientX < rect.right) {
-        const half = (rect.width * 0.5);
-        if (clientX <= rect.left + half) {
+    for (const [index, rect] of ranges.entries()) {
+      if (rect.begin <= cursor && cursor < rect.end) {
+        const half = (rect.end - rect.begin) * 0.5;
+        if (cursor <= rect.begin + half) {
           return index;
         } else {
           return index + 1;
         }
       }
     }
-    return this.columnRects.length;
+    return ranges.length;
   }
 
-  getRowIndexByCursor(clientY: number) {
-    if (this.rowRects.length == 0) {
-      return 0;
-    }
-    if (clientY < this.rowRects[0].top) {
-      return 0;
-    }
-    for (const [index, rect] of this.rowRects.entries()) {
-      if (rect.top <= clientY && clientY < rect.bottom) {
-        const half = (rect.height * 0.5);
-        if (clientY <= rect.top + half) {
-          return index;
-        } else {
-          return index + 1;
-        }
-      }
-    }
-    return this.rowRects.length;
+  getRangeIndexByCursor(coordinatePosition: number) {
+    return GridView.getRangeIndexByCursor(this.ranges, coordinatePosition);
   }
 
-  moveInsertLineElementOfColumn(index: number) {
-    if (!this.insertLineElement) {
-      throw Error('`insertLineElement` must exist');
+  moveColumnLineElement(index: number) {
+    if (!this.lineElement) {
+      throw Error('`lineElement` must exist');
     }
-    const lineRect = this.getInsertColumnRect(index);
-    this.insertLineElement.style.left = `${lineRect.x}px`;
+    const lineRect = this.getColumnLineRect(index);
+    this.lineElement.style.left = `${lineRect.x}px`;
   }
 
-  moveInsertLineElementOfRow(index: number) {
-    if (!this.insertLineElement) {
-      throw Error('`insertLineElement` must exist');
+  moveRowLineElement(index: number) {
+    if (!this.lineElement) {
+      throw Error('`lineElement` must exist');
     }
-    const lineRect = this.getInsertRowRect(index);
-    this.insertLineElement.style.top = `${lineRect.y}px`;
+    const lineRect = this.getRowLineRect(index);
+    this.lineElement.style.top = `${lineRect.y}px`;
   }
 
-  startHeaderDragging(index: number) {
+  startColumnDragging(index: number) {
     const rect = this.getColumnRect(index);
-    const lineRect = this.getInsertColumnRect(index);
-    this.cursorElement = this.createGhostElement(rect);
-    this.insertLineElement = this.createInsertLineElement(lineRect);
-    this.tableElement.insertBefore(this.cursorElement, null);
-    this.tableElement.insertBefore(this.insertLineElement, null);
+    const lineRect = this.getColumnLineRect(index);
+    this.ghostElement = this.createGhostElement(rect);
+    this.lineElement = this.createLineElement(lineRect);
+    this.tableElement.insertBefore(this.ghostElement, null);
+    this.tableElement.insertBefore(this.lineElement, null);
   }
 
-  startBodyDragging(index: number) {
+  startRowDragging(index: number) {
     const rect = this.getRowRect(index);
-    const lineRect = this.getInsertRowRect(index);
-    this.cursorElement = this.createGhostElement(rect);
-    this.insertLineElement = this.createInsertLineElement(lineRect);
-    this.tableElement.insertBefore(this.cursorElement, null);
-    this.tableElement.insertBefore(this.insertLineElement, null);
+    const lineRect = this.getRowLineRect(index);
+    this.ghostElement = this.createGhostElement(rect);
+    this.lineElement = this.createLineElement(lineRect);
+    this.tableElement.insertBefore(this.ghostElement, null);
+    this.tableElement.insertBefore(this.lineElement, null);
   }
 
-  onMouseMoveHeader(event: MouseEvent) {
-    if (this.draggingHeader == NO_INDEX) {
-      console.assert(this.draggingCandidateHeader != NO_INDEX);
-      this.draggingHeader = this.draggingCandidateHeader;
-      this.startHeaderDragging(this.draggingHeader);
+  onMouseMoveColumn(event: MouseEvent) {
+    if (this.draggingIndex == NO_INDEX) {
+      console.assert(this.draggingCandidateIndex != NO_INDEX);
+      this.draggingIndex = this.draggingCandidateIndex;
+      this.startColumnDragging(this.draggingIndex);
     }
 
-    this.moveCursorElement(event);
-    const insertLineIndex = this.getColumnIndexByCursor(event.clientX);
-    this.moveInsertLineElementOfColumn(insertLineIndex);
+    this.moveGhostElement(event);
+    const insertLineIndex = this.getRangeIndexByCursor(event.clientX);
+    this.moveColumnLineElement(insertLineIndex);
   }
 
-  onMouseMoveBody(event: MouseEvent) {
-    if (this.draggingBody == NO_INDEX) {
-      console.assert(this.draggingCandidateBody != NO_INDEX);
-      this.draggingBody = this.draggingCandidateBody;
-      this.startBodyDragging(this.draggingBody);
+  onMouseMoveRow(event: MouseEvent) {
+    if (this.draggingIndex == NO_INDEX) {
+      console.assert(this.draggingCandidateIndex != NO_INDEX);
+      this.draggingIndex = this.draggingCandidateIndex;
+      this.startRowDragging(this.draggingIndex);
     }
 
-    this.moveCursorElement(event);
-    const insertLineIndex = this.getRowIndexByCursor(event.clientY);
-    this.moveInsertLineElementOfRow(insertLineIndex);
+    this.moveGhostElement(event);
+    const insertLineIndex = this.getRangeIndexByCursor(event.clientY);
+    this.moveRowLineElement(insertLineIndex);
   }
 
-  moveHeader(selectIndex: number, insertIndex: number) {
+  static createArrayOfMovedItem<T>(
+      source: Array<any>,
+      selectIndex: number,
+      insertIndex: number,
+  ) {
     if (selectIndex == insertIndex || selectIndex + 1 == insertIndex) {
       return;
     }
 
-    const buffer = [] as Array<string>;
-    const selectItem = this.headers[selectIndex];
+    const result = [] as Array<T>;
+    const selectItem = source[selectIndex];
 
-    for (let i = 0; i < this.headers.length; ++i) {
+    for (let i = 0; i < source.length; ++i) {
       if (i == insertIndex) {
-        buffer.push(selectItem);
+        result.push(selectItem);
       }
       if (i == selectIndex) {
         continue;
       }
-      buffer.push(this.headers[i]);
+      result.push(source[i]);
     }
-    if (this.headers.length == insertIndex) {
-      buffer.push(selectItem);
+    if (source.length == insertIndex) {
+      result.push(selectItem);
     }
-
-    this.headers = buffer;
+    return result;
   }
 
-  moveBody(selectIndex: number, insertIndex: number) {
-    if (selectIndex == insertIndex || selectIndex + 1 == insertIndex) {
-      return;
-    }
-
-    const buffer = [] as Array<any>;
-    const selectItem = this.items[selectIndex];
-
-    for (let i = 0; i < this.items.length; ++i) {
-      if (i == insertIndex) {
-        buffer.push(selectItem);
-      }
-      if (i == selectIndex) {
-        continue;
-      }
-      buffer.push(this.items[i]);
-    }
-    if (this.items.length == insertIndex) {
-      buffer.push(selectItem);
-    }
-
-    this.items = buffer;
-  }
-
-  endHeaderDragging(event: MouseEvent) {
-    const selectIndex = this.draggingHeader;
-    const insertIndex = this.getColumnIndexByCursor(event.clientX);
-    this.moveHeader(selectIndex, insertIndex);
-
-    if (this.insertLineElement) {
-      this.tableElement.removeChild(this.insertLineElement);
-    }
-    if (this.cursorElement) {
-      this.tableElement.removeChild(this.cursorElement);
-    }
-
-    this.draggingCandidateHeader = NO_INDEX;
-    this.draggingHeader = NO_INDEX;
-    this.insertLineElement = undefined;
-    this.cursorElement = undefined;
-  }
-
-  endBodyDragging(event: MouseEvent) {
-    const selectIndex = this.draggingBody;
-    const insertIndex = this.getRowIndexByCursor(event.clientY);
-    this.moveBody(selectIndex, insertIndex);
-
-    if (this.insertLineElement) {
-      this.tableElement.removeChild(this.insertLineElement);
-    }
-    if (this.cursorElement) {
-      this.tableElement.removeChild(this.cursorElement);
-    }
-
-    this.draggingCandidateBody = NO_INDEX;
-    this.draggingBody = NO_INDEX;
-    this.insertLineElement = undefined;
-    this.cursorElement = undefined;
-  }
-
-  onMouseUpHeader(event: MouseEvent) {
-    document.removeEventListener('mousemove', this.onMouseMoveHeader);
-    document.removeEventListener('mouseup', this.onMouseUpHeader);
-
-    if (this.draggingHeader != NO_INDEX) {
-      this.endHeaderDragging(event);
+  moveColumn(selectIndex: number, insertIndex: number) {
+    const newHeaders = GridView.createArrayOfMovedItem<string>(
+        this.headers, selectIndex, insertIndex
+    );
+    if (typeof newHeaders !== 'undefined') {
+      this.headers = newHeaders;
     }
   }
 
-  onMouseUpBody(event: MouseEvent) {
-    document.removeEventListener('mousemove', this.onMouseMoveBody);
-    document.removeEventListener('mouseup', this.onMouseUpBody);
+  moveRow(selectIndex: number, insertIndex: number) {
+    const newItems = GridView.createArrayOfMovedItem<any>(
+        this.items, selectIndex, insertIndex
+    );
+    if (typeof newItems !== 'undefined') {
+      this.items = newItems;
+    }
+  }
 
-    if (this.draggingBody != NO_INDEX) {
-      this.endBodyDragging(event);
+  endColumnDragging(event: MouseEvent) {
+    const selectIndex = this.draggingIndex;
+    const insertIndex = this.getRangeIndexByCursor(event.clientX);
+    this.moveColumn(selectIndex, insertIndex);
+
+    if (this.lineElement) {
+      this.tableElement.removeChild(this.lineElement);
+    }
+    if (this.ghostElement) {
+      this.tableElement.removeChild(this.ghostElement);
+    }
+
+    this.draggingCandidateIndex = NO_INDEX;
+    this.draggingIndex = NO_INDEX;
+    this.lineElement = undefined;
+    this.ghostElement = undefined;
+  }
+
+  endRowDragging(event: MouseEvent) {
+    const selectIndex = this.draggingIndex;
+    const insertIndex = this.getRangeIndexByCursor(event.clientY);
+    this.moveRow(selectIndex, insertIndex);
+
+    if (this.lineElement) {
+      this.tableElement.removeChild(this.lineElement);
+    }
+    if (this.ghostElement) {
+      this.tableElement.removeChild(this.ghostElement);
+    }
+
+    this.draggingCandidateIndex = NO_INDEX;
+    this.draggingIndex = NO_INDEX;
+    this.lineElement = undefined;
+    this.ghostElement = undefined;
+  }
+
+  onMouseUpColumn(event: MouseEvent) {
+    document.removeEventListener('mousemove', this.onMouseMoveColumn);
+    document.removeEventListener('mouseup', this.onMouseUpColumn);
+
+    if (this.draggingIndex != NO_INDEX) {
+      this.endColumnDragging(event);
+    }
+  }
+
+  onMouseUpRow(event: MouseEvent) {
+    document.removeEventListener('mousemove', this.onMouseMoveRow);
+    document.removeEventListener('mouseup', this.onMouseUpRow);
+
+    if (this.draggingIndex != NO_INDEX) {
+      this.endRowDragging(event);
     }
   }
 
@@ -545,65 +536,80 @@ export default class GridView extends VueBase {
   // Resize
   // ------
 
-  resizeCandidateHeader = NO_INDEX;
-  resizeHeader = NO_INDEX;
-  saveCursorX = 0;
-  saveWidth = 0;
-
-  onMouseDownHeaderResize(event: MouseEvent, index: number) {
-    this.resizeCandidateHeader = index;
-    this.saveCursorX = event.clientX;
+  onMouseDownColumnResize(event: MouseEvent, index: number) {
+    this.draggingCandidateIndex = index;
+    this.cursorX = event.clientX;
     const headerDataElement = this.getHeaderDataElement(index);
     const headerDataRect = headerDataElement.getBoundingClientRect();
-    this.saveWidth = headerDataRect.width;
-    document.addEventListener('mousemove', this.onMouseMoveHeaderResize);
-    document.addEventListener('mouseup', this.onMouseUpHeaderResize);
+    this.originalWidthOfResizeCandidate = headerDataRect.width;
+    document.addEventListener('mousemove', this.onMouseMoveColumnResize);
+    document.addEventListener('mouseup', this.onMouseUpColumnResize);
   }
 
-  getResizeWidth(event: MouseEvent) {
-    return this.saveWidth + (event.clientX - this.saveCursorX);
+  getAdjustedWidth(event: MouseEvent) {
+    return this.originalWidthOfResizeCandidate + (event.clientX - this.cursorX);
   }
 
   resizeColumn(width: number, index: number) {
-    const widthPixel = `${width}px`;
+    const w = width > DEFAULT_MIN_WIDTH ? width : DEFAULT_MIN_WIDTH;
+    const widthPixel = `${w}px`;
     const headerElement = this.getHeaderDataElement(index);
     headerElement.style.width = widthPixel;
 
     for (let i = 0; i < this.items.length; ++i) {
-      const elem = this.getBodyRowDataElement(i, index);
+      const elem = this.getBodyDataElement(i, index);
       elem.style.width = widthPixel;
+      elem.style.minWidth = widthPixel;
     }
   }
 
-  onMouseMoveHeaderResize(event: MouseEvent) {
-    if (this.resizeHeader == NO_INDEX) {
-      console.assert(this.resizeCandidateHeader != NO_INDEX);
-      this.resizeHeader = this.resizeCandidateHeader;
+  onMouseMoveColumnResize(event: MouseEvent) {
+    if (this.draggingIndex == NO_INDEX) {
+      console.assert(this.draggingCandidateIndex != NO_INDEX);
+      this.draggingIndex = this.draggingCandidateIndex;
     }
-    const width = this.getResizeWidth(event);
-    this.resizeColumn(width, this.resizeHeader);
+    const width = this.getAdjustedWidth(event);
+    this.resizeColumn(width, this.draggingIndex);
   }
 
-  onMouseUpHeaderResize(event: MouseEvent) {
-    if (this.resizeHeader != NO_INDEX) {
-      const width = this.getResizeWidth(event);
-      this.resizeColumn(width, this.resizeHeader);
+  onMouseUpColumnResize(event: MouseEvent) {
+    if (this.draggingIndex != NO_INDEX) {
+      const width = this.getAdjustedWidth(event);
+      this.resizeColumn(width, this.draggingIndex);
 
-      const index = this.resizeHeader;
+      const index = this.draggingIndex;
       const header = this.headers[index];
       this.sizes[header].width = width;
 
-      this.resizeCandidateHeader = NO_INDEX;
-      this.resizeHeader = NO_INDEX;
+      this.draggingCandidateIndex = NO_INDEX;
+      this.draggingIndex = NO_INDEX;
     }
-    document.removeEventListener('mousemove', this.onMouseMoveHeaderResize);
-    document.removeEventListener('mouseup', this.onMouseUpHeaderResize);
+    document.removeEventListener('mousemove', this.onMouseMoveColumnResize);
+    document.removeEventListener('mouseup', this.onMouseUpColumnResize);
   }
 
   onClickAddHeader() {
+    this.headers.push('tester');
+  }
+
+  getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
   }
 
   onClickAddItem() {
+    const newItem = {
+      id: this.items.length + 1,
+      name: 'New',
+      sport: 'Unknown',
+      rank: this.getRandomInt(0, 100),
+    };
+    this.items.push(newItem);
+
+    this.$nextTick(() => {
+      this.refreshTable();
+    });
   }
 }
 </script>
@@ -819,11 +825,16 @@ $color-blue-accent-4: map-deep-get($colors, 'blue', 'accent-4');
 .grid-view {
   @include flex-column;
   position: relative; // It is necessary because 'div', which is 'absolute', is added.
+  user-select: none;
+
+  //overflow: auto;
+  //flex: 1 1 auto;
+  //height: 100%;
+  //max-width: 100%;
 
   .grid-view--header {
     @include flex-column;
     @include text-subtitle-2;
-    user-select: none;
 
     .grid-view--header-row {
       @include flex-row;
