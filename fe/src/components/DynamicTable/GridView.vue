@@ -11,11 +11,11 @@ ko:
 <template>
   <div class="grid-view">
     <div class="grid-view--table" ref="table">
-      <!--    <div-->
-      <!--        ref="scrollbar-vertical"-->
-      <!--        class="grid-view&#45;&#45;scrollbar-vertical"-->
-      <!--        @mousedown="onMouseDownScrollbarVertical"-->
-      <!--    ></div>-->
+      <div
+          ref="scrollbar-vertical"
+          class="grid-view--scrollbar-vertical"
+          @mousedown="onMouseDownScrollbarVertical"
+      ></div>
       <div
           ref="scrollbar-horizontal"
           class="grid-view--scrollbar-horizontal"
@@ -67,14 +67,8 @@ ko:
               class="grid-view--body-drag"
               @mousedown="onMouseDownRow($event, index)"
           >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="8 0 8 24"
-                role="img"
-                aria-hidden="true"
-            >
-              <path :d="icons.dragVertical"></path>
-            </svg>
+            <icon-drag-vertical>
+            </icon-drag-vertical>
           </div>
 
           <div class="grid-view--body-index">
@@ -103,7 +97,7 @@ ko:
 <script lang="ts">
 import {Component, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import {mdiDragVertical} from '@mdi/js';
+import IconDragVertical from '@/components/DynamicTable/IconDragVertical.vue';
 
 export const NO_INDEX = -1;
 export const DEFAULT_MIN_WIDTH = 100;
@@ -120,12 +114,12 @@ export interface Range {
   end: number;
 }
 
-@Component
+@Component({
+  components: {
+    IconDragVertical,
+  }
+})
 export default class GridView extends VueBase {
-  readonly icons = {
-    dragVertical: mdiDragVertical
-  };
-
   @Ref('table')
   readonly tableElement!: HTMLDivElement;
 
@@ -648,6 +642,13 @@ export default class GridView extends VueBase {
     });
   }
 
+  // -------------------
+  // Scrollbar: vertical
+  // -------------------
+
+  onMouseDownScrollbarVertical() {
+  }
+
   // ---------------------
   // Scrollbar: horizontal
   // ---------------------
@@ -784,17 +785,17 @@ $cell-padding-size: 8px;
 
 .theme--light.v-application {
   .grid-view {
+    .grid-view--scrollbar-vertical {
+      background: $color-black;
+    }
+
+    .grid-view--scrollbar-horizontal {
+      background: $color-black;
+    }
+
     .grid-view--table {
       background: $light-background;
       color: $light-color;
-
-      .grid-view--scrollbar-vertical {
-        background: $color-black;
-      }
-
-      .grid-view--scrollbar-horizontal {
-        background: $color-black;
-      }
 
       .grid-view--header {
         background: $color-grey-lighten-4;
@@ -802,24 +803,24 @@ $cell-padding-size: 8px;
     }
   }
 
-  .outline {
-    border-color: $color-grey-lighten-2;
-  }
+  //.outline {
+  //  border-color: $color-grey-lighten-2;
+  //}
 }
 
 .theme--dark.v-application {
   .grid-view {
+    .grid-view--scrollbar-vertical {
+      background: $color-white;
+    }
+
+    .grid-view--scrollbar-horizontal {
+      background: $color-white;
+    }
+
     .grid-view--table {
       background: $dark-background;
       color: $dark-color;
-
-      .grid-view--scrollbar-vertical {
-        background: $color-white;
-      }
-
-      .grid-view--scrollbar-horizontal {
-        background: $color-white;
-      }
 
       .grid-view--header {
         background: $color-grey-darken-4;
@@ -827,9 +828,9 @@ $cell-padding-size: 8px;
     }
   }
 
-  .outline {
-    border-color: $color-grey-darken-2;
-  }
+  //.outline {
+  //  border-color: $color-grey-darken-2;
+  //}
 }
 
 @mixin flex-column {
@@ -930,37 +931,42 @@ $cell-padding-size: 8px;
 }
 
 .grid-view {
+  @include flex-column;
+  position: relative; // It is necessary because 'div', which is 'absolute', is added.
+  user-select: none;
+
+  .grid-view--scrollbar-vertical {
+    @include scrollbar;
+
+    position: absolute;
+    left: auto;
+    top: $scrollbar-margin;
+    right: $scrollbar-margin;
+    bottom: $scrollbar-margin;
+    width: $scrollbar-size;
+  }
+
+  .grid-view--scrollbar-horizontal {
+    @include scrollbar;
+
+    position: absolute;
+    left: $scrollbar-margin;
+    top: auto;
+    right: $scrollbar-margin;
+    bottom: $scrollbar-margin;
+    height: $scrollbar-size;
+  }
+
   .grid-view--table {
-    @include flex-column;
-    position: relative; // It is necessary because 'div', which is 'absolute', is added.
-    user-select: none;
+    position: fixed;
+    overflow: hidden;
+    height: 700px;
+    width: 800px;
 
     //overflow: auto;
     //flex: 1 1 auto;
     //height: 100%;
     //max-width: 100%;
-
-    .grid-view--scrollbar-vertical {
-      @include scrollbar;
-
-      position: absolute;
-      left: auto;
-      top: $scrollbar-margin;
-      right: $scrollbar-margin;
-      bottom: $scrollbar-margin;
-      width: $scrollbar-size;
-    }
-
-    .grid-view--scrollbar-horizontal {
-      @include scrollbar;
-
-      position: absolute;
-      left: $scrollbar-margin;
-      top: auto;
-      right: $scrollbar-margin;
-      bottom: $scrollbar-margin;
-      height: $scrollbar-size;
-    }
 
     .grid-view--header {
       @include flex-column;
@@ -1053,19 +1059,11 @@ $cell-padding-size: 8px;
   }
 }
 
-.grid-view .grid-view--table .grid-view--body .grid-view--body-row {
-  .grid-view--body-drag {
-    svg {
-      visibility: hidden;
-    }
-  }
+.grid-view .grid-view--body-row .grid-view--body-drag svg {
+  visibility: hidden;
 }
 
-.grid-view .grid-view--table .grid-view--body .grid-view--body-row:hover {
-  .grid-view--body-drag {
-    svg {
-      visibility: visible;
-    }
-  }
+.grid-view .grid-view--body-row:hover .grid-view--body-drag svg {
+  visibility: visible;
 }
 </style>
