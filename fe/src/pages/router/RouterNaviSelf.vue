@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="router-navi-self">
     <navi-self>
     </navi-self>
 
@@ -23,3 +23,8 @@ import NaviSelf from '@/pages/navigation/NaviSelf.vue';
 export default class RouterNaviSelf extends VueBase {
 }
 </script>
+
+<style lang="scss" scoped>
+.router-navi-self {
+}
+</style>

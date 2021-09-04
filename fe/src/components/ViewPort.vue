@@ -1,5 +1,5 @@
 <template>
-  <div class="fill-width" :style="contentStyle">
+  <div class="viewport" :style="contentStyle">
     <slot></slot>
   </div>
 </template>
@@ -37,12 +37,16 @@ export default class ViewPort extends Vue {
   }
 
   get contentStyle() {
-    return {height: `${this.contentHeight}px`};
+    return {
+      'height': `${this.contentHeight}px`,
+      'max-height': `${this.contentHeight}px`
+    };
   }
 
   mounted() {
+    window.addEventListener('resize', this.onResize);
+
     this.$nextTick(() => {
-      window.addEventListener('resize', this.onResize);
       this.onResize();
     })
   }
@@ -66,13 +70,20 @@ export default class ViewPort extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.fill-width {
+@mixin fill-width {
   max-width: 100%;
 }
 
-.absolute-position {
+@mixin absolute-position {
   position: absolute;
-  //position: fixed;
-  //transform: translateX(0%);
+}
+
+@mixin fixed-position {
+  position: fixed;
+  transform: translateX(0%);
+}
+
+.viewport {
+  @include fill-width;
 }
 </style>

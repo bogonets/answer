@@ -17,7 +17,7 @@ ko:
 </i18n>
 
 <template>
-  <div>
+  <div class="main-table">
     <v-toolbar dense flat>
       <v-btn plain small @click="onClickView">
         <v-icon left>
@@ -62,17 +62,14 @@ ko:
     </v-toolbar>
     <v-divider></v-divider>
 
-    <view-port :margin-top="viewPortMarginTop">
-      <grid-view>
-      </grid-view>
-    </view-port>
+    <grid-view>
+    </grid-view>
   </div>
 </template>
 
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ViewPort from '@/components/ViewPort.vue';
 import GridView from '@/components/DynamicTable/GridView.vue';
 
 const NAVIGATION_DENSE_HEIGHT = 48;
@@ -81,7 +78,6 @@ const VIEW_PORT_MARGIN_TOP = (NAVIGATION_DENSE_HEIGHT * 2) + DIVIDER_HEIGHT;
 
 @Component({
   components: {
-    ViewPort,
     GridView,
   }
 })
@@ -104,3 +100,8 @@ export default class MainTables extends VueBase {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.main-table {
+}
+</style>

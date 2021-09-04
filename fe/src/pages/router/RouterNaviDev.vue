@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="router-navi-dev">
     <navi-dev>
     </navi-dev>
 
@@ -23,3 +23,8 @@ import NaviDev from '@/pages/navigation/NaviDev.vue';
 export default class RouterNaviDev extends VueBase {
 }
 </script>
+
+<style lang="scss" scoped>
+.router-navi-dev {
+}
+</style>

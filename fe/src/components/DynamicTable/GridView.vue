@@ -10,6 +10,17 @@ ko:
 
 <template>
   <div class="grid-view" ref="table">
+<!--    <div-->
+<!--        ref="scrollbar-vertical"-->
+<!--        class="grid-view&#45;&#45;scrollbar-vertical"-->
+<!--        @mousedown="onMouseDownScrollbarVertical"-->
+<!--    ></div>-->
+    <div
+        ref="scrollbar-horizontal"
+        class="grid-view--scrollbar-horizontal"
+        @mousedown="onMouseDownScrollbarHorizontal"
+    ></div>
+
     <div class="grid-view--header" ref="header">
       <div class="grid-view--header-row" ref="headerRow">
         <div class="grid-view--header-drag">
@@ -116,6 +127,12 @@ export default class GridView extends VueBase {
   @Ref('table')
   readonly tableElement!: HTMLDivElement;
 
+  @Ref('scrollbar-vertical')
+  readonly scrollbarVerticalElement!: HTMLDivElement;
+
+  @Ref('scrollbar-horizontal')
+  readonly scrollbarHorizontalElement!: HTMLDivElement;
+
   @Ref('header')
   readonly headerElement!: HTMLDivElement;
 
@@ -146,11 +163,11 @@ export default class GridView extends VueBase {
   };
 
   items = [
-    { id: 1, name: 'Abby', sport: 'basket', rank: 10 },
-    { id: 2, name: 'Brooke', sport: 'foot', rank: 20 },
-    { id: 3, name: 'Courtenay', sport: 'volley', rank: 30 },
-    { id: 4, name: 'David', sport: 'rugby', rank: 40 }
-  ];
+    // { id: 1, name: 'Abby', sport: 'basket', rank: 10 },
+    // { id: 2, name: 'Brooke', sport: 'foot', rank: 20 },
+    // { id: 3, name: 'Courtenay', sport: 'volley', rank: 30 },
+    // { id: 4, name: 'David', sport: 'rugby', rank: 40 }
+  ] as Array<any>;
 
   draggingCandidateIndex = NO_INDEX;
   draggingIndex = NO_INDEX;
@@ -164,6 +181,21 @@ export default class GridView extends VueBase {
   cursorY = 0;
 
   originalWidthOfResizeCandidate = 0;  // Used only for resize feature.
+
+  created() {
+    for (let i = 0; i < 10; ++i) {
+      const newItem = {
+        id: i,
+        name: 'New',
+        sport: 'Unknown',
+        rank: i,
+      };
+      this.items.push(newItem);
+    }
+    // this.$nextTick(() => {
+    //   this.refreshTable();
+    // });
+  }
 
   mounted() {
     this.refreshTable();
@@ -591,7 +623,7 @@ export default class GridView extends VueBase {
   }
 
   onClickAddHeader() {
-    this.headers.push('tester');
+    this.headers.push(`tester-${this.headers.length}`);
   }
 
   getRandomInt(min, max) {
@@ -612,6 +644,42 @@ export default class GridView extends VueBase {
     this.$nextTick(() => {
       this.refreshTable();
     });
+  }
+
+  // ---------------------
+  // Scrollbar: horizontal
+  // ---------------------
+
+  scrolling = false;
+  scrollBegin = 0;
+
+  onMouseDownScrollbarHorizontal(event: MouseEvent) {
+    window.addEventListener('mousemove', this.onMouseMoveScrollbarHorizontal);
+    window.addEventListener('mouseup', this.onMouseUpScrollbarHorizontal);
+
+    event.preventDefault();
+    this.scrolling = true;
+    this.scrollBegin = this.scrollbarHorizontalElement.offsetTop;
+    this.cursorY = event.clientY;
+  }
+
+  onMouseMoveScrollbarHorizontal(event: MouseEvent) {
+    event.preventDefault();
+    const delta = event.clientY - this.cursorY;
+    const pixel = this.tableElement.scrollHeight / this.tableElement.clientHeight;
+    const top = Math.ceil((this.scrollBegin + delta) * pixel);
+
+    this.scrollHorizontal(top)
+  }
+
+  onMouseUpScrollbarHorizontal(event: MouseEvent) {
+    window.removeEventListener('mousemove', this.onMouseMoveScrollbarHorizontal);
+    window.removeEventListener('mouseup', this.onMouseUpScrollbarHorizontal);
+  }
+
+  scrollHorizontal(top) {
+    // this.$refs.left.$refs.body.scrollTop = top
+    // this.$refs.right.$refs.body.scrollTop = top
   }
 }
 </script>
@@ -677,6 +745,9 @@ $color-grey-darken-2: map-get($color-grey, 'darken-2');
 $color-grey-darken-3: map-get($color-grey, 'darken-3');
 $color-grey-darken-4: map-get($color-grey, 'darken-4');
 
+$color-black: map-get($shades, 'black');
+$color-white: map-get($shades, 'white');
+
 $light-background: map-get($material-light, 'background');
 $light-color: map-deep-get($material-light, 'text', 'secondary');
 
@@ -685,6 +756,8 @@ $dark-color: map-deep-get($material-dark, 'text', 'secondary');
 
 $color-blue-accent-4: map-deep-get($colors, 'blue', 'accent-4');
 
+$scrollbar-size: 6px;
+$scrollbar-margin: 3px;
 $cell-padding-size: 8px;
 
 @mixin get-text-style($name) {
@@ -712,6 +785,14 @@ $cell-padding-size: 8px;
     background: $light-background;
     color: $light-color;
 
+    .grid-view--scrollbar-vertical {
+      background: $color-black;
+    }
+
+    .grid-view--scrollbar-horizontal {
+      background: $color-black;
+    }
+
     .grid-view--header {
       background: $color-grey-lighten-4;
     }
@@ -726,6 +807,14 @@ $cell-padding-size: 8px;
   .grid-view {
     background: $dark-background;
     color: $dark-color;
+
+    .grid-view--scrollbar-vertical {
+      background: $color-white;
+    }
+
+    .grid-view--scrollbar-horizontal {
+      background: $color-white;
+    }
 
     .grid-view--header {
       background: $color-grey-darken-4;
@@ -826,6 +915,14 @@ $cell-padding-size: 8px;
   fill: currentColor;
 }
 
+@mixin scrollbar {
+  opacity: 0.6;
+  border-radius: 3px;
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
+}
+
 .grid-view {
   @include flex-column;
   position: relative; // It is necessary because 'div', which is 'absolute', is added.
@@ -835,6 +932,28 @@ $cell-padding-size: 8px;
   //flex: 1 1 auto;
   //height: 100%;
   //max-width: 100%;
+
+  .grid-view--scrollbar-vertical {
+    @include scrollbar;
+
+    position: absolute;
+    left: auto;
+    top: $scrollbar-margin;
+    right: $scrollbar-margin;
+    bottom: $scrollbar-margin;
+    width: $scrollbar-size;
+  }
+
+  .grid-view--scrollbar-horizontal {
+    @include scrollbar;
+
+    position: absolute;
+    left: $scrollbar-margin;
+    top: auto;
+    right: $scrollbar-margin;
+    bottom: $scrollbar-margin;
+    height: $scrollbar-size;
+  }
 
   .grid-view--header {
     @include flex-column;

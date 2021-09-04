@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="router-navi-group">
     <navi-group>
     </navi-group>
 
@@ -23,3 +23,8 @@ import NaviGroup from "@/pages/navigation/NaviGroup.vue";
 export default class RouterNaviGroup extends VueBase {
 }
 </script>
+
+<style lang="scss" scoped>
+.router-navi-group {
+}
+</style>

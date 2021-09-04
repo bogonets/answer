@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="router-navi-main">
     <navi-main>
     </navi-main>
 
@@ -23,3 +23,8 @@ import NaviMain from "@/pages/navigation/NaviMain.vue";
 export default class RouterNaviMain extends VueBase {
 }
 </script>
+
+<style lang="scss" scoped>
+.router-navi-main {
+}
+</style>

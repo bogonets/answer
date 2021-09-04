@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="router-navi-admin">
     <navi-admin>
     </navi-admin>
 
@@ -23,3 +23,8 @@ import NaviAdmin from '@/pages/navigation/NaviAdmin.vue';
 export default class RouterNaviAdmin extends VueBase {
 }
 </script>
+
+<style lang="scss" scoped>
+.router-navi-admin {
+}
+</style>
