@@ -9,90 +9,92 @@ ko:
 </i18n>
 
 <template>
-  <div class="grid-view" ref="table">
-<!--    <div-->
-<!--        ref="scrollbar-vertical"-->
-<!--        class="grid-view&#45;&#45;scrollbar-vertical"-->
-<!--        @mousedown="onMouseDownScrollbarVertical"-->
-<!--    ></div>-->
-    <div
-        ref="scrollbar-horizontal"
-        class="grid-view--scrollbar-horizontal"
-        @mousedown="onMouseDownScrollbarHorizontal"
-    ></div>
+  <div class="grid-view">
+    <div class="grid-view--table" ref="table">
+      <!--    <div-->
+      <!--        ref="scrollbar-vertical"-->
+      <!--        class="grid-view&#45;&#45;scrollbar-vertical"-->
+      <!--        @mousedown="onMouseDownScrollbarVertical"-->
+      <!--    ></div>-->
+      <div
+          ref="scrollbar-horizontal"
+          class="grid-view--scrollbar-horizontal"
+          @mousedown="onMouseDownScrollbarHorizontal"
+      ></div>
 
-    <div class="grid-view--header" ref="header">
-      <div class="grid-view--header-row" ref="headerRow">
-        <div class="grid-view--header-drag">
-        </div>
-
-        <div class="grid-view--header-index" ref="headerIndex">
-          {{ $t('header.id') }}
-        </div>
-
-        <template v-for="[index, header] in headers.entries()">
-          <div class="grid-view--header-data" :key="`${header}-data`">
-            <div
-                class="grid-view--header-data-content"
-                @mousedown="onMouseDownColumn($event, index)"
-            >
-              {{ header }}
-            </div>
-
-            <div
-                class="grid-view--header-data-resize"
-                :key="`${header}-divider`"
-                @mousedown="onMouseDownColumnResize($event, index)"
-            >
-            </div>
+      <div class="grid-view--header" ref="header">
+        <div class="grid-view--header-row" ref="headerRow">
+          <div class="grid-view--header-drag">
           </div>
-        </template>
 
-        <div class="grid-view--header-add">
-          <v-btn plain icon small @click="onClickAddHeader">
+          <div class="grid-view--header-index" ref="headerIndex">
+            {{ $t('header.id') }}
+          </div>
+
+          <template v-for="[index, header] in headers.entries()">
+            <div class="grid-view--header-data" :key="`${header}-data`">
+              <div
+                  class="grid-view--header-data-content"
+                  @mousedown="onMouseDownColumn($event, index)"
+              >
+                {{ header }}
+              </div>
+
+              <div
+                  class="grid-view--header-data-resize"
+                  :key="`${header}-divider`"
+                  @mousedown="onMouseDownColumnResize($event, index)"
+              >
+              </div>
+            </div>
+          </template>
+
+          <div class="grid-view--header-add">
+            <v-btn plain icon small @click="onClickAddHeader">
+              <v-icon small>mdi-plus</v-icon>
+            </v-btn>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-view--body" ref="body">
+        <div
+            class="grid-view--body-row"
+            v-for="[index, item] in items.entries()"
+            :key="item.id"
+        >
+          <div
+              class="grid-view--body-drag"
+              @mousedown="onMouseDownRow($event, index)"
+          >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="8 0 8 24"
+                role="img"
+                aria-hidden="true"
+            >
+              <path :d="icons.dragVertical"></path>
+            </svg>
+          </div>
+
+          <div class="grid-view--body-index">
+            {{ item.id }}
+          </div>
+
+          <div
+              class="grid-view--body-data"
+              v-for="header in headers"
+              :key="header"
+          >
+            {{ item[header] }}
+          </div>
+        </div>
+
+        <div class="grid-view--body-add">
+          <v-btn plain icon small @click="onClickAddItem">
             <v-icon small>mdi-plus</v-icon>
           </v-btn>
         </div>
-      </div>
-    </div>
-
-    <div class="grid-view--body" ref="body">
-      <div
-          class="grid-view--body-row"
-          v-for="[index, item] in items.entries()"
-          :key="item.id"
-      >
-        <div
-            class="grid-view--body-drag"
-            @mousedown="onMouseDownRow($event, index)"
-        >
-          <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="8 0 8 24"
-              role="img"
-              aria-hidden="true"
-          >
-            <path :d="icons.dragVertical"></path>
-          </svg>
-        </div>
-
-        <div class="grid-view--body-index">
-          {{ item.id }}
-        </div>
-
-        <div
-            class="grid-view--body-data"
-            v-for="header in headers"
-            :key="header"
-        >
-          {{ item[header] }}
-        </div>
-      </div>
-
-      <div class="grid-view--body-add">
-        <v-btn plain icon small @click="onClickAddItem">
-          <v-icon small>mdi-plus</v-icon>
-        </v-btn>
       </div>
     </div>
   </div>
@@ -782,19 +784,21 @@ $cell-padding-size: 8px;
 
 .theme--light.v-application {
   .grid-view {
-    background: $light-background;
-    color: $light-color;
+    .grid-view--table {
+      background: $light-background;
+      color: $light-color;
 
-    .grid-view--scrollbar-vertical {
-      background: $color-black;
-    }
+      .grid-view--scrollbar-vertical {
+        background: $color-black;
+      }
 
-    .grid-view--scrollbar-horizontal {
-      background: $color-black;
-    }
+      .grid-view--scrollbar-horizontal {
+        background: $color-black;
+      }
 
-    .grid-view--header {
-      background: $color-grey-lighten-4;
+      .grid-view--header {
+        background: $color-grey-lighten-4;
+      }
     }
   }
 
@@ -805,19 +809,21 @@ $cell-padding-size: 8px;
 
 .theme--dark.v-application {
   .grid-view {
-    background: $dark-background;
-    color: $dark-color;
+    .grid-view--table {
+      background: $dark-background;
+      color: $dark-color;
 
-    .grid-view--scrollbar-vertical {
-      background: $color-white;
-    }
+      .grid-view--scrollbar-vertical {
+        background: $color-white;
+      }
 
-    .grid-view--scrollbar-horizontal {
-      background: $color-white;
-    }
+      .grid-view--scrollbar-horizontal {
+        background: $color-white;
+      }
 
-    .grid-view--header {
-      background: $color-grey-darken-4;
+      .grid-view--header {
+        background: $color-grey-darken-4;
+      }
     }
   }
 
@@ -924,123 +930,125 @@ $cell-padding-size: 8px;
 }
 
 .grid-view {
-  @include flex-column;
-  position: relative; // It is necessary because 'div', which is 'absolute', is added.
-  user-select: none;
-
-  //overflow: auto;
-  //flex: 1 1 auto;
-  //height: 100%;
-  //max-width: 100%;
-
-  .grid-view--scrollbar-vertical {
-    @include scrollbar;
-
-    position: absolute;
-    left: auto;
-    top: $scrollbar-margin;
-    right: $scrollbar-margin;
-    bottom: $scrollbar-margin;
-    width: $scrollbar-size;
-  }
-
-  .grid-view--scrollbar-horizontal {
-    @include scrollbar;
-
-    position: absolute;
-    left: $scrollbar-margin;
-    top: auto;
-    right: $scrollbar-margin;
-    bottom: $scrollbar-margin;
-    height: $scrollbar-size;
-  }
-
-  .grid-view--header {
+  .grid-view--table {
     @include flex-column;
-    @include text-subtitle-2;
+    position: relative; // It is necessary because 'div', which is 'absolute', is added.
+    user-select: none;
 
-    .grid-view--header-row {
-      @include flex-row;
+    //overflow: auto;
+    //flex: 1 1 auto;
+    //height: 100%;
+    //max-width: 100%;
 
-      .grid-view--header-drag {
-        @include drag-vertical-sizing;
-        @include cell-drag-aligning;
-        @include cell-outline-drag;
-      }
+    .grid-view--scrollbar-vertical {
+      @include scrollbar;
 
-      .grid-view--header-index {
-        @include cell-index-sizing;
-        @include cell-index-aligning;
-        @include cell-outline;
-      }
+      position: absolute;
+      left: auto;
+      top: $scrollbar-margin;
+      right: $scrollbar-margin;
+      bottom: $scrollbar-margin;
+      width: $scrollbar-size;
+    }
 
-      .grid-view--header-data {
-        @include cell-header-data-sizing;
-        @include cell-header-data-aligning;
-        @include cell-outline;
+    .grid-view--scrollbar-horizontal {
+      @include scrollbar;
 
-        .grid-view--header-data-content {
+      position: absolute;
+      left: $scrollbar-margin;
+      top: auto;
+      right: $scrollbar-margin;
+      bottom: $scrollbar-margin;
+      height: $scrollbar-size;
+    }
+
+    .grid-view--header {
+      @include flex-column;
+      @include text-subtitle-2;
+
+      .grid-view--header-row {
+        @include flex-row;
+
+        .grid-view--header-drag {
+          @include drag-vertical-sizing;
+          @include cell-drag-aligning;
+          @include cell-outline-drag;
+        }
+
+        .grid-view--header-index {
+          @include cell-index-sizing;
+          @include cell-index-aligning;
+          @include cell-outline;
+        }
+
+        .grid-view--header-data {
+          @include cell-header-data-sizing;
+          @include cell-header-data-aligning;
+          @include cell-outline;
+
+          .grid-view--header-data-content {
+            @include cell-data-aligning;
+
+            padding-left: $cell-padding-size;
+            width: 100%;
+            height: 100%;
+          }
+
+          .grid-view--header-data-resize {
+            width: $cell-padding-size;
+            height: 29px;
+            border-radius: 6px;
+          }
+
+          .grid-view--header-data-resize:hover {
+            cursor: col-resize;
+            background: $color-blue-accent-4;
+          }
+        }
+
+        .grid-view--header-add {
           @include cell-data-aligning;
 
-          padding-left: $cell-padding-size;
-          width: 100%;
-          height: 100%;
+          margin-left: 4px;
+        }
+      }
+    }
+
+    .grid-view--body {
+      @include flex-column;
+      @include text-body-2;
+
+      .grid-view--body-row {
+        @include flex-row;
+
+        .grid-view--body-drag {
+          @include drag-vertical-sizing;
+          @include drag-vertical-coloring;
+          @include cell-drag-aligning;
+          @include cell-outline-drag;
+
+          cursor: grab;
+          //cursor: -webkit-grab;
+          //cursor:-moz-grab;
         }
 
-        .grid-view--header-data-resize {
-          width: $cell-padding-size;
-          height: 29px;
-          border-radius: 6px;
+        .grid-view--body-index {
+          @include cell-index-sizing;
+          @include cell-index-aligning;
+          @include cell-outline;
         }
 
-        .grid-view--header-data-resize:hover {
-          cursor: col-resize;
-          background: $color-blue-accent-4;
+        .grid-view--body-data {
+          @include cell-data-sizing;
+          @include cell-data-aligning;
+          @include cell-outline;
         }
       }
 
-      .grid-view--header-add {
-        @include cell-data-aligning;
-
+      .grid-view--body-add {
+        margin-top: 4px;
         margin-left: 4px;
       }
-    }
-  }
-
-  .grid-view--body {
-    @include flex-column;
-    @include text-body-2;
-
-    .grid-view--body-row {
-      @include flex-row;
-
-      .grid-view--body-drag {
-        @include drag-vertical-sizing;
-        @include drag-vertical-coloring;
-        @include cell-drag-aligning;
-        @include cell-outline-drag;
-
-        cursor: grab;
-        //cursor: -webkit-grab;
-        //cursor:-moz-grab;
-      }
-
-      .grid-view--body-index {
-        @include cell-index-sizing;
-        @include cell-index-aligning;
-        @include cell-outline;
-      }
-
-      .grid-view--body-data {
-        @include cell-data-sizing;
-        @include cell-data-aligning;
-        @include cell-outline;
-      }
-    }
-
-    .grid-view--body-add {
-      margin-top: 4px;
-      margin-left: 4px;
     }
   }
 }
