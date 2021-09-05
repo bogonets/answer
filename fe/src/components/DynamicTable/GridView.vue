@@ -23,11 +23,11 @@ ko:
       ></div>
 
       <div class="grid-view--header" ref="header">
-        <div class="grid-view--header-row" ref="headerRow">
+        <div class="grid-view--header-row" ref="header-row">
           <div class="grid-view--header-drag">
           </div>
 
-          <div class="grid-view--header-index" ref="headerIndex">
+          <div class="grid-view--header-index" ref="header-index">
             {{ $t('header.id') }}
           </div>
 
@@ -58,36 +58,45 @@ ko:
       </div>
 
       <div class="grid-view--body" ref="body">
-        <div
-            class="grid-view--body-row"
-            v-for="[index, item] in items.entries()"
-            :key="item.id"
-        >
+        <div class="grid-view--body-left" ref="body-left">
           <div
-              class="grid-view--body-drag"
-              @mousedown="onMouseDownRow($event, index)"
+              class="grid-view--body-left-row"
+              v-for="[index, item] in items.entries()"
+              :key="item.id"
           >
-            <icon-drag-vertical>
-            </icon-drag-vertical>
+            <div
+                class="grid-view--body-drag"
+                @mousedown="onMouseDownRow($event, index)"
+            >
+              <icon-drag-vertical>
+              </icon-drag-vertical>
+            </div>
+            <div class="grid-view--body-index">
+              {{ item.id }}
+            </div>
           </div>
 
-          <div class="grid-view--body-index">
-            {{ item.id }}
-          </div>
-
-          <div
-              class="grid-view--body-data"
-              v-for="header in headers"
-              :key="header"
-          >
-            {{ item[header] }}
+          <div class="grid-view--body-add">
+            <v-btn plain icon small @click="onClickAddItem">
+              <v-icon small>mdi-plus</v-icon>
+            </v-btn>
           </div>
         </div>
 
-        <div class="grid-view--body-add">
-          <v-btn plain icon small @click="onClickAddItem">
-            <v-icon small>mdi-plus</v-icon>
-          </v-btn>
+        <div class="grid-view--body-right" ref="body-right">
+          <div
+              class="grid-view--body-right-row"
+              v-for="item in items"
+              :key="item.id"
+          >
+            <div
+                class="grid-view--body-data"
+                v-for="header in headers"
+                :key="header"
+            >
+              {{ item[header] }}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -132,14 +141,20 @@ export default class GridView extends VueBase {
   @Ref('header')
   readonly headerElement!: HTMLDivElement;
 
-  @Ref('headerIndex')
+  @Ref('header-index')
   readonly headerIndexElement!: HTMLDivElement;
 
-  @Ref('headerRow')
+  @Ref('header-row')
   readonly headerRowElement!: HTMLDivElement;
 
   @Ref('body')
   readonly bodyElement!: HTMLDivElement;
+
+  @Ref('body-left')
+  readonly bodyLeftElement!: HTMLDivElement;
+
+  @Ref('body-right')
+  readonly bodyRightElement!: HTMLDivElement;
 
   headers = ['name', 'sport', 'rank'];
 
@@ -209,20 +224,34 @@ export default class GridView extends VueBase {
     return this.headerRowElement.getElementsByClassName('grid-view--header-data');
   }
 
-  get bodyRowElements() {
-    return this.bodyElement.getElementsByClassName('grid-view--body-row');
+  get bodyLeftRowElements() {
+    return this.bodyLeftElement.getElementsByClassName('grid-view--body-left-row');
+  }
+
+  get bodyRightRowElements() {
+    return this.bodyRightElement.getElementsByClassName('grid-view--body-right-row');
   }
 
   getHeaderDataElement(index: number) {
     return this.headerDataElements[index] as HTMLDivElement;
   }
 
-  getBodyRowElement(index: number) {
-    return this.bodyRowElements[index] as HTMLDivElement;
+  getBodyLeftRowElement(index: number) {
+    return this.bodyLeftRowElements[index] as HTMLDivElement;
+  }
+
+  getBodyRightRowElement(index: number) {
+    return this.bodyRightRowElements[index] as HTMLDivElement;
+  }
+
+  getBodyDragElement(rowIndex: number, columnIndex: number) {
+    const row = this.getBodyLeftRowElement(rowIndex);
+    const data = row.getElementsByClassName('grid-view--body-drag');
+    return data[columnIndex] as HTMLDivElement;
   }
 
   getBodyDataElement(rowIndex: number, columnIndex: number) {
-    const row = this.getBodyRowElement(rowIndex);
+    const row = this.getBodyRightRowElement(rowIndex);
     const data = row.getElementsByClassName('grid-view--body-data');
     return data[columnIndex] as HTMLDivElement;
   }
@@ -234,11 +263,19 @@ export default class GridView extends VueBase {
     return this.getHeaderDataElement(index - 1);
   }
 
-  getRowElement(index: number) {
+  getLeftRowElement(index: number) {
     if (index == 0) {
       return this.headerRowElement;
     } else {
-      return this.getBodyRowElement(index - 1);
+      return this.getBodyLeftRowElement(index - 1);
+    }
+  }
+
+  getRightRowElement(index: number) {
+    if (index == 0) {
+      return this.headerRowElement;
+    } else {
+      return this.getBodyRightRowElement(index - 1);
     }
   }
 
@@ -246,8 +283,8 @@ export default class GridView extends VueBase {
     return this.getColumnElement(this.headers.length);
   }
 
-  getLastRowElement() {
-    return this.getRowElement(this.items.length);
+  getLastRightRowElement() {
+    return this.getRightRowElement(this.items.length);
   }
 
   getColumnRect(index: number) {
@@ -256,10 +293,10 @@ export default class GridView extends VueBase {
 
     const elementRect = element.getBoundingClientRect();
     const tableRect = this.tableElement.getBoundingClientRect();
-    const lastRect = this.getLastRowElement().getBoundingClientRect();
+    const lastRect = this.getLastRightRowElement().getBoundingClientRect();
 
-    const x = elementRect.x - tableRect.x;
-    const y = elementRect.y - tableRect.y;
+    const x = elementRect.left - tableRect.left;
+    const y = elementRect.top - tableRect.top;
     const width = elementRect.width;
     const height = lastRect.bottom - tableRect.top;
     return {x, y, width, height} as Rect;
@@ -267,45 +304,48 @@ export default class GridView extends VueBase {
 
   getRowRect(index: number) {
     console.assert(this.items.length > index && index >= 0);
-    const element = this.getBodyRowElement(index);
+    const leftElement = this.getBodyLeftRowElement(index);
+    const rightElement = this.getBodyRightRowElement(index);
 
-    const elementRect = element.getBoundingClientRect();
+    const leftElementRect = leftElement.getBoundingClientRect();
+    const rightElementRect = rightElement.getBoundingClientRect();
     const tableRect = this.tableElement.getBoundingClientRect();
-    const lastRect = this.getLastColumnElement().getBoundingClientRect();
 
-    const x = elementRect.x - tableRect.x;
-    const y = elementRect.y - tableRect.y;
-    const width = lastRect.right - tableRect.left;
-    const height = elementRect.height;
+    const x = leftElementRect.left - tableRect.left;
+    const y = leftElementRect.top - tableRect.top;
+    const width = leftElementRect.width + rightElementRect.width;
+    const height = leftElementRect.height;
     return {x, y, width, height} as Rect;
   }
 
   getColumnLineRect(lineIndex: number) {
-    console.assert(this.headers.length >= lineIndex && lineIndex >= 0);
+    console.assert(this.headers.length > lineIndex && lineIndex >= 0);
     const element = this.getColumnElement(lineIndex);
 
     const elementRect = element.getBoundingClientRect();
     const tableRect = this.tableElement.getBoundingClientRect();
-    const lastRect = this.getLastRowElement().getBoundingClientRect();
+    const lastRect = this.getLastRightRowElement().getBoundingClientRect();
 
-    const x = elementRect.x - tableRect.x + elementRect.width - 1;
-    const y = elementRect.y - tableRect.y;
+    const x = elementRect.left - tableRect.left + elementRect.width - 1;
+    const y = elementRect.top - tableRect.top;
     const width = 1;
     const height = lastRect.bottom - tableRect.top;
     return {x, y, width, height} as Rect;
   }
 
   getRowLineRect(lineIndex: number) {
-    console.assert(this.items.length >= lineIndex && lineIndex >= 0);
-    const element = this.getRowElement(lineIndex);
+    console.assert(this.items.length > lineIndex && lineIndex >= 0);
+    const leftElement = this.getLeftRowElement(lineIndex);
+    const rightElement = this.getRightRowElement(lineIndex);
 
-    const elementRect = element.getBoundingClientRect();
+    const leftElementRect = leftElement.getBoundingClientRect();
+    const rightElementRect = rightElement.getBoundingClientRect();
     const tableRect = this.tableElement.getBoundingClientRect();
     const lastRect = this.getLastColumnElement().getBoundingClientRect();
 
-    const x = elementRect.x - tableRect.x;
-    const y = elementRect.y - tableRect.y + (lastRect.bottom - tableRect.top) - 1;
-    const width = elementRect.width;
+    const x = leftElementRect.x - tableRect.x;
+    const y = leftElementRect.y - tableRect.y + (lastRect.bottom - tableRect.top) - 1;
+    const width = leftElementRect.width + rightElementRect.width;
     const height = 1;
     return {x, y, width, height} as Rect;
   }
@@ -343,7 +383,7 @@ export default class GridView extends VueBase {
 
   getRowRanges() {
     const result = [] as Array<Range>;
-    for (const element of this.bodyRowElements) {
+    for (const element of this.bodyRightRowElements) {
       const rect = element.getBoundingClientRect();
       result.push({begin: rect.top, end: rect.bottom} as Range);
     }
@@ -1021,49 +1061,62 @@ $cell-padding-size: 8px;
     }
 
     .grid-view--body {
-      @include flex-column;
-      @include text-body-2;
+      @include flex-row;
 
-      .grid-view--body-row {
-        @include flex-row;
+      .grid-view--body-left {
+        @include flex-column;
+        @include text-body-2;
 
-        .grid-view--body-drag {
-          @include drag-vertical-sizing;
-          @include drag-vertical-coloring;
-          @include cell-drag-aligning;
-          @include cell-outline-drag;
+        .grid-view--body-left-row {
+          @include flex-row;
 
-          cursor: grab;
-          //cursor: -webkit-grab;
-          //cursor:-moz-grab;
+          .grid-view--body-drag {
+            @include drag-vertical-sizing;
+            @include drag-vertical-coloring;
+            @include cell-drag-aligning;
+            @include cell-outline-drag;
+
+            cursor: grab;
+            //cursor: -webkit-grab;
+            //cursor:-moz-grab;
+          }
+
+          .grid-view--body-index {
+            @include cell-index-sizing;
+            @include cell-index-aligning;
+            @include cell-outline;
+          }
         }
 
-        .grid-view--body-index {
-          @include cell-index-sizing;
-          @include cell-index-aligning;
-          @include cell-outline;
-        }
-
-        .grid-view--body-data {
-          @include cell-data-sizing;
-          @include cell-data-aligning;
-          @include cell-outline;
+        .grid-view--body-add {
+          margin-top: 4px;
+          margin-left: 4px;
         }
       }
 
-      .grid-view--body-add {
-        margin-top: 4px;
-        margin-left: 4px;
+      .grid-view--body-right {
+        @include flex-column;
+        @include text-body-2;
+
+        .grid-view--body-right-row {
+          @include flex-row;
+
+          .grid-view--body-data {
+            @include cell-data-sizing;
+            @include cell-data-aligning;
+            @include cell-outline;
+          }
+        }
       }
     }
   }
 }
 
-.grid-view .grid-view--body-row .grid-view--body-drag svg {
-  visibility: hidden;
-}
-
-.grid-view .grid-view--body-row:hover .grid-view--body-drag svg {
-  visibility: visible;
-}
+//.grid-view .grid-view--body-row .grid-view--body-drag svg {
+//  visibility: hidden;
+//}
+//
+//.grid-view .grid-view--body-row:hover .grid-view--body-drag svg {
+//  visibility: visible;
+//}
 </style>
