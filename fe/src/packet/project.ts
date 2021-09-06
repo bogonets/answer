@@ -27,6 +27,3 @@ export interface UpdateProjectQ {
     visibility?: number;
     extra?: any;
 }
-
-export const FEATURE_AIRJOY = 'airjoy';
-export const FEATURE_VMS = 'vms';

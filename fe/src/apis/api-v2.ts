@@ -321,9 +321,9 @@ export default class ApiV2 {
         return this.delete(`/main/projects/${group}/${project}/members/${member}`);
     }
 
-    // ---------------
-    // Main/Permission
-    // ---------------
+    // ----------------
+    // Main/Permissions
+    // ----------------
 
     getMainPermissions() {
         return this.get<Array<PermissionA>>('/main/permissions');
@@ -335,6 +335,14 @@ export default class ApiV2 {
 
     getMainPermissionsPgroupPproject(group: string, project: string) {
         return this.get<PermissionA>(`/main/permissions/${group}/${project}`);
+    }
+
+    // ----------
+    // Main/Infos
+    // ----------
+
+    getMainInfosOem() {
+        return this.get<InfoA>(`/main/infos/oem`);
     }
 
     // --------------

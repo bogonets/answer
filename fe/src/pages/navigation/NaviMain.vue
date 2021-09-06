@@ -45,7 +45,7 @@ ko:
 
       <v-list-item link @click.stop="onClickFoldNavigation">
         <v-list-item-icon>
-          <v-avatar color="accent" size="24">{{ projectAvatar }}</v-avatar>
+          <v-avatar color="info" size="24">{{ projectAvatar }}</v-avatar>
         </v-list-item-icon>
         <v-list-item-title>
           {{ projectSlug }}
@@ -187,7 +187,8 @@ ko:
 import {Component, Emit, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {UserA} from '@/packet/user';
-import {ProjectA, FEATURE_VMS, FEATURE_AIRJOY} from '@/packet/project';
+import {ProjectA} from '@/packet/project';
+import {FEATURE_VMS, FEATURE_AIRJOY} from '@/packet/features';
 
 @Component
 export default class NaviMain extends VueBase {
@@ -343,31 +344,6 @@ export default class NaviMain extends VueBase {
   settings() {
     if (!this.noDefault) {
       this.moveToMainSettings();
-    }
-  }
-
-  // -----------------
-  // Extension: AirJoy
-  // -----------------
-
-  @Emit('click:airjoy-summary')
-  airjoySummary() {
-    if (!this.noDefault) {
-      // this.moveToMainProjectAirjoyTables();
-    }
-  }
-
-  @Emit('click:airjoy-live')
-  airjoyLive() {
-    if (!this.noDefault) {
-      // this.moveToMainProjectAirjoyStatistics();
-    }
-  }
-
-  @Emit('click:airjoy-chart')
-  airjoyChart() {
-    if (!this.noDefault) {
-      // this.moveToMainProjectAirjoyMonitoring();
     }
   }
 }
