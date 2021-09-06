@@ -8,7 +8,6 @@ from asyncio import Task, Event, AbstractEventLoop, CancelledError
 from aiohttp import ClientSession
 from aiohttp.hdrs import AUTHORIZATION, CONTENT_TYPE
 from aiohttp.web import Application
-from aiohttp.typedefs import LooseHeaders
 from aiohttp.hdrs import (
     METH_HEAD,
     METH_GET,
@@ -29,7 +28,6 @@ from recc.http.http_app import HttpApp
 from recc.http.http_utils import v2_public_path
 from recc.http import http_urls as u
 from recc.serialization.serialize import serialize_default
-from recc.serialization.deserialize import deserialize_default
 from recc.packet.user import SigninA, SignupQ
 from recc.core.context import Context
 from recc.driver.json import global_json_encoder
@@ -44,23 +42,6 @@ _T = TypeVar("_T")
 
 DEFAULT_ADMIN_USERNAME: Final[str] = "admin"
 DEFAULT_ADMIN_PASSWORD: Final[str] = "0000"
-
-
-class RequestData:
-    def __init__(
-        self,
-        method: str,
-        path: str,
-        *,
-        headers: Optional[LooseHeaders] = None,
-        data: Optional[Any] = None,
-        timeout: Optional[float] = None,
-    ):
-        self.method = method
-        self.path = path
-        self.headers = headers
-        self.data = data
-        self.timeout = timeout
 
 
 class ResponseData:

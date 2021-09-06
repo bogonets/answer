@@ -9,10 +9,12 @@ from recc.argparse.config._utils import get_namespace, get_config_members
 from recc.variables.http import (
     DEFAULT_HTTP_ADDRESS,
     DEFAULT_HTTP_TIMEOUT,
+    DEFAULT_SCHEME,
 )
 
 
 class CtrlConfig(GlobalConfig):
+    scheme: str
     address: str
     timeout: float
     username: str
@@ -28,6 +30,12 @@ ARG_HELP = Argument(
     help=f"Print {Command.task.name} help message.",
 )
 
+ARG_SCHEME = Argument(
+    key="--scheme",
+    last_injection_value=DEFAULT_SCHEME,
+    metavar="scheme",
+    help="URI Scheme",
+)
 ARG_ADDRESS = Argument(
     key="--address",
     last_injection_value=DEFAULT_HTTP_ADDRESS,
@@ -59,6 +67,7 @@ CTRL_USAGE: Final[str] = f"recc {Command.ctrl.name} [options]"
 CTRL_DESCRIPTION: Final[str] = "Command-line controller"
 CTRL_ARGS = (
     ARG_HELP,
+    ARG_SCHEME,
     ARG_ADDRESS,
     ARG_TIMEOUT,
     ARG_USERNAME,
