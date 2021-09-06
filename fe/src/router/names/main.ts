@@ -5,6 +5,11 @@ export const mainNames = {
     mainTables: 'mainTables',
     mainVms: 'mainVms',
 
+    // Airjoy
+    airjoySummary: 'airjoySummary',
+    airjoyMonitor: 'airjoyMonitor',
+    airJoyGraph: 'airJoyGraph',
+
     // -- Not yet --
     mainLayouts: 'mainLayouts',
     mainFiles: 'mainFiles',

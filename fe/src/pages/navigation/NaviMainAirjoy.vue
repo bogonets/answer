@@ -67,6 +67,9 @@ ko:
         </v-list-item>
 
         <v-list-item link @click.stop="airjoyLive">
+          <v-list-item-icon>
+            <v-icon>mdi-monitor-dashboard</v-icon>
+          </v-list-item-icon>
           <v-list-item-title>
             {{ $t('live') }}
           </v-list-item-title>
@@ -74,7 +77,7 @@ ko:
 
         <v-list-item link @click.stop="airjoyChart">
           <v-list-item-icon>
-            <v-icon>mdi-account-group</v-icon>
+            <v-icon>mdi-chart-bar</v-icon>
           </v-list-item-icon>
           <v-list-item-title>
             {{ $t('chart') }}
@@ -186,21 +189,21 @@ export default class NaviMainAirjoy extends VueBase {
   @Emit('click:airjoy-summary')
   airjoySummary() {
     if (!this.noDefault) {
-      // this.moveToMainProjectAirjoyTables();
+      this.moveToMainAirjoySummary();
     }
   }
 
   @Emit('click:airjoy-live')
   airjoyLive() {
     if (!this.noDefault) {
-      // this.moveToMainProjectAirjoyStatistics();
+      this.moveToMainAirjoyMonitor();
     }
   }
 
   @Emit('click:airjoy-chart')
   airjoyChart() {
     if (!this.noDefault) {
-      // this.moveToMainProjectAirjoyMonitoring();
+      this.moveToMainAirJoyGraph();
     }
   }
 
