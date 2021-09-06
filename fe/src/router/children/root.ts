@@ -23,24 +23,26 @@ import RootGroups from '@/pages/RootGroups.vue';
 import RootGroupsNew from '@/pages/RootGroupsNew.vue';
 import RootAbout from '@/pages/RootAbout.vue';
 
+import PUBLIC_PATH from '@/router/public-path';
+
 export const rootChildren = [
     {
-        path: '/init',
+        path: PUBLIC_PATH + 'init',
         component: Init,
         name: rootNames.init,
     },
     {
-        path: '/signin',
+        path: PUBLIC_PATH + 'signin',
         component: Signin,
         name: rootNames.signin,
     },
     {
-        path: '/signup',
+        path: PUBLIC_PATH + 'signup',
         component: Signup,
         name: rootNames.signup,
     },
     {
-        path: '/',
+        path: PUBLIC_PATH,
         component: RouterBarMain,
         meta: {requiresAuth: true},
         children: [

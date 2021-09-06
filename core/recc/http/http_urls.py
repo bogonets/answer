@@ -8,6 +8,7 @@ root = "/"
 
 # Depth 1st.
 app = "/app"
+app_root = app + root
 api = "/api"
 
 # Static files.

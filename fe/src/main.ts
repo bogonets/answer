@@ -148,19 +148,19 @@ Vue.prototype.$buttonColor = function () {
   }
 }
 
-if (process.env.NODE_ENV === 'production') {
-  router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.requiresAuth)) {
-      if (!sessionStore.getters['user/getAccessToken']) {
-        next('/');
-      } else {
-        next();
-      }
-    } else {
-      next();
-    }
-  });
-}
+// if (process.env.NODE_ENV === 'production') {
+//   router.beforeEach((to, from, next) => {
+//     if (to.matched.some(record => record.meta.requiresAuth)) {
+//       if (!sessionStore.getters['user/getAccessToken']) {
+//         next('/app/signin');
+//       } else {
+//         next();
+//       }
+//     } else {
+//       next();
+//     }
+//   });
+// }
 
 new Vue({
   router,

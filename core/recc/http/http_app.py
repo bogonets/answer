@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import asyncio
-import os
 import sys
 from asyncio import AbstractEventLoop, Task, CancelledError
 from ipaddress import ip_address, IPv4Address
@@ -26,20 +25,18 @@ from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 from aiohttp.web_routedef import AbstractRouteDef
 
-from recc.argparse.config.core_config import ARG_HTTP_ROOT
 from recc.core.context import Context
 from recc.http.http_interface import HttpAppCallback, EmptyHttpAppCallback
 from recc.http import http_urls as u
 from recc.http.v1.router_v1 import RouterV1
 from recc.http.v2.router_v2 import RouterV2
-from recc.file.permission import is_readable_dir, is_writable_dir
+from recc.http.http_www import HttpWWW
 from recc.log.logging import recc_http_logger as logger
 from recc.util.version import version_text
 
 PY_36 = sys.version_info >= (3, 6)
 PY_37 = sys.version_info >= (3, 7)
 PY_38 = sys.version_info >= (3, 8)
-DEFAULT_HTTP_ROOT = ARG_HTTP_ROOT.inference_default_value()
 
 
 def _get_ip_family(ip: str) -> int:
@@ -126,7 +123,6 @@ class HttpApp:
         self._callback = callback if callback else EmptyHttpAppCallback()
 
         self._routes = list()
-        self._routes += self._get_http_root_routes()
         self._routes += self._get_common_routes()
         self._routes += self._get_common_api_routes()
 
@@ -139,6 +135,9 @@ class HttpApp:
 
         self._router_v2 = RouterV2(self._context)
         self._app.add_subapp(u.api_v2, self._router_v2.app)
+
+        self._www = HttpWWW(self._context)
+        self._app.add_subapp(u.app, self._www.app)
 
         self._cors = _create_cors(self._app)
 
@@ -159,23 +158,6 @@ class HttpApp:
     @web.middleware
     async def _global_middleware(self, request: Request, handler) -> Response:
         return await handler(request)
-
-    def _get_http_root_routes(self) -> List[AbstractRouteDef]:
-        http_root = self._context.config.http_root
-        if not os.path.isdir(http_root):
-            logger.error(f"Not found http root directory: {http_root}")
-            return []
-
-        if not is_readable_dir(http_root):
-            logger.error(f"Not readable http root directory: {http_root}")
-            return []
-
-        if is_writable_dir(http_root):
-            logger.warning(
-                f"Writable http root directory (There may be a security issue): {http_root}"  # noqa
-            )
-
-        return [web.static(u.app, http_root if http_root else DEFAULT_HTTP_ROOT)]
 
     def _get_common_routes(self) -> List[AbstractRouteDef]:
         return [
@@ -198,10 +180,10 @@ class HttpApp:
         raise GracefulExit()
 
     async def on_get_root(self, request: Request) -> Response:
-        raise web.HTTPFound(u.app_index)
+        raise web.HTTPFound(u.app_root)
 
     async def on_get_index(self, request: Request) -> Response:
-        raise web.HTTPFound(u.app_index)
+        raise web.HTTPFound(u.app_root)
 
     async def on_get_favicon(self, request: Request) -> Response:
         raise web.HTTPFound(u.app_favicon)

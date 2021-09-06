@@ -8,7 +8,7 @@ module.exports = {
     }
   },
 
-  publicPath: process.env.NODE_ENV === "production" ? "/app/" : "/",
+  publicPath: "/app/",
 
   pluginOptions: {
     i18n: {

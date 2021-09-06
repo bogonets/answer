@@ -148,7 +148,7 @@ export default class MenuAccount extends VueBase {
   onClickLogout() {
     this.$localStore.clearSession();
     this.$store.commit('user/logout');
-    this.$router.push('/');
+    this.moveToSignin();
   }
 }
 </script>
