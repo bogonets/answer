@@ -8,6 +8,11 @@ from recc.argparse.config.core_config import (
     CORE_ARGS,
     cast_core_config,
 )
+from recc.argparse.config.ctrl_config import (
+    CtrlConfig,
+    CTRL_ARGS,
+    cast_ctrl_config,
+)
 from recc.argparse.config.task_config import (
     TaskConfig,
     TASK_ARGS,
@@ -40,6 +45,12 @@ def get_default_core_namespace() -> Namespace:
     return result
 
 
+def get_default_ctrl_namespace() -> Namespace:
+    result = get_default_namespace(*GLOBAL_ARGS, *CTRL_ARGS)
+    setattr(result, ARG_COMMAND.normalize_key, Command.ctrl.name)
+    return result
+
+
 def get_default_task_namespace() -> Namespace:
     result = get_default_namespace(*GLOBAL_ARGS, *TASK_ARGS)
     setattr(result, ARG_COMMAND.normalize_key, Command.task.name)
@@ -52,6 +63,10 @@ def get_default_global_config() -> GlobalConfig:
 
 def get_default_core_config() -> CoreConfig:
     return cast_core_config(get_default_core_namespace())
+
+
+def get_default_ctrl_config() -> CtrlConfig:
+    return cast_ctrl_config(get_default_ctrl_namespace())
 
 
 def get_default_task_config() -> TaskConfig:
