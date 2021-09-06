@@ -11,6 +11,7 @@ from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.member import MemberA, CreateMemberQ, UpdateMemberQ
 from recc.packet.permission import PermissionA
+from recc.packet.info import InfoA
 from recc.variables.database import (
     VISIBILITY_LEVEL_PRIVATE,
     PERMISSION_NAME_GUEST,
@@ -349,6 +350,19 @@ class RouterV2MainTestCase(AsyncTestCase):
         self.assertIn(self.username, response1_data)
         self.assertIn(user1_username, response1_data)
         self.assertIn(user2_username, response1_data)
+
+    async def test_infos_oem(self):
+        response1 = await self.tester.get(v2_main_path(u.infos_oem))
+        self.assertNotEqual(200, response1.status)
+
+        oem = "tester"
+        await self.tester.context.set_info_oem(oem)
+
+        response2 = await self.tester.get(v2_main_path(u.infos_oem), cls=InfoA)
+        self.assertEqual(200, response2.status)
+        response2_data = response2.data
+        self.assertIsInstance(response2_data, InfoA)
+        self.assertEqual(oem, response2_data.value)
 
 
 if __name__ == "__main__":

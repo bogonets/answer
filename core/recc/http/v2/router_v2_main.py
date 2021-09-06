@@ -3,7 +3,7 @@
 from typing import List
 from aiohttp import web
 from aiohttp.web_routedef import AbstractRouteDef
-from aiohttp.web_exceptions import HTTPBadRequest, HTTPForbidden
+from aiohttp.web_exceptions import HTTPBadRequest, HTTPForbidden, HTTPNotFound
 from recc.core.context import Context
 from recc.http.http_decorator import parameter_matcher
 from recc.session.session_ex import SessionEx
@@ -12,6 +12,7 @@ from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.member import MemberA, CreateMemberQ, UpdateMemberQ
 from recc.packet.permission import PermissionA
+from recc.packet.info import InfoA
 from recc.packet.cvt.project import project_to_answer
 from recc.packet.cvt.group import group_to_answer
 from recc.packet.cvt.permission import permission_to_answer
@@ -77,6 +78,9 @@ class RouterV2Main:
 
             # Users
             web.get(u.usernames, self.get_usernames),
+
+            # Infos
+            web.get(u.infos_oem, self.get_infos_oem),
         ]
         # fmt: on
 
@@ -467,3 +471,21 @@ class RouterV2Main:
     @parameter_matcher()
     async def get_usernames(self) -> List[str]:
         return await self.context.get_usernames()
+
+    # -----
+    # Infos
+    # -----
+
+    @parameter_matcher()
+    async def get_infos_oem(self) -> InfoA:
+        try:
+            db_info = await self.context.get_info_oem()
+        except RuntimeError as e:
+            raise HTTPNotFound(reason=str(e))
+        assert db_info.key
+        return InfoA(
+            key=db_info.key,
+            value=db_info.value,
+            created_at=db_info.created_at,
+            updated_at=db_info.updated_at,
+        )
