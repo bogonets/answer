@@ -1,6 +1,7 @@
 <i18n lang="yaml">
 en:
   summary: "Summary"
+  table: "Table"
   live: "Live"
   chart: "Chart"
   members: "Members"
@@ -8,6 +9,7 @@ en:
 
 ko:
   summary: "요약"
+  table: "테이블"
   live: "실시간"
   chart: "차트"
   members: "회원 관리"
@@ -61,6 +63,15 @@ ko:
           </v-list-item-icon>
           <v-list-item-title>
             {{ $t('live') }}
+          </v-list-item-title>
+        </v-list-item>
+
+        <v-list-item link @click.stop="airjoyTable">
+          <v-list-item-icon>
+            <v-icon>mdi-table</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('table') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -178,14 +189,21 @@ export default class NaviMainAirjoy extends VueBase {
   @Emit('click:airjoy-live')
   airjoyLive() {
     if (!this.noDefault) {
-      this.moveToMainAirjoyMonitor();
+      this.moveToMainAirjoyLive();
+    }
+  }
+
+  @Emit('click:airjoy-table')
+  airjoyTable() {
+    if (!this.noDefault) {
+      this.moveToMainAirjoyTable();
     }
   }
 
   @Emit('click:airjoy-chart')
   airjoyChart() {
     if (!this.noDefault) {
-      this.moveToMainAirJoyGraph();
+      this.moveToMainAirJoyChart();
     }
   }
 

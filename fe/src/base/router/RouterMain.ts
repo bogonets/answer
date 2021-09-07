@@ -49,15 +49,19 @@ export default class RouterMain extends Router {
     // Airjoy
     // ------
 
+    moveToMainAirJoyChart(group?: string, project?: string) {
+        this._moveToMainSubpage(mainNames.mainAirjoyChart, group, project);
+    }
+
+    moveToMainAirjoyLive(group?: string, project?: string) {
+        this._moveToMainSubpage(mainNames.mainAirjoyLive, group, project);
+    }
+
     moveToMainAirjoySummary(group?: string, project?: string) {
-        this._moveToMainSubpage(mainNames.airjoySummary, group, project);
+        this._moveToMainSubpage(mainNames.mainAirjoySummary, group, project);
     }
 
-    moveToMainAirjoyMonitor(group?: string, project?: string) {
-        this._moveToMainSubpage(mainNames.airjoyMonitor, group, project);
-    }
-
-    moveToMainAirJoyGraph(group?: string, project?: string) {
-        this._moveToMainSubpage(mainNames.airJoyGraph, group, project);
+    moveToMainAirjoyTable(group?: string, project?: string) {
+        this._moveToMainSubpage(mainNames.mainAirjoyTable, group, project);
     }
 }
