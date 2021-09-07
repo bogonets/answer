@@ -9,7 +9,6 @@ en:
   tasks: "Tasks"
   templates: "Templates"
   features: "Features"
-  envs: "System variables"
 
 ko:
   title: "관리자 설정"
@@ -21,7 +20,6 @@ ko:
   tasks: "태스크"
   templates: "템플릿"
   features: "기능 설정"
-  envs: "시스템 변수"
 </i18n>
 
 <template>
@@ -128,15 +126,6 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item link @click.stop="envs">
-          <v-list-item-icon>
-            <v-icon>mdi-cogs</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('envs') }}
-          </v-list-item-title>
-        </v-list-item>
-
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
@@ -219,13 +208,6 @@ export default class NaviAdmin extends VueBase {
   features() {
     if (!this.noDefault) {
       this.moveToAdminConfigs();
-    }
-  }
-
-  @Emit('click:envs')
-  envs() {
-    if (!this.noDefault) {
-      this.moveToAdminInfos();
     }
   }
 }

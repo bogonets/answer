@@ -3,11 +3,13 @@ en:
   title: "DevTools"
   overview: "Overview"
   envs: "Environment"
+  infos: "Infos"
 
 ko:
   title: "개발 도구"
   overview: "개요"
   envs: "환경 변수"
+  infos: "기본 설정"
 </i18n>
 
 <template>
@@ -60,6 +62,15 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
+        <v-list-item link @click.stop="infos">
+          <v-list-item-icon>
+            <v-icon>mdi-cogs</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('infos') }}
+          </v-list-item-title>
+        </v-list-item>
+
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
@@ -100,6 +111,13 @@ export default class NaviDev extends VueBase {
   envs() {
     if (!this.noDefault) {
       this.moveToDevEnvs();
+    }
+  }
+
+  @Emit('click:infos')
+  infos() {
+    if (!this.noDefault) {
+      this.moveToDevInfos();
     }
   }
 }

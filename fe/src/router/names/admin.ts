@@ -3,7 +3,6 @@ export const adminNames = {
     adminGroups: 'adminGroups',
     adminGroupsEdit: 'adminGroupsEdit',
     adminGroupsNew: 'adminGroupsNew',
-    adminInfos: 'adminInfos',
     adminOverview: 'adminOverview',
     adminPermissions: 'adminPermissions',
     adminPermissionsEdit: 'adminPermissionsEdit',

@@ -24,10 +24,6 @@ export default class RouterAdmin extends Router {
         this.moveTo(adminNames.adminGroupsNew);
     }
 
-    moveToAdminInfos() {
-        this.moveTo(adminNames.adminInfos);
-    }
-
     moveToAdminOverview() {
         this.moveTo(adminNames.adminOverview);
     }
