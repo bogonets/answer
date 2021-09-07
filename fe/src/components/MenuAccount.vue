@@ -108,7 +108,7 @@ export default class MenuAccount extends VueBase {
   }
 
   get isDeveloperMode(): boolean {
-    return process.env.NODE_ENV !== 'production';
+    return this.hasAdminPermission && this.$localStore.devEnable;
   }
 
   get usernameAvatar(): string {
