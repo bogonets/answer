@@ -4,6 +4,7 @@ export default {
         access: '',
         refresh: '',
         user: {},
+        preference: {},
     },
     getters: {
         already: state => {
@@ -32,7 +33,10 @@ export default {
                 return state.user.extra.lang || '';
             }
             return '';
-        }
+        },
+        preference: state => {
+            return state.preference;
+        },
     },
     mutations: {
         access(state, val) {
@@ -58,6 +62,9 @@ export default {
                 state.user.extra = {};
             }
             state.user.extra.lang = val;
-        }
+        },
+        preference(state, val) {
+            state.preference = val;
+        },
     },
 }

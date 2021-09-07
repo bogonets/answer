@@ -20,7 +20,9 @@ import {
     UpdatePasswordQ,
     UserExtra,
     createEmptySigninA,
+    createEmptyUserA,
 } from '@/packet/user';
+import {PreferenceA, createEmptyPreference} from '@/packet/preference';
 import {encryptSha256} from '@/crypto/sha';
 
 const DEFAULT_TIMEOUT = 30 * 1000;
@@ -99,10 +101,16 @@ export default class ApiV2 {
         this.api.defaults.baseURL = originToBaseUrl(origin);
     }
 
-    setDefaultSession(access: string, refresh: string, user: UserA) {
+    setDefaultSession(
+        access: string,
+        refresh: string,
+        user: UserA,
+        preference: PreferenceA,
+    ) {
         this.session.access = access;
         this.session.refresh = refresh;
         this.session.user = user;
+        this.session.preference = preference;
     }
 
     setDefaultBearerAuthorization(token: string) {
@@ -181,8 +189,9 @@ export default class ApiV2 {
                     throw new ApiV2RefreshTokenError(refresh);
                 }
                 if (updateDefaultAuth) {
-                    const user = result.user || {};
-                    this.setDefaultSession(access, refresh, user);
+                    const user = result.user || createEmptyUserA();
+                    const preference = result.preference || createEmptyPreference();
+                    this.setDefaultSession(access, refresh, user, preference);
                     this.setDefaultBearerAuthorization(access);
                 }
                 return result;

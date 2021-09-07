@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from hashlib import sha256
 from typing import Optional, Any
 from datetime import datetime
+from recc.packet.preference import PreferenceA
 
 
 @dataclass
@@ -57,6 +58,7 @@ class SigninA:
     access: str
     refresh: str
     user: UserA
+    preference: PreferenceA
 
 
 @dataclass

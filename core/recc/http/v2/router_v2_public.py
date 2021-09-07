@@ -13,6 +13,7 @@ from recc.http.header.basic_auth import BasicAuth
 from recc.http.http_decorator import parameter_matcher
 from recc.util.version import version_text
 from recc.packet.user import UserA, SigninA, SignupQ
+from recc.packet.preference import PreferenceA
 from recc.http import http_urls as u
 
 
@@ -97,6 +98,7 @@ class RouterV2Public:
         access, refresh = await self.context.signin(username)
         user_uid = await self.context.get_user_uid(username)
         db_user = await self.context.get_user(user_uid)
+        oem = await self.context.opt_info_oem_value()
         assert db_user.username is not None
         user = UserA(
             username=db_user.username,
@@ -110,4 +112,5 @@ class RouterV2Public:
             updated_at=db_user.updated_at,
             last_login=db_user.last_login,
         )
-        return SigninA(access, refresh, user)
+        preference = PreferenceA(oem=oem)
+        return SigninA(access, refresh, user, preference)

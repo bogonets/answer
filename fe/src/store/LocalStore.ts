@@ -3,6 +3,7 @@ import {PluginObject} from 'vue/types/plugin';
 import {Store, CommitOptions} from 'vuex';
 import VuexPersist from 'vuex-persist'
 import {UserA, UserExtra} from '@/packet/user';
+import {PreferenceA} from '@/packet/preference';
 
 // Modules
 import api from '@/store/modules/api';
@@ -24,6 +25,7 @@ const SESSION_USER = 'session/user';
 const SESSION_USER_EXTRA = 'session/userExtra';
 const SESSION_USER_EXTRA_DARK = 'session/userExtraDark';
 const SESSION_USER_EXTRA_LANG = 'session/userExtraLang';
+const SESSION_PREFERENCE = 'session/preference';
 const TRANSLATION_LANG = 'translation/lang';
 
 export interface LocalStoreOptions {
@@ -130,6 +132,14 @@ export class LocalStore {
 
     set user(val: UserA) {
         this.setter(SESSION_USER, val);
+    }
+
+    get preference() {
+        return this.getter(SESSION_PREFERENCE) as PreferenceA;
+    }
+
+    set preference(val: PreferenceA) {
+        this.setter(SESSION_PREFERENCE, val);
     }
 
     get userExtra() {

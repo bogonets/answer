@@ -1,3 +1,5 @@
+import {PreferenceA, createEmptyPreference} from '@/packet/preference';
+
 export interface UserA {
     username: string;
     nickname?: string;
@@ -24,6 +26,7 @@ export interface SigninA {
     access: string;
     refresh: string;
     user: UserA;
+    preference: PreferenceA;
 }
 
 export interface SignupQ {
@@ -71,6 +74,7 @@ export function createEmptySigninA() {
         access: '',
         refresh: '',
         user: createEmptyUserA(),
+        preference: createEmptyPreference(),
     } as SigninA;
 }
 

@@ -1,6 +1,5 @@
 <i18n lang="yaml">
 en:
-  dashboard: "Dashboard"
   summary: "Summary"
   live: "Live"
   chart: "Chart"
@@ -8,7 +7,6 @@ en:
   settings: "Settings"
 
 ko:
-  dashboard: "대시보드"
   summary: "요약"
   live: "실시간"
   chart: "차트"
@@ -47,15 +45,6 @@ ko:
           :value="value"
           @change="input"
       >
-
-        <v-list-item link @click.stop="dashboard">
-          <v-list-item-icon>
-            <v-icon>mdi-gauge</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('dashboard') }}
-          </v-list-item-title>
-        </v-list-item>
 
         <v-list-item link @click.stop="airjoySummary">
           <v-list-item-icon>
@@ -177,13 +166,6 @@ export default class NaviMainAirjoy extends VueBase {
   @Emit()
   input(index: number) {
     return index;
-  }
-
-  @Emit('click:dashboard')
-  dashboard() {
-    if (!this.noDefault) {
-      this.moveToMainDashboard();
-    }
   }
 
   @Emit('click:airjoy-summary')

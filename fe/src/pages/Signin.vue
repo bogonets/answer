@@ -144,7 +144,8 @@ import VueBase from '@/base/VueBase';
 import TitleLogo from '@/components/TitleLogo.vue';
 import LinearLoading from '@/components/LinearLoading.vue';
 import ButtonsConfigPublic from '@/components/ButtonsConfigPublic.vue';
-import {UserA, UserExtra} from '@/packet/user';
+import {UserA, UserExtra, createEmptyUserA} from '@/packet/user';
+import {PreferenceA, createEmptyPreference} from '@/packet/preference';
 
 const WAIT_MOMENT_MILLISECONDS = 0;
 const V_TEXT_FIELD_VALIDATE = 'validate';
@@ -263,10 +264,16 @@ export default class Signin extends VueBase {
 
   // Methods
 
-  saveUserToLocal(access: string, refresh: string, user: UserA) {
+  saveUserToLocal(
+      access: string,
+      refresh: string,
+      user: UserA,
+      preference: PreferenceA,
+  ) {
     this.$localStore.access = access;
     this.$localStore.refresh = refresh;
     this.$localStore.user = user;
+    this.$localStore.preference = preference;
   }
 
   /**
@@ -433,8 +440,9 @@ export default class Signin extends VueBase {
 
           const access = response.access || '';
           const refresh = response.refresh || '';
-          const user = response.user || {} as UserA;
-          this.saveUserToLocal(access, refresh, user);
+          const user = response.user || createEmptyUserA();
+          const preference = response.preference || createEmptyPreference();
+          this.saveUserToLocal(access, refresh, user, preference);
           this.saveUserToSession(access, refresh, user);
 
           if (user.extra) {

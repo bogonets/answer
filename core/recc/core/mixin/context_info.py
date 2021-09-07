@@ -36,5 +36,15 @@ class ContextInfo(ContextBase):
     async def get_info_oem(self) -> Info:
         return await self.get_info(INFO_KEY_OEM)
 
+    async def opt_info_oem_value(self, default_value="") -> str:
+        try:
+            info = await self.get_info(INFO_KEY_OEM)
+            if info.value:
+                return info.value
+            else:
+                return default_value
+        except:  # noqa
+            return default_value
+
     async def set_info_oem(self, value: str) -> Info:
         return await self.database.upsert_info(INFO_KEY_OEM, value)

@@ -1,12 +1,20 @@
 import {Component} from 'vue-property-decorator';
 import Router from '@/base/router/Router';
 import mainNames from "@/router/names/main";
-import AirJoyGraph from "@/components/external/airjoy/AirJoyGraph.vue";
+import {OEM_AIRJOY} from "@/packet/oem";
 
 @Component
 export default class RouterMain extends Router {
     moveToMain(group?: string, project?: string) {
-        this.moveToMainDashboard(group, project);
+        const oem = this.$localStore.preference.oem;
+        switch (oem) {
+            case OEM_AIRJOY:
+                this.moveToMainAirjoySummary(group, project);
+                break;
+            default:
+                this.moveToMainDashboard(group, project);
+                break;
+        }
     }
 
     private _moveToMainSubpage(routeName: string, group?: string, project?: string) {

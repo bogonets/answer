@@ -31,6 +31,7 @@ export default class App extends VueBase {
     const access = this.$localStore.access;
     const refresh = this.$localStore.refresh;
     const user = this.$localStore.user;
+    const preference = this.$localStore.preference;
     console.info(`[APP] Already session information: ${user.username}`)
 
     // This information is used in APIv1.
@@ -42,7 +43,7 @@ export default class App extends VueBase {
       phone: user.phone1 || '',
     });
 
-    this.$api2.setDefaultSession(access, refresh, user);
+    this.$api2.setDefaultSession(access, refresh, user, preference);
     this.$api2.setDefaultBearerAuthorization(access);
 
     if (user.extra) {
