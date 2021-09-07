@@ -100,7 +100,11 @@ def request_version(
     timeout=DEFAULT_REQUEST_TIMEOUT_SECONDS,
 ) -> Tuple[int, Optional[str]]:
     return request(
-        host=host, port=port, path=u.api_version, scheme=scheme, timeout=timeout
+        host=host,
+        port=port,
+        path=u.api_version,
+        scheme=scheme,
+        timeout=timeout,
     )
 
 
@@ -128,10 +132,10 @@ class HttpClient:
         self.address = address
         self.timeout = timeout
 
-        self._username: Optional[str] = None
-        self._password: Optional[str] = None
-        self._access_token: Optional[str] = None
-        self._refresh_token: Optional[str] = None
+        self.username: Optional[str] = None
+        self.password: Optional[str] = None
+        self.access_token: Optional[str] = None
+        self.refresh_token: Optional[str] = None
 
     @property
     def origin(self) -> str:
@@ -181,8 +185,8 @@ class HttpClient:
             for key, value in headers.items():
                 updated_headers.add(key, value)
 
-        if self._access_token and AUTHORIZATION not in updated_headers:
-            token = BearerAuth(self._access_token).encode()
+        if self.access_token and AUTHORIZATION not in updated_headers:
+            token = BearerAuth(self.access_token).encode()
             updated_headers.add(AUTHORIZATION, token)
 
         request_body: str
@@ -197,30 +201,41 @@ class HttpClient:
         else:
             request_body = ""
 
-        async with ClientSession(timeout=self.timeout) as session:
-            method_caller = self.get_method_caller(method, session)
-            async with method_caller(
-                url=url,
-                data=request_body,
-                headers=updated_headers,
-                timeout=self.timeout,
-            ) as response:
-                response_data: Any = None
-                if cls is not None:
-                    response_data = payload_to_class(
-                        response.headers, await response.text(), cls
-                    )
-                elif response.content_length > 0:
-                    if response.content_type == APPLICATION_JSON:
-                        response_data = await response.json()
-                    else:
-                        response_data = await response.text()
+        await self.on_request_begin()
 
-                return ResponseData(
-                    status=response.status,
-                    data=response_data,
-                    headers=response.headers,
-                )
+        try:
+            async with ClientSession(timeout=self.timeout) as session:
+                method_caller = self.get_method_caller(method, session)
+                async with method_caller(
+                    url=url,
+                    data=request_body,
+                    headers=updated_headers,
+                    timeout=self.timeout,
+                ) as response:
+                    response_data: Any = None
+                    if cls is not None:
+                        response_data = payload_to_class(
+                            response.headers, await response.text(), cls
+                        )
+                    elif response.content_length > 0:
+                        if response.content_type == APPLICATION_JSON:
+                            response_data = await response.json()
+                        else:
+                            response_data = await response.text()
+
+                    return ResponseData(
+                        status=response.status,
+                        data=response_data,
+                        headers=response.headers,
+                    )
+        finally:
+            await self.on_request_end()
+
+    async def on_request_begin(self):
+        pass
+
+    async def on_request_end(self):
+        pass
 
     async def get(
         self,
@@ -272,6 +287,24 @@ class HttpClient:
     ) -> ResponseData:
         return await self.request(METH_DELETE, path, headers, text, data, cls)
 
+    async def signup_public(self, username: str, password: str) -> None:
+        if not username:
+            raise ValueError("A `username` argument is required.")
+        if not password:
+            raise ValueError("A `password` argument is required.")
+        signup = SignupQ(username, SignupQ.encrypt_password(password))
+        response = await self.post(v2_public_path(u.signup), data=signup)
+        if response.status != HTTPStatus.OK:
+            raise RuntimeError(f"Signup status error: {response.status}")
+
+    async def signup_admin(self, username: str, password: str) -> None:
+        signup = SignupQ(username, SignupQ.encrypt_password(password))
+        response = await self.post(v2_public_path(u.signup_admin), data=signup)
+        if response.status == HTTPStatus.SERVICE_UNAVAILABLE:
+            pass
+        elif response.status != HTTPStatus.OK:
+            raise RuntimeError(f"Signup status error: {response.status}")
+
     async def signin(self, username: str, password: str, save_session=False) -> SigninA:
         auth = BasicAuth(username, SignupQ.encrypt_password(password))
         headers = {str(AUTHORIZATION): auth.encode()}
@@ -285,8 +318,18 @@ class HttpClient:
         assert result.user is not None
         assert isinstance(result, SigninA)
         if save_session:
-            self._username = username
-            self._password = password
-            self._access_token = result.access
-            self._refresh_token = result.refresh
+            self.username = username
+            self.password = password
+            self.access_token = result.access
+            self.refresh_token = result.refresh
         return result
+
+    async def signup_and_in(
+        self, username: str, password: str, save_session=True
+    ) -> None:
+        if not username:
+            raise ValueError("A `username` argument is required.")
+        if not password:
+            raise ValueError("A `password` argument is required.")
+        await self.signup_admin(username, password)
+        await self.signin(username, password, save_session=save_session)
