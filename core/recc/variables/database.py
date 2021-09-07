@@ -45,10 +45,10 @@ VIEW_USER_ADMIN_COUNT = f"{VIEW_PREFIX}user_admin_count"
 # VIEW_PROJECT_WIDGET = f"{VIEW_PREFIX}project_widget"
 # VIEW_LAYOUT_WIDGET = f"{VIEW_PREFIX}layout_widget"
 
-RECC_DB_VERSION_KEY = "recc.db.version"
-RECC_OEM_KEY = "recc.oem"
-RECC_UUID_KEY = "recc.uuid"
-RECC_INSTALL_TIMESTAMP_KEY = "recc.install.timestamp"
+INFO_KEY_RECC_DB_VERSION = "recc.db.version"
+INFO_KEY_RECC_UUID = "recc.uuid"
+INFO_KEY_RECC_INSTALL_TIMESTAMP = "recc.install.timestamp"
+INFO_KEY_OEM = "recc.oem"
 
 DEFAULT_TIMEOUT_SECONDS = 30.0
 DEFAULT_CLOSE_TIMEOUT_SECONDS = 30.0

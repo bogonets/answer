@@ -8,7 +8,7 @@ from recc.rule.database_info import (
     valid_user_modifiable,
     valid_user_removable,
 )
-from recc.variables.database import RECC_OEM_KEY
+from recc.variables.database import INFO_KEY_OEM
 
 
 class ContextInfo(ContextBase):
@@ -34,7 +34,7 @@ class ContextInfo(ContextBase):
         return await self.database.select_info_by_key(key)
 
     async def get_info_oem(self) -> Info:
-        return await self.get_info(RECC_OEM_KEY)
+        return await self.get_info(INFO_KEY_OEM)
 
     async def set_info_oem(self, value: str) -> Info:
-        return await self.database.upsert_info(RECC_OEM_KEY, value)
+        return await self.database.upsert_info(INFO_KEY_OEM, value)

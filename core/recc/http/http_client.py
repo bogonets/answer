@@ -116,14 +116,14 @@ class ResponseData:
         self,
         *,
         status: Optional[int] = None,
+        reason: Optional[str] = None,
         data: Optional[Any] = None,
         headers: Optional[CIMultiDictProxy] = None,
-        exception: Optional[BaseException] = None,
     ):
         self.status = status
+        self.reason = reason
         self.data = data
         self.headers = headers
-        self.exception = exception
 
 
 class HttpClient:
@@ -213,18 +213,20 @@ class HttpClient:
                     timeout=self.timeout,
                 ) as response:
                     response_data: Any = None
-                    if cls is not None:
-                        response_data = payload_to_class(
-                            response.headers, await response.text(), cls
-                        )
-                    elif response.content_length > 0:
-                        if response.content_type == APPLICATION_JSON:
+
+                    if response.content_length > 0:
+                        if response.status == HTTPStatus.OK and cls is not None:
+                            response_data = payload_to_class(
+                                response.headers, await response.text(), cls
+                            )
+                        elif response.content_type.startswith(APPLICATION_JSON):
                             response_data = await response.json()
                         else:
                             response_data = await response.text()
 
                     return ResponseData(
                         status=response.status,
+                        reason=response.reason,
                         data=response_data,
                         headers=response.headers,
                     )

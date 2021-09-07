@@ -3,7 +3,7 @@
 from recc.variables.database import (
     TABLE_INFO,
     VIEW_INFO_DB_VERSION,
-    RECC_DB_VERSION_KEY,
+    INFO_KEY_RECC_DB_VERSION,
 )
 from recc.util.version import database_version
 
@@ -17,14 +17,14 @@ INSERT INTO {TABLE_INFO} (
     value,
     created_at
 ) SELECT
-    '{RECC_DB_VERSION_KEY}',
+    '{INFO_KEY_RECC_DB_VERSION}',
     '{database_version}',
     $1
 WHERE
     NOT EXISTS(
         SELECT value
         FROM {TABLE_INFO}
-        WHERE key LIKE '{RECC_DB_VERSION_KEY}'
+        WHERE key LIKE '{INFO_KEY_RECC_DB_VERSION}'
     );
 """
 

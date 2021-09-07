@@ -29,10 +29,6 @@ def main(
         printer(e)
         return 1
 
-    if config.unrecognized_arguments:
-        printer(f"Unrecognized arguments: {config.unrecognized_arguments}")
-        return 1
-
     if config.help:
         printer(config.help_message)
         return 0
@@ -46,6 +42,11 @@ def main(
         return 1
 
     cmd = get_command(config)
+
+    if cmd != Command.ctrl and config.unrecognized_arguments:
+        printer(f"Unrecognized arguments: {config.unrecognized_arguments}")
+        return 1
+
     if cmd == Command.core:
         assert isinstance(config, CoreConfig)
         return core_main(config, http_callback)

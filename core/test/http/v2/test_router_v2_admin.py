@@ -4,7 +4,7 @@ from unittest import main
 from typing import List
 from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
-from recc.variables.database import RECC_DB_VERSION_KEY
+from recc.variables.database import INFO_KEY_RECC_DB_VERSION
 from recc.http.http_utils import v2_admin_path
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
@@ -29,9 +29,11 @@ class RouterV2AdminTestCase(AsyncTestCase):
         response1 = await self.tester.get(v2_admin_path(u.infos), cls=List[InfoA])
         self.assertEqual(200, response1.status)
         self.assertIsInstance(response1.data, list)
-        version = list(filter(lambda x: x.key == RECC_DB_VERSION_KEY, response1.data))
+        version = list(
+            filter(lambda x: x.key == INFO_KEY_RECC_DB_VERSION, response1.data)
+        )
         self.assertEqual(1, len(version))
-        self.assertEqual(RECC_DB_VERSION_KEY, version[0].key)
+        self.assertEqual(INFO_KEY_RECC_DB_VERSION, version[0].key)
 
         info1 = CreateInfoQ("key1", "value2")
         response2 = await self.tester.post(v2_admin_path(u.infos), data=info1)
