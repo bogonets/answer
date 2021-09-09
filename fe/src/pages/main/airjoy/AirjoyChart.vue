@@ -3,6 +3,7 @@ en:
   groups: "Groups"
   airjoy_table: "Table"
   chart: "Chart"
+  period: "Please select a period or date"
   labels:
     category: "Please select a category to output as a chart"
   categories:
@@ -17,6 +18,7 @@ ko:
   groups: "Groups"
   airjoy_table: "Table"
   chart: "Chart"
+  period: "기간 또는 날짜를 선택해 주세요"
   labels:
     category: "차트로 출력할 카테고리를 선택하세요"
   categories:
@@ -53,13 +55,12 @@ ko:
         <div class="d-inline-flex flex-row align-center text-center">
           <v-icon class="mr-2">mdi-calendar</v-icon>
           <v-menu
-              ref="menu"
-              v-model="menu2"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              transition="scale-transition"
               offset-y
+              transition="scale-transition"
               min-width="auto"
+              v-model="periodMenu"
+              :nudge-right="datePickerSize"
+              :close-on-content-click="false"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
@@ -68,45 +69,16 @@ ko:
                   outlined
                   readonly
                   hide-details
-                  v-model="date"
-                  label="Picker without buttons"
+                  v-model="periodRangeText"
+                  :label="$t('period')"
                   prepend-icon=""
                   v-bind="attrs"
                   v-on="on"
               ></v-text-field>
             </template>
             <v-date-picker
-                v-model="date"
-                no-title
-                scrollable
-                @input="menu2 = false"
-            ></v-date-picker>
-          </v-menu>
-          <span class="mx-3">~</span>
-          <v-menu
-              ref="menu"
-              v-model="menu2"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              transition="scale-transition"
-              offset-y
-              min-width="auto"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                  dense
-                  rounded
-                  outlined
-                  readonly
-                  hide-details
-                  v-model="date"
-                  label="Picker without buttons"
-                  v-bind="attrs"
-                  v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-                v-model="date"
+                v-model="periodRange"
+                range
                 no-title
                 scrollable
                 @input="menu2 = false"
@@ -152,7 +124,7 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component} from 'vue-property-decorator';
+import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import VueApexCharts from 'vue-apexcharts';
@@ -163,6 +135,17 @@ import {
   CATEGORY_HUMIDITY,
   CATEGORY_TEMPERATURE,
 } from '@/packet/airjoy';
+
+export function today() {
+  const now = new Date(Date.now());
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+  const yearText = `${year}`.padStart(4, '0');
+  const monthText = `${month}`.padStart(2, '0');
+  const dayText = `${day}`.padStart(2, '0');
+  return `${yearText}-${monthText}-${dayText}`;
+}
 
 @Component({
   components: {
@@ -500,6 +483,12 @@ export default class AirjoyChart extends VueBase {
     ]
   }];
 
+  @Prop({type: Number, default: 40})
+  readonly datePickerSize!: number;
+
+  periodMenu = false;
+  periodRange = [today()];
+
   category = '';
 
   created() {
@@ -507,6 +496,10 @@ export default class AirjoyChart extends VueBase {
     if (index !== -1) {
       this.category = this.categories[index];
     }
+  }
+
+  get periodRangeText() {
+    return this.periodRange.join(' ~ ')
   }
 
   get categories() {

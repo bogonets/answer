@@ -109,3 +109,17 @@ export function createEmptyAirjoyA() {
         sleepMode: 0,
     } as AirjoyA;
 }
+
+export function createEmptyAirjoyAsA() {
+    return {
+        group: '',
+        project: '',
+        airjoyUid: '',
+        uid: 0,
+        author: '',
+        description: '',
+        datetime: '',
+        created_at: '',
+        updated_at: '',
+    } as AirjoyAsA;
+}
