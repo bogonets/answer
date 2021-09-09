@@ -45,6 +45,21 @@ ko:
         <airjoy-table-item
             hide-description
             :item="item"
+            @click:body="onClickBody"
+            @click:name="onClickName"
+            @click:power="onClickPower"
+            @click:mode="onClickMode"
+            @click:fan-weak="onClickFanWeak"
+            @click:fan-medium="onClickFanMedium"
+            @click:fan-high="onClickFanHigh"
+            @click:lock="onClickLock"
+            @click:filter="onClickFilter"
+            @click:sleep="onClickSleep"
+            @click:time-off="onClickTimeOff"
+            @click:time-one="onClickTimeOne"
+            @click:time-two="onClickTimeTwo"
+            @click:time-four="onClickTimeFour"
+            @click:time-eight="onClickTimeEight"
         ></airjoy-table-item>
       </template>
 
@@ -56,10 +71,11 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop} from 'vue-property-decorator';
+import {Component, Emit, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
-import {AirjoyA, createEmptyAirjoyA} from "@/packet/airjoy";
+import type {AirjoyA} from "@/packet/airjoy";
+import {createEmptyAirjoyA} from "@/packet/airjoy";
 import AirjoyTableItem from "@/pages/main/airjoy/AirjoyTableItem.vue";
 
 @Component({
@@ -244,6 +260,53 @@ export default class AirjoyTable extends VueBase {
     this.items[2].sleepMode = 1;
     this.items[3].sleepMode = 1;
     this.items[4].sleepMode = 1;
+  }
+
+  onClickBody(item: AirjoyA) {
+    this.moveToMainAirjoyDetails(`${item.uid}`);
+  }
+
+  onClickName(item: AirjoyA) {
+    this.moveToMainAirjoyDetails(`${item.uid}`);
+  }
+
+  onClickPower(item: AirjoyA) {
+  }
+
+  onClickMode(item: AirjoyA) {
+  }
+
+  onClickFanWeak(item: AirjoyA) {
+  }
+
+  onClickFanMedium(item: AirjoyA) {
+  }
+
+  onClickFanHigh(item: AirjoyA) {
+  }
+
+  onClickLock(item: AirjoyA) {
+  }
+
+  onClickFilter(item: AirjoyA) {
+  }
+
+  onClickSleep(item: AirjoyA) {
+  }
+
+  onClickTimeOff(item: AirjoyA) {
+  }
+
+  onClickTimeOne(item: AirjoyA) {
+  }
+
+  onClickTimeTwo(item: AirjoyA) {
+  }
+
+  onClickTimeFour(item: AirjoyA) {
+  }
+
+  onClickTimeEight(item: AirjoyA) {
   }
 }
 </script>

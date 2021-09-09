@@ -1,19 +1,20 @@
 <template>
-  <view-port>
+  <view-port class="airjoy-summary">
     <div :class="themeClass">
       <div class="d-block text-center">
-        <h1>
+        <h1 class="preview-text">
           {{ items[index] }}
         </h1>
       </div>
     </div>
     <div class="control-panel">
       <v-select
+          dark
           dense
           rounded
+          flat
           outlined
-          solo
-          background-color="transparent"
+          hide-details
           :items="items"
           :value="items[index]"
           @change="onChangeTheme"
@@ -145,5 +146,17 @@ $animation-duration: 15s;
   position: absolute;
   right: 12px;
   bottom: 12px;
+}
+
+.theme--light.v-application .airjoy-summary {
+  .preview-text {
+    color: map-get($shades, 'white');
+  }
+}
+
+.theme--dark.v-application .airjoy-summary {
+  .preview-text {
+    color: map-get($shades, 'white');
+  }
 }
 </style>

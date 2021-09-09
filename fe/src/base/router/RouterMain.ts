@@ -49,8 +49,13 @@ export default class RouterMain extends Router {
     // Airjoy
     // ------
 
-    moveToMainAirJoyChart(group?: string, project?: string) {
-        this._moveToMainSubpage(mainNames.mainAirjoyChart, group, project);
+    moveToMainAirjoyDetails(airjoy: string, group?: string, project?: string) {
+        const params = {
+            airjoy: airjoy,
+            group: group || this.$route.params.group,
+            project: project || this.$route.params.project,
+        };
+        this.moveTo(mainNames.mainAirjoyDetails, params);
     }
 
     moveToMainAirjoyLive(group?: string, project?: string) {

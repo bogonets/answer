@@ -50,7 +50,7 @@ ko:
 
         <v-list-item link @click.stop="airjoySummary">
           <v-list-item-icon>
-            <v-icon>mdi-air-filter</v-icon>
+            <v-icon>mdi-weather-windy</v-icon>
           </v-list-item-icon>
           <v-list-item-title>
             {{ $t('summary') }}
@@ -72,15 +72,6 @@ ko:
           </v-list-item-icon>
           <v-list-item-title>
             {{ $t('table') }}
-          </v-list-item-title>
-        </v-list-item>
-
-        <v-list-item link @click.stop="airjoyChart">
-          <v-list-item-icon>
-            <v-icon>mdi-chart-bar</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('chart') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -197,13 +188,6 @@ export default class NaviMainAirjoy extends VueBase {
   airjoyTable() {
     if (!this.noDefault) {
       this.moveToMainAirjoyTable();
-    }
-  }
-
-  @Emit('click:airjoy-chart')
-  airjoyChart() {
-    if (!this.noDefault) {
-      this.moveToMainAirJoyChart();
     }
   }
 

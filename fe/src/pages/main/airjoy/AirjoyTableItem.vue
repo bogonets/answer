@@ -257,7 +257,7 @@ ko:
         </div>
       </div>
 
-      <div class="table-item--body-right">
+      <div class="table-item--body-right" @click.stop="bodyRight">
 
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
@@ -666,6 +666,11 @@ export default class AirjoyTable extends VueBase {
     return this.item;
   }
 
+  @Emit('click:body-right')
+  bodyRight() {
+    return this.item;
+  }
+
   @Emit('click:name')
   name() {
     return this.item;
@@ -779,7 +784,7 @@ export default class AirjoyTable extends VueBase {
     .table-item--body-right {
       @include flex-row;
       align-items: center;
-      padding-right: 4px;
+      padding: 12px 4px 12px 12px;
     }
   }
 }
