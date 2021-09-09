@@ -78,7 +78,7 @@ ko:
       </v-card>
     </view-port>
 
-    <v-footer absolute padless :height="footerHeight">
+    <v-footer :height="footerHeight">
       <v-system-bar absolute>
         <v-icon>mdi-application</v-icon>
         <v-spacer></v-spacer>
