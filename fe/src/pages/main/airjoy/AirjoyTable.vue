@@ -48,6 +48,13 @@ ko:
             @click:body="onClickBody"
             @click:name="onClickName"
             @click:power="onClickPower"
+            @click:pm10="onClickPm10"
+            @click:pm2_5="onClickPm2_5"
+            @click:co2="onClickCo2"
+            @click:humidity="onClickHumidity"
+            @click:temperature="onClickTemperature"
+            @click:voc="onClickVoc"
+            @click:as="onClickAs"
             @click:mode="onClickMode"
             @click:fan-weak="onClickFanWeak"
             @click:fan-medium="onClickFanMedium"
@@ -71,17 +78,24 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Emit, Prop} from 'vue-property-decorator';
+import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
-import type {AirjoyA} from "@/packet/airjoy";
-import {createEmptyAirjoyA} from "@/packet/airjoy";
-import AirjoyTableItem from "@/pages/main/airjoy/AirjoyTableItem.vue";
+import AirjoyTableItem from '@/pages/main/airjoy/AirjoyTableItem.vue';
+import type {AirjoyA} from '@/packet/airjoy';
+import {
+  CATEGORY_PM10,
+  CATEGORY_PM2_5,
+  CATEGORY_CO2,
+  CATEGORY_HUMIDITY,
+  CATEGORY_TEMPERATURE,
+  createEmptyAirjoyA,
+} from '@/packet/airjoy';
 
 @Component({
   components: {
-    AirjoyTableItem,
     BreadcrumbMain,
+    AirjoyTableItem,
   }
 })
 export default class AirjoyTable extends VueBase {
@@ -271,6 +285,32 @@ export default class AirjoyTable extends VueBase {
   }
 
   onClickPower(item: AirjoyA) {
+  }
+
+  onClickPm10(item: AirjoyA) {
+    this.moveToMainAirjoyChart(`${item.uid}`, CATEGORY_PM10);
+  }
+
+  onClickPm2_5(item: AirjoyA) {
+    this.moveToMainAirjoyChart(`${item.uid}`, CATEGORY_PM2_5);
+  }
+
+  onClickCo2(item: AirjoyA) {
+    this.moveToMainAirjoyChart(`${item.uid}`, CATEGORY_CO2);
+  }
+
+  onClickHumidity(item: AirjoyA) {
+    this.moveToMainAirjoyChart(`${item.uid}`, CATEGORY_HUMIDITY);
+  }
+
+  onClickTemperature(item: AirjoyA) {
+    this.moveToMainAirjoyChart(`${item.uid}`, CATEGORY_TEMPERATURE);
+  }
+
+  onClickVoc(item: AirjoyA) {
+  }
+
+  onClickAs(item: AirjoyA) {
   }
 
   onClickMode(item: AirjoyA) {

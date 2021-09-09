@@ -1,3 +1,9 @@
+export const CATEGORY_PM10 = 'pm10';
+export const CATEGORY_PM2_5 = 'pm2.5';
+export const CATEGORY_CO2 = 'co2';
+export const CATEGORY_HUMIDITY = 'humidity';
+export const CATEGORY_TEMPERATURE = 'temperature';
+
 export interface AirjoyA {
     group: string;
     project: string;

@@ -2,6 +2,7 @@
 en:
   online: "Online"
   offline: "Offline"
+  chart: "Chart"
   uv:
     normal: "UV/Normal"
     alarm: "UV/Alarm"
@@ -52,6 +53,7 @@ en:
 ko:
   online: "네트워크 연결이 정상 상태 입니다"
   offline: "네트워크 연결이 끊어졌습니다"
+  chart: "차트"
   uv:
     normal: "UV 알람이 꺼져있습니다"
     alarm: "UV 알람이 켜져있습니다"
@@ -176,7 +178,7 @@ ko:
         <div class="table-item--body-left-bottom">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" small v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" small @click.stop="clickPm10" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-dots-hexagon</v-icon>
                 {{ item.pm10 }}
               </v-chip>
@@ -186,7 +188,7 @@ ko:
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" small v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" small @click.stop="clickPm2_5" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-dots-horizontal</v-icon>
                 {{ item.pm2_5 }}
               </v-chip>
@@ -196,7 +198,7 @@ ko:
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" small v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" small @click.stop="clickCo2" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-molecule-co2</v-icon>
                 {{ item.co2 }}
               </v-chip>
@@ -206,7 +208,7 @@ ko:
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" small v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" small @click.stop="clickHumidity" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-water</v-icon>
                 {{ item.humidity }}
               </v-chip>
@@ -216,7 +218,7 @@ ko:
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" small v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" small @click.stop="clickTemperature" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-thermometer</v-icon>
                 {{ item.temperature }}
               </v-chip>
@@ -226,7 +228,7 @@ ko:
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" small v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" small @click.stop="clickVoc" v-bind="attrs" v-on="on">
                 <v-icon left size="22">mdi-alpha-v</v-icon>
                 {{ item.voc }}
               </v-chip>
@@ -236,7 +238,7 @@ ko:
 
           <v-tooltip v-if="item.asCount" bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" small v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" small @click.stop="clickAs" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-wrench</v-icon>
                 {{ item.asCount }}
               </v-chip>
@@ -678,6 +680,41 @@ export default class AirjoyTable extends VueBase {
 
   @Emit('click:power')
   power() {
+    return this.item;
+  }
+
+  @Emit('click:pm10')
+  clickPm10() {
+    return this.item;
+  }
+
+  @Emit('click:pm2_5')
+  clickPm2_5() {
+    return this.item;
+  }
+
+  @Emit('click:co2')
+  clickCo2() {
+    return this.item;
+  }
+
+  @Emit('click:humidity')
+  clickHumidity() {
+    return this.item;
+  }
+
+  @Emit('click:temperature')
+  clickTemperature() {
+    return this.item;
+  }
+
+  @Emit('click:voc')
+  clickVoc() {
+    return this.item;
+  }
+
+  @Emit('click:as')
+  clickAs() {
     return this.item;
   }
 

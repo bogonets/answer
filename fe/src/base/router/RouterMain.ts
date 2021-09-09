@@ -1,7 +1,7 @@
 import {Component} from 'vue-property-decorator';
 import Router from '@/base/router/Router';
-import mainNames from "@/router/names/main";
-import {OEM_AIRJOY} from "@/packet/oem";
+import mainNames from '@/router/names/main';
+import {OEM_AIRJOY} from '@/packet/oem';
 
 @Component
 export default class RouterMain extends Router {
@@ -48,6 +48,21 @@ export default class RouterMain extends Router {
     // ------
     // Airjoy
     // ------
+
+    moveToMainAirjoyChart(
+        airjoy: string,
+        category?: string,
+        group?: string,
+        project?: string,
+    ) {
+        const params = {
+            airjoy: airjoy,
+            category: category || '',
+            group: group || this.$route.params.group,
+            project: project || this.$route.params.project,
+        };
+        this.moveTo(mainNames.mainAirjoyChart, params);
+    }
 
     moveToMainAirjoyDetails(airjoy: string, group?: string, project?: string) {
         const params = {

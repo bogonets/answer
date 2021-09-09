@@ -6,6 +6,7 @@ export const mainNames = {
     mainVms: 'mainVms',
 
     // Airjoy
+    mainAirjoyChart: 'mainAirjoyChart',
     mainAirjoyDetails: 'mainAirjoyDetails',
     mainAirjoyLive: 'mainAirjoyLive',
     mainAirjoySummary: 'mainAirjoySummary',

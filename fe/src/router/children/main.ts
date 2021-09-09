@@ -6,6 +6,7 @@ import MainTables from '@/pages/main/MainTables.vue';
 import MainVms from '@/pages/main/MainVms.vue';
 
 // Airjoy
+import AirjoyChart from '@/pages/main/airjoy/AirjoyChart.vue';
 import AirjoyDetails from '@/pages/main/airjoy/AirjoyDetails.vue';
 import AirjoyLive from '@/pages/main/airjoy/AirjoyLive.vue';
 import AirjoySummary from '@/pages/main/airjoy/AirjoySummary.vue';
@@ -39,6 +40,11 @@ export const mainChildren = [
     },
 
     // Airjoy
+    {
+        path: ':group/:project/airjoy/chart/:airjoy',
+        component: AirjoyChart,
+        name: mainNames.mainAirjoyChart,
+    },
     {
         path: ':group/:project/airjoy/details/:airjoy',
         component: AirjoyDetails,
