@@ -19,9 +19,6 @@ en:
     description: "Description"
     datetime: "Datetime"
     actions: "Actions"
-  msg:
-    loading: "Loading... Please wait"
-    empty: "Empty A/S"
 
 ko:
   groups: "Groups"
@@ -43,9 +40,6 @@ ko:
     description: "기록"
     datetime: "날짜"
     actions: "관리"
-  msg:
-    loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-    empty: "A/S 기록이 존재하지 않습니다."
 </i18n>
 
 <template>
@@ -169,85 +163,21 @@ ko:
       </v-col>
     </v-row>
 
-    <v-divider class="my-4"></v-divider>
-
-    <v-data-table
-        :class="dataTableClass"
-        :headers="headers"
-        :items="asItems"
-        :search="filter"
-        :loading="loading"
-        :loading-text="$t('msg.loading')"
-        @click:row="onClickAsRow"
-    >
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-text-field
-              class="mr-4"
-              v-model="filter"
-              append-icon="mdi-magnify"
-              single-line
-              hide-details
-              :label="$t('labels.search')"
-          ></v-text-field>
-          <v-btn color="primary" @click="onClickNewAs">
-            {{ $t('labels.as_new') }}
-          </v-btn>
-        </v-toolbar>
-      </template>
-
-      <template v-if="!hideActions" v-slot:item.actions="{ item }">
-        <v-icon v-if="!hideActionEdit" small class="mr-2" @click="onClickAsEdit(item)">
-          mdi-pencil
-        </v-icon>
-        <v-icon v-if="!hideActionMove" small color="red" @click="onClickAsDelete(item)">
-          mdi-delete
-        </v-icon>
-      </template>
-
-      <template v-slot:no-data>
-        {{ $t('msg.empty') }}
-      </template>
-    </v-data-table>
-
-    <!-- A/S dialog. -->
-    <v-dialog v-model="showAsDialog" max-width="320">
-      <v-card>
-        <v-card-title class="text-h5">
-          {{ $t('labels.as_new') }}
-        </v-card-title>
-<!--        <v-card-text>-->
-<!--          {{ $t('hints.as_new') }}-->
-<!--        </v-card-text>-->
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="onClickNewAsCancel">
-            {{ $t('cancel') }}
-          </v-btn>
-          <v-btn :loading="loadingAsSubmit" color="primary" @click="onClickNewAsSubmit">
-            {{ $t('delete') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
   </v-container>
 </template>
 
 <script lang='ts'>
-import {Component, Prop} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import VueApexCharts from 'vue-apexcharts';
-import type {AirjoyAsA} from '@/packet/airjoy';
 import {
   CATEGORY_PM10,
   CATEGORY_PM2_5,
   CATEGORY_CO2,
   CATEGORY_HUMIDITY,
   CATEGORY_TEMPERATURE,
-  createEmptyAirjoyA, createEmptyAirjoyAsA,
+  createEmptyAirjoyA
 } from '@/packet/airjoy';
 
 @Component({
@@ -288,101 +218,7 @@ export default class MainAirjoyDetails extends VueBase {
     },
   ];
 
-  readonly headers = [
-    {
-      text: this.$t('headers.author'),
-      align: 'center',
-      filterable: true,
-      sortable: true,
-      value: 'author',
-    },
-    {
-      text: this.$t('headers.description'),
-      align: 'center',
-      filterable: true,
-      sortable: true,
-      value: 'description',
-    },
-    {
-      text: this.$t('headers.datetime'),
-      align: 'center',
-      filterable: false,
-      sortable: true,
-      value: 'datetime',
-    },
-    {
-      text: this.$t('headers.actions'),
-      align: 'center',
-      filterable: false,
-      sortable: false,
-      value: 'actions',
-    }
-  ];
-
-  @Prop({type: Boolean, default: false})
-  readonly hideActionEdit!: boolean;
-
-  @Prop({type: Boolean, default: false})
-  readonly hideActionMove!: boolean;
-
   item = createEmptyAirjoyA();
-  asItems = [] as Array<AirjoyAsA>;
-  loading = false;
-  filter = '';
-
-  showAsDialog = false;
-  loadingAsSubmit = false;
-
-  created() {
-    this.asItems = [
-      createEmptyAirjoyAsA(),
-      createEmptyAirjoyAsA(),
-      createEmptyAirjoyAsA(),
-      createEmptyAirjoyAsA(),
-      createEmptyAirjoyAsA(),
-    ];
-    this.asItems[0].author = 'User0'
-    this.asItems[1].author = 'User1'
-    this.asItems[2].author = 'Name2'
-    this.asItems[3].author = 'Name3'
-    this.asItems[4].author = 'Name4'
-
-    this.asItems[0].description = 'Description0'
-    this.asItems[1].description = 'Description1'
-    this.asItems[2].description = 'Brief2'
-    this.asItems[3].description = 'Brief3'
-    this.asItems[4].description = 'Brief4'
-
-    this.asItems[0].datetime = '2021-01-01'
-    this.asItems[1].datetime = '2021-02-03'
-    this.asItems[2].datetime = '2021-03-20'
-    this.asItems[3].datetime = '2021-04-12'
-    this.asItems[4].datetime = '2021-05-30'
-  }
-
-  get dataTableClass(): string {
-    if (this.asItems.length >= 1) {
-      return 'row-pointer';
-    } else {
-      return '';
-    }
-  }
-
-  get hideActions(): boolean {
-    return this.hideActionEdit && this.hideActionMove;
-  }
-
-  onClickNewAs() {
-    this.showAsDialog = true;
-  }
-
-  onClickNewAsCancel() {
-    this.showAsDialog = false;
-  }
-
-  onClickNewAsSubmit() {
-    this.showAsDialog = false;
-  }
 
   onClickPm10() {
     this.moveToMainAirjoyChart(`${this.item.uid}`, CATEGORY_PM10);
@@ -405,15 +241,7 @@ export default class MainAirjoyDetails extends VueBase {
   }
 
   onClickAs() {
-  }
-
-  onClickAsRow(item: AirjoyAsA) {
-  }
-
-  onClickAsEdit(item: AirjoyAsA) {
-  }
-
-  onClickAsDelete(item: AirjoyAsA) {
+    this.moveToMainAirjoyAs(`${this.item.uid}`);
   }
 }
 </script>
@@ -443,9 +271,5 @@ export default class MainAirjoyDetails extends VueBase {
 
 .theme--dark.v-application .card {
   border-color: rgba(map-get($shades, 'white'), 0.2);
-}
-
-.row-pointer {
-  cursor: pointer;
 }
 </style>

@@ -38,8 +38,7 @@ ko:
 
 <template>
   <v-container>
-    <toolbar-breadcrumbs :items="breadcrumbs"
-    ></toolbar-breadcrumbs>
+    <toolbar-breadcrumbs :items="breadcrumbs"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
     <v-row class="mt-4">

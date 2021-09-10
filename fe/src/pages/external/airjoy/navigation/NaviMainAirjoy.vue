@@ -2,16 +2,18 @@
 en:
   summary: "Summary"
   live: "Live"
-  chart: "Chart"
   devices: "Devices"
+  chart: "Chart"
+  as: "A/S"
   members: "Members"
   settings: "Settings"
 
 ko:
   summary: "요약"
   live: "실시간"
-  chart: "차트"
   devices: "장치 관리"
+  chart: "차트"
+  as: "A/S"
   members: "회원 관리"
   settings: "프로젝트 설정"
 </i18n>
@@ -72,6 +74,24 @@ ko:
           </v-list-item-icon>
           <v-list-item-title>
             {{ $t('devices') }}
+          </v-list-item-title>
+        </v-list-item>
+
+        <v-list-item link @click.stop="airjoyChart">
+          <v-list-item-icon>
+            <v-icon>mdi-chart-bar</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('chart') }}
+          </v-list-item-title>
+        </v-list-item>
+
+        <v-list-item link @click.stop="airjoyAs">
+          <v-list-item-icon>
+            <v-icon>mdi-wrench</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('as') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -187,6 +207,20 @@ export default class NaviMainAirjoy extends VueBase {
   airjoyDevices() {
     if (!this.noDefault) {
       this.moveToMainAirjoyDevices();
+    }
+  }
+
+  @Emit('click:airjoy-chart')
+  airjoyChart() {
+    if (!this.noDefault) {
+      this.moveToMainAirjoyChart();
+    }
+  }
+
+  @Emit('click:airjoy-as')
+  airjoyAs() {
+    if (!this.noDefault) {
+      this.moveToMainAirjoyAs();
     }
   }
 

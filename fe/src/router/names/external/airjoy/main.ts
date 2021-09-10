@@ -1,4 +1,5 @@
 export const mainAirjoyNames = {
+    mainAirjoyAs: 'mainAirjoyAs',
     mainAirjoyChart: 'mainAirjoyChart',
     mainAirjoyDetails: 'mainAirjoyDetails',
     mainAirjoyDevices: 'mainAirjoyDevices',
