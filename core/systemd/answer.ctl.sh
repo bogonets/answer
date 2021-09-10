@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)
+CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
+
 SERVICE_NAME=answer
+CONFIG_PATH="$CORE_DIR/config.yml"
+LOGGING_PATH="$CORE_DIR/logging.yml"
+STORAGE_DIR="$CORE_DIR/storage"
 
 USAGE_MESSAGE="
 systemctl for answer service.
@@ -34,7 +40,11 @@ Environment=RECC_VERBOSE=2
 Environment=RECC_DEVELOPER=true
 ExecStart=/usr/bin/env \
     /home/zer0/.pyenv/versions/opy-zer0-3.8.9/bin/python \
-    -m recc core
+    -m recc \
+    --config \"$CONFIG_PATH\" \
+    --log-config \"$LOGGING_PATH\" \
+    core \
+    --storage-root \"$STORAGE_DIR\"
 
 [Install]
 WantedBy=default.target
