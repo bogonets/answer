@@ -80,7 +80,6 @@ ko:
 import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {INFO_RULES} from '@/rules';
-import {CreateInfoQ} from '@/packet/info';
 
 @Component
 export default class CardInfoNew extends VueBase {

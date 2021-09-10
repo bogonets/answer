@@ -179,7 +179,7 @@ import {CreateInfoQ, UpdateInfoQ} from "@/packet/info";
 @Component({
   components: {
     ToolbarBreadcrumbs,
-    CardInfoNew: CardInfoNew,
+    CardInfoNew,
   }
 })
 export default class DevInfos extends VueBase {
