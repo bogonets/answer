@@ -4,6 +4,7 @@ import MainAirjoyChart from '@/pages/external/airjoy/main/MainAirjoyChart.vue';
 import MainAirjoyDetails from '@/pages/external/airjoy/main/MainAirjoyDetails.vue';
 import MainAirjoyDevices from '@/pages/external/airjoy/main/MainAirjoyDevices.vue';
 import MainAirjoyLive from '@/pages/external/airjoy/main/MainAirjoyLive.vue';
+import MainAirjoySettings from '@/pages/external/airjoy/main/MainAirjoySettings.vue';
 import MainAirjoySummary from '@/pages/external/airjoy/main/MainAirjoySummary.vue';
 
 export const mainAirjoyChildren = [
@@ -31,6 +32,11 @@ export const mainAirjoyChildren = [
         path: ':group/:project/airjoy/live',
         component: MainAirjoyLive,
         name: mainAirjoyNames.mainAirjoyLive,
+    },
+    {
+        path: ':group/:project/airjoy/settings',
+        component: MainAirjoySettings,
+        name: mainAirjoyNames.mainAirjoySettings,
     },
     {
         path: ':group/:project/airjoy/summary',

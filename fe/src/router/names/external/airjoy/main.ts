@@ -4,6 +4,7 @@ export const mainAirjoyNames = {
     mainAirjoyDetails: 'mainAirjoyDetails',
     mainAirjoyDevices: 'mainAirjoyDevices',
     mainAirjoyLive: 'mainAirjoyLive',
+    mainAirjoySettings: 'mainAirjoySettings',
     mainAirjoySummary: 'mainAirjoySummary',
 };
 

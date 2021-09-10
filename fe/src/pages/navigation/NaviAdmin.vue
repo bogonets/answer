@@ -25,7 +25,7 @@ ko:
   features: "기능 설정"
   external:
     airjoy:
-      devices: "Airjoy 장치"
+      devices: "Airjoy 장치 관리"
 </i18n>
 
 <template>

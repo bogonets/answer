@@ -5,6 +5,7 @@ en:
   devices: "Devices"
   chart: "Chart"
   as: "A/S"
+  airjoy_settings: "Airjoy Settings"
   members: "Members"
   settings: "Settings"
 
@@ -14,6 +15,7 @@ ko:
   devices: "장치 관리"
   chart: "차트"
   as: "A/S"
+  airjoy_settings: "에어조이 설정"
   members: "회원 관리"
   settings: "프로젝트 설정"
 </i18n>
@@ -92,6 +94,17 @@ ko:
           </v-list-item-icon>
           <v-list-item-title>
             {{ $t('as') }}
+          </v-list-item-title>
+        </v-list-item>
+
+        <v-divider></v-divider>
+
+        <v-list-item link @click.stop="airjoySettings">
+          <v-list-item-icon>
+            <v-icon>mdi-application-cog</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('airjoy_settings') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -221,6 +234,13 @@ export default class NaviMainAirjoy extends VueBase {
   airjoyAs() {
     if (!this.noDefault) {
       this.moveToMainAirjoyAs();
+    }
+  }
+
+  @Emit('click:airjoy-settings')
+  airjoySettings() {
+    if (!this.noDefault) {
+      this.moveToMainAirjoySettings();
     }
   }
 

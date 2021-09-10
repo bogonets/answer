@@ -1,11 +1,9 @@
 <i18n lang="yaml">
 en:
-  airjoy: "Airjoy"
-  devices: "Devices"
+  airjoy_devices: "Airjoy Devices"
 
 ko:
-  airjoy: "에어조이"
-  devices: "장치 관리"
+  airjoy_devices: "Airjoy 장치 관리"
 </i18n>
 
 <template>
@@ -34,11 +32,7 @@ export default class AdminAirjoyDevices extends VueBase {
       href: () => this.moveToAdmin(),
     },
     {
-      text: this.$t('airjoy').toString(),
-      disabled: true,
-    },
-    {
-      text: this.$t('devices').toString(),
+      text: this.$t('airjoy_devices').toString(),
       disabled: true,
     },
   ];
