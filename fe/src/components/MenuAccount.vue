@@ -21,6 +21,7 @@ ko:
       left
       bottom
       offset-y
+      :z-index="menuZIndex"
       open-on-click
       transition="slide-y-transition"
       :close-on-content-click="true"
@@ -103,6 +104,8 @@ import VueBase from '@/base/VueBase';
 
 @Component
 export default class MenuAccount extends VueBase {
+  private readonly menuZIndex = 100;
+
   get hasAdminPermission(): boolean {
     return this.$localStore.user.is_admin || false;
   }

@@ -263,7 +263,7 @@ ko:
 
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn x-small icon :disabled="loading" @click.stop="mode" v-bind="attrs" v-on="on">
+            <v-btn small icon :disabled="loading" @click.stop="mode" v-bind="attrs" v-on="on">
               <v-icon>{{ modeIcon }}</v-icon>
             </v-btn>
           </template>
@@ -274,7 +274,7 @@ ko:
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip top>
               <template v-slot:activator="{ on: tooltip }">
-                <v-btn x-small icon :disabled="loading" v-bind="attrs" v-on="{...tooltip, ...menu}">
+                <v-btn small icon :disabled="loading" v-bind="attrs" v-on="{...tooltip, ...menu}">
                   <v-icon>{{ fanIcon }}</v-icon>
                 </v-btn>
               </template>
@@ -297,7 +297,7 @@ ko:
 
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn x-small icon :disabled="loading" @click.stop="lock" v-bind="attrs" v-on="on">
+            <v-btn small icon :disabled="loading" @click.stop="lock" v-bind="attrs" v-on="on">
               <v-icon>{{ lockIcon }}</v-icon>
             </v-btn>
           </template>
@@ -306,7 +306,7 @@ ko:
 
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn x-small icon :disabled="loading" @click.stop="filter" v-bind="attrs" v-on="on">
+            <v-btn small icon :disabled="loading" @click.stop="filter" v-bind="attrs" v-on="on">
               <v-icon :color="filterColor">mdi-air-filter</v-icon>
             </v-btn>
           </template>
@@ -315,7 +315,7 @@ ko:
 
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn x-small icon :disabled="loading" @click.stop="sleep" v-bind="attrs" v-on="on">
+            <v-btn small icon :disabled="loading" @click.stop="sleep" v-bind="attrs" v-on="on">
               <v-icon>{{ sleepIcon }}</v-icon>
             </v-btn>
           </template>
@@ -326,7 +326,7 @@ ko:
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip top>
               <template v-slot:activator="{ on: tooltip }">
-                <v-btn x-small icon :disabled="loading" v-bind="attrs" v-on="{...tooltip, ...menu}">
+                <v-btn small icon :disabled="loading" v-bind="attrs" v-on="{...tooltip, ...menu}">
                   <v-icon>{{ timerIcon }}</v-icon>
                 </v-btn>
               </template>
@@ -821,7 +821,7 @@ export default class MainAirjoyDevicesItem extends VueBase {
     .table-item--body-right {
       @include flex-row;
       align-items: center;
-      padding: 12px 4px 12px 12px;
+      padding: 8px 4px 8px 8px;
     }
   }
 }
