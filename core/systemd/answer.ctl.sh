@@ -4,9 +4,14 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)
 CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
 
 SERVICE_NAME=answer
-CONFIG_PATH="$CORE_DIR/config.yml"
 LOGGING_PATH="$CORE_DIR/logging.yml"
 STORAGE_DIR="$CORE_DIR/storage"
+
+OPY_EXECUTABLE=$HOME/.pyenv/versions/opy-zer0-3.8.9/bin/python
+PYTHON_EXECUTABLE=$OPY_EXECUTABLE
+
+SERVICE_PREFIX=$HOME/.config/systemd/user
+SERVICE_DESTINATION=$SERVICE_PREFIX/answer.service
 
 USAGE_MESSAGE="
 systemctl for answer service.
@@ -14,7 +19,7 @@ systemctl for answer service.
   Usage: $0 [command] [command-args] ...
 
 Available commands:
-  -h, --help    Print this message.
+  help          Print this message.
   install       Install service file.
   uninstall     Uninstall service file.
   setup         Daemon reload, enable, start
@@ -28,23 +33,14 @@ Available commands:
   log           Service journal
 "
 
-SERVICE_PREFIX=$HOME/.config/systemd/user
-SERVICE_DESTINATION=$SERVICE_PREFIX/answer.service
-
 SERVICE_CONTENT="
 [Unit]
-Description=ANSWER
+Description=The ANSWER, No-code development platform
 
 [Service]
 Environment=RECC_VERBOSE=2
 Environment=RECC_DEVELOPER=true
-ExecStart=/usr/bin/env \
-    /home/zer0/.pyenv/versions/opy-zer0-3.8.9/bin/python \
-    -m recc \
-    --config \"$CONFIG_PATH\" \
-    --log-config \"$LOGGING_PATH\" \
-    core \
-    --storage-root \"$STORAGE_DIR\"
+ExecStart=\"$PYTHON_EXECUTABLE\" -m recc core --storage-root \"$STORAGE_DIR\"
 
 [Install]
 WantedBy=default.target
@@ -75,11 +71,12 @@ COMMAND=$1
 shift 1
 if [[ -z $COMMAND ]]; then
     echo "Empty argument"
+    echo "$USAGE_MESSAGE"
     exit 1
 fi
 
 case "$COMMAND" in
--h|--help)
+help|--help|-h)
     echo "$USAGE_MESSAGE"
     exit 0
     ;;
@@ -119,12 +116,8 @@ log)
     journalctl --user -u $SERVICE_NAME "$@"
     ;;
 *)
-    if [[ -z $1 ]]; then
-        echo "Empty argument"
-    else
-        echo "Unrecognized argument: $1"
-    fi
+    echo "Unrecognized argument: $1"
+    echo "$USAGE_MESSAGE"
     exit 1
     ;;
 esac
-
