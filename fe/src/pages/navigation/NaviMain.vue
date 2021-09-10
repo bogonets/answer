@@ -9,11 +9,6 @@ en:
   vms: "VMS"
   members: "Members"
   settings: "Settings"
-  airjoy:
-    title: "AIRJOY"
-    summary: "Summary"
-    live: "Live"
-    chart: "Chart"
 
 ko:
   dashboard: "대시보드"
@@ -25,11 +20,6 @@ ko:
   vms: "VMS"
   members: "회원 관리"
   settings: "프로젝트 설정"
-  airjoy:
-    title: "에어조이"
-    summary: "요약"
-    live: "실시간"
-    chart: "차트"
 </i18n>
 
 <template>
@@ -127,36 +117,6 @@ ko:
             {{ $t('vms') }}
           </v-list-item-title>
         </v-list-item>
-
-        <v-divider v-if="isAirjoy"></v-divider>
-        <v-list-group v-if="isAirjoy" :value="true" no-action>
-          <template v-slot:activator>
-            <v-list-item-icon>
-              <v-icon>mdi-air-filter</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>
-              {{ $t('airjoy.title') }}
-            </v-list-item-title>
-          </template>
-
-          <v-list-item link @click.stop="airjoySummary">
-            <v-list-item-title>
-              {{ $t('airjoy.summary') }}
-            </v-list-item-title>
-          </v-list-item>
-
-          <v-list-item link @click.stop="airjoyLive">
-            <v-list-item-title>
-              {{ $t('airjoy.live') }}
-            </v-list-item-title>
-          </v-list-item>
-
-          <v-list-item link @click.stop="airjoyChart">
-            <v-list-item-title>
-              {{ $t('airjoy.chart') }}
-            </v-list-item-title>
-          </v-list-item>
-        </v-list-group>
 
         <v-divider></v-divider>
 

@@ -133,7 +133,7 @@ ko:
         </v-list-item>
 
         <v-divider v-if="isAirjoy"></v-divider>
-        <v-list-item  v-if="isAirjoy" link @click.stop="airjoy">
+        <v-list-item  v-if="isAirjoy" link @click.stop="externalAirjoyDevices">
           <v-list-item-icon>
             <v-icon>mdi-weather-windy</v-icon>
           </v-list-item-icon>
@@ -239,6 +239,7 @@ export default class NaviAdmin extends VueBase {
   @Emit('click:external-airjoy-devices')
   externalAirjoyDevices() {
     if (!this.noDefault) {
+      this.moveToAdminAirjoyDevices();
     }
   }
 }

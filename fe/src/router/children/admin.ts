@@ -16,6 +16,9 @@ import AdminUsers from '@/pages/admin/AdminUsers.vue';
 import AdminUsersEdit from '@/pages/admin/AdminUsersEdit.vue';
 import AdminUsersNew from '@/pages/admin/AdminUsersNew.vue';
 
+// External
+import adminAirjoyChildren from '@/router/children/external/airjoy/admin';
+
 export const adminChildren = [
     {
         path: 'configs',
@@ -97,6 +100,8 @@ export const adminChildren = [
         component: AdminUsersNew,
         name: adminNames.adminUsersNew,
     },
+
+    ...adminAirjoyChildren,
 ];
 
 export default adminChildren;
