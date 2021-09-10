@@ -3,15 +3,15 @@
     <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
-      <table-groups
-          hide-action-edit
-          hide-action-move
-          clickable-row
-          :loading="loading"
-          :items="items"
-          @click:new="onClickNew"
-          @click:row="onClickRow"
-      ></table-groups>
+    <table-groups
+        hide-action-edit
+        hide-action-move
+        clickable-row
+        :loading="loading"
+        :items="items"
+        @click:new="onClickNew"
+        @click:row="onClickRow"
+    ></table-groups>
 
   </v-container>
 </template>
@@ -62,7 +62,6 @@ export default class RootGroups extends VueBase {
   }
 
   onClickRow(item: GroupA) {
-    console.info(`onClickRow(${item.slug})`);
     this.moveToGroupProjects(item.slug);
   }
 }

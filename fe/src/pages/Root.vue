@@ -1,24 +1,60 @@
 <template>
   <v-container>
+    <table-groups
+        hide-action-edit
+        hide-action-move
+        clickable-row
+        :loading="loading"
+        :items="items"
+        @click:new="onClickNew"
+        @click:row="onClickRow"
+    ></table-groups>
   </v-container>
 </template>
 
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import BarMain from '@/pages/bar/BarMain.vue';
+import TableGroups from '@/components/TableGroups.vue';
+import {GroupA} from "@/packet/group";
 
 @Component({
   components: {
-    BarMain,
+    TableGroups,
   }
 })
 export default class Root extends VueBase {
+  loading = false;
+  items = [] as Array<GroupA>;
+
   created() {
     if (!this.$localStore.alreadySession) {
       this.moveToSignin();
       return;
     }
+
+    this.requestGroups()
+  }
+
+  requestGroups() {
+    this.loading = true;
+    this.$api2.getMainGroups()
+        .then(items => {
+          this.loading = false;
+          this.items = items;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
+
+  onClickNew() {
+    this.moveToRootGroupsNew();
+  }
+
+  onClickRow(item: GroupA) {
+    this.moveToGroupProjects(item.slug);
   }
 }
 </script>
