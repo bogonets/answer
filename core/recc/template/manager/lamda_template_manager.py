@@ -3,7 +3,7 @@
 import os
 import re
 from re import Pattern
-from io import BytesIO
+from io import BytesIO, StringIO
 from tarfile import open as tar_open
 from tarfile import TarInfo
 from typing import List, Dict, Optional, Iterable, KeysView, ValuesView
@@ -202,9 +202,17 @@ class LamdaTemplateManager:
         self._templates: Dict[LamdaTemplateKey, LamdaTemplate] = dict()
         self._storage_compressed = bytes()
 
+    @staticmethod
+    def get_builtin_dir() -> str:
+        return get_module_directory(recc_lamda_builtin_module)
+
+    @staticmethod
+    def get_package_dir() -> str:
+        return get_module_directory(recc_lamda_module)
+
     def refresh(self) -> None:
-        builtin_dir = get_module_directory(recc_lamda_builtin_module)
-        package_dir = get_module_directory(recc_lamda_module)
+        builtin_dir = self.get_builtin_dir()
+        package_dir = self.get_package_dir()
         storage_dir = self._template_directory
         venv_dir = self._venv_directory
 
@@ -221,6 +229,22 @@ class LamdaTemplateManager:
             self._storage_compressed = compress_template_directory(storage_dir)
         else:
             self._storage_compressed = bytes()
+
+    def to_details(self) -> str:
+        io = StringIO()
+        io.writelines([
+            f"[{self.__class__.__name__}]",
+            f"- Builtin directory: {self.get_builtin_dir()}",
+            f"- Package directory: {self.get_package_dir()}",
+            f"- Storage directory: {self._template_directory}",
+            f"- Virtual environment directory: {self._venv_directory}",
+            f"- Number of templates: {len(self._templates)}",
+            f"- Number of builtin categories: {len(self._builtin_category_to_names)}",
+            f"- Number of package categories: {len(self._package_category_to_names)}",
+            f"- Number of storage categories: {len(self._storage_category_to_names)}",
+            f"- Storage compressed bytes: {len(self._storage_compressed)}",
+        ])
+        return io.getvalue()
 
     @property
     def root_dir(self) -> str:

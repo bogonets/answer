@@ -154,6 +154,9 @@ class ContextInit(ContextBase):
     def _init_templates(self) -> None:
         self._templates = LamdaTemplateManager()
         self._templates.refresh()
+        logger.info("Created template-manager.")
+        if self._config.verbose >= 1:
+            logger.info(self._templates.to_details())
 
     def init_all(
         self,
