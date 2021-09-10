@@ -6,6 +6,7 @@ en:
   groups: "Groups"
   projects: "Projects"
   permissions: "Permissions"
+  plugins: "Plugins"
   tasks: "Tasks"
   templates: "Templates"
   features: "Features"
@@ -20,6 +21,7 @@ ko:
   groups: "그룹"
   projects: "프로젝트"
   permissions: "권한"
+  plugins: "플러그인"
   tasks: "태스크"
   templates: "템플릿"
   features: "기능 설정"
@@ -120,6 +122,15 @@ ko:
           </v-list-item-icon>
           <v-list-item-title>
             {{ $t('templates') }}
+          </v-list-item-title>
+        </v-list-item>
+
+        <v-list-item link @click.stop="plugins">
+          <v-list-item-icon>
+            <v-icon>mdi-toy-brick</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('plugins') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -226,6 +237,13 @@ export default class NaviAdmin extends VueBase {
   templates() {
     if (!this.noDefault) {
       this.moveToAdminTemplates();
+    }
+  }
+
+  @Emit('click:plugins')
+  plugins() {
+    if (!this.noDefault) {
+      this.moveToAdminPlugins();
     }
   }
 
