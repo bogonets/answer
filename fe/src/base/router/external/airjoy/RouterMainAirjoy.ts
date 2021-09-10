@@ -28,6 +28,14 @@ export default class RouterMainAirjoy extends Router {
         this.moveTo(mainAirjoyNames.mainAirjoyDetails, params);
     }
 
+    moveToMainAirjoyDevices(group?: string, project?: string) {
+        const params = {
+            group: group || this.$route.params.group,
+            project: project || this.$route.params.project,
+        };
+        this.moveTo(mainAirjoyNames.mainAirjoyDevices, params);
+    }
+
     moveToMainAirjoyLive(group?: string, project?: string) {
         const params = {
             group: group || this.$route.params.group,
@@ -42,13 +50,5 @@ export default class RouterMainAirjoy extends Router {
             project: project || this.$route.params.project,
         };
         this.moveTo(mainAirjoyNames.mainAirjoySummary, params);
-    }
-
-    moveToMainAirjoyTable(group?: string, project?: string) {
-        const params = {
-            group: group || this.$route.params.group,
-            project: project || this.$route.params.project,
-        };
-        this.moveTo(mainAirjoyNames.mainAirjoyTable, params);
     }
 }

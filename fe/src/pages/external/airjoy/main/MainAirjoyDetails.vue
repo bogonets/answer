@@ -1,7 +1,7 @@
 <i18n lang="yaml">
 en:
   groups: "Groups"
-  airjoy_table: "Table"
+  devices: "Devices"
   details: "Details"
   categories:
     pm10: "PM10: {0}"
@@ -25,7 +25,7 @@ en:
 
 ko:
   groups: "Groups"
-  airjoy_table: "Table"
+  devices: "Devices"
   details: "Details"
   categories:
     pm10: "미세먼지: {0}"
@@ -274,9 +274,9 @@ export default class MainAirjoyDetails extends VueBase {
       href: () => this.moveToMain(),
     },
     {
-      text: this.$t('airjoy_table'),
+      text: this.$t('devices'),
       disabled: false,
-      href: () => this.moveToMainAirjoyTable(),
+      href: () => this.moveToMainAirjoyDevices(),
     },
     {
       text: this.$t('details'),

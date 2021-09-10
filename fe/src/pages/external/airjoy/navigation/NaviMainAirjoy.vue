@@ -1,17 +1,17 @@
 <i18n lang="yaml">
 en:
   summary: "Summary"
-  table: "Table"
   live: "Live"
   chart: "Chart"
+  devices: "Devices"
   members: "Members"
   settings: "Settings"
 
 ko:
   summary: "요약"
-  table: "테이블"
   live: "실시간"
   chart: "차트"
+  devices: "장치 관리"
   members: "회원 관리"
   settings: "프로젝트 설정"
 </i18n>
@@ -66,12 +66,12 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item link @click.stop="airjoyTable">
+        <v-list-item link @click.stop="airjoyDevices">
           <v-list-item-icon>
-            <v-icon>mdi-table</v-icon>
+            <v-icon>mdi-tablet</v-icon>
           </v-list-item-icon>
           <v-list-item-title>
-            {{ $t('table') }}
+            {{ $t('devices') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -108,7 +108,6 @@ import {ProjectA} from '@/packet/project';
 
 @Component
 export default class NaviMainAirjoy extends VueBase {
-
   @Prop({type: Boolean, default: false})
   readonly noDefault!: boolean;
 
@@ -184,10 +183,10 @@ export default class NaviMainAirjoy extends VueBase {
     }
   }
 
-  @Emit('click:airjoy-table')
-  airjoyTable() {
+  @Emit('click:airjoy-devices')
+  airjoyDevices() {
     if (!this.noDefault) {
-      this.moveToMainAirjoyTable();
+      this.moveToMainAirjoyDevices();
     }
   }
 

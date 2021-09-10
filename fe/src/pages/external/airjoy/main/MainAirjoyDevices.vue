@@ -1,5 +1,6 @@
 <i18n lang="yaml">
 en:
+  add_device: "Add Device"
   label:
     search: "You can filter by name or UID."
   msg:
@@ -7,6 +8,7 @@ en:
     empty: "Devices do not exist"
 
 ko:
+  add_device: "장치 추가"
   label:
     search: "이름 또는 UID를 필터링할 수 있습니다."
   msg:
@@ -38,11 +40,14 @@ ko:
               hide-details
               :label="$t('label.search')"
           ></v-text-field>
+          <v-btn color="primary" @click="onClickAddDevice">
+            {{ $t('add_device') }}
+          </v-btn>
         </v-toolbar>
       </template>
 
       <template v-slot:item="{ item }">
-        <main-airjoy-table-item
+        <main-airjoy-devices-item
             hide-description
             :item="item"
             @click:body="onClickBody"
@@ -67,7 +72,7 @@ ko:
             @click:time-two="onClickTimeTwo"
             @click:time-four="onClickTimeFour"
             @click:time-eight="onClickTimeEight"
-        ></main-airjoy-table-item>
+        ></main-airjoy-devices-item>
       </template>
 
       <template v-slot:no-data>
@@ -81,7 +86,7 @@ ko:
 import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
-import MainAirjoyTableItem from '@/pages/external/airjoy/main/MainAirjoyTableItem.vue';
+import MainAirjoyDevicesItem from '@/pages/external/airjoy/main/MainAirjoyDevicesItem.vue';
 import type {AirjoyA} from '@/packet/airjoy';
 import {
   CATEGORY_PM10,
@@ -95,10 +100,10 @@ import {
 @Component({
   components: {
     BreadcrumbMain,
-    MainAirjoyTableItem,
+    MainAirjoyDevicesItem,
   }
 })
-export default class MainAirjoyTable extends VueBase {
+export default class MainAirjoyDevices extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly hideFilterInput!: boolean;
 
@@ -274,6 +279,9 @@ export default class MainAirjoyTable extends VueBase {
     this.items[2].sleepMode = 1;
     this.items[3].sleepMode = 1;
     this.items[4].sleepMode = 1;
+  }
+
+  onClickAddDevice() {
   }
 
   onClickBody(item: AirjoyA) {

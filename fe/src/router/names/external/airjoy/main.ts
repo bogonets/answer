@@ -1,9 +1,9 @@
 export const mainAirjoyNames = {
     mainAirjoyChart: 'mainAirjoyChart',
     mainAirjoyDetails: 'mainAirjoyDetails',
+    mainAirjoyDevices: 'mainAirjoyDevices',
     mainAirjoyLive: 'mainAirjoyLive',
     mainAirjoySummary: 'mainAirjoySummary',
-    mainAirjoyTable: 'mainAirjoyTable',
 };
 
 export default mainAirjoyNames;

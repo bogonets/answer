@@ -119,7 +119,7 @@ ko:
       </v-btn>
       <div class="table-item--body-left">
         <div class="table-item--body-left-top">
-          <span class="text--primary text-subtitle-2" @click.stop="name">
+          <span class="text--primary text-subtitle-2 mr-1" @click.stop="name">
             {{ item.name }}
           </span>
 
@@ -415,7 +415,7 @@ const LOCK = 1;
     BreadcrumbMain,
   }
 })
-export default class MainAirjoyTable extends VueBase {
+export default class MainAirjoyDevicesItem extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly hideDescription!: boolean;
 
