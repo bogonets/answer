@@ -5,12 +5,8 @@ import MainSettings from '@/pages/main/MainSettings.vue';
 import MainTables from '@/pages/main/MainTables.vue';
 import MainVms from '@/pages/main/MainVms.vue';
 
-// Airjoy
-import AirjoyChart from '@/pages/main/airjoy/AirjoyChart.vue';
-import AirjoyDetails from '@/pages/main/airjoy/AirjoyDetails.vue';
-import AirjoyLive from '@/pages/main/airjoy/AirjoyLive.vue';
-import AirjoySummary from '@/pages/main/airjoy/AirjoySummary.vue';
-import AirjoyTable from '@/pages/main/airjoy/AirjoyTable.vue';
+// External
+import mainAirjoyChildren from '@/router/children/external/airjoy/main';
 
 export const mainChildren = [
     {
@@ -39,32 +35,7 @@ export const mainChildren = [
         name: mainNames.mainVms,
     },
 
-    // Airjoy
-    {
-        path: ':group/:project/airjoy/chart/:airjoy',
-        component: AirjoyChart,
-        name: mainNames.mainAirjoyChart,
-    },
-    {
-        path: ':group/:project/airjoy/details/:airjoy',
-        component: AirjoyDetails,
-        name: mainNames.mainAirjoyDetails,
-    },
-    {
-        path: ':group/:project/airjoy/live',
-        component: AirjoyLive,
-        name: mainNames.mainAirjoyLive,
-    },
-    {
-        path: ':group/:project/airjoy/summary',
-        component: AirjoySummary,
-        name: mainNames.mainAirjoySummary,
-    },
-    {
-        path: ':group/:project/airjoy/table',
-        component: AirjoyTable,
-        name: mainNames.mainAirjoyTable,
-    },
+    ...mainAirjoyChildren,
 ];
 
 export default mainChildren;

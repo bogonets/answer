@@ -9,6 +9,9 @@ en:
   tasks: "Tasks"
   templates: "Templates"
   features: "Features"
+  external:
+    airjoy:
+      devices: "Airjoy Devices"
 
 ko:
   title: "관리자 설정"
@@ -20,6 +23,9 @@ ko:
   tasks: "태스크"
   templates: "템플릿"
   features: "기능 설정"
+  external:
+    airjoy:
+      devices: "Airjoy 장치"
 </i18n>
 
 <template>
@@ -126,6 +132,16 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
+        <v-divider v-if="isAirjoy"></v-divider>
+        <v-list-item  v-if="isAirjoy" link @click.stop="airjoy">
+          <v-list-item-icon>
+            <v-icon>mdi-weather-windy</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('external.airjoy.devices') }}
+          </v-list-item-title>
+        </v-list-item>
+
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
@@ -134,6 +150,7 @@ ko:
 <script lang="ts">
 import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import {OEM_AIRJOY} from '@/packet/oem';
 
 @Component
 export default class NaviAdmin extends VueBase {
@@ -145,6 +162,14 @@ export default class NaviAdmin extends VueBase {
   readonly value!: number;
 
   mini = false;
+
+  get oem() {
+    return this.$localStore.preference.oem;
+  }
+
+  get isAirjoy() {
+    return this.oem === OEM_AIRJOY;
+  }
 
   onClickFoldNavigation() {
     this.mini = !this.mini;
@@ -208,6 +233,12 @@ export default class NaviAdmin extends VueBase {
   features() {
     if (!this.noDefault) {
       this.moveToAdminConfigs();
+    }
+  }
+
+  @Emit('click:external-airjoy-devices')
+  externalAirjoyDevices() {
+    if (!this.noDefault) {
     }
   }
 }

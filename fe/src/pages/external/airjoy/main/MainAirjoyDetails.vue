@@ -256,7 +256,7 @@ import {
     VueApexCharts,
   }
 })
-export default class AirjoyDetails extends VueBase {
+export default class MainAirjoyDetails extends VueBase {
   private readonly breadcrumbs = [
     {
       text: this.$t('groups'),

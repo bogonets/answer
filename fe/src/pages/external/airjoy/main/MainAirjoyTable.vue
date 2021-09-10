@@ -42,7 +42,7 @@ ko:
       </template>
 
       <template v-slot:item="{ item }">
-        <airjoy-table-item
+        <main-airjoy-table-item
             hide-description
             :item="item"
             @click:body="onClickBody"
@@ -67,7 +67,7 @@ ko:
             @click:time-two="onClickTimeTwo"
             @click:time-four="onClickTimeFour"
             @click:time-eight="onClickTimeEight"
-        ></airjoy-table-item>
+        ></main-airjoy-table-item>
       </template>
 
       <template v-slot:no-data>
@@ -81,7 +81,7 @@ ko:
 import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
-import AirjoyTableItem from '@/pages/main/airjoy/AirjoyTableItem.vue';
+import MainAirjoyTableItem from '@/pages/external/airjoy/main/MainAirjoyTableItem.vue';
 import type {AirjoyA} from '@/packet/airjoy';
 import {
   CATEGORY_PM10,
@@ -95,10 +95,10 @@ import {
 @Component({
   components: {
     BreadcrumbMain,
-    AirjoyTableItem,
+    MainAirjoyTableItem,
   }
 })
-export default class AirjoyTable extends VueBase {
+export default class MainAirjoyTable extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly hideFilterInput!: boolean;
 

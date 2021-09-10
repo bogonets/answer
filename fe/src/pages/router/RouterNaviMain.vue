@@ -15,7 +15,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BarMain from '@/pages/bar/BarMain.vue';
 import NaviMain from '@/pages/navigation/NaviMain.vue';
-import NaviMainAirjoy from '@/pages/navigation/airjoy/NaviMainAirjoy.vue';
+import NaviMainAirjoy from '@/pages/external/airjoy/navigation/NaviMainAirjoy.vue';
 import {OEM_AIRJOY} from '@/packet/oem';
 
 @Component({

@@ -415,7 +415,7 @@ const LOCK = 1;
     BreadcrumbMain,
   }
 })
-export default class AirjoyTable extends VueBase {
+export default class MainAirjoyTable extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly hideDescription!: boolean;
 

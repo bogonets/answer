@@ -1,5 +1,6 @@
 <i18n lang="yaml">
 en:
+  refresh: "Refresh"
   position:
     builtin: "Builtin"
     package: "Package"
@@ -14,6 +15,7 @@ en:
   empty_lamdas: "Empty Lamdas"
 
 ko:
+  refresh: "갱신"
   position:
     builtin: "내장"
     package: "패키지"
@@ -37,6 +39,14 @@ ko:
       <v-tab>{{ $t('position.builtin') }}</v-tab>
       <v-tab>{{ $t('position.package') }}</v-tab>
       <v-tab>{{ $t('position.storage') }}</v-tab>
+
+      <v-spacer></v-spacer>
+      <v-btn color="primary" class="align-self-center mr-2" @click="onClickRefresh">
+        <v-icon left>
+          mdi-refresh
+        </v-icon>
+        {{ $t('refresh') }}
+      </v-btn>
     </v-tabs>
     <v-divider></v-divider>
 
@@ -188,6 +198,10 @@ export default class AdminTemplates extends VueBase {
 
   updateCurrentLamdasWithTabIndex() {
     this.updateCurrentLamdas(this.tabIndex);
+  }
+
+  onClickRefresh() {
+    this.updateLamdas();
   }
 
   onClickEditConfig(item) {

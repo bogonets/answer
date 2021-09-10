@@ -69,7 +69,7 @@ import VueApexCharts from 'vue-apexcharts';
     VueApexCharts,
   }
 })
-export default class AirjoyLive extends VueBase {
+export default class MainAirjoyLive extends VueBase {
   select = ''
   items = ['a', 'b', 'c']
 

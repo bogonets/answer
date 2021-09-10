@@ -153,7 +153,7 @@ export function today() {
     VueApexCharts,
   }
 })
-export default class AirjoyChart extends VueBase {
+export default class MainAirjoyChart extends VueBase {
   private readonly breadcrumbs = [
     {
       text: this.$t('groups'),

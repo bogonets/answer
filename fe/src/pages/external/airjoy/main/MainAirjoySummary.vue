@@ -34,7 +34,7 @@ import ViewPort from '@/components/ViewPort.vue';
     ViewPort,
   }
 })
-export default class AirjoySummary extends VueBase {
+export default class MainAirjoySummary extends VueBase {
   items = ['Good', 'Normal', 'Warning', 'Danger'];
   index = 0;
 

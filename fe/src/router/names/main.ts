@@ -1,3 +1,4 @@
+import mainAirjoyNames from '@/router/names/external/airjoy/main';
 export const mainNames = {
     mainDashboard: 'mainDashboard',
     mainMembers: 'mainMembers',
@@ -5,18 +6,13 @@ export const mainNames = {
     mainTables: 'mainTables',
     mainVms: 'mainVms',
 
-    // Airjoy
-    mainAirjoyChart: 'mainAirjoyChart',
-    mainAirjoyDetails: 'mainAirjoyDetails',
-    mainAirjoyLive: 'mainAirjoyLive',
-    mainAirjoySummary: 'mainAirjoySummary',
-    mainAirjoyTable: 'mainAirjoyTable',
-
     // -- Not yet --
     mainLayouts: 'mainLayouts',
     mainFiles: 'mainFiles',
     mainTasks: 'mainTasks',
     mainVp: 'mainVp',
+
+    ...mainAirjoyNames,
 };
 
 export default mainNames;

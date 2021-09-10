@@ -1,10 +1,10 @@
-import {Component} from 'vue-property-decorator';
-import Router from '@/base/router/Router';
+import Component, {mixins} from 'vue-class-component';
+import RouterMainAirjoy from '@/base/router/external/airjoy/RouterMainAirjoy';
 import mainNames from '@/router/names/main';
 import {OEM_AIRJOY} from '@/packet/oem';
 
 @Component
-export default class RouterMain extends Router {
+export default class RouterMain extends mixins(RouterMainAirjoy) {
     moveToMain(group?: string, project?: string) {
         const oem = this.$localStore.preference.oem;
         switch (oem) {
@@ -43,45 +43,5 @@ export default class RouterMain extends Router {
 
     moveToMainVms(group?: string, project?: string) {
         this._moveToMainSubpage(mainNames.mainVms, group, project);
-    }
-
-    // ------
-    // Airjoy
-    // ------
-
-    moveToMainAirjoyChart(
-        airjoy: string,
-        category?: string,
-        group?: string,
-        project?: string,
-    ) {
-        const params = {
-            airjoy: airjoy,
-            category: category || '',
-            group: group || this.$route.params.group,
-            project: project || this.$route.params.project,
-        };
-        this.moveTo(mainNames.mainAirjoyChart, params);
-    }
-
-    moveToMainAirjoyDetails(airjoy: string, group?: string, project?: string) {
-        const params = {
-            airjoy: airjoy,
-            group: group || this.$route.params.group,
-            project: project || this.$route.params.project,
-        };
-        this.moveTo(mainNames.mainAirjoyDetails, params);
-    }
-
-    moveToMainAirjoyLive(group?: string, project?: string) {
-        this._moveToMainSubpage(mainNames.mainAirjoyLive, group, project);
-    }
-
-    moveToMainAirjoySummary(group?: string, project?: string) {
-        this._moveToMainSubpage(mainNames.mainAirjoySummary, group, project);
-    }
-
-    moveToMainAirjoyTable(group?: string, project?: string) {
-        this._moveToMainSubpage(mainNames.mainAirjoyTable, group, project);
     }
 }
