@@ -9,7 +9,6 @@ from recc.cache.cache import Cache
 from recc.database.interfaces.db_interface import DbInterface
 from recc.task.task_connection_pool import TaskConnectionPool
 from recc.resource.port_manager import PortManager
-from recc.template.manager.lamda_template_manager import LamdaTemplateManager
 
 
 class ContextBase:
@@ -25,7 +24,6 @@ class ContextBase:
     _database: DbInterface
     _tasks: TaskConnectionPool
     _ports: PortManager
-    _templates: LamdaTemplateManager
 
     @property
     def config(self) -> CoreConfig:
@@ -47,6 +45,13 @@ class ContextBase:
         Storage Manager property.
         """
         return self._storage
+
+    @property
+    def template_manager(self):
+        """
+        Template Manager property.
+        """
+        return self.storage.get_template_manager()
 
     @property
     def session_factory(self):

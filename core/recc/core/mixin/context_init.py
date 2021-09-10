@@ -22,7 +22,6 @@ from recc.database.database import create_database
 from recc.storage.core_storage import CoreStorage
 from recc.task.task_connection_pool import create_task_connection_pool
 from recc.resource.port_manager import PortManager
-from recc.template.manager.lamda_template_manager import LamdaTemplateManager
 from recc.log.logging import recc_core_logger as logger
 from recc.session.session import (
     DEFAULT_ISSUER_RECC_ACCESS,
@@ -80,6 +79,8 @@ class ContextInit(ContextBase):
         self._storage = CoreStorage(self._config.storage_root)
         root_dir = self._storage.get_root_directory()
         logger.info(f"Created storage-manager (root={root_dir})")
+        if self._config.verbose >= 1:
+            logger.info(self._storage.get_template_manager().to_details())
 
     def _init_session_factory(self) -> None:
         assert self._signature
@@ -151,13 +152,6 @@ class ContextInit(ContextBase):
         self._ports = PortManager(min_port, max_port)
         logger.info("Created port-manager.")
 
-    def _init_templates(self) -> None:
-        self._templates = LamdaTemplateManager()
-        self._templates.refresh()
-        logger.info("Created template-manager.")
-        if self._config.verbose >= 1:
-            logger.info(self._templates.to_details())
-
     def init_all(
         self,
         config: Optional[CoreConfig] = None,
@@ -182,7 +176,6 @@ class ContextInit(ContextBase):
         self._init_database()
         self._init_task_manager()
         self._init_port_manager()
-        self._init_templates()
 
         if skip_assertion:
             return

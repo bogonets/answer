@@ -231,19 +231,20 @@ class LamdaTemplateManager:
             self._storage_compressed = bytes()
 
     def to_details(self) -> str:
-        io = StringIO()
-        io.writelines([
-            f"[{self.__class__.__name__}]",
-            f"- Builtin directory: {self.get_builtin_dir()}",
-            f"- Package directory: {self.get_package_dir()}",
-            f"- Storage directory: {self._template_directory}",
-            f"- Virtual environment directory: {self._venv_directory}",
-            f"- Number of templates: {len(self._templates)}",
-            f"- Number of builtin categories: {len(self._builtin_category_to_names)}",
-            f"- Number of package categories: {len(self._package_category_to_names)}",
-            f"- Number of storage categories: {len(self._storage_category_to_names)}",
+        lines = [
+            f"[{self.__class__.__name__}]\n",
+            f"- Builtin directory: {self.get_builtin_dir()}\n",
+            f"- Package directory: {self.get_package_dir()}\n",
+            f"- Storage directory: {self._template_directory}\n",
+            f"- Virtual environment directory: {self._venv_directory}\n",
+            f"- Number of templates: {len(self._templates)}\n",
+            f"- Number of builtin categories: {len(self._builtin_category_to_names)}\n",
+            f"- Number of package categories: {len(self._package_category_to_names)}\n",
+            f"- Number of storage categories: {len(self._storage_category_to_names)}\n",
             f"- Storage compressed bytes: {len(self._storage_compressed)}",
-        ])
+        ]
+        io = StringIO()
+        io.writelines(lines)
         return io.getvalue()
 
     @property
