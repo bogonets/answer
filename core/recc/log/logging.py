@@ -14,6 +14,7 @@ LOGGER_NAME_RECC_CACHE = "recc.cache"
 LOGGER_NAME_RECC_DATABASE = "recc.database"
 LOGGER_NAME_RECC_COMMON = "recc.common"
 LOGGER_NAME_RECC_LAMDA = "recc.lamda"
+LOGGER_NAME_RECC_NETWORK = "recc.network"
 
 recc_logger = logging.getLogger(LOGGER_NAME_RECC)
 recc_core_logger = logging.getLogger(LOGGER_NAME_CORE_RECC)
@@ -24,6 +25,7 @@ recc_cache_logger = logging.getLogger(LOGGER_NAME_RECC_CACHE)
 recc_database_logger = logging.getLogger(LOGGER_NAME_RECC_DATABASE)
 recc_common_logger = logging.getLogger(LOGGER_NAME_RECC_COMMON)
 recc_lamda_logger = logging.getLogger(LOGGER_NAME_RECC_LAMDA)
+recc_network_logger = logging.getLogger(LOGGER_NAME_RECC_NETWORK)
 
 SEVERITY_NAME_CRITICAL = "critical"
 SEVERITY_NAME_FATAL = "fatal"

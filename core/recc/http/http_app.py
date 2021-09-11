@@ -1,18 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import asyncio
-import sys
-from asyncio import AbstractEventLoop, Task, CancelledError
-from ipaddress import ip_address, IPv4Address
-from socket import (
-    socket,
-    AF_INET,
-    AF_INET6,
-    SOCK_STREAM,
-    SOL_SOCKET,
-    SO_REUSEADDR,
-    SO_REUSEPORT,
-)
+from asyncio import Task, CancelledError
+from socket import socket
 from typing import Optional, List
 
 from aiohttp import web
@@ -25,6 +14,8 @@ from aiohttp.web_response import Response
 from aiohttp.web_routedef import AbstractRouteDef
 
 from recc.core.context import Context
+from recc.aio.task import all_tasks, cancel_tasks
+from recc.network.socket import bind_socket
 from recc.http.http_interface import HttpAppCallback, EmptyHttpAppCallback
 from recc.http.http_cors import create_cors
 from recc.http.v1.router_v1 import RouterV1
@@ -33,50 +24,12 @@ from recc.http.http_www import HttpWWW
 from recc.http import http_urls as u
 from recc.log.logging import recc_http_logger as logger
 from recc.util.version import version_text
-
-PY_36 = sys.version_info >= (3, 6)
-PY_37 = sys.version_info >= (3, 7)
-PY_38 = sys.version_info >= (3, 8)
-
-
-def _get_ip_family(ip: str) -> int:
-    return AF_INET if type(ip_address(ip)) is IPv4Address else AF_INET6
-
-
-def _all_tasks(loop: AbstractEventLoop):
-    if PY_37:
-        return getattr(asyncio, "all_tasks")(loop)
-    else:
-        return {t for t in list(asyncio.Task.all_tasks(loop)) if not t.done()}
-
-
-def _cancel_tasks(to_cancel, loop: AbstractEventLoop) -> None:
-    if not to_cancel:
-        return
-
-    for task in to_cancel:
-        task.cancel()
-
-    loop.run_until_complete(
-        asyncio.gather(*to_cancel, loop=loop, return_exceptions=True)
-    )
-
-    for task in to_cancel:
-        if task.cancelled():
-            continue
-        if task.exception() is not None:
-            loop.call_exception_handler(
-                {
-                    "message": "unhandled exception during asyncio.run() shutdown",
-                    "exception": task.exception(),
-                    "task": task,
-                }
-            )
+from recc.util.python_version import PY_36
 
 
 class HttpApp:
     """
-    c2core main application class.
+    HTTP application.
     """
 
     _sock: Optional[socket] = None
@@ -99,7 +52,6 @@ class HttpApp:
         context: Optional[Context] = None,
         callback: Optional[HttpAppCallback] = None,
     ):
-        super().__init__()
         self._context = context if context else Context()
         self._callback = callback if callback else EmptyHttpAppCallback()
 
@@ -110,6 +62,9 @@ class HttpApp:
         self._app = web.Application(middlewares=[self._global_middleware])
         self._app._set_loop(self._context.loop)  # noqa
         self._app.router.add_routes(self._routes)
+        self._app.on_startup.append(self.on_startup)
+        self._app.on_shutdown.append(self.on_shutdown)
+        self._app.on_cleanup.append(self.on_cleanup)
 
         self._router_v1 = RouterV1(self._context)
         self._app.add_subapp(u.api_v1, self._router_v1.app)
@@ -122,19 +77,17 @@ class HttpApp:
 
         self._cors = create_cors(self._app)
 
-        self._app.on_startup.append(self.on_startup)
-        self._app.on_shutdown.append(self.on_shutdown)
-        self._app.on_cleanup.append(self.on_cleanup)
+    @property
+    def context(self):
+        return self._context
 
-    def _error_response(
-        self, e: BaseException, status: int, code: Optional[int] = None
-    ) -> Response:
-        dev_mode = self._context.config.developer
-        msg = repr(e) if dev_mode else str(e)
-        return web.json_response(
-            {"code": code if code is not None else status, "msg": msg},
-            status=status,
-        )
+    @property
+    def callback(self):
+        return self._callback
+
+    @property
+    def app(self):
+        return self._app
 
     @web.middleware
     async def _global_middleware(self, request: Request, handler) -> Response:
@@ -202,33 +155,8 @@ class HttpApp:
         bind = self._context.config.http_bind
         port = self._context.config.http_port
         dev_mode = self._context.config.developer
-
-        family: int
-        try:
-            family = _get_ip_family(bind)
-        except ValueError:
-            logger.error("The bind argument must be ipv4 or ipv6.")
-            return False
-
-        assert family == AF_INET or family == AF_INET6
-
-        try:
-            logger.info(f"Socket(bind={bind},port={port}) binding ...")
-            self._sock = socket(family=family, type=SOCK_STREAM)
-            if dev_mode:
-                # This is how to clear the `TIME_WAIT` time
-                # when restarting the program to speed up debugging.
-                self._sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-                self._sock.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
-            self._sock.bind((bind, port))
-            logger.info("Socket binding success.")
-            return True
-        except OSError as e:
-            logger.error(f"Socket binding failed: {e}")
-            if self._sock is not None:
-                self._sock.close()
-            self._sock = None
-            return False
+        self._sock = bind_socket(bind, port, dev_mode, dev_mode)
+        return self._sock is not None
 
     def exists_socket(self) -> bool:
         return self._sock is not None
@@ -310,9 +238,9 @@ class HttpApp:
         except KeyboardInterrupt:
             logger.info("http_app.run_until_complete() keyboard interrupt !!")
         finally:
-            _cancel_tasks({self._task}, loop)
-            _cancel_tasks(_all_tasks(loop), loop)
-            if sys.version_info >= (3, 6):  # don't use PY_36 to pass mypy
+            cancel_tasks(loop, self._task)
+            cancel_tasks(loop, *all_tasks(loop))
+            if PY_36:  # don't use python3.6 to pass mypy
                 loop.run_until_complete(loop.shutdown_asyncgens())
             if finally_clear:
                 loop.close()
