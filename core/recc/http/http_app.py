@@ -15,7 +15,6 @@ from socket import (
 )
 from typing import Optional, List
 
-import aiohttp_cors
 from aiohttp import web
 from aiohttp.log import access_logger
 from aiohttp.web import GracefulExit
@@ -27,10 +26,11 @@ from aiohttp.web_routedef import AbstractRouteDef
 
 from recc.core.context import Context
 from recc.http.http_interface import HttpAppCallback, EmptyHttpAppCallback
-from recc.http import http_urls as u
+from recc.http.http_cors import create_cors
 from recc.http.v1.router_v1 import RouterV1
 from recc.http.v2.router_v2 import RouterV2
 from recc.http.http_www import HttpWWW
+from recc.http import http_urls as u
 from recc.log.logging import recc_http_logger as logger
 from recc.util.version import version_text
 
@@ -41,25 +41,6 @@ PY_38 = sys.version_info >= (3, 8)
 
 def _get_ip_family(ip: str) -> int:
     return AF_INET if type(ip_address(ip)) is IPv4Address else AF_INET6
-
-
-def _create_cors(app: web.Application) -> aiohttp_cors.CorsConfig:
-    cors = aiohttp_cors.setup(
-        app,
-        defaults={
-            "*": aiohttp_cors.ResourceOptions(
-                allow_credentials=True,
-                expose_headers="*",
-                allow_headers="*",
-                max_age=None,
-                allow_methods=None,
-            )
-        },
-    )
-    routes = list(app.router.routes())
-    for route in routes:
-        cors.add(route)
-    return cors
 
 
 def _all_tasks(loop: AbstractEventLoop):
@@ -139,7 +120,7 @@ class HttpApp:
         self._www = HttpWWW(self._context)
         self._app.add_subapp(u.app, self._www.app)
 
-        self._cors = _create_cors(self._app)
+        self._cors = create_cors(self._app)
 
         self._app.on_startup.append(self.on_startup)
         self._app.on_shutdown.append(self.on_shutdown)
@@ -200,7 +181,7 @@ class HttpApp:
 
     async def call_soon_graceful_exit(self):
         assert self._task
-        self._task.get_loop().call_soon(self._graceful_exit)
+        self._task.get_loop().call_soon_threadsafe(self._graceful_exit)
 
     async def on_startup(self, app: web.Application):
         logger.info("http_app startup begin ...")
