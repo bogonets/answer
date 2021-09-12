@@ -4,9 +4,12 @@ import os
 from io import BytesIO
 from tarfile import open as tar_open
 from tempfile import TemporaryDirectory
+from shutil import copyfile
 from unittest import main
 from tester.unittest.async_test_case import AsyncTestCase
-from tester.node.numpy_plugins import copy_builtin_numpy_nodes
+from tester.lamda.numpy_plugins import copy_builtin_numpy_nodes
+from tester.plugin import simple_plugin
+from recc.package.package_utils import get_module_path
 from recc.storage.core_storage import CoreStorage
 
 
@@ -24,6 +27,12 @@ class CoreStorageTestCase(AsyncTestCase):
         self.numpy_json_files = copy_builtin_numpy_nodes(template_dir)
         self.assertLess(0, len(self.numpy_json_files))
         self.sm.refresh_templates()
+
+        self.assertTrue(self.sm.plugin.is_dir())
+        simple_plugin_path = get_module_path(simple_plugin)
+        simple_plugin_name = os.path.split(simple_plugin_path)[1]
+        simple_plugin_output = os.path.join(self.sm.plugin, simple_plugin_name)
+        copyfile(simple_plugin_path, simple_plugin_output)
 
     async def tearDown(self):
         self.temp_dir.cleanup()
@@ -43,6 +52,10 @@ class CoreStorageTestCase(AsyncTestCase):
                 json_name = os.path.basename(json_file)
                 expect_name = os.path.join("numpy", json_name)
                 self.assertIn(expect_name, tar_names)
+
+    async def test_plugin(self):
+        plugins = self.sm.find_python_plugins()
+        self.assertEqual(1, len(plugins))
 
 
 if __name__ == "__main__":

@@ -15,11 +15,13 @@ working.global/{project}
 """
 
 CORE_TEMPLATE_NAME = "template"
+CORE_PLUGIN_NAME = "plugin"
 
 CORE_NAMES = (
     CORE_WORKSPACE_NAME,
     CORE_WORKSPACE_GLOBAL_NAME,
     CORE_TEMPLATE_NAME,
+    CORE_PLUGIN_NAME,
 )
 
 # [WORKSPACE] first-depth categories.

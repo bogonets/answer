@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
+from typing import List
+from pathlib import Path
+from fnmatch import fnmatch
 from recc.storage.sock.sock_path import get_socket_url
 from recc.storage.mixin.storage_base import StorageBaseMixin
 from recc.storage.mixin.storage_template_manager import StorageTemplateManagerMixin
@@ -9,6 +12,7 @@ from recc.variables.storage import (
     CORE_WORKSPACE_NAME,
     CORE_WORKSPACE_GLOBAL_NAME,
     CORE_TEMPLATE_NAME,
+    CORE_PLUGIN_NAME,
     CORE_NAMES,
 )
 
@@ -28,8 +32,8 @@ class CoreStorage(
         refresh_templates=True,
     ):
         self.init_storage(
-            root_dir,
-            CORE_NAMES,
+            root_dir=root_dir,
+            subdir_names=CORE_NAMES,
             last_temp_candidate=last_temp_candidate,
             read_only=read_only,
             validate=validate,
@@ -49,6 +53,11 @@ class CoreStorage(
         if refresh_templates:
             self.refresh_templates()
 
+        self.plugin = Path(os.path.join(selected_root_dir, CORE_PLUGIN_NAME))
+
     def get_socket_url(self, group_name: str, project_name: str, task_name: str) -> str:
         prefix = self.get_project_dir(group_name, project_name)
         return get_socket_url(prefix, task_name)
+
+    def find_python_plugins(self) -> List[Path]:
+        return list(filter(lambda x: fnmatch(str(x), "*.py"), self.plugin.iterdir()))
