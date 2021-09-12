@@ -9,15 +9,15 @@ from recc.vs.lamda_interface import REQUEST_METHOD_SET, REQUEST_METHOD_GET, Lamd
 from recc.template.lamda_template import LamdaTemplate
 from recc.template.property import Property
 
-DEFAULT_MODULE_NAME = "__answer__"
-DEFAULT_FILENAME = "<PythonLambda>"
+DEFAULT_MODULE_NAME = "__recc_lamda__"
+DEFAULT_FILENAME = "<ReccLamda>"
 COMPILE_MODE_EXEC = "exec"
 OPTIMIZE_DEFAULT = -1
 OPTIMIZE_LEVEL0 = 0  # no optimization, __debug__ is true
 OPTIMIZE_LEVEL1 = 1  # asserts are removed, __debug__ is false
 OPTIMIZE_LEVEL2 = 2  # docstrings are removed too
 
-PYTHON_LAMBDA_SOURCE_PREFIX = """# -*- coding: utf-8 -*-
+PYTHON_LAMDA_SOURCE_PREFIX = """# -*- coding: utf-8 -*-
 import sys
 import os
 import signal
@@ -61,7 +61,7 @@ CALL_FILENAME_ON_RUN = "<builtin_on_run_caller>"
 
 class LamdaPython(Lamda):
     """
-    Python lambda plugin.
+    Python lamda plugin.
     """
 
     _template: LamdaTemplate
@@ -115,7 +115,7 @@ class LamdaPython(Lamda):
             site_packages = str()
 
         local_variables: Dict[str, Any] = dict()
-        source_prefix = PYTHON_LAMBDA_SOURCE_PREFIX.format(
+        source_prefix = PYTHON_LAMDA_SOURCE_PREFIX.format(
             ignore_interrupt_signal=True,
             site_packages=site_packages,
         )
