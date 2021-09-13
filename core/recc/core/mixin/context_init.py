@@ -23,6 +23,7 @@ from recc.storage.core_storage import CoreStorage
 from recc.task.task_connection_pool import create_task_connection_pool
 from recc.resource.port_manager import PortManager
 from recc.log.logging import recc_core_logger as logger
+from recc.plugin.plugin_manager import PluginManager
 from recc.session.session import (
     DEFAULT_ISSUER_RECC_ACCESS,
     DEFAULT_ISSUER_RECC_REFRESH,
@@ -152,6 +153,10 @@ class ContextInit(ContextBase):
         self._ports = PortManager(min_port, max_port)
         logger.info("Created port-manager.")
 
+    def _init_plugin_manager(self) -> None:
+        self._plugins = PluginManager()
+        logger.info("Created plugin-manager.")
+
     def init_all(
         self,
         config: Optional[CoreConfig] = None,
@@ -176,6 +181,7 @@ class ContextInit(ContextBase):
         self._init_database()
         self._init_task_manager()
         self._init_port_manager()
+        self._init_plugin_manager()
 
         if skip_assertion:
             return
@@ -190,3 +196,4 @@ class ContextInit(ContextBase):
         assert self._database is not None
         assert self._tasks is not None
         assert self._ports is not None
+        assert self._plugins is not None

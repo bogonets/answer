@@ -1,38 +1,41 @@
 # -*- coding: utf-8 -*-
 
 from typing import Dict, Any
+from asyncio import gather
 from recc.plugin.plugin import Plugin
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 
 
 class PluginManager(Dict[str, Plugin]):
-    def exists_create(self, name: str) -> bool:
-        return self.__getitem__(name).exists_create
+    def create(self, context: Any, *files, **kwargs) -> None:
+        for file in files:
+            plugin = Plugin(file)
+            if plugin.exists_create:
+                plugin.call_create(context, **kwargs)
+            self.__setitem__(plugin.name, plugin)
 
-    def exists_destroy(self, name: str) -> bool:
-        return self.__getitem__(name).exists_destroy
+    def destroy(self) -> None:
+        for key, plugin in self.items():
+            if plugin.exists_destroy:
+                plugin.call_destroy()
 
-    def exists_open(self, name: str) -> bool:
-        return self.__getitem__(name).exists_open
+    async def open(self) -> None:
+        coroutines = []
+        for key, plugin in self.items():
+            if plugin.exists_open:
+                coroutines.append(plugin.call_open())
+        await gather(*coroutines)
 
-    def exists_close(self, name: str) -> bool:
-        return self.__getitem__(name).exists_close
+    async def close(self) -> None:
+        coroutines = []
+        for key, plugin in self.items():
+            if plugin.exists_close:
+                coroutines.append(plugin.call_close())
+        await gather(*coroutines)
 
-    def exists_request(self, name: str) -> bool:
-        return self.__getitem__(name).exists_request
-
-    def call_create(self, name: str, context: Any, **kwargs) -> None:
-        self.__getitem__(name).call_create(context, **kwargs)
-
-    def call_destroy(self, name: str) -> None:
-        self.__getitem__(name).call_destroy()
-
-    async def call_open(self, name: str) -> None:
-        await self.__getitem__(name).call_open()
-
-    async def call_close(self, name: str) -> None:
-        await self.__getitem__(name).call_close()
-
-    async def call_request(self, name: str, request: Request) -> Response:
-        return await self.__getitem__(name).call_request(request)
+    async def request(self, name: str, request: Request) -> Response:
+        plugin = self.__getitem__(name)
+        if not plugin.exists_request:
+            raise NotImplementedError
+        return await plugin.call_request(request)

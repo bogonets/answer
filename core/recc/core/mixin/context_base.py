@@ -9,6 +9,7 @@ from recc.cache.cache import Cache
 from recc.database.interfaces.db_interface import DbInterface
 from recc.task.task_connection_pool import TaskConnectionPool
 from recc.resource.port_manager import PortManager
+from recc.plugin.plugin_manager import PluginManager
 
 
 class ContextBase:
@@ -24,6 +25,7 @@ class ContextBase:
     _database: DbInterface
     _tasks: TaskConnectionPool
     _ports: PortManager
+    _plugins: PluginManager
 
     @property
     def config(self) -> CoreConfig:
@@ -131,6 +133,14 @@ class ContextBase:
         """
         assert self._ports is not None
         return self._ports
+
+    @property
+    def plugins(self):
+        """
+        Plugin Manager.
+        """
+        assert self._plugins is not None
+        return self._plugins
 
     # ----------------
     # Database caching

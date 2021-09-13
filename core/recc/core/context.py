@@ -11,6 +11,7 @@ from recc.core.mixin.context_init import ContextInit
 from recc.core.mixin.context_lamda import ContextLamda
 from recc.core.mixin.context_layout import ContextLayout
 from recc.core.mixin.context_permission import ContextPermission
+from recc.core.mixin.context_plugin import ContextPlugin
 from recc.core.mixin.context_port import ContextPort
 from recc.core.mixin.context_project import ContextProject
 from recc.core.mixin.context_storage import ContextStorage
@@ -27,6 +28,7 @@ class Context(
     ContextLamda,
     ContextLayout,
     ContextPermission,
+    ContextPlugin,
     ContextPort,
     ContextProject,
     ContextStorage,
@@ -79,6 +81,13 @@ class Context(
         await self._tasks.open()
         logger.info("Opened task-manager")
 
+        plugin_scripts = self._storage.find_python_plugins()
+        self._plugins.create(self, *plugin_scripts)
+        logger.info("Create plugin-manager")
+
+        await self._plugins.open()
+        logger.info("Opened plugin-manager")
+
         await self._after_open()
         logger.info("The context has been opened")
 
@@ -102,13 +111,19 @@ class Context(
     async def _before_close(self) -> None:
         if self.container.is_open() and self.is_guest_mode():
             await self.disconnect_global_network()
-            logger.info("Disconnect global network.")
+            logger.info("Disconnect global network")
 
     async def close(self) -> None:
         logger.info("Closing the context")
         await self._before_close()
 
         teardown = self._config.teardown
+
+        await self._plugins.close()
+        logger.info("Closed plugin-manager")
+
+        self._plugins.destroy()
+        logger.info("Destroyed plugin-manager")
 
         await self._tasks.close()
         logger.info("Closed task-manager")
