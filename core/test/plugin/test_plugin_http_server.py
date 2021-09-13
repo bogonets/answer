@@ -9,6 +9,8 @@ from tester.unittest.async_test_case import AsyncTestCase
 from tester.plugin import plugin_http_server
 from recc.package.package_utils import get_module_path
 from recc.plugin.plugin import Plugin
+from recc.http.http_client import HttpClient
+from recc.variables.http import DEFAULT_HTTP_TEST_PORT
 
 
 class PluginHttpServerTestCase(AsyncTestCase):
@@ -24,22 +26,31 @@ class PluginHttpServerTestCase(AsyncTestCase):
 
     async def test_default(self):
         host = "0.0.0.0"
-        port = 30001
+        port = DEFAULT_HTTP_TEST_PORT
 
         plugin = Plugin(self.plugin_output)
-        self.assertTrue(plugin.exists_setup)
-        self.assertTrue(plugin.exists_teardown)
+        self.assertTrue(plugin.exists_create)
+        self.assertTrue(plugin.exists_destroy)
+        self.assertTrue(plugin.exists_open)
+        self.assertTrue(plugin.exists_close)
         self.assertTrue(plugin.exists_request)
 
-        context = dict()
-        await plugin.call_setup(context, host=host, port=port)
+        plugin.call_create(object(), host=host, port=port)
         self.assertEqual("http_server", plugin.name)
+
+        await plugin.call_open()
+
+        body = "TEST_BODY"
+        client = HttpClient(f"{host}:{port}")
+        tester_response = await client.get("/tester", text=body)
+        self.assertEqual(200, tester_response.status)
 
         response = await plugin.call_request(None)  # noqa
         self.assertIsInstance(response, Response)
-        self.assertEqual("http_server", response.text)
+        self.assertEqual(body, response.text)
 
-        await plugin.call_teardown()
+        await plugin.call_close()
+        plugin.call_destroy()
 
 
 if __name__ == "__main__":

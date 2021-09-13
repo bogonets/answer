@@ -24,19 +24,23 @@ class PluginSimpleTestCase(AsyncTestCase):
 
     async def test_default(self):
         plugin = Plugin(self.plugin_output)
-        self.assertTrue(plugin.exists_setup)
-        self.assertTrue(plugin.exists_teardown)
+        self.assertTrue(plugin.exists_create)
+        self.assertTrue(plugin.exists_destroy)
+        self.assertTrue(plugin.exists_open)
+        self.assertTrue(plugin.exists_close)
         self.assertTrue(plugin.exists_request)
 
-        context = dict()
-        await plugin.call_setup(context)
+        plugin.call_create(object())
         self.assertEqual("simple", plugin.name)
+
+        await plugin.call_open()
 
         response = await plugin.call_request(None)  # noqa
         self.assertIsInstance(response, Response)
         self.assertEqual("simple", response.text)
 
-        await plugin.call_teardown()
+        await plugin.call_close()
+        plugin.call_destroy()
 
 
 if __name__ == "__main__":

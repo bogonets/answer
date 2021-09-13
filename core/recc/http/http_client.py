@@ -48,10 +48,10 @@ def request(
     path=u.root,
     scheme=DEFAULT_SCHEME,
     timeout=DEFAULT_REQUEST_TIMEOUT_SECONDS,
+    data=None,
 ) -> Tuple[int, Optional[str]]:
-    response = requests.get(
-        f"{scheme}://{host}:{port}{normalize_url_path(path)}", timeout=timeout
-    )
+    url = f"{scheme}://{host}:{port}{normalize_url_path(path)}"
+    response = requests.get(url=url, data=data, timeout=timeout)
     code = response.status_code
     return code, response.text if code == 200 else str()
 
@@ -127,7 +127,12 @@ class ResponseData:
 
 
 class HttpClient:
-    def __init__(self, scheme: str, address: str, timeout: float):
+    def __init__(
+        self,
+        address: str,
+        scheme=DEFAULT_SCHEME,
+        timeout=DEFAULT_REQUEST_TIMEOUT_SECONDS,
+    ):
         self.scheme = scheme
         self.address = address
         self.timeout = timeout
