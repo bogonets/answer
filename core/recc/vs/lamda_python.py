@@ -8,6 +8,7 @@ from recc.blueprint.blueprint import BpProperty
 from recc.vs.lamda_interface import REQUEST_METHOD_SET, REQUEST_METHOD_GET, Lamda
 from recc.template.lamda_template import LamdaTemplate
 from recc.template.property import Property
+from recc.compile.future import get_annotations_compiler_flag
 
 DEFAULT_MODULE_NAME = "__recc_lamda__"
 DEFAULT_FILENAME = "<ReccLamda>"
@@ -121,8 +122,10 @@ class LamdaPython(Lamda):
         )
         exec(source_prefix, self._global_variables, local_variables)
 
+        flags = get_annotations_compiler_flag()
+
         def _compile(src: str, filename: str):
-            return compile(src, filename, COMPILE_MODE_EXEC, 0, False, optimize)
+            return compile(src, filename, COMPILE_MODE_EXEC, flags, 0, optimize)
 
         source_ast = _compile(
             source if source is not None else str(),

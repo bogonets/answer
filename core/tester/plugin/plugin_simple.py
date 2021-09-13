@@ -5,7 +5,7 @@ from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 
 
-async def on_setup(context: Any) -> Dict[str, Any]:
+async def on_setup(context: Any, **kwargs) -> Dict[str, Any]:
     return {"name": "simple"}
 
 

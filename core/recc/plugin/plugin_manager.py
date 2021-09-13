@@ -16,8 +16,8 @@ class PluginManager(Dict[str, Plugin]):
     def exists_request(self, name: str) -> bool:
         return self.__getitem__(name).exists_request()
 
-    async def call_setup(self, name: str, context: Any) -> None:
-        await self.__getitem__(name).call_setup(context)
+    async def call_setup(self, name: str, context: Any, **kwargs) -> None:
+        await self.__getitem__(name).call_setup(context, **kwargs)
 
     async def call_teardown(self, name: str) -> None:
         await self.__getitem__(name).call_teardown()

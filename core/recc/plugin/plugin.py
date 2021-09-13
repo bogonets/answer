@@ -2,31 +2,22 @@
 
 import os
 import builtins
-import site
 from importlib.machinery import BuiltinImporter
 from typing import Optional, Any, Dict
 from inspect import iscoroutinefunction
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
+from recc.compile.future import get_annotations_compiler_flag
 
 DEFAULT_MODULE_NAME = "__recc_plugin__"
 DEFAULT_FILENAME = "<ReccPlugin>"
 COMPILE_MODE_EXEC = "exec"
+COMPILE_FLAGS = get_annotations_compiler_flag()
 
 OPTIMIZE_DEFAULT = -1
 OPTIMIZE_LEVEL0 = 0  # no optimization, __debug__ is true
 OPTIMIZE_LEVEL1 = 1  # asserts are removed, __debug__ is false
 OPTIMIZE_LEVEL2 = 2  # docstrings are removed too
-
-PYTHON_PLUGIN_SOURCE_PREFIX = """# -*- coding: utf-8 -*-
-import sys
-import os
-import signal
-if {ignore_interrupt_signal}:
-    signal.signal(signal.SIGINT, signal.SIG_IGN)
-if "{site_packages}":
-    sys.path.insert(0, "{site_packages}")
-"""
 
 NAME_ON_SETUP = "on_setup"
 NAME_ON_TEARDOWN = "on_teardown"
@@ -35,35 +26,38 @@ NAME_ON_REQUEST = "on_request"
 PLUGIN_INFORMATION_KEY_NAME = "name"
 
 
+def run_python_plugin(path: str) -> Dict[str, Any]:
+    with open(path, "r") as f:
+        source = f.read()
+
+    global_variables: Dict[str, Any] = {
+        "__name__": DEFAULT_MODULE_NAME,
+        "__file__": path,
+        "__doc__": "",
+        "__loader__": type(BuiltinImporter),
+        "__builtins__": builtins,
+    }
+    local_variables: Dict[str, Any] = dict()
+
+    ast = compile(source, path, COMPILE_MODE_EXEC, COMPILE_FLAGS)
+    exec(ast, global_variables, local_variables)
+    global_variables.update(local_variables)
+    return global_variables
+
+
 class Plugin:
     def __init__(self, path: str):
         self._path = path
-        with open(path, "r") as f:
-            self._source = f.read()
-        self._source_ast = compile(self._source, path, COMPILE_MODE_EXEC)
-        self._global_variables: Dict[str, Any] = {
-            "__name__": DEFAULT_MODULE_NAME,
-            "__file__": path,
-            "__doc__": "",
-            "__loader__": type(BuiltinImporter),
-            "__builtins__": builtins,
-        }
-        local_variables: Dict[str, Any] = dict()
-
-        try:
-            site_packages = site.getsitepackages()[0]
-        except:  # noqa
-            site_packages = str()
-
-        source_prefix = PYTHON_PLUGIN_SOURCE_PREFIX.format(
-            ignore_interrupt_signal=True,
-            site_packages=site_packages,
-        )
-        exec(source_prefix, self._global_variables, local_variables)
-
-        exec(self._source_ast, self._global_variables, local_variables)
-        self._global_variables.update(local_variables)
+        self._global_variables = run_python_plugin(path)
         self._name = ""
+
+    @property
+    def path(self) -> str:
+        return self._path
+
+    @property
+    def globals(self) -> Dict[str, Any]:
+        return self._global_variables
 
     @property
     def name(self) -> str:
@@ -86,13 +80,13 @@ class Plugin:
                 return str(info.get(PLUGIN_INFORMATION_KEY_NAME))
         return os.path.split(self._path)[1]
 
-    async def call_setup(self, context: Any) -> None:
+    async def call_setup(self, context: Any, **kwargs) -> None:
         on_setup = self._global_variables.get(NAME_ON_SETUP)
         assert on_setup is not None
         if iscoroutinefunction(on_setup):
-            result = await on_setup(context)
+            result = await on_setup(context, **kwargs)
         else:
-            result = on_setup(context)
+            result = on_setup(context, **kwargs)
         self._name = self.parse_plugin_name(result)
 
     async def call_teardown(self) -> None:
