@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 
 
-def on_setup(config, context) -> Optional[Dict[str, Any]]:
+async def on_setup(context: Any) -> Dict[str, Any]:
     return {"name": "simple"}
 
 
-def on_teardown() -> None:
+async def on_teardown() -> None:
     pass
 
 
-def on_external(request: Request) -> Response:
-    pass
+async def on_request(request: Request) -> Response:
+    return Response(text="simple")

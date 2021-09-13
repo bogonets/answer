@@ -4,7 +4,6 @@ import os
 from tempfile import TemporaryDirectory
 from shutil import copyfile
 from unittest import main
-from argparse import Namespace
 from aiohttp.web_response import Response
 from tester.unittest.async_test_case import AsyncTestCase
 from tester.plugin import simple_plugin
@@ -29,12 +28,13 @@ class PluginTestCase(AsyncTestCase):
         self.assertTrue(plugin.exists_teardown)
         self.assertTrue(plugin.exists_request)
 
-        config = Namespace()
         context = dict()
-        await plugin.call_setup(config, context)
+        await plugin.call_setup(context)
+        self.assertEqual("simple", plugin.name)
 
-        response = await plugin.call_request()
+        response = await plugin.call_request(None)  # noqa
         self.assertIsInstance(response, Response)
+        self.assertEqual("simple", response.text)
 
         await plugin.call_teardown()
 
