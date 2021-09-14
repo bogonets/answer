@@ -114,7 +114,9 @@ pkey
 pmember
 pname
 pperm
+pplugin
 pproject
+ptail
 puser
 pval
 

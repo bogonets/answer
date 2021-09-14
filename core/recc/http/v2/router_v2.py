@@ -17,6 +17,7 @@ from recc.http.v2.router_v2_public import RouterV2Public
 from recc.http.v2.router_v2_admin import RouterV2Admin
 from recc.http.v2.router_v2_self import RouterV2Self
 from recc.http.v2.router_v2_main import RouterV2Main
+from recc.http.v2.router_v2_plugins import RouterV2Plugins
 from recc.http.http_session import assign_session
 from recc.http import http_urls as u
 from recc.http import http_cache_keys as c
@@ -43,6 +44,9 @@ class RouterV2:
         self._main = RouterV2Main(context)
         self._app.add_subapp(u.main, self._main.app)
 
+        self._plugins = RouterV2Plugins(context)
+        self._app.add_subapp(u.plugins, self._plugins.app)
+
     @property
     def app(self) -> web.Application:
         return self._app
@@ -66,6 +70,10 @@ class RouterV2:
     @staticmethod
     def is_self_router(request: Request) -> bool:
         return request.path.startswith(u.api_v2_self)
+
+    @staticmethod
+    def is_plugins_router(request: Request) -> bool:
+        return request.path.startswith(u.api_v2_plugins)
 
     async def test_initialized_database(self) -> None:
         if not await self.context.is_initialized_database():
@@ -113,6 +121,10 @@ class RouterV2:
         await self.assign_session(request)
         return await handler(request)
 
+    async def middleware_plugins(self, request: Request, handler) -> Response:
+        assert self is not None, "Remove warning about 'method may be static'"
+        return await handler(request)
+
     @web.middleware
     async def middleware(self, request: Request, handler) -> Response:
         if request.method == METH_OPTIONS:
@@ -126,5 +138,7 @@ class RouterV2:
             return await self.middleware_public(request, handler)
         elif self.is_self_router(request):
             return await self.middleware_self(request, handler)
+        elif self.is_plugins_router(request):
+            return await self.middleware_plugins(request, handler)
         else:
             raise HTTPNotFound()

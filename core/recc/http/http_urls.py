@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from typing import Optional
 from recc.http import http_path_keys as p
 
 # Depth root.
@@ -35,6 +36,7 @@ members = "/members"
 overview = "/overview"
 password = "/password"
 permissions = "/permissions"
+plugins = "/plugins"
 projects = "/projects"
 public = "/public"
 oem = "/oem"
@@ -50,8 +52,11 @@ users = "/users"
 version = "/version"
 
 
-def _param_path(key: str) -> str:
-    return "/{" + key + "}"
+def _param_path(key: str, pattern: Optional[str] = None) -> str:
+    if pattern:
+        return "/{" + key + ":" + pattern + "}"
+    else:
+        return "/{" + key + "}"
 
 
 # Params (Use the prefix 'p')
@@ -60,7 +65,9 @@ pkey = _param_path(p.key)
 pname = _param_path(p.name)
 pmember = _param_path(p.member)
 pperm = _param_path(p.perm)
+pplugin = _param_path(p.plugin)
 pproject = _param_path(p.project)
+ptail = _param_path(p.tail, r".*")
 puser = _param_path(p.user)
 
 # Mixin for ROOT
@@ -70,6 +77,7 @@ api_v2_admin = api + v2 + admin
 api_v2_main = api + v2 + main
 api_v2_public = api + v2 + public
 api_v2_self = api + v2 + self
+api_v2_plugins = api + v2 + plugins
 
 # Mixin (/api)
 api_version = api + version
@@ -86,6 +94,7 @@ infos_pkey = infos + pkey
 permissions_pperm = permissions + pperm
 permissions_pgroup = permissions + pgroup
 permissions_pgroup_pproject = permissions + pgroup + pproject
+pplugin_ptail = pplugin + ptail
 projects_pgroup_pproject = projects + pgroup + pproject
 projects_pgroup_pproject_members = projects_pgroup_pproject + members
 projects_pgroup_pproject_members_pmember = projects_pgroup_pproject_members + pmember
