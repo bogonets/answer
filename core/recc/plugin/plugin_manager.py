@@ -8,7 +8,7 @@ from aiohttp.web_response import Response
 
 
 class PluginManager(Dict[str, Plugin]):
-    def create(self, context: Any, *files, **kwargs) -> None:
+    def create(self, context: Any, *files: str, **kwargs) -> None:
         for file in files:
             plugin = Plugin(file)
             if plugin.exists_create:

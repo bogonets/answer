@@ -11,7 +11,7 @@ from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 
 DEFAULT_HOST = "0.0.0.0"
-DEFAULT_PORT = 40000
+DEFAULT_PORT = 39999
 
 logger = getLogger("recc.plugin.http_server")
 
@@ -26,7 +26,7 @@ class Server:
         self.port = int(kwargs.get("port", DEFAULT_PORT))
         self.app = Application()
         self.app.add_routes([
-            web.get("/tester", self.on_get_tester)
+            web.get("/tester", self.on_get_tester),
         ])
         self.app.on_startup.append(self.on_startup)
         self.ready = Event()

@@ -56,3 +56,8 @@ def v2_self_path(*paths: str, **kwargs: str) -> str:
 def v2_plugins_path(*paths: str, **kwargs: str) -> str:
     path = join_urls(u.api_v2_plugins, *paths)
     return path.format(**kwargs) if kwargs else path
+
+
+def v2_plugins_pplugin_path(plugin: str, *paths: str, **kwargs: str) -> str:
+    path = join_urls(u.api_v2_plugins, u.pplugin.format(plugin=plugin), *paths)
+    return path.format(**kwargs) if kwargs else path
