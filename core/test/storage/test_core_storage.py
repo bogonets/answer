@@ -8,7 +8,7 @@ from shutil import copyfile
 from unittest import main
 from tester.unittest.async_test_case import AsyncTestCase
 from tester.lamda.numpy_plugins import copy_builtin_numpy_nodes
-from tester.plugin import plugin_simple
+from tester.plugins import plugin_simple
 from recc.package.package_utils import get_module_path
 from recc.storage.core_storage import CoreStorage
 
