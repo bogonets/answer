@@ -16,12 +16,13 @@ from aiohttp.hdrs import (
     AUTHORIZATION,
     CONTENT_TYPE,
 )
-from multidict import CIMultiDictProxy, CIMultiDict
+from multidict import CIMultiDict
 
 from recc.driver.json import global_json_encoder
 from recc.mime.mime_type import MIME_APPLICATION_JSON_UTF8, APPLICATION_JSON
 from recc.packet.user import SigninA, SignupQ
 from recc.serialization.serialize import serialize_default
+from recc.http.http_packet import HttpResponse
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.header.bearer_auth import BearerAuth
 from recc.http.http_payload import payload_to_class
@@ -111,21 +112,6 @@ def request_version(
 _T = TypeVar("_T")
 
 
-class ResponseData:
-    def __init__(
-        self,
-        *,
-        status: Optional[int] = None,
-        reason: Optional[str] = None,
-        data: Optional[Any] = None,
-        headers: Optional[CIMultiDictProxy] = None,
-    ):
-        self.status = status
-        self.reason = reason
-        self.data = data
-        self.headers = headers
-
-
 class HttpClient:
     def __init__(
         self,
@@ -176,7 +162,7 @@ class HttpClient:
         text: Optional[str] = None,
         data: Optional[Any] = None,
         cls: Optional[Type[_T]] = None,
-    ) -> ResponseData:
+    ) -> HttpResponse:
         if path:
             if path[0] == URL_PATH_SEPARATOR:
                 url = self.origin + path
@@ -229,7 +215,7 @@ class HttpClient:
                         else:
                             response_data = await response.text()
 
-                    return ResponseData(
+                    return HttpResponse(
                         status=response.status,
                         reason=response.reason,
                         data=response_data,
@@ -251,7 +237,7 @@ class HttpClient:
         text: Optional[str] = None,
         data: Optional[Any] = None,
         cls: Optional[Type[_T]] = None,
-    ) -> ResponseData:
+    ) -> HttpResponse:
         return await self.request(METH_GET, path, headers, text, data, cls)
 
     async def post(
@@ -261,7 +247,7 @@ class HttpClient:
         text: Optional[str] = None,
         data: Optional[Any] = None,
         cls: Optional[Type[_T]] = None,
-    ) -> ResponseData:
+    ) -> HttpResponse:
         return await self.request(METH_POST, path, headers, text, data, cls)
 
     async def patch(
@@ -271,7 +257,7 @@ class HttpClient:
         text: Optional[str] = None,
         data: Optional[Any] = None,
         cls: Optional[Type[_T]] = None,
-    ) -> ResponseData:
+    ) -> HttpResponse:
         return await self.request(METH_PATCH, path, headers, text, data, cls)
 
     async def put(
@@ -281,7 +267,7 @@ class HttpClient:
         text: Optional[str] = None,
         data: Optional[Any] = None,
         cls: Optional[Type[_T]] = None,
-    ) -> ResponseData:
+    ) -> HttpResponse:
         return await self.request(METH_PUT, path, headers, text, data, cls)
 
     async def delete(
@@ -291,7 +277,7 @@ class HttpClient:
         text: Optional[str] = None,
         data: Optional[Any] = None,
         cls: Optional[Type[_T]] = None,
-    ) -> ResponseData:
+    ) -> HttpResponse:
         return await self.request(METH_DELETE, path, headers, text, data, cls)
 
     async def signup_public(self, username: str, password: str) -> None:

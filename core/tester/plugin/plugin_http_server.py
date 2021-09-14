@@ -2,12 +2,18 @@
 
 from typing import Optional, Any, Dict
 from asyncio import Task, Event, create_task
+from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR, SO_REUSEPORT
+from logging import getLogger
 from aiohttp.web import Application
 from aiohttp.web import _run_app  # noqa
 from aiohttp import web
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
-from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR, SO_REUSEPORT
+
+DEFAULT_HOST = "0.0.0.0"
+DEFAULT_PORT = 40000
+
+logger = getLogger("recc.plugin.http_server")
 
 
 class Server:
@@ -16,8 +22,8 @@ class Server:
 
     def __init__(self, context: Any, **kwargs):
         self.context = context
-        self.host = str(kwargs["host"])
-        self.port = int(kwargs["port"])
+        self.host = str(kwargs.get("host", DEFAULT_HOST))
+        self.port = int(kwargs.get("port", DEFAULT_PORT))
         self.app = Application()
         self.app.add_routes([
             web.get("/tester", self.on_get_tester)
@@ -42,10 +48,12 @@ class Server:
         await _run_app(self.app, sock=self.sock)
 
     async def on_open(self) -> None:
+        logger.debug("on_open")
         self.task = create_task(self._runner())
         await self.ready.wait()
 
     async def on_close(self) -> None:
+        logger.debug("on_close")
         assert self.task is not None
         try:
             self.task.cancel()
@@ -56,7 +64,8 @@ class Server:
             assert self.sock is not None
             self.sock.close()
 
-    async def on_request(self, request) -> Response:
+    async def on_request(self, request: Request) -> Response:
+        logger.debug("on_request")
         assert self.task is not None
         return Response(text=self.body)
 
