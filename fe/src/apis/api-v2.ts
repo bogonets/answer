@@ -513,4 +513,12 @@ export default class ApiV2 {
     deleteAdminPermissionsPperm(perm: string) {
         return this.delete(`/admin/permissions/${perm}`);
     }
+
+    // --------------
+    // Plugins/Airjoy
+    // --------------
+
+    getAirjoy(group: string, project: string) {
+        return this.get(`/plugins/airjoy/${group}/${project}`);
+    }
 }

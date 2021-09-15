@@ -5,6 +5,7 @@ from inspect import signature, isclass, iscoroutinefunction
 from functools import wraps
 from datetime import datetime
 from http import HTTPStatus
+
 from aiohttp.hdrs import AUTHORIZATION
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
@@ -30,7 +31,8 @@ from recc.http.http_status import (
 from recc.http import http_cache_keys as c
 from recc.variables.http import VERY_VERBOSE_DEBUGGING
 
-CONTEXT_METHOD_NAME = "context"
+CONTEXT_PROPERTY_NAME = "context"
+CONFIG_PROPERTY_NAME = "config"
 
 
 def _is_serializable_instance(obj: Any) -> bool:
@@ -91,10 +93,10 @@ async def _parameter_matcher_main(
         update_arguments.append(obj)
 
     very_verbose_debugging = False
-    context = getattr(obj, CONTEXT_METHOD_NAME, None)
+    context = getattr(obj, CONTEXT_PROPERTY_NAME, None)
     if context and isinstance(context, Context):
-        config = context.config
-        if config.developer and config.verbose >= VERY_VERBOSE_DEBUGGING:
+        config = getattr(obj, CONFIG_PROPERTY_NAME, None)
+        if config and config.developer and config.verbose >= VERY_VERBOSE_DEBUGGING:
             very_verbose_debugging = True
 
     if len(keys) >= 2:
@@ -104,50 +106,54 @@ async def _parameter_matcher_main(
             if type_origin is None:
                 type_origin = param.annotation
             assert type_origin is not None
-            assert isinstance(type_origin, type)
 
-            # BasicAuth
-            if issubclass(type_origin, BasicAuth):
-                if AUTHORIZATION not in request.headers:
-                    raise HTTPBadRequest(reason=f"Not exists {AUTHORIZATION} header")
-                try:
-                    authorization = request.headers[AUTHORIZATION]
-                    basic = BasicAuth.decode_from_authorization_header(authorization)
-                except ValueError as e:
-                    raise HTTPBadRequest(reason=str(e))
-                update_arguments.append(basic)
-                continue
+            if isinstance(type_origin, type):
+                # BasicAuth
+                if issubclass(type_origin, BasicAuth):
+                    if AUTHORIZATION not in request.headers:
+                        raise HTTPBadRequest(
+                            reason=f"Not exists {AUTHORIZATION} header"
+                        )
+                    try:
+                        authorization = request.headers[AUTHORIZATION]
+                        basic = BasicAuth.decode_from_authorization_header(
+                            authorization
+                        )
+                    except ValueError as e:
+                        raise HTTPBadRequest(reason=str(e))
+                    update_arguments.append(basic)
+                    continue
 
-            # Request
-            if issubclass(type_origin, Request):
-                update_arguments.append(request)
-                continue
+                # Request
+                if issubclass(type_origin, Request):
+                    update_arguments.append(request)
+                    continue
 
-            # HttpRequest
-            if issubclass(type_origin, HttpRequest):
-                update_arguments.append(
-                    HttpRequest(
-                        method=request.method,
-                        path=request.path,
-                        data=await request.read(),
-                        headers=request.headers,
+                # HttpRequest
+                if issubclass(type_origin, HttpRequest):
+                    update_arguments.append(
+                        HttpRequest(
+                            method=request.method,
+                            path=request.path,
+                            data=await request.read(),
+                            headers=request.headers,
+                        )
                     )
-                )
-                continue
+                    continue
 
-            # Session
-            if issubclass(type_origin, Session):
-                if c.session not in request:
-                    raise HTTPUnauthorized(reason=f"Not exists {c.session}")
-                update_arguments.append(request[c.session])
-                continue
+                # Session
+                if issubclass(type_origin, Session):
+                    if c.session not in request:
+                        raise HTTPUnauthorized(reason=f"Not exists {c.session}")
+                    update_arguments.append(request[c.session])
+                    continue
 
-            # SessionEx
-            if issubclass(type_origin, SessionEx):
-                if c.session not in request:
-                    raise HTTPUnauthorized(reason=f"Not exists {c.session}")
-                update_arguments.append(request[c.session])
-                continue
+                # SessionEx
+                if issubclass(type_origin, SessionEx):
+                    if c.session not in request:
+                        raise HTTPUnauthorized(reason=f"Not exists {c.session}")
+                    update_arguments.append(request[c.session])
+                    continue
 
             # Path
             if match_count >= 1 and key in request.match_info:

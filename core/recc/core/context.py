@@ -103,11 +103,6 @@ class Context(
         await self._tasks.open()
         logger.info("Opened task-manager")
 
-        plugin_script_paths = self._storage.find_python_plugins()
-        plugin_scripts = list(map(lambda x: str(x), plugin_script_paths))
-        self._plugins.create(self, *plugin_scripts)
-        logger.info("Create plugin-manager")
-
         await self._plugins.open()
         logger.info("Opened plugin-manager")
 

@@ -122,7 +122,8 @@ class RouterV2:
         return await handler(request)
 
     async def middleware_plugins(self, request: Request, handler) -> Response:
-        assert self is not None, "Remove warning about 'method may be static'"
+        await self.test_initialized_database()
+        await self.assign_session(request)
         return await handler(request)
 
     @web.middleware

@@ -2,7 +2,7 @@
 
 import os
 from typing import Any, Dict
-from inspect import iscoroutinefunction
+from inspect import signature, iscoroutinefunction
 from recc.compile.future import get_annotations_compiler_flag
 
 COMPILE_MODE_EXEC = "exec"
@@ -13,6 +13,14 @@ NAME_ON_DESTROY = "on_destroy"
 NAME_ON_OPEN = "on_open"
 NAME_ON_CLOSE = "on_close"
 NAME_ON_REQUEST = "on_request"
+
+
+def get_python_plugin_name(path: str) -> str:
+    name = str(os.path.split(path)[1])
+    if name.endswith(".py"):
+        return name[:-3]
+    else:
+        return name
 
 
 def exec_python_plugin(
@@ -28,12 +36,11 @@ def exec_python_plugin(
 
 class Plugin:
     def __init__(self, path: str):
-        name = os.path.split(path)[1]
-        global_variables: Dict[str, Any] = {}
+        global_variables: Dict[str, Any] = dict()
         exec_python_plugin(path, global_variables, global_variables)
 
-        self._name = name
         self._path = path
+        self._name = get_python_plugin_name(path)
         self._global_variables = global_variables
 
     @property
@@ -116,4 +123,8 @@ class Plugin:
         assert on_request is not None
         if not iscoroutinefunction(on_request):
             raise RuntimeError("'on_request' must be a coroutine function")
-        return await on_request(*args, **kwargs)
+
+        sig = signature(on_request)
+        keys = list(sig.parameters.keys())
+        arguments = args[: len(keys)]
+        return await on_request(*arguments, **kwargs)

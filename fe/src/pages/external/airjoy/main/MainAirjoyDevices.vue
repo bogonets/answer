@@ -135,6 +135,16 @@ export default class MainAirjoyDevices extends VueBase {
   }
 
   created() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    this.$api2.getAirjoy(group, project)
+        .then(() => {
+          this.toastRequestSuccess();
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+        })
+
     this.items = [
       createEmptyAirjoyA(),
       createEmptyAirjoyA(),

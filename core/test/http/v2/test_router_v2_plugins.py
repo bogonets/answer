@@ -17,19 +17,25 @@ class RouterV2PluginsTestCase(AsyncTestCase):
         self.temp = TemporaryDirectory()
         self.plugin_dir = os.path.join(self.temp.name, CORE_PLUGIN_NAME)
         os.mkdir(self.plugin_dir)
-        self.plugin_name = "plugin_http_server.py"
-        self.plugin_path = copy_plugin(self.plugin_name, self.plugin_dir)
+        self.plugin_name = "plugin_http_server"
+        self.plugin_filename = self.plugin_name + ".py"
+        self.plugin_path = copy_plugin(self.plugin_filename, self.plugin_dir)
         self.assertTrue(os.path.isfile(self.plugin_path))
 
         self.tester = HttpAppTester(self.loop, self.temp.name)
         await self.tester.setup()
         await self.tester.wait_startup()
 
-        # self.username = "user1"
-        # self.password = "1234"
-        # await self.tester.signup_default_admin()
-        # await self.tester.signup(self.username, self.password)
-        # await self.tester.signin(self.username, self.password, save_session=True)
+        self.username = "user1"
+        self.password = "1234"
+        try:
+            await self.tester.signup_default_admin()
+            await self.tester.signup(self.username, self.password)
+            await self.tester.signin(self.username, self.password, save_session=True)
+        except:  # noqa
+            await self.tester.teardown()
+            self.temp.cleanup()
+            raise
 
         plugin_keys = list(self.tester.context.plugins.keys())
         self.assertEqual(1, len(plugin_keys))

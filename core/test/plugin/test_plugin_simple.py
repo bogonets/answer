@@ -11,8 +11,9 @@ from recc.plugin.plugin import Plugin
 class PluginSimpleTestCase(AsyncTestCase):
     async def setUp(self):
         self.temp_dir = TemporaryDirectory()
-        self.plugin_name = "plugin_simple.py"
-        self.plugin_output = copy_plugin(self.plugin_name, self.temp_dir.name)
+        self.plugin_name = "plugin_simple"
+        self.plugin_filename = self.plugin_name + ".py"
+        self.plugin_output = copy_plugin(self.plugin_filename, self.temp_dir.name)
         self.assertTrue(os.path.isfile(self.plugin_output))
 
     async def tearDown(self):

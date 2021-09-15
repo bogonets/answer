@@ -6,11 +6,11 @@ from recc.plugin.plugin import Plugin
 
 
 class PluginManager(Dict[str, Plugin]):
-    def create(self, context: Any, *files: str, **kwargs) -> None:
+    def create(self, context: Any, *files: str) -> None:
         for file in files:
             plugin = Plugin(file)
             if plugin.exists_create:
-                plugin.call_create(context, **kwargs)
+                plugin.call_create(context)
             self.__setitem__(plugin.name, plugin)
 
     def destroy(self) -> None:

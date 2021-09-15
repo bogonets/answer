@@ -154,7 +154,13 @@ class ContextInit(ContextBase):
         logger.info("Created port-manager.")
 
     def _init_plugin_manager(self) -> None:
+        assert self._storage
+
+        plugin_script_paths = self._storage.find_python_plugins()
+        plugin_scripts = list(map(lambda x: str(x), plugin_script_paths))
+
         self._plugins = PluginManager()
+        self._plugins.create(self, *plugin_scripts)
         logger.info("Created plugin-manager.")
 
     def init_all(
