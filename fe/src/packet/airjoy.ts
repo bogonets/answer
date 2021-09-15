@@ -11,11 +11,11 @@ export interface AirjoyA {
     description: string;
     online: boolean;
 
-    asCount: number;
-    asLast: string;
+    as_count: number;
+    as_last: string;
 
     // Native
-    fwVer: number;
+    fw_ver: number;
     uid: number;
     pm10: number;
     pm2_5: number;
@@ -24,14 +24,14 @@ export interface AirjoyA {
     temperature: number;
     voc: number;
     mode: number;
-    powerState: number;
-    fanControl: number;
+    power_state: number;
+    fan_control: number;
     lock: number;
     filter: number;
-    filterLife: number;
-    uvLed: number;
-    timeReservation: number;
-    sleepMode: number;
+    filter_life: number;
+    uv_led: number;
+    time_reservation: number;
+    sleep_mode: number;
 }
 
 export interface AirjoyQ {
@@ -39,18 +39,18 @@ export interface AirjoyQ {
 
     // Native
     mode?: number;
-    powerState?: number;
-    fanControl?: number;
+    power_state?: number;
+    fan_control?: number;
     lock?: number;
-    filterReset?: number;
-    sleepMode?: number;
-    timeReservation?: number;
+    filter_reset?: number;
+    sleep_mode?: number;
+    time_reservation?: number;
 }
 
 export interface AirjoyAsA {
     group: string;
     project: string;
-    airjoyUid: string;
+    airjoy_uid: string;
 
     uid: number;
     author?: string;
@@ -88,9 +88,9 @@ export function createEmptyAirjoyA() {
         name: '',
         description: '',
         online: false,
-        asCount: 0,
-        asLast: '',
-        fwVer: 0,
+        as_count: 0,
+        as_last: '',
+        fw_ver: 0,
         uid: 0,
         pm10: 0,
         pm2_5: 0,
@@ -99,14 +99,14 @@ export function createEmptyAirjoyA() {
         temperature: 0,
         voc: 0,
         mode: 0,
-        powerState: 0,
-        fanControl: 0,
+        power_state: 0,
+        fan_control: 0,
         lock: 0,
         filter: 0,
-        filterLife: 0,
-        uvLed: 0,
-        timeReservation: 0,
-        sleepMode: 0,
+        filter_life: 0,
+        uv_led: 0,
+        time_reservation: 0,
+        sleep_mode: 0,
     } as AirjoyA;
 }
 
@@ -114,7 +114,7 @@ export function createEmptyAirjoyAsA() {
     return {
         group: '',
         project: '',
-        airjoyUid: '',
+        airjoy_uid: '',
         uid: 0,
         author: '',
         description: '',

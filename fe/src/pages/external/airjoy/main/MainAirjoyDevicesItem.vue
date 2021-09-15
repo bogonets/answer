@@ -137,7 +137,7 @@ ko:
             <template v-slot:activator="{ on, attrs }">
               <v-chip class="mr-1" x-small outlined v-bind="attrs" v-on="on">
                 <v-icon left>mdi-tag</v-icon>
-                {{ item.fwVer }}
+                {{ item.fw_ver }}
               </v-chip>
             </template>
             <span>{{ $t('tooltip.fw') }}</span>
@@ -156,7 +156,7 @@ ko:
             <span>{{ filterLifeDescription }}</span>
           </v-tooltip>
 
-          <v-tooltip v-if="!item.uvLed" bottom>
+          <v-tooltip v-if="!item.uv_led" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-chip class="mr-1" x-small color="orange accent-4" v-bind="attrs" v-on="on">
                 <v-icon>mdi-weather-sunny</v-icon>
@@ -236,15 +236,15 @@ ko:
             <span>{{ $t('tooltip.voc', [item.voc]) }}</span>
           </v-tooltip>
 
-          <v-tooltip v-if="item.asCount" bottom>
+          <v-tooltip v-if="item.as_count" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-chip class="mr-1" small @click.stop="clickAs" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-wrench</v-icon>
-                {{ item.asCount }}
+                {{ item.as_count }}
               </v-chip>
             </template>
-            <span v-if="item.asLast">
-              {{ $t('tooltip.as_last', [item.asLast]) }}
+            <span v-if="item.as_last">
+              {{ $t('tooltip.as_last', [item.as_last]) }}
             </span>
           </v-tooltip>
         </div>
@@ -429,7 +429,7 @@ export default class MainAirjoyDevicesItem extends VueBase {
   readonly item!: AirjoyA;
 
   get powerColor() {
-    if (this.item.powerState) {
+    if (this.item.power_state) {
       return 'green';
     } else {
       return 'deep-orange';
@@ -448,7 +448,7 @@ export default class MainAirjoyDevicesItem extends VueBase {
   }
 
   get filterLifeMinutes() {
-    const life = this.item.filterLife || 0;
+    const life = this.item.filter_life || 0;
     const lifeMinutes = life * FILTER_LIFE_MINUTES_UNIT;
     return `${lifeMinutes}m`;
   }
@@ -499,7 +499,7 @@ export default class MainAirjoyDevicesItem extends VueBase {
   }
 
   get uvLedDescription() {
-    if (this.item.uvLed) {
+    if (this.item.uv_led) {
       return this.$t('uv.normal');
     } else {
       return this.$t('uv.alarm');
@@ -534,7 +534,7 @@ export default class MainAirjoyDevicesItem extends VueBase {
   }
 
   get fanIcon() {
-    switch (this.item.fanControl) {
+    switch (this.item.fan_control) {
       case FAN_CONTROL_NORMAL:
         return 'mdi-fan';
       case FAN_CONTROL_WEAK:
@@ -553,7 +553,7 @@ export default class MainAirjoyDevicesItem extends VueBase {
   }
 
   get fanDescription() {
-    switch (this.item.fanControl) {
+    switch (this.item.fan_control) {
       case FAN_CONTROL_NORMAL:
         return this.$t('fan.normal');
       case FAN_CONTROL_WEAK:
@@ -572,7 +572,7 @@ export default class MainAirjoyDevicesItem extends VueBase {
   }
 
   get fanSpeedIndex() {
-    switch (this.item.fanControl) {
+    switch (this.item.fan_control) {
       case FAN_CONTROL_WEAK:
         return 0;
       case FAN_CONTROL_MEDIUM:
@@ -607,7 +607,7 @@ export default class MainAirjoyDevicesItem extends VueBase {
   }
 
   get sleepIcon() {
-    switch (this.item.sleepMode) {
+    switch (this.item.sleep_mode) {
       case 0:
         return 'mdi-sleep-off';
       case 1:
@@ -618,7 +618,7 @@ export default class MainAirjoyDevicesItem extends VueBase {
   }
 
   get sleepDescription() {
-    switch (this.item.sleepMode) {
+    switch (this.item.sleep_mode) {
       case 0:
         return this.$t('sleep.disable');
       case 1:
@@ -629,7 +629,7 @@ export default class MainAirjoyDevicesItem extends VueBase {
   }
 
   get timerIcon() {
-    switch (this.item.timeReservation) {
+    switch (this.item.time_reservation) {
       case 0:
         return 'mdi-timer-off-outline';
       case 1:
@@ -646,7 +646,7 @@ export default class MainAirjoyDevicesItem extends VueBase {
   }
 
   get timerDescription() {
-    const time = this.item.timeReservation || 0;
+    const time = this.item.time_reservation || 0;
     switch (time) {
       case 0:
         return this.$t('timer.off');

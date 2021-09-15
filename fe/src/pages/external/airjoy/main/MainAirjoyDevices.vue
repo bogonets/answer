@@ -160,23 +160,23 @@ export default class MainAirjoyDevices extends VueBase {
     this.items[3].online = false;
     this.items[4].online = false;
 
-    this.items[0].asCount = 0;
-    this.items[1].asCount = 0;
-    this.items[2].asCount = 10;
-    this.items[3].asCount = 20;
-    this.items[4].asCount = 30;
+    this.items[0].as_count = 0;
+    this.items[1].as_count = 0;
+    this.items[2].as_count = 10;
+    this.items[3].as_count = 20;
+    this.items[4].as_count = 30;
 
-    this.items[0].asLast = '';
-    this.items[1].asLast = '';
-    this.items[2].asLast = '2020-01-01';
-    this.items[3].asLast = '2020-01-02';
-    this.items[4].asLast = '2021-09-10T21:10';
+    this.items[0].as_last = '';
+    this.items[1].as_last = '';
+    this.items[2].as_last = '2020-01-01';
+    this.items[3].as_last = '2020-01-02';
+    this.items[4].as_last = '2021-09-10T21:10';
 
-    this.items[0].fwVer = 10;
-    this.items[1].fwVer = 20;
-    this.items[2].fwVer = 30;
-    this.items[3].fwVer = 40;
-    this.items[4].fwVer = 51;
+    this.items[0].fw_ver = 10;
+    this.items[1].fw_ver = 20;
+    this.items[2].fw_ver = 30;
+    this.items[3].fw_ver = 40;
+    this.items[4].fw_ver = 51;
 
     this.items[0].uid = 100;
     this.items[1].uid = 200;
@@ -232,17 +232,17 @@ export default class MainAirjoyDevices extends VueBase {
     this.items[3].mode = 1;
     this.items[4].mode = 1;
 
-    this.items[0].powerState = 0;
-    this.items[1].powerState = 0;
-    this.items[2].powerState = 1;
-    this.items[3].powerState = 1;
-    this.items[4].powerState = 1;
+    this.items[0].power_state = 0;
+    this.items[1].power_state = 0;
+    this.items[2].power_state = 1;
+    this.items[3].power_state = 1;
+    this.items[4].power_state = 1;
 
-    this.items[0].fanControl = 1;
-    this.items[1].fanControl = 2;
-    this.items[2].fanControl = 3;
-    this.items[3].fanControl = 4;
-    this.items[4].fanControl = 5;
+    this.items[0].fan_control = 1;
+    this.items[1].fan_control = 2;
+    this.items[2].fan_control = 3;
+    this.items[3].fan_control = 4;
+    this.items[4].fan_control = 5;
 
     this.items[0].lock = 0;
     this.items[1].lock = 0;
@@ -256,29 +256,29 @@ export default class MainAirjoyDevices extends VueBase {
     this.items[3].filter = 1;
     this.items[4].filter = 2;
 
-    this.items[0].filterLife = 0;
-    this.items[1].filterLife = 1;
-    this.items[2].filterLife = 10;
-    this.items[3].filterLife = 20;
-    this.items[4].filterLife = 40;
+    this.items[0].filter_life = 0;
+    this.items[1].filter_life = 1;
+    this.items[2].filter_life = 10;
+    this.items[3].filter_life = 20;
+    this.items[4].filter_life = 40;
 
-    this.items[0].uvLed = 0;
-    this.items[1].uvLed = 0;
-    this.items[2].uvLed = 1;
-    this.items[3].uvLed = 1;
-    this.items[4].uvLed = 1;
+    this.items[0].uv_led = 0;
+    this.items[1].uv_led = 0;
+    this.items[2].uv_led = 1;
+    this.items[3].uv_led = 1;
+    this.items[4].uv_led = 1;
 
-    this.items[0].timeReservation = 0;
-    this.items[1].timeReservation = 1;
-    this.items[2].timeReservation = 2;
-    this.items[3].timeReservation = 3;
-    this.items[4].timeReservation = 4;
+    this.items[0].time_reservation = 0;
+    this.items[1].time_reservation = 1;
+    this.items[2].time_reservation = 2;
+    this.items[3].time_reservation = 3;
+    this.items[4].time_reservation = 4;
 
-    this.items[0].sleepMode = 0;
-    this.items[1].sleepMode = 0;
-    this.items[2].sleepMode = 1;
-    this.items[3].sleepMode = 1;
-    this.items[4].sleepMode = 1;
+    this.items[0].sleep_mode = 0;
+    this.items[1].sleep_mode = 0;
+    this.items[2].sleep_mode = 1;
+    this.items[3].sleep_mode = 1;
+    this.items[4].sleep_mode = 1;
   }
 
   onClickAddDevice() {

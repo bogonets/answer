@@ -89,7 +89,9 @@ ko:
       <v-col cols="4">
         <div class="card" @click="onClickAs">
           <v-icon left large>mdi-wrench</v-icon>
-          <span class="text--secondary text-subtitle-2">{{ $t('categories.as', [item.asCount]) }}</span>
+          <span class="text--secondary text-subtitle-2">{{
+              $t('categories.as', [item.as_count])
+            }}</span>
         </div>
       </v-col>
     </v-row>
