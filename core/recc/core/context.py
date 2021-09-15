@@ -18,6 +18,12 @@ from recc.core.mixin.context_storage import ContextStorage
 from recc.core.mixin.context_system import ContextSystem
 from recc.core.mixin.context_task import ContextTask
 from recc.core.mixin.context_user import ContextUser
+from recc.util.version import (
+    version_text,
+    version_info,
+    database_version,
+    database_info,
+)
 
 
 class Context(
@@ -51,6 +57,22 @@ class Context(
     ):
         self._closed = True
         self.init_all(config, loop, skip_assertion)
+
+    @classmethod
+    def version_text(cls) -> str:
+        return version_text
+
+    @classmethod
+    def version_info(cls) -> tuple:
+        return version_info
+
+    @classmethod
+    def database_version(cls) -> str:
+        return database_version
+
+    @classmethod
+    def database_info(cls) -> tuple:
+        return database_info
 
     async def open(self) -> None:
         await self._database.open()

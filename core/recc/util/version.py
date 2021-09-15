@@ -13,5 +13,5 @@ def normalize_version(ver: str) -> str:
 version_text = "2.0.0-dev7"
 version_info = parse_semantic_version(version_text)
 
-database_version = "2.0.0"
+database_version = version_text.split("-")[0]
 database_info = parse_semantic_version(database_version)

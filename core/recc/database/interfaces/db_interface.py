@@ -13,6 +13,7 @@ from recc.database.interfaces.db_project import DbProject
 from recc.database.interfaces.db_project_member import DbProjectMember
 from recc.database.interfaces.db_task import DbTask
 from recc.database.interfaces.db_user import DbUser
+from recc.database.interfaces.db_utils import DbUtils
 from recc.database.interfaces.db_widget import DbWidget
 
 
@@ -29,6 +30,7 @@ class DbInterface(
     DbProjectMember,
     DbTask,
     DbUser,
+    DbUtils,
     DbWidget,
     metaclass=ABCMeta,
 ):

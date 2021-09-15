@@ -14,6 +14,7 @@ from recc.database.postgresql.mixin.pg_project import PgProject
 from recc.database.postgresql.mixin.pg_project_member import PgProjectMember
 from recc.database.postgresql.mixin.pg_task import PgTask
 from recc.database.postgresql.mixin.pg_user import PgUser
+from recc.database.postgresql.mixin.pg_utils import PgUtils
 from recc.database.postgresql.mixin.pg_widget import PgWidget
 from recc.variables.database import DEFAULT_TIMEOUT_SECONDS
 
@@ -34,6 +35,7 @@ class PgDb(
     PgProjectMember,
     PgTask,
     PgUser,
+    PgUtils,
     PgWidget,
 ):
     """
