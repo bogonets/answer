@@ -55,18 +55,14 @@ class RouterV2PluginsTestCase(AsyncTestCase):
         self.assertEqual(self.plugin_name, response_data[0])
 
     async def test_request(self):
-        path = v2_plugins_pplugin_path(self.plugin_name, "/tester")
+        path = v2_plugins_pplugin_path(self.plugin_name, "/")
         get_response = await self.tester.get(path)
         self.assertEqual(200, get_response.status)
 
-        post_response = await self.tester.post(path)
+        test_body = "TEST_BODY"
+        post_response = await self.tester.post(path, data=test_body)
         self.assertEqual(200, post_response.status)
-
-        patch_response = await self.tester.patch(path)
-        self.assertEqual(200, patch_response.status)
-
-        delete_response = await self.tester.delete(path)
-        self.assertEqual(200, delete_response.status)
+        self.assertEqual(test_body, post_response.data)
 
 
 if __name__ == "__main__":

@@ -23,18 +23,13 @@ class PluginSimpleTestCase(AsyncTestCase):
         plugin = Plugin(self.plugin_output)
         self.assertTrue(plugin.exists_create)
         self.assertTrue(plugin.exists_destroy)
+        self.assertFalse(plugin.exists_routes)
         self.assertTrue(plugin.exists_open)
         self.assertTrue(plugin.exists_close)
-        self.assertTrue(plugin.exists_request)
 
         plugin.call_create(object())
         self.assertEqual(self.plugin_name, plugin.name)
-
         await plugin.call_open()
-
-        response = await plugin.call_request()
-        self.assertEqual("simple", response)
-
         await plugin.call_close()
         plugin.call_destroy()
 

@@ -65,9 +65,7 @@ class Server:
             assert self.sock is not None
             self.sock.close()
 
-    async def on_request(self) -> str:
-        logger.debug("on_request")
-        assert self.task is not None
+    def get_body(self) -> str:
         return self.body
 
 
@@ -94,6 +92,23 @@ async def on_close() -> None:
     await server.on_close()
 
 
-async def on_request() -> str:
+async def on_get() -> str:
     assert server is not None
-    return await server.on_request()
+    return server.get_body()
+
+
+async def on_post(data: str) -> str:
+    assert server is not None
+    return data
+
+
+async def on_get_pattern() -> str:
+    return "pattern"
+
+
+def on_routes():
+    return [
+        ("GET", "/", on_get),
+        ("POST", "/", on_post),
+        ("GET", "/unknown/{pattern}/test", on_get_pattern),
+    ]

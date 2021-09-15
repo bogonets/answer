@@ -28,12 +28,15 @@ class PluginHttpServerTestCase(AsyncTestCase):
         plugin = Plugin(self.plugin_output)
         self.assertTrue(plugin.exists_create)
         self.assertTrue(plugin.exists_destroy)
+        self.assertTrue(plugin.exists_routes)
         self.assertTrue(plugin.exists_open)
         self.assertTrue(plugin.exists_close)
-        self.assertTrue(plugin.exists_request)
 
         plugin.call_create(object(), host=host, port=port)
         self.assertEqual(self.plugin_name, plugin.name)
+
+        plugin.update_routes()
+        self.assertEqual(3, len(plugin.routes))
 
         await plugin.call_open()
 
@@ -42,8 +45,15 @@ class PluginHttpServerTestCase(AsyncTestCase):
         tester_response = await client.get("/tester", text=body)
         self.assertEqual(200, tester_response.status)
 
-        response = await plugin.call_request()
-        self.assertEqual(body, response)
+        get_result = await plugin.call_route("get", "/")
+        self.assertEqual(body, get_result)
+
+        post_data = "POST_TEST_BODY"
+        post_result = await plugin.call_route("post", "/", post_data)
+        self.assertEqual(post_data, post_result)
+
+        post_result = await plugin.call_route("get", "/unknown/a/test")
+        self.assertEqual("pattern", post_result)
 
         await plugin.call_close()
         plugin.call_destroy()

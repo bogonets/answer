@@ -31,9 +31,3 @@ class PluginManager(Dict[str, Plugin]):
             if plugin.exists_close:
                 coroutines.append(plugin.call_close())
         await gather(*coroutines)
-
-    async def request(self, name: str, *args, **kwargs) -> Any:
-        plugin = self.__getitem__(name)
-        if not plugin.exists_request:
-            raise NotImplementedError
-        return await plugin.call_request(*args, **kwargs)

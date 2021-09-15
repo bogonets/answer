@@ -25,7 +25,3 @@ async def on_open() -> None:
 
 async def on_close() -> None:
     pass
-
-
-async def on_request() -> str:
-    return "simple"

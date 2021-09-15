@@ -161,6 +161,9 @@ class ContextInit(ContextBase):
 
         self._plugins = PluginManager()
         self._plugins.create(self, *plugin_scripts)
+        for plugin_name, plugin in self._plugins.items():
+            if plugin.exists_routes:
+                plugin.update_routes()
         logger.info("Created plugin-manager.")
 
     def init_all(

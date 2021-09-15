@@ -89,9 +89,6 @@ async def _parameter_matcher_main(
     match_count = len(request.match_info)
     assign_body = False
 
-    if obj is not None:
-        update_arguments.append(obj)
-
     very_verbose_debugging = False
     context = getattr(obj, CONTEXT_PROPERTY_NAME, None)
     if context and isinstance(context, Context):
@@ -99,87 +96,112 @@ async def _parameter_matcher_main(
         if config and config.developer and config.verbose >= VERY_VERBOSE_DEBUGGING:
             very_verbose_debugging = True
 
-    if len(keys) >= 2:
-        for key in keys[1:]:
-            param = sig.parameters[key]
-            type_origin = get_origin(param.annotation)
-            if type_origin is None:
+    if obj is None:
+        argument_keys = keys
+    else:
+        assert len(keys) >= 1
+        update_arguments.append(obj)  # keys[0] is class instance. maybe 'self'
+        argument_keys = keys[1:]
+
+    for key in argument_keys:
+        param = sig.parameters[key]
+        type_origin = get_origin(param.annotation)
+        if type_origin is None:
+            if isinstance(param.annotation, type):
                 type_origin = param.annotation
-            assert type_origin is not None
+            elif isinstance(param.annotation, str):
+                if param.annotation == "str":
+                    type_origin = str
+                elif param.annotation == "int":
+                    type_origin = int
+                elif param.annotation == "float":
+                    type_origin = float
+                elif param.annotation == "bytes":
+                    type_origin = bytes
+                elif param.annotation == "list":
+                    type_origin = list
+                elif param.annotation == "set":
+                    type_origin = set
+                elif param.annotation == "dict":
+                    type_origin = dict
+                else:
+                    msg = f"Unknown annotation string: {param.annotation}"
+                    raise NotImplementedError(msg)
+            else:
+                msg = f"Unknown annotation type: {type(param.annotation).__name__}"
+                raise NotImplementedError(msg)
 
-            if isinstance(type_origin, type):
-                # BasicAuth
-                if issubclass(type_origin, BasicAuth):
-                    if AUTHORIZATION not in request.headers:
-                        raise HTTPBadRequest(
-                            reason=f"Not exists {AUTHORIZATION} header"
-                        )
-                    try:
-                        authorization = request.headers[AUTHORIZATION]
-                        basic = BasicAuth.decode_from_authorization_header(
-                            authorization
-                        )
-                    except ValueError as e:
-                        raise HTTPBadRequest(reason=str(e))
-                    update_arguments.append(basic)
-                    continue
+        assert type_origin is not None
+        assert isinstance(type_origin, type)
 
-                # Request
-                if issubclass(type_origin, Request):
-                    update_arguments.append(request)
-                    continue
+        # BasicAuth
+        if issubclass(type_origin, BasicAuth):
+            if AUTHORIZATION not in request.headers:
+                raise HTTPBadRequest(reason=f"Not exists {AUTHORIZATION} header")
+            try:
+                authorization = request.headers[AUTHORIZATION]
+                basic = BasicAuth.decode_from_authorization_header(authorization)
+            except ValueError as e:
+                raise HTTPBadRequest(reason=str(e))
+            update_arguments.append(basic)
+            continue
 
-                # HttpRequest
-                if issubclass(type_origin, HttpRequest):
-                    update_arguments.append(
-                        HttpRequest(
-                            method=request.method,
-                            path=request.path,
-                            data=await request.read(),
-                            headers=request.headers,
-                        )
-                    )
-                    continue
+        # Request
+        if issubclass(type_origin, Request):
+            update_arguments.append(request)
+            continue
 
-                # Session
-                if issubclass(type_origin, Session):
-                    if c.session not in request:
-                        raise HTTPUnauthorized(reason=f"Not exists {c.session}")
-                    update_arguments.append(request[c.session])
-                    continue
+        # HttpRequest
+        if issubclass(type_origin, HttpRequest):
+            update_arguments.append(
+                HttpRequest(
+                    method=request.method,
+                    path=request.path,
+                    data=await request.read(),
+                    headers=request.headers,
+                )
+            )
+            continue
 
-                # SessionEx
-                if issubclass(type_origin, SessionEx):
-                    if c.session not in request:
-                        raise HTTPUnauthorized(reason=f"Not exists {c.session}")
-                    update_arguments.append(request[c.session])
-                    continue
+        # Session
+        if issubclass(type_origin, Session):
+            if c.session not in request:
+                raise HTTPUnauthorized(reason=f"Not exists {c.session}")
+            update_arguments.append(request[c.session])
+            continue
 
-            # Path
-            if match_count >= 1 and key in request.match_info:
-                update_arguments.append(request.match_info[key])
-                match_count -= 1
+        # SessionEx
+        if issubclass(type_origin, SessionEx):
+            if c.session not in request:
+                raise HTTPUnauthorized(reason=f"Not exists {c.session}")
+            update_arguments.append(request[c.session])
+            continue
+
+        # Path
+        if match_count >= 1 and key in request.match_info:
+            update_arguments.append(request.match_info[key])
+            match_count -= 1
+            continue
+
+        # Body
+        if not assign_body:
+            if _is_serializable_class(type_origin):
+                body = payload_to_object(request.headers, await request.text())
+                assign_body = True
+            elif isclass(type_origin):
+                body = await request_payload_to_class(request, type_origin)  # noqa
+                assign_body = True
+            else:
+                body = None
+
+            if assign_body:
+                assert body is not None
+                if very_verbose_debugging:
+                    logger.debug(f"BODY: {str(body)}")
+                update_arguments.append(body)
                 continue
 
-            # Body
-            if not assign_body:
-                if _is_serializable_class(type_origin):
-                    body = payload_to_object(request.headers, await request.text())
-                    assign_body = True
-                elif isclass(type_origin):
-                    body = await request_payload_to_class(request, type_origin)  # noqa
-                    assign_body = True
-                else:
-                    body = None
-
-                if assign_body:
-                    assert body is not None
-                    if very_verbose_debugging:
-                        logger.debug(f"BODY: {str(body)}")
-                    update_arguments.append(body)
-                    continue
-
-            update_arguments.append(None)
+        update_arguments.append(None)
 
     if iscoroutinefunction(func):
         result = await func(*update_arguments)
