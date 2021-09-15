@@ -3,8 +3,6 @@
 from typing import Dict, Any
 from asyncio import gather
 from recc.plugin.plugin import Plugin
-from aiohttp.web_request import Request
-from aiohttp.web_response import Response
 
 
 class PluginManager(Dict[str, Plugin]):
@@ -34,8 +32,8 @@ class PluginManager(Dict[str, Plugin]):
                 coroutines.append(plugin.call_close())
         await gather(*coroutines)
 
-    async def request(self, name: str, request: Request) -> Response:
+    async def request(self, name: str, *args, **kwargs) -> Any:
         plugin = self.__getitem__(name)
         if not plugin.exists_request:
             raise NotImplementedError
-        return await plugin.call_request(request)
+        return await plugin.call_request(*args, **kwargs)

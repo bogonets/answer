@@ -65,10 +65,10 @@ class Server:
             assert self.sock is not None
             self.sock.close()
 
-    async def on_request(self, request: Request) -> Response:
+    async def on_request(self) -> str:
         logger.debug("on_request")
         assert self.task is not None
-        return Response(text=self.body)
+        return self.body
 
 
 server: Optional[Server] = None
@@ -94,6 +94,6 @@ async def on_close() -> None:
     await server.on_close()
 
 
-async def on_request(request: Request) -> Response:
+async def on_request() -> str:
     assert server is not None
-    return await server.on_request(request)
+    return await server.on_request()

@@ -5,8 +5,9 @@ from aiohttp import web
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
+from aiohttp.web_exceptions import HTTPNotFound
 from recc.core.context import Context
-from recc.http.http_decorator import parameter_matcher
+from recc.http.http_decorator import parameter_matcher, parameter_matcher_main
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
 
@@ -49,8 +50,19 @@ class RouterV2Plugins:
         return self.context.get_plugin_keys()
 
     async def any_plugin_tail(self, request: Request) -> Response:
-        plugin = request.match_info[p.plugin]
-        return await self.context.plugins.request(plugin, request)
+        plugin_name = request.match_info[p.plugin]
+        plugin = self.context.plugins.get(plugin_name, None)
+        if plugin is None:
+            raise HTTPNotFound(reason=f"Not found {plugin_name} plugin")
+
+        if not plugin.exists_request:
+            msg = f"Not exists `on_request` function in {plugin_name} plugin"
+            raise HTTPNotFound(reason=msg)
+
+        func = plugin.get_on_request_func()
+        assert func is not None
+
+        return await parameter_matcher_main(func, None, request)
 
     async def get_plugin_tail(self, request: Request) -> Response:
         return await self.any_plugin_tail(request)

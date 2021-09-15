@@ -3,7 +3,6 @@
 import os
 from tempfile import TemporaryDirectory
 from unittest import main
-from aiohttp.web_response import Response
 from tester.unittest.async_test_case import AsyncTestCase
 from tester.plugins.copy_plugin import copy_plugin
 from recc.plugin.plugin import Plugin
@@ -32,9 +31,8 @@ class PluginSimpleTestCase(AsyncTestCase):
 
         await plugin.call_open()
 
-        response = await plugin.call_request(None)  # noqa
-        self.assertIsInstance(response, Response)
-        self.assertEqual("simple", response.text)
+        response = await plugin.call_request()
+        self.assertEqual("simple", response)
 
         await plugin.call_close()
         plugin.call_destroy()

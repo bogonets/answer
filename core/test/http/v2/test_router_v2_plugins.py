@@ -18,7 +18,7 @@ class RouterV2PluginsTestCase(AsyncTestCase):
         self.plugin_dir = os.path.join(self.temp.name, CORE_PLUGIN_NAME)
         os.mkdir(self.plugin_dir)
         self.plugin_name = "plugin_http_server.py"
-        self.plugin_path = copy_plugin("plugin_http_server.py", self.plugin_dir)
+        self.plugin_path = copy_plugin(self.plugin_name, self.plugin_dir)
         self.assertTrue(os.path.isfile(self.plugin_path))
 
         self.tester = HttpAppTester(self.loop, self.temp.name)

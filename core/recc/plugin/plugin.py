@@ -3,8 +3,6 @@
 import os
 from typing import Any, Dict
 from inspect import iscoroutinefunction
-from aiohttp.web_request import Request
-from aiohttp.web_response import Response
 from recc.compile.future import get_annotations_compiler_flag
 
 DEFAULT_MODULE_NAME = "__recc_plugin__"
@@ -76,6 +74,21 @@ class Plugin:
     def exists_request(self) -> bool:
         return NAME_ON_REQUEST in self._global_variables
 
+    def get_on_create_func(self) -> Any:
+        return self._global_variables.get(NAME_ON_CREATE, None)
+
+    def get_on_destroy_func(self) -> Any:
+        return self._global_variables.get(NAME_ON_DESTROY, None)
+
+    def get_on_open_func(self) -> Any:
+        return self._global_variables.get(NAME_ON_OPEN, None)
+
+    def get_on_close_func(self) -> Any:
+        return self._global_variables.get(NAME_ON_CLOSE, None)
+
+    def get_on_request_func(self) -> Any:
+        return self._global_variables.get(NAME_ON_REQUEST, None)
+
     def call_create(self, context: Any, **kwargs) -> None:
         on_create = self._global_variables.get(NAME_ON_CREATE)
         assert on_create is not None
@@ -104,9 +117,9 @@ class Plugin:
             raise RuntimeError("'on_close' must be a coroutine function")
         await on_close()
 
-    async def call_request(self, request: Request) -> Response:
+    async def call_request(self, *args, **kwargs) -> Any:
         on_request = self._global_variables.get(NAME_ON_REQUEST)
         assert on_request is not None
         if not iscoroutinefunction(on_request):
             raise RuntimeError("'on_request' must be a coroutine function")
-        return await on_request(request)
+        return await on_request(*args, **kwargs)

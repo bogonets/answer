@@ -4,6 +4,7 @@ from typing import List, Any, get_origin
 from inspect import signature, isclass, iscoroutinefunction
 from functools import wraps
 from datetime import datetime
+from http import HTTPStatus
 from aiohttp.hdrs import AUTHORIZATION
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
@@ -17,6 +18,7 @@ from recc.session.session import Session
 from recc.log.logging import recc_http_logger as logger
 from recc.serialization.serialize import serialize_default
 from recc.http.header.basic_auth import BasicAuth
+from recc.http.http_packet import HttpRequest, HttpResponse
 from recc.http.http_payload import payload_to_object, request_payload_to_class
 from recc.http.http_response import get_accept_type, get_encoding, create_response
 from recc.session.session_ex import SessionEx
@@ -85,6 +87,9 @@ async def _parameter_matcher_main(
     match_count = len(request.match_info)
     assign_body = False
 
+    if obj is not None:
+        update_arguments.append(obj)
+
     very_verbose_debugging = False
     context = getattr(obj, CONTEXT_METHOD_NAME, None)
     if context and isinstance(context, Context):
@@ -116,6 +121,18 @@ async def _parameter_matcher_main(
             # Request
             if issubclass(type_origin, Request):
                 update_arguments.append(request)
+                continue
+
+            # HttpRequest
+            if issubclass(type_origin, HttpRequest):
+                update_arguments.append(
+                    HttpRequest(
+                        method=request.method,
+                        path=request.path,
+                        data=await request.read(),
+                        headers=request.headers,
+                    )
+                )
                 continue
 
             # Session
@@ -159,9 +176,9 @@ async def _parameter_matcher_main(
             update_arguments.append(None)
 
     if iscoroutinefunction(func):
-        result = await func(obj, *update_arguments)
+        result = await func(*update_arguments)
     else:
-        result = func(obj, *update_arguments)
+        result = func(*update_arguments)
 
     if very_verbose_debugging:
         logger.debug(f"RESULT: {str(result)}")
@@ -170,6 +187,13 @@ async def _parameter_matcher_main(
         return Response()
     elif isinstance(result, Response):
         return result
+    elif isinstance(result, HttpResponse):
+        return Response(
+            body=result.data,
+            status=result.status if result.status else HTTPStatus.INTERNAL_SERVER_ERROR,
+            reason=result.reason,
+            headers=result.headers,
+        )
     elif _is_serializable_instance(result):
         return create_response(accept, encoding, result)
     elif isclass(type(result)):
@@ -178,49 +202,57 @@ async def _parameter_matcher_main(
     raise NotImplementedError
 
 
+async def parameter_matcher_main(
+    func,
+    obj: Any,
+    request: Request,
+) -> Response:
+    now = datetime.utcnow()
+
+    # Forwarded
+    # X-Forwarded-For
+    # X-Forwarded-Host
+    # X-Forwarded-Proto
+    remote = request.remote
+    method = request.method
+    path = request.path
+    version = request.version
+    request_info = f"{remote} {method} {path} HTTP/{version[0]}.{version[1]}"
+
+    try:
+        result = await _parameter_matcher_main(func, obj, request)
+    except HTTPException as e:
+        logger.error(e)
+        result = Response(
+            status=e.status,
+            reason=e.reason,
+            text=e.text,
+            headers=e.headers,
+        )
+    except (ValueError, KeyError) as e:
+        logger.exception(e)
+        result = Response(status=STATUS_BAD_REQUEST, reason=str(e))
+    except PermissionError as e:
+        logger.exception(e)
+        result = Response(status=STATUS_UNAUTHORIZED, reason=str(e))
+    except BaseException as e:
+        logger.exception(e)
+        result = Response(status=STATUS_INTERNAL_SERVER_ERROR, reason=str(e))
+
+    status = result.status
+    reason = result.reason
+    duration = (datetime.utcnow() - now).total_seconds()
+    response_info = f"{status} {reason} ({duration:.3f}s)"
+    logger.info(f"{request_info} -> {response_info}")
+
+    return result
+
+
 def parameter_matcher():
     def _wrap(func):
         @wraps(func)
-        async def __wrap(obj, request: Request) -> Response:
-            now = datetime.utcnow()
-
-            # Forwarded
-            # X-Forwarded-For
-            # X-Forwarded-Host
-            # X-Forwarded-Proto
-            remote = request.remote
-            method = request.method
-            path = request.path
-            version = request.version
-            request_info = f"{remote} {method} {path} HTTP/{version[0]}.{version[1]}"
-
-            try:
-                result = await _parameter_matcher_main(func, obj, request)
-            except HTTPException as e:
-                logger.error(e)
-                result = Response(
-                    status=e.status,
-                    reason=e.reason,
-                    text=e.text,
-                    headers=e.headers,
-                )
-            except (ValueError, KeyError) as e:
-                logger.exception(e)
-                result = Response(status=STATUS_BAD_REQUEST, reason=str(e))
-            except PermissionError as e:
-                logger.exception(e)
-                result = Response(status=STATUS_UNAUTHORIZED, reason=str(e))
-            except BaseException as e:
-                logger.exception(e)
-                result = Response(status=STATUS_INTERNAL_SERVER_ERROR, reason=str(e))
-
-            status = result.status
-            reason = result.reason
-            duration = (datetime.utcnow() - now).total_seconds()
-            response_info = f"{status} {reason} ({duration:.3f}s)"
-            logger.info(f"{request_info} -> {response_info}")
-
-            return result
+        async def __wrap(obj, request):
+            return await parameter_matcher_main(func, obj, request)
 
         return __wrap
 
