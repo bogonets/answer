@@ -5,8 +5,6 @@ from typing import Any, Dict
 from inspect import iscoroutinefunction
 from recc.compile.future import get_annotations_compiler_flag
 
-DEFAULT_MODULE_NAME = "__recc_plugin__"
-DEFAULT_FILENAME = "<ReccPlugin>"
 COMPILE_MODE_EXEC = "exec"
 COMPILE_FLAGS = get_annotations_compiler_flag()
 
@@ -15,8 +13,6 @@ NAME_ON_DESTROY = "on_destroy"
 NAME_ON_OPEN = "on_open"
 NAME_ON_CLOSE = "on_close"
 NAME_ON_REQUEST = "on_request"
-
-PLUGIN_INFORMATION_KEY_NAME = "name"
 
 
 def exec_python_plugin(
@@ -32,14 +28,12 @@ def exec_python_plugin(
 
 class Plugin:
     def __init__(self, path: str):
-        global_variables: Dict[str, Any] = {
-            "__name__": DEFAULT_MODULE_NAME,
-            "__file__": path,
-        }
+        name = os.path.split(path)[1]
+        global_variables: Dict[str, Any] = {}
         exec_python_plugin(path, global_variables, global_variables)
 
+        self._name = name
         self._path = path
-        self._name = os.path.split(self._path)[1]
         self._global_variables = global_variables
 
     @property
