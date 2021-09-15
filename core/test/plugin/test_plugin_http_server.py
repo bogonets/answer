@@ -14,7 +14,8 @@ from recc.variables.http import DEFAULT_HTTP_TEST_PORT
 class PluginHttpServerTestCase(AsyncTestCase):
     async def setUp(self):
         self.temp_dir = TemporaryDirectory()
-        self.plugin_output = copy_plugin("plugin_http_server.py", self.temp_dir.name)
+        self.plugin_name = "plugin_http_server.py"
+        self.plugin_output = copy_plugin(self.plugin_name, self.temp_dir.name)
         self.assertTrue(os.path.isfile(self.plugin_output))
 
     async def tearDown(self):
@@ -32,7 +33,7 @@ class PluginHttpServerTestCase(AsyncTestCase):
         self.assertTrue(plugin.exists_request)
 
         plugin.call_create(object(), host=host, port=port)
-        self.assertEqual("http_server", plugin.name)
+        self.assertEqual(self.plugin_name, plugin.name)
 
         await plugin.call_open()
 

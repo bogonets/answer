@@ -17,6 +17,7 @@ class RouterV2PluginsTestCase(AsyncTestCase):
         self.temp = TemporaryDirectory()
         self.plugin_dir = os.path.join(self.temp.name, CORE_PLUGIN_NAME)
         os.mkdir(self.plugin_dir)
+        self.plugin_name = "plugin_http_server.py"
         self.plugin_path = copy_plugin("plugin_http_server.py", self.plugin_dir)
         self.assertTrue(os.path.isfile(self.plugin_path))
 
@@ -33,7 +34,7 @@ class RouterV2PluginsTestCase(AsyncTestCase):
         plugin_keys = list(self.tester.context.plugins.keys())
         self.assertEqual(1, len(plugin_keys))
         self.plugin_name = plugin_keys[0]
-        self.assertEqual("http_server", self.plugin_name)
+        self.assertEqual(self.plugin_name, self.plugin_name)
 
     async def tearDown(self):
         await self.tester.teardown()

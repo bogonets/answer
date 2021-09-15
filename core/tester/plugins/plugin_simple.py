@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, Any
 from aiohttp.web_response import Response
 
 
-def on_create(context, **kwargs) -> Dict[str, Any]:
-    return {"name": "simple"}
+def on_create(context, **kwargs) -> None:
+    pass
 
 
 def on_destroy() -> None:

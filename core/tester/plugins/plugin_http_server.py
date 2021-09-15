@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, Dict
+from typing import Optional, Any
 from asyncio import Task, Event, create_task
 from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR, SO_REUSEPORT
 from logging import getLogger
@@ -38,6 +38,7 @@ class Server:
         self.sock.bind((self.host, self.port))
 
     async def on_startup(self, app):
+        assert app is not None
         self.ready.set()
 
     async def on_get_tester(self, request: Request) -> Response:
@@ -73,10 +74,9 @@ class Server:
 server: Optional[Server] = None
 
 
-def on_create(context: Any, **kwargs) -> Dict[str, Any]:
+def on_create(context: Any, **kwargs) -> None:
     global server
     server = Server(context, **kwargs)
-    return {"name": "http_server"}
 
 
 def on_destroy() -> None:

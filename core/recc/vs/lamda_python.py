@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import builtins
 from typing import Optional, Any, Dict, List
-from importlib.machinery import BuiltinImporter
 from recc.venv.pyvenv_cfg import read_site_packages_dir
 from recc.blueprint.blueprint import BpProperty
 from recc.vs.lamda_interface import REQUEST_METHOD_SET, REQUEST_METHOD_GET, Lamda
@@ -13,6 +11,7 @@ from recc.compile.future import get_annotations_compiler_flag
 DEFAULT_MODULE_NAME = "__recc_lamda__"
 DEFAULT_FILENAME = "<ReccLamda>"
 COMPILE_MODE_EXEC = "exec"
+
 OPTIMIZE_DEFAULT = -1
 OPTIMIZE_LEVEL0 = 0  # no optimization, __debug__ is true
 OPTIMIZE_LEVEL1 = 1  # asserts are removed, __debug__ is false
@@ -99,8 +98,6 @@ class LamdaPython(Lamda):
             "__name__": DEFAULT_MODULE_NAME,
             "__file__": script_path,
             "__doc__": doc,
-            "__loader__": type(BuiltinImporter),
-            "__builtins__": builtins,
             "app": self._app,
         }
 

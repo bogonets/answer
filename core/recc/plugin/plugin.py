@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-import builtins
-from importlib.machinery import BuiltinImporter
-from typing import Optional, Any, Dict
+from typing import Any, Dict
 from inspect import iscoroutinefunction
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
@@ -23,30 +21,28 @@ NAME_ON_REQUEST = "on_request"
 PLUGIN_INFORMATION_KEY_NAME = "name"
 
 
-def exec_python_plugin(path: str) -> Dict[str, Any]:
+def exec_python_plugin(
+    path: str,
+    global_variables: Dict[str, Any],
+    local_variables: Dict[str, Any],
+) -> None:
     with open(path, "r") as f:
         source = f.read()
-
-    global_variables: Dict[str, Any] = {
-        "__name__": DEFAULT_MODULE_NAME,
-        "__file__": path,
-        "__doc__": "",
-        "__loader__": type(BuiltinImporter),
-        "__builtins__": builtins,
-    }
-    local_variables: Dict[str, Any] = dict()
-
     ast = compile(source, path, COMPILE_MODE_EXEC, COMPILE_FLAGS)
     exec(ast, global_variables, local_variables)
-    global_variables.update(local_variables)
-    return global_variables
 
 
 class Plugin:
     def __init__(self, path: str):
+        global_variables: Dict[str, Any] = {
+            "__name__": DEFAULT_MODULE_NAME,
+            "__file__": path,
+        }
+        exec_python_plugin(path, global_variables, global_variables)
+
         self._path = path
         self._name = os.path.split(self._path)[1]
-        self._global_variables = exec_python_plugin(path)
+        self._global_variables = global_variables
 
     @property
     def path(self) -> str:
@@ -80,19 +76,12 @@ class Plugin:
     def exists_request(self) -> bool:
         return NAME_ON_REQUEST in self._global_variables
 
-    @staticmethod
-    def parse_plugin_name(info: Optional[Dict[str, Any]]) -> str:
-        if not isinstance(info, dict):
-            raise RuntimeError("The `info` must be `dict` type.")
-        return str(info[PLUGIN_INFORMATION_KEY_NAME])
-
     def call_create(self, context: Any, **kwargs) -> None:
         on_create = self._global_variables.get(NAME_ON_CREATE)
         assert on_create is not None
         if iscoroutinefunction(on_create):
             raise RuntimeError("`on_create` is not a coroutine function")
-        result = on_create(context, **kwargs)
-        self._name = self.parse_plugin_name(result)
+        on_create(context, **kwargs)
 
     def call_destroy(self) -> None:
         on_destroy = self._global_variables.get(NAME_ON_DESTROY)
