@@ -9,7 +9,7 @@ export default class RouterMain extends mixins(RouterMainAirjoy) {
         const oem = this.$localStore.preference.oem;
         switch (oem) {
             case OEM_AIRJOY:
-                this.moveToMainAirjoySummary(group, project);
+                this.moveToMainAirjoyDevices(group, project);
                 break;
             default:
                 this.moveToMainDashboard(group, project);

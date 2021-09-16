@@ -53,6 +53,18 @@ export default class MainAirjoySummary extends VueBase {
     }
   }
 
+  created() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    this.$api2.getAirjoyLive(group, project)
+        .then(items => {
+          this.toastRequestSuccess();
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+        });
+  }
+
   onChangeTheme(item: string) {
     console.log(item);
     this.index = this.items.indexOf(item);

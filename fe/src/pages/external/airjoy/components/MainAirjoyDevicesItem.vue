@@ -391,8 +391,8 @@ ko:
 import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
-import type {AirjoyA} from "@/packet/airjoy";
-import {createEmptyAirjoyA} from "@/packet/airjoy";
+import type {AirjoyDeviceA} from "@/packet/airjoy";
+import {createEmptyAirjoyDeviceA} from "@/packet/airjoy";
 
 const FILTER_STATUS_NORMAL = 0;
 const FILTER_STATUS_RESET = 1;
@@ -425,8 +425,8 @@ export default class MainAirjoyDevicesItem extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly disable!: boolean;
 
-  @Prop({type: Object, default: createEmptyAirjoyA})
-  readonly item!: AirjoyA;
+  @Prop({type: Object, default: createEmptyAirjoyDeviceA})
+  readonly item!: AirjoyDeviceA;
 
   get powerColor() {
     if (this.item.power_state) {

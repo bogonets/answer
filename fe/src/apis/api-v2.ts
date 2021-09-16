@@ -1,27 +1,16 @@
-import AxiosLib, {
-    AxiosInstance,
-    AxiosResponse,
-    AxiosRequestConfig,
-    AxiosBasicCredentials,
-} from 'axios'
-import {ConfigA, UpdateConfigValueQ} from '@/packet/config';
-import {GroupA, CreateGroupQ, UpdateGroupQ} from '@/packet/group';
-import {InfoA, CreateInfoQ, UpdateInfoQ} from '@/packet/info';
-import {PermissionA, CreatePermissionQ, UpdatePermissionQ} from '@/packet/permission';
-import {TemplateA} from '@/packet/template';
-import {ProjectA, CreateProjectQ, UpdateProjectQ} from '@/packet/project';
-import {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
-import {SystemOverviewA} from '@/packet/system';
-import {
-    UserA,
-    UpdateUserQ,
-    SigninA,
-    SignupQ,
-    UpdatePasswordQ,
-    UserExtra,
-    createEmptySigninA,
-    createEmptyUserA,
-} from '@/packet/user';
+import AxiosLib from 'axios';
+import type {AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosBasicCredentials} from 'axios';
+import type {AirjoyDeviceA, AirjoySensorA} from '@/packet/airjoy';
+import type {ConfigA, UpdateConfigValueQ} from '@/packet/config';
+import type {GroupA, CreateGroupQ, UpdateGroupQ} from '@/packet/group';
+import type {InfoA, CreateInfoQ, UpdateInfoQ} from '@/packet/info';
+import type {PermissionA, CreatePermissionQ, UpdatePermissionQ} from '@/packet/permission';
+import type {TemplateA} from '@/packet/template';
+import type {ProjectA, CreateProjectQ, UpdateProjectQ} from '@/packet/project';
+import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
+import type {SystemOverviewA} from '@/packet/system';
+import type {UserA, UpdateUserQ, SigninA, SignupQ, UpdatePasswordQ, UserExtra} from '@/packet/user';
+import {createEmptySigninA, createEmptyUserA} from '@/packet/user';
 import {PreferenceA, createEmptyPreference} from '@/packet/preference';
 import {encryptSha256} from '@/crypto/sha';
 
@@ -518,7 +507,7 @@ export default class ApiV2 {
     // Plugins/Airjoy
     // --------------
 
-    getAirjoy(group: string, project: string) {
-        return this.get(`/plugins/airjoy/${group}/${project}`);
+    getAirjoyLive(group: string, project: string) {
+        return this.get<Array<AirjoySensorA>>(`/plugins/airjoy/${group}/${project}/live`);
     }
 }

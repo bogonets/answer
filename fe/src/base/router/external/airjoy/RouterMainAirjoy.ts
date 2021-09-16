@@ -4,19 +4,6 @@ import mainAirjoyNames from '@/router/names/external/airjoy/main';
 
 @Component
 export default class RouterMainAirjoy extends Router {
-    moveToMainAirjoyAs(
-        airjoy?: string,
-        group?: string,
-        project?: string,
-    ) {
-        const params = {
-            airjoy: airjoy || '',
-            group: group || this.$route.params.group,
-            project: project || this.$route.params.project,
-        };
-        this.moveTo(mainAirjoyNames.mainAirjoyAs, params);
-    }
-
     moveToMainAirjoyChart(
         airjoy?: string,
         category?: string,
@@ -55,6 +42,19 @@ export default class RouterMainAirjoy extends Router {
             project: project || this.$route.params.project,
         };
         this.moveTo(mainAirjoyNames.mainAirjoyLive, params);
+    }
+
+    moveToMainAirjoyService(
+        airjoy?: string,
+        group?: string,
+        project?: string,
+    ) {
+        const params = {
+            airjoy: airjoy || '',
+            group: group || this.$route.params.group,
+            project: project || this.$route.params.project,
+        };
+        this.moveTo(mainAirjoyNames.mainAirjoyService, params);
     }
 
     moveToMainAirjoySettings(group?: string, project?: string) {

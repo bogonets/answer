@@ -2,7 +2,7 @@
 en:
   groups: "Groups"
   devices: "Devices"
-  as: "A/S"
+  service: "Service"
   categories:
     pm10: "PM10: {0}"
     pm2_5: "PM2.5: {0}"
@@ -10,7 +10,7 @@ en:
     humidity: "Humidity: {0}"
     temperature: "Temperature: {0}"
     voc: "VOC: {0}"
-    as: "A/S: {0}"
+    service: "Service: {0}"
   labels:
     search: "You can filter by author or description."
     as_new: "New A/S"
@@ -27,7 +27,7 @@ en:
 ko:
   groups: "Groups"
   devices: "Devices"
-  as: "A/S"
+  service: "Service"
   categories:
     pm10: "미세먼지: {0}"
     pm2_5: "초미세먼지: {0}"
@@ -35,7 +35,7 @@ ko:
     humidity: "습도: {0}"
     temperature: "온도: {0}"
     voc: "VOC: {0}"
-    as: "A/S: {0}"
+    service: "Service: {0}"
   labels:
     search: "담당자 또는 기록을 필터링할 수 있습니다."
     as_new: "새로운 A/S 기록"
@@ -140,15 +140,8 @@ import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import VueApexCharts from 'vue-apexcharts';
-import type {AirjoyAsA} from '@/packet/airjoy';
-import {
-  CATEGORY_PM10,
-  CATEGORY_PM2_5,
-  CATEGORY_CO2,
-  CATEGORY_HUMIDITY,
-  CATEGORY_TEMPERATURE,
-  createEmptyAirjoyA, createEmptyAirjoyAsA,
-} from '@/packet/airjoy';
+import type {AirjoyServiceA} from '@/packet/airjoy';
+import {createEmptyAirjoyServiceA} from '@/packet/airjoy';
 
 @Component({
   components: {
@@ -156,7 +149,7 @@ import {
     VueApexCharts,
   }
 })
-export default class MainAirjoyAs extends VueBase {
+export default class MainAirjoyService extends VueBase {
   private readonly breadcrumbs = [
     {
       text: this.$t('groups'),
@@ -179,7 +172,7 @@ export default class MainAirjoyAs extends VueBase {
       href: () => this.moveToMainAirjoyDevices(),
     },
     {
-      text: this.$t('as'),
+      text: this.$t('service'),
       disabled: true,
     },
     {
@@ -228,7 +221,7 @@ export default class MainAirjoyAs extends VueBase {
   device = '';
   devices = ['100', '200', '300', '400']
 
-  asItems = [] as Array<AirjoyAsA>;
+  asItems = [] as Array<AirjoyServiceA>;
   loading = false;
   filter = '';
 
@@ -243,11 +236,11 @@ export default class MainAirjoyAs extends VueBase {
     }
 
     this.asItems = [
-      createEmptyAirjoyAsA(),
-      createEmptyAirjoyAsA(),
-      createEmptyAirjoyAsA(),
-      createEmptyAirjoyAsA(),
-      createEmptyAirjoyAsA(),
+      createEmptyAirjoyServiceA(),
+      createEmptyAirjoyServiceA(),
+      createEmptyAirjoyServiceA(),
+      createEmptyAirjoyServiceA(),
+      createEmptyAirjoyServiceA(),
     ];
     this.asItems[0].author = 'User0'
     this.asItems[1].author = 'User1'
@@ -261,11 +254,11 @@ export default class MainAirjoyAs extends VueBase {
     this.asItems[3].description = 'Brief3'
     this.asItems[4].description = 'Brief4'
 
-    this.asItems[0].datetime = '2021-01-01'
-    this.asItems[1].datetime = '2021-02-03'
-    this.asItems[2].datetime = '2021-03-20'
-    this.asItems[3].datetime = '2021-04-12'
-    this.asItems[4].datetime = '2021-05-30'
+    this.asItems[0].time = '2021-01-01'
+    this.asItems[1].time = '2021-02-03'
+    this.asItems[2].time = '2021-03-20'
+    this.asItems[3].time = '2021-04-12'
+    this.asItems[4].time = '2021-05-30'
   }
 
   get dataTableClass(): string {
@@ -295,13 +288,13 @@ export default class MainAirjoyAs extends VueBase {
   onClickAs() {
   }
 
-  onClickAsRow(item: AirjoyAsA) {
+  onClickAsRow(item: AirjoyServiceA) {
   }
 
-  onClickAsEdit(item: AirjoyAsA) {
+  onClickAsEdit(item: AirjoyServiceA) {
   }
 
-  onClickAsDelete(item: AirjoyAsA) {
+  onClickAsDelete(item: AirjoyServiceA) {
   }
 }
 </script>

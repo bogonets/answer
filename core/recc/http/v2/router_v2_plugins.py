@@ -37,6 +37,7 @@ class RouterV2Plugins:
             web.patch(u.pplugin_ptail, self.any_pplugin_ptail),
             web.post(u.pplugin_ptail, self.any_pplugin_ptail),
             web.delete(u.pplugin_ptail, self.any_pplugin_ptail),
+            web.put(u.pplugin_ptail, self.any_pplugin_ptail),
         ]
 
     # --------

@@ -10,7 +10,7 @@ en:
     humidity: "Humidity: {0}"
     temperature: "Temperature: {0}"
     voc: "VOC: {0}"
-    as: "A/S: {0}"
+    service: "Service: {0}"
   labels:
     search: "You can filter by author or description."
     as_new: "New A/S"
@@ -31,7 +31,7 @@ ko:
     humidity: "습도: {0}"
     temperature: "온도: {0}"
     voc: "VOC: {0}"
-    as: "A/S: {0}"
+    service: "Service: {0}"
   labels:
     search: "담당자 또는 기록을 필터링할 수 있습니다."
     as_new: "새로운 A/S 기록"
@@ -87,10 +87,10 @@ ko:
       </v-col>
 
       <v-col cols="4">
-        <div class="card" @click="onClickAs">
+        <div class="card" @click="onClickService">
           <v-icon left large>mdi-wrench</v-icon>
           <span class="text--secondary text-subtitle-2">{{
-              $t('categories.as', [item.as_count])
+              $t('categories.service', [item.as_count])
             }}</span>
         </div>
       </v-col>
@@ -179,7 +179,7 @@ import {
   CATEGORY_CO2,
   CATEGORY_HUMIDITY,
   CATEGORY_TEMPERATURE,
-  createEmptyAirjoyA
+  createEmptyAirjoyDeviceA
 } from '@/packet/airjoy';
 
 @Component({
@@ -220,7 +220,7 @@ export default class MainAirjoyDetails extends VueBase {
     },
   ];
 
-  item = createEmptyAirjoyA();
+  item = createEmptyAirjoyDeviceA();
 
   onClickPm10() {
     this.moveToMainAirjoyChart(`${this.item.uid}`, CATEGORY_PM10);
@@ -242,8 +242,8 @@ export default class MainAirjoyDetails extends VueBase {
     this.moveToMainAirjoyChart(`${this.item.uid}`, CATEGORY_TEMPERATURE);
   }
 
-  onClickAs() {
-    this.moveToMainAirjoyAs(`${this.item.uid}`);
+  onClickService() {
+    this.moveToMainAirjoyService(`${this.item.uid}`);
   }
 }
 </script>

@@ -86,15 +86,15 @@ ko:
 import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
-import MainAirjoyDevicesItem from '@/pages/external/airjoy/main/MainAirjoyDevicesItem.vue';
-import type {AirjoyA} from '@/packet/airjoy';
+import MainAirjoyDevicesItem from '@/pages/external/airjoy/components/MainAirjoyDevicesItem.vue';
+import type {AirjoyDeviceA} from '@/packet/airjoy';
 import {
   CATEGORY_PM10,
   CATEGORY_PM2_5,
   CATEGORY_CO2,
   CATEGORY_HUMIDITY,
   CATEGORY_TEMPERATURE,
-  createEmptyAirjoyA,
+  CATEGORY_VOC,
 } from '@/packet/airjoy';
 
 @Component({
@@ -127,7 +127,7 @@ export default class MainAirjoyDevices extends VueBase {
     },
   ];
 
-  items = [] as Array<AirjoyA>;
+  items = [] as Array<AirjoyDeviceA>;
   filter = '';
 
   get hideTopBar(): boolean {
@@ -135,236 +135,92 @@ export default class MainAirjoyDevices extends VueBase {
   }
 
   created() {
-    const group = this.$route.params.group;
-    const project = this.$route.params.project;
-    this.$api2.getAirjoy(group, project)
-        .then(() => {
-          this.toastRequestSuccess();
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-        })
-
-    this.items = [
-      createEmptyAirjoyA(),
-      createEmptyAirjoyA(),
-      createEmptyAirjoyA(),
-      createEmptyAirjoyA(),
-      createEmptyAirjoyA(),
-    ] as Array<AirjoyA>;
-    this.items[0].name = 'name1';
-    this.items[1].name = 'name2';
-    this.items[2].name = 'name3';
-    this.items[3].name = 'name4';
-    this.items[4].name = 'name5';
-
-    this.items[0].description = 'More description1';
-    this.items[1].description = 'More description2';
-    this.items[2].description = 'More description3';
-    this.items[3].description = 'More description4';
-    this.items[4].description = 'More description5';
-
-    this.items[0].online = true;
-    this.items[1].online = true;
-    this.items[2].online = false;
-    this.items[3].online = false;
-    this.items[4].online = false;
-
-    this.items[0].as_count = 0;
-    this.items[1].as_count = 0;
-    this.items[2].as_count = 10;
-    this.items[3].as_count = 20;
-    this.items[4].as_count = 30;
-
-    this.items[0].as_last = '';
-    this.items[1].as_last = '';
-    this.items[2].as_last = '2020-01-01';
-    this.items[3].as_last = '2020-01-02';
-    this.items[4].as_last = '2021-09-10T21:10';
-
-    this.items[0].fw_ver = 10;
-    this.items[1].fw_ver = 20;
-    this.items[2].fw_ver = 30;
-    this.items[3].fw_ver = 40;
-    this.items[4].fw_ver = 51;
-
-    this.items[0].uid = 100;
-    this.items[1].uid = 200;
-    this.items[2].uid = 300;
-    this.items[3].uid = 400;
-    this.items[4].uid = 501;
-
-    this.items[0].pm10 = 0;
-    this.items[1].pm10 = 10;
-    this.items[2].pm10 = 20;
-    this.items[3].pm10 = 30;
-    this.items[4].pm10 = 40;
-
-    this.items[0].pm2_5 = 0;
-    this.items[1].pm2_5 = 3;
-    this.items[2].pm2_5 = 3.24;
-    this.items[3].pm2_5 = 30;
-    this.items[4].pm2_5 = 100;
-
-    this.items[0].co2 = 0;
-    this.items[1].co2 = 20;
-    this.items[2].co2 = 30;
-    this.items[3].co2 = 40;
-    this.items[4].co2 = 100;
-
-    this.items[0].humidity = 0;
-    this.items[1].humidity = 20;
-    this.items[2].humidity = 30;
-    this.items[3].humidity = 40;
-    this.items[4].humidity = 100;
-
-    this.items[0].temperature = 0;
-    this.items[1].temperature = 20;
-    this.items[2].temperature = 30;
-    this.items[3].temperature = 40;
-    this.items[4].temperature = 100;
-
-    this.items[0].voc = 0;
-    this.items[1].voc = 1;
-    this.items[2].voc = 2;
-    this.items[3].voc = 3;
-    this.items[4].voc = 3;
-
-    this.items[0].mode = 0;
-    this.items[1].mode = 0;
-    this.items[2].mode = 1;
-    this.items[3].mode = 1;
-    this.items[4].mode = 1;
-
-    this.items[0].mode = 0;
-    this.items[1].mode = 0;
-    this.items[2].mode = 1;
-    this.items[3].mode = 1;
-    this.items[4].mode = 1;
-
-    this.items[0].power_state = 0;
-    this.items[1].power_state = 0;
-    this.items[2].power_state = 1;
-    this.items[3].power_state = 1;
-    this.items[4].power_state = 1;
-
-    this.items[0].fan_control = 1;
-    this.items[1].fan_control = 2;
-    this.items[2].fan_control = 3;
-    this.items[3].fan_control = 4;
-    this.items[4].fan_control = 5;
-
-    this.items[0].lock = 0;
-    this.items[1].lock = 0;
-    this.items[2].lock = 1;
-    this.items[3].lock = 1;
-    this.items[4].lock = 1;
-
-    this.items[0].filter = 0;
-    this.items[1].filter = 0;
-    this.items[2].filter = 1;
-    this.items[3].filter = 1;
-    this.items[4].filter = 2;
-
-    this.items[0].filter_life = 0;
-    this.items[1].filter_life = 1;
-    this.items[2].filter_life = 10;
-    this.items[3].filter_life = 20;
-    this.items[4].filter_life = 40;
-
-    this.items[0].uv_led = 0;
-    this.items[1].uv_led = 0;
-    this.items[2].uv_led = 1;
-    this.items[3].uv_led = 1;
-    this.items[4].uv_led = 1;
-
-    this.items[0].time_reservation = 0;
-    this.items[1].time_reservation = 1;
-    this.items[2].time_reservation = 2;
-    this.items[3].time_reservation = 3;
-    this.items[4].time_reservation = 4;
-
-    this.items[0].sleep_mode = 0;
-    this.items[1].sleep_mode = 0;
-    this.items[2].sleep_mode = 1;
-    this.items[3].sleep_mode = 1;
-    this.items[4].sleep_mode = 1;
+    // const group = this.$route.params.group;
+    // const project = this.$route.params.project;
+    // this.$api2.getAirjoy(group, project)
+    //     .then(() => {
+    //       this.toastRequestSuccess();
+    //     })
+    //     .catch(error => {
+    //       this.toastRequestFailure(error);
+    //     })
   }
 
   onClickAddDevice() {
   }
 
-  onClickBody(item: AirjoyA) {
+  onClickBody(item: AirjoyDeviceA) {
     this.moveToMainAirjoyDetails(`${item.uid}`);
   }
 
-  onClickName(item: AirjoyA) {
+  onClickName(item: AirjoyDeviceA) {
     this.moveToMainAirjoyDetails(`${item.uid}`);
   }
 
-  onClickPower(item: AirjoyA) {
+  onClickPower(item: AirjoyDeviceA) {
   }
 
-  onClickPm10(item: AirjoyA) {
+  onClickPm10(item: AirjoyDeviceA) {
     this.moveToMainAirjoyChart(`${item.uid}`, CATEGORY_PM10);
   }
 
-  onClickPm2_5(item: AirjoyA) {
+  onClickPm2_5(item: AirjoyDeviceA) {
     this.moveToMainAirjoyChart(`${item.uid}`, CATEGORY_PM2_5);
   }
 
-  onClickCo2(item: AirjoyA) {
+  onClickCo2(item: AirjoyDeviceA) {
     this.moveToMainAirjoyChart(`${item.uid}`, CATEGORY_CO2);
   }
 
-  onClickHumidity(item: AirjoyA) {
+  onClickHumidity(item: AirjoyDeviceA) {
     this.moveToMainAirjoyChart(`${item.uid}`, CATEGORY_HUMIDITY);
   }
 
-  onClickTemperature(item: AirjoyA) {
+  onClickTemperature(item: AirjoyDeviceA) {
     this.moveToMainAirjoyChart(`${item.uid}`, CATEGORY_TEMPERATURE);
   }
 
-  onClickVoc(item: AirjoyA) {
+  onClickVoc(item: AirjoyDeviceA) {
+    this.moveToMainAirjoyChart(`${item.uid}`, CATEGORY_VOC);
   }
 
-  onClickAs(item: AirjoyA) {
+  onClickAs(item: AirjoyDeviceA) {
   }
 
-  onClickMode(item: AirjoyA) {
+  onClickMode(item: AirjoyDeviceA) {
   }
 
-  onClickFanWeak(item: AirjoyA) {
+  onClickFanWeak(item: AirjoyDeviceA) {
   }
 
-  onClickFanMedium(item: AirjoyA) {
+  onClickFanMedium(item: AirjoyDeviceA) {
   }
 
-  onClickFanHigh(item: AirjoyA) {
+  onClickFanHigh(item: AirjoyDeviceA) {
   }
 
-  onClickLock(item: AirjoyA) {
+  onClickLock(item: AirjoyDeviceA) {
   }
 
-  onClickFilter(item: AirjoyA) {
+  onClickFilter(item: AirjoyDeviceA) {
   }
 
-  onClickSleep(item: AirjoyA) {
+  onClickSleep(item: AirjoyDeviceA) {
   }
 
-  onClickTimeOff(item: AirjoyA) {
+  onClickTimeOff(item: AirjoyDeviceA) {
   }
 
-  onClickTimeOne(item: AirjoyA) {
+  onClickTimeOne(item: AirjoyDeviceA) {
   }
 
-  onClickTimeTwo(item: AirjoyA) {
+  onClickTimeTwo(item: AirjoyDeviceA) {
   }
 
-  onClickTimeFour(item: AirjoyA) {
+  onClickTimeFour(item: AirjoyDeviceA) {
   }
 
-  onClickTimeEight(item: AirjoyA) {
+  onClickTimeEight(item: AirjoyDeviceA) {
   }
 }
 </script>

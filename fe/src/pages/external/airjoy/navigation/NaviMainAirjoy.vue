@@ -1,20 +1,20 @@
 <i18n lang="yaml">
 en:
+  devices: "Devices"
   summary: "Summary"
   live: "Live"
-  devices: "Devices"
   chart: "Chart"
-  as: "A/S"
+  service: "Service"
   airjoy_settings: "Airjoy Settings"
   members: "Members"
   settings: "Settings"
 
 ko:
+  devices: "장치 관리"
   summary: "요약"
   live: "실시간"
-  devices: "장치 관리"
   chart: "차트"
-  as: "A/S"
+  service: "서비스"
   airjoy_settings: "에어조이 설정"
   members: "회원 관리"
   settings: "프로젝트 설정"
@@ -52,21 +52,12 @@ ko:
           @change="input"
       >
 
-        <v-list-item link @click.stop="airjoySummary">
+        <v-list-item v-if="!hideSummary" link @click.stop="airjoySummary">
           <v-list-item-icon>
             <v-icon>mdi-weather-windy</v-icon>
           </v-list-item-icon>
           <v-list-item-title>
             {{ $t('summary') }}
-          </v-list-item-title>
-        </v-list-item>
-
-        <v-list-item link @click.stop="airjoyLive">
-          <v-list-item-icon>
-            <v-icon>mdi-monitor-dashboard</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('live') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -79,6 +70,15 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
+        <v-list-item link @click.stop="airjoyLive">
+          <v-list-item-icon>
+            <v-icon>mdi-monitor-dashboard</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('live') }}
+          </v-list-item-title>
+        </v-list-item>
+
         <v-list-item link @click.stop="airjoyChart">
           <v-list-item-icon>
             <v-icon>mdi-chart-bar</v-icon>
@@ -88,12 +88,12 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item link @click.stop="airjoyAs">
+        <v-list-item link @click.stop="airjoyService">
           <v-list-item-icon>
             <v-icon>mdi-wrench</v-icon>
           </v-list-item-icon>
           <v-list-item-title>
-            {{ $t('as') }}
+            {{ $t('service') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -143,6 +143,9 @@ import {ProjectA} from '@/packet/project';
 export default class NaviMainAirjoy extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly noDefault!: boolean;
+
+  @Prop({type: Boolean, default: true})
+  readonly hideSummary!: boolean;
 
   @Prop({type: Boolean, default: false})
   readonly hideMembers!: boolean;
@@ -209,17 +212,17 @@ export default class NaviMainAirjoy extends VueBase {
     }
   }
 
-  @Emit('click:airjoy-live')
-  airjoyLive() {
-    if (!this.noDefault) {
-      this.moveToMainAirjoyLive();
-    }
-  }
-
   @Emit('click:airjoy-devices')
   airjoyDevices() {
     if (!this.noDefault) {
       this.moveToMainAirjoyDevices();
+    }
+  }
+
+  @Emit('click:airjoy-live')
+  airjoyLive() {
+    if (!this.noDefault) {
+      this.moveToMainAirjoyLive();
     }
   }
 
@@ -230,10 +233,10 @@ export default class NaviMainAirjoy extends VueBase {
     }
   }
 
-  @Emit('click:airjoy-as')
-  airjoyAs() {
+  @Emit('click:airjoy-service')
+  airjoyService() {
     if (!this.noDefault) {
-      this.moveToMainAirjoyAs();
+      this.moveToMainAirjoyService();
     }
   }
 
