@@ -47,7 +47,7 @@ ko:
       </template>
 
       <template v-slot:item="{ item }">
-        <main-airjoy-devices-item
+        <airjoy-device-row
             hide-description
             :item="item"
             @click:body="onClickBody"
@@ -72,7 +72,7 @@ ko:
             @click:time-two="onClickTimeTwo"
             @click:time-four="onClickTimeFour"
             @click:time-eight="onClickTimeEight"
-        ></main-airjoy-devices-item>
+        ></airjoy-device-row>
       </template>
 
       <template v-slot:no-data>
@@ -86,7 +86,7 @@ ko:
 import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
-import MainAirjoyDevicesItem from '@/pages/external/airjoy/components/MainAirjoyDevicesItem.vue';
+import AirjoyDeviceRow from '@/pages/external/airjoy/components/AirjoyDeviceRow.vue';
 import type {AirjoyDeviceA} from '@/packet/airjoy';
 import {
   CATEGORY_PM10,
@@ -100,7 +100,7 @@ import {
 @Component({
   components: {
     BreadcrumbMain,
-    MainAirjoyDevicesItem,
+    AirjoyDeviceRow,
   }
 })
 export default class MainAirjoyDevices extends VueBase {

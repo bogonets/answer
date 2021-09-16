@@ -415,7 +415,7 @@ const LOCK = 1;
     BreadcrumbMain,
   }
 })
-export default class MainAirjoyDevicesItem extends VueBase {
+export default class AirjoyDeviceRow extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly hideDescription!: boolean;
 
