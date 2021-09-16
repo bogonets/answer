@@ -1,5 +1,6 @@
 import atLeast4Char from '@/rules/at-least';
 import emptyOrEmailFormat from '@/rules/email';
+import integerField from '@/rules/number';
 import emptyOrPhoneFormat from '@/rules/phone';
 import requiredField from '@/rules/required';
 import noReccPrefix from '@/rules/recc-info';
@@ -41,4 +42,9 @@ export const PHONE_RULES = [
 export const INFO_RULES = [
     requiredField,
     noReccPrefix,
+];
+
+export const UID_RULES = [
+    requiredField,
+    integerField,
 ];

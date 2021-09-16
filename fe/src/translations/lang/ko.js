@@ -5,6 +5,7 @@ export default {
         required: '공백을 허용하지 않습니다.',
         at_least_4char: '최소 네 글자 이상 허용됩니다.',
         email: '이메일 형식이 올바르지 않습니다.',
+        integer: '정수형 문자만 허용됩니다.',
         phone: '전화번호 형식이 올바르지 않습니다.',
         slug: "슬러그 형식이 올바르지 않습니다.",
         no_recc_prefix: "'recc.' 접두사 는 사용할 수 없습니다.",

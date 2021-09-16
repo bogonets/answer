@@ -1,6 +1,9 @@
 <i18n lang="yaml">
 en:
-  add_device: "Add Device"
+  add_device:
+    button: "Add Device"
+    title: "Register Airjoy Device"
+    subtitle: "Detects and registers new Airjoy devices"
   label:
     search: "You can filter by name or UID."
   msg:
@@ -8,7 +11,10 @@ en:
     empty: "Devices do not exist"
 
 ko:
-  add_device: "장치 추가"
+  add_device:
+    button: "장치 추가"
+    title: "에어조이 기기 등록"
+    subtitle: "새로운 에어조이 기기를 탐지하고 등록합니다"
   label:
     search: "이름 또는 UID를 필터링할 수 있습니다."
   msg:
@@ -41,7 +47,7 @@ ko:
               :label="$t('label.search')"
           ></v-text-field>
           <v-btn color="primary" @click="onClickAddDevice">
-            {{ $t('add_device') }}
+            {{ $t('add_device.button') }}
           </v-btn>
         </v-toolbar>
       </template>
@@ -79,6 +85,22 @@ ko:
         {{ $t('msg.empty') }}
       </template>
     </v-data-table>
+
+    <!-- Add Dialog -->
+    <v-dialog
+        v-model="showAddDialog"
+        persistent
+        no-click-animation
+        :max-width="widthAddDialog"
+        @keydown.esc.stop="onClickAddCancel"
+    >
+      <airjoy-device-add
+          :title="$t('add_device.title')"
+          :subtitle="$t('add_device.subtitle')"
+          @cancel="onClickAddCancel"
+          @ok="onClickAddOk"
+      ></airjoy-device-add>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -87,6 +109,7 @@ import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import AirjoyDeviceRow from '@/pages/external/airjoy/components/AirjoyDeviceRow.vue';
+import AirjoyDeviceAdd from '@/pages/external/airjoy/components/AirjoyDeviceAdd.vue';
 import type {AirjoyDeviceA} from '@/packet/airjoy';
 import {
   CATEGORY_PM10,
@@ -101,6 +124,7 @@ import {
   components: {
     BreadcrumbMain,
     AirjoyDeviceRow,
+    AirjoyDeviceAdd,
   }
 })
 export default class MainAirjoyDevices extends VueBase {
@@ -116,6 +140,9 @@ export default class MainAirjoyDevices extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly loading!: boolean;
 
+  @Prop({type: Number, default: 480})
+  readonly widthAddDialog!: number;
+
   readonly headers = [
     {
       filterable: true,
@@ -129,6 +156,8 @@ export default class MainAirjoyDevices extends VueBase {
 
   items = [] as Array<AirjoyDeviceA>;
   filter = '';
+
+  showAddDialog = false;
 
   get hideTopBar(): boolean {
     return this.hideFilterInput;
@@ -147,6 +176,14 @@ export default class MainAirjoyDevices extends VueBase {
   }
 
   onClickAddDevice() {
+    this.showAddDialog = true;
+  }
+
+  onClickAddCancel() {
+    this.showAddDialog = false;
+  }
+
+  onClickAddOk() {
   }
 
   onClickBody(item: AirjoyDeviceA) {

@@ -5,6 +5,7 @@ export default {
         required: 'Required field.',
         at_least_4char: 'At least 4 characters.',
         email: 'Email format is incorrect.',
+        integer: 'Only integer characters are allowed.',
         phone: 'Phone format is incorrect.',
         slug: "Slug format is incorrect.",
         no_recc_prefix: "'recc.' prefix cannot be used.",
