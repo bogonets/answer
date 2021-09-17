@@ -1,6 +1,21 @@
 import AxiosLib from 'axios';
-import type {AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosBasicCredentials} from 'axios';
-import type {AirjoyDeviceA, AirjoySensorA} from '@/packet/airjoy';
+import type {
+    AxiosInstance,
+    AxiosResponse,
+    AxiosRequestConfig,
+    AxiosBasicCredentials
+} from 'axios';
+import type {
+    AirjoySensorA,
+    AirjoyDeviceA,
+    CreateAirjoyDeviceQ,
+    UpdateAirjoyDeviceQ,
+    AirjoyControlQ,
+    AirjoyChartQ,
+    AirjoyServiceA,
+    CreateAirjoyServiceQ,
+    UpdateAirjoyServiceQ,
+} from '@/packet/airjoy';
 import type {ConfigA, UpdateConfigValueQ} from '@/packet/config';
 import type {GroupA, CreateGroupQ, UpdateGroupQ} from '@/packet/group';
 import type {InfoA, CreateInfoQ, UpdateInfoQ} from '@/packet/info';
@@ -508,6 +523,66 @@ export default class ApiV2 {
     // --------------
 
     getAirjoyLive(group: string, project: string) {
-        return this.get<Array<AirjoySensorA>>(`/plugins/airjoy/${group}/${project}/live`);
+        const url = `/plugins/airjoy/${group}/${project}/live`;
+        return this.get<Array<AirjoySensorA>>(url);
+    }
+
+    getAirjoyDevices(group: string, project: string) {
+        const url = `/plugins/airjoy/${group}/${project}/devices`;
+        return this.get<Array<AirjoyDeviceA>>(url);
+    }
+
+    postAirjoyDevices(group: string, project: string, body: CreateAirjoyDeviceQ) {
+        const url = `/plugins/airjoy/${group}/${project}/devices`;
+        return this.post(url, body);
+    }
+
+    getAirjoyDevice(group: string, project: string, device: string) {
+        const url = `/plugins/airjoy/${group}/${project}/devices/${device}`;
+        return this.get<AirjoySensorA>(url);
+    }
+
+    patchAirjoyDevice(group: string, project: string, device: string, body: UpdateAirjoyDeviceQ) {
+        const url = `/plugins/airjoy/${group}/${project}/devices/${device}`;
+        return this.patch(url, body);
+    }
+
+    deleteAirjoyDevice(group: string, project: string, device: string) {
+        const url = `/plugins/airjoy/${group}/${project}/devices/${device}`;
+        return this.delete(url);
+    }
+
+    postAirjoyControl(group: string, project: string, device: string, body: AirjoyControlQ) {
+        const url = `/plugins/airjoy/${group}/${project}/devices/${device}/control`;
+        return this.post(url, body);
+    }
+
+    getAirjoyChart(group: string, project: string, device: string, begin: string, end: string) {
+        const body = {
+            begin: begin,
+            end: end,
+        } as AirjoyChartQ;
+        const url = `/plugins/airjoy/${group}/${project}/devices/${device}/chart`;
+        return this.post(url, body);  // TODO: Change to 'GET' method
+    }
+
+    getAirjoyServices(group: string, project: string, device: string) {
+        const url = `/plugins/airjoy/${group}/${project}/devices/${device}/services`;
+        return this.get<Array<AirjoyServiceA>>(url);
+    }
+
+    postAirjoyServices(group: string, project: string, device: string, body: CreateAirjoyServiceQ) {
+        const url = `/plugins/airjoy/${group}/${project}/devices/${device}/services`;
+        return this.post(url, body);
+    }
+
+    patchAirjoyServices(group: string, project: string, device: string, service: string, body: UpdateAirjoyServiceQ) {
+        const url = `/plugins/airjoy/${group}/${project}/devices/${device}/services/${service}`;
+        return this.patch(url, body);
+    }
+
+    deleteAirjoyServices(group: string, project: string, device: string, service: string) {
+        const url = `/plugins/airjoy/${group}/${project}/devices/${device}/services/${service}`;
+        return this.delete(url);
     }
 }

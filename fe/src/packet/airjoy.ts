@@ -91,7 +91,7 @@ export interface CreateAirjoyServiceQ {
     time: string;
 }
 
-export interface UpdateAirjoyAsQ {
+export interface UpdateAirjoyServiceQ {
     author: string;
     description: string;
     time: string;
