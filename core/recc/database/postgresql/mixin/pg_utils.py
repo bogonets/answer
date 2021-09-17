@@ -18,7 +18,7 @@ class PgUtils(DbUtils, PgBase):
         *args,
         timeout: Optional[float] = None,
     ) -> Any:
-        return await self.execute(query, *args, timeout)
+        return await self.execute(query, *args, timeout=timeout)
 
     @overrides
     async def execute_queries(
@@ -26,7 +26,7 @@ class PgUtils(DbUtils, PgBase):
         queries: Iterable[str],
         timeout: Optional[float] = None,
     ) -> Any:
-        return await self.executes(queries, timeout)
+        return await self.executes(queries, timeout=timeout)
 
     @overrides
     async def fetch_rows(

@@ -3,6 +3,7 @@
 import os
 from typing import Optional, Any, Dict, Tuple, Iterable, List
 from inspect import iscoroutinefunction
+from copy import deepcopy
 from aiohttp.web_urldispatcher import DynamicResource
 from recc.compile.future import get_annotations_compiler_flag
 
@@ -140,8 +141,26 @@ class Plugin:
 
     def update_routes(self) -> None:
         routes = list()
-        for method, path, route in self._call_get_routes():
-            routes.append(Route(method, path, route))
+        for method, path, guest_route in self._call_get_routes():
+            host_route = deepcopy(guest_route)
+            if hasattr(host_route, "__annotations__"):
+                assert isinstance(host_route.__annotations__, dict)
+                update_annotations: Dict[str, Any] = dict()
+                for key, annotation in host_route.__annotations__.items():
+                    if isinstance(annotation, type):
+                        update_annotations[key] = annotation
+                    else:
+                        type_origin = eval(
+                            annotation,
+                            self._global_variables,
+                            self._global_variables,
+                        )
+                        if type_origin is not None:
+                            update_annotations[key] = type_origin
+                        else:
+                            update_annotations[key] = annotation
+                host_route.__annotations__ = update_annotations
+            routes.append(Route(method, path, host_route))
         self._routes = routes
 
     def get_route(self, method: str, path: str) -> Tuple[Any, Dict[str, str]]:

@@ -1,9 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from typing import List, Any
+from multidict import CIMultiDict
 from aiohttp import web
+from aiohttp.hdrs import (
+    METH_OPTIONS,
+    ACCESS_CONTROL_ALLOW_CREDENTIALS,
+    ACCESS_CONTROL_ALLOW_HEADERS,
+    ACCESS_CONTROL_ALLOW_METHODS,
+    ACCESS_CONTROL_ALLOW_ORIGIN,
+)
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
+from aiohttp.web_response import Response
 from aiohttp.web_exceptions import HTTPNotFound
 from recc.core.context import Context
 from recc.http.http_decorator import parameter_matcher, parameter_matcher_main
@@ -17,7 +26,7 @@ class RouterV2Plugins:
 
     def __init__(self, context: Context):
         self._context = context
-        self._app = web.Application()
+        self._app = web.Application(middlewares=[self.middleware])
         self._app.add_routes(self._routes())
 
     @property
@@ -27,6 +36,22 @@ class RouterV2Plugins:
     @property
     def context(self) -> Context:
         return self._context
+
+    @web.middleware
+    async def middleware(self, request: Request, handler) -> Response:
+        if request.method == METH_OPTIONS:
+            return await self.options_cors(request)
+        return await handler(request)  # (CORS) Default `options` handling.
+
+    async def options_cors(self, request: Request) -> Response:
+        assert self is not None
+        assert request is not None
+        headers = CIMultiDict[str]()
+        headers.add(ACCESS_CONTROL_ALLOW_CREDENTIALS, "*")
+        headers.add(ACCESS_CONTROL_ALLOW_HEADERS, "*")
+        headers.add(ACCESS_CONTROL_ALLOW_METHODS, "*")
+        headers.add(ACCESS_CONTROL_ALLOW_ORIGIN, "*")
+        return Response(headers=headers)
 
     # noinspection PyTypeChecker
     def _routes(self) -> List[AbstractRouteDef]:
