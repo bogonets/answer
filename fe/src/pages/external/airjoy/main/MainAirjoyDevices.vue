@@ -97,6 +97,7 @@ ko:
       <airjoy-device-add
           :title="$t('add_device.title')"
           :subtitle="$t('add_device.subtitle')"
+          :submit-loading="loadingAddDevice"
           @cancel="onClickAddCancel"
           @ok="onClickAddOk"
       ></airjoy-device-add>
@@ -117,7 +118,7 @@ import {
   CATEGORY_CO2,
   CATEGORY_HUMIDITY,
   CATEGORY_TEMPERATURE,
-  CATEGORY_VOC,
+  CATEGORY_VOC, CreateAirjoyDeviceQ,
 } from '@/packet/airjoy';
 
 @Component({
@@ -137,9 +138,6 @@ export default class MainAirjoyDevices extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly clickableRow!: boolean;
 
-  @Prop({type: Boolean, default: false})
-  readonly loading!: boolean;
-
   @Prop({type: Number, default: 480})
   readonly widthAddDialog!: number;
 
@@ -154,25 +152,34 @@ export default class MainAirjoyDevices extends VueBase {
     },
   ];
 
+  loading = false;
   items = [] as Array<AirjoyDeviceA>;
   filter = '';
 
   showAddDialog = false;
+  loadingAddDevice = false;
 
   get hideTopBar(): boolean {
     return this.hideFilterInput;
   }
 
   created() {
+    this.updateDevices();
+  }
+
+  updateDevices() {
+    this.loading = true;
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    // this.$api2.getAirjoy(group, project)
-    //     .then(() => {
-    //       this.toastRequestSuccess();
-    //     })
-    //     .catch(error => {
-    //       this.toastRequestFailure(error);
-    //     })
+    this.$api2.getAirjoyDevices(group, project)
+        .then(items => {
+          this.loading = false;
+          this.items = items;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        })
   }
 
   onClickAddDevice() {
@@ -183,7 +190,21 @@ export default class MainAirjoyDevices extends VueBase {
     this.showAddDialog = false;
   }
 
-  onClickAddOk() {
+  onClickAddOk(body: CreateAirjoyDeviceQ) {
+    this.loadingAddDevice = true;
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    this.$api2.postAirjoyDevices(group, project, body)
+        .then(() => {
+          this.loadingAddDevice = false;
+          this.showAddDialog = false;
+          this.toastRequestSuccess();
+          this.updateDevices();
+        })
+        .catch(error => {
+          this.loadingAddDevice = false;
+          this.toastRequestFailure(error);
+        })
   }
 
   onClickBody(item: AirjoyDeviceA) {

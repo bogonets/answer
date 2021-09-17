@@ -89,6 +89,7 @@ ko:
         {{ $t('cancel') }}
       </v-btn>
       <v-btn
+          :loading="submitLoading"
           color="primary"
           @click="submit"
       >
@@ -118,6 +119,9 @@ export default class AirjoyDeviceAdd extends VueBase {
 
   @Prop({type: Boolean, default: false})
   readonly disableValidate!: boolean;
+
+  @Prop({type: Boolean, default: false})
+  readonly submitLoading!: boolean;
 
   valid = false;
   uid = '';
