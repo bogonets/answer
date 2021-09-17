@@ -97,9 +97,8 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-divider></v-divider>
-
-        <v-list-item link @click.stop="airjoySettings">
+        <v-divider v-if="!hideAirjoySettings"></v-divider>
+        <v-list-item v-if="!hideAirjoySettings" link @click.stop="airjoySettings">
           <v-list-item-icon>
             <v-icon>mdi-application-cog</v-icon>
           </v-list-item-icon>
@@ -146,6 +145,9 @@ export default class NaviMainAirjoy extends VueBase {
 
   @Prop({type: Boolean, default: true})
   readonly hideSummary!: boolean;
+
+  @Prop({type: Boolean, default: true})
+  readonly hideAirjoySettings!: boolean;
 
   @Prop({type: Boolean, default: false})
   readonly hideMembers!: boolean;

@@ -178,6 +178,7 @@ import {
   CATEGORY_CO2,
   CATEGORY_HUMIDITY,
   CATEGORY_TEMPERATURE,
+  CATEGORY_VOC,
 } from '@/packet/airjoy';
 
 export function today() {
@@ -373,20 +374,19 @@ export default class MainAirjoyChart extends VueBase {
   getCategoryIndex(name: string) {
     if (name === CATEGORY_PM10) {
       return 0;
-    }
-    if (name === CATEGORY_PM2_5) {
+    } else if (name === CATEGORY_PM2_5) {
       return 1;
-    }
-    if (name === CATEGORY_CO2) {
+    } else if (name === CATEGORY_CO2) {
       return 2;
-    }
-    if (name === CATEGORY_HUMIDITY) {
+    } else if (name === CATEGORY_HUMIDITY) {
       return 3;
-    }
-    if (name === CATEGORY_TEMPERATURE) {
+    } else if (name === CATEGORY_TEMPERATURE) {
       return 4;
+    } else if (name === CATEGORY_VOC) {
+      return 5;
+    } else {
+      return -1;
     }
-    return -1;
   }
 
   onInputPeriodStart() {

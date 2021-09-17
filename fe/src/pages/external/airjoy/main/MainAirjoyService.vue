@@ -23,6 +23,9 @@ en:
   msg:
     loading: "Loading... Please wait"
     empty: "Empty A/S"
+  add_service:
+    title: "Add service"
+    subtitle: "Add service"
 
 ko:
   groups: "Groups"
@@ -48,6 +51,9 @@ ko:
   msg:
     loading: "불러오는중 입니다... 잠시만 기다려 주세요."
     empty: "A/S 기록이 존재하지 않습니다."
+  add_service:
+    title: "Add service"
+    subtitle: "Add service"
 </i18n>
 
 <template>
@@ -109,26 +115,21 @@ ko:
         </template>
       </v-data-table>
 
-      <!-- A/S dialog. -->
-      <v-dialog v-model="showAsDialog" max-width="320">
-        <v-card>
-          <v-card-title class="text-h5">
-            {{ $t('labels.as_new') }}
-          </v-card-title>
-          <!--        <v-card-text>-->
-          <!--          {{ $t('hints.as_new') }}-->
-          <!--        </v-card-text>-->
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn @click="onClickNewAsCancel">
-              {{ $t('cancel') }}
-            </v-btn>
-            <v-btn :loading="loadingAsSubmit" color="primary" @click="onClickNewAsSubmit">
-              {{ $t('delete') }}
-            </v-btn>
-          </v-card-actions>
-        </v-card>
+      <!-- Add Dialog -->
+      <v-dialog
+          v-model="showAddDialog"
+          persistent
+          no-click-animation
+          :max-width="widthAddDialog"
+          @keydown.esc.stop="onClickAddCancel"
+      >
+        <airjoy-service-add
+            :title="$t('add_service.title')"
+            :subtitle="$t('add_service.subtitle')"
+            :submit-loading="loadingAddDevice"
+            @cancel="onClickAddCancel"
+            @ok="onClickAddOk"
+        ></airjoy-service-add>
       </v-dialog>
     </v-card>
 
@@ -139,13 +140,15 @@ ko:
 import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
+import AirjoyServiceAdd from '@/pages/external/airjoy/components/AirjoyServiceAdd.vue';
 import VueApexCharts from 'vue-apexcharts';
 import type {AirjoyServiceA} from '@/packet/airjoy';
-import {createEmptyAirjoyServiceA} from '@/packet/airjoy';
+import {CreateAirjoyDeviceQ, createEmptyAirjoyServiceA} from '@/packet/airjoy';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
+    AirjoyServiceAdd,
     VueApexCharts,
   }
 })
@@ -218,6 +221,9 @@ export default class MainAirjoyService extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly hideActionMove!: boolean;
 
+  @Prop({type: Number, default: 480})
+  readonly widthAddDialog!: number;
+
   device = '';
   devices = ['100', '200', '300', '400']
 
@@ -225,8 +231,8 @@ export default class MainAirjoyService extends VueBase {
   loading = false;
   filter = '';
 
-  showAsDialog = false;
-  loadingAsSubmit = false;
+  showAddDialog = false;
+  loadingAddDevice = false;
 
   created() {
     const device = this.$route.params.airjoy;
@@ -274,15 +280,32 @@ export default class MainAirjoyService extends VueBase {
   }
 
   onClickNewAs() {
-    this.showAsDialog = true;
+    this.showAddDialog = true;
   }
 
-  onClickNewAsCancel() {
-    this.showAsDialog = false;
+  onClickAddDevice() {
+    this.showAddDialog = true;
   }
 
-  onClickNewAsSubmit() {
-    this.showAsDialog = false;
+  onClickAddCancel() {
+    this.showAddDialog = false;
+  }
+
+  onClickAddOk(body: CreateAirjoyDeviceQ) {
+    this.loadingAddDevice = true;
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    // this.$api2.postAirjoyDevices(group, project, body)
+    //     .then(() => {
+    //       this.loadingAddDevice = false;
+    //       this.showAddDialog = false;
+    //       this.toastRequestSuccess();
+    //       this.updateDevices();
+    //     })
+    //     .catch(error => {
+    //       this.loadingAddDevice = false;
+    //       this.toastRequestFailure(error);
+    //     })
   }
 
   onClickAs() {
