@@ -329,52 +329,13 @@ ko:
             </v-tooltip>
           </template>
 
-          <div class="button-group--wrapper">
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn class="rounded-l-xl" small tile @click.stop="timeOff" v-bind="attrs" v-on="on">
-                  <v-icon>mdi-timer-off-outline</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t('timer.cancel') }}</span>
-            </v-tooltip>
-
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn small tile @click.stop="timeOne" v-bind="attrs" v-on="on">
-                  <v-icon>mdi-clock-time-one-outline</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t('timer.one') }}</span>
-            </v-tooltip>
-
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn small tile @click.stop="timeTwo" v-bind="attrs" v-on="on">
-                  <v-icon>mdi-clock-time-two-outline</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t('timer.two') }}</span>
-            </v-tooltip>
-
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn small tile @click.stop="timeFour" v-bind="attrs" v-on="on">
-                  <v-icon>mdi-clock-time-four-outline</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t('timer.four') }}</span>
-            </v-tooltip>
-
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn class="rounded-r-xl" small tile @click.stop="timeEight" v-bind="attrs" v-on="on">
-                  <v-icon>mdi-clock-time-eight-outline</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t('timer.eight') }}</span>
-            </v-tooltip>
-          </div>
+          <airjoy-timer-group
+              @click:timer-off="timerOff"
+              @click:timer-one="timerOne"
+              @click:timer-two="timerTwo"
+              @click:timer-four="timerFour"
+              @click:timer-eight="timerEight"
+          ></airjoy-timer-group>
         </v-menu>
 
       </div>
@@ -386,10 +347,10 @@ ko:
 import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
-import type {AirjoyDeviceA} from "@/packet/airjoy";
-import {createEmptyAirjoyDeviceA} from "@/packet/airjoy";
-import AirjoyFanSpeedGroup
-  from "@/pages/external/airjoy/components/AirjoyFanSpeedGroup.vue";
+import type {AirjoyDeviceA} from '@/packet/airjoy';
+import {createEmptyAirjoyDeviceA} from '@/packet/airjoy';
+import AirjoyFanSpeedGroup from '@/pages/external/airjoy/components/AirjoyFanSpeedGroup.vue';
+import AirjoyTimerGroup from '@/pages/external/airjoy/components/AirjoyTimerGroup.vue';
 
 const FILTER_STATUS_NORMAL = 0;
 const FILTER_STATUS_RESET = 1;
@@ -409,6 +370,7 @@ const LOCK = 1;
 
 @Component({
   components: {
+    AirjoyTimerGroup,
     AirjoyFanSpeedGroup,
     BreadcrumbMain,
   }
@@ -751,28 +713,28 @@ export default class AirjoyDeviceRow extends VueBase {
     return this.item;
   }
 
-  @Emit('click:time-off')
-  timeOff() {
+  @Emit('click:timer-off')
+  timerOff() {
     return this.item;
   }
 
-  @Emit('click:time-one')
-  timeOne() {
+  @Emit('click:timer-one')
+  timerOne() {
     return this.item;
   }
 
-  @Emit('click:time-two')
-  timeTwo() {
+  @Emit('click:timer-two')
+  timerTwo() {
     return this.item;
   }
 
-  @Emit('click:time-four')
-  timeFour() {
+  @Emit('click:timer-four')
+  timerFour() {
     return this.item;
   }
 
-  @Emit('click:time-eight')
-  timeEight() {
+  @Emit('click:timer-eight')
+  timerEight() {
     return this.item;
   }
 }
@@ -844,11 +806,5 @@ $hover-transparent: 0.2;
 
 .v-menu__content {
   box-shadow: none;
-}
-
-.button-group--wrapper {
-  @include flex-row;
-  flex-wrap: nowrap;
-  padding: 2px;
 }
 </style>

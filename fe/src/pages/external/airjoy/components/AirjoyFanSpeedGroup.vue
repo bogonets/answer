@@ -69,6 +69,12 @@ export default class AirjoyFanSpeedGroup extends VueBase {
   @Prop({type: Number, default: 0})
   readonly speed!: number;
 
+  @Prop({type: String, default: 'primary'})
+  readonly activeColor!: string;
+
+  @Prop({type: String, default: ''})
+  readonly inactiveColor!: string;
+
   get isWeak() {
     return this.speed == 1;
   }
@@ -82,15 +88,15 @@ export default class AirjoyFanSpeedGroup extends VueBase {
   }
 
   get colorWeak() {
-    return this.isWeak ? 'primary' : '';
+    return this.isWeak ? this.activeColor : this.inactiveColor;
   }
 
   get colorMedium() {
-    return this.isMedium ? 'primary' : '';
+    return this.isMedium ? this.activeColor : this.inactiveColor;
   }
 
   get colorHigh() {
-    return this.isHigh ? 'primary' : '';
+    return this.isHigh ? this.activeColor : this.inactiveColor;
   }
 
   @Emit('click:fan-weak')
