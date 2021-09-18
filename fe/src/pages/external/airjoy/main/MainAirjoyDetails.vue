@@ -1,5 +1,7 @@
 <i18n lang="yaml">
 en:
+  online: "Online"
+  offline: "Offline"
   groups: "Groups"
   devices: "Devices"
   details: "Details"
@@ -30,6 +32,8 @@ en:
   delete: "Delete"
 
 ko:
+  online: "네트워크 연결이 정상 상태 입니다"
+  offline: "네트워크 연결이 끊어졌습니다"
   groups: "Groups"
   devices: "Devices"
   details: "Details"
@@ -105,7 +109,7 @@ ko:
 
     <v-row class="mt-2">
       <v-col cols="4">
-        <div class="card" @click="onClickPm10">
+        <div v-ripple class="card" @click="onClickPm10">
           <v-icon left large>mdi-dots-hexagon</v-icon>
           <span class="text--secondary text-subtitle-2">
             {{ $t('categories.pm10', [item.pm10]) }}
@@ -114,7 +118,7 @@ ko:
       </v-col>
 
       <v-col cols="4">
-        <div class="card" @click="onClickPm2_5">
+        <div v-ripple class="card" @click="onClickPm2_5">
           <v-icon left large>mdi-dots-horizontal</v-icon>
           <span class="text--secondary text-subtitle-2">
             {{ $t('categories.pm2_5', [item.pm2_5]) }}
@@ -123,7 +127,7 @@ ko:
       </v-col>
 
       <v-col cols="4">
-        <div class="card" @click="onClickCo2">
+        <div v-ripple class="card" @click="onClickCo2">
           <v-icon left large>mdi-molecule-co2</v-icon>
           <span class="text--secondary text-subtitle-2">
             {{ $t('categories.co2', [item.co2]) }}
@@ -134,7 +138,7 @@ ko:
 
     <v-row>
       <v-col cols="4">
-        <div class="card" @click="onClickHumidity">
+        <div v-ripple class="card" @click="onClickHumidity">
           <v-icon left large>mdi-water</v-icon>
           <span class="text--secondary text-subtitle-2">
             {{ $t('categories.humidity', [item.humidity]) }}
@@ -143,7 +147,7 @@ ko:
       </v-col>
 
       <v-col cols="4">
-        <div class="card" @click="onClickTemperature">
+        <div v-ripple class="card" @click="onClickTemperature">
           <v-icon left large>mdi-thermometer</v-icon>
           <span class="text--secondary text-subtitle-2">
             {{ $t('categories.temperature', [item.temperature]) }}
@@ -152,7 +156,7 @@ ko:
       </v-col>
 
       <v-col cols="4">
-        <div class="card" @click="onClickService">
+        <div v-ripple class="card" @click="onClickService">
           <span class="text--secondary text-h6 font-weight-bold">
             {{ $t('categories.voc') }}
           </span>
@@ -163,46 +167,65 @@ ko:
       </v-col>
     </v-row>
 
-    <v-divider class="my-4"></v-divider>
+<!--    <v-list>-->
+<!--      <v-list-item @click.stop="power">-->
+<!--        <v-list-item-icon>-->
+<!--          <v-icon>mdi-power</v-icon>-->
+<!--        </v-list-item-icon>-->
+<!--        <v-list-item-title>-->
+<!--          {{ $t('power') }}-->
+<!--        </v-list-item-title>-->
+<!--      </v-list-item>-->
+<!--    </v-list>-->
 
     <v-row>
       <v-col cols="2">
-        <div class="card elevation-2 green">
+        <div v-ripple class="card elevation-2 green">
           <v-icon large>mdi-power</v-icon>
           <span class="text--secondary text-subtitle-2">POWER</span>
         </div>
       </v-col>
 
       <v-col cols="2">
-        <div class="card elevation-2 orange accent-4">
+        <div v-ripple class="card elevation-2 orange accent-4">
           <v-icon large>mdi-weather-sunny</v-icon>
           <span class="text--secondary text-subtitle-2">UV</span>
         </div>
       </v-col>
 
       <v-col cols="2">
-        <div class="card elevation-2 green">
-          <v-icon large>mdi-lan-connect</v-icon>
-          <span class="text--secondary text-subtitle-2">ONLINE</span>
-        </div>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <div v-if="item.online" v-ripple class="card elevation-2 green" v-bind="attrs" v-on="on">
+              <v-icon large>mdi-lan-connect</v-icon>
+              <span class="text--secondary text-subtitle-2">ONLINE</span>
+            </div>
+            <div v-else v-ripple class="card elevation-2 red" v-bind="attrs" v-on="on">
+              <v-icon large>mdi-lan-disconnect</v-icon>
+              <span class="text--secondary text-subtitle-2">OFFLINE</span>
+            </div>
+          </template>
+          <span>{{ onlineDescription }}</span>
+        </v-tooltip>
       </v-col>
 
       <v-col cols="2">
-        <div class="card elevation-2">
+        <div v-ripple class="card elevation-2">
           <v-icon large>mdi-alpha-a-circle-outline</v-icon>
           <span class="text--secondary text-subtitle-2">AUTO</span>
         </div>
       </v-col>
 
       <v-col cols="2">
-        <div class="card elevation-2">
+        <div v-ripple class="card elevation-2">
           <v-icon large>mdi-lock-open-variant</v-icon>
           <span class="text--secondary text-subtitle-2">UNLOCK</span>
         </div>
       </v-col>
 
       <v-col cols="2">
-        <div class="card elevation-2">
+        <div v-ripple class="card elevation-2">
           <v-icon large>mdi-sleep</v-icon>
           <span class="text--secondary text-subtitle-2">SLEEP</span>
         </div>
@@ -211,21 +234,21 @@ ko:
 
     <v-row>
       <v-col cols="2">
-        <div class="card elevation-2">
+        <div v-ripple class="card elevation-2">
           <v-icon large>mdi-air-filter</v-icon>
           <span class="text--secondary text-subtitle-2">RESET</span>
         </div>
       </v-col>
 
       <v-col cols="2">
-        <div class="card elevation-2">
+        <div v-ripple class="card elevation-2">
           <v-icon large>mdi-fan-auto</v-icon>
           <span class="text--secondary text-subtitle-2">AUTO</span>
         </div>
       </v-col>
 
       <v-col cols="2">
-        <div class="card elevation-2">
+        <div v-ripple class="card elevation-2">
           <v-icon large>mdi-timer-off-outline</v-icon>
           <span class="text--secondary text-subtitle-2">OFF</span>
         </div>
@@ -370,6 +393,14 @@ export default class MainAirjoyDetails extends VueBase {
           this.loading = false;
           this.toastRequestFailure(error);
         });
+  }
+
+  get onlineDescription() {
+    if (this.item.online) {
+      return this.$t('online');
+    } else {
+      return this.$t('offline');
+    }
   }
 
   onClickPm10() {
