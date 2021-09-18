@@ -282,17 +282,12 @@ ko:
             </v-tooltip>
           </template>
 
-          <div class="button-group--wrapper">
-            <v-btn class="rounded-l-xl" small tile @click.stop="fanWeak">
-              <v-icon>mdi-fan-speed-1</v-icon>
-            </v-btn>
-            <v-btn small tile @click.stop="fanMedium">
-              <v-icon>mdi-fan-speed-2</v-icon>
-            </v-btn>
-            <v-btn class="rounded-r-xl" small tile @click.stop="fanHigh">
-              <v-icon>mdi-fan-speed-3</v-icon>
-            </v-btn>
-          </div>
+          <airjoy-fan-speed-group
+              @click:fan-weak="fanWeak"
+              @click:fan-medium="fanMedium"
+              @click:fan-high="fanHigh"
+          >
+          </airjoy-fan-speed-group>
         </v-menu>
 
         <v-tooltip top>
@@ -393,6 +388,8 @@ import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import type {AirjoyDeviceA} from "@/packet/airjoy";
 import {createEmptyAirjoyDeviceA} from "@/packet/airjoy";
+import AirjoyFanSpeedGroup
+  from "@/pages/external/airjoy/components/AirjoyFanSpeedGroup.vue";
 
 const FILTER_STATUS_NORMAL = 0;
 const FILTER_STATUS_RESET = 1;
@@ -412,6 +409,7 @@ const LOCK = 1;
 
 @Component({
   components: {
+    AirjoyFanSpeedGroup,
     BreadcrumbMain,
   }
 })

@@ -141,6 +141,9 @@ export default class MainAirjoyDevices extends VueBase {
   @Prop({type: Number, default: 480})
   readonly widthAddDialog!: number;
 
+  @Prop({type: Number, default: 1000})
+  readonly updateIntervalMilliseconds!: number;
+
   readonly headers = [
     {
       filterable: true,
@@ -159,6 +162,8 @@ export default class MainAirjoyDevices extends VueBase {
   showAddDialog = false;
   loadingAddDevice = false;
 
+  intervalHandle = -1;
+
   get hideTopBar(): boolean {
     return this.hideFilterInput;
   }
@@ -167,19 +172,35 @@ export default class MainAirjoyDevices extends VueBase {
     this.updateDevices();
   }
 
-  updateDevices() {
-    this.loading = true;
+  mounted() {
+    this.intervalHandle = window.setInterval(() => {
+      this.updateDevices(false);
+    }, this.updateIntervalMilliseconds);
+  }
+
+  beforeDestroy() {
+    window.clearInterval(this.intervalHandle);
+  }
+
+  updateDevices(changeLoading = true) {
+    if (changeLoading) {
+      this.loading = true;
+    }
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     this.$api2.getAirjoyDevices(group, project)
         .then(items => {
-          this.loading = false;
+          if (changeLoading) {
+            this.loading = false;
+          }
           this.items = items;
         })
         .catch(error => {
-          this.loading = false;
+          if (changeLoading) {
+            this.loading = false;
+          }
           this.toastRequestFailure(error);
-        })
+        });
   }
 
   onClickAddDevice() {

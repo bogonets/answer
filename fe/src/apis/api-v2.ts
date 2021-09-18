@@ -539,7 +539,7 @@ export default class ApiV2 {
 
     getAirjoyDevice(group: string, project: string, device: string) {
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}`;
-        return this.get<AirjoySensorA>(url);
+        return this.get<AirjoyDeviceA>(url);
     }
 
     patchAirjoyDevice(group: string, project: string, device: string, body: UpdateAirjoyDeviceQ) {

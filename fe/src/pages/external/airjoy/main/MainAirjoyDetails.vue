@@ -9,16 +9,25 @@ en:
     co2: "CO2: {0}"
     humidity: "Humidity: {0}"
     temperature: "Temperature: {0}"
-    voc: "VOC: {0}"
+    voc: "VOC"
     service: "Service: {0}"
   labels:
     search: "You can filter by author or description."
     as_new: "New A/S"
+    delete: "Delete a device"
+  hints:
+    delete: "Please be careful! It cannot be recovered."
   headers:
     author: "Author"
     description: "Description"
     datetime: "Datetime"
     actions: "Actions"
+  tooltip:
+    id: "AIRJOY device ID"
+    fw: "Firmware version"
+  delete_confirm: "Are you sure? Are you really removing this device?"
+  cancel: "Cancel"
+  delete: "Delete"
 
 ko:
   groups: "Groups"
@@ -30,16 +39,25 @@ ko:
     co2: "이산화탄소: {0}"
     humidity: "습도: {0}"
     temperature: "온도: {0}"
-    voc: "VOC: {0}"
+    voc: "VOC"
     service: "Service: {0}"
   labels:
     search: "담당자 또는 기록을 필터링할 수 있습니다."
     as_new: "새로운 A/S 기록"
+    delete: "장치 제거"
+  hints:
+    delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
   headers:
     author: "담당자"
     description: "기록"
     datetime: "날짜"
     actions: "관리"
+  tooltip:
+    id: "AIRJOY 기기 ID"
+    fw: "펌웨어 버전"
+  delete_confirm: "이 장치를 정말 제거합니까?"
+  cancel: "취소"
+  delete: "제거"
 </i18n>
 
 <template>
@@ -48,25 +66,68 @@ ko:
     ></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
-    <v-row class="mt-4">
+    <v-row>
+      <v-col cols="12">
+        <v-toolbar flat>
+          <v-toolbar-title>
+            {{ item.name }}
+          </v-toolbar-title>
+
+          <v-spacer></v-spacer>
+
+          <v-progress-circular v-show="loading" color="primary" class="mr-2" :indeterminate="loading"
+          ></v-progress-circular>
+
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-chip class="mr-2" outlined color="primary" v-bind="attrs" v-on="on">
+                <v-icon left>mdi-identifier</v-icon>
+                {{ item.uid }}
+              </v-chip>
+            </template>
+            <span>{{ $t('tooltip.id') }}</span>
+          </v-tooltip>
+
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-chip v-bind="attrs" v-on="on">
+                <v-icon left>mdi-tag</v-icon>
+                {{ item.fw_ver }}
+              </v-chip>
+            </template>
+            <span>{{ $t('tooltip.fw') }}</span>
+          </v-tooltip>
+        </v-toolbar>
+      </v-col>
+    </v-row>
+
+    <v-divider></v-divider>
+
+    <v-row class="mt-2">
       <v-col cols="4">
         <div class="card" @click="onClickPm10">
           <v-icon left large>mdi-dots-hexagon</v-icon>
-          <span class="text--secondary text-subtitle-2">{{ $t('categories.pm10', [item.pm10]) }}</span>
+          <span class="text--secondary text-subtitle-2">
+            {{ $t('categories.pm10', [item.pm10]) }}
+          </span>
         </div>
       </v-col>
 
       <v-col cols="4">
         <div class="card" @click="onClickPm2_5">
           <v-icon left large>mdi-dots-horizontal</v-icon>
-          <span class="text--secondary text-subtitle-2">{{ $t('categories.pm2_5', [item.pm2_5]) }}</span>
+          <span class="text--secondary text-subtitle-2">
+            {{ $t('categories.pm2_5', [item.pm2_5]) }}
+          </span>
         </div>
       </v-col>
 
       <v-col cols="4">
         <div class="card" @click="onClickCo2">
           <v-icon left large>mdi-molecule-co2</v-icon>
-          <span class="text--secondary text-subtitle-2">{{ $t('categories.co2', [item.co2]) }}</span>
+          <span class="text--secondary text-subtitle-2">
+            {{ $t('categories.co2', [item.co2]) }}
+          </span>
         </div>
       </v-col>
     </v-row>
@@ -75,23 +136,29 @@ ko:
       <v-col cols="4">
         <div class="card" @click="onClickHumidity">
           <v-icon left large>mdi-water</v-icon>
-          <span class="text--secondary text-subtitle-2">{{ $t('categories.humidity', [item.humidity]) }}</span>
+          <span class="text--secondary text-subtitle-2">
+            {{ $t('categories.humidity', [item.humidity]) }}
+          </span>
         </div>
       </v-col>
 
       <v-col cols="4">
         <div class="card" @click="onClickTemperature">
           <v-icon left large>mdi-thermometer</v-icon>
-          <span class="text--secondary text-subtitle-2">{{ $t('categories.temperature', [item.temperature]) }}</span>
+          <span class="text--secondary text-subtitle-2">
+            {{ $t('categories.temperature', [item.temperature]) }}
+          </span>
         </div>
       </v-col>
 
       <v-col cols="4">
         <div class="card" @click="onClickService">
-          <v-icon left large>mdi-wrench</v-icon>
-          <span class="text--secondary text-subtitle-2">{{
-              $t('categories.service', [item.as_count])
-            }}</span>
+          <span class="text--secondary text-h6 font-weight-bold">
+            {{ $t('categories.voc') }}
+          </span>
+          <span class="text--secondary text-subtitle-2">
+            {{ item.voc }}
+          </span>
         </div>
       </v-col>
     </v-row>
@@ -165,11 +232,53 @@ ko:
       </v-col>
     </v-row>
 
+    <v-divider class="my-4"></v-divider>
+
+    <v-alert outlined prominent type="error" class="ma-4">
+      <v-row align="center" class="pl-4">
+        <v-col>
+          <v-row>
+            <h6 class="text-h6">{{ $t('labels.delete') }}</h6>
+          </v-row>
+          <v-row>
+            <span class="text-body-2">{{ $t('hints.delete') }}</span>
+          </v-row>
+        </v-col>
+        <v-col class="shrink">
+          <v-btn color="error" @click.stop="onClickDelete">
+            {{ $t('delete') }}
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-alert>
+
+    <!-- Delete dialog. -->
+    <v-dialog v-model="showDeleteDialog" max-width="320">
+      <v-card>
+        <v-card-title class="text-h5 error--text">
+          {{ $t('labels.delete') }}
+        </v-card-title>
+        <v-card-text>
+          {{ $t('delete_confirm') }}
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="onClickDeleteCancel">
+            {{ $t('cancel') }}
+          </v-btn>
+          <v-btn :loading="loadingDelete" color="error" @click="onClickDeleteOk">
+            {{ $t('delete') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </v-container>
 </template>
 
-<script lang='ts'>
-import {Component} from 'vue-property-decorator';
+<script lang="ts">
+import {Component, Emit, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import VueApexCharts from 'vue-apexcharts';
@@ -181,9 +290,11 @@ import {
   CATEGORY_TEMPERATURE,
   createEmptyAirjoyDeviceA
 } from '@/packet/airjoy';
+import AirjoyFanSpeedGroup from '@/pages/external/airjoy/components/AirjoyFanSpeedGroup.vue';
 
 @Component({
   components: {
+    AirjoyFanSpeedGroup,
     ToolbarBreadcrumbs,
     VueApexCharts,
   }
@@ -220,7 +331,46 @@ export default class MainAirjoyDetails extends VueBase {
     },
   ];
 
+  @Prop({type: Number, default: 1000})
+  readonly updateIntervalMilliseconds!: number;
+
+  loading = false;
   item = createEmptyAirjoyDeviceA();
+
+  intervalHandle = -1;
+
+  showDeleteDialog = false;
+  loadingDelete = false;
+
+  created() {
+    this.updateDevice();
+  }
+
+  mounted() {
+    this.intervalHandle = window.setInterval(() => {
+      this.updateDevice();
+    }, this.updateIntervalMilliseconds);
+  }
+
+  beforeDestroy() {
+    window.clearInterval(this.intervalHandle);
+  }
+
+  updateDevice() {
+    this.loading = true;
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    this.$api2.getAirjoyDevice(group, project, device)
+        .then(item => {
+          this.loading = false;
+          this.item = item;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
 
   onClickPm10() {
     this.moveToMainAirjoyChart(`${this.item.uid}`, CATEGORY_PM10);
@@ -245,6 +395,32 @@ export default class MainAirjoyDetails extends VueBase {
   onClickService() {
     this.moveToMainAirjoyService(`${this.item.uid}`);
   }
+
+  onClickDelete() {
+    this.showDeleteDialog = true;
+  }
+
+  onClickDeleteCancel() {
+    this.showDeleteDialog = false;
+  }
+
+  onClickDeleteOk() {
+    this.loadingDelete = true;
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    this.$api2.deleteAirjoyDevice(group, project, device)
+        .then(() => {
+          this.showDeleteDialog = false;
+          this.loadingDelete = false;
+          this.moveToMainAirjoyDevices();
+          this.toastRequestSuccess();
+        })
+        .catch(error => {
+          this.loadingDelete = false;
+          this.toastRequestFailure(error);
+        });
+  }
 }
 </script>
 
@@ -258,6 +434,8 @@ export default class MainAirjoyDetails extends VueBase {
   justify-content: center;
   align-content: center;
   align-items: center;
+
+  height: 120px;
 
   padding: 24px;
   border-radius: 12px;
