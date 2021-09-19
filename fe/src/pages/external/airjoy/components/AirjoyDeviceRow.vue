@@ -42,7 +42,6 @@ en:
     manual: "Manual Mode"
     unknown: "Unknown Mode"
   timer:
-    cancel: "Cancel"
     off: "Off"
     one: "1h"
     two: "2h"
@@ -93,7 +92,6 @@ ko:
     manual: "수동 모드 입니다"
     unknown: "알 수 없는 모드 입니다"
   timer:
-    cancel: "예약을 취소합니다"
     off: "예약이 설정되어 있지 않습니다"
     one: "1시간"
     two: "2시간"
@@ -270,7 +268,7 @@ ko:
           <span>{{ modeDescription }}</span>
         </v-tooltip>
 
-        <v-menu class="button-group" offset-y>
+        <v-menu offset-y>
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip top>
               <template v-slot:activator="{ on: tooltip }">
@@ -317,7 +315,7 @@ ko:
           <span>{{ sleepDescription }}</span>
         </v-tooltip>
 
-        <v-menu class="button-group" offset-y>
+        <v-menu offset-y>
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip top>
               <template v-slot:activator="{ on: tooltip }">

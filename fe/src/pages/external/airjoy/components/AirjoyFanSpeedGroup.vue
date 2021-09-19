@@ -124,6 +124,8 @@ $edge-rounded-inside: $edge-rounded - 1px;
   flex-direction: row;
   flex-wrap: nowrap;
 
+  border-radius: $edge-rounded;
+
   .fan-button-group--left {
     border-radius: $edge-rounded-inside 0 0 $edge-rounded-inside;
     border-width: 1px 0 1px 1px;

@@ -9,12 +9,12 @@ import MainAirjoySummary from '@/pages/external/airjoy/main/MainAirjoySummary.vu
 
 export const mainAirjoyChildren = [
     {
-        path: ':group/:project/airjoy/chart/:airjoy',
+        path: ':group/:project/airjoy/chart/:device',
         component: MainAirjoyChart,
         name: mainAirjoyNames.mainAirjoyChart,
     },
     {
-        path: ':group/:project/airjoy/details/:airjoy',
+        path: ':group/:project/airjoy/details/:device',
         component: MainAirjoyDetails,
         name: mainAirjoyNames.mainAirjoyDetails,
     },
@@ -29,7 +29,7 @@ export const mainAirjoyChildren = [
         name: mainAirjoyNames.mainAirjoyLive,
     },
     {
-        path: ':group/:project/airjoy/service/:airjoy',
+        path: ':group/:project/airjoy/service/:device',
         component: MainAirjoyService,
         name: mainAirjoyNames.mainAirjoyService,
     },

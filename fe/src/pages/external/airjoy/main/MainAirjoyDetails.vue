@@ -5,6 +5,40 @@ en:
   groups: "Groups"
   devices: "Devices"
   details: "Details"
+  filter_reset: "Filter Reset"
+  power:
+    on: "Power ON"
+    off: "Power OFF"
+  mode:
+    auto: "Auto Mode"
+    manual: "Manual Mode"
+    unknown: "Unknown Mode"
+  fan:
+    normal: "Normal"
+    weak: "Weak"
+    medium: "Medium"
+    high: "High"
+    auto: "Auto"
+    sleep: "Sleep"
+    unknown: "Unknown"
+  lock:
+    lock: "Lock"
+    unlock: "Unlock"
+    unknown: "Unknown"
+  sleep:
+    awake: "Awake"
+    sleep: "Sleep"
+    unknown: "Unknown"
+  timer:
+    off: "Off"
+    one: "1h"
+    two: "2h"
+    four: "4h"
+    eight: "8h"
+    unknown: "Unknown"
+  uv:
+    normal: "Normal"
+    alarm: "Alarm"
   categories:
     pm10: "PM10: {0}"
     pm2_5: "PM2.5: {0}"
@@ -13,6 +47,7 @@ en:
     temperature: "Temperature: {0}"
     voc: "VOC"
     service: "Service: {0}"
+    filter_life: "Filter Life: {0}"
   labels:
     search: "You can filter by author or description."
     as_new: "New A/S"
@@ -24,9 +59,35 @@ en:
     description: "Description"
     datetime: "Datetime"
     actions: "Actions"
+  filter:
+    normal: "Filter Normal"
+    reset: "Filter Reset"
+    exchange: "Filter Exchange"
+    unknown: "Filter Unknown"
   tooltip:
+    power:
+      on: "Click the button to power off"
+      off: "Click the button to power on"
+    mode:
+      auto: "Click the button to switch to manual mode"
+      manual: " Click the button to switch to automatic mode"
+    lock:
+      lock: "Click the button to lock"
+      unlock: "Click the button to unlock"
+      unknown: "Unknown lock status"
+    sleep:
+      awake: "Click the button to sleep state"
+      sleep: "Click the button to awake state"
+      unknown: "Unknown sleep state"
+    filter_reset: "Click the button to reset the remaining time of the filter"
+    fan: "Click the button to change the fan speed."
+    timer: "Click the button to set the timer"
     id: "AIRJOY device ID"
     fw: "Firmware version"
+  time_unit:
+    minutes: "{0}Minutes"
+    hours : "{0}Hours"
+    days: "{0}Days"
   delete_confirm: "Are you sure? Are you really removing this device?"
   cancel: "Cancel"
   delete: "Delete"
@@ -34,9 +95,43 @@ en:
 ko:
   online: "네트워크 연결이 정상 상태 입니다"
   offline: "네트워크 연결이 끊어졌습니다"
-  groups: "Groups"
-  devices: "Devices"
-  details: "Details"
+  groups: "그룹"
+  devices: "장치"
+  details: "상세"
+  filter_reset: "필터 리셋"
+  power:
+    on: "전원 켜짐"
+    off: "전원 꺼짐"
+  mode:
+    auto: "자동 모드"
+    manual: "수동 모드"
+    unknown: "알수 없음"
+  fan:
+    normal: "팬"
+    weak: "약"
+    medium: "중"
+    high: "강"
+    auto: "자동"
+    sleep: "잠자기"
+    unknown: "알수 없음"
+  lock:
+    lock: "잠금 상태"
+    unlock: "잠금 해제"
+    unknown: "알수 없음"
+  sleep:
+    awake: "슬립 해제"
+    sleep: "슬립 모드"
+    unknown: "알수 없음"
+  timer:
+    off: "예약 없음"
+    one: "1시간"
+    two: "2시간"
+    four: "4시간"
+    eight: "8시간"
+    unknown: "알수 없음"
+  uv:
+    normal: "UV 알람이 꺼져있습니다"
+    alarm: "UV 알람이 켜져있습니다"
   categories:
     pm10: "미세먼지: {0}"
     pm2_5: "초미세먼지: {0}"
@@ -44,7 +139,8 @@ ko:
     humidity: "습도: {0}"
     temperature: "온도: {0}"
     voc: "VOC"
-    service: "Service: {0}"
+    service: "서비스: {0}"
+    filter_life: "필터 수명: {0}"
   labels:
     search: "담당자 또는 기록을 필터링할 수 있습니다."
     as_new: "새로운 A/S 기록"
@@ -56,9 +152,35 @@ ko:
     description: "기록"
     datetime: "날짜"
     actions: "관리"
+  filter:
+    normal: "필터 정상"
+    reset: "필터 시간 초기화"
+    exchange: "필터 교체"
+    unknown: "알수 없음"
   tooltip:
+    power:
+      on: "버튼을 클릭하여 전원을 끕니다"
+      off: "버튼을 클릭하여 전원을 켭니다"
+    mode:
+      auto: "버튼을 클릭하여 수동 모드로 전환합니다"
+      manual: "버튼을 클릭하여 자동 모드로 전환합니다"
+    lock:
+      lock: "버튼을 클릭하여 잠금을 해제합니다"
+      unlock: "버튼을 클릭하여 잠급니다"
+      unknown: "알 수 없는 잠금 상태 입니다"
+    sleep:
+      awake: "버튼을 클릭하여 잠자기 상태로 전환합니다"
+      sleep: "버튼을 클릭하여 깨어납니다"
+      unknown: "알 수 없는 슬립 상태"
+    filter_reset: "버튼을 클릭하여 필터의 남은 시간을 초기화 합니다"
+    fan: "버튼을 클릭하여 팬 속도를 조절할 수 있습니다"
+    timer: "버튼을 클릭하여 타이머를 설정합니다"
     id: "AIRJOY 기기 ID"
     fw: "펌웨어 버전"
+  time_unit:
+    minutes: "{0}분"
+    hours : "{0}시간"
+    days: "{0}일"
   delete_confirm: "이 장치를 정말 제거합니까?"
   cancel: "취소"
   delete: "제거"
@@ -73,14 +195,60 @@ ko:
     <v-row>
       <v-col cols="12">
         <v-toolbar flat>
+
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                  class="mr-3"
+                  fab
+                  small
+                  elevation="0"
+                  :color="powerColor"
+                  v-bind="attrs"
+                  v-on="on"
+              >
+                <v-icon>mdi-power</v-icon>
+              </v-btn>
+            </template>
+            <span>{{ powerTooltip }}</span>
+          </v-tooltip>
+
           <v-toolbar-title>
             {{ item.name }}
           </v-toolbar-title>
 
           <v-spacer></v-spacer>
 
-          <v-progress-circular v-show="loading" color="primary" class="mr-2" :indeterminate="loading"
+          <v-progress-circular
+              v-show="loading"
+              color="primary"
+              class="mr-2"
+              :indeterminate="loading"
           ></v-progress-circular>
+
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                  class="mr-2"
+                  :color="uvLedColor"
+                  v-bind="attrs"
+                  v-on="on"
+              >mdi-weather-sunny</v-icon>
+            </template>
+            <span>{{ uvLedDescription }}</span>
+          </v-tooltip>
+
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                  class="mr-2"
+                  :color="onlineColor"
+                  v-bind="attrs"
+                  v-on="on"
+              >{{ onlineIcon }}</v-icon>
+            </template>
+            <span>{{ onlineDescription }}</span>
+          </v-tooltip>
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -110,7 +278,7 @@ ko:
     <v-row class="mt-2">
       <v-col cols="4">
         <div v-ripple class="card" @click="onClickPm10">
-          <v-icon left large>mdi-dots-hexagon</v-icon>
+          <v-icon large>mdi-dots-hexagon</v-icon>
           <span class="text--secondary text-subtitle-2">
             {{ $t('categories.pm10', [item.pm10]) }}
           </span>
@@ -119,7 +287,7 @@ ko:
 
       <v-col cols="4">
         <div v-ripple class="card" @click="onClickPm2_5">
-          <v-icon left large>mdi-dots-horizontal</v-icon>
+          <v-icon large>mdi-dots-horizontal</v-icon>
           <span class="text--secondary text-subtitle-2">
             {{ $t('categories.pm2_5', [item.pm2_5]) }}
           </span>
@@ -128,7 +296,7 @@ ko:
 
       <v-col cols="4">
         <div v-ripple class="card" @click="onClickCo2">
-          <v-icon left large>mdi-molecule-co2</v-icon>
+          <v-icon large>mdi-molecule-co2</v-icon>
           <span class="text--secondary text-subtitle-2">
             {{ $t('categories.co2', [item.co2]) }}
           </span>
@@ -139,7 +307,7 @@ ko:
     <v-row>
       <v-col cols="4">
         <div v-ripple class="card" @click="onClickHumidity">
-          <v-icon left large>mdi-water</v-icon>
+          <v-icon large>mdi-water</v-icon>
           <span class="text--secondary text-subtitle-2">
             {{ $t('categories.humidity', [item.humidity]) }}
           </span>
@@ -148,7 +316,7 @@ ko:
 
       <v-col cols="4">
         <div v-ripple class="card" @click="onClickTemperature">
-          <v-icon left large>mdi-thermometer</v-icon>
+          <v-icon large>mdi-thermometer</v-icon>
           <span class="text--secondary text-subtitle-2">
             {{ $t('categories.temperature', [item.temperature]) }}
           </span>
@@ -156,7 +324,7 @@ ko:
       </v-col>
 
       <v-col cols="4">
-        <div v-ripple class="card" @click="onClickService">
+        <div v-ripple class="card" @click="onClickVoc">
           <span class="text--secondary text-h6 font-weight-bold">
             {{ $t('categories.voc') }}
           </span>
@@ -167,91 +335,141 @@ ko:
       </v-col>
     </v-row>
 
-<!--    <v-list>-->
-<!--      <v-list-item @click.stop="power">-->
-<!--        <v-list-item-icon>-->
-<!--          <v-icon>mdi-power</v-icon>-->
-<!--        </v-list-item-icon>-->
-<!--        <v-list-item-title>-->
-<!--          {{ $t('power') }}-->
-<!--        </v-list-item-title>-->
-<!--      </v-list-item>-->
-<!--    </v-list>-->
-
     <v-row>
-      <v-col cols="2">
-        <div v-ripple class="card elevation-2 green">
-          <v-icon large>mdi-power</v-icon>
-          <span class="text--secondary text-subtitle-2">POWER</span>
+      <v-col cols="4">
+        <div v-ripple class="card">
+          <v-icon large>{{ filterIcon }}</v-icon>
+          <span class="text--secondary text-subtitle-2">
+            {{ filterLabel }}
+          </span>
         </div>
       </v-col>
 
-      <v-col cols="2">
-        <div v-ripple class="card elevation-2 orange accent-4">
-          <v-icon large>mdi-weather-sunny</v-icon>
-          <span class="text--secondary text-subtitle-2">UV</span>
+      <v-col cols="4">
+        <div v-ripple class="card">
+          <v-icon large>mdi-heart-pulse</v-icon>
+          <span class="text--secondary text-subtitle-2">
+            {{ $t('categories.filter_life', [filterLifeText]) }}
+          </span>
         </div>
       </v-col>
 
-      <v-col cols="2">
-
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <div v-if="item.online" v-ripple class="card elevation-2 green" v-bind="attrs" v-on="on">
-              <v-icon large>mdi-lan-connect</v-icon>
-              <span class="text--secondary text-subtitle-2">ONLINE</span>
-            </div>
-            <div v-else v-ripple class="card elevation-2 red" v-bind="attrs" v-on="on">
-              <v-icon large>mdi-lan-disconnect</v-icon>
-              <span class="text--secondary text-subtitle-2">OFFLINE</span>
-            </div>
-          </template>
-          <span>{{ onlineDescription }}</span>
-        </v-tooltip>
-      </v-col>
-
-      <v-col cols="2">
-        <div v-ripple class="card elevation-2">
-          <v-icon large>mdi-alpha-a-circle-outline</v-icon>
-          <span class="text--secondary text-subtitle-2">AUTO</span>
-        </div>
-      </v-col>
-
-      <v-col cols="2">
-        <div v-ripple class="card elevation-2">
-          <v-icon large>mdi-lock-open-variant</v-icon>
-          <span class="text--secondary text-subtitle-2">UNLOCK</span>
-        </div>
-      </v-col>
-
-      <v-col cols="2">
-        <div v-ripple class="card elevation-2">
-          <v-icon large>mdi-sleep</v-icon>
-          <span class="text--secondary text-subtitle-2">SLEEP</span>
+      <v-col cols="4">
+        <div v-ripple class="card" @click="onClickService">
+          <v-icon large>mdi-tools</v-icon>
+          <span class="text--secondary text-subtitle-2">
+            {{ $t('categories.service', [item.as_count]) }}
+          </span>
         </div>
       </v-col>
     </v-row>
 
+    <v-divider class="my-4"></v-divider>
+
     <v-row>
       <v-col cols="2">
-        <div v-ripple class="card elevation-2">
-          <v-icon large>mdi-air-filter</v-icon>
-          <span class="text--secondary text-subtitle-2">RESET</span>
-        </div>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <div v-ripple class="card elevation-2" v-bind="attrs" v-on="on">
+              <v-icon large>{{ modeIcon }}</v-icon>
+              <span class="text--secondary text-subtitle-2">
+                {{ modeLabel }}
+              </span>
+            </div>
+          </template>
+          <span>{{ modeTooltip }}</span>
+        </v-tooltip>
       </v-col>
 
       <v-col cols="2">
-        <div v-ripple class="card elevation-2">
-          <v-icon large>mdi-fan-auto</v-icon>
-          <span class="text--secondary text-subtitle-2">AUTO</span>
-        </div>
+        <v-menu offset-y>
+          <template v-slot:activator="{ on: menu, attrs }">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on: tooltip }">
+                <div v-ripple class="card elevation-2" v-bind="attrs" v-on="{...tooltip, ...menu}">
+                  <v-icon large>{{ fanIcon }}</v-icon>
+                  <span class="text--secondary text-subtitle-2">
+                              {{ fanLabel }}
+                            </span>
+                </div>
+              </template>
+              <span>{{ $t('tooltip.fan') }}</span>
+            </v-tooltip>
+          </template>
+
+          <airjoy-fan-speed-group
+              @click:fan-weak="onClickFanWeak"
+              @click:fan-medium="onClickFanMedium"
+              @click:fan-high="onClickFanHigh"
+          >
+          </airjoy-fan-speed-group>
+        </v-menu>
       </v-col>
 
       <v-col cols="2">
-        <div v-ripple class="card elevation-2">
-          <v-icon large>mdi-timer-off-outline</v-icon>
-          <span class="text--secondary text-subtitle-2">OFF</span>
-        </div>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <div v-ripple class="card elevation-2" v-bind="attrs" v-on="on">
+              <v-icon large>{{ lockIcon }}</v-icon>
+              <span class="text--secondary text-subtitle-2">
+                {{ lockLabel }}
+              </span>
+            </div>
+          </template>
+          <span>{{ lockTooltip }}</span>
+        </v-tooltip>
+      </v-col>
+
+      <v-col cols="2">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <div v-ripple class="card elevation-2" v-bind="attrs" v-on="on">
+              <v-icon large>mdi-cached</v-icon>
+              <span class="text--secondary text-subtitle-2">
+                {{ $t('filter_reset') }}
+              </span>
+            </div>
+          </template>
+          <span>{{ $t('tooltip.filter_reset') }}</span>
+        </v-tooltip>
+      </v-col>
+
+      <v-col cols="2">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <div v-ripple class="card elevation-2" v-bind="attrs" v-on="on">
+              <v-icon large>{{ sleepIcon }}</v-icon>
+              <span class="text--secondary text-subtitle-2">
+                {{ sleepLabel }}
+              </span>
+            </div>
+          </template>
+          <span>{{ sleepTooltip }}</span>
+        </v-tooltip>
+      </v-col>
+
+      <v-col cols="2">
+        <v-menu offset-y>
+          <template v-slot:activator="{ on: menu, attrs }">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on: tooltip }">
+                <div v-ripple class="card elevation-2" v-bind="attrs" v-on="{...tooltip, ...menu}">
+                  <v-icon large>{{ timerIcon }}</v-icon>
+                  <span class="text--secondary text-subtitle-2">{{ timerLabel }}</span>
+                </div>
+              </template>
+              <span>{{ $t('tooltip.timer') }}</span>
+            </v-tooltip>
+          </template>
+
+          <airjoy-timer-group
+              @click:timer-off="onClickTimerOff"
+              @click:timer-one="onClickTimerOne"
+              @click:timer-two="onClickTimerTwo"
+              @click:timer-four="onClickTimerFour"
+              @click:timer-eight="onClickTimerEight"
+          ></airjoy-timer-group>
+        </v-menu>
       </v-col>
     </v-row>
 
@@ -311,13 +529,38 @@ import {
   CATEGORY_CO2,
   CATEGORY_HUMIDITY,
   CATEGORY_TEMPERATURE,
+  CATEGORY_VOC,
   createEmptyAirjoyDeviceA
 } from '@/packet/airjoy';
 import AirjoyFanSpeedGroup from '@/pages/external/airjoy/components/AirjoyFanSpeedGroup.vue';
+import AirjoyTimerGroup from '@/pages/external/airjoy/components/AirjoyTimerGroup.vue';
+
+const FILTER_STATUS_NORMAL = 0;
+const FILTER_STATUS_RESET = 1;
+const FILTER_STATUS_EXCHANGE = 2;
+
+const FILTER_LIFE_MINUTES_UNIT = 10;
+
+const MODE_MANUAL = 0;
+const MODE_AUTO = 0;
+
+const FAN_CONTROL_NORMAL = 0;
+const FAN_CONTROL_WEAK = 1;
+const FAN_CONTROL_MEDIUM = 2;
+const FAN_CONTROL_HIGH = 3;
+const FAN_CONTROL_AUTO = 4;
+const FAN_CONTROL_SLEEP = 5;
+
+const UNLOCK = 0;
+const LOCK = 1;
+
+const AWAKE = 0;
+const SLEEP = 1;
 
 @Component({
   components: {
     AirjoyFanSpeedGroup,
+    AirjoyTimerGroup,
     ToolbarBreadcrumbs,
     VueApexCharts,
   }
@@ -395,12 +638,299 @@ export default class MainAirjoyDetails extends VueBase {
         });
   }
 
+  get filterColor() {
+    switch (this.item.filter) {
+      case FILTER_STATUS_NORMAL:
+        return '';  // 'light-green darken-4';
+      case FILTER_STATUS_RESET:
+        return 'yellow darken-4';
+      case FILTER_STATUS_EXCHANGE:
+        return 'red';
+      default:
+        return 'blue-grey';
+    }
+  }
+
+  get filterIcon() {
+    switch (this.item.filter) {
+      case FILTER_STATUS_NORMAL:
+        return 'mdi-air-filter';
+      case FILTER_STATUS_RESET:
+        return 'mdi-alarm';
+      case FILTER_STATUS_EXCHANGE:
+        return 'mdi-cached';
+      default:
+        return 'mdi-help';
+    }
+  }
+
+  get filterLabel() {
+    switch (this.item.filter) {
+      case FILTER_STATUS_NORMAL:
+        return this.$t('filter.normal');
+      case FILTER_STATUS_RESET:
+        return this.$t('filter.reset');
+      case FILTER_STATUS_EXCHANGE:
+        return this.$t('filter.exchange');
+      default:
+        return this.$t('filter.unknown');
+    }
+  }
+
+  get filterLifeText() {
+    const minutes = this.item.filter_life * FILTER_LIFE_MINUTES_UNIT;
+    if (minutes < 60) {
+      return this.$t('time_unit.minutes', [minutes])
+    }
+    if (minutes < (60*24)) {
+      return this.$t('time_unit.hours', [Math.ceil(minutes/60)])
+    }
+    return this.$t('time_unit.days', [Math.ceil(minutes/(60*24))])
+  }
+
+  get powerColor() {
+    if (this.item.power_state) {
+      return 'green';
+    } else {
+      return 'red';
+    }
+  }
+
+  get powerLabel() {
+    if (this.item.power_state) {
+      return this.$t('power.on');
+    } else {
+      return this.$t('power.off');
+    }
+  }
+
+  get powerTooltip() {
+    if (this.item.power_state) {
+      return this.$t('tooltip.power.on');
+    } else {
+      return this.$t('tooltip.power.off');
+    }
+  }
+
+  get modeIcon() {
+    switch (this.item.mode) {
+      case MODE_MANUAL:
+        return 'mdi-alpha-m-circle-outline';
+      case MODE_AUTO:
+        return 'mdi-alpha-a-circle-outline';
+      default:
+        return 'mdi-help-circle-outline';
+    }
+  }
+
+  get modeLabel() {
+    switch (this.item.mode) {
+      case MODE_MANUAL:
+        return this.$t('mode.manual');
+      case MODE_AUTO:
+        return this.$t('mode.auto');
+      default:
+        return this.$t('mode.unknown');
+    }
+  }
+
+  get modeTooltip() {
+    if (this.item.mode) {
+      return this.$t('tooltip.mode.auto');
+    } else {
+      return this.$t('tooltip.mode.manual');
+    }
+  }
+
+  get fanIcon() {
+    switch (this.item.fan_control) {
+      case FAN_CONTROL_NORMAL:
+        return 'mdi-fan';
+      case FAN_CONTROL_WEAK:
+        return 'mdi-fan-speed-1';
+      case FAN_CONTROL_MEDIUM:
+        return 'mdi-fan-speed-2';
+      case FAN_CONTROL_HIGH:
+        return 'mdi-fan-speed-3';
+      case FAN_CONTROL_AUTO:
+        return 'mdi-fan-auto';
+      case FAN_CONTROL_SLEEP:
+        return 'mdi-fan-off';
+      default:
+        return 'mdi-fan';
+    }
+  }
+
+  get fanLabel() {
+    switch (this.item.fan_control) {
+      case FAN_CONTROL_NORMAL:
+        return this.$t('fan.normal');
+      case FAN_CONTROL_WEAK:
+        return this.$t('fan.weak');
+      case FAN_CONTROL_MEDIUM:
+        return this.$t('fan.medium');
+      case FAN_CONTROL_HIGH:
+        return this.$t('fan.high');
+      case FAN_CONTROL_AUTO:
+        return this.$t('fan.auto');
+      case FAN_CONTROL_SLEEP:
+        return this.$t('fan.sleep');
+      default:
+        return this.$t('fan.unknown');
+    }
+  }
+
+  get lockIcon() {
+    switch (this.item.lock) {
+      case LOCK:
+        return 'mdi-lock';
+      case UNLOCK:
+        return 'mdi-lock-open-variant';
+      default:
+        return 'mdi-lock-alert';
+    }
+  }
+
+  get lockLabel() {
+    switch (this.item.lock) {
+      case LOCK:
+        return this.$t('lock.lock');
+      case UNLOCK:
+        return this.$t('lock.unlock');
+      default:
+        return this.$t('lock.unknown');
+    }
+  }
+
+  get lockTooltip() {
+    switch (this.item.lock) {
+      case LOCK:
+        return this.$t('tooltip.lock.lock');
+      case UNLOCK:
+        return this.$t('tooltip.lock.unlock');
+      default:
+        return this.$t('tooltip.lock.unknown');
+    }
+  }
+
+  get sleepIcon() {
+    switch (this.item.sleep_mode) {
+      case AWAKE:
+        return 'mdi-sleep-off';
+      case SLEEP:
+        return 'mdi-sleep';
+      default:
+        return 'mdi-help';
+    }
+  }
+
+  get sleepLabel() {
+    switch (this.item.sleep_mode) {
+      case AWAKE:
+        return this.$t('sleep.awake');
+      case SLEEP:
+        return this.$t('sleep.sleep');
+      default:
+        return this.$t('sleep.unknown');
+    }
+  }
+
+  get sleepTooltip() {
+    switch (this.item.sleep_mode) {
+      case AWAKE:
+        return this.$t('tooltip.sleep.awake');
+      case SLEEP:
+        return this.$t('tooltip.sleep.sleep');
+      default:
+        return this.$t('tooltip.sleep.unknown');
+    }
+  }
+
+  get timerIcon() {
+    switch (this.item.time_reservation) {
+      case 0:
+        return 'mdi-timer-off-outline';
+      case 1:
+        return 'mdi-clock-time-one-outline';
+      case 2:
+        return 'mdi-clock-time-two-outline';
+      case 3:
+        return 'mdi-clock-time-four-outline';
+      case 4:
+        return 'mdi-clock-time-eight-outline';
+      default:
+        return 'mdi-help';
+    }
+  }
+
+  get timerLabel() {
+    const time = this.item.time_reservation || 0;
+    switch (time) {
+      case 0:
+        return this.$t('timer.off');
+      case 1:
+        return this.$t('timer.one');
+      case 2:
+        return this.$t('timer.two');
+      case 3:
+        return this.$t('timer.four');
+      case 4:
+        return this.$t('timer.eight');
+      default:
+        return this.$t('timer.unknown');
+    }
+  }
+
+
+  get onlineColor() {
+    if (this.item.online) {
+      return 'green';
+    } else {
+      return 'red';
+    }
+  }
+
+  get onlineIcon() {
+    if (this.item.online) {
+      return 'mdi-lan-connect';
+    } else {
+      return 'mdi-lan-disconnect';
+    }
+  }
+
   get onlineDescription() {
     if (this.item.online) {
       return this.$t('online');
     } else {
       return this.$t('offline');
     }
+  }
+
+  get uvLedColor() {
+    if (this.item.uv_led) {
+      return 'grey';
+    } else {
+      return 'orange';
+    }
+  }
+
+  get uvLedIcon() {
+    if (this.item.uv_led) {
+      return 'mdi-lan-connect';
+    } else {
+      return 'mdi-lan-disconnect';
+    }
+  }
+
+  get uvLedDescription() {
+    if (this.item.uv_led) {
+      return this.$t('uv.normal');
+    } else {
+      return this.$t('uv.alarm');
+    }
+  }
+
+  onClickPower() {
   }
 
   onClickPm10() {
@@ -423,8 +953,36 @@ export default class MainAirjoyDetails extends VueBase {
     this.moveToMainAirjoyChart(`${this.item.uid}`, CATEGORY_TEMPERATURE);
   }
 
+  onClickVoc() {
+    this.moveToMainAirjoyChart(`${this.item.uid}`, CATEGORY_VOC);
+  }
+
   onClickService() {
     this.moveToMainAirjoyService(`${this.item.uid}`);
+  }
+
+  onClickFanWeak() {
+  }
+
+  onClickFanMedium() {
+  }
+
+  onClickFanHigh() {
+  }
+
+  onClickTimerOff() {
+  }
+
+  onClickTimerOne() {
+  }
+
+  onClickTimerTwo() {
+  }
+
+  onClickTimerFour() {
+  }
+
+  onClickTimerEight() {
   }
 
   onClickDelete() {
@@ -482,5 +1040,9 @@ export default class MainAirjoyDetails extends VueBase {
 
 .theme--dark.v-application .card {
   border-color: rgba(map-get($shades, 'white'), 0.2);
+}
+
+.v-menu__content {
+  box-shadow: none;
 }
 </style>
