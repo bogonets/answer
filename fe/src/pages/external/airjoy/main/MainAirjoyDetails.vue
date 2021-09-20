@@ -206,6 +206,7 @@ ko:
                   :color="powerColor"
                   v-bind="attrs"
                   v-on="on"
+                  @click="onClickPower"
               >
                 <v-icon>mdi-power</v-icon>
               </v-btn>
@@ -337,7 +338,7 @@ ko:
 
     <v-row>
       <v-col cols="4">
-        <div v-ripple class="card">
+        <div class="card">
           <v-icon large>{{ filterIcon }}</v-icon>
           <span class="text--secondary text-subtitle-2">
             {{ filterLabel }}
@@ -346,7 +347,7 @@ ko:
       </v-col>
 
       <v-col cols="4">
-        <div v-ripple class="card">
+        <div class="card">
           <v-icon large>mdi-heart-pulse</v-icon>
           <span class="text--secondary text-subtitle-2">
             {{ $t('categories.filter_life', [filterLifeText]) }}
@@ -370,7 +371,7 @@ ko:
       <v-col cols="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <div v-ripple class="card elevation-2" v-bind="attrs" v-on="on">
+            <div v-ripple class="card elevation-2" @click="onClickMode" v-bind="attrs" v-on="on">
               <v-icon large>{{ modeIcon }}</v-icon>
               <span class="text--secondary text-subtitle-2">
                 {{ modeLabel }}
@@ -382,7 +383,7 @@ ko:
       </v-col>
 
       <v-col cols="2">
-        <v-menu offset-y>
+        <v-menu offset-y v-model="showFanMenu">
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on: tooltip }">
@@ -409,7 +410,7 @@ ko:
       <v-col cols="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <div v-ripple class="card elevation-2" v-bind="attrs" v-on="on">
+            <div v-ripple class="card elevation-2" @click="onClickLock" v-bind="attrs" v-on="on">
               <v-icon large>{{ lockIcon }}</v-icon>
               <span class="text--secondary text-subtitle-2">
                 {{ lockLabel }}
@@ -423,7 +424,7 @@ ko:
       <v-col cols="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <div v-ripple class="card elevation-2" v-bind="attrs" v-on="on">
+            <div v-ripple class="card elevation-2" @click="onClickFilterReset" v-bind="attrs" v-on="on">
               <v-icon large>mdi-cached</v-icon>
               <span class="text--secondary text-subtitle-2">
                 {{ $t('filter_reset') }}
@@ -437,7 +438,7 @@ ko:
       <v-col cols="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <div v-ripple class="card elevation-2" v-bind="attrs" v-on="on">
+            <div v-ripple class="card elevation-2" @click="onClickSleep" v-bind="attrs" v-on="on">
               <v-icon large>{{ sleepIcon }}</v-icon>
               <span class="text--secondary text-subtitle-2">
                 {{ sleepLabel }}
@@ -449,7 +450,7 @@ ko:
       </v-col>
 
       <v-col cols="2">
-        <v-menu offset-y>
+        <v-menu offset-y v-model="showTimerMenu">
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on: tooltip }">
@@ -519,10 +520,11 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Emit, Prop} from 'vue-property-decorator';
+import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import VueApexCharts from 'vue-apexcharts';
+import type {AirjoyControlQ} from '@/packet/airjoy';
 import {
   CATEGORY_PM10,
   CATEGORY_PM2_5,
@@ -530,7 +532,7 @@ import {
   CATEGORY_HUMIDITY,
   CATEGORY_TEMPERATURE,
   CATEGORY_VOC,
-  createEmptyAirjoyDeviceA
+  createEmptyAirjoyDeviceA,
 } from '@/packet/airjoy';
 import AirjoyFanSpeedGroup from '@/pages/external/airjoy/components/AirjoyFanSpeedGroup.vue';
 import AirjoyTimerGroup from '@/pages/external/airjoy/components/AirjoyTimerGroup.vue';
@@ -541,8 +543,8 @@ const FILTER_STATUS_EXCHANGE = 2;
 
 const FILTER_LIFE_MINUTES_UNIT = 10;
 
-const MODE_MANUAL = 0;
 const MODE_AUTO = 0;
+const MODE_MANUAL = 1;
 
 const FAN_CONTROL_NORMAL = 0;
 const FAN_CONTROL_WEAK = 1;
@@ -556,6 +558,19 @@ const LOCK = 1;
 
 const AWAKE = 0;
 const SLEEP = 1;
+
+const POWER_STATE_OFF = 0;
+const POWER_STATE_ON = 1;
+
+export interface Control {
+  mode?: number;
+  power_state?: number;
+  fan_control?: number;
+  lock?: number;
+  filter_reset?: number;
+  sleep_mode?: number;
+  time_reservation?: number;
+}
 
 @Component({
   components: {
@@ -592,7 +607,7 @@ export default class MainAirjoyDetails extends VueBase {
       disabled: true,
     },
     {
-      text: this.$route.params.airjoy,
+      text: this.$route.params.device,
       disabled: true,
     },
   ];
@@ -602,6 +617,9 @@ export default class MainAirjoyDetails extends VueBase {
 
   loading = false;
   item = createEmptyAirjoyDeviceA();
+
+  showFanMenu = false;
+  showTimerMenu = false;
 
   intervalHandle = -1;
 
@@ -693,14 +711,6 @@ export default class MainAirjoyDetails extends VueBase {
       return 'green';
     } else {
       return 'red';
-    }
-  }
-
-  get powerLabel() {
-    if (this.item.power_state) {
-      return this.$t('power.on');
-    } else {
-      return this.$t('power.off');
     }
   }
 
@@ -914,14 +924,6 @@ export default class MainAirjoyDetails extends VueBase {
     }
   }
 
-  get uvLedIcon() {
-    if (this.item.uv_led) {
-      return 'mdi-lan-connect';
-    } else {
-      return 'mdi-lan-disconnect';
-    }
-  }
-
   get uvLedDescription() {
     if (this.item.uv_led) {
       return this.$t('uv.normal');
@@ -930,7 +932,41 @@ export default class MainAirjoyDetails extends VueBase {
     }
   }
 
+  controlDevice(state: Control) {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    this.loading = true;
+    const body = {
+      uid: Number.parseInt(device),
+      mode: state.mode ?? this.item.mode,
+      power_state: state.power_state ?? this.item.power_state,
+      fan_control: state.fan_control ?? this.item.fan_control,
+      lock: state.lock ?? this.item.lock,
+      filter_reset: state.filter_reset ?? 0,
+      sleep_mode: state.sleep_mode ?? this.item.sleep_mode,
+      time_reservation: state.time_reservation ?? this.item.time_reservation,
+    } as AirjoyControlQ;
+    this.$api2.postAirjoyControl(group, project, device, body)
+        .then(() => {
+          this.loading = false;
+          this.toastRequestSuccess();
+          this.updateDevice();
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
+
   onClickPower() {
+    let power_state;
+    if (this.item.power_state == POWER_STATE_ON) {
+      power_state = POWER_STATE_OFF;
+    } else {
+      power_state = POWER_STATE_ON;
+    }
+    this.controlDevice({power_state: power_state});
   }
 
   onClickPm10() {
@@ -957,32 +993,82 @@ export default class MainAirjoyDetails extends VueBase {
     this.moveToMainAirjoyChart(`${this.item.uid}`, CATEGORY_VOC);
   }
 
+  onClickMode() {
+    let mode;
+    if (this.item.mode == MODE_AUTO) {
+      mode = MODE_MANUAL;
+    } else {
+      mode = MODE_AUTO;
+    }
+    this.controlDevice({mode: mode});
+  }
+
   onClickService() {
     this.moveToMainAirjoyService(`${this.item.uid}`);
   }
 
   onClickFanWeak() {
+    this.showFanMenu = false;
+    this.controlDevice({fan_control: FAN_CONTROL_WEAK});
   }
 
   onClickFanMedium() {
+    this.showFanMenu = false;
+    this.controlDevice({fan_control: FAN_CONTROL_MEDIUM});
   }
 
   onClickFanHigh() {
+    this.showFanMenu = false;
+    this.controlDevice({fan_control: FAN_CONTROL_HIGH});
+  }
+
+  onClickLock() {
+    let lock;
+    if (this.item.lock == LOCK) {
+      lock = UNLOCK;
+    } else {
+      lock = LOCK;
+    }
+    this.controlDevice({lock: lock});
+  }
+
+  onClickFilterReset() {
+    this.controlDevice({filter_reset: 1});
+  }
+
+  onClickSleep() {
+    let sleep_mode;
+    if (this.item.sleep_mode == SLEEP) {
+      sleep_mode = AWAKE;
+    } else {
+      sleep_mode = SLEEP;
+    }
+    this.controlDevice({sleep_mode: sleep_mode});
   }
 
   onClickTimerOff() {
+    this.showTimerMenu = false;
+    this.controlDevice({time_reservation: 0});
   }
 
   onClickTimerOne() {
+    this.showTimerMenu = false;
+    this.controlDevice({time_reservation: 1});
   }
 
   onClickTimerTwo() {
+    this.showTimerMenu = false;
+    this.controlDevice({time_reservation: 2});
   }
 
   onClickTimerFour() {
+    this.showTimerMenu = false;
+    this.controlDevice({time_reservation: 3});
   }
 
   onClickTimerEight() {
+    this.showTimerMenu = false;
+    this.controlDevice({time_reservation: 4});
   }
 
   onClickDelete() {
