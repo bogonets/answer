@@ -235,7 +235,7 @@ ko:
 
           <v-tooltip v-if="item.as_count" bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" @click.stop="clickAs" v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" @click.stop="clickService" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-wrench</v-icon>
                 {{ item.as_count }}
               </v-chip>
@@ -267,7 +267,7 @@ ko:
           <span>{{ modeDescription }}</span>
         </v-tooltip>
 
-        <v-menu offset-y>
+        <v-menu offset-y v-model="showFanMenu">
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip top>
               <template v-slot:activator="{ on: tooltip }">
@@ -314,7 +314,7 @@ ko:
           <span>{{ sleepDescription }}</span>
         </v-tooltip>
 
-        <v-menu offset-y>
+        <v-menu offset-y v-model="showTimerMenu">
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip top>
               <template v-slot:activator="{ on: tooltip }">
@@ -384,6 +384,9 @@ export default class AirjoyDeviceRow extends VueBase {
 
   @Prop({type: Object, default: createEmptyAirjoyDeviceA})
   readonly item!: AirjoyDeviceA;
+
+  showFanMenu = false;
+  showTimerMenu = false;
 
   get powerColor() {
     if (this.item.power_state) {
@@ -670,8 +673,8 @@ export default class AirjoyDeviceRow extends VueBase {
     return this.item;
   }
 
-  @Emit('click:as')
-  clickAs() {
+  @Emit('click:service')
+  clickService() {
     return this.item;
   }
 
@@ -682,16 +685,19 @@ export default class AirjoyDeviceRow extends VueBase {
 
   @Emit('click:fan-weak')
   fanWeak() {
+    this.showFanMenu = false;
     return this.item;
   }
 
   @Emit('click:fan-medium')
   fanMedium() {
+    this.showFanMenu = false;
     return this.item;
   }
 
   @Emit('click:fan-high')
   fanHigh() {
+    this.showFanMenu = false;
     return this.item;
   }
 
@@ -712,26 +718,31 @@ export default class AirjoyDeviceRow extends VueBase {
 
   @Emit('click:timer-off')
   timerOff() {
+    this.showTimerMenu = false;
     return this.item;
   }
 
   @Emit('click:timer-one')
   timerOne() {
+    this.showTimerMenu = false;
     return this.item;
   }
 
   @Emit('click:timer-two')
   timerTwo() {
+    this.showTimerMenu = false;
     return this.item;
   }
 
   @Emit('click:timer-four')
   timerFour() {
+    this.showTimerMenu = false;
     return this.item;
   }
 
   @Emit('click:timer-eight')
   timerEight() {
+    this.showTimerMenu = false;
     return this.item;
   }
 }

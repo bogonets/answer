@@ -41,10 +41,26 @@ ko:
     <breadcrumb-main name="Live"></breadcrumb-main>
     <v-divider></v-divider>
 
+    <v-row class="my-4">
+      <v-col class="pb-0" cols="12">
+        <v-select
+            dense
+            rounded
+            outlined
+            hide-details
+            v-model="category"
+            :items="categories"
+            :label="$t('labels.category')"
+            @change="onChangeCategory"
+        ></v-select>
+      </v-col>
+    </v-row>
+
     <v-card class="mt-4 pt-4">
       <div class="mb-2 text--primary text-subtitle-2 text-center">
         {{ $t('title') }}
       </div>
+
       <vue-apex-charts
           type="line"
           height="350"
@@ -59,21 +75,6 @@ ko:
       <v-btn elevation="4" fab absolute :color="playColor" @click="onClickPlay">
         <v-icon>{{ playIcon }}</v-icon>
       </v-btn>
-    </v-row>
-
-    <v-row class="mt-12">
-      <v-col class="pb-0" cols="12">
-        <v-select
-            dense
-            rounded
-            outlined
-            hide-details
-            v-model="category"
-            :items="categories"
-            :label="$t('labels.category')"
-            @change="onChangeCategory"
-        ></v-select>
-      </v-col>
     </v-row>
 
   </v-container>

@@ -378,7 +378,7 @@ export default class MainAirjoyService extends VueBase {
         .then(() => {
           this.loadingAddDevice = false;
           this.showAddDialog = false;
-          this.updateServices(item.uid);
+          this.updateServices();
         })
         .catch(error => {
           this.loadingAddDevice = false;

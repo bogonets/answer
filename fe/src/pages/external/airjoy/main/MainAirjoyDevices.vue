@@ -65,7 +65,7 @@ ko:
             @click:humidity="onClickHumidity"
             @click:temperature="onClickTemperature"
             @click:voc="onClickVoc"
-            @click:as="onClickAs"
+            @click:service="onClickService"
             @click:mode="onClickMode"
             @click:fan-weak="onClickFanWeak"
             @click:fan-medium="onClickFanMedium"
@@ -73,11 +73,11 @@ ko:
             @click:lock="onClickLock"
             @click:filter="onClickFilter"
             @click:sleep="onClickSleep"
-            @click:time-off="onClickTimeOff"
-            @click:time-one="onClickTimeOne"
-            @click:time-two="onClickTimeTwo"
-            @click:time-four="onClickTimeFour"
-            @click:time-eight="onClickTimeEight"
+            @click:timer-off="onClickTimerOff"
+            @click:timer-one="onClickTimerOne"
+            @click:timer-two="onClickTimerTwo"
+            @click:timer-four="onClickTimerFour"
+            @click:timer-eight="onClickTimerEight"
         ></airjoy-device-row>
       </template>
 
@@ -118,8 +118,25 @@ import {
   CATEGORY_CO2,
   CATEGORY_HUMIDITY,
   CATEGORY_TEMPERATURE,
-  CATEGORY_VOC, CreateAirjoyDeviceQ,
+  CATEGORY_VOC, CreateAirjoyDeviceQ, AirjoyControlQ,
 } from '@/packet/airjoy';
+import {Control} from "@/pages/external/airjoy/main/MainAirjoyDetails.vue";
+
+const POWER_STATE_OFF = 0;
+const POWER_STATE_ON = 1;
+
+const MODE_AUTO = 0;
+const MODE_MANUAL = 1;
+
+const FAN_CONTROL_WEAK = 1;
+const FAN_CONTROL_MEDIUM = 2;
+const FAN_CONTROL_HIGH = 3;
+
+const UNLOCK = 0;
+const LOCK = 1;
+
+const AWAKE = 0;
+const SLEEP = 1;
 
 @Component({
   components: {
@@ -236,9 +253,6 @@ export default class MainAirjoyDevices extends VueBase {
     this.moveToMainAirjoyDetails(`${item.uid}`);
   }
 
-  onClickPower(item: AirjoyDeviceA) {
-  }
-
   onClickPm10(item: AirjoyDeviceA) {
     this.moveToMainAirjoyChart(`${item.uid}`, CATEGORY_PM10);
   }
@@ -263,43 +277,109 @@ export default class MainAirjoyDevices extends VueBase {
     this.moveToMainAirjoyChart(`${item.uid}`, CATEGORY_VOC);
   }
 
-  onClickAs(item: AirjoyDeviceA) {
+  onClickService(item: AirjoyDeviceA) {
+    this.moveToMainAirjoyService(`${item.uid}`);
+  }
+
+  controlDevice(item: AirjoyDeviceA, state: Control) {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    this.loading = true;
+    const body = {
+      uid: item.uid,
+      mode: state.mode ?? item.mode,
+      power_state: state.power_state ?? item.power_state,
+      fan_control: state.fan_control ?? item.fan_control,
+      lock: state.lock ?? item.lock,
+      filter_reset: state.filter_reset ?? 0,
+      sleep_mode: state.sleep_mode ?? item.sleep_mode,
+      time_reservation: state.time_reservation ?? item.time_reservation,
+    } as AirjoyControlQ;
+    this.$api2.postAirjoyControl(group, project, item.uid.toString(), body)
+        .then(() => {
+          this.loading = false;
+          this.toastRequestSuccess();
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
+
+  onClickPower(item: AirjoyDeviceA) {
+    let power_state;
+    if (item.power_state == POWER_STATE_ON) {
+      power_state = POWER_STATE_OFF;
+    } else {
+      power_state = POWER_STATE_ON;
+    }
+    this.controlDevice(item, {power_state: power_state});
   }
 
   onClickMode(item: AirjoyDeviceA) {
+    let mode;
+    if (item.mode == MODE_AUTO) {
+      mode = MODE_MANUAL;
+    } else {
+      mode = MODE_AUTO;
+    }
+    this.controlDevice(item, {mode: mode});
   }
 
   onClickFanWeak(item: AirjoyDeviceA) {
+    this.controlDevice(item, {fan_control: FAN_CONTROL_WEAK});
   }
 
   onClickFanMedium(item: AirjoyDeviceA) {
+    this.controlDevice(item, {fan_control: FAN_CONTROL_MEDIUM});
   }
 
   onClickFanHigh(item: AirjoyDeviceA) {
+    this.controlDevice(item, {fan_control: FAN_CONTROL_HIGH});
   }
 
   onClickLock(item: AirjoyDeviceA) {
+    let lock;
+    if (item.lock == LOCK) {
+      lock = UNLOCK;
+    } else {
+      lock = LOCK;
+    }
+    this.controlDevice(item, {lock: lock});
   }
 
   onClickFilter(item: AirjoyDeviceA) {
+    this.controlDevice(item, {filter_reset: 1});
   }
 
   onClickSleep(item: AirjoyDeviceA) {
+    let sleep_mode;
+    if (item.sleep_mode == SLEEP) {
+      sleep_mode = AWAKE;
+    } else {
+      sleep_mode = SLEEP;
+    }
+    this.controlDevice(item, {sleep_mode: sleep_mode});
   }
 
-  onClickTimeOff(item: AirjoyDeviceA) {
+  onClickTimerOff(item: AirjoyDeviceA) {
+    this.controlDevice(item, {time_reservation: 0});
   }
 
-  onClickTimeOne(item: AirjoyDeviceA) {
+  onClickTimerOne(item: AirjoyDeviceA) {
+    this.controlDevice(item, {time_reservation: 1});
   }
 
-  onClickTimeTwo(item: AirjoyDeviceA) {
+  onClickTimerTwo(item: AirjoyDeviceA) {
+    this.controlDevice(item, {time_reservation: 2});
   }
 
-  onClickTimeFour(item: AirjoyDeviceA) {
+  onClickTimerFour(item: AirjoyDeviceA) {
+    this.controlDevice(item, {time_reservation: 3});
   }
 
-  onClickTimeEight(item: AirjoyDeviceA) {
+  onClickTimerEight(item: AirjoyDeviceA) {
+    this.controlDevice(item, {time_reservation: 4});
   }
 }
 </script>
