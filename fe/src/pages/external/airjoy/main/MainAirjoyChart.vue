@@ -16,6 +16,14 @@ en:
     humidity: "Humidity"
     temperature: "Temperature"
     voc: "VOC"
+  msg:
+    empty_device: "Empty device"
+    empty_category: "Empty category"
+  range:
+    d90: "90d"
+    d30: "30d"
+    d7: "7d"
+    d1: "1d"
 
 ko:
   groups: "Groups"
@@ -34,6 +42,14 @@ ko:
     humidity: "습도"
     temperature: "온도"
     voc: "VOC"
+  msg:
+    empty_device: "Empty device"
+    empty_category: "Empty category"
+  range:
+    d90: "90일"
+    d30: "30일"
+    d7: "일주"
+    d1: "오늘"
 </i18n>
 
 <template>
@@ -49,9 +65,27 @@ ko:
             outlined
             hide-details
             v-model="device"
+            :loading="loadingDevices"
             :items="devices"
             :label="$t('labels.device')"
-        ></v-select>
+            @change="onChangeDevice"
+        >
+          <template v-slot:item="{ item }">
+            {{ item.name }}
+            <v-chip class="ml-2" x-small outlined color="primary">
+              <v-icon left>mdi-identifier</v-icon>
+              {{ item.uid }}
+            </v-chip>
+          </template>
+
+          <template v-slot:selection="{ item }">
+            {{ item.name }}
+            <v-chip class="ml-2" x-small outlined color="primary">
+              <v-icon left>mdi-identifier</v-icon>
+              {{ item.uid }}
+            </v-chip>
+          </template>
+        </v-select>
       </v-col>
     </v-row>
 
@@ -136,17 +170,17 @@ ko:
       <v-col class="d-flex flex-row align-center" cols="4">
         <v-spacer></v-spacer>
         <v-btn-toggle dense>
-          <v-btn>
-            3M
+          <v-btn @click="onClickRange90d">
+            {{ $t('range.d90') }}
           </v-btn>
-          <v-btn>
-            1M
+          <v-btn @click="onClickRange30d">
+            {{ $t('range.d30') }}
           </v-btn>
-          <v-btn>
-            1W
+          <v-btn @click="onClickRange7d">
+            {{ $t('range.d7') }}
           </v-btn>
-          <v-btn>
-            TODAY
+          <v-btn @click="onClickRange1d">
+            {{ $t('range.d1') }}
           </v-btn>
         </v-btn-toggle>
       </v-col>
@@ -172,6 +206,7 @@ import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import VueApexCharts from 'vue-apexcharts';
+import type {AirjoyDeviceA, AirjoySensorA} from '@/packet/airjoy';
 import {
   CATEGORY_PM10,
   CATEGORY_PM2_5,
@@ -179,18 +214,40 @@ import {
   CATEGORY_HUMIDITY,
   CATEGORY_TEMPERATURE,
   CATEGORY_VOC,
+  createEmptyAirjoyDeviceA,
 } from '@/packet/airjoy';
+import * as _ from 'lodash';
 
-export function today() {
-  const now = new Date(Date.now());
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
-  const day = now.getDate();
+export function dateToText(time: Date) {
+  const year = time.getFullYear();
+  const month = time.getMonth() + 1;
+  const day = time.getDate();
   const yearText = `${year}`.padStart(4, '0');
   const monthText = `${month}`.padStart(2, '0');
   const dayText = `${day}`.padStart(2, '0');
   return `${yearText}-${monthText}-${dayText}`;
 }
+
+export function today() {
+  return dateToText(new Date(Date.now()));
+}
+
+export function yesterday() {
+  const now = new Date(Date.now());
+  const start = new Date();
+  start.setDate(now.getDate() - 1);
+  return dateToText(start);
+}
+
+export function dateRange(days: number) {
+  const end = new Date(Date.now());
+  const start = new Date();
+  start.setDate(end.getDate() - days);
+  return [dateToText(start), dateToText(end)];
+}
+
+const UNKNOWN_DEVICE = '-';
+const CHUNK_SIZE = 10;
 
 @Component({
   components: {
@@ -236,7 +293,12 @@ export default class MainAirjoyChart extends VueBase {
     },
     chart: {
       height: 350,
-      type: 'candlestick',
+      type: 'rangeBar',
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false
+      }
     },
     title: {
       text: 'CandleStick Chart - Category X-axis',
@@ -263,96 +325,41 @@ export default class MainAirjoyChart extends VueBase {
     }
   };
 
-  series = [{
-    name: 'candle',
-    data: [
-      {
-        x: new Date(1538857800000),
-        y: [6593.86, 6604.28, 6586.57, 6600.01]
-      },
-      {
-        x: new Date(1538859600000),
-        y: [6601.81, 6603.21, 6592.78, 6596.25]
-      },
-      {
-        x: new Date(1538861400000),
-        y: [6596.25, 6604.2, 6590, 6602.99]
-      },
-      {
-        x: new Date(1538863200000),
-        y: [6602.99, 6606, 6584.99, 6587.81]
-      },
-      {
-        x: new Date(1538865000000),
-        y: [6587.81, 6595, 6583.27, 6591.96]
-      },
-      {
-        x: new Date(1538866800000),
-        y: [6591.97, 6596.07, 6585, 6588.39]
-      },
-      {
-        x: new Date(1538868600000),
-        y: [6587.6, 6598.21, 6587.6, 6594.27]
-      },
-      {
-        x: new Date(1538870400000),
-        y: [6596.44, 6601, 6590, 6596.55]
-      },
-      {
-        x: new Date(1538872200000),
-        y: [6598.91, 6605, 6596.61, 6600.02]
-      },
-      {
-        x: new Date(1538874000000),
-        y: [6600.55, 6605, 6589.14, 6593.01]
-      },
-      {
-        x: new Date(1538875800000),
-        y: [6593.15, 6605, 6592, 6603.06]
-      },
-      {
-        x: new Date(1538877600000),
-        y: [6603.07, 6604.5, 6599.09, 6603.89]
-      },
-      {
-        x: new Date(1538879400000),
-        y: [6604.44, 6604.44, 6600, 6603.5]
-      },
-      {
-        x: new Date(1538881200000),
-        y: [6603.5, 6603.99, 6597.5, 6603.86]
-      },
-      {
-        x: new Date(1538883000000),
-        y: [6603.85, 6605, 6600, 6604.07]
-      },
-      {
-        x: new Date(1538884800000),
-        y: [6604.98, 6606, 6604.07, 6606]
-      },
-    ]
-  }];
+  series = [];
 
   @Prop({type: Number, default: 40})
   readonly datePickerSize!: number;
 
-  device = '';
-  devices = ['100', '200', '300', '400']
+  loadingDevices = false;
+  device = createEmptyAirjoyDeviceA();
+  devices = [] as Array<AirjoyDeviceA>;
 
   showPeriodStartMenu = false;
-  periodStart = today();
+  periodStart = yesterday();
 
   showPeriodEndMenu = false;
   periodEnd = today();
 
   category = '';
 
+  loading = false;
+  items = [] as Array<AirjoySensorA>;
+
+  originalSeries = {
+    pm10: [],
+    pm2_5: [],
+    co2: [],
+    humidity: [],
+    temperature: [],
+    voc: [],
+  };
+
   created() {
-    const device = this.$route.params.airjoy;
-    const deviceIndex = this.devices.indexOf(device);
-    if (deviceIndex !== -1) {
-      this.device = device;
+    let uid = undefined;
+    if (!!this.$route.params.device && this.$route.params.device !== UNKNOWN_DEVICE) {
+      uid = Number.parseInt(this.$route.params.device);
     }
+    this.updateDevices(uid);
 
     const index = this.getCategoryIndex(this.$route.params.category);
     if (index !== -1) {
@@ -389,12 +396,167 @@ export default class MainAirjoyChart extends VueBase {
     }
   }
 
+  updateDevices(device?: number) {
+    this.loadingDevices = true;
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    this.$api2.getAirjoyDevices(group, project)
+        .then(items => {
+          this.loadingDevices = false;
+          this.devices = items;
+          if (typeof device !== 'undefined') {
+            this.device = this.devices.find(i => i.uid === device);
+          } else {
+            this.device = createEmptyAirjoyDeviceA();
+          }
+        })
+        .catch(error => {
+          this.loadingDevices = false;
+          this.toastRequestFailure(error);
+        });
+  }
+
+  updateChart() {
+    if (!this.device) {
+      return;
+    }
+
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.device.uid;
+    this.$api2.getAirjoyChart(group, project, device, this.periodStart, this.periodEnd)
+        .then(items => {
+          this.items = items;
+          this.toastRequestSuccess();
+          this.updateSeries();
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+        });
+  }
+
+  updateSeries() {
+    const originalSeries = {
+      pm10: [],
+      pm2_5: [],
+      co2: [],
+      humidity: [],
+      temperature: [],
+      voc: [],
+    };
+
+    for (const item of this.items) {
+      const time = new Date(item.time);
+      originalSeries.pm10.push({x: time, y: [item.pm10]});
+      originalSeries.pm2_5.push({x: time, y: [item.pm2_5]});
+      originalSeries.co2.push({x: time, y: [item.co2]});
+      originalSeries.humidity.push({x: time, y: [item.humidity]});
+      originalSeries.temperature.push({x: time, y: [item.temperature]});
+      originalSeries.voc.push({x: time, y: [item.voc]});
+    }
+    this.originalSeries = originalSeries;
+
+    const dataPm10 = [];
+    const dataPm2_5 = [];
+    const dataCo2 = [];
+    const dataHumidity = [];
+    const dataTemperature = [];
+    const dataVoc = [];
+
+    for (const chunk of _.chunk(originalSeries.pm10, CHUNK_SIZE)) {
+      const timeMin = _.minBy(chunk, o => o.x);
+      const timeMax = _.maxBy(chunk, o => o.x);
+      const dataMin = _.minBy(chunk, o => o.y);
+      const dataMax = _.maxBy(chunk, o => o.y);
+      dataPm10.push({x: timeMin, y: [dataMin, dataMax]});
+    }
+
+    for (const chunk of _.chunk(originalSeries.pm2_5, CHUNK_SIZE)) {
+      const timeMin = _.minBy(chunk, o => o.x);
+      const timeMax = _.maxBy(chunk, o => o.x);
+      const dataMin = _.minBy(chunk, o => o.y);
+      const dataMax = _.maxBy(chunk, o => o.y);
+      dataPm2_5.push({x: timeMin, y: [dataMin, dataMax]});
+    }
+
+    for (const chunk of _.chunk(originalSeries.co2, CHUNK_SIZE)) {
+      const timeMin = _.minBy(chunk, o => o.x);
+      const timeMax = _.maxBy(chunk, o => o.x);
+      const dataMin = _.minBy(chunk, o => o.y);
+      const dataMax = _.maxBy(chunk, o => o.y);
+      dataCo2.push({x: timeMin, y: [dataMin, dataMax]});
+    }
+
+    for (const chunk of _.chunk(originalSeries.humidity, CHUNK_SIZE)) {
+      const timeMin = _.minBy(chunk, o => o.x);
+      const timeMax = _.maxBy(chunk, o => o.x);
+      const dataMin = _.minBy(chunk, o => o.y);
+      const dataMax = _.maxBy(chunk, o => o.y);
+      dataHumidity.push({x: timeMin, y: [dataMin, dataMax]});
+    }
+
+    for (const chunk of _.chunk(originalSeries.temperature, CHUNK_SIZE)) {
+      const timeMin = _.minBy(chunk, o => o.x);
+      const timeMax = _.maxBy(chunk, o => o.x);
+      const dataMin = _.minBy(chunk, o => o.y);
+      const dataMax = _.maxBy(chunk, o => o.y);
+      dataTemperature.push({x: timeMin, y: [dataMin, dataMax]});
+    }
+
+    for (const chunk of _.chunk(originalSeries.voc, CHUNK_SIZE)) {
+      const timeMin = _.minBy(chunk, o => o.x);
+      const timeMax = _.maxBy(chunk, o => o.x);
+      const dataMin = _.minBy(chunk, o => o.y);
+      const dataMax = _.maxBy(chunk, o => o.y);
+      dataVoc.push({x: timeMin, y: [dataMin, dataMax]});
+    }
+
+    this.series = [
+      {name: 'pm10', data: dataPm10},
+      {name: 'pm2_5', data: dataPm2_5},
+      {name: 'co2', data: dataCo2},
+      {name: 'humidity', data: dataHumidity},
+      {name: 'temperature', data: dataTemperature},
+      {name: 'voc', data: dataVoc},
+    ];
+
+    console.dir(this.series);
+  }
+
   onInputPeriodStart() {
     this.showPeriodStartMenu = true;
   }
 
   onInputPeriodEnd() {
     this.showPeriodEndMenu = true;
+  }
+
+  onChangeDevice() {
+    this.updateChart();
+  }
+
+  onClickRange90d() {
+    const range = dateRange(90);
+    this.periodStart = range[0];
+    this.periodEnd = range[1];
+  }
+
+  onClickRange30d() {
+    const range = dateRange(30);
+    this.periodStart = range[0];
+    this.periodEnd = range[1];
+  }
+
+  onClickRange7d() {
+    const range = dateRange(7);
+    this.periodStart = range[0];
+    this.periodEnd = range[1];
+  }
+
+  onClickRange1d() {
+    const range = dateRange(1);
+    this.periodStart = range[0];
+    this.periodEnd = range[1];
   }
 }
 </script>

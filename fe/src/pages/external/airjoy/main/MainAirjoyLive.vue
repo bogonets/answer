@@ -2,7 +2,6 @@
 en:
   title: "Airjoy Device Live Viewer"
   groups: "Groups"
-  devices: "Devices"
   chart: "Chart"
   period:
     start: "Start date"
@@ -19,9 +18,8 @@ en:
     voc: "VOC"
 
 ko:
-  title: "Airjoy Device Live Viewer"
+  title: "AIRJOY 실시간 모니터링"
   groups: "Groups"
-  devices: "Devices"
   chart: "Chart"
   period:
     start: "시작일"
@@ -58,8 +56,8 @@ ko:
     </v-card>
 
     <v-row class="mt-1" align="center" justify="center">
-      <v-btn elevation="4" fab absolute color="primary">
-        <v-icon>mdi-play</v-icon>
+      <v-btn elevation="4" fab absolute :color="playColor" @click="onClickPlay">
+        <v-icon>{{ playIcon }}</v-icon>
       </v-btn>
     </v-row>
 
@@ -73,6 +71,7 @@ ko:
             v-model="category"
             :items="categories"
             :label="$t('labels.category')"
+            @change="onChangeCategory"
         ></v-select>
       </v-col>
     </v-row>
@@ -85,6 +84,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import VueApexCharts from 'vue-apexcharts';
+import type {AirjoySensorA} from '@/packet/airjoy';
 import {
   CATEGORY_CO2,
   CATEGORY_HUMIDITY,
@@ -92,13 +92,25 @@ import {
   CATEGORY_PM2_5,
   CATEGORY_TEMPERATURE,
   CATEGORY_VOC,
-} from "@/packet/airjoy";
+} from '@/packet/airjoy';
+
+const INDEX_PM10 = 0;
+const INDEX_PM2_5 = 1;
+const INDEX_CO2 = 2;
+const INDEX_HUMIDITY = 3;
+const INDEX_TEMPERATURE = 4;
+const INDEX_VOC = 5;
 
 export function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min; //최댓값은 제외, 최솟값은 포함
 }
+
+const UPDATE_INTERVAL_MILLISECONDS = 1000;
+const Y_AXIS_COUNTER = 10;
+const Y_AXIS_RANGE = UPDATE_INTERVAL_MILLISECONDS * Y_AXIS_COUNTER;
+const MAX_SERIES = 1000;
 
 @Component({
   components: {
@@ -107,21 +119,18 @@ export function getRandomInt(min, max) {
   }
 })
 export default class MainAirjoyLive extends VueBase {
-  select = ''
-  items = ['a', 'b', 'c']
-
-  readonly chartOptions = {
+  chartOptions = {
     theme: {
       mode: this.$vuetify.theme.dark ? 'dark' : 'light',
     },
     chart: {
-      id: 'chart',
+      id: 'realtime',
       type: 'line',
       animations: {
         enabled: true,
         easing: 'linear',
         dynamicAnimation: {
-          speed: 1000
+          speed: UPDATE_INTERVAL_MILLISECONDS,
         }
       },
       toolbar: {
@@ -139,52 +148,75 @@ export default class MainAirjoyLive extends VueBase {
     },
     xaxis: {
       type: 'datetime',
-      categories: ['01/01/2003', '02/01/2003','03/01/2003','04/01/2003','05/01/2003','06/01/2003','07/01/2003','08/01/2003'],
+      range: Y_AXIS_RANGE,
     },
     yaxis: {
-      max: 100
     },
     legend: {
       show: true
     },
   };
 
-  series = [{
-    name: '단말기',
-    data: [30, 40, 45, 50, 49, 60, 70, 91]
-  }, {
-    name: '200',
-    data: [23, 43, 54, 12, 44, 52, 32, 11]
-  }];
+  series = [];
+  // series = [{
+  //   name: '',
+  //   data: [
+  //     {x: new Date(Date.now()), y: 0}
+  //   ]
+  // }];
 
+  play = true;
   category = '';
 
+  intervalHandle = -1;
+
   created() {
-    const index = this.getCategoryIndex(this.$route.params.category);
+    const index = this.getCategoryIndexByEnum(this.$route.params.category);
     if (index !== -1) {
       this.category = this.categories[index];
     } else {
       this.category = this.categories[0];
     }
+  }
 
+  mounted() {
+    this.intervalHandle = window.setInterval(() => {
+      if (this.play) {
+        this.updateChart();
+      }
 
-    // ApexCharts.exec('chart', 'updateSeries', [{
-    // }], true);
+      // this.series[0].data.push({x: new Date(Date.now()), y: getRandomInt(0, 100)})
+      // if (this.series[0].data.length > 100) {
+      //   this.series[0].data.splice(0, this.series[0].data.length);
+      // }
+      // // this.$refs.chart.updateSeries([{data: this.series[0].data}])
+      // this.$refs.chart.updateSeries(this.series);
+    }, UPDATE_INTERVAL_MILLISECONDS);
+  }
 
-    // setInterval(() => {
-    //   this.series[0].data.push(getRandomInt(1, 99));
-    //   this.series[1].data.push(getRandomInt(1, 99));
-    //   this.$refs.chart.updateSeries(this.series);
-    // }, 1000);
+  beforeDestroy() {
+    if (this.intervalHandle != -1) {
+      window.clearInterval(this.intervalHandle);
+      this.intervalHandle = -1;
+    }
+  }
 
-    // var me = this
-    //       window.setInterval(function () {
-    //         getNewSeries(lastDate, {
-    //           min: 10,
-    //           max: 90
-    //         })
-    //
-    //       }, 1000)
+  getCategoryIndexByEnum(name: string) {
+    if (name === CATEGORY_PM10) {
+      return INDEX_PM10;
+    } else if (name === CATEGORY_PM2_5) {
+      return INDEX_PM2_5;
+    } else if (name === CATEGORY_CO2) {
+      return INDEX_CO2;
+    } else if (name === CATEGORY_HUMIDITY) {
+      return INDEX_HUMIDITY;
+    } else if (name === CATEGORY_TEMPERATURE) {
+      return INDEX_TEMPERATURE;
+    } else if (name === CATEGORY_VOC) {
+      return INDEX_VOC;
+    } else {
+      return -1;
+    }
   }
 
   get categories() {
@@ -198,127 +230,92 @@ export default class MainAirjoyLive extends VueBase {
     ];
   }
 
-  getCategoryIndex(name: string) {
-    if (name === CATEGORY_PM10) {
-      return 0;
-    } else if (name === CATEGORY_PM2_5) {
-      return 1;
-    } else if (name === CATEGORY_CO2) {
-      return 2;
-    } else if (name === CATEGORY_HUMIDITY) {
-      return 3;
-    } else if (name === CATEGORY_TEMPERATURE) {
-      return 4;
-    } else if (name === CATEGORY_VOC) {
-      return 5;
+  get categoryIndex() {
+    return this.categories.findIndex(i => i === this.category);
+  }
+
+  get playColor() {
+    if (this.play) {
+      return 'primary';
     } else {
-      return -1;
+      return 'error';
     }
   }
 
-  // series = [];
-  //
-  // chartOptions = {
-  //   chart: {
-  //     id: 'realtime',
-  //     height: 350,
-  //     type: 'line',
-  //     animations: {
-  //       enabled: true,
-  //       easing: 'linear',
-  //       dynamicAnimation: {
-  //         speed: 1000
-  //       }
-  //     },
-  //     toolbar: {
-  //       show: false
-  //     },
-  //     zoom: {
-  //       enabled: false
-  //     }
-  //   },
-  //   dataLabels: {
-  //     enabled: false
-  //   },
-  //   stroke: {
-  //     curve: 'smooth'
-  //   },
-  //   title: {
-  //     text: 'Dynamic Updating Chart',
-  //     align: 'left'
-  //   },
-  //   markers: {
-  //     size: 0
-  //   },
-  //   xaxis: {
-  //     type: 'datetime',
-  //   },
-  //   yaxis: {
-  //     max: 100
-  //   },
-  //   legend: {
-  //     show: false
-  //   },
-  // };
 
-  mounted() {
-    // window.setInterval(() => {
-    //   getNewSeries(lastDate, {
-    //     min: 10,
-    //     max: 90
-    //   })
-    //
-    //   this.$refs.chart.updateSeries([{
-    //     data: data
-    //   }])
-    // }, 1000);
-    //
-    // // every 60 seconds, we reset the data to prevent memory leaks
-    // window.setInterval(function () {
-    //   this.$refs.chart.updateSeries([{
-    //     this.data
-    //   }], false, true)
-    // }, 60000)
-  }
-
-  generateDayWiseTimeSeries(baseval, count, yrange) {
-    // let i = 0;
-    // let series = [];
-    // while (i < count) {
-    //   let x = baseval;
-    //   let y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
-    //   series.push([x, y]);
-    //   baseval += 86400000;
-    //   i++;
-    // }
-    // return series;
+  get playIcon() {
+    if (this.play) {
+      return 'mdi-play';
+    } else {
+      return 'mdi-pause';
+    }
   }
 
   updateChart() {
-    // const series = [
-    //   {
-    //     name: 'South',
-    //     data: this.generateDayWiseTimeSeries(new Date('11 Feb 2017').getTime(), 20, {
-    //       min: 10,
-    //       max: 60
-    //     })
-    //   },
-    //   {
-    //     name: 'North',
-    //     data: this.generateDayWiseTimeSeries(new Date('11 Feb 2017').getTime(), 20, {
-    //       min: 10,
-    //       max: 20
-    //     })
-    //   },
-    //   {
-    //     name: 'Central',
-    //     data: this.generateDayWiseTimeSeries(new Date('11 Feb 2017').getTime(), 20, {
-    //       min: 10,
-    //       max: 15
-    //     })
-    //   }
-    // ]
-    // this.series = series
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    this.$api2.getAirjoyLive(group, project)
+        .then(items => {
+          this.updateSeries(items);
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+        });
+  }
+
+  updateSeries(items: Array<AirjoySensorA>) {
+    for (const item of items) {
+      const name = item.uid.toString();
+
+      // const time = new Date(item.time);
+      const now = new Date(Date.now());
+      const offset = now.getTimezoneOffset() * 60 * 1000;
+      const time = new Date(Date.now() - offset);
+
+      let value;
+      switch (this.categoryIndex) {
+        case INDEX_PM10:
+          value = item.pm10;
+          break;
+        case INDEX_PM2_5:
+          value = item.pm2_5;
+          break;
+        case INDEX_CO2:
+          value = item.co2;
+          break;
+        case INDEX_HUMIDITY:
+          value = item.humidity;
+          break;
+        case INDEX_TEMPERATURE:
+          value = item.temperature;
+          break;
+        case INDEX_VOC:
+          value = item.voc;
+          break;
+      }
+
+      const series = this.series.find(i => i.name === name);
+      if (typeof series === 'undefined') {
+        this.series.push({name: name, data: [{x: time, y: value}]});
+      } else {
+        series.data.push({x: time, y: value});
+      }
+    }
+
+    if (this.series[0].data.length >= MAX_SERIES) {
+      this.series = [];
+    }
+
+    this.$refs.chart.updateSeries(this.series);
+  }
+
+  onChangeCategory(value) {
+    console.assert(value == this.category);
+    this.series = [];
+  }
+
+  onClickPlay() {
+    this.play = !this.play;
   }
 }
 </script>

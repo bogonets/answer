@@ -102,8 +102,10 @@ uvloop
 vender
 webrtcurls
 websocket
+xaxis
 xmltodict
 yamlparse
+yaxis
 zoneinfo
 
 # Parameter prefix ('p')

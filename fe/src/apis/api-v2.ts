@@ -563,7 +563,7 @@ export default class ApiV2 {
             end: end,
         } as AirjoyChartQ;
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}/chart`;
-        return this.post(url, body);  // TODO: Change to 'GET' method
+        return this.post<Array<AirjoySensorA>>(url, body);  // TODO: Change to 'GET' method
     }
 
     getAirjoyServices(group: string, project: string, device?: string) {

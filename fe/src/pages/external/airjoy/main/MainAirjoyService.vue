@@ -297,7 +297,6 @@ export default class MainAirjoyService extends VueBase {
 
   showEditDialog = false;
   loadingEditDevice = false;
-  editDevice = createEmptyAirjoyDeviceA();
   editService = createEmptyAirjoyServiceA();
 
   showDeleteDialog = false;
@@ -306,7 +305,7 @@ export default class MainAirjoyService extends VueBase {
 
   created() {
     if (!!this.$route.params.device && this.$route.params.device !== UNKNOWN_DEVICE) {
-      this.filter = this.$route.params.device.toString();
+      this.filter = this.$route.params.device;
     }
     this.updateDevices();
     this.updateServices();
