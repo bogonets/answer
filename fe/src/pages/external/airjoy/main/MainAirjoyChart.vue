@@ -99,6 +99,7 @@ ko:
             v-model="category"
             :items="categories"
             :label="$t('labels.category')"
+            @change="onChangeCategory"
         ></v-select>
       </v-col>
     </v-row>
@@ -189,12 +190,12 @@ ko:
     <v-card class="mt-4 pt-4">
       <vue-apex-charts
           class="mx-2"
-          type="candlestick"
+          type="rangeBar"
           height="350"
           ref="chart"
           :options="chartOptions"
-          :series="series">
-      </vue-apex-charts>
+          :series="series"
+      ></vue-apex-charts>
       <v-spacer class="py-4"></v-spacer>
     </v-card>
 
@@ -249,6 +250,14 @@ export function dateRange(days: number) {
 const UNKNOWN_DEVICE = '-';
 const CHUNK_SIZE = 10;
 
+const INDEX_PM10 = 0;
+const INDEX_PM2_5 = 1;
+const INDEX_CO2 = 2;
+const INDEX_HUMIDITY = 3;
+const INDEX_TEMPERATURE = 4;
+const INDEX_VOC = 5;
+
+
 @Component({
   components: {
     ToolbarBreadcrumbs,
@@ -300,28 +309,28 @@ export default class MainAirjoyChart extends VueBase {
         horizontal: false
       }
     },
-    title: {
-      text: 'CandleStick Chart - Category X-axis',
-      align: 'left'
-    },
+    // title: {
+    //   text: 'CandleStick Chart - Category X-axis',
+    //   align: 'left'
+    // },
     tooltip: {
       enabled: true,
     },
     xaxis: {
-      type: 'category',
-      labels: {
-        formatter: function(val) {
-          const n = Date.parse(val)
-          const d = new Date(n);
-          const s = d.toLocaleString();
-          return s;
-        }
-      }
+      type: 'datetime',
+    //   labels: {
+    //     formatter: function(val) {
+    //       const n = Date.parse(val)
+    //       const d = new Date(n);
+    //       const s = d.toLocaleString();
+    //       return s;
+    //     }
+    //   }
     },
     yaxis: {
-      tooltip: {
-        enabled: true
-      }
+    //   tooltip: {
+    //     enabled: true
+    //   }
     }
   };
 
@@ -345,15 +354,6 @@ export default class MainAirjoyChart extends VueBase {
   loading = false;
   items = [] as Array<AirjoySensorA>;
 
-  originalSeries = {
-    pm10: [],
-    pm2_5: [],
-    co2: [],
-    humidity: [],
-    temperature: [],
-    voc: [],
-  };
-
   created() {
     let uid = undefined;
     if (!!this.$route.params.device && this.$route.params.device !== UNKNOWN_DEVICE) {
@@ -361,9 +361,29 @@ export default class MainAirjoyChart extends VueBase {
     }
     this.updateDevices(uid);
 
-    const index = this.getCategoryIndex(this.$route.params.category);
+    const index = this.getCategoryIndexByEnum(this.$route.params.category);
     if (index !== -1) {
       this.category = this.categories[index];
+    } else {
+      this.category = this.categories[0];
+    }
+  }
+
+  getCategoryIndexByEnum(name: string) {
+    if (name === CATEGORY_PM10) {
+      return INDEX_PM10;
+    } else if (name === CATEGORY_PM2_5) {
+      return INDEX_PM2_5;
+    } else if (name === CATEGORY_CO2) {
+      return INDEX_CO2;
+    } else if (name === CATEGORY_HUMIDITY) {
+      return INDEX_HUMIDITY;
+    } else if (name === CATEGORY_TEMPERATURE) {
+      return INDEX_TEMPERATURE;
+    } else if (name === CATEGORY_VOC) {
+      return INDEX_VOC;
+    } else {
+      return -1;
     }
   }
 
@@ -378,22 +398,8 @@ export default class MainAirjoyChart extends VueBase {
     ];
   }
 
-  getCategoryIndex(name: string) {
-    if (name === CATEGORY_PM10) {
-      return 0;
-    } else if (name === CATEGORY_PM2_5) {
-      return 1;
-    } else if (name === CATEGORY_CO2) {
-      return 2;
-    } else if (name === CATEGORY_HUMIDITY) {
-      return 3;
-    } else if (name === CATEGORY_TEMPERATURE) {
-      return 4;
-    } else if (name === CATEGORY_VOC) {
-      return 5;
-    } else {
-      return -1;
-    }
+  get categoryIndex() {
+    return this.categories.findIndex(i => i === this.category);
   }
 
   updateDevices(device?: number) {
@@ -417,7 +423,7 @@ export default class MainAirjoyChart extends VueBase {
   }
 
   updateChart() {
-    if (!this.device) {
+    if (!this.device.uid) {
       return;
     }
 
@@ -436,102 +442,77 @@ export default class MainAirjoyChart extends VueBase {
   }
 
   updateSeries() {
-    const originalSeries = {
-      pm10: [],
-      pm2_5: [],
-      co2: [],
-      humidity: [],
-      temperature: [],
-      voc: [],
-    };
+    const pm10 = [];
+    const pm2_5 = [];
+    const co2 = [];
+    const humidity = [];
+    const temperature = [];
+    const voc = [];
 
     for (const item of this.items) {
       const time = new Date(item.time);
-      originalSeries.pm10.push({x: time, y: [item.pm10]});
-      originalSeries.pm2_5.push({x: time, y: [item.pm2_5]});
-      originalSeries.co2.push({x: time, y: [item.co2]});
-      originalSeries.humidity.push({x: time, y: [item.humidity]});
-      originalSeries.temperature.push({x: time, y: [item.temperature]});
-      originalSeries.voc.push({x: time, y: [item.voc]});
+      pm10.push({x: time, y: item.pm10});
+      pm2_5.push({x: time, y: item.pm2_5});
+      co2.push({x: time, y: item.co2});
+      humidity.push({x: time, y: item.humidity});
+      temperature.push({x: time, y: item.temperature});
+      voc.push({x: time, y: item.voc});
     }
-    this.originalSeries = originalSeries;
 
-    const dataPm10 = [];
-    const dataPm2_5 = [];
-    const dataCo2 = [];
-    const dataHumidity = [];
-    const dataTemperature = [];
-    const dataVoc = [];
+    let series;
+    switch (this.categoryIndex) {
+      case INDEX_PM10:
+        series = pm10;
+        break;
+      case INDEX_PM2_5:
+        series = pm2_5;
+        break;
+      case INDEX_CO2:
+        series = co2;
+        break;
+      case INDEX_HUMIDITY:
+        series = humidity;
+        break;
+      case INDEX_TEMPERATURE:
+        series = temperature;
+        break;
+      case INDEX_VOC:
+        series = voc;
+        break;
+    }
 
-    for (const chunk of _.chunk(originalSeries.pm10, CHUNK_SIZE)) {
+    const data = [];
+    for (const chunk of _.chunk(series, CHUNK_SIZE)) {
       const timeMin = _.minBy(chunk, o => o.x);
       const timeMax = _.maxBy(chunk, o => o.x);
       const dataMin = _.minBy(chunk, o => o.y);
       const dataMax = _.maxBy(chunk, o => o.y);
-      dataPm10.push({x: timeMin, y: [dataMin, dataMax]});
+      data.push({x: timeMin.x, y: [dataMin.y, dataMax.y]});
     }
 
-    for (const chunk of _.chunk(originalSeries.pm2_5, CHUNK_SIZE)) {
-      const timeMin = _.minBy(chunk, o => o.x);
-      const timeMax = _.maxBy(chunk, o => o.x);
-      const dataMin = _.minBy(chunk, o => o.y);
-      const dataMax = _.maxBy(chunk, o => o.y);
-      dataPm2_5.push({x: timeMin, y: [dataMin, dataMax]});
-    }
-
-    for (const chunk of _.chunk(originalSeries.co2, CHUNK_SIZE)) {
-      const timeMin = _.minBy(chunk, o => o.x);
-      const timeMax = _.maxBy(chunk, o => o.x);
-      const dataMin = _.minBy(chunk, o => o.y);
-      const dataMax = _.maxBy(chunk, o => o.y);
-      dataCo2.push({x: timeMin, y: [dataMin, dataMax]});
-    }
-
-    for (const chunk of _.chunk(originalSeries.humidity, CHUNK_SIZE)) {
-      const timeMin = _.minBy(chunk, o => o.x);
-      const timeMax = _.maxBy(chunk, o => o.x);
-      const dataMin = _.minBy(chunk, o => o.y);
-      const dataMax = _.maxBy(chunk, o => o.y);
-      dataHumidity.push({x: timeMin, y: [dataMin, dataMax]});
-    }
-
-    for (const chunk of _.chunk(originalSeries.temperature, CHUNK_SIZE)) {
-      const timeMin = _.minBy(chunk, o => o.x);
-      const timeMax = _.maxBy(chunk, o => o.x);
-      const dataMin = _.minBy(chunk, o => o.y);
-      const dataMax = _.maxBy(chunk, o => o.y);
-      dataTemperature.push({x: timeMin, y: [dataMin, dataMax]});
-    }
-
-    for (const chunk of _.chunk(originalSeries.voc, CHUNK_SIZE)) {
-      const timeMin = _.minBy(chunk, o => o.x);
-      const timeMax = _.maxBy(chunk, o => o.x);
-      const dataMin = _.minBy(chunk, o => o.y);
-      const dataMax = _.maxBy(chunk, o => o.y);
-      dataVoc.push({x: timeMin, y: [dataMin, dataMax]});
-    }
-
-    this.series = [
-      {name: 'pm10', data: dataPm10},
-      {name: 'pm2_5', data: dataPm2_5},
-      {name: 'co2', data: dataCo2},
-      {name: 'humidity', data: dataHumidity},
-      {name: 'temperature', data: dataTemperature},
-      {name: 'voc', data: dataVoc},
-    ];
-
-    console.dir(this.series);
+    this.series = [{data: data}];
+    this.$refs.chart.updateSeries(this.series);
   }
 
   onInputPeriodStart() {
     this.showPeriodStartMenu = true;
+    console.log('onInputPeriodStart');
+    this.updateChart();
   }
 
   onInputPeriodEnd() {
     this.showPeriodEndMenu = true;
+    console.log('onInputPeriodEnd');
+    this.updateChart();
   }
 
   onChangeDevice() {
+    console.log('onChangeDevice');
+    this.updateChart();
+  }
+
+  onChangeCategory() {
+    console.log('onChangeCategory');
     this.updateChart();
   }
 
@@ -539,24 +520,32 @@ export default class MainAirjoyChart extends VueBase {
     const range = dateRange(90);
     this.periodStart = range[0];
     this.periodEnd = range[1];
+    console.log('onClickRange90d');
+    this.updateChart();
   }
 
   onClickRange30d() {
     const range = dateRange(30);
     this.periodStart = range[0];
     this.periodEnd = range[1];
+    console.log('onClickRange30d');
+    this.updateChart();
   }
 
   onClickRange7d() {
     const range = dateRange(7);
     this.periodStart = range[0];
     this.periodEnd = range[1];
+    console.log('onClickRange7d');
+    this.updateChart();
   }
 
   onClickRange1d() {
     const range = dateRange(1);
     this.periodStart = range[0];
     this.periodEnd = range[1];
+    console.log('onClickRange1d');
+    this.updateChart();
   }
 }
 </script>

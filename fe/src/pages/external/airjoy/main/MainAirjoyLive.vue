@@ -243,7 +243,6 @@ export default class MainAirjoyLive extends VueBase {
     }
   }
 
-
   get playIcon() {
     if (this.play) {
       return 'mdi-play';
