@@ -291,3 +291,33 @@ export function createDemoAirjoyDevices() {
 
     return items;
 }
+
+export function createDemoAirjoyServices() {
+    const items = [
+        createEmptyAirjoyServiceA(),
+        createEmptyAirjoyServiceA(),
+        createEmptyAirjoyServiceA(),
+        createEmptyAirjoyServiceA(),
+        createEmptyAirjoyServiceA(),
+    ];
+
+    items[0].author = 'User0'
+    items[1].author = 'User1'
+    items[2].author = 'Name2'
+    items[3].author = 'Name3'
+    items[4].author = 'Name4'
+
+    items[0].description = 'Description0'
+    items[1].description = 'Description1'
+    items[2].description = 'Brief2'
+    items[3].description = 'Brief3'
+    items[4].description = 'Brief4'
+
+    items[0].time = '2021-01-01'
+    items[1].time = '2021-02-03'
+    items[2].time = '2021-03-20'
+    items[3].time = '2021-04-12'
+    items[4].time = '2021-05-30'
+
+    return items;
+}

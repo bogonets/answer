@@ -107,7 +107,6 @@ ko:
     <div class="table-item--wrapper" @click="body">
       <v-btn
           fab
-          small
           :color="powerColor"
           :loading="loading"
           :disabled="loading"
@@ -117,13 +116,13 @@ ko:
       </v-btn>
       <div class="table-item--body-left">
         <div class="table-item--body-left-top">
-          <span class="text--primary text-subtitle-2 mr-1" @click.stop="name">
+          <span class="text--primary text-subtitle-1 mr-1" @click.stop="name">
             {{ item.name }}
           </span>
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" x-small outlined color="primary" v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" small outlined color="primary" v-bind="attrs" v-on="on">
                 <v-icon left small>mdi-identifier</v-icon>
                 {{ item.uid }}
               </v-chip>
@@ -133,7 +132,7 @@ ko:
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" x-small outlined v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" small outlined v-bind="attrs" v-on="on">
                 <v-icon left>mdi-tag</v-icon>
                 {{ item.fw_ver }}
               </v-chip>
@@ -143,7 +142,7 @@ ko:
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" x-small :color="filterColor" v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" small :color="filterColor" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-air-filter</v-icon>
                 <v-icon v-if="filterReset" left>mdi-timer-outline</v-icon>
                 <v-icon v-if="filterExchange" left>mdi-cached</v-icon>
@@ -156,7 +155,7 @@ ko:
 
           <v-tooltip v-if="!item.uv_led" bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" x-small color="orange accent-4" v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" small color="orange accent-4" v-bind="attrs" v-on="on">
                 <v-icon>mdi-weather-sunny</v-icon>
               </v-chip>
             </template>
@@ -165,7 +164,7 @@ ko:
 
           <v-tooltip v-if="!item.online" bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip x-small :color="onlineColor" v-bind="attrs" v-on="on">
+              <v-chip small :color="onlineColor" v-bind="attrs" v-on="on">
                 <v-icon>mdi-lan-connect</v-icon>
               </v-chip>
             </template>
@@ -176,7 +175,7 @@ ko:
         <div class="table-item--body-left-bottom">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" small @click.stop="clickPm10" v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" @click.stop="clickPm10" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-dots-hexagon</v-icon>
                 {{ item.pm10 }}
               </v-chip>
@@ -186,7 +185,7 @@ ko:
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" small @click.stop="clickPm2_5" v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" @click.stop="clickPm2_5" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-dots-horizontal</v-icon>
                 {{ item.pm2_5 }}
               </v-chip>
@@ -196,7 +195,7 @@ ko:
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" small @click.stop="clickCo2" v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" @click.stop="clickCo2" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-molecule-co2</v-icon>
                 {{ item.co2 }}
               </v-chip>
@@ -206,7 +205,7 @@ ko:
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" small @click.stop="clickHumidity" v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" @click.stop="clickHumidity" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-water</v-icon>
                 {{ item.humidity }}
               </v-chip>
@@ -216,7 +215,7 @@ ko:
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" small @click.stop="clickTemperature" v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" @click.stop="clickTemperature" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-thermometer</v-icon>
                 {{ item.temperature }}
               </v-chip>
@@ -226,7 +225,7 @@ ko:
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" small @click.stop="clickVoc" v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" @click.stop="clickVoc" v-bind="attrs" v-on="on">
                 <v-icon left size="22">mdi-alpha-v</v-icon>
                 {{ item.voc }}
               </v-chip>
@@ -236,7 +235,7 @@ ko:
 
           <v-tooltip v-if="item.as_count" bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-1" small @click.stop="clickAs" v-bind="attrs" v-on="on">
+              <v-chip class="mr-1" @click.stop="clickAs" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-wrench</v-icon>
                 {{ item.as_count }}
               </v-chip>
@@ -261,7 +260,7 @@ ko:
 
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn small icon :disabled="loading" @click.stop="mode" v-bind="attrs" v-on="on">
+            <v-btn large icon :disabled="loading" @click.stop="mode" v-bind="attrs" v-on="on">
               <v-icon>{{ modeIcon }}</v-icon>
             </v-btn>
           </template>
@@ -272,7 +271,7 @@ ko:
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip top>
               <template v-slot:activator="{ on: tooltip }">
-                <v-btn small icon :disabled="loading" v-bind="attrs" v-on="{...tooltip, ...menu}">
+                <v-btn large icon :disabled="loading" v-bind="attrs" v-on="{...tooltip, ...menu}">
                   <v-icon>{{ fanIcon }}</v-icon>
                 </v-btn>
               </template>
@@ -290,7 +289,7 @@ ko:
 
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn small icon :disabled="loading" @click.stop="lock" v-bind="attrs" v-on="on">
+            <v-btn large icon :disabled="loading" @click.stop="lock" v-bind="attrs" v-on="on">
               <v-icon>{{ lockIcon }}</v-icon>
             </v-btn>
           </template>
@@ -299,7 +298,7 @@ ko:
 
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn small icon :disabled="loading" @click.stop="filter" v-bind="attrs" v-on="on">
+            <v-btn large icon :disabled="loading" @click.stop="filter" v-bind="attrs" v-on="on">
               <v-icon :color="filterColor">mdi-air-filter</v-icon>
             </v-btn>
           </template>
@@ -308,7 +307,7 @@ ko:
 
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn small icon :disabled="loading" @click.stop="sleep" v-bind="attrs" v-on="on">
+            <v-btn large icon :disabled="loading" @click.stop="sleep" v-bind="attrs" v-on="on">
               <v-icon>{{ sleepIcon }}</v-icon>
             </v-btn>
           </template>
@@ -319,7 +318,7 @@ ko:
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip top>
               <template v-slot:activator="{ on: tooltip }">
-                <v-btn small icon :disabled="loading" v-bind="attrs" v-on="{...tooltip, ...menu}">
+                <v-btn large icon :disabled="loading" v-bind="attrs" v-on="{...tooltip, ...menu}">
                   <v-icon>{{ timerIcon }}</v-icon>
                 </v-btn>
               </template>

@@ -566,9 +566,14 @@ export default class ApiV2 {
         return this.post(url, body);  // TODO: Change to 'GET' method
     }
 
-    getAirjoyServices(group: string, project: string, device: string) {
-        const url = `/plugins/airjoy/${group}/${project}/devices/${device}/services`;
-        return this.get<Array<AirjoyServiceA>>(url);
+    getAirjoyServices(group: string, project: string, device?: string) {
+        if (typeof device === 'undefined') {
+            const url = `/plugins/airjoy/${group}/${project}/services`;
+            return this.get<Array<AirjoyServiceA>>(url);
+        } else {
+            const url = `/plugins/airjoy/${group}/${project}/devices/${device}/services`;
+            return this.get<Array<AirjoyServiceA>>(url);
+        }
     }
 
     postAirjoyServices(group: string, project: string, device: string, body: CreateAirjoyServiceQ) {

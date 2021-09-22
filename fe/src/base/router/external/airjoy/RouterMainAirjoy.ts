@@ -2,17 +2,20 @@ import {Component} from 'vue-property-decorator';
 import Router from '@/base/router/Router';
 import mainAirjoyNames from '@/router/names/external/airjoy/main';
 
+const UNKNOWN_CATEGORY = '-';
+const UNKNOWN_DEVICE = '-';
+
 @Component
 export default class RouterMainAirjoy extends Router {
     moveToMainAirjoyChart(
-        airjoy?: string,
+        device?: string,
         category?: string,
         group?: string,
         project?: string,
     ) {
         const params = {
-            airjoy: airjoy || '',
-            category: category || '',
+            category: category || UNKNOWN_CATEGORY,
+            device: device || UNKNOWN_DEVICE,
             group: group || this.$route.params.group,
             project: project || this.$route.params.project,
         };
@@ -21,7 +24,7 @@ export default class RouterMainAirjoy extends Router {
 
     moveToMainAirjoyDetails(device: string, group?: string, project?: string) {
         const params = {
-            device: device,
+            device: device || UNKNOWN_DEVICE,
             group: group || this.$route.params.group,
             project: project || this.$route.params.project,
         };
@@ -45,12 +48,12 @@ export default class RouterMainAirjoy extends Router {
     }
 
     moveToMainAirjoyService(
-        airjoy?: string,
+        device?: string,
         group?: string,
         project?: string,
     ) {
         const params = {
-            airjoy: airjoy || '',
+            device: device || UNKNOWN_DEVICE,
             group: group || this.$route.params.group,
             project: project || this.$route.params.project,
         };

@@ -288,7 +288,8 @@ ko:
 
       <v-col cols="4">
         <div v-ripple class="card" @click="onClickPm2_5">
-          <v-icon large>mdi-dots-horizontal</v-icon>
+<!--          <v-icon large>mdi-dots-horizontal</v-icon>-->
+          <v-icon large>mdi-blur</v-icon>
           <span class="text--secondary text-subtitle-2">
             {{ $t('categories.pm2_5', [item.pm2_5]) }}
           </span>
@@ -348,8 +349,8 @@ ko:
 
       <v-col cols="4">
         <div class="card">
-          <v-icon large>mdi-heart-pulse</v-icon>
-          <span class="text--secondary text-subtitle-2">
+          <v-icon large>mdi-timer-sand</v-icon>
+          <span class="text--secondary text-subtitle-2" :class="filterLifeColor">
             {{ $t('categories.filter_life', [filterLifeText]) }}
           </span>
         </div>
@@ -615,6 +616,9 @@ export default class MainAirjoyDetails extends VueBase {
   @Prop({type: Number, default: 1000})
   readonly updateIntervalMilliseconds!: number;
 
+  @Prop({type: Boolean, default: false})
+  readonly enableFilterUnitDays!: boolean;
+
   loading = false;
   item = createEmptyAirjoyDeviceA();
 
@@ -695,13 +699,23 @@ export default class MainAirjoyDetails extends VueBase {
     }
   }
 
+  get filterLifeColor() {
+    if (this.item.filter_life == 0) {
+      return 'red--text text--darken-3'
+    } else {
+      return '';
+    }
+  }
+
   get filterLifeText() {
     const minutes = this.item.filter_life * FILTER_LIFE_MINUTES_UNIT;
-    if (minutes < 60) {
-      return this.$t('time_unit.minutes', [minutes])
-    }
-    if (minutes < (60*24)) {
-      return this.$t('time_unit.hours', [Math.ceil(minutes/60)])
+    if (this.enableFilterUnitDays) {
+      if (minutes < 60) {
+        return this.$t('time_unit.minutes', [minutes])
+      }
+      if (minutes < (60 * 24)) {
+        return this.$t('time_unit.hours', [Math.ceil(minutes / 60)])
+      }
     }
     return this.$t('time_unit.days', [Math.ceil(minutes/(60*24))])
   }
