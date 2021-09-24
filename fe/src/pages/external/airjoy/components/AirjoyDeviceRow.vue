@@ -788,6 +788,7 @@ export default class AirjoyDeviceRow extends VueBase {
 
     .table-item--body-right {
       @include flex-row;
+      flex-wrap: wrap;
       align-items: center;
       padding: 8px 4px 8px 8px;
     }

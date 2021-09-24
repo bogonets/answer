@@ -37,8 +37,8 @@ en:
     eight: "8h"
     unknown: "Unknown"
   uv:
-    normal: "Normal"
-    alarm: "Alarm"
+    normal: "UV Normal"
+    alarm: "UV Alarm"
   categories:
     pm10: "PM10: {0}"
     pm2_5: "PM2.5: {0}"
