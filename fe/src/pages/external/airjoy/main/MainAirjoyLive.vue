@@ -61,13 +61,13 @@ ko:
         {{ $t('title') }}
       </div>
 
-      <vue-apex-charts
-          type="line"
-          height="350"
-          ref="chart"
-          :options="chartOptions"
-          :series="series">
-      </vue-apex-charts>
+<!--      <vue-apex-charts-->
+<!--          type="line"-->
+<!--          height="350"-->
+<!--          ref="chart"-->
+<!--          :options="chartOptions"-->
+<!--          :series="series">-->
+<!--      </vue-apex-charts>-->
       <v-spacer class="py-4"></v-spacer>
     </v-card>
 
@@ -120,45 +120,46 @@ const MAX_SERIES = 1000;
   }
 })
 export default class MainAirjoyLive extends VueBase {
-  chartOptions = {
-    theme: {
-      mode: this.$vuetify.theme.dark ? 'dark' : 'light',
-    },
-    chart: {
-      id: 'realtime',
-      type: 'line',
-      animations: {
-        enabled: true,
-        easing: 'linear',
-        dynamicAnimation: {
-          speed: UPDATE_INTERVAL_MILLISECONDS,
-        }
-      },
-      toolbar: {
-        show: false
-      },
-      zoom: {
-        enabled: false
-      }
-    },
-    dataLabels: {
-      enabled: false
-    },
-    stroke: {
-      curve: 'smooth'
-    },
-    xaxis: {
-      type: 'datetime',
-      range: Y_AXIS_RANGE,
-    },
-    yaxis: {
-    },
-    legend: {
-      show: true
-    },
-  };
 
-  series = [];
+  // chartOptions = {
+  //   theme: {
+  //     mode: this.$vuetify.theme.dark ? 'dark' : 'light',
+  //   },
+  //   chart: {
+  //     id: 'realtime',
+  //     type: 'line',
+  //     animations: {
+  //       enabled: true,
+  //       easing: 'linear',
+  //       dynamicAnimation: {
+  //         speed: UPDATE_INTERVAL_MILLISECONDS,
+  //       }
+  //     },
+  //     toolbar: {
+  //       show: false
+  //     },
+  //     zoom: {
+  //       enabled: false
+  //     }
+  //   },
+  //   dataLabels: {
+  //     enabled: false
+  //   },
+  //   stroke: {
+  //     curve: 'smooth'
+  //   },
+  //   xaxis: {
+  //     type: 'datetime',
+  //     range: Y_AXIS_RANGE,
+  //   },
+  //   yaxis: {
+  //   },
+  //   legend: {
+  //     show: true
+  //   },
+  // };
+
+  // series = [];
   // series = [{
   //   name: '',
   //   data: [
@@ -264,54 +265,54 @@ export default class MainAirjoyLive extends VueBase {
   }
 
   updateSeries(items: Array<AirjoySensorA>) {
-    for (const item of items) {
-      const name = item.uid.toString();
-
-      // const time = new Date(item.time);
-      const now = new Date(Date.now());
-      const offset = now.getTimezoneOffset() * 60 * 1000;
-      const time = new Date(Date.now() - offset);
-
-      let value;
-      switch (this.categoryIndex) {
-        case INDEX_PM10:
-          value = item.pm10;
-          break;
-        case INDEX_PM2_5:
-          value = item.pm2_5;
-          break;
-        case INDEX_CO2:
-          value = item.co2;
-          break;
-        case INDEX_HUMIDITY:
-          value = item.humidity;
-          break;
-        case INDEX_TEMPERATURE:
-          value = item.temperature;
-          break;
-        case INDEX_VOC:
-          value = item.voc;
-          break;
-      }
-
-      const series = this.series.find(i => i.name === name);
-      if (typeof series === 'undefined') {
-        this.series.push({name: name, data: [{x: time, y: value}]});
-      } else {
-        series.data.push({x: time, y: value});
-      }
-    }
-
-    if (this.series[0].data.length >= MAX_SERIES) {
-      this.series = [];
-    }
-
-    this.$refs.chart.updateSeries(this.series);
+  //   for (const item of items) {
+  //     const name = item.uid.toString();
+  //
+  //     // const time = new Date(item.time);
+  //     const now = new Date(Date.now());
+  //     const offset = now.getTimezoneOffset() * 60 * 1000;
+  //     const time = new Date(Date.now() - offset);
+  //
+  //     let value;
+  //     switch (this.categoryIndex) {
+  //       case INDEX_PM10:
+  //         value = item.pm10;
+  //         break;
+  //       case INDEX_PM2_5:
+  //         value = item.pm2_5;
+  //         break;
+  //       case INDEX_CO2:
+  //         value = item.co2;
+  //         break;
+  //       case INDEX_HUMIDITY:
+  //         value = item.humidity;
+  //         break;
+  //       case INDEX_TEMPERATURE:
+  //         value = item.temperature;
+  //         break;
+  //       case INDEX_VOC:
+  //         value = item.voc;
+  //         break;
+  //     }
+  //
+  //     const series = this.series.find(i => i.name === name);
+  //     if (typeof series === 'undefined') {
+  //       this.series.push({name: name, data: [{x: time, y: value}]});
+  //     } else {
+  //       series.data.push({x: time, y: value});
+  //     }
+  //   }
+  //
+  //   if (this.series[0].data.length >= MAX_SERIES) {
+  //     this.series = [];
+  //   }
+  //
+  //   this.$refs.chart.updateSeries(this.series);
   }
 
   onChangeCategory(value) {
     console.assert(value == this.category);
-    this.series = [];
+    // this.series = [];
   }
 
   onClickPlay() {

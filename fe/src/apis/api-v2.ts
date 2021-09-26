@@ -537,27 +537,51 @@ export default class ApiV2 {
         return this.post(url, body);
     }
 
-    getAirjoyDevice(group: string, project: string, device: string) {
+    getAirjoyDevice(
+        group: string,
+        project: string,
+        device: number | string,
+    ) {
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}`;
         return this.get<AirjoyDeviceA>(url);
     }
 
-    patchAirjoyDevice(group: string, project: string, device: string, body: UpdateAirjoyDeviceQ) {
+    patchAirjoyDevice(
+        group: string,
+        project: string,
+        device: number | string,
+        body: UpdateAirjoyDeviceQ,
+    ) {
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}`;
         return this.patch(url, body);
     }
 
-    deleteAirjoyDevice(group: string, project: string, device: string) {
+    deleteAirjoyDevice(
+        group: string,
+        project: string,
+        device: number | string,
+    ) {
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}`;
         return this.delete(url);
     }
 
-    postAirjoyControl(group: string, project: string, device: string, body: AirjoyControlQ) {
+    postAirjoyControl(
+        group: string,
+        project: string,
+        device: number | string,
+        body: AirjoyControlQ,
+    ) {
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}/control`;
         return this.post(url, body);
     }
 
-    getAirjoyChart(group: string, project: string, device: string, begin: string, end: string) {
+    getAirjoyChart(
+        group: string,
+        project: string,
+        device: number | string,
+        begin: string,
+        end: string,
+    ) {
         const body = {
             begin: begin,
             end: end,
@@ -566,7 +590,11 @@ export default class ApiV2 {
         return this.post<Array<AirjoySensorA>>(url, body);  // TODO: Change to 'GET' method
     }
 
-    getAirjoyServices(group: string, project: string, device?: string) {
+    getAirjoyServices(
+        group: string,
+        project: string,
+        device?: number | string,
+    ) {
         if (typeof device === 'undefined') {
             const url = `/plugins/airjoy/${group}/${project}/services`;
             return this.get<Array<AirjoyServiceA>>(url);
@@ -576,17 +604,33 @@ export default class ApiV2 {
         }
     }
 
-    postAirjoyServices(group: string, project: string, device: string, body: CreateAirjoyServiceQ) {
+    postAirjoyServices(
+        group: string,
+        project: string,
+        device: number | string,
+        body: CreateAirjoyServiceQ,
+    ) {
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}/services`;
         return this.post(url, body);
     }
 
-    patchAirjoyServices(group: string, project: string, device: string, service: string, body: UpdateAirjoyServiceQ) {
+    patchAirjoyServices(
+        group: string,
+        project: string,
+        device: number | string,
+        service: number | string,
+        body: UpdateAirjoyServiceQ,
+    ) {
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}/services/${service}`;
         return this.patch(url, body);
     }
 
-    deleteAirjoyServices(group: string, project: string, device: string, service: string) {
+    deleteAirjoyServices(
+        group: string,
+        project: string,
+        device: number | string,
+        service: number | string,
+    ) {
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}/services/${service}`;
         return this.delete(url);
     }

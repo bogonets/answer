@@ -188,14 +188,15 @@ ko:
     </v-row>
 
     <v-card class="mt-4 pt-4">
-      <vue-apex-charts
-          class="mx-2"
-          type="rangeBar"
-          height="350"
-          ref="chart"
-          :options="chartOptions"
-          :series="series"
-      ></vue-apex-charts>
+      <bar-chart :chart-data="chartData"></bar-chart>
+<!--      <vue-apex-charts-->
+<!--          class="mx-2"-->
+<!--          type="rangeBar"-->
+<!--          height="350"-->
+<!--          ref="chart"-->
+<!--          :options="chartOptions"-->
+<!--          :series="series"-->
+<!--      ></vue-apex-charts>-->
       <v-spacer class="py-4"></v-spacer>
     </v-card>
 
@@ -218,6 +219,7 @@ import {
   createEmptyAirjoyDeviceA,
 } from '@/packet/airjoy';
 import * as _ from 'lodash';
+import BarChart from '@/components/chart/BarChart.vue'
 
 export function dateToText(time: Date) {
   const year = time.getFullYear();
@@ -258,8 +260,13 @@ const INDEX_TEMPERATURE = 4;
 const INDEX_VOC = 5;
 
 
+function getRandomInt() {
+  return Math.floor(Math.random() * (50 - 5 + 1)) + 5
+}
+
 @Component({
   components: {
+    BarChart,
     ToolbarBreadcrumbs,
     VueApexCharts,
   }
@@ -296,43 +303,58 @@ export default class MainAirjoyChart extends VueBase {
     },
   ];
 
-  readonly chartOptions = {
-    theme: {
-      mode: this.$vuetify.theme.dark ? 'dark' : 'light',
-    },
-    chart: {
-      height: 350,
-      type: 'rangeBar',
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false
+  chartData = {
+    labels: [getRandomInt(), getRandomInt()],
+    datasets: [
+      {
+        label: 'Data One',
+        backgroundColor: '#f87979',
+        data: [getRandomInt(), getRandomInt()]
+      }, {
+        label: 'Data One',
+        backgroundColor: '#f87979',
+        data: [getRandomInt(), getRandomInt()]
       }
-    },
-    // title: {
-    //   text: 'CandleStick Chart - Category X-axis',
-    //   align: 'left'
-    // },
-    tooltip: {
-      enabled: true,
-    },
-    xaxis: {
-      type: 'datetime',
-    //   labels: {
-    //     formatter: function(val) {
-    //       const n = Date.parse(val)
-    //       const d = new Date(n);
-    //       const s = d.toLocaleString();
-    //       return s;
-    //     }
-    //   }
-    },
-    yaxis: {
-    //   tooltip: {
-    //     enabled: true
-    //   }
-    }
+    ]
   };
+
+  // readonly chartOptions = {
+  //   theme: {
+  //     mode: this.$vuetify.theme.dark ? 'dark' : 'light',
+  //   },
+  //   chart: {
+  //     height: 350,
+  //     type: 'rangeBar',
+  //   },
+  //   plotOptions: {
+  //     bar: {
+  //       horizontal: false
+  //     }
+  //   },
+  //   // title: {
+  //   //   text: 'CandleStick Chart - Category X-axis',
+  //   //   align: 'left'
+  //   // },
+  //   tooltip: {
+  //     enabled: true,
+  //   },
+  //   xaxis: {
+  //     type: 'datetime',
+  //   //   labels: {
+  //   //     formatter: function(val) {
+  //   //       const n = Date.parse(val)
+  //   //       const d = new Date(n);
+  //   //       const s = d.toLocaleString();
+  //   //       return s;
+  //   //     }
+  //   //   }
+  //   },
+  //   yaxis: {
+  //   //   tooltip: {
+  //   //     enabled: true
+  //   //   }
+  //   }
+  // };
 
   series = [];
 
@@ -355,7 +377,7 @@ export default class MainAirjoyChart extends VueBase {
   items = [] as Array<AirjoySensorA>;
 
   created() {
-    let uid = undefined;
+    let uid: any = undefined;
     if (!!this.$route.params.device && this.$route.params.device !== UNKNOWN_DEVICE) {
       uid = Number.parseInt(this.$route.params.device);
     }
@@ -411,7 +433,12 @@ export default class MainAirjoyChart extends VueBase {
           this.loadingDevices = false;
           this.devices = items;
           if (typeof device !== 'undefined') {
-            this.device = this.devices.find(i => i.uid === device);
+            const findDevice = this.devices.find(i => i.uid === device);
+            if (typeof findDevice !== 'undefined') {
+              this.device = findDevice;
+            } else {
+              this.device = createEmptyAirjoyDeviceA();
+            }
           } else {
             this.device = createEmptyAirjoyDeviceA();
           }
@@ -429,7 +456,7 @@ export default class MainAirjoyChart extends VueBase {
 
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    const device = this.device.uid;
+    const device = this.device.uid.toString();
     this.$api2.getAirjoyChart(group, project, device, this.periodStart, this.periodEnd)
         .then(items => {
           this.items = items;
@@ -442,56 +469,56 @@ export default class MainAirjoyChart extends VueBase {
   }
 
   updateSeries() {
-    const pm10 = [];
-    const pm2_5 = [];
-    const co2 = [];
-    const humidity = [];
-    const temperature = [];
-    const voc = [];
-
-    for (const item of this.items) {
-      const time = new Date(item.time);
-      pm10.push({x: time, y: item.pm10});
-      pm2_5.push({x: time, y: item.pm2_5});
-      co2.push({x: time, y: item.co2});
-      humidity.push({x: time, y: item.humidity});
-      temperature.push({x: time, y: item.temperature});
-      voc.push({x: time, y: item.voc});
-    }
-
-    let series;
-    switch (this.categoryIndex) {
-      case INDEX_PM10:
-        series = pm10;
-        break;
-      case INDEX_PM2_5:
-        series = pm2_5;
-        break;
-      case INDEX_CO2:
-        series = co2;
-        break;
-      case INDEX_HUMIDITY:
-        series = humidity;
-        break;
-      case INDEX_TEMPERATURE:
-        series = temperature;
-        break;
-      case INDEX_VOC:
-        series = voc;
-        break;
-    }
-
-    const data = [];
-    for (const chunk of _.chunk(series, CHUNK_SIZE)) {
-      const timeMin = _.minBy(chunk, o => o.x);
-      const timeMax = _.maxBy(chunk, o => o.x);
-      const dataMin = _.minBy(chunk, o => o.y);
-      const dataMax = _.maxBy(chunk, o => o.y);
-      data.push({x: timeMin.x, y: [dataMin.y, dataMax.y]});
-    }
-
-    this.series = [{data: data}];
-    this.$refs.chart.updateSeries(this.series);
+    // const pm10 = [];
+    // const pm2_5 = [];
+    // const co2 = [];
+    // const humidity = [];
+    // const temperature = [];
+    // const voc = [];
+    //
+    // for (const item of this.items) {
+    //   const time = new Date(item.time);
+    //   pm10.push({x: time, y: item.pm10});
+    //   pm2_5.push({x: time, y: item.pm2_5});
+    //   co2.push({x: time, y: item.co2});
+    //   humidity.push({x: time, y: item.humidity});
+    //   temperature.push({x: time, y: item.temperature});
+    //   voc.push({x: time, y: item.voc});
+    // }
+    //
+    // let series;
+    // switch (this.categoryIndex) {
+    //   case INDEX_PM10:
+    //     series = pm10;
+    //     break;
+    //   case INDEX_PM2_5:
+    //     series = pm2_5;
+    //     break;
+    //   case INDEX_CO2:
+    //     series = co2;
+    //     break;
+    //   case INDEX_HUMIDITY:
+    //     series = humidity;
+    //     break;
+    //   case INDEX_TEMPERATURE:
+    //     series = temperature;
+    //     break;
+    //   case INDEX_VOC:
+    //     series = voc;
+    //     break;
+    // }
+    //
+    // const data = [];
+    // for (const chunk of _.chunk(series, CHUNK_SIZE)) {
+    //   const timeMin = _.minBy(chunk, o => o.x);
+    //   const timeMax = _.maxBy(chunk, o => o.x);
+    //   const dataMin = _.minBy(chunk, o => o.y);
+    //   const dataMax = _.maxBy(chunk, o => o.y);
+    //   data.push({x: timeMin.x, y: [dataMin.y, dataMax.y]});
+    // }
+    //
+    // this.series = [{data: data}];
+    // this.$refs.chart.updateSeries(this.series);
   }
 
   onInputPeriodStart() {

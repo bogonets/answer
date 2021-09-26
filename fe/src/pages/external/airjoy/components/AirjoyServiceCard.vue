@@ -301,6 +301,9 @@ export default class AirjoyServiceCard extends VueBase {
 
   @Emit()
   ok() {
+    if (typeof this.device === 'undefined') {
+      throw TypeError('Airjoy device is not selected.');
+    }
     return {
       uid: this.device.uid,
       author: this.author,
