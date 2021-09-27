@@ -1,5 +1,12 @@
-export function now() {
+export function today() {
     return new Date(Date.now());
+}
+
+export function yesterday() {
+  const date = today();
+  const result = new Date();
+  result.setDate(date.getDate() - 1);
+  return result;
 }
 
 export function dateString(year: number, month: number, day: number) {
@@ -18,6 +25,10 @@ export function dateToString(date: Date) {
     return dateString(year, month, day);
 }
 
-export function nowString() {
-    return dateToString(now());
+export function todayString() {
+    return dateToString(today());
+}
+
+export function yesterdayString() {
+    return dateToString(yesterday());
 }

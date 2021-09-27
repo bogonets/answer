@@ -19,6 +19,7 @@ en:
   msg:
     empty_device: "Empty device"
     empty_category: "Empty category"
+    no_chart: "No device or category selected"
   range:
     d90: "90d"
     d30: "30d"
@@ -45,6 +46,7 @@ ko:
   msg:
     empty_device: "Empty device"
     empty_category: "Empty category"
+    no_chart: "장치 또는 카테고리가 선택되지 않았습니다"
   range:
     d90: "90일"
     d30: "30일"
@@ -187,17 +189,16 @@ ko:
       </v-col>
     </v-row>
 
-    <v-card class="mt-4 pt-4">
-      <bar-chart :chart-data="chartData"></bar-chart>
-<!--      <vue-apex-charts-->
-<!--          class="mx-2"-->
-<!--          type="rangeBar"-->
-<!--          height="350"-->
-<!--          ref="chart"-->
-<!--          :options="chartOptions"-->
-<!--          :series="series"-->
-<!--      ></vue-apex-charts>-->
-      <v-spacer class="py-4"></v-spacer>
+    <v-card class="my-4 py-4">
+      <div v-if="noChart" class="d-flex flex-column align-center">
+        <v-icon x-large>
+          mdi-chart-bar
+        </v-icon>
+        <div class="text--secondary text-subtitle-1 text-center">
+          {{ $t('msg.no_chart') }}
+        </div>
+      </div>
+      <bar-chart v-else :chart-data="chartData"></bar-chart>
     </v-card>
 
   </v-container>
@@ -207,58 +208,22 @@ ko:
 import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import VueApexCharts from 'vue-apexcharts';
+import BarChart from '@/components/chart/BarChart.vue'
 import type {AirjoyDeviceA, AirjoySensorA} from '@/packet/airjoy';
 import {
-  CATEGORY_PM10,
-  CATEGORY_PM2_5,
-  CATEGORY_CO2,
-  CATEGORY_HUMIDITY,
-  CATEGORY_TEMPERATURE,
-  CATEGORY_VOC,
-  createEmptyAirjoyDeviceA,
+  UNKNOWN_ROUTE_PARAMS_DEVICE,
+  INDEX_UNKNOWN,
+  categoryIndexByName,
+  printableCategoryNames,
 } from '@/packet/airjoy';
-import * as _ from 'lodash';
-import BarChart from '@/components/chart/BarChart.vue'
-
-export function dateToText(time: Date) {
-  const year = time.getFullYear();
-  const month = time.getMonth() + 1;
-  const day = time.getDate();
-  const yearText = `${year}`.padStart(4, '0');
-  const monthText = `${month}`.padStart(2, '0');
-  const dayText = `${day}`.padStart(2, '0');
-  return `${yearText}-${monthText}-${dayText}`;
-}
-
-export function today() {
-  return dateToText(new Date(Date.now()));
-}
-
-export function yesterday() {
-  const now = new Date(Date.now());
-  const start = new Date();
-  start.setDate(now.getDate() - 1);
-  return dateToText(start);
-}
+import {dateToString, todayString, yesterdayString} from '@/chrono/date';
 
 export function dateRange(days: number) {
   const end = new Date(Date.now());
   const start = new Date();
   start.setDate(end.getDate() - days);
-  return [dateToText(start), dateToText(end)];
+  return [dateToString(start), dateToString(end)];
 }
-
-const UNKNOWN_DEVICE = '-';
-const CHUNK_SIZE = 10;
-
-const INDEX_PM10 = 0;
-const INDEX_PM2_5 = 1;
-const INDEX_CO2 = 2;
-const INDEX_HUMIDITY = 3;
-const INDEX_TEMPERATURE = 4;
-const INDEX_VOC = 5;
-
 
 function getRandomInt() {
   return Math.floor(Math.random() * (50 - 5 + 1)) + 5
@@ -268,7 +233,6 @@ function getRandomInt() {
   components: {
     BarChart,
     ToolbarBreadcrumbs,
-    VueApexCharts,
   }
 })
 export default class MainAirjoyChart extends VueBase {
@@ -318,58 +282,18 @@ export default class MainAirjoyChart extends VueBase {
     ]
   };
 
-  // readonly chartOptions = {
-  //   theme: {
-  //     mode: this.$vuetify.theme.dark ? 'dark' : 'light',
-  //   },
-  //   chart: {
-  //     height: 350,
-  //     type: 'rangeBar',
-  //   },
-  //   plotOptions: {
-  //     bar: {
-  //       horizontal: false
-  //     }
-  //   },
-  //   // title: {
-  //   //   text: 'CandleStick Chart - Category X-axis',
-  //   //   align: 'left'
-  //   // },
-  //   tooltip: {
-  //     enabled: true,
-  //   },
-  //   xaxis: {
-  //     type: 'datetime',
-  //   //   labels: {
-  //   //     formatter: function(val) {
-  //   //       const n = Date.parse(val)
-  //   //       const d = new Date(n);
-  //   //       const s = d.toLocaleString();
-  //   //       return s;
-  //   //     }
-  //   //   }
-  //   },
-  //   yaxis: {
-  //   //   tooltip: {
-  //   //     enabled: true
-  //   //   }
-  //   }
-  // };
-
-  series = [];
-
   @Prop({type: Number, default: 40})
   readonly datePickerSize!: number;
 
   loadingDevices = false;
-  device = createEmptyAirjoyDeviceA();
+  device?: number | AirjoyDeviceA = -1;
   devices = [] as Array<AirjoyDeviceA>;
 
   showPeriodStartMenu = false;
-  periodStart = yesterday();
+  periodStart = yesterdayString();
 
   showPeriodEndMenu = false;
-  periodEnd = today();
+  periodEnd = todayString();
 
   category = '';
 
@@ -377,54 +301,36 @@ export default class MainAirjoyChart extends VueBase {
   items = [] as Array<AirjoySensorA>;
 
   created() {
-    let uid: any = undefined;
-    if (!!this.$route.params.device && this.$route.params.device !== UNKNOWN_DEVICE) {
-      uid = Number.parseInt(this.$route.params.device);
-    }
-    this.updateDevices(uid);
-
-    const index = this.getCategoryIndexByEnum(this.$route.params.category);
-    if (index !== -1) {
+    const index = categoryIndexByName(this.$route.params.category);
+    if (index !== INDEX_UNKNOWN) {
       this.category = this.categories[index];
     } else {
       this.category = this.categories[0];
     }
-  }
 
-  getCategoryIndexByEnum(name: string) {
-    if (name === CATEGORY_PM10) {
-      return INDEX_PM10;
-    } else if (name === CATEGORY_PM2_5) {
-      return INDEX_PM2_5;
-    } else if (name === CATEGORY_CO2) {
-      return INDEX_CO2;
-    } else if (name === CATEGORY_HUMIDITY) {
-      return INDEX_HUMIDITY;
-    } else if (name === CATEGORY_TEMPERATURE) {
-      return INDEX_TEMPERATURE;
-    } else if (name === CATEGORY_VOC) {
-      return INDEX_VOC;
-    } else {
-      return -1;
-    }
+    this.updateDevices();
   }
 
   get categories() {
-    return [
-      this.$t('categories.pm10').toString(),
-      this.$t('categories.pm2_5').toString(),
-      this.$t('categories.co2').toString(),
-      this.$t('categories.humidity').toString(),
-      this.$t('categories.temperature').toString(),
-      this.$t('categories.voc').toString(),
-    ];
+    return printableCategoryNames(this.$vuetify.lang.current);
   }
 
-  get categoryIndex() {
-    return this.categories.findIndex(i => i === this.category);
+  // get categoryIndex() {
+  //   return this.categories.findIndex(i => i === this.category);
+  // }
+
+  get noChart() {
+    return typeof this.device !== 'object' || !this.category;
   }
 
-  updateDevices(device?: number) {
+  get selectedAirjoyUid() {
+    if (this.$route.params.device !== UNKNOWN_ROUTE_PARAMS_DEVICE) {
+      return Number.parseInt(this.$route.params.device);
+    }
+    return undefined;
+  }
+
+  updateDevices() {
     this.loadingDevices = true;
     const group = this.$route.params.group;
     const project = this.$route.params.project;
@@ -432,15 +338,10 @@ export default class MainAirjoyChart extends VueBase {
         .then(items => {
           this.loadingDevices = false;
           this.devices = items;
-          if (typeof device !== 'undefined') {
-            const findDevice = this.devices.find(i => i.uid === device);
-            if (typeof findDevice !== 'undefined') {
-              this.device = findDevice;
-            } else {
-              this.device = createEmptyAirjoyDeviceA();
-            }
+          if (typeof this.selectedAirjoyUid !== 'undefined') {
+            this.device = this.devices.find(i => i.uid === this.selectedAirjoyUid);
           } else {
-            this.device = createEmptyAirjoyDeviceA();
+            this.device = undefined;
           }
         })
         .catch(error => {
@@ -450,13 +351,13 @@ export default class MainAirjoyChart extends VueBase {
   }
 
   updateChart() {
-    if (!this.device.uid) {
+    if (typeof this.device !== 'object') {
       return;
     }
 
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    const device = this.device.uid.toString();
+    const device = this.device.uid;
     this.$api2.getAirjoyChart(group, project, device, this.periodStart, this.periodEnd)
         .then(items => {
           this.items = items;
@@ -523,23 +424,19 @@ export default class MainAirjoyChart extends VueBase {
 
   onInputPeriodStart() {
     this.showPeriodStartMenu = true;
-    console.log('onInputPeriodStart');
     this.updateChart();
   }
 
   onInputPeriodEnd() {
     this.showPeriodEndMenu = true;
-    console.log('onInputPeriodEnd');
     this.updateChart();
   }
 
   onChangeDevice() {
-    console.log('onChangeDevice');
     this.updateChart();
   }
 
   onChangeCategory() {
-    console.log('onChangeCategory');
     this.updateChart();
   }
 
@@ -547,7 +444,6 @@ export default class MainAirjoyChart extends VueBase {
     const range = dateRange(90);
     this.periodStart = range[0];
     this.periodEnd = range[1];
-    console.log('onClickRange90d');
     this.updateChart();
   }
 
@@ -555,7 +451,6 @@ export default class MainAirjoyChart extends VueBase {
     const range = dateRange(30);
     this.periodStart = range[0];
     this.periodEnd = range[1];
-    console.log('onClickRange30d');
     this.updateChart();
   }
 
@@ -563,7 +458,6 @@ export default class MainAirjoyChart extends VueBase {
     const range = dateRange(7);
     this.periodStart = range[0];
     this.periodEnd = range[1];
-    console.log('onClickRange7d');
     this.updateChart();
   }
 
@@ -571,7 +465,6 @@ export default class MainAirjoyChart extends VueBase {
     const range = dateRange(1);
     this.periodStart = range[0];
     this.periodEnd = range[1];
-    console.log('onClickRange1d');
     this.updateChart();
   }
 }

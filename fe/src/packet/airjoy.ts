@@ -1,3 +1,4 @@
+export const CATEGORY_UNKNOWN = '';
 export const CATEGORY_PM10 = 'pm10';
 export const CATEGORY_PM2_5 = 'pm2.5';
 export const CATEGORY_CO2 = 'co2';
@@ -5,7 +6,120 @@ export const CATEGORY_HUMIDITY = 'humidity';
 export const CATEGORY_TEMPERATURE = 'temperature';
 export const CATEGORY_VOC = 'voc';
 
+export const INDEX_UNKNOWN = -1;
+export const INDEX_PM10 = 0;
+export const INDEX_PM2_5 = 1;
+export const INDEX_CO2 = 2;
+export const INDEX_HUMIDITY = 3;
+export const INDEX_TEMPERATURE = 4;
+export const INDEX_VOC = 5;
+
+export function categoryIndexByName(name: string) {
+    if (name === CATEGORY_PM10) {
+        return INDEX_PM10;
+    } else if (name === CATEGORY_PM2_5) {
+        return INDEX_PM2_5;
+    } else if (name === CATEGORY_CO2) {
+        return INDEX_CO2;
+    } else if (name === CATEGORY_HUMIDITY) {
+        return INDEX_HUMIDITY;
+    } else if (name === CATEGORY_TEMPERATURE) {
+        return INDEX_TEMPERATURE;
+    } else if (name === CATEGORY_VOC) {
+        return INDEX_VOC;
+    } else {
+        return INDEX_UNKNOWN;
+    }
+}
+
+export function categoryNameByIndex(index: number) {
+    switch (index) {
+        case INDEX_PM10:
+            return CATEGORY_PM10;
+        case INDEX_PM2_5:
+            return CATEGORY_PM2_5;
+        case INDEX_CO2:
+            return CATEGORY_CO2;
+        case INDEX_HUMIDITY:
+            return CATEGORY_HUMIDITY;
+        case INDEX_TEMPERATURE:
+            return CATEGORY_TEMPERATURE;
+        case INDEX_VOC:
+            return CATEGORY_VOC;
+        default:
+            return CATEGORY_UNKNOWN;
+    }
+}
+
+export const PRINTABLE_CATEGORY_NAME = {
+    'ko': {
+        'pm10': '미세먼지',
+        'pm2.5': '초미세먼지',
+        'co2': '이산화탄소',
+        'humidity': '습도',
+        'temperature': '온도',
+        'voc': 'VOC',
+    },
+    'en': {
+        'pm10': 'PM10',
+        'pm2.5': 'PM2.5',
+        'co2': 'CO2',
+        'humidity': 'Humidity',
+        'temperature': 'Temperature',
+        'voc': 'VOC',
+    },
+};
+
+export function printableCategoryNameByIndex(index: number, lang: string) {
+    switch (index) {
+        case INDEX_PM10:
+            return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_PM10];
+        case INDEX_PM2_5:
+            return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_PM2_5];
+        case INDEX_CO2:
+            return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_CO2];
+        case INDEX_HUMIDITY:
+            return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_HUMIDITY];
+        case INDEX_TEMPERATURE:
+            return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_TEMPERATURE];
+        case INDEX_VOC:
+            return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_VOC];
+        default:
+            return CATEGORY_UNKNOWN;
+    }
+}
+
+export function printableCategoryIndexByName(index: number, lang: string) {
+    if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_PM10]) {
+        return INDEX_PM10;
+    } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_PM2_5]) {
+        return INDEX_PM2_5;
+    } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_CO2]) {
+        return INDEX_CO2;
+    } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_HUMIDITY]) {
+        return INDEX_HUMIDITY;
+    } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_TEMPERATURE]) {
+        return INDEX_TEMPERATURE;
+    } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_VOC]) {
+        return INDEX_VOC;
+    } else {
+        return INDEX_UNKNOWN;
+    }
+}
+
+export function printableCategoryNames(lang: string) {
+    return [
+        printableCategoryNameByIndex(INDEX_PM10, lang),
+        printableCategoryNameByIndex(INDEX_PM2_5, lang),
+        printableCategoryNameByIndex(INDEX_CO2, lang),
+        printableCategoryNameByIndex(INDEX_HUMIDITY, lang),
+        printableCategoryNameByIndex(INDEX_TEMPERATURE, lang),
+        printableCategoryNameByIndex(INDEX_VOC, lang),
+    ];
+}
+
 export const UNKNOWN_AIRJOY_UID = 0;
+export const UNKNOWN_ROUTE_PARAMS_DEVICE = '-';
 
 export interface AirjoySensorA {
     name: string;

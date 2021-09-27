@@ -160,7 +160,7 @@ import type {AirjoyDeviceA, AirjoyServiceA} from '@/packet/airjoy';
 import {UNKNOWN_AIRJOY_UID} from '@/packet/airjoy';
 import {VForm} from 'vuetify/lib/components/VForm';
 import requiredField from '@/rules/required';
-import {nowString} from '@/chrono/date';
+import {todayString} from '@/chrono/date';
 import {splitDateAndTime} from '@/chrono/iso8601';
 
 export interface ServiceInfo {
@@ -206,12 +206,12 @@ export default class AirjoyServiceCard extends VueBase {
 
   originalUid = 0;
   originalAuthor = '';
-  originalTime = nowString();
+  originalTime = todayString();
   originalDescription = '';
 
   device?: AirjoyDeviceA = undefined;
   author = '';
-  time = nowString();
+  time = todayString();
   description = '';
 
   created() {
@@ -224,7 +224,7 @@ export default class AirjoyServiceCard extends VueBase {
   }
 
   updateForms(service?: AirjoyServiceA) {
-    const time = service?.time || nowString();
+    const time = service?.time || todayString();
 
     this.originalUid = service?.airjoy_uid || UNKNOWN_AIRJOY_UID;
     this.originalAuthor = service?.author || '';
