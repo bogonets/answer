@@ -208,14 +208,19 @@ ko:
 import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-// import BarChart from '@/components/chart/BarChart.vue'
 import {dateToString, todayString, yesterdayString} from '@/chrono/date';
-import type {AirjoyDeviceA, AirjoySensorA} from '@/packet/airjoy';
+import type {AirjoyChartA, AirjoyDeviceA} from '@/packet/airjoy';
 import {
   UNKNOWN_ROUTE_PARAMS_DEVICE,
   INDEX_UNKNOWN,
+  INDEX_HUMIDITY,
+  INDEX_TEMPERATURE,
   categoryIndexByName,
   printableCategoryNames,
+  printableCategoryIndexByName,
+  categoryNameByIndex,
+  calcHumidity,
+  calcTemperature,
 } from '@/packet/airjoy';
 import {BarChart} from 'vue-chart-3'
 
@@ -276,73 +281,29 @@ export default class MainAirjoyChart extends VueBase {
         display: false,
       },
     },
-
-    // plugins: {
-    //   legend: {
-    //     display: false,
-    //   },
-    //   streaming: {
-    //     duration: 20000
-    //   },
-    // },
-    // scales: {
-    //   x: {
-    //     type: 'realtime',
-    //     // Change options only for THIS AXIS
-    //     realtime: {
-    //       duration: 20000
-    //     }
-    //   }
-    // },
-
-    // plugins: {
-    //   title: {
-    //     display: true,
-    //     text: 'Grid Line Settings'
-    //   },
-    //   legend: {
-    //     position: 'bottom',
-    //   },
-    // },
-    // scales: {
-    //   xAxis: {
-    //     min: 0,
-    //   }
-    // },
-  };
-
-  chartData = {
-    labels: [getRandomInt(), getRandomInt()],
-    datasets: [
-      {
-        label: 'Data One',
-        backgroundColor: '#f87979',
-        data: [getRandomInt(), getRandomInt()]
-      }, {
-        label: 'Data One',
-        backgroundColor: '#f87979',
-        data: [getRandomInt(), getRandomInt()]
+    scales: {
+      x: {
+        min: 0,
       }
-    ]
+    },
   };
 
   @Prop({type: Number, default: 40})
   readonly datePickerSize!: number;
 
+  chartData = {};
+
   loadingDevices = false;
   device?: number | AirjoyDeviceA = -1;
   devices = [] as Array<AirjoyDeviceA>;
+
+  category = '';
 
   showPeriodStartMenu = false;
   periodStart = yesterdayString();
 
   showPeriodEndMenu = false;
   periodEnd = todayString();
-
-  category = '';
-
-  loading = false;
-  items = [] as Array<AirjoySensorA>;
 
   created() {
     const index = categoryIndexByName(this.$route.params.category);
@@ -358,10 +319,6 @@ export default class MainAirjoyChart extends VueBase {
   get categories() {
     return printableCategoryNames(this.$vuetify.lang.current);
   }
-
-  // get categoryIndex() {
-  //   return this.categories.findIndex(i => i === this.category);
-  // }
 
   get noChart() {
     return typeof this.device !== 'object' || !this.category;
@@ -402,68 +359,52 @@ export default class MainAirjoyChart extends VueBase {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     const device = this.device.uid;
-    this.$api2.getAirjoyChart(group, project, device, this.periodStart, this.periodEnd)
+    const start = this.periodStart;
+    const end = this.periodEnd;
+    const lang = this.$vuetify.lang.current;
+    const categoryIndex = printableCategoryIndexByName(this.category, lang);
+    const category = categoryNameByIndex(categoryIndex);
+
+    this.$api2.getAirjoyChart(group, project, device, start, end, category)
         .then(items => {
-          this.items = items;
           this.toastRequestSuccess();
-          this.updateSeries();
+          this.updateSeries(categoryIndex, items);
         })
         .catch(error => {
           this.toastRequestFailure(error);
         });
   }
 
-  updateSeries() {
-    // const pm10 = [];
-    // const pm2_5 = [];
-    // const co2 = [];
-    // const humidity = [];
-    // const temperature = [];
-    // const voc = [];
-    //
-    // for (const item of this.items) {
-    //   const time = new Date(item.time);
-    //   pm10.push({x: time, y: item.pm10});
-    //   pm2_5.push({x: time, y: item.pm2_5});
-    //   co2.push({x: time, y: item.co2});
-    //   humidity.push({x: time, y: item.humidity});
-    //   temperature.push({x: time, y: item.temperature});
-    //   voc.push({x: time, y: item.voc});
-    // }
-    //
-    // let series;
-    // switch (this.categoryIndex) {
-    //   case INDEX_PM10:
-    //     series = pm10;
-    //     break;
-    //   case INDEX_PM2_5:
-    //     series = pm2_5;
-    //     break;
-    //   case INDEX_CO2:
-    //     series = co2;
-    //     break;
-    //   case INDEX_HUMIDITY:
-    //     series = humidity;
-    //     break;
-    //   case INDEX_TEMPERATURE:
-    //     series = temperature;
-    //     break;
-    //   case INDEX_VOC:
-    //     series = voc;
-    //     break;
-    // }
-    //
-    // const data = [];
-    // for (const chunk of _.chunk(series, CHUNK_SIZE)) {
-    //   const timeMin = _.minBy(chunk, o => o.x);
-    //   const timeMax = _.maxBy(chunk, o => o.x);
-    //   const dataMin = _.minBy(chunk, o => o.y);
-    //   const dataMax = _.maxBy(chunk, o => o.y);
-    //   data.push({x: timeMin.x, y: [dataMin.y, dataMax.y]});
-    // }
-    //
-    // this.series = [{data: data}];
-    // this.$refs.chart.updateSeries(this.series);
+  updateSeries(categoryIndex: number, items: Array<AirjoyChartA>) {
+    const labels: Array<string> = [];
+    const data: Array<Array<number>> = [];
+    for (const item of items) {
+      labels.push(item.bucket)
+
+      if (categoryIndex == INDEX_HUMIDITY) {
+        const min = calcHumidity(item.min);
+        const max = calcHumidity(item.max);
+        data.push([min, max]);
+      } else if (categoryIndex == INDEX_TEMPERATURE) {
+        const min = calcTemperature(item.min);
+        const max = calcTemperature(item.max);
+        data.push([min, max]);
+      } else {
+        data.push([item.min, item.max]);
+      }
+    }
+
+    const background = this.$vuetify.theme.currentTheme.primary || 'blue';
+    this.chartData = {
+      labels: labels,
+      datasets: [
+        {
+          label: this.category,
+          backgroundColor: background,
+          data: data,
+        }
+      ],
+    };
   }
 
   onInputPeriodStart() {

@@ -1,6 +1,6 @@
 export const CATEGORY_UNKNOWN = '';
 export const CATEGORY_PM10 = 'pm10';
-export const CATEGORY_PM2_5 = 'pm2.5';
+export const CATEGORY_PM2_5 = 'pm2_5';
 export const CATEGORY_CO2 = 'co2';
 export const CATEGORY_HUMIDITY = 'humidity';
 export const CATEGORY_TEMPERATURE = 'temperature';
@@ -13,6 +13,14 @@ export const INDEX_CO2 = 2;
 export const INDEX_HUMIDITY = 3;
 export const INDEX_TEMPERATURE = 4;
 export const INDEX_VOC = 5;
+
+export function calcHumidity(value: number) {
+    return value / 10.0;
+}
+
+export function calcTemperature(value: number) {
+    return (value - 500.0) / 10.0;
+}
 
 export function categoryIndexByName(name: string) {
     if (name === CATEGORY_PM10) {
@@ -54,7 +62,7 @@ export function categoryNameByIndex(index: number) {
 export const PRINTABLE_CATEGORY_NAME = {
     'ko': {
         'pm10': '미세먼지',
-        'pm2.5': '초미세먼지',
+        'pm2_5': '초미세먼지',
         'co2': '이산화탄소',
         'humidity': '습도',
         'temperature': '온도',
@@ -62,7 +70,7 @@ export const PRINTABLE_CATEGORY_NAME = {
     },
     'en': {
         'pm10': 'PM10',
-        'pm2.5': 'PM2.5',
+        'pm2_5': 'PM2.5',
         'co2': 'CO2',
         'humidity': 'Humidity',
         'temperature': 'Temperature',
@@ -89,7 +97,7 @@ export function printableCategoryNameByIndex(index: number, lang: string) {
     }
 }
 
-export function printableCategoryIndexByName(index: number, lang: string) {
+export function printableCategoryIndexByName(name: string, lang: string) {
     if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_PM10]) {
         return INDEX_PM10;
     } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_PM2_5]) {
@@ -183,9 +191,18 @@ export interface AirjoyControlQ {
     time_reservation?: number;
 }
 
+export interface AirjoyChartA {
+    bucket: string;
+    min: number;
+    max: number;
+}
+
 export interface AirjoyChartQ {
     begin: string;
     end: string;
+    category: string;
+    period?: string;
+    origin?: string;
 }
 
 export interface AirjoyServiceA {
@@ -404,36 +421,6 @@ export function createDemoAirjoyDevices() {
     items[2].sleep_mode = 1;
     items[3].sleep_mode = 1;
     items[4].sleep_mode = 1;
-
-    return items;
-}
-
-export function createDemoAirjoyServices() {
-    const items = [
-        createEmptyAirjoyServiceA(),
-        createEmptyAirjoyServiceA(),
-        createEmptyAirjoyServiceA(),
-        createEmptyAirjoyServiceA(),
-        createEmptyAirjoyServiceA(),
-    ];
-
-    items[0].author = 'User0'
-    items[1].author = 'User1'
-    items[2].author = 'Name2'
-    items[3].author = 'Name3'
-    items[4].author = 'Name4'
-
-    items[0].description = 'Description0'
-    items[1].description = 'Description1'
-    items[2].description = 'Brief2'
-    items[3].description = 'Brief3'
-    items[4].description = 'Brief4'
-
-    items[0].time = '2021-01-01'
-    items[1].time = '2021-02-03'
-    items[2].time = '2021-03-20'
-    items[3].time = '2021-04-12'
-    items[4].time = '2021-05-30'
 
     return items;
 }

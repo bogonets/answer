@@ -11,6 +11,7 @@ import type {
     CreateAirjoyDeviceQ,
     UpdateAirjoyDeviceQ,
     AirjoyControlQ,
+    AirjoyChartA,
     AirjoyChartQ,
     AirjoyServiceA,
     CreateAirjoyServiceQ,
@@ -581,13 +582,15 @@ export default class ApiV2 {
         device: number | string,
         begin: string,
         end: string,
+        category: string,
     ) {
         const body = {
             begin: begin,
             end: end,
+            category: category,
         } as AirjoyChartQ;
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}/chart`;
-        return this.post<Array<AirjoySensorA>>(url, body);  // TODO: Change to 'GET' method
+        return this.post<Array<AirjoyChartA>>(url, body);  // TODO: Change to 'GET' method
     }
 
     getAirjoyServices(
