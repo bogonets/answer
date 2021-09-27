@@ -60,14 +60,10 @@ ko:
       <div class="mb-2 text--primary text-subtitle-2 text-center">
         {{ $t('title') }}
       </div>
-
-<!--      <vue-apex-charts-->
-<!--          type="line"-->
-<!--          height="350"-->
-<!--          ref="chart"-->
-<!--          :options="chartOptions"-->
-<!--          :series="series">-->
-<!--      </vue-apex-charts>-->
+      <line-chart
+          :chart-data="chartData"
+          :options="chartOptions"
+      ></line-chart>
       <v-spacer class="py-4"></v-spacer>
     </v-card>
 
@@ -84,115 +80,86 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
-import VueApexCharts from 'vue-apexcharts';
-import type {AirjoySensorA} from '@/packet/airjoy';
+import {LineChart} from 'vue-chart-3';
+import {Chart} from 'chart.js';
+import type {AirjoyDeviceA, AirjoySensorA} from '@/packet/airjoy';
 import {
-  CATEGORY_CO2,
-  CATEGORY_HUMIDITY,
-  CATEGORY_PM10,
-  CATEGORY_PM2_5,
-  CATEGORY_TEMPERATURE,
-  CATEGORY_VOC,
+  INDEX_UNKNOWN,
+  INDEX_PM10,
+  INDEX_PM2_5,
+  INDEX_CO2,
+  INDEX_HUMIDITY,
+  INDEX_TEMPERATURE,
+  INDEX_VOC,
+  categoryIndexByName,
+  printableCategoryNames,
+  printableCategoryIndexByName,
+  calcTemperature,
+  calcHumidity,
 } from '@/packet/airjoy';
-
-const INDEX_PM10 = 0;
-const INDEX_PM2_5 = 1;
-const INDEX_CO2 = 2;
-const INDEX_HUMIDITY = 3;
-const INDEX_TEMPERATURE = 4;
-const INDEX_VOC = 5;
-
-export function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min; //최댓값은 제외, 최솟값은 포함
-}
+import * as _ from 'lodash';
 
 const UPDATE_INTERVAL_MILLISECONDS = 1000;
-const Y_AXIS_COUNTER = 10;
-const Y_AXIS_RANGE = UPDATE_INTERVAL_MILLISECONDS * Y_AXIS_COUNTER;
-const MAX_SERIES = 1000;
+const STREAMING_FRAME_RATE = 30;
 
 @Component({
   components: {
     BreadcrumbMain,
-    VueApexCharts,
+    LineChart,
   }
 })
 export default class MainAirjoyLive extends VueBase {
+  chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+      },
+      streaming: {
+        pause: false,
+        frameRate: STREAMING_FRAME_RATE,
+      },
+    },
+    scales: {
+      x: {
+        type: 'realtime',
+        realtime: {
+          onRefresh: this.onChartRefresh,
+        }
+      },
+      y: {
+        min: 0
+      },
+    }
+  };
 
-  // chartOptions = {
-  //   theme: {
-  //     mode: this.$vuetify.theme.dark ? 'dark' : 'light',
-  //   },
-  //   chart: {
-  //     id: 'realtime',
-  //     type: 'line',
-  //     animations: {
-  //       enabled: true,
-  //       easing: 'linear',
-  //       dynamicAnimation: {
-  //         speed: UPDATE_INTERVAL_MILLISECONDS,
-  //       }
-  //     },
-  //     toolbar: {
-  //       show: false
-  //     },
-  //     zoom: {
-  //       enabled: false
-  //     }
-  //   },
-  //   dataLabels: {
-  //     enabled: false
-  //   },
-  //   stroke: {
-  //     curve: 'smooth'
-  //   },
-  //   xaxis: {
-  //     type: 'datetime',
-  //     range: Y_AXIS_RANGE,
-  //   },
-  //   yaxis: {
-  //   },
-  //   legend: {
-  //     show: true
-  //   },
-  // };
+  loadingDevices = false;
 
-  // series = [];
-  // series = [{
-  //   name: '',
-  //   data: [
-  //     {x: new Date(Date.now()), y: 0}
-  //   ]
-  // }];
+  originalChartData = {};
+  chartData = {};
 
-  play = true;
   category = '';
 
   intervalHandle = -1;
+  items = [] as Array<AirjoySensorA>;
 
   created() {
-    const index = this.getCategoryIndexByEnum(this.$route.params.category);
-    if (index !== -1) {
+    const index = categoryIndexByName(this.$route.params.category);
+    if (index !== INDEX_UNKNOWN) {
       this.category = this.categories[index];
     } else {
       this.category = this.categories[0];
     }
+    this.updateDevices();
   }
 
   mounted() {
     this.intervalHandle = window.setInterval(() => {
-      if (this.play) {
+      if (!this.isPause()) {
         this.updateChart();
       }
-
-      // this.series[0].data.push({x: new Date(Date.now()), y: getRandomInt(0, 100)})
-      // if (this.series[0].data.length > 100) {
-      //   this.series[0].data.splice(0, this.series[0].data.length);
-      // }
-      // // this.$refs.chart.updateSeries([{data: this.series[0].data}])
-      // this.$refs.chart.updateSeries(this.series);
     }, UPDATE_INTERVAL_MILLISECONDS);
   }
 
@@ -203,53 +170,64 @@ export default class MainAirjoyLive extends VueBase {
     }
   }
 
-  getCategoryIndexByEnum(name: string) {
-    if (name === CATEGORY_PM10) {
-      return INDEX_PM10;
-    } else if (name === CATEGORY_PM2_5) {
-      return INDEX_PM2_5;
-    } else if (name === CATEGORY_CO2) {
-      return INDEX_CO2;
-    } else if (name === CATEGORY_HUMIDITY) {
-      return INDEX_HUMIDITY;
-    } else if (name === CATEGORY_TEMPERATURE) {
-      return INDEX_TEMPERATURE;
-    } else if (name === CATEGORY_VOC) {
-      return INDEX_VOC;
-    } else {
-      return -1;
-    }
+  isPause() {
+    return this.chartOptions.plugins.streaming.pause;
   }
 
   get categories() {
-    return [
-      this.$t('categories.pm10').toString(),
-      this.$t('categories.pm2_5').toString(),
-      this.$t('categories.co2').toString(),
-      this.$t('categories.humidity').toString(),
-      this.$t('categories.temperature').toString(),
-      this.$t('categories.voc').toString(),
-    ];
-  }
-
-  get categoryIndex() {
-    return this.categories.findIndex(i => i === this.category);
+    return printableCategoryNames(this.$vuetify.lang.current);
   }
 
   get playColor() {
-    if (this.play) {
+    if (this.isPause()) {
       return 'primary';
     } else {
-      return 'error';
+      return 'primary';
     }
   }
 
   get playIcon() {
-    if (this.play) {
+    if (this.isPause()) {
       return 'mdi-play';
     } else {
       return 'mdi-pause';
     }
+  }
+
+  updateDevices() {
+    this.loadingDevices = true;
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    this.$api2.getAirjoyDevices(group, project)
+        .then(items => {
+          this.loadingDevices = false;
+          this.updateChartData(items);
+        })
+        .catch(error => {
+          this.loadingDevices = false;
+          this.toastRequestFailure(error);
+        });
+  }
+
+  updateChartData(items: Array<AirjoyDeviceA>) {
+    const background = this.$vuetify.theme.currentTheme.primary?.toString() || 'blue';
+    const chartData = {
+      datasets: [] as Array<object>
+    };
+
+    for (const item of items) {
+      const name = item.name.toString();
+      const uid = item.uid.toString();
+      const label = name ? name : uid;
+      chartData.datasets.push({
+        label: label,
+        backgroundColor: background,
+        data: [],
+      });
+    }
+
+    this.originalChartData = chartData;
+    this.chartData = _.cloneDeep(this.originalChartData);
   }
 
   updateChart() {
@@ -257,66 +235,57 @@ export default class MainAirjoyLive extends VueBase {
     const project = this.$route.params.project;
     this.$api2.getAirjoyLive(group, project)
         .then(items => {
-          this.updateSeries(items);
+          this.items = items;
         })
         .catch(error => {
           this.toastRequestFailure(error);
         });
   }
 
-  updateSeries(items: Array<AirjoySensorA>) {
-  //   for (const item of items) {
-  //     const name = item.uid.toString();
-  //
-  //     // const time = new Date(item.time);
-  //     const now = new Date(Date.now());
-  //     const offset = now.getTimezoneOffset() * 60 * 1000;
-  //     const time = new Date(Date.now() - offset);
-  //
-  //     let value;
-  //     switch (this.categoryIndex) {
-  //       case INDEX_PM10:
-  //         value = item.pm10;
-  //         break;
-  //       case INDEX_PM2_5:
-  //         value = item.pm2_5;
-  //         break;
-  //       case INDEX_CO2:
-  //         value = item.co2;
-  //         break;
-  //       case INDEX_HUMIDITY:
-  //         value = item.humidity;
-  //         break;
-  //       case INDEX_TEMPERATURE:
-  //         value = item.temperature;
-  //         break;
-  //       case INDEX_VOC:
-  //         value = item.voc;
-  //         break;
-  //     }
-  //
-  //     const series = this.series.find(i => i.name === name);
-  //     if (typeof series === 'undefined') {
-  //       this.series.push({name: name, data: [{x: time, y: value}]});
-  //     } else {
-  //       series.data.push({x: time, y: value});
-  //     }
-  //   }
-  //
-  //   if (this.series[0].data.length >= MAX_SERIES) {
-  //     this.series = [];
-  //   }
-  //
-  //   this.$refs.chart.updateSeries(this.series);
+  getSensorValue(item: AirjoySensorA) {
+    const lang = this.$vuetify.lang.current;
+    const index = printableCategoryIndexByName(this.category, lang);
+    switch (index) {
+      case INDEX_PM10:
+        return item.pm10;
+      case INDEX_PM2_5:
+        return item.pm2_5;
+      case INDEX_CO2:
+        return item.pm2_5;
+      case INDEX_HUMIDITY:
+        return calcHumidity(item.humidity);
+      case INDEX_TEMPERATURE:
+        return calcTemperature(item.temperature);
+      case INDEX_VOC:
+        return item.voc;
+      default:
+        return 0;
+    }
+  }
+
+  onChartRefresh(chart: Chart) {
+    for (const item of this.items) {
+      const name = item.name.toString();
+      const uid = item.uid.toString();
+      const label = name ? name : uid;
+      const value = this.getSensorValue(item);
+      const data = {x: Date.now(), y: value};
+
+      const dataset = chart.data.datasets.find(dataset => dataset.label == label);
+      if (typeof dataset !== 'undefined') {
+        dataset.data.push(data);
+      }
+    }
   }
 
   onChangeCategory(value) {
     console.assert(value == this.category);
-    // this.series = [];
+    this.chartData = _.cloneDeep(this.originalChartData);
   }
 
   onClickPlay() {
-    this.play = !this.play;
+    const pause = this.chartOptions.plugins.streaming.pause;
+    this.chartOptions.plugins.streaming.pause = !pause;
   }
 }
 </script>

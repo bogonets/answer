@@ -9,13 +9,6 @@ en:
   labels:
     device: "Please select a device ID to output as a chart"
     category: "Please select a category to output as a chart"
-  categories:
-    pm10: "PM10"
-    pm2_5: "PM2.5"
-    co2: "CO2"
-    humidity: "Humidity"
-    temperature: "Temperature"
-    voc: "VOC"
   msg:
     empty_device: "Empty device"
     empty_category: "Empty category"
@@ -36,13 +29,6 @@ ko:
   labels:
     device: "차트로 출력할 장치 ID를 선택하세요"
     category: "차트로 출력할 카테고리를 선택하세요"
-  categories:
-    pm10: "미세먼지"
-    pm2_5: "초미세먼지"
-    co2: "이산화탄소"
-    humidity: "습도"
-    temperature: "온도"
-    voc: "VOC"
   msg:
     empty_device: "Empty device"
     empty_category: "Empty category"
@@ -208,6 +194,7 @@ ko:
 import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
+import {BarChart} from 'vue-chart-3';
 import {dateToString, todayString, yesterdayString} from '@/chrono/date';
 import type {AirjoyChartA, AirjoyDeviceA} from '@/packet/airjoy';
 import {
@@ -222,7 +209,6 @@ import {
   calcHumidity,
   calcTemperature,
 } from '@/packet/airjoy';
-import {BarChart} from 'vue-chart-3'
 
 export function dateRange(days: number) {
   const end = new Date(Date.now());
@@ -282,7 +268,7 @@ export default class MainAirjoyChart extends VueBase {
       },
     },
     scales: {
-      x: {
+      y: {
         min: 0,
       }
     },
@@ -394,7 +380,7 @@ export default class MainAirjoyChart extends VueBase {
       }
     }
 
-    const background = this.$vuetify.theme.currentTheme.primary || 'blue';
+    const background = this.$vuetify.theme.currentTheme.primary?.toString() || 'blue';
     this.chartData = {
       labels: labels,
       datasets: [

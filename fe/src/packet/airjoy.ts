@@ -19,7 +19,12 @@ export function calcHumidity(value: number) {
 }
 
 export function calcTemperature(value: number) {
-    return (value - 500.0) / 10.0;
+    const result = (value - 500.0) / 10.0;
+    if (result >= 0) {
+        return result;
+    } else {
+        return 0;
+    }
 }
 
 export function categoryIndexByName(name: string) {
