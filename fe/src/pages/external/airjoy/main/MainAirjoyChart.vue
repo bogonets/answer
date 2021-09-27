@@ -198,7 +198,7 @@ ko:
           {{ $t('msg.no_chart') }}
         </div>
       </div>
-      <bar-chart v-else :chart-data="chartData"></bar-chart>
+      <bar-chart v-else :chart-data="chartData" :options="chartOptions"></bar-chart>
     </v-card>
 
   </v-container>
@@ -208,7 +208,8 @@ ko:
 import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import BarChart from '@/components/chart/BarChart.vue'
+// import BarChart from '@/components/chart/BarChart.vue'
+import {dateToString, todayString, yesterdayString} from '@/chrono/date';
 import type {AirjoyDeviceA, AirjoySensorA} from '@/packet/airjoy';
 import {
   UNKNOWN_ROUTE_PARAMS_DEVICE,
@@ -216,7 +217,7 @@ import {
   categoryIndexByName,
   printableCategoryNames,
 } from '@/packet/airjoy';
-import {dateToString, todayString, yesterdayString} from '@/chrono/date';
+import {BarChart} from 'vue-chart-3'
 
 export function dateRange(days: number) {
   const end = new Date(Date.now());
@@ -266,6 +267,49 @@ export default class MainAirjoyChart extends VueBase {
       disabled: true,
     },
   ];
+
+  readonly chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+
+    // plugins: {
+    //   legend: {
+    //     display: false,
+    //   },
+    //   streaming: {
+    //     duration: 20000
+    //   },
+    // },
+    // scales: {
+    //   x: {
+    //     type: 'realtime',
+    //     // Change options only for THIS AXIS
+    //     realtime: {
+    //       duration: 20000
+    //     }
+    //   }
+    // },
+
+    // plugins: {
+    //   title: {
+    //     display: true,
+    //     text: 'Grid Line Settings'
+    //   },
+    //   legend: {
+    //     position: 'bottom',
+    //   },
+    // },
+    // scales: {
+    //   xAxis: {
+    //     min: 0,
+    //   }
+    // },
+  };
 
   chartData = {
     labels: [getRandomInt(), getRandomInt()],
