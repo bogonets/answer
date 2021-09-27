@@ -5,6 +5,8 @@ export const CATEGORY_HUMIDITY = 'humidity';
 export const CATEGORY_TEMPERATURE = 'temperature';
 export const CATEGORY_VOC = 'voc';
 
+export const UNKNOWN_AIRJOY_UID = 0;
+
 export interface AirjoySensorA {
     name: string;
     time: string;

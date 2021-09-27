@@ -156,21 +156,12 @@ ko:
 <script lang="ts">
 import {Component, Prop, Emit, Ref, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import {AirjoyDeviceA, AirjoyServiceA} from '@/packet/airjoy';
-import {createEmptyAirjoyDeviceA} from '@/packet/airjoy';
-import requiredField from '@/rules/required';
+import type {AirjoyDeviceA, AirjoyServiceA} from '@/packet/airjoy';
+import {UNKNOWN_AIRJOY_UID} from '@/packet/airjoy';
 import {VForm} from 'vuetify/lib/components/VForm';
-
-export function today() {
-  const now = new Date(Date.now());
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
-  const day = now.getDate();
-  const yearText = `${year}`.padStart(4, '0');
-  const monthText = `${month}`.padStart(2, '0');
-  const dayText = `${day}`.padStart(2, '0');
-  return `${yearText}-${monthText}-${dayText}`;
-}
+import requiredField from '@/rules/required';
+import {nowString} from '@/chrono/date';
+import {splitDateAndTime} from '@/chrono/iso8601';
 
 export interface ServiceInfo {
   uid: number;
@@ -178,8 +169,6 @@ export interface ServiceInfo {
   description: string;
   time: string;
 }
-
-const UNKNOWN_UID = -1;
 
 @Component
 export default class AirjoyServiceCard extends VueBase {
@@ -217,12 +206,12 @@ export default class AirjoyServiceCard extends VueBase {
 
   originalUid = 0;
   originalAuthor = '';
-  originalTime = today();
+  originalTime = nowString();
   originalDescription = '';
 
   device?: AirjoyDeviceA = undefined;
   author = '';
-  time = today();
+  time = nowString();
   description = '';
 
   created() {
@@ -235,14 +224,14 @@ export default class AirjoyServiceCard extends VueBase {
   }
 
   updateForms(service?: AirjoyServiceA) {
-    const time = service?.time || today();
+    const time = service?.time || nowString();
 
-    this.originalUid = service?.airjoy_uid || UNKNOWN_UID;
+    this.originalUid = service?.airjoy_uid || UNKNOWN_AIRJOY_UID;
     this.originalAuthor = service?.author || '';
-    this.originalTime = time.split('T')[0];
+    this.originalTime = splitDateAndTime(time)[0];
     this.originalDescription = service?.description || '';
 
-    if (this.originalUid === UNKNOWN_UID) {
+    if (this.originalUid === UNKNOWN_AIRJOY_UID) {
       this.device = undefined;
     } else {
       this.device = this.devices.find(i => i.uid === this.originalUid);
