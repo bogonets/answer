@@ -40,11 +40,11 @@ en:
     normal: "UV Normal"
     alarm: "UV Alarm"
   categories:
-    pm10: "PM10: {0}"
-    pm2_5: "PM2.5: {0}"
-    co2: "CO2: {0}"
-    humidity: "Humidity: {0}"
-    temperature: "Temperature: {0}"
+    pm10: "PM10: {0} μg/m³"
+    pm2_5: "PM2.5: {0} μg/m³"
+    co2: "CO2: {0} ppm"
+    humidity: "Humidity: {0} %"
+    temperature: "Temperature: {0} °C"
     voc: "VOC"
     service: "Service: {0}"
     filter_life: "Filter Life: {0}"
@@ -133,11 +133,11 @@ ko:
     normal: "UV 알람이 꺼져있습니다"
     alarm: "UV 알람이 켜져있습니다"
   categories:
-    pm10: "미세먼지: {0}"
-    pm2_5: "초미세먼지: {0}"
-    co2: "이산화탄소: {0}"
-    humidity: "습도: {0}"
-    temperature: "온도: {0}"
+    pm10: "미세먼지: {0} μg/m³"
+    pm2_5: "초미세먼지: {0} μg/m³"
+    co2: "이산화탄소: {0} ppm"
+    humidity: "습도: {0} %"
+    temperature: "온도: {0} °C"
     voc: "VOC"
     service: "서비스: {0}"
     filter_life: "필터 수명: {0}"
@@ -188,178 +188,176 @@ ko:
 
 <template>
   <v-container>
-    <toolbar-breadcrumbs :items="breadcrumbs"
-    ></toolbar-breadcrumbs>
-    <v-divider></v-divider>
+    <v-progress-linear
+        height="2"
+        absolute
+        top
+        color="primary"
+        v-show="loading"
+        :indeterminate="loading"
+    ></v-progress-linear>
 
-    <v-row>
-      <v-col cols="12">
-        <v-toolbar flat>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                  class="mr-3"
-                  fab
-                  small
-                  elevation="0"
-                  :color="powerColor"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="onClickPower"
-              >
-                <v-icon>mdi-power</v-icon>
-              </v-btn>
-            </template>
-            <span>{{ powerTooltip }}</span>
-          </v-tooltip>
-
-          <v-toolbar-title>
-            {{ item.name }}
-          </v-toolbar-title>
-
-          <v-spacer></v-spacer>
-
-          <v-progress-circular
-              v-show="loading"
-              color="primary"
-              class="mr-2"
-              :indeterminate="loading"
-          ></v-progress-circular>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                  class="mr-2"
-                  :color="uvLedColor"
-                  v-bind="attrs"
-                  v-on="on"
-              >mdi-weather-sunny</v-icon>
-            </template>
-            <span>{{ uvLedDescription }}</span>
-          </v-tooltip>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                  class="mr-2"
-                  :color="onlineColor"
-                  v-bind="attrs"
-                  v-on="on"
-              >{{ onlineIcon }}</v-icon>
-            </template>
-            <span>{{ onlineDescription }}</span>
-          </v-tooltip>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-chip class="mr-2" outlined color="primary" v-bind="attrs" v-on="on">
-                <v-icon left>mdi-identifier</v-icon>
-                {{ item.uid }}
-              </v-chip>
-            </template>
-            <span>{{ $t('tooltip.id') }}</span>
-          </v-tooltip>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-chip v-bind="attrs" v-on="on">
-                <v-icon left>mdi-tag</v-icon>
-                {{ item.fw_ver }}
-              </v-chip>
-            </template>
-            <span>{{ $t('tooltip.fw') }}</span>
-          </v-tooltip>
-        </v-toolbar>
-      </v-col>
-    </v-row>
-
+    <toolbar-breadcrumbs :items="breadcrumbs"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
     <v-row class="mt-2">
-      <v-col cols="4">
+      <v-col cols="auto">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                class="mr-3"
+                fab
+                small
+                elevation="0"
+                :color="powerColor"
+                v-bind="attrs"
+                v-on="on"
+                @click="onClickPower"
+            >
+              <v-icon>mdi-power</v-icon>
+            </v-btn>
+          </template>
+          <span>{{ powerTooltip }}</span>
+        </v-tooltip>
+
+        <span class="text--primary text-h6 text-no-wrap">
+          {{ item.name }}
+        </span>
+      </v-col>
+
+      <v-spacer></v-spacer>
+
+      <v-col cols="auto">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon
+                class="mr-2"
+                :color="uvLedColor"
+                v-bind="attrs"
+                v-on="on"
+            >mdi-weather-sunny</v-icon>
+          </template>
+          <span>{{ uvLedDescription }}</span>
+        </v-tooltip>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon
+                class="mr-2"
+                :color="onlineColor"
+                v-bind="attrs"
+                v-on="on"
+            >{{ onlineIcon }}</v-icon>
+          </template>
+          <span>{{ onlineDescription }}</span>
+        </v-tooltip>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-chip class="mr-2" outlined color="primary" v-bind="attrs" v-on="on">
+              <v-icon left>mdi-identifier</v-icon>
+              {{ item.uid }}
+            </v-chip>
+          </template>
+          <span>{{ $t('tooltip.id') }}</span>
+        </v-tooltip>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-chip v-bind="attrs" v-on="on">
+              <v-icon left>mdi-tag</v-icon>
+              {{ item.fw_ver }}
+            </v-chip>
+          </template>
+          <span>{{ $t('tooltip.fw') }}</span>
+        </v-tooltip>
+      </v-col>
+    </v-row>
+
+    <v-divider class="mt-2"></v-divider>
+
+    <v-row class="mt-2">
+      <v-col cols="12" sm="6" md="4" lg="2">
         <div v-ripple class="card" @click="onClickPm10">
           <v-icon large>mdi-dots-hexagon</v-icon>
-          <span class="text--secondary text-subtitle-2">
+          <span class="text--secondary text-subtitle-2 text-no-wrap">
             {{ $t('categories.pm10', [item.pm10]) }}
           </span>
         </div>
       </v-col>
 
-      <v-col cols="4">
+      <v-col cols="12" sm="6" md="4" lg="2">
         <div v-ripple class="card" @click="onClickPm2_5">
-<!--          <v-icon large>mdi-dots-horizontal</v-icon>-->
           <v-icon large>mdi-blur</v-icon>
-          <span class="text--secondary text-subtitle-2">
+          <span class="text--secondary text-subtitle-2 text-no-wrap">
             {{ $t('categories.pm2_5', [item.pm2_5]) }}
           </span>
         </div>
       </v-col>
 
-      <v-col cols="4">
+      <v-col cols="12" sm="6" md="4" lg="2">
         <div v-ripple class="card" @click="onClickCo2">
           <v-icon large>mdi-molecule-co2</v-icon>
-          <span class="text--secondary text-subtitle-2">
+          <span class="text--secondary text-subtitle-2 text-no-wrap">
             {{ $t('categories.co2', [item.co2]) }}
           </span>
         </div>
       </v-col>
-    </v-row>
 
-    <v-row>
-      <v-col cols="4">
+      <v-col cols="12" sm="6" md="4" lg="2">
         <div v-ripple class="card" @click="onClickHumidity">
           <v-icon large>mdi-water</v-icon>
-          <span class="text--secondary text-subtitle-2">
-            {{ $t('categories.humidity', [item.humidity]) }}
+          <span class="text--secondary text-subtitle-2 text-no-wrap">
+            {{ $t('categories.humidity', [calcHumidityText(item.humidity)]) }}
           </span>
         </div>
       </v-col>
 
-      <v-col cols="4">
+      <v-col cols="12" sm="6" md="4" lg="2">
         <div v-ripple class="card" @click="onClickTemperature">
           <v-icon large>mdi-thermometer</v-icon>
-          <span class="text--secondary text-subtitle-2">
-            {{ $t('categories.temperature', [item.temperature]) }}
+          <span class="text--secondary text-subtitle-2 text-no-wrap">
+            {{ $t('categories.temperature', [calcTemperature(item.temperature)]) }}
           </span>
         </div>
       </v-col>
 
-      <v-col cols="4">
+      <v-col cols="12" sm="6" md="4" lg="2">
         <div v-ripple class="card" @click="onClickVoc">
-          <span class="text--secondary text-h6 font-weight-bold">
+          <span class="text--secondary text-h6 font-weight-bold text-no-wrap">
             {{ $t('categories.voc') }}
           </span>
-          <span class="text--secondary text-subtitle-2">
+          <span class="text--secondary text-subtitle-2 text-no-wrap">
             {{ item.voc }}
           </span>
         </div>
       </v-col>
-    </v-row>
 
-    <v-row>
-      <v-col cols="4">
+      <v-col cols="12" sm="6" md="4">
         <div class="card">
           <v-icon large>{{ filterIcon }}</v-icon>
-          <span class="text--secondary text-subtitle-2">
+          <span class="text--secondary text-subtitle-2 text-no-wrap">
             {{ filterLabel }}
           </span>
         </div>
       </v-col>
 
-      <v-col cols="4">
+      <v-col cols="12" sm="6" md="4">
         <div class="card">
           <v-icon large>mdi-timer-sand</v-icon>
-          <span class="text--secondary text-subtitle-2" :class="filterLifeColor">
+          <span
+              class="text--secondary text-subtitle-2 text-no-wrap"
+              :class="filterLifeColor"
+          >
             {{ $t('categories.filter_life', [filterLifeText]) }}
           </span>
         </div>
       </v-col>
 
-      <v-col cols="4">
+      <v-col cols="12" sm="12" md="4">
         <div v-ripple class="card" @click="onClickService">
           <v-icon large>mdi-tools</v-icon>
-          <span class="text--secondary text-subtitle-2">
+          <span class="text--secondary text-subtitle-2 text-no-wrap">
             {{ $t('categories.service', [item.as_count]) }}
           </span>
         </div>
@@ -369,12 +367,18 @@ ko:
     <v-divider class="my-4"></v-divider>
 
     <v-row>
-      <v-col cols="2">
+      <v-col cols="6" sm="4" md="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <div v-ripple class="card elevation-2" @click="onClickMode" v-bind="attrs" v-on="on">
+            <div
+                v-ripple
+                class="card elevation-2"
+                @click="onClickMode"
+                v-bind="attrs"
+                v-on="on"
+            >
               <v-icon large>{{ modeIcon }}</v-icon>
-              <span class="text--secondary text-subtitle-2">
+              <span class="text--secondary text-subtitle-2 text-no-wrap">
                 {{ modeLabel }}
               </span>
             </div>
@@ -383,16 +387,21 @@ ko:
         </v-tooltip>
       </v-col>
 
-      <v-col cols="2">
+      <v-col cols="6" sm="4" md="2">
         <v-menu offset-y v-model="showFanMenu">
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on: tooltip }">
-                <div v-ripple class="card elevation-2" v-bind="attrs" v-on="{...tooltip, ...menu}">
+                <div
+                    v-ripple
+                    class="card elevation-2"
+                    v-bind="attrs"
+                    v-on="{...tooltip, ...menu}"
+                >
                   <v-icon large>{{ fanIcon }}</v-icon>
-                  <span class="text--secondary text-subtitle-2">
-                              {{ fanLabel }}
-                            </span>
+                  <span class="text--secondary text-subtitle-2 text-no-wrap">
+                    {{ fanLabel }}
+                  </span>
                 </div>
               </template>
               <span>{{ $t('tooltip.fan') }}</span>
@@ -408,12 +417,18 @@ ko:
         </v-menu>
       </v-col>
 
-      <v-col cols="2">
+      <v-col cols="6" sm="4" md="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <div v-ripple class="card elevation-2" @click="onClickLock" v-bind="attrs" v-on="on">
+            <div
+                v-ripple
+                class="card elevation-2"
+                @click="onClickLock"
+                v-bind="attrs"
+                v-on="on"
+            >
               <v-icon large>{{ lockIcon }}</v-icon>
-              <span class="text--secondary text-subtitle-2">
+              <span class="text--secondary text-subtitle-2 text-no-wrap">
                 {{ lockLabel }}
               </span>
             </div>
@@ -422,12 +437,18 @@ ko:
         </v-tooltip>
       </v-col>
 
-      <v-col cols="2">
+      <v-col cols="6" sm="4" md="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <div v-ripple class="card elevation-2" @click="onClickFilterReset" v-bind="attrs" v-on="on">
+            <div
+                v-ripple
+                class="card elevation-2"
+                @click="onClickFilterReset"
+                v-bind="attrs"
+                v-on="on"
+            >
               <v-icon large>mdi-cached</v-icon>
-              <span class="text--secondary text-subtitle-2">
+              <span class="text--secondary text-subtitle-2 text-no-wrap">
                 {{ $t('filter_reset') }}
               </span>
             </div>
@@ -436,12 +457,18 @@ ko:
         </v-tooltip>
       </v-col>
 
-      <v-col cols="2">
+      <v-col cols="6" sm="4" md="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <div v-ripple class="card elevation-2" @click="onClickSleep" v-bind="attrs" v-on="on">
+            <div
+                v-ripple
+                class="card elevation-2"
+                @click="onClickSleep"
+                v-bind="attrs"
+                v-on="on"
+            >
               <v-icon large>{{ sleepIcon }}</v-icon>
-              <span class="text--secondary text-subtitle-2">
+              <span class="text--secondary text-subtitle-2 text-no-wrap">
                 {{ sleepLabel }}
               </span>
             </div>
@@ -450,14 +477,21 @@ ko:
         </v-tooltip>
       </v-col>
 
-      <v-col cols="2">
+      <v-col cols="6" sm="4" md="2">
         <v-menu offset-y v-model="showTimerMenu">
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on: tooltip }">
-                <div v-ripple class="card elevation-2" v-bind="attrs" v-on="{...tooltip, ...menu}">
+                <div
+                    v-ripple
+                    class="card elevation-2"
+                    v-bind="attrs"
+                    v-on="{...tooltip, ...menu}"
+                >
                   <v-icon large>{{ timerIcon }}</v-icon>
-                  <span class="text--secondary text-subtitle-2">{{ timerLabel }}</span>
+                  <span class="text--secondary text-subtitle-2 text-no-wrap">
+                    {{ timerLabel }}
+                  </span>
                 </div>
               </template>
               <span>{{ $t('tooltip.timer') }}</span>
@@ -533,35 +567,31 @@ import {
   CATEGORY_HUMIDITY,
   CATEGORY_TEMPERATURE,
   CATEGORY_VOC,
+  FILTER_STATUS_NORMAL,
+  FILTER_STATUS_RESET,
+  FILTER_STATUS_EXCHANGE,
+  MODE_AUTO,
+  MODE_MANUAL,
+  FAN_CONTROL_NORMAL,
+  FAN_CONTROL_WEAK,
+  FAN_CONTROL_MEDIUM,
+  FAN_CONTROL_HIGH,
+  FAN_CONTROL_AUTO,
+  FAN_CONTROL_SLEEP,
+  UNLOCK,
+  LOCK,
+  AWAKE,
+  SLEEP,
+  POWER_STATE_OFF,
+  POWER_STATE_ON,
+  MINUTES_IN_DAY,
   createEmptyAirjoyDeviceA,
+  calcHumidityText as _calcHumidityText,
+  calcTemperature as _calcTemperature,
+  calcFilterLifeMinutes,
 } from '@/packet/airjoy';
 import AirjoyFanSpeedGroup from '@/pages/external/airjoy/components/AirjoyFanSpeedGroup.vue';
 import AirjoyTimerGroup from '@/pages/external/airjoy/components/AirjoyTimerGroup.vue';
-
-const FILTER_STATUS_NORMAL = 0;
-const FILTER_STATUS_RESET = 1;
-const FILTER_STATUS_EXCHANGE = 2;
-
-const FILTER_LIFE_MINUTES_UNIT = 10;
-
-const MODE_AUTO = 0;
-const MODE_MANUAL = 1;
-
-const FAN_CONTROL_NORMAL = 0;
-const FAN_CONTROL_WEAK = 1;
-const FAN_CONTROL_MEDIUM = 2;
-const FAN_CONTROL_HIGH = 3;
-const FAN_CONTROL_AUTO = 4;
-const FAN_CONTROL_SLEEP = 5;
-
-const UNLOCK = 0;
-const LOCK = 1;
-
-const AWAKE = 0;
-const SLEEP = 1;
-
-const POWER_STATE_OFF = 0;
-const POWER_STATE_ON = 1;
 
 export interface Control {
   mode?: number;
@@ -616,8 +646,8 @@ export default class MainAirjoyDetails extends VueBase {
   @Prop({type: Number, default: 1000})
   readonly updateIntervalMilliseconds!: number;
 
-  @Prop({type: Boolean, default: false})
-  readonly enableFilterUnitDays!: boolean;
+  @Prop({type: Boolean, default: true})
+  readonly onlyFilterUnitDays!: boolean;
 
   loading = false;
   item = createEmptyAirjoyDeviceA();
@@ -658,6 +688,14 @@ export default class MainAirjoyDetails extends VueBase {
           this.loading = false;
           this.toastRequestFailure(error);
         });
+  }
+
+  calcHumidityText(value: number) {
+    return _calcHumidityText(value)
+  }
+
+  calcTemperature(value: number) {
+    return _calcTemperature(value);
   }
 
   get filterColor() {
@@ -708,8 +746,8 @@ export default class MainAirjoyDetails extends VueBase {
   }
 
   get filterLifeText() {
-    const minutes = this.item.filter_life * FILTER_LIFE_MINUTES_UNIT;
-    if (this.enableFilterUnitDays) {
+    const minutes = calcFilterLifeMinutes(this.item.filter_life);
+    if (!this.onlyFilterUnitDays) {
       if (minutes < 60) {
         return this.$t('time_unit.minutes', [minutes])
       }
@@ -717,7 +755,7 @@ export default class MainAirjoyDetails extends VueBase {
         return this.$t('time_unit.hours', [Math.ceil(minutes / 60)])
       }
     }
-    return this.$t('time_unit.days', [Math.ceil(minutes/(60*24))])
+    return this.$t('time_unit.days', [Math.ceil(minutes / MINUTES_IN_DAY)])
   }
 
   get powerColor() {

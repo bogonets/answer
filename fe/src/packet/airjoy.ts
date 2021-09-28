@@ -14,8 +14,37 @@ export const INDEX_HUMIDITY = 3;
 export const INDEX_TEMPERATURE = 4;
 export const INDEX_VOC = 5;
 
+export const FILTER_STATUS_NORMAL = 0;
+export const FILTER_STATUS_RESET = 1;
+export const FILTER_STATUS_EXCHANGE = 2;
+
+export const MODE_AUTO = 0;
+export const MODE_MANUAL = 1;
+
+export const FAN_CONTROL_NORMAL = 0;
+export const FAN_CONTROL_WEAK = 1;
+export const FAN_CONTROL_MEDIUM = 2;
+export const FAN_CONTROL_HIGH = 3;
+export const FAN_CONTROL_AUTO = 4;
+export const FAN_CONTROL_SLEEP = 5;
+
+export const UNLOCK = 0;
+export const LOCK = 1;
+
+export const AWAKE = 0;
+export const SLEEP = 1;
+
+export const POWER_STATE_OFF = 0;
+export const POWER_STATE_ON = 1;
+
+export const MINUTES_IN_DAY = 60 * 24;
+
 export function calcHumidity(value: number) {
-    return value / 10.0;
+    return (value / 10.0);
+}
+
+export function calcHumidityText(value: number) {
+    return calcHumidity(value).toFixed(1);
 }
 
 export function calcTemperature(value: number) {
@@ -25,6 +54,15 @@ export function calcTemperature(value: number) {
     } else {
         return 0;
     }
+}
+
+export function calcFilterLifeMinutes(value: number) {
+    return value * 10;
+}
+
+export function calcFilterLifeDays(value: number) {
+    const minutes = calcFilterLifeMinutes(value);
+    return Math.ceil(minutes / MINUTES_IN_DAY);
 }
 
 export function categoryIndexByName(name: string) {

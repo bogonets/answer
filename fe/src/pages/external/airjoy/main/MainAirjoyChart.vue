@@ -93,9 +93,14 @@ ko:
     </v-row>
 
     <v-row class="mt-4">
-      <v-col cols="8">
+      <v-col cols="12" sm="7">
         <div class="d-inline-flex flex-row align-center text-center">
-          <v-icon class="mr-2">mdi-calendar</v-icon>
+          <v-icon
+              v-if="$vuetify.breakpoint.mdAndUp"
+              class="mr-2"
+          >
+            mdi-calendar
+          </v-icon>
           <v-menu
               offset-y
               transition="scale-transition"
@@ -156,7 +161,7 @@ ko:
         </div>
       </v-col>
 
-      <v-col class="d-flex flex-row align-center" cols="4">
+      <v-col class="d-flex flex-row align-center" cols="12" sm="5">
         <v-spacer></v-spacer>
         <v-btn-toggle dense>
           <v-btn @click="onClickRange90d">
@@ -254,7 +259,7 @@ export default class MainAirjoyChart extends VueBase {
       disabled: true,
     },
     {
-      text: this.$route.params.airjoy,
+      text: this.$route.params.device,
       disabled: true,
     },
   ];
@@ -353,7 +358,6 @@ export default class MainAirjoyChart extends VueBase {
 
     this.$api2.getAirjoyChart(group, project, device, start, end, category)
         .then(items => {
-          this.toastRequestSuccess();
           this.updateSeries(categoryIndex, items);
         })
         .catch(error => {

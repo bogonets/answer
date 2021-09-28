@@ -48,6 +48,10 @@ en:
     four: "4h"
     eight: "8h"
     unknown: "Timer/Unknown"
+  time_unit:
+    minutes: "{0}Minutes"
+    hours : "{0}Hours"
+    days: "{0}Days"
 
 ko:
   online: "네트워크 연결이 정상 상태 입니다"
@@ -98,6 +102,10 @@ ko:
     four: "4시간"
     eight: "8시간"
     unknown: "알 수 없는 예약 시간 입니다"
+  time_unit:
+    minutes: "{0}분"
+    hours : "{0}시간"
+    days: "{0}일"
 </i18n>
 
 <template>
@@ -114,9 +122,10 @@ ko:
       >
         <v-icon>mdi-power</v-icon>
       </v-btn>
+
       <div class="table-item--body-left">
         <div class="table-item--body-left-top">
-          <span class="text--primary text-subtitle-1 mr-1" @click.stop="name">
+          <span class="text--primary text-subtitle-1 font-weight-bold mr-1" @click.stop="name">
             {{ item.name }}
           </span>
 
@@ -147,7 +156,7 @@ ko:
                 <v-icon v-if="filterReset" left>mdi-timer-outline</v-icon>
                 <v-icon v-if="filterExchange" left>mdi-cached</v-icon>
                 <v-icon v-if="filterUnknown" left>mdi-help</v-icon>
-                {{ filterLifeMinutes }}
+                {{ filterLifeText }}
               </v-chip>
             </template>
             <span>{{ filterLifeDescription }}</span>
@@ -186,7 +195,7 @@ ko:
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-chip class="mr-1" @click.stop="clickPm2_5" v-bind="attrs" v-on="on">
-                <v-icon left>mdi-dots-horizontal</v-icon>
+                <v-icon left>mdi-blur</v-icon>
                 {{ item.pm2_5 }}
               </v-chip>
             </template>
@@ -207,20 +216,20 @@ ko:
             <template v-slot:activator="{ on, attrs }">
               <v-chip class="mr-1" @click.stop="clickHumidity" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-water</v-icon>
-                {{ item.humidity }}
+                {{ calcHumidityText(item.humidity) }}
               </v-chip>
             </template>
-            <span>{{ $t('tooltip.humidity', [item.humidity]) }}</span>
+            <span>{{ $t('tooltip.humidity', [calcHumidityText(item.humidity)]) }}</span>
           </v-tooltip>
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-chip class="mr-1" @click.stop="clickTemperature" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-thermometer</v-icon>
-                {{ item.temperature }}
+                {{ calcTemperature(item.temperature) }}
               </v-chip>
             </template>
-            <span>{{ $t('tooltip.temperature', [item.temperature]) }}</span>
+            <span>{{ $t('tooltip.temperature', [calcTemperature(item.temperature)]) }}</span>
           </v-tooltip>
 
           <v-tooltip bottom>
@@ -343,33 +352,32 @@ ko:
 <script lang="ts">
 import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import type {AirjoyDeviceA} from '@/packet/airjoy';
-import {createEmptyAirjoyDeviceA} from '@/packet/airjoy';
+import {
+  MINUTES_IN_DAY,
+  FILTER_STATUS_NORMAL,
+  FILTER_STATUS_RESET,
+  FILTER_STATUS_EXCHANGE,
+  FAN_CONTROL_NORMAL,
+  FAN_CONTROL_WEAK,
+  FAN_CONTROL_MEDIUM,
+  FAN_CONTROL_HIGH,
+  FAN_CONTROL_AUTO,
+  FAN_CONTROL_SLEEP,
+  UNLOCK,
+  LOCK,
+  createEmptyAirjoyDeviceA,
+  calcHumidityText as _calcHumidityText,
+  calcTemperature as _calcTemperature,
+  calcFilterLifeMinutes,
+} from '@/packet/airjoy';
 import AirjoyFanSpeedGroup from '@/pages/external/airjoy/components/AirjoyFanSpeedGroup.vue';
 import AirjoyTimerGroup from '@/pages/external/airjoy/components/AirjoyTimerGroup.vue';
-
-const FILTER_STATUS_NORMAL = 0;
-const FILTER_STATUS_RESET = 1;
-const FILTER_STATUS_EXCHANGE = 2;
-
-const FILTER_LIFE_MINUTES_UNIT = 10;
-
-const FAN_CONTROL_NORMAL = 0;
-const FAN_CONTROL_WEAK = 1;
-const FAN_CONTROL_MEDIUM = 2;
-const FAN_CONTROL_HIGH = 3;
-const FAN_CONTROL_AUTO = 4;
-const FAN_CONTROL_SLEEP = 5;
-
-const UNLOCK = 0;
-const LOCK = 1;
 
 @Component({
   components: {
     AirjoyTimerGroup,
     AirjoyFanSpeedGroup,
-    BreadcrumbMain,
   }
 })
 export default class AirjoyDeviceRow extends VueBase {
@@ -385,8 +393,19 @@ export default class AirjoyDeviceRow extends VueBase {
   @Prop({type: Object, default: createEmptyAirjoyDeviceA})
   readonly item!: AirjoyDeviceA;
 
+  @Prop({type: Boolean, default: true})
+  readonly onlyFilterUnitDays!: boolean;
+
   showFanMenu = false;
   showTimerMenu = false;
+
+  calcHumidityText(value: number) {
+    return _calcHumidityText(value)
+  }
+
+  calcTemperature(value: number) {
+    return _calcTemperature(value);
+  }
 
   get powerColor() {
     if (this.item.power_state) {
@@ -407,10 +426,17 @@ export default class AirjoyDeviceRow extends VueBase {
     }
   }
 
-  get filterLifeMinutes() {
-    const life = this.item.filter_life || 0;
-    const lifeMinutes = life * FILTER_LIFE_MINUTES_UNIT;
-    return `${lifeMinutes}m`;
+  get filterLifeText() {
+    const minutes = calcFilterLifeMinutes(this.item.filter_life);
+    if (!this.onlyFilterUnitDays) {
+      if (minutes < 60) {
+        return this.$t('time_unit.minutes', [minutes])
+      }
+      if (minutes < (60 * 24)) {
+        return this.$t('time_unit.hours', [Math.ceil(minutes / 60)])
+      }
+    }
+    return this.$t('time_unit.days', [Math.ceil(minutes / MINUTES_IN_DAY)])
   }
 
   get filterReset() {
@@ -531,18 +557,18 @@ export default class AirjoyDeviceRow extends VueBase {
     }
   }
 
-  get fanSpeedIndex() {
-    switch (this.item.fan_control) {
-      case FAN_CONTROL_WEAK:
-        return 0;
-      case FAN_CONTROL_MEDIUM:
-        return 1;
-      case FAN_CONTROL_HIGH:
-        return 2;
-      default:
-        return -1;
-    }
-  }
+  // get fanSpeedIndex() {
+  //   switch (this.item.fan_control) {
+  //     case FAN_CONTROL_WEAK:
+  //       return 0;
+  //     case FAN_CONTROL_MEDIUM:
+  //       return 1;
+  //     case FAN_CONTROL_HIGH:
+  //       return 2;
+  //     default:
+  //       return -1;
+  //   }
+  // }
 
   get lockIcon() {
     switch (this.item.lock) {
@@ -774,7 +800,9 @@ export default class AirjoyDeviceRow extends VueBase {
       padding-left: 8px;
 
       .table-item--body-left-top {
+        margin-bottom: 2px;
       }
+
       .table-item--body-left-bottom {
       }
     }
