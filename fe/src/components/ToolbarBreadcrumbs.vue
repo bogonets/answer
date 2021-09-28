@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Watch} from 'vue-property-decorator';
+import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 
 @Component
@@ -36,11 +36,8 @@ export default class ToolbarBreadcrumbs extends VueBase {
   }
 
   updateItems() {
-    if (this.items.length >= 3 && this.$vuetify.breakpoint.smAndUp) {
-      this.currentItems = this.items;
-    } else {
+    if (this.items.length >= 3 && this.$vuetify.breakpoint.xs) {
       this.currentItems = [
-        this.items[0],
         {
           text: '...',
           disabled: false,
@@ -48,6 +45,8 @@ export default class ToolbarBreadcrumbs extends VueBase {
         },
         this.items[this.items.length - 1],
       ];
+    } else {
+      this.currentItems = this.items;
     }
   }
 

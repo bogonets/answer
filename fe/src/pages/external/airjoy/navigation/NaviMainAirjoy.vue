@@ -48,7 +48,7 @@ ko:
       <v-list-item-group
           mandatory
           color="primary"
-          :value="value"
+          :value="index"
           @change="input"
       >
 
@@ -133,10 +133,12 @@ ko:
 </template>
 
 <script lang='ts'>
-import {Component, Emit, Prop} from 'vue-property-decorator';
+import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {UserA} from '@/packet/user';
 import {ProjectA} from '@/packet/project';
+import mainAirjoyNames from '@/router/names/external/airjoy/main';
+import mainNames from '@/router/names/main';
 
 @Component
 export default class NaviMainAirjoy extends VueBase {
@@ -154,9 +156,6 @@ export default class NaviMainAirjoy extends VueBase {
 
   @Prop({type: Boolean, default: false})
   readonly hideSettings!: boolean;
-
-  @Prop({type: Number, default: 0})
-  readonly value!: number;
 
   index = 0;
   mini = false;
@@ -202,8 +201,35 @@ export default class NaviMainAirjoy extends VueBase {
     this.mini = !this.mini;
   }
 
+  @Watch('$route')
+  onChangeRoute() {
+    const name = this.$route.name;
+    if (name === mainAirjoyNames.mainAirjoyDevices) {
+      this.index = 0;
+    } else if (name === mainAirjoyNames.mainAirjoyDetails) {
+      this.index = 0;
+    } else if (name === mainAirjoyNames.mainAirjoyLive) {
+      this.index = 1;
+    } else if (name === mainAirjoyNames.mainAirjoyChart) {
+      this.index = 2;
+    } else if (name === mainAirjoyNames.mainAirjoyService) {
+      this.index = 3;
+    } else if (name === mainNames.mainMembers) {
+      this.index = 4;
+    } else if (name === mainNames.mainSettings) {
+      this.index = 5;
+    } else if (name === mainAirjoyNames.mainAirjoySettings) {
+      this.index = -1;
+    } else if (name === mainAirjoyNames.mainAirjoySummary) {
+      this.index = -1;
+    } else {
+      this.index = -1;
+    }
+  }
+
   @Emit()
   input(index: number) {
+    this.index = index;
     return index;
   }
 

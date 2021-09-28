@@ -58,7 +58,7 @@ ko:
       <v-list-item-group
           mandatory
           color="primary"
-          :value="value"
+          :value="index"
           @change="input"
       >
 
@@ -159,9 +159,10 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop, Emit} from 'vue-property-decorator';
+import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {OEM_AIRJOY} from '@/packet/oem';
+import adminNames from '@/router/names/admin';
 
 @Component
 export default class NaviAdmin extends VueBase {
@@ -169,9 +170,7 @@ export default class NaviAdmin extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly noDefault!: boolean;
 
-  @Prop({type: Number, default: 0})
-  readonly value!: number;
-
+  index = 0;
   mini = false;
 
   get oem() {
@@ -186,8 +185,53 @@ export default class NaviAdmin extends VueBase {
     this.mini = !this.mini;
   }
 
+  @Watch('$route')
+  onChangeRoute() {
+    const name = this.$route.name;
+    if (name === adminNames.adminOverview) {
+      this.index = 0;
+    } else if (name === adminNames.adminUsers) {
+      this.index = 1;
+    } else if (name === adminNames.adminUsersEdit) {
+      this.index = 1;
+    } else if (name === adminNames.adminUsersNew) {
+      this.index = 1;
+    } else if (name === adminNames.adminGroups) {
+      this.index = 2;
+    } else if (name === adminNames.adminGroupsEdit) {
+      this.index = 2;
+    } else if (name === adminNames.adminGroupsNew) {
+      this.index = 2;
+    } else if (name === adminNames.adminProjects) {
+      this.index = 3;
+    } else if (name === adminNames.adminProjectsEdit) {
+      this.index = 3;
+    } else if (name === adminNames.adminProjectsNew) {
+      this.index = 3;
+    } else if (name === adminNames.adminPermissions) {
+      this.index = 4;
+    } else if (name === adminNames.adminPermissionsEdit) {
+      this.index = 4;
+    } else if (name === adminNames.adminPermissionsNew) {
+      this.index = 4;
+    } else if (name === adminNames.adminTasks) {
+      this.index = 5;
+    } else if (name === adminNames.adminTemplates) {
+      this.index = 6;
+    } else if (name === adminNames.adminPlugins) {
+      this.index = 7;
+    } else if (name === adminNames.adminConfigs) {
+      this.index = 8;
+    } else if (name === adminNames.adminAirjoyDevices) {
+      this.index = 9;
+    } else {
+      this.index = -1;
+    }
+  }
+
   @Emit()
   input(index: number) {
+    this.index = index;
     return index;
   }
 
