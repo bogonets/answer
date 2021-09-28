@@ -1,5 +1,5 @@
 <template>
-  <div class="router-bar-main">
+  <div>
     <bar-main>
     </bar-main>
 
@@ -23,8 +23,3 @@ import BarMain from '@/pages/bar/BarMain.vue';
 export default class RouterBarMain extends VueBase {
 }
 </script>
-
-<style lang="scss" scoped>
-.router-bar-main {
-}
-</style>

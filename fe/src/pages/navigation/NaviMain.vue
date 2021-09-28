@@ -146,9 +146,9 @@ ko:
 <script lang='ts'>
 import {Component, Emit, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import {UserA} from '@/packet/user';
-import {ProjectA} from '@/packet/project';
-import {FEATURE_VMS, FEATURE_AIRJOY} from '@/packet/features';
+import type {ProjectA} from '@/packet/project';
+import type {PermissionA} from '@/packet/permission';
+import {FEATURE_VMS} from '@/packet/features';
 
 @Component
 export default class NaviMain extends VueBase {
@@ -168,20 +168,20 @@ export default class NaviMain extends VueBase {
   index = 0;
   mini = false;
   project = {} as ProjectA;
-  user = {} as UserA;
+  permission = {} as PermissionA;
 
   get projectSlug(): string {
-    const name = this.$route.params.project;
-    if (name) {
-      return name;
+    const project = this.$route.params.project;
+    if (project) {
+      return project;
     }
     return this.$t('project.unknown').toString();
   }
 
   get projectAvatar(): string {
-    const name = this.$route.params.project;
-    if (name) {
-      return name[0].toUpperCase();
+    const project = this.$route.params.project;
+    if (project) {
+      return project[0].toUpperCase();
     }
     return '?';
   }
@@ -194,10 +194,6 @@ export default class NaviMain extends VueBase {
     return this.features.findIndex(i => i == FEATURE_VMS) != -1;
   }
 
-  get isAirjoy() {
-    return this.features.findIndex(i => i == FEATURE_AIRJOY) != -1;
-  }
-
   created() {
     (async () => {
       await this.requestSetup();
@@ -206,11 +202,10 @@ export default class NaviMain extends VueBase {
 
   async requestSetup() {
     try {
-      this.user = await this.$api2.getSelf();
-      this.project = await this.$api2.getMainProjectsPgroupPproject(
-          this.$route.params.group,
-          this.$route.params.project,
-      );
+      const group = this.$route.params.group;
+      const project = this.$route.params.project;
+      this.project = await this.$api2.getMainProjectsPgroupPproject(group, project);
+      this.permission = await this.requestProjectPermission();
     } catch (error) {
       this.toastRequestFailure(error);
       this.moveToBack();

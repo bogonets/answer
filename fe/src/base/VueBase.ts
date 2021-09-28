@@ -30,4 +30,23 @@ export default class VueBase extends mixins(
 
     moveToMainProject(group?: string, project?: string) {
     }
+
+    async requestGroupPermission() {
+        const group = this.$route.params.group;
+        const perm = await this.$api2.getMainPermissionsPgroup(group);
+        this.$sessionStore.permissionGroup = group;
+        this.$sessionStore.clearPermissionProject();
+        this.$sessionStore.permission = perm;
+        return perm;
+    }
+
+    async requestProjectPermission() {
+        const group = this.$route.params.group;
+        const project = this.$route.params.project;
+        const perm = await this.$api2.getMainPermissionsPgroupPproject(group, project);
+        this.$sessionStore.permissionGroup = group;
+        this.$sessionStore.permissionProject = project;
+        this.$sessionStore.permission = perm;
+        return perm;
+    }
 }

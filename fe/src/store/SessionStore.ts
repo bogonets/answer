@@ -14,6 +14,7 @@ const PERMISSION_GROUP = 'permission/group';
 const PERMISSION_PROJECT = 'permission/project';
 const PERMISSION_FEATURES = 'permission/features';
 const PERMISSION_EXTRA = 'permission/extra';
+const PERMISSION_ADMIN = 'permission/admin';
 const PERMISSION_LAYOUT_READ = 'permission/layoutRead';
 const PERMISSION_LAYOUT_WRITE = 'permission/layoutWrite';
 const PERMISSION_STORAGE_READ = 'permission/storageRead';
@@ -77,20 +78,36 @@ export class SessionStore {
         return this.setter(key, undefined);
     }
 
-    get group() {
+    clearPermissionGroup() {
+        this.clear(PERMISSION_GROUP);
+    }
+
+    get permissionGroup() {
         return this.getter(PERMISSION_GROUP) as string;
     }
 
-    set group(val: string) {
+    set permissionGroup(val: string) {
         this.setter(PERMISSION_GROUP, val);
     }
 
-    get project() {
+    clearPermissionProject() {
+        this.clear(PERMISSION_PROJECT);
+    }
+
+    get permissionProject() {
         return this.getter(PERMISSION_PROJECT) as string;
     }
 
-    set project(val: string) {
+    set permissionProject(val: string) {
         this.setter(PERMISSION_PROJECT, val);
+    }
+
+    get permissionAdmin() {
+        return this.getter(PERMISSION_ADMIN) as boolean;
+    }
+
+    set permissionAdmin(val: boolean) {
+        this.setter(PERMISSION_ADMIN, val);
     }
 
     set permission(val: PermissionA) {

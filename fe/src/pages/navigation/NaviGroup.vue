@@ -43,7 +43,7 @@ ko:
       <v-list-item-group
           mandatory
           color="primary"
-          :value="value"
+          :value="index"
           @change="input"
       >
 
@@ -82,6 +82,8 @@ ko:
 <script lang="ts">
 import {Component, Emit, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import {GroupA} from "@/packet/group";
+import {PermissionA} from "@/packet/permission";
 
 @Component
 export default class MainAccount extends VueBase {
@@ -95,10 +97,10 @@ export default class MainAccount extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly hideSettings!: boolean;
 
-  @Prop({type: Number, default: 0})
-  readonly value!: number;
-
+  index = 0;
   mini = false;
+  group = {} as GroupA;
+  permission = {} as PermissionA;
 
   get groupSlug(): string {
     const name = this.$route.params.group;
@@ -109,12 +111,28 @@ export default class MainAccount extends VueBase {
   }
 
   get groupAvatar(): string {
-    // return this.groupSlug[0].toUpperCase();
     const name = this.$route.params.group;
     if (name) {
       return name[0].toUpperCase();
     }
     return '?';
+  }
+
+  created() {
+    (async () => {
+      await this.requestSetup();
+    })();
+  }
+
+  async requestSetup() {
+    try {
+      const group = this.$route.params.group;
+      this.group = await this.$api2.getMainGroupsPgroup(group);
+      this.permission = await this.requestGroupPermission();
+    } catch (error) {
+      this.toastRequestFailure(error);
+      this.moveToBack();
+    }
   }
 
   onClickFoldNavigation() {
@@ -123,6 +141,7 @@ export default class MainAccount extends VueBase {
 
   @Emit()
   input(index: number) {
+    this.index = index;
     return index;
   }
 

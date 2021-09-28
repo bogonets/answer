@@ -33,20 +33,27 @@ export default class Root extends VueBase {
       return;
     }
 
-    this.requestGroups()
+    this.requestSetup();
   }
 
-  requestGroups() {
+  requestSetup() {
     this.loading = true;
-    this.$api2.getMainGroups()
-        .then(items => {
-          this.loading = false;
-          this.items = items;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    (async () => {
+      await this._setup();
+    })();
+  }
+
+  async _setup() {
+    try {
+      const user = await this.$api2.getSelf();
+      this.$sessionStore.permissionAdmin = user.is_admin || false;
+
+      this.items = await this.$api2.getMainGroups();
+    } catch (error) {
+      this.toastRequestFailure(error);
+    } finally {
+      this.loading = false;
+    }
   }
 
   onClickNew() {

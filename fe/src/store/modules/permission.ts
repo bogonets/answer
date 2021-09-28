@@ -5,6 +5,7 @@ export default {
         project: '',
         features: [],
         extra: {},
+        admin: false,
         layout: {read: false, write: false},
         storage: {read: false, write: false},
         manager: {read: false, write: false},
@@ -25,41 +26,44 @@ export default {
         extra: state => {
             return state.extra;
         },
+        admin: state => {
+            return state.admin;
+        },
         layoutRead: state => {
-            return state.layout.read;
+            return state.admin || state.layout.read;
         },
         layoutWrite: state => {
-            return state.layout.write;
+            return state.admin || state.layout.write;
         },
         storageRead: state => {
-            return state.storage.read;
+            return state.admin || state.storage.read;
         },
         storageWrite: state => {
-            return state.storage.write;
+            return state.admin || state.storage.write;
         },
         managerRead: state => {
-            return state.manager.read;
+            return state.admin || state.manager.read;
         },
         managerWrite: state => {
-            return state.manager.write;
+            return state.admin || state.manager.write;
         },
         graphRead: state => {
-            return state.graph.read;
+            return state.admin || state.graph.read;
         },
         graphWrite: state => {
-            return state.graph.write;
+            return state.admin || state.graph.write;
         },
         memberRead: state => {
-            return state.member.read;
+            return state.admin || state.member.read;
         },
         memberWrite: state => {
-            return state.member.write;
+            return state.admin || state.member.write;
         },
         settingRead: state => {
-            return state.setting.read;
+            return state.admin || state.setting.read;
         },
         settingWrite: state => {
-            return state.setting.write;
+            return state.admin || state.setting.write;
         },
     },
     mutations: {
@@ -74,6 +78,9 @@ export default {
         },
         extra(state, val) {
             state.extra = val || {};
+        },
+        admin(state, val) {
+            state.admin = !!val;
         },
         layoutRead(state, val) {
             state.layout.read = !!val;

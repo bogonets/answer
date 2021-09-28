@@ -135,8 +135,8 @@ ko:
 <script lang='ts'>
 import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import {UserA} from '@/packet/user';
-import {ProjectA} from '@/packet/project';
+import type {ProjectA} from '@/packet/project';
+import type {PermissionA} from '@/packet/permission';
 import mainAirjoyNames from '@/router/names/external/airjoy/main';
 import mainNames from '@/router/names/main';
 
@@ -160,7 +160,7 @@ export default class NaviMainAirjoy extends VueBase {
   index = 0;
   mini = false;
   project = {} as ProjectA;
-  user = {} as UserA;
+  permission = {} as PermissionA;
 
   get projectSlug(): string {
     const name = this.$route.params.project;
@@ -186,11 +186,10 @@ export default class NaviMainAirjoy extends VueBase {
 
   async requestSetup() {
     try {
-      this.user = await this.$api2.getSelf();
-      this.project = await this.$api2.getMainProjectsPgroupPproject(
-          this.$route.params.group,
-          this.$route.params.project,
-      );
+      const group = this.$route.params.group;
+      const project = this.$route.params.project;
+      this.project = await this.$api2.getMainProjectsPgroupPproject(group, project);
+      this.permission = await this.requestProjectPermission();
     } catch (error) {
       this.toastRequestFailure(error);
       this.moveToBack();
