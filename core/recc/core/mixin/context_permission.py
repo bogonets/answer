@@ -87,35 +87,28 @@ class ContextPermission(ContextBase):
     async def delete_permission(self, uid: int) -> None:
         await self.database.delete_permission_by_uid(uid)
 
-    async def get_permission(self, uid: int, remove_sensitive=True) -> Permission:
-        result = await self.database.select_permission_by_uid(uid)
-        if remove_sensitive:
-            result.remove_sensitive()
-        return result
+    async def get_permission(self, uid: int) -> Permission:
+        return await self.database.select_permission_by_uid(uid)
 
-    async def get_permissions(self, remove_sensitive=True) -> List[Permission]:
-        permissions = await self.database.select_permissions()
-        if remove_sensitive:
-            for permission in permissions:
-                permission.remove_sensitive()
-        return permissions
+    async def get_permissions(self) -> List[Permission]:
+        return await self.database.select_permissions()
 
-    async def get_group_permission(
-        self, user_uid: int, group_uid: int, remove_sensitive=True
-    ) -> Permission:
-        permission = await self.database.select_permission_by_user_uid_and_group_uid(
+    async def get_group_permission(self, user_uid: int, group_uid: int) -> Permission:
+        return await self.database.select_permission_by_user_uid_and_group_uid(
             user_uid, group_uid
         )
-        if remove_sensitive:
-            permission.remove_sensitive()
-        return permission
 
     async def get_project_permission(
-        self, user_uid: int, project_uid: int, remove_sensitive=True
+        self, user_uid: int, project_uid: int
     ) -> Permission:
-        permission = await self.database.select_permission_by_user_uid_and_project_uid(
+        return await self.database.select_permission_by_user_uid_and_project_uid(
             user_uid, project_uid
         )
-        if remove_sensitive:
-            permission.remove_sensitive()
-        return permission
+
+    async def get_best_permission(
+        self, user_uid: int, group_uid: int, project_uid: int
+    ) -> Permission:
+        try:
+            return await self.get_project_permission(user_uid, project_uid)
+        except:  # noqa
+            return await self.get_group_permission(user_uid, group_uid)

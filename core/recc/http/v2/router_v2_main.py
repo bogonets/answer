@@ -114,9 +114,7 @@ class RouterV2Main:
     @parameter_matcher()
     async def get_pgroup(self, session: SessionEx, group: str) -> GroupA:
         group_uid = await self.context.get_group_uid(group)
-        permission = await self.context.get_group_permission(
-            session.uid, group_uid, remove_sensitive=False
-        )
+        permission = await self.context.get_group_permission(session.uid, group_uid)
         if permission.uid is None:
             raise HTTPForbidden(reason="You do not have valid permissions")
         db_group = await self.context.get_group(group_uid)
@@ -127,9 +125,7 @@ class RouterV2Main:
         self, session: SessionEx, group: str, body: UpdateGroupQ
     ) -> None:
         group_uid = await self.context.get_group_uid(group)
-        permission = await self.context.get_group_permission(
-            session.uid, group_uid, remove_sensitive=False
-        )
+        permission = await self.context.get_group_permission(session.uid, group_uid)
         if permission.uid is None or not permission.w_setting:
             raise HTTPForbidden(reason="You do not have valid permissions")
         await self.context.update_group(
@@ -144,9 +140,7 @@ class RouterV2Main:
     @parameter_matcher()
     async def delete_pgroup(self, session: SessionEx, group: str) -> None:
         group_uid = await self.context.get_group_uid(group)
-        permission = await self.context.get_group_permission(
-            session.uid, group_uid, remove_sensitive=False
-        )
+        permission = await self.context.get_group_permission(session.uid, group_uid)
         if permission.uid is None or not permission.w_setting:
             raise HTTPForbidden(reason="You do not have valid permissions")
         await self.context.delete_group(group_uid)
@@ -292,8 +286,8 @@ class RouterV2Main:
     ) -> ProjectA:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        permission = await self.context.get_project_permission(
-            session.uid, project_uid, remove_sensitive=False
+        permission = await self.context.get_best_permission(
+            session.uid, group_uid, project_uid
         )
         if permission.uid is None:
             raise HTTPForbidden(reason="You do not have valid permissions")
@@ -309,8 +303,8 @@ class RouterV2Main:
     ) -> None:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        permission = await self.context.get_project_permission(
-            session.uid, project_uid, remove_sensitive=False
+        permission = await self.context.get_best_permission(
+            session.uid, group_uid, project_uid
         )
         if permission.uid is None or not permission.w_setting:
             raise HTTPForbidden(reason="You do not have valid permissions")
@@ -329,8 +323,8 @@ class RouterV2Main:
     ) -> None:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        permission = await self.context.get_project_permission(
-            session.uid, project_uid, remove_sensitive=False
+        permission = await self.context.get_best_permission(
+            session.uid, group_uid, project_uid
         )
         if permission.uid is None or not permission.w_setting:
             raise HTTPForbidden(reason="You do not have valid permissions")
@@ -346,7 +340,9 @@ class RouterV2Main:
     ) -> List[MemberA]:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        permission = await self.context.get_project_permission(session.uid, project_uid)
+        permission = await self.context.get_best_permission(
+            session.uid, group_uid, project_uid
+        )
         if not permission.r_member:
             raise HTTPForbidden(reason="You do not have valid permissions")
 
@@ -368,7 +364,9 @@ class RouterV2Main:
     ) -> None:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        permission = await self.context.get_project_permission(session.uid, project_uid)
+        permission = await self.context.get_best_permission(
+            session.uid, group_uid, project_uid
+        )
         if not permission.w_member:
             raise HTTPForbidden(reason="You do not have valid permissions")
 
@@ -384,7 +382,9 @@ class RouterV2Main:
     ) -> MemberA:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        permission = await self.context.get_project_permission(session.uid, project_uid)
+        permission = await self.context.get_best_permission(
+            session.uid, group_uid, project_uid
+        )
         if not permission.r_member:
             raise HTTPForbidden(reason="You do not have valid permissions")
 
@@ -407,7 +407,9 @@ class RouterV2Main:
     ) -> None:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        permission = await self.context.get_project_permission(session.uid, project_uid)
+        permission = await self.context.get_best_permission(
+            session.uid, group_uid, project_uid
+        )
         if not permission.w_member:
             raise HTTPForbidden(reason="You do not have valid permissions")
 
@@ -423,7 +425,9 @@ class RouterV2Main:
     ) -> None:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        permission = await self.context.get_project_permission(session.uid, project_uid)
+        permission = await self.context.get_best_permission(
+            session.uid, group_uid, project_uid
+        )
         if not permission.w_member:
             raise HTTPForbidden(reason="You do not have valid permissions")
 
@@ -458,10 +462,9 @@ class RouterV2Main:
     ) -> PermissionA:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        member = await self.context.get_project_member(project_uid, session.uid)
-        permission_uid = member.permission_uid
-        assert permission_uid is not None
-        permission = await self.context.get_permission(permission_uid)
+        permission = await self.context.get_best_permission(
+            session.uid, group_uid, project_uid
+        )
         return permission_to_answer(permission)
 
     @parameter_matcher()

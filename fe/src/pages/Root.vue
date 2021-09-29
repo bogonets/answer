@@ -11,7 +11,7 @@ ko:
 <template>
   <v-container>
 
-    <span class="ml-2 text--secondary text-subtitle-2">
+    <span class="ml-2 text--primary text-overline">
       {{ $t('groups') }}
     </span>
     <v-divider></v-divider>
@@ -26,7 +26,7 @@ ko:
         @click:row="onClickGroupRow"
     ></table-groups>
 
-    <span class="ml-2 text--secondary text-subtitle-2">
+    <span class="ml-2 text--primary text-overline">
       {{ $t('projects') }}
     </span>
     <v-divider></v-divider>

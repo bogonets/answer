@@ -367,9 +367,9 @@ WITH gm AS (
     FROM {TABLE_GROUP_MEMBER}
     WHERE user_uid=$1 AND group_uid=$2
 )
-SELECT p.*
-FROM gm
-INNER JOIN {TABLE_PERMISSION} p ON gm.permission_uid=p.uid;
+SELECT perm.*
+FROM {TABLE_PERMISSION} AS perm, gm
+WHERE gm.permission_uid=perm.uid;
 """
 
 SELECT_PERMISSION_BY_USER_UID_AND_PROJECT_UID = f"""
@@ -378,7 +378,7 @@ WITH pm AS (
     FROM {TABLE_PROJECT_MEMBER}
     WHERE user_uid=$1 AND project_uid=$2
 )
-SELECT p.*
-FROM pm
-INNER JOIN {TABLE_PERMISSION} p ON pm.permission_uid=p.uid;
+SELECT perm.*
+FROM {TABLE_PERMISSION} AS perm, pm
+WHERE pm.permission_uid=perm.uid;
 """
