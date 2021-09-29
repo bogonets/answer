@@ -7,13 +7,25 @@ export default {
         email: 'Email format is incorrect.',
         integer: 'Only integer characters are allowed.',
         phone: 'Phone format is incorrect.',
-        slug: "Slug format is incorrect.",
+        slug: 'Slug format is incorrect.',
         no_recc_prefix: "'recc.' prefix cannot be used.",
     },
 
     toast: {
         request_success: 'The request was successful',
         request_failure: 'The request failed',
+        no_layout_read: 'Layout read permission is required',
+        no_layout_write: 'Layout write permission is required',
+        no_storage_read: 'Storage read permission is required',
+        no_storage_write: 'Storage write permission is required',
+        no_manager_read: 'Manager read permission is required',
+        no_manager_write: 'Manager write permission is required',
+        no_graph_read: 'Graph read permission is required',
+        no_graph_write: 'Graph write permission is required',
+        no_member_read: 'Member read permission is required',
+        no_member_write: 'Member write permission is required',
+        no_setting_read: 'Setting read permission is required',
+        no_setting_write: 'Setting write permission is required',
     },
 
     basic: {

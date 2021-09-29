@@ -7,13 +7,25 @@ export default {
         email: '이메일 형식이 올바르지 않습니다.',
         integer: '정수형 문자만 허용됩니다.',
         phone: '전화번호 형식이 올바르지 않습니다.',
-        slug: "슬러그 형식이 올바르지 않습니다.",
+        slug: '슬러그 형식이 올바르지 않습니다.',
         no_recc_prefix: "'recc.' 접두사 는 사용할 수 없습니다.",
     },
 
     toast: {
         request_success: '요청에 성공하였습니다.',
         request_failure: '요청에 실패하였습니다.',
+        no_layout_read: '레이아웃 읽기 권한이 필요합니다.',
+        no_layout_write: '레이아웃 쓰기 권한이 필요합니다.',
+        no_storage_read: '저장소 읽기 권한이 필요합니다.',
+        no_storage_write: '저장소 쓰기 권한이 필요합니다.',
+        no_manager_read: '관리자 읽기 권한이 필요합니다.',
+        no_manager_write: '관리자 쓰기 권한이 필요합니다.',
+        no_graph_read: '그래프  읽기 권한이 필요합니다.',
+        no_graph_write: '그래프 쓰기 권한이 필요합니다.',
+        no_member_read: '멤버  읽기 권한이 필요합니다.',
+        no_member_write: '멤버 쓰기 권한이 필요합니다.',
+        no_setting_read: '설정 읽기 권한이 필요합니다.',
+        no_setting_write: '설정 쓰기 권한이 필요합니다.',
     },
 
     basic: {

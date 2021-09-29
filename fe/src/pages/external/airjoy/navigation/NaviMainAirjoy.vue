@@ -61,7 +61,7 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item link @click.stop="airjoyDevices">
+        <v-list-item v-if="showDevices" link @click.stop="airjoyDevices">
           <v-list-item-icon>
             <v-icon>mdi-tablet</v-icon>
           </v-list-item-icon>
@@ -70,7 +70,7 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item link @click.stop="airjoyLive">
+        <v-list-item v-if="showLive" link @click.stop="airjoyLive">
           <v-list-item-icon>
             <v-icon>mdi-monitor-dashboard</v-icon>
           </v-list-item-icon>
@@ -79,7 +79,7 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item link @click.stop="airjoyChart">
+        <v-list-item v-if="showChart" link @click.stop="airjoyChart">
           <v-list-item-icon>
             <v-icon>mdi-chart-bar</v-icon>
           </v-list-item-icon>
@@ -88,7 +88,7 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item link @click.stop="airjoyService">
+        <v-list-item v-if="showService" link @click.stop="airjoyService">
           <v-list-item-icon>
             <v-icon>mdi-wrench</v-icon>
           </v-list-item-icon>
@@ -107,9 +107,9 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-divider></v-divider>
+        <v-divider v-if="showMember || showSetting"></v-divider>
 
-        <v-list-item link @click.stop="members">
+        <v-list-item v-if="showMember" link @click.stop="members">
           <v-list-item-icon>
             <v-icon>mdi-account-group</v-icon>
           </v-list-item-icon>
@@ -118,7 +118,7 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item link @click.stop="settings">
+        <v-list-item v-if="showSetting" link @click.stop="settings">
           <v-list-item-icon>
             <v-icon>mdi-cog-outline</v-icon>
           </v-list-item-icon>
@@ -194,6 +194,30 @@ export default class NaviMainAirjoy extends VueBase {
       this.toastRequestFailure(error);
       this.moveToBack();
     }
+  }
+
+  get showDevices() {
+    return this.permission?.r_manager || false;
+  }
+
+  get showLive() {
+    return this.permission?.r_manager || false;
+  }
+
+  get showChart() {
+    return this.permission?.r_manager || false;
+  }
+
+  get showService() {
+    return this.permission?.r_manager || false;
+  }
+
+  get showMember() {
+    return this.permission?.r_member || false;
+  }
+
+  get showSetting() {
+    return this.permission?.r_setting;
   }
 
   onClickFoldNavigation() {

@@ -83,7 +83,7 @@ ko:
                 hide-details
                 :label="$t('labels.search')"
             ></v-text-field>
-            <v-btn color="primary" @click="onClickNewAs">
+            <v-btn v-if="showAdd" color="primary" @click="onClickNewAs">
               {{ $t('labels.as_new') }}
             </v-btn>
           </v-toolbar>
@@ -93,11 +93,11 @@ ko:
           {{ utcToDate(item.time) }}
         </template>
 
-        <template v-if="!hideActions" v-slot:item.actions="{ item }">
-          <v-icon v-if="!hideActionEdit" small class="mr-2" @click.stop="onClickServiceEdit(item)">
+        <template v-slot:item.actions="{ item }">
+          <v-icon small class="mr-2" @click.stop="onClickServiceEdit(item)">
             mdi-pencil
           </v-icon>
-          <v-icon v-if="!hideActionMove" small color="red" @click.stop="onClickServiceDelete(item)">
+          <v-icon v-if="showDelete" small color="red" @click.stop="onClickServiceDelete(item)">
             mdi-delete
           </v-icon>
         </template>
@@ -276,12 +276,6 @@ export default class MainAirjoyService extends VueBase {
     }
   ];
 
-  @Prop({type: Boolean, default: false})
-  readonly hideActionEdit!: boolean;
-
-  @Prop({type: Boolean, default: false})
-  readonly hideActionMove!: boolean;
-
   @Prop({type: Number, default: 480})
   readonly widthDialog!: number;
 
@@ -341,8 +335,12 @@ export default class MainAirjoyService extends VueBase {
         });
   }
 
-  get hideActions(): boolean {
-    return this.hideActionEdit && this.hideActionMove;
+  get showAdd(): boolean {
+    return this.isManagerWrite;
+  }
+
+  get showDelete(): boolean {
+    return this.isManagerWrite;
   }
 
   utcToDate(utc?: string) {

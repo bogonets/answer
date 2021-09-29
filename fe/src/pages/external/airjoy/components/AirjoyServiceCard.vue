@@ -52,7 +52,7 @@ ko:
                 outlined
                 :value="device"
                 @input="onInputDevice"
-                :disabled="disableDevice"
+                :disabled="disableDevice && !isEditable"
                 :rules="uidRules"
                 :items="devices"
                 :label="$t('label.uid')"
@@ -79,6 +79,7 @@ ko:
             <v-text-field
                 dense
                 outlined
+                :disabled="!isEditable"
                 :value="author"
                 @input="onInputAuthor"
                 :label="$t('label.author')"
@@ -101,6 +102,7 @@ ko:
                     outlined
                     readonly
                     v-model="time"
+                    :disabled="!isEditable"
                     :label="$t('label.time')"
                     :hint="$t('hint.time')"
                     v-bind="attrs"
@@ -110,6 +112,7 @@ ko:
               <v-date-picker
                   no-title
                   scrollable
+                  :disabled="!isEditable"
                   :value="time"
                   @input="onInputTime"
               ></v-date-picker>
@@ -120,6 +123,7 @@ ko:
             <v-textarea
                 dense
                 outlined
+                :disabled="!isEditable"
                 :value="description"
                 @input="onInputDescription"
                 :label="$t('label.description')"
@@ -142,6 +146,7 @@ ko:
         {{ $t('cancel') }}
       </v-btn>
       <v-btn
+          v-if="isEditable"
           :disabled="!modified"
           :loading="submitLoading"
           color="primary"
@@ -239,6 +244,10 @@ export default class AirjoyServiceCard extends VueBase {
     this.author = this.originalAuthor;
     this.time = this.originalTime;
     this.description = this.originalDescription;
+  }
+
+  get isEditable(): boolean {
+    return this.isManagerWrite;
   }
 
   formValidate() {
