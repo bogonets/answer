@@ -4,7 +4,7 @@ from typing import List, Optional, Any
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.group import Group
 from recc.database.struct.group_member import GroupMember
-from recc.database.struct.group_join_member import GroupJoinMember
+from recc.database.struct.group_join_member import GroupJoinGroupMember
 from recc.variables.database import VISIBILITY_LEVEL_PRIVATE, VISIBILITY_LEVEL_INTERNAL
 
 
@@ -83,7 +83,7 @@ class ContextGroup(ContextBase):
         self,
         user_uid: int,
         remove_sensitive=True,
-    ) -> List[GroupJoinMember]:
+    ) -> List[GroupJoinGroupMember]:
         groups = await self.database.select_group_members_join_group_by_user_uid(
             user_uid
         )

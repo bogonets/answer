@@ -4,7 +4,7 @@ from typing import List
 from overrides import overrides
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.project_member import ProjectMember
-from recc.database.struct.project_join_member import ProjectJoinMember
+from recc.database.struct.project_join_member import ProjectJoinProjectMember
 from recc.database.interfaces.db_project_member import DbProjectMember
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.project_member import (
@@ -113,13 +113,13 @@ class PgProjectMember(DbProjectMember, PgBase):
     @overrides
     async def select_project_members_join_project_by_user_uid(
         self, user_uid: int
-    ) -> List[ProjectJoinMember]:
-        result: List[ProjectJoinMember] = list()
+    ) -> List[ProjectJoinProjectMember]:
+        result: List[ProjectJoinProjectMember] = list()
         async with self.conn() as conn:
             async with conn.transaction():
                 query = SELECT_PROJECT_MEMBER_JOIN_PROJECT_BY_USER_UID
                 async for row in conn.cursor(query, user_uid):
-                    result.append(ProjectJoinMember(**dict(row)))
+                    result.append(ProjectJoinProjectMember(**dict(row)))
         result_msg = f"{len(result)} project members"
         logger.info(
             f"select_project_members_join_project_by_user_uid() -> {result_msg}"
@@ -129,13 +129,13 @@ class PgProjectMember(DbProjectMember, PgBase):
     @overrides
     async def select_project_member_join_project_by_user_uid_and_project_uid(
         self, user_uid: int, project_uid: int
-    ) -> ProjectJoinMember:
+    ) -> ProjectJoinProjectMember:
         query = SELECT_PROJECT_MEMBER_JOIN_PROJECT_BY_USER_UID_PROJECT_UID
         row = await self.fetch_row(query, user_uid, project_uid)
         params_msg = f"user_uid={user_uid},project_uid={project_uid}"
         if not row:
             raise RuntimeError(f"Not found project member: {params_msg}")
-        result = ProjectJoinMember(**dict(row))
+        result = ProjectJoinProjectMember(**dict(row))
         func_name = "select_project_member_join_project_by_user_uid_and_project_uid"
         logger.info(f"{func_name}({params_msg}) ok.")
         return result

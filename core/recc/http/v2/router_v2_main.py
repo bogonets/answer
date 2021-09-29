@@ -247,9 +247,7 @@ class RouterV2Main:
     async def get_groups_pgroup_projects(self, group: str) -> List[ProjectA]:
         group_uid = await self.context.get_group_uid(group)
         result = list()
-        for project in await self.context.get_projects(
-            group_uid, remove_sensitive=False
-        ):
+        for project in await self.context.get_projects(group_uid):
             assert project.uid is not None
             assert project.group_uid == group_uid
             assert project.slug is not None
@@ -263,9 +261,7 @@ class RouterV2Main:
     @parameter_matcher()
     async def get_projects(self, session: SessionEx) -> List[ProjectA]:
         result = list()
-        for project in await self.context.get_projects_by_user(
-            session.uid, remove_sensitive=False
-        ):
+        for project in await self.context.get_projects_by_user(session.uid):
             assert project.uid is not None
             assert project.group_uid is not None
             assert project.slug is not None

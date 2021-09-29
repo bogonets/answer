@@ -341,7 +341,7 @@ class RouterV2Admin:
     @parameter_matcher()
     async def get_projects(self) -> List[ProjectA]:
         result = list()
-        for project in await self.context.get_projects(remove_sensitive=False):
+        for project in await self.context.get_projects():
             assert project.uid is not None
             assert project.group_uid is not None
             assert project.slug is not None

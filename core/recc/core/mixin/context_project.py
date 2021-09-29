@@ -4,7 +4,7 @@ from typing import List, Optional, Any
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.project import Project
 from recc.database.struct.project_member import ProjectMember
-from recc.database.struct.project_join_member import ProjectJoinMember
+from recc.database.struct.project_join_member import ProjectJoinProjectMember
 from recc.variables.database import VISIBILITY_LEVEL_PRIVATE, VISIBILITY_LEVEL_INTERNAL
 
 
@@ -57,47 +57,27 @@ class ContextProject(ContextBase):
     async def delete_project(self, uid: int) -> None:
         await self.database.delete_project_by_uid(uid)
 
-    async def get_projects(
-        self,
-        group_uid: Optional[int] = None,
-        remove_sensitive=True,
-    ) -> List[Project]:
+    async def get_projects(self, group_uid: Optional[int] = None) -> List[Project]:
         if not group_uid:
-            projects = await self.database.select_projects()
+            return await self.database.select_projects()
         else:
-            projects = await self.database.select_projects_by_group_uid(group_uid)
-        if remove_sensitive:
-            for project in projects:
-                project.remove_sensitive()
-        return projects
+            return await self.database.select_projects_by_group_uid(group_uid)
 
-    async def get_project(self, uid: int, remove_sensitive=True) -> Project:
-        project = await self.database.select_project_by_uid(uid)
-        if remove_sensitive:
-            project.remove_sensitive()
-        return project
+    async def get_project(self, uid: int) -> Project:
+        return await self.database.select_project_by_uid(uid)
 
-    async def get_projects_for_accessible(self, remove_sensitive=True) -> List[Project]:
-        projects = await self.database.select_projects_by_below_visibility(
+    async def get_projects_for_accessible(self) -> List[Project]:
+        return await self.database.select_projects_by_below_visibility(
             VISIBILITY_LEVEL_INTERNAL
         )
-        if remove_sensitive:
-            for project in projects:
-                project.remove_sensitive()
-        return projects
 
     async def get_projects_by_user(
         self,
         user_uid: int,
-        remove_sensitive=True,
-    ) -> List[ProjectJoinMember]:
-        projects = await self.database.select_project_members_join_project_by_user_uid(
+    ) -> List[ProjectJoinProjectMember]:
+        return await self.database.select_project_members_join_project_by_user_uid(
             user_uid
         )
-        if remove_sensitive:
-            for project in projects:
-                project.remove_sensitive()
-        return projects
 
     async def get_project_members(self, project_uid: int) -> List[ProjectMember]:
         return await self.database.select_project_members_by_project_uid(project_uid)

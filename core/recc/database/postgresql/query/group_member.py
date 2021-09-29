@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from recc.variables.database import TABLE_GROUP, TABLE_GROUP_MEMBER
+from recc.variables.database import TABLE_GROUP, TABLE_GROUP_MEMBER, TABLE_PROJECT
 
 ##########
 # INSERT #
@@ -82,4 +82,15 @@ WITH gm AS (
 SELECT *
 FROM gm
 INNER JOIN {TABLE_GROUP} g ON gm.group_uid=g.uid;
+"""
+
+SELECT_GROUP_MEMBER_JOIN_PROJECT_BY_USER_UID = f"""
+WITH gm AS (
+    SELECT *
+    FROM {TABLE_GROUP_MEMBER}
+    WHERE user_uid=$1
+)
+SELECT *
+FROM gm
+INNER JOIN {TABLE_PROJECT} p ON gm.group_uid=p.group_uid;
 """

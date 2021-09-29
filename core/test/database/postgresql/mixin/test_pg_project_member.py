@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import main
-from recc.database.struct.project_join_member import ProjectJoinMember
+from recc.database.struct.project_join_member import ProjectJoinProjectMember
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
@@ -97,7 +97,7 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
         )
         self.assertEqual(1, len(projects))
         project0 = projects[0]
-        self.assertIsInstance(project0, ProjectJoinMember)
+        self.assertIsInstance(project0, ProjectJoinProjectMember)
         self.assertEqual(self.project.uid, project0.project_uid)
         self.assertEqual(test_user, project0.user_uid)
         self.assertEqual(self.guest, project0.permission_uid)

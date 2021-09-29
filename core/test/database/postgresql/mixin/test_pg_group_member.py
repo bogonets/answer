@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import main
-from recc.database.struct.group_join_member import GroupJoinMember
+from recc.database.struct.group_join_member import GroupJoinGroupMember
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
@@ -72,7 +72,7 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
         groups = await self.db.select_group_members_join_group_by_user_uid(test_user)
         self.assertEqual(1, len(groups))
         group0 = groups[0]
-        self.assertIsInstance(group0, GroupJoinMember)
+        self.assertIsInstance(group0, GroupJoinGroupMember)
         self.assertEqual(self.anonymous, group0.group_uid)
         self.assertEqual(test_user, group0.user_uid)
         self.assertEqual(self.guest, group0.permission_uid)

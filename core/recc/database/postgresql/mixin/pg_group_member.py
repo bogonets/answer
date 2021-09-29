@@ -4,7 +4,10 @@ from typing import List
 from overrides import overrides
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.group_member import GroupMember
-from recc.database.struct.group_join_member import GroupJoinMember
+from recc.database.struct.group_join_member import (
+    GroupJoinGroupMember,
+    ProjectJoinGroupMember,
+)
 from recc.database.interfaces.db_group_member import DbGroupMember
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.group_member import (
@@ -17,6 +20,7 @@ from recc.database.postgresql.query.group_member import (
     SELECT_GROUP_MEMBER_ALL,
     SELECT_GROUP_MEMBER_JOIN_GROUP_BY_USER_UID,
     SELECT_GROUP_MEMBER_JOIN_GROUP_BY_USER_UID_AND_GROUP_UID,
+    SELECT_GROUP_MEMBER_JOIN_PROJECT_BY_USER_UID,
 )
 
 
@@ -111,13 +115,13 @@ class PgGroupMember(DbGroupMember, PgBase):
     @overrides
     async def select_group_members_join_group_by_user_uid(
         self, user_uid: int
-    ) -> List[GroupJoinMember]:
-        result: List[GroupJoinMember] = list()
+    ) -> List[GroupJoinGroupMember]:
+        result: List[GroupJoinGroupMember] = list()
         async with self.conn() as conn:
             async with conn.transaction():
                 query = SELECT_GROUP_MEMBER_JOIN_GROUP_BY_USER_UID
                 async for row in conn.cursor(query, user_uid):
-                    result.append(GroupJoinMember(**dict(row)))
+                    result.append(GroupJoinGroupMember(**dict(row)))
         result_msg = f"{len(result)} group members"
         logger.info(f"select_group_members_join_group_by_user_uid() -> {result_msg}")
         return result
@@ -125,13 +129,27 @@ class PgGroupMember(DbGroupMember, PgBase):
     @overrides
     async def select_group_member_join_group_by_user_uid_and_group_uid(
         self, user_uid: int, group_uid: int
-    ) -> GroupJoinMember:
+    ) -> GroupJoinGroupMember:
         query = SELECT_GROUP_MEMBER_JOIN_GROUP_BY_USER_UID_AND_GROUP_UID
         row = await self.fetch_row(query, user_uid, group_uid)
         params_msg = f"user_uid={user_uid},group_uid={group_uid}"
         if not row:
             raise RuntimeError(f"Not found group member: {params_msg}")
-        result = GroupJoinMember(**dict(row))
+        result = GroupJoinGroupMember(**dict(row))
         func_name = "select_group_member_join_group_by_user_uid_and_group_uid"
         logger.info(f"{func_name}({params_msg}) ok.")
+        return result
+
+    @overrides
+    async def select_group_members_join_project_by_user_uid(
+        self, user_uid: int
+    ) -> List[ProjectJoinGroupMember]:
+        result: List[ProjectJoinGroupMember] = list()
+        async with self.conn() as conn:
+            async with conn.transaction():
+                query = SELECT_GROUP_MEMBER_JOIN_PROJECT_BY_USER_UID
+                async for row in conn.cursor(query, user_uid):
+                    result.append(ProjectJoinGroupMember(**dict(row)))
+        result_msg = f"{len(result)} group members"
+        logger.info(f"select_group_members_join_project_by_user_uid() -> {result_msg}")
         return result
