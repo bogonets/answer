@@ -2,7 +2,11 @@
 
 from datetime import datetime
 from typing import Any, List, Optional
-from recc.variables.database import TABLE_PROJECT, TABLE_PROJECT_MEMBER
+from recc.variables.database import (
+    TABLE_PROJECT,
+    TABLE_PROJECT_MEMBER,
+    TABLE_GROUP_MEMBER,
+)
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
 
@@ -112,4 +116,20 @@ FROM {TABLE_PROJECT};
 SELECT_PROJECT_COUNT = f"""
 SELECT count(uid) AS count
 FROM {TABLE_PROJECT};
+"""
+
+SELECT_PROJECT_BY_USER_UID = f"""
+WITH pm AS (
+    SELECT *
+    FROM {TABLE_PROJECT_MEMBER}
+    WHERE user_uid=$1
+), gm AS (
+    SELECT *
+    FROM {TABLE_GROUP_MEMBER}
+    WHERE user_uid=$1
+)
+SELECT p.*
+FROM {TABLE_PROJECT} AS p, pm, gm
+WHERE pm.project_uid=p.uid OR gm.group_uid=p.group_uid
+GROUP BY p.uid;
 """

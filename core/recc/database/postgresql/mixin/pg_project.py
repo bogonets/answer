@@ -17,6 +17,7 @@ from recc.database.postgresql.query.project import (
     SELECT_PROJECT_BY_GROUP_ID,
     SELECT_PROJECT_BY_BELOW_VISIBILITY,
     SELECT_PROJECT_COUNT,
+    SELECT_PROJECT_BY_USER_UID,
     get_update_project_query_by_uid,
 )
 
@@ -160,4 +161,17 @@ class PgProject(DbProject, PgBase):
         assert row and len(row) == 1
         result = int(row.get("count", 0))
         logger.info(f"select_projects_count() -> {result}")
+        return result
+
+    @overrides
+    async def select_projects_by_user_uid(self, user_uid: int) -> List[Project]:
+        result: List[Project] = list()
+        async with self.conn() as conn:
+            async with conn.transaction():
+                query = SELECT_PROJECT_BY_USER_UID
+                async for row in conn.cursor(query, user_uid):
+                    result.append(Project(**dict(row)))
+        params_msg = f"user_uid={user_uid}"
+        result_msg = f"{len(result)} project"
+        logger.info(f"select_projects_by_user_uid({params_msg}) -> {result_msg}")
         return result

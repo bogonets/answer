@@ -71,3 +71,7 @@ class DbProject(metaclass=ABCMeta):
     @abstractmethod
     async def select_projects_count(self) -> int:
         raise NotImplementedError
+
+    @abstractmethod
+    async def select_projects_by_user_uid(self, user_uid: int) -> List[Project]:
+        raise NotImplementedError

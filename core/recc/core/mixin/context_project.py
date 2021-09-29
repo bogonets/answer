@@ -4,7 +4,6 @@ from typing import List, Optional, Any
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.project import Project
 from recc.database.struct.project_member import ProjectMember
-from recc.database.struct.project_join_member import ProjectJoinProjectMember
 from recc.variables.database import VISIBILITY_LEVEL_PRIVATE, VISIBILITY_LEVEL_INTERNAL
 
 
@@ -71,13 +70,8 @@ class ContextProject(ContextBase):
             VISIBILITY_LEVEL_INTERNAL
         )
 
-    async def get_projects_by_user(
-        self,
-        user_uid: int,
-    ) -> List[ProjectJoinProjectMember]:
-        return await self.database.select_project_members_join_project_by_user_uid(
-            user_uid
-        )
+    async def get_projects_by_user(self, user_uid: int) -> List[Project]:
+        return await self.database.select_projects_by_user_uid(user_uid)
 
     async def get_project_members(self, project_uid: int) -> List[ProjectMember]:
         return await self.database.select_project_members_by_project_uid(project_uid)
