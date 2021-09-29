@@ -5,6 +5,8 @@ export const rootNames = {
     root: 'root',
     rootGroups: 'rootGroups',
     rootGroupsNew: 'rootGroupsNew',
+    rootProjects: 'rootProjects',
+    rootProjectsNew: 'rootProjectsNew',
     rootAbout: 'rootAbout',
 };
 

@@ -20,7 +20,7 @@ ko:
       {{ $t('groups') }}
     </v-btn>
 
-    <v-btn v-if="false" plain small text color="primary" @click="onClickProjects">
+    <v-btn plain small text color="primary" @click="onClickProjects">
       {{ $t('projects') }}
     </v-btn>
 
@@ -58,7 +58,7 @@ export default class BarMain extends VueBase {
   }
 
   onClickProjects() {
-    // this.moveToProjects();
+    this.moveToRootProjects();
   }
 }
 </script>

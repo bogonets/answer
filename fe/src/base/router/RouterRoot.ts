@@ -28,6 +28,14 @@ export default class RouterRoot extends Router {
         this.moveTo(rootNames.rootGroupsNew);
     }
 
+    moveToRootProjects() {
+        this.moveTo(rootNames.rootProjects);
+    }
+
+    moveToRootProjectsNew() {
+        this.moveTo(rootNames.rootProjectsNew);
+    }
+
     moveToRootAbout() {
         this.moveTo(rootNames.rootAbout);
     }

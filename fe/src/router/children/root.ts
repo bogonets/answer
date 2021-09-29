@@ -21,6 +21,8 @@ import Error from '@/pages/Error.vue';
 
 import RootGroups from '@/pages/RootGroups.vue';
 import RootGroupsNew from '@/pages/RootGroupsNew.vue';
+import RootProjects from '@/pages/RootProjects.vue';
+import RootProjectsNew from '@/pages/RootProjectsNew.vue';
 import RootAbout from '@/pages/RootAbout.vue';
 
 import PUBLIC_PATH from '@/router/public-path';
@@ -60,6 +62,16 @@ export const rootChildren = [
                 path: 'groups/new',
                 component: RootGroupsNew,
                 name: rootNames.rootGroupsNew,
+            },
+            {
+                path: 'projects',
+                component: RootProjects,
+                name: rootNames.rootProjects,
+            },
+            {
+                path: 'projects/new',
+                component: RootProjectsNew,
+                name: rootNames.rootProjectsNew,
             },
             {
                 path: 'group',
