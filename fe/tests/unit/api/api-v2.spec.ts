@@ -7,7 +7,7 @@ function getReccServerAddress(): string {
 }
 
 describe('ApiV2', () => {
-  let api = new ApiV2(getReccServerAddress());
+  let api = new ApiV2({origin: getReccServerAddress()});
 
   test('version', async () => {
     const version_text = await api.getPublicVersion();

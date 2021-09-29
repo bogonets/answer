@@ -2,6 +2,7 @@ import Vue from 'vue';
 import App from './App.vue';
 import '@/registerServiceWorker';
 import router from '@/router';
+import rootNames from '@/router/names/root';
 import vuetify from '@/plugins/vuetify';
 import '@/plugins/chart.js';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';

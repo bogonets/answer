@@ -31,7 +31,14 @@ import {PreferenceA, createEmptyPreference} from '@/packet/preference';
 import {encryptSha256} from '@/crypto/sha';
 
 const DEFAULT_TIMEOUT = 30 * 1000;
+const STATUS_CODE_ACCESS_TOKEN_ERROR = 461
+const STATUS_CODE_UNINITIALIZED_SERVICE = 561
 
+const VALIDATE_STATUS = [
+    200,
+    STATUS_CODE_ACCESS_TOKEN_ERROR,
+    STATUS_CODE_UNINITIALIZED_SERVICE,
+];
 
 export class ApiV2TokenError extends Error {
     constructor(token?: string) {
@@ -65,16 +72,29 @@ export function originToBaseUrl(origin: string): string {
     }
 }
 
+export interface ApiV2Options {
+    origin?: string;
+    timeout?: number;
+    tokenErrorCallback?: () => void;
+    uninitializedServiceCallback?: () => void;
+}
+
 export default class ApiV2 {
+
+    readonly tokenErrorCallback?: () => void;
+    readonly uninitializedServiceCallback?: () => void;
 
     private originAddress: string;
     private api: AxiosInstance;
     private session: SigninA;
 
-    constructor(
-        origin: string = document.location.origin,
-        timeout: number = DEFAULT_TIMEOUT,
-    ) {
+    constructor(options?: ApiV2Options) {
+        this.tokenErrorCallback = options?.tokenErrorCallback;
+        this.uninitializedServiceCallback = options?.uninitializedServiceCallback;
+
+        const origin = options?.origin || document.location.origin;
+        const timeout = options?.timeout || DEFAULT_TIMEOUT;
+
         this.originAddress = origin;
         this.api = AxiosLib.create({
             baseURL: originToBaseUrl(origin),
@@ -83,7 +103,7 @@ export default class ApiV2 {
                 Accept: 'application/json',
             },
             validateStatus: (status: number): boolean => {
-                return status === 200;
+                return VALIDATE_STATUS.includes(status);
             }
         });
         this.session = createEmptySigninA();
@@ -122,26 +142,45 @@ export default class ApiV2 {
         this.api.defaults.headers['Authorization'] = `Bearer ${token}`;
     }
 
+    private _commonErrorHandling<T>(res: AxiosResponse<T>) {
+        if (res.status === STATUS_CODE_ACCESS_TOKEN_ERROR) {
+            if (this.tokenErrorCallback) {
+                this.tokenErrorCallback();
+            }
+        } else if (res.status === STATUS_CODE_UNINITIALIZED_SERVICE) {
+            if (this.uninitializedServiceCallback) {
+                this.uninitializedServiceCallback();
+            }
+        } else {
+            console.assert(res.status === 200);
+        }
+    }
+
     get<T = any>(url: string, config?: AxiosRequestConfig) {
-        return this.api.get<T>(url, config).then((res) => {
+        return this.api.get<T>(url, config).then(res => {
+            this._commonErrorHandling(res);
             return res.data;
         });
     }
 
     post<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-        return this.api.post<T>(url, data, config).then((res) => {
+        return this.api.post<T>(url, data, config).then(res => {
+            this._commonErrorHandling(res);
             return res.data;
         });
     }
 
     patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-        return this.api.patch<T>(url, data, config).then((res) => {
+        return this.api.patch<T>(url, data, config).then(res => {
+            this._commonErrorHandling(res);
             return res.data;
         });
     }
 
     delete(url: string, config?: AxiosRequestConfig) {
-        return this.api.delete(url, config);
+        return this.api.delete(url, config).then(res => {
+            this._commonErrorHandling(res);
+        });
     }
 
     encryptPassword(password: string): string {
