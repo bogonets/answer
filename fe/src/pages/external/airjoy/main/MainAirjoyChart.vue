@@ -189,7 +189,12 @@ ko:
           {{ $t('msg.no_chart') }}
         </div>
       </div>
-      <bar-chart v-else :chart-data="chartData" :options="chartOptions"></bar-chart>
+      <chart
+          v-else
+          type="bar"
+          :chart-data="chartData"
+          :options="chartOptions"
+      ></chart>
     </v-card>
 
   </v-container>
@@ -199,7 +204,7 @@ ko:
 import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import {BarChart} from 'vue-chart-3';
+import Chart from '@/chart/Chart.vue';
 import {dateToString, todayString, yesterdayString} from '@/chrono/date';
 import type {AirjoyChartA, AirjoyDeviceA} from '@/packet/airjoy';
 import {
@@ -228,7 +233,7 @@ function getRandomInt() {
 
 @Component({
   components: {
-    BarChart,
+    Chart,
     ToolbarBreadcrumbs,
   }
 })

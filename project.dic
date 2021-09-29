@@ -103,9 +103,11 @@ vender
 webrtcurls
 websocket
 xaxis
+xlabels
 xmltodict
 yamlparse
 yaxis
+ylabels
 zoneinfo
 
 # Parameter prefix ('p')

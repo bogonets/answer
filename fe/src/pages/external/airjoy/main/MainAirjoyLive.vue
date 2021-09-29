@@ -60,10 +60,11 @@ ko:
       <div class="mb-2 text--primary text-subtitle-2 text-center">
         {{ $t('title') }}
       </div>
-      <line-chart
+      <chart
+          type="line"
           :chart-data="chartData"
           :options="chartOptions"
-      ></line-chart>
+      ></chart>
       <v-spacer class="py-4"></v-spacer>
     </v-card>
 
@@ -80,8 +81,8 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
-import {LineChart} from 'vue-chart-3';
-import {Chart} from 'chart.js';
+import Chart from '@/chart/Chart.vue';
+import {Chart as ChartJS} from 'chart.js';
 import type {AirjoyDeviceA, AirjoySensorA} from '@/packet/airjoy';
 import {
   INDEX_UNKNOWN,
@@ -105,7 +106,7 @@ const STREAMING_FRAME_RATE = 30;
 @Component({
   components: {
     BreadcrumbMain,
-    LineChart,
+    Chart,
   }
 })
 export default class MainAirjoyLive extends VueBase {
@@ -263,7 +264,7 @@ export default class MainAirjoyLive extends VueBase {
     }
   }
 
-  onChartRefresh(chart: Chart) {
+  onChartRefresh(chart: ChartJS) {
     for (const item of this.items) {
       const name = item.name.toString();
       const uid = item.uid.toString();
