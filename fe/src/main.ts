@@ -48,9 +48,6 @@ import 'splitpanes/dist/splitpanes.css';
 Vue.component('vSplitpanes', Splitpanes);
 Vue.component('vPane', Pane);
 
-import VueApexCharts from 'vue-apexcharts';
-Vue.use(VueApexCharts);
-
 import sha256 from 'sha256';
 Vue.prototype.$sha256 = sha256;
 

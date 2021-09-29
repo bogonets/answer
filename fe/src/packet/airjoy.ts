@@ -1,3 +1,6 @@
+export const UNKNOWN_AIRJOY_UID = 0;
+export const UNKNOWN_ROUTE_PARAMS_DEVICE = '-';
+
 export const CATEGORY_UNKNOWN = '';
 export const CATEGORY_PM10 = 'pm10';
 export const CATEGORY_PM2_5 = 'pm2_5';
@@ -168,9 +171,6 @@ export function printableCategoryNames(lang: string) {
         printableCategoryNameByIndex(INDEX_VOC, lang),
     ];
 }
-
-export const UNKNOWN_AIRJOY_UID = 0;
-export const UNKNOWN_ROUTE_PARAMS_DEVICE = '-';
 
 export interface AirjoySensorA {
     name: string;

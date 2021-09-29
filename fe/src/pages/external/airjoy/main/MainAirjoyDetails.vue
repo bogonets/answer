@@ -558,7 +558,6 @@ ko:
 import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import VueApexCharts from 'vue-apexcharts';
 import type {AirjoyControlQ} from '@/packet/airjoy';
 import {
   CATEGORY_PM10,
@@ -608,7 +607,6 @@ export interface Control {
     AirjoyFanSpeedGroup,
     AirjoyTimerGroup,
     ToolbarBreadcrumbs,
-    VueApexCharts,
   }
 })
 export default class MainAirjoyDetails extends VueBase {

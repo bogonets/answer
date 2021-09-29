@@ -175,23 +175,23 @@ ko:
 import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import AirjoyServiceCard, {ServiceInfo} from '@/pages/external/airjoy/components/AirjoyServiceCard.vue';
-import VueApexCharts from 'vue-apexcharts';
+import type {ServiceInfo} from '@/pages/external/airjoy/components/AirjoyServiceCard.vue';
+import AirjoyServiceCard from '@/pages/external/airjoy/components/AirjoyServiceCard.vue';
 import type {
   AirjoyDeviceA,
   AirjoyServiceA,
-  UpdateAirjoyServiceQ
+  UpdateAirjoyServiceQ,
+  CreateAirjoyServiceQ,
 } from '@/packet/airjoy';
-import type {CreateAirjoyServiceQ} from '@/packet/airjoy';
-import {createEmptyAirjoyDeviceA, createEmptyAirjoyServiceA} from '@/packet/airjoy';
-
-const UNKNOWN_DEVICE = '-';
+import {
+  UNKNOWN_ROUTE_PARAMS_DEVICE,
+  createEmptyAirjoyServiceA,
+} from '@/packet/airjoy';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
     AirjoyServiceCard,
-    VueApexCharts,
   }
 })
 export default class MainAirjoyService extends VueBase {
@@ -304,7 +304,7 @@ export default class MainAirjoyService extends VueBase {
   deleteService = createEmptyAirjoyServiceA();
 
   created() {
-    if (!!this.$route.params.device && this.$route.params.device !== UNKNOWN_DEVICE) {
+    if (!!this.$route.params.device && this.$route.params.device !== UNKNOWN_ROUTE_PARAMS_DEVICE) {
       this.filter = this.$route.params.device;
     }
     this.updateDevices();
