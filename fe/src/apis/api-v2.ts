@@ -21,6 +21,7 @@ import type {ConfigA, UpdateConfigValueQ} from '@/packet/config';
 import type {GroupA, CreateGroupQ, UpdateGroupQ} from '@/packet/group';
 import type {InfoA, CreateInfoQ, UpdateInfoQ} from '@/packet/info';
 import type {PermissionA, CreatePermissionQ, UpdatePermissionQ} from '@/packet/permission';
+import type {PluginA} from '@/packet/plugin';
 import type {TemplateA} from '@/packet/template';
 import type {ProjectA, CreateProjectQ, UpdateProjectQ} from '@/packet/project';
 import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
@@ -556,6 +557,14 @@ export default class ApiV2 {
 
     deleteAdminPermissionsPperm(perm: string) {
         return this.delete(`/admin/permissions/${perm}`);
+    }
+
+    // -------------
+    // Admin/Plugins
+    // -------------
+
+    getAdminPlugins() {
+        return this.get<Array<PluginA>>('/admin/plugins');
     }
 
     // --------------

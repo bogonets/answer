@@ -11,6 +11,7 @@ from recc.http import http_path_keys as p
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.info import InfoA, CreateInfoQ
 from recc.packet.permission import PermissionA, CreatePermissionQ, UpdatePermissionQ
+from recc.packet.plugin import PluginA
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.system import SystemOverviewA
 
@@ -260,6 +261,14 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertLessEqual(0, response.data.users)
         self.assertLessEqual(0, response.data.groups)
         self.assertLessEqual(0, response.data.projects)
+
+    async def test_plugins(self):
+        path = v2_admin_path(u.plugins)
+        response = await self.tester.get(path, cls=List[PluginA])
+        self.assertEqual(200, response.status)
+        self.assertIsNotNone(response.data)
+        self.assertIsInstance(response.data, list)
+        self.assertEqual(0, len(response.data))
 
 
 if __name__ == "__main__":

@@ -16,6 +16,7 @@ from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.info import InfoA, CreateInfoQ, UpdateInfoQ
 from recc.packet.permission import PermissionA, CreatePermissionQ, UpdatePermissionQ
+from recc.packet.plugin import PluginA
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.system import SystemOverviewA
 from recc.packet.template import TemplateA
@@ -96,6 +97,9 @@ class RouterV2Admin:
             web.get(u.permissions_pperm, self.get_permissions_pperm),
             web.patch(u.permissions_pperm, self.patch_permissions_pperm),
             web.delete(u.permissions_pperm, self.delete_permissions_pperm),
+
+            # plugins
+            web.get(u.plugins, self.get_plugins),
         ]
         # fmt: on
 
@@ -457,3 +461,11 @@ class RouterV2Admin:
     async def delete_permissions_pperm(self, perm: str) -> None:
         uid = await self.context.get_permission_uid(perm)
         await self.context.delete_permission(uid)
+
+    # -------
+    # Plugins
+    # -------
+
+    @parameter_matcher()
+    async def get_plugins(self) -> List[PluginA]:
+        return self.context.get_plugins()
