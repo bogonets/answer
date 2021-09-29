@@ -13,7 +13,6 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.8.2",
     "@types/lodash": "^4.14.172",
-    "@vue/composition-api": "^1.2.2",
     "ansi_up": "^4.0.4",
     "axios": "0.18.0",
     "chart.js": "^3.5.1",
@@ -33,7 +32,6 @@
     "sha256": "^0.2.0",
     "splitpanes": "^2.2.1",
     "vue": "^2.6.11",
-    "vue-chart-3": "^0.5.8",
     "vue-class-component": "^7.2.6",
     "vue-drag-drop": "1.1.4",
     "vue-i18n": "^8.22.3",
