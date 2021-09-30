@@ -1,3 +1,5 @@
+export const OEM_AIRJOY = 'airjoy';
+
 export interface PreferenceA {
     oem: string;
 }

@@ -26,7 +26,7 @@ ko:
 
     <v-spacer></v-spacer>
 
-    <v-btn icon>
+    <v-btn v-if="showAlarm" icon>
       <v-icon>mdi-bell</v-icon>
     </v-btn>
 
@@ -41,6 +41,11 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import MenuAccount from '@/components/MenuAccount.vue';
 import TitleLogoSmall from '@/components/TitleLogoSmall.vue';
+import {OEM_AIRJOY} from '@/packet/preference';
+
+const NO_ALARM_OEMS = [
+    OEM_AIRJOY,
+];
 
 @Component({
   components: {
@@ -49,6 +54,10 @@ import TitleLogoSmall from '@/components/TitleLogoSmall.vue';
   }
 })
 export default class BarMain extends VueBase {
+  get showAlarm() {
+    return !NO_ALARM_OEMS.includes(this.$localStore.preference.oem);
+  }
+
   onClickLogo() {
     this.moveToRoot();
   }

@@ -67,6 +67,8 @@ netbase
 newshape
 nocov
 noninteractive
+oem
+oems
 objname
 objs
 onlytext
