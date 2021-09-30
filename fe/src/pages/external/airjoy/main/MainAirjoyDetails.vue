@@ -51,14 +51,15 @@ en:
   labels:
     search: "You can filter by author or description."
     as_new: "New A/S"
+    filter_reset: "Filter Reset"
     delete: "Delete a device"
   hints:
+    description: "Detailed human-readable description."
     delete: "Please be careful! It cannot be recovered."
   headers:
-    author: "Author"
-    description: "Description"
-    datetime: "Datetime"
-    actions: "Actions"
+    details: "Details"
+  subheaders:
+    details: "Details information for AIRJOY device"
   filter:
     normal: "Filter Normal"
     reset: "Filter Reset"
@@ -88,9 +89,12 @@ en:
     minutes: "{0}Minutes"
     hours : "{0}Hours"
     days: "{0}Days"
+  filter_reset_confirm: "Are you sure? Are you really filter reset this device?"
   delete_confirm: "Are you sure? Are you really removing this device?"
   cancel: "Cancel"
   delete: "Delete"
+  submit: "Submit"
+  reset: "Reset"
 
 ko:
   online: "네트워크 연결이 정상 상태 입니다"
@@ -144,14 +148,15 @@ ko:
   labels:
     search: "담당자 또는 기록을 필터링할 수 있습니다."
     as_new: "새로운 A/S 기록"
+    filter_reset: "필터 리셋"
     delete: "장치 제거"
   hints:
+    description: "사람이 읽을 수 있는 상세한 설명."
     delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
   headers:
-    author: "담당자"
-    description: "기록"
-    datetime: "날짜"
-    actions: "관리"
+    details: "상세 정보"
+  subheaders:
+    details: "AIRJOY 장치의 상세정보"
   filter:
     normal: "필터 정상"
     reset: "필터 시간 초기화"
@@ -181,9 +186,12 @@ ko:
     minutes: "{0}분"
     hours : "{0}시간"
     days: "{0}일"
+  filter_reset_confirm: "필터 리셋을 진행합니까?"
   delete_confirm: "이 장치를 정말 제거합니까?"
   cancel: "취소"
   delete: "제거"
+  submit: "제출"
+  reset: "리셋"
 </i18n>
 
 <template>
@@ -509,8 +517,42 @@ ko:
       </v-col>
     </v-row>
 
-    <v-divider class="my-4"></v-divider>
+    <v-divider class="mt-4"></v-divider>
+    <left-title
+        :header="$t('headers.details')"
+        :subheader="$t('subheaders.details')"
+    >
+      <v-form>
+        <v-textarea
+            auto-grow
+            persistent-hint
+            :value="description"
+            @input="onInputDescription"
+            :hint="$t('hints.description')"
+        ></v-textarea>
 
+        <v-row class="mt-2" no-gutters>
+          <v-spacer></v-spacer>
+          <v-btn
+              class="mr-4"
+              color="second"
+              @click="onCancelDetails"
+          >
+            {{ $t('cancel') }}
+          </v-btn>
+          <v-btn
+              color="primary"
+              :loading="loadingSubmit"
+              :disabled="disableSubmit"
+              @click="onSubmitDetails"
+          >
+            {{ $t('submit') }}
+          </v-btn>
+        </v-row>
+      </v-form>
+    </left-title>
+
+    <v-divider class="my-4"></v-divider>
     <v-alert outlined prominent type="error" class="ma-4">
       <v-row align="center" class="pl-4">
         <v-col>
@@ -530,7 +572,32 @@ ko:
     </v-alert>
 
     <!-- Delete dialog. -->
-    <v-dialog v-model="showDeleteDialog" max-width="320">
+    <v-dialog v-model="showFilterResetDialog" :max-width="dialogMaxWidth">
+      <v-card>
+        <v-card-title class="text-h5 error--text">
+          {{ $t('labels.filter_reset') }}
+        </v-card-title>
+        <v-card-text>
+          {{ $t('filter_reset_confirm') }}
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="onClickFilterResetCancel">
+            {{ $t('cancel') }}
+          </v-btn>
+          <v-btn
+              color="error"
+              @click="onClickFilterResetOk"
+          >
+            {{ $t('reset') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Delete dialog. -->
+    <v-dialog v-model="showDeleteDialog" :max-width="dialogMaxWidth">
       <v-card>
         <v-card-title class="text-h5 error--text">
           {{ $t('labels.delete') }}
@@ -544,7 +611,11 @@ ko:
           <v-btn @click="onClickDeleteCancel">
             {{ $t('cancel') }}
           </v-btn>
-          <v-btn :loading="loadingDelete" color="error" @click="onClickDeleteOk">
+          <v-btn
+              color="error"
+              :loading="loadingDelete"
+              @click="onClickDeleteOk"
+          >
             {{ $t('delete') }}
           </v-btn>
         </v-card-actions>
@@ -558,7 +629,8 @@ ko:
 import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import type {AirjoyControlQ} from '@/packet/airjoy';
+import LeftTitle from '@/components/LeftTitle.vue';
+import type {AirjoyControlQ, UpdateAirjoyDeviceQ} from '@/packet/airjoy';
 import {
   CATEGORY_PM10,
   CATEGORY_PM2_5,
@@ -604,9 +676,10 @@ export interface Control {
 
 @Component({
   components: {
+    ToolbarBreadcrumbs,
     AirjoyFanSpeedGroup,
     AirjoyTimerGroup,
-    ToolbarBreadcrumbs,
+    LeftTitle,
   }
 })
 export default class MainAirjoyDetails extends VueBase {
@@ -641,6 +714,9 @@ export default class MainAirjoyDetails extends VueBase {
     },
   ];
 
+  @Prop({type: Number, default: 320})
+  readonly dialogMaxWidth!: number;
+
   @Prop({type: Number, default: 1000})
   readonly updateIntervalMilliseconds!: number;
 
@@ -655,11 +731,18 @@ export default class MainAirjoyDetails extends VueBase {
 
   intervalHandle = -1;
 
+  showFilterResetDialog = false;
+  loadingFilterReset = false;
+
   showDeleteDialog = false;
   loadingDelete = false;
 
+  loadingSubmit = false;
+  originalDescription = '';
+  description = '';
+
   created() {
-    this.updateDevice();
+    this.updateDevice(true);
   }
 
   mounted() {
@@ -672,7 +755,7 @@ export default class MainAirjoyDetails extends VueBase {
     window.clearInterval(this.intervalHandle);
   }
 
-  updateDevice() {
+  updateDevice(firstLoading?: boolean) {
     this.loading = true;
     const group = this.$route.params.group;
     const project = this.$route.params.project;
@@ -681,6 +764,10 @@ export default class MainAirjoyDetails extends VueBase {
         .then(item => {
           this.loading = false;
           this.item = item;
+          if (firstLoading) {
+            this.originalDescription = item.description;
+            this.description = item.description;
+          }
         })
         .catch(error => {
           this.loading = false;
@@ -694,6 +781,14 @@ export default class MainAirjoyDetails extends VueBase {
 
   calcTemperature(value: number) {
     return _calcTemperature(value);
+  }
+
+  get modifiedDescription() {
+    return this.description !== this.originalDescription;
+  }
+
+  get disableSubmit() {
+    return !this.modifiedDescription || this.loadingSubmit;
   }
 
   get filterColor() {
@@ -1009,6 +1104,37 @@ export default class MainAirjoyDetails extends VueBase {
         });
   }
 
+  onInputDescription(value) {
+    this.description = value || '';
+  }
+
+  onCancelDetails() {
+    this.description = this.originalDescription;
+  }
+
+  onSubmitDetails() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    const name = this.item.name;
+    const description = this.description;
+    const body = {
+      name: name,
+      description: description,
+    } as UpdateAirjoyDeviceQ;
+    this.loadingSubmit = false;
+    this.$api2.patchAirjoyDevice(group, project, device, body)
+        .then(() => {
+          this.loadingSubmit = false;
+          this.toastRequestSuccess();
+          this.originalDescription = description;
+        })
+        .catch(error => {
+          this.loadingSubmit = false;
+          this.toastRequestFailure(error);
+        });
+  }
+
   onClickPower() {
     let power_state;
     if (this.item.power_state == POWER_STATE_ON) {
@@ -1083,6 +1209,15 @@ export default class MainAirjoyDetails extends VueBase {
   }
 
   onClickFilterReset() {
+    this.showFilterResetDialog = true;
+  }
+
+  onClickFilterResetCancel() {
+    this.showFilterResetDialog = false;
+  }
+
+  onClickFilterResetOk() {
+    this.showFilterResetDialog = false;
     this.controlDevice({filter_reset: 1});
   }
 

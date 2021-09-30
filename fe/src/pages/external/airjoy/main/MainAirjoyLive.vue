@@ -61,6 +61,7 @@ ko:
         {{ $t('title') }}
       </div>
       <chart
+          class="pa-2"
           type="line"
           :chart-data="chartData"
           :options="chartOptions"
@@ -73,6 +74,9 @@ ko:
         <v-icon>{{ playIcon }}</v-icon>
       </v-btn>
     </v-row>
+
+    <div class="my-12">
+    </div>
 
   </v-container>
 </template>
@@ -265,6 +269,11 @@ export default class MainAirjoyLive extends VueBase {
   }
 
   onChartRefresh(chart: ChartJS) {
+    const pause = this.chartOptions.plugins.streaming.pause;
+    if (pause) {
+      return;
+    }
+
     for (const item of this.items) {
       const name = item.name.toString();
       const uid = item.uid.toString();

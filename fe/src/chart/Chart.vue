@@ -73,6 +73,13 @@ export default class Chart extends Vue {
     this.chart = new ChartJS(context, config);
   }
 
+  @Watch('options.plugins.streaming.pause')
+  onChangeOptionsPluginsStreamingPause() {
+    if (this.chart) {
+      this.chart.update();
+    }
+  }
+
   @Watch('chartData')
   onChangeChartData(newData, oldData) {
     if (oldData && typeof this.chart !== 'undefined') {
