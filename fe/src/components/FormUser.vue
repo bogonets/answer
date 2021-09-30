@@ -57,7 +57,7 @@ ko:
         type="text"
         autocomplete="off"
         :value="value.username"
-        @input="inputUsername"
+        @input="onInputUsername"
         :rules="rules.username"
         :disabled="disableUsername"
         :filled="disableUsername"
@@ -74,7 +74,7 @@ ko:
           type="password"
           autocomplete="off"
           :value="value.password"
-          @input="inputPassword"
+          @input="onInputPassword"
           :rules="rules.password"
           :hint="$t('hint.password')"
       ></v-text-field>
@@ -87,7 +87,7 @@ ko:
           autocomplete="off"
           ref="confirmPasswordField"
           :value="confirmPassword"
-          @input="inputConfirmPassword"
+          @input="onInputConfirmPassword"
           :rules="rules.confirmPassword"
           :hint="$t('hint.confirmPassword')"
           @keypress.enter.stop="onEnterConfirm"
@@ -100,7 +100,7 @@ ko:
           dense
           persistent-hint
           :value="value.nickname"
-          @input="inputNickname"
+          @input="onInputNickname"
           :hint="$t('hint.nickname')"
       ></v-text-field>
 
@@ -109,7 +109,7 @@ ko:
           dense
           persistent-hint
           :value="value.email"
-          @input="inputEmail"
+          @input="onInputEmail"
           :rules="rules.email"
           :hint="$t('hint.email')"
       ></v-text-field>
@@ -119,7 +119,7 @@ ko:
           dense
           persistent-hint
           :value="value.phone1"
-          @input="inputPhone1"
+          @input="onInputPhone1"
           :rules="rules.phone"
           :hint="$t('hint.phone1')"
       ></v-text-field>
@@ -129,7 +129,7 @@ ko:
           dense
           persistent-hint
           :value="value.phone2"
-          @input="inputPhone2"
+          @input="onInputPhone2"
           :rules="rules.phone"
           :hint="$t('hint.phone2')"
       ></v-text-field>
@@ -144,8 +144,9 @@ ko:
       <div>
         <v-switch
             inset
-            :value="value.isAdmin"
-            @change="changeIsAdmin"
+            :disabled="disableAccess"
+            :value="value.is_admin"
+            @change="onChangeIsAdmin"
         ></v-switch>
       </div>
     </v-row>
@@ -189,7 +190,7 @@ export class UserItem {
   email = '';
   phone1 = '';
   phone2 = '';
-  isAdmin = false;
+  is_admin = false;
 
   fromObject(obj?: any) {
     this.username = obj?.username || '';
@@ -198,7 +199,32 @@ export class UserItem {
     this.email = obj?.email || '';
     this.phone1 = obj?.phone1 || '';
     this.phone2 = obj?.phone2 || '';
-    this.isAdmin = obj?.is_admin || false;
+    this.is_admin = obj?.is_admin || false;
+  }
+
+  isEqual(obj?: any) {
+    if (typeof obj !== 'object') {
+      return false;
+    }
+    if (this.username !== obj.username) {
+      return false;
+    }
+    if (this.password !== obj.password) {
+      return false;
+    }
+    if (this.nickname !== obj.nickname) {
+      return false;
+    }
+    if (this.email !== obj.email) {
+      return false;
+    }
+    if (this.phone1 !== obj.phone1) {
+      return false;
+    }
+    if (this.phone2 !== obj.phone2) {
+      return false;
+    }
+    return this.is_admin === obj.is_admin;
   }
 }
 
@@ -219,6 +245,9 @@ export default class FormUser extends VueBase {
 
   @Prop({type: Boolean})
   readonly disableUsername!: boolean;
+
+  @Prop({type: Boolean})
+  readonly disableAccess!: boolean;
 
   @Prop({type: Boolean})
   readonly disableSubmitButton!: boolean;
@@ -256,44 +285,44 @@ export default class FormUser extends VueBase {
   valid = false;
   confirmPassword = '';
 
-  inputUsername(event: string) {
+  onInputUsername(event: string) {
     this.value.username = event;
     this.input();
   }
 
-  inputPassword(event: string) {
+  onInputPassword(event: string) {
     this.value.password = event;
     this.validateConfirmPasswordField();
     this.input();
   }
 
-  inputConfirmPassword(event: string) {
+  onInputConfirmPassword(event: string) {
     this.confirmPassword = event;
     this.input();
   }
 
-  inputNickname(event: string) {
+  onInputNickname(event: string) {
     this.value.nickname = event;
     this.input();
   }
 
-  inputEmail(event: string) {
+  onInputEmail(event: string) {
     this.value.email = event;
     this.input();
   }
 
-  inputPhone1(event: string) {
+  onInputPhone1(event: string) {
     this.value.phone1 = event;
     this.input();
   }
 
-  inputPhone2(event: string) {
+  onInputPhone2(event: string) {
     this.value.phone2 = event;
     this.input();
   }
 
-  changeIsAdmin(event: null | boolean) {
-    this.value.isAdmin = !!event;
+  onChangeIsAdmin(event: null | boolean) {
+    this.value.is_admin = !!event;
     this.input();
   }
 

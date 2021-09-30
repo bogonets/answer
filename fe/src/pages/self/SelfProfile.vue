@@ -10,12 +10,12 @@ en:
     created_at: "Created At"
     updated_at: "Updated At"
     last_login: "Last signin"
-    delete: "Delete a user"
+    secession: "Secession User"
   hint:
-    delete: "Please be careful! It cannot be recovered."
-  delete_confirm: "Are you sure? Are you really removing this user?"
+    secession: "Please be careful! It cannot be recovered."
+  secession_confirm: "Are you sure? Are you sure you want to secession?"
   cancel: "Cancel"
-  delete: "Delete"
+  secession: "Secession"
 
 ko:
   header:
@@ -28,12 +28,12 @@ ko:
     created_at: "계정 생성일"
     updated_at: "계정 갱신일"
     last_login: "마지막 로그인"
-    delete: "사용자 제거"
+    secession: "사용자 탈퇴"
   hint:
-    delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
-  delete_confirm: "이 사용자를 정말 제거합니까?"
+    secession: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
+  secession_confirm: "정말로 탈퇴합니까?"
   cancel: "취소"
-  delete: "제거"
+  secession: "탈퇴"
 </i18n>
 
 <template>
@@ -47,8 +47,10 @@ ko:
     >
       <form-user
           disable-username
+          disable-access
           hide-password
           hide-cancel-button
+          hide-access
           :disable-submit-button="!modified"
           :value="current"
           @input="onInputCurrent"
@@ -77,28 +79,28 @@ ko:
       <v-row align="center" class="pl-4">
         <v-col>
           <v-row>
-            <h6 class="text-h6">{{ $t('label.delete') }}</h6>
+            <h6 class="text-h6">{{ $t('label.secession') }}</h6>
           </v-row>
           <v-row>
-            <span class="text-body-2">{{ $t('hint.delete') }}</span>
+            <span class="text-body-2">{{ $t('hint.secession') }}</span>
           </v-row>
         </v-col>
         <v-col class="shrink">
           <v-btn color="error" @click.stop="onClickDelete">
-            {{ $t('delete') }}
+            {{ $t('secession') }}
           </v-btn>
         </v-col>
       </v-row>
     </v-alert>
 
-    <!-- Delete dialog. -->
-    <v-dialog v-model="showDeleteDialog" :max-width="dialogMaxWidth">
+    <!-- Secession dialog. -->
+    <v-dialog v-model="showSecessionDialog" :max-width="dialogMaxWidth">
       <v-card>
         <v-card-title class="text-h5 error--text">
-          {{ $t('label.delete') }}
+          {{ $t('label.secession') }}
         </v-card-title>
         <v-card-text>
-          {{ $t('delete_confirm') }}
+          {{ $t('secession_confirm') }}
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
@@ -106,8 +108,8 @@ ko:
           <v-btn @click="onClickDeleteCancel">
             {{ $t('cancel') }}
           </v-btn>
-          <v-btn :loading="loadingDelete" color="error" @click="onClickDeleteOk">
-            {{ $t('delete') }}
+          <v-btn :loading="loadingSecession" color="error" @click="onClickDeleteOk">
+            {{ $t('secession') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -122,7 +124,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormUser, {UserItem} from '@/components/FormUser.vue';
-import {UserA, UpdateUserQ} from '@/packet/user';
+import {UpdateUserQ, UserA} from '@/packet/user';
 
 @Component({
   components: {
@@ -131,20 +133,15 @@ import {UserA, UpdateUserQ} from '@/packet/user';
     FormUser,
   }
 })
-export default class AdminUsersEdit extends VueBase {
+export default class SelfProfile extends VueBase {
   private readonly navigationItems = [
     {
-      text: 'Admin',
+      text: 'Self',
       disabled: false,
-      href: () => this.moveToAdmin(),
+      href: () => this.moveToSelf(),
     },
     {
-      text: 'Users',
-      disabled: false,
-      href: () => this.moveToAdminUsers(),
-    },
-    {
-      text: 'Edit',
+      text: 'Profile',
       disabled: true,
     },
   ];
@@ -170,22 +167,21 @@ export default class AdminUsersEdit extends VueBase {
 
   modified = false;
   showSubmitLoading = false;
-  showDeleteDialog = false;
-  loadingDelete = false;
+  showSecessionDialog = false;
+  loadingSecession = false;
 
   created() {
     this.requestUser();
   }
 
   requestUser() {
-    const username = this.$route.params.username;
-    this.$api2.getAdminUsersPuser(username)
+    this.$api2.getSelf()
         .then(body => {
           this.updateUser(body);
         })
         .catch(error => {
           this.toastRequestFailure(error);
-          this.moveToBack();
+          // this.moveToBack();
         });
   }
 
@@ -208,7 +204,6 @@ export default class AdminUsersEdit extends VueBase {
     this.current.is_admin = isAdmin;
     this.original.fromObject(this.current);
     this.modified = !this.original.isEqual(this.current);
-    console.log(`updateUser: ${this.modified}`)
 
     this.detailItems = [
       {
@@ -240,9 +235,8 @@ export default class AdminUsersEdit extends VueBase {
       is_admin: event.is_admin,
     } as UpdateUserQ;
 
-    const username = this.$route.params.username;
     this.showSubmitLoading = true;
-    this.$api2.patchAdminUsersPuser(username, body)
+    this.$api2.patchSelf(body)
         .then(() => {
           this.showSubmitLoading = false;
           this.toastRequestSuccess();
@@ -259,25 +253,25 @@ export default class AdminUsersEdit extends VueBase {
   // ------
 
   onClickDelete() {
-    this.showDeleteDialog = true;
+    this.showSecessionDialog = true;
   }
 
   onClickDeleteCancel() {
-    this.showDeleteDialog = false;
+    this.showSecessionDialog = false;
   }
 
   onClickDeleteOk() {
-    const username = this.$route.params.username;
-    this.loadingDelete = true;
-    this.$api2.deleteAdminUsersPuser(username)
+    this.loadingSecession = true;
+    this.$api2.deleteSelf()
         .then(() => {
-          this.loadingDelete = false;
-          this.showDeleteDialog = false;
+          this.loadingSecession = false;
+          this.showSecessionDialog = false;
           this.toastRequestSuccess();
-          this.moveToAdminUsers();
+          this.$localStore.clearSession();
+          this.moveToSignin();
         })
         .catch(error => {
-          this.loadingDelete = false;
+          this.loadingSecession = false;
           this.toastRequestFailure(error);
         });
   }

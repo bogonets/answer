@@ -97,7 +97,7 @@ export const adminChildren = [
         name: adminNames.adminUsers,
     },
     {
-        path: 'users/edit',
+        path: 'users/edit/:username',
         component: AdminUsersEdit,
         name: adminNames.adminUsersEdit,
     },

@@ -34,8 +34,10 @@ class RouterV2Self:
         return [
             web.get(u.empty, self.get_root),
             web.patch(u.empty, self.patch_root),
+            web.delete(u.empty, self.delete_root),
             web.get(u.root, self.get_root),
             web.patch(u.root, self.patch_root),
+            web.delete(u.root, self.delete_root),
             web.get(u.extra, self.get_extra),
             web.patch(u.extra, self.patch_extra),
             web.patch(u.password, self.patch_password),
@@ -72,6 +74,10 @@ class RouterV2Self:
             is_admin=None,
             extra=body.extra,
         )
+
+    @parameter_matcher()
+    async def delete_root(self, session: SessionEx) -> None:
+        await self.context.remove_user_by_uid(session.uid)
 
     @parameter_matcher()
     async def get_extra(self, session: SessionEx) -> Any:

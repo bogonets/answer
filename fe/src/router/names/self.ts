@@ -1,6 +1,6 @@
 export const selfNames = {
     selfAppearance: 'selfAppearance',
-    selfOverview: 'selfOverview',
+    selfProfile: 'selfProfile',
 };
 
 export default selfNames;

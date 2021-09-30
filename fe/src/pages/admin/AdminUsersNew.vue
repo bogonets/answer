@@ -73,7 +73,7 @@ export default class AdminUsersNew extends VueBase {
       email: event.email,
       phone1: event.phone1,
       phone2: event.phone1,
-      is_admin: event.isAdmin,
+      is_admin: event.is_admin,
     } as SignupQ;
 
     this.submitLoading = true;

@@ -117,9 +117,12 @@ class ContextUser(ContextBase):
             user_uid, pass_info.password, pass_info.salt
         )
 
+    async def remove_user_by_uid(self, user_uid: int) -> None:
+        await self.database.delete_user_by_uid(user_uid)
+
     async def remove_user(self, username: str) -> None:
         user_uid = await self.get_user_uid(username)
-        await self.database.delete_user_by_uid(user_uid)
+        await self.remove_user_by_uid(user_uid)
 
     async def update_user(
         self,

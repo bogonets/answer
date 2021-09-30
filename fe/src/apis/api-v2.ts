@@ -275,6 +275,10 @@ export default class ApiV2 {
         return this.patch('/self/password', body);
     }
 
+    deleteSelf() {
+        return this.delete('/self');
+    }
+
     // -----------
     // Main/Groups
     // -----------

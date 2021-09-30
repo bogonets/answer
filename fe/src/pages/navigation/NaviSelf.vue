@@ -2,14 +2,16 @@
 en:
   user:
     unknown: "[Unknown User]"
-  overview: "Overview"
+  profile: "Profile"
   appearance: "Appearance"
+  password: "Password"
 
 ko:
   user:
     unknown: "[알수없는 사용자]"
-  overview: "개요"
+  profile: "프로파일"
   appearance: "외관"
+  password: "비밀번호"
 </i18n>
 
 <template>
@@ -45,12 +47,12 @@ ko:
           @change="input"
       >
 
-        <v-list-item link @click.stop="overview">
+        <v-list-item link @click.stop="profile">
           <v-list-item-icon>
             <v-icon>mdi-developer-board</v-icon>
           </v-list-item-icon>
           <v-list-item-title>
-            {{ $t('overview') }}
+            {{ $t('profile') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -60,6 +62,15 @@ ko:
           </v-list-item-icon>
           <v-list-item-title>
             {{ $t('appearance') }}
+          </v-list-item-title>
+        </v-list-item>
+
+        <v-list-item link @click.stop="password">
+          <v-list-item-icon>
+            <v-icon>mdi-key-variant</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('password') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -104,10 +115,10 @@ export default class MainAccount extends VueBase {
     return index;
   }
 
-  @Emit('click:overview')
-  overview() {
+  @Emit('click:profile')
+  profile() {
     if (!this.noDefault) {
-      this.moveToSelf();
+      this.moveToSelfProfile();
     }
   }
 
@@ -115,6 +126,13 @@ export default class MainAccount extends VueBase {
   appearance() {
     if (!this.noDefault) {
       this.moveToSelfAppearance();
+    }
+  }
+
+  @Emit('click:password')
+  password() {
+    if (!this.noDefault) {
+      // this.moveToSelfPassword();
     }
   }
 }

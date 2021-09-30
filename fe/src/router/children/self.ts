@@ -1,6 +1,6 @@
 import selfNames from '@/router/names/self';
 import SelfAppearance from '@/pages/self/SelfAppearance.vue';
-import SelfOverview from '@/pages/self/SelfOverview.vue';
+import SelfProfile from '@/pages/self/SelfProfile.vue';
 
 export const selfChildren = [
     {
@@ -9,9 +9,9 @@ export const selfChildren = [
         name: selfNames.selfAppearance,
     },
     {
-        path: 'overview',
-        component: SelfOverview,
-        name: selfNames.selfOverview,
+        path: 'profile',
+        component: SelfProfile,
+        name: selfNames.selfProfile,
     },
 ];
 
