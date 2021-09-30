@@ -28,7 +28,7 @@ ko:
       <v-col cols="8" sm="6" md="6" lg="6" xl="4">
 
         <div
-            class="d-block mb-16"
+            class="d-block my-16"
             @click="onClickLogo"
         >
           <title-logo
