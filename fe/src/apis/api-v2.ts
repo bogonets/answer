@@ -25,7 +25,7 @@ import type {PluginA} from '@/packet/plugin';
 import type {TemplateA} from '@/packet/template';
 import type {ProjectA, CreateProjectQ, UpdateProjectQ} from '@/packet/project';
 import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
-import type {SystemOverviewA} from '@/packet/system';
+import type {SystemOverviewA, VersionsA} from '@/packet/system';
 import type {UserA, UpdateUserQ, SigninA, SignupQ, UpdatePasswordQ, UserExtra} from '@/packet/user';
 import type {EnvironmentA} from '@/packet/environment';
 import {createEmptySigninA, createEmptyUserA} from '@/packet/user';
@@ -466,6 +466,10 @@ export default class ApiV2 {
 
     getAdminSystemOverview() {
         return this.get<SystemOverviewA>('/admin/system/overview');
+    }
+
+    getAdminSystemVersions() {
+        return this.get<VersionsA>('/admin/system/versions');
     }
 
     // ---------------

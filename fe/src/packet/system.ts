@@ -3,3 +3,7 @@ export interface SystemOverviewA {
     groups: number;
     projects: number;
 }
+
+export interface VersionsA {
+    python: string;
+}

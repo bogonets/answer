@@ -87,7 +87,7 @@ export default class AdminOverview extends VueBase {
           this.projects = response.projects || 0;
         })
         .catch(error => {
-          console.error(error);
+          this.toastRequestFailure(error);
         });
   }
 

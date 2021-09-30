@@ -51,6 +51,7 @@ test = "/test"
 usernames = "/usernames"
 users = "/users"
 version = "/version"
+versions = "/versions"
 
 
 def _param_path(key: str, pattern: Optional[str] = None) -> str:
@@ -102,4 +103,5 @@ projects_pgroup_pproject_members_pmember = projects_pgroup_pproject_members + pm
 signup_admin = signup + admin
 state_already = state + already
 system_overview = system + overview
+system_versions = system + versions
 users_puser = users + puser
