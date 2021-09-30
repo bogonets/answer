@@ -12,6 +12,10 @@ export default class RouterSelf extends Router {
         this.moveTo(selfNames.selfAppearance);
     }
 
+    moveToSelfPassword() {
+        this.moveTo(selfNames.selfPassword);
+    }
+
     moveToSelfProfile() {
         this.moveTo(selfNames.selfProfile);
     }

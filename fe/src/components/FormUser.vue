@@ -3,7 +3,7 @@ en:
   label:
     username: "Username (Required)"
     password: "Password (Required)"
-    confirmPassword: "Confirm (Required)"
+    confirm_password: "Confirm (Required)"
     nickname: "Nickname"
     email: "E-Mail"
     phone1: "Phone1"
@@ -12,7 +12,7 @@ en:
   hint:
     username: "Please enter the ID to be used when sign in."
     password: "Please enter the password to be used when sign in."
-    confirmPassword: "Please enter your password again."
+    confirm_password: "Please enter your password again."
     nickname: "Please enter your nickname that will be displayed on the screen."
     email: "Please enter the email address to be used in case of loss of ID and password."
     phone1: "This is the representative phone number."
@@ -27,7 +27,7 @@ ko:
   label:
     username: "사용자명 (필수)"
     password: "비밀번호 (필수)"
-    confirmPassword: "비밀번호 확인 (필수)"
+    confirm_password: "비밀번호 확인 (필수)"
     nickname: "별칭"
     email: "이메일"
     phone1: "전화번호1"
@@ -36,7 +36,7 @@ ko:
   hint:
     username: "로그인시 사용할 아이디를 입력해 주세요."
     password: "로그인시 사용할 비밀번호를 입력해 주세요."
-    confirmPassword: "비밀번호를 한번 더 입력해 주세요."
+    confirm_password: "비밀번호를 한번 더 입력해 주세요."
     nickname: "화면에 표시될 당신의 별명을 입력해 주세요."
     email: "아이디 및 비밀번호 분실시 사용될 이메일 주소를 입력해 주세요."
     phone1: "대표 전화번호 입니다."
@@ -79,7 +79,7 @@ ko:
           :hint="$t('hint.password')"
       ></v-text-field>
 
-      <p :class="subtitleClass">{{ $t('label.confirmPassword') }}</p>
+      <p :class="subtitleClass">{{ $t('label.confirm_password') }}</p>
       <v-text-field
           dense
           persistent-hint
@@ -89,7 +89,7 @@ ko:
           :value="confirmPassword"
           @input="onInputConfirmPassword"
           :rules="rules.confirmPassword"
-          :hint="$t('hint.confirmPassword')"
+          :hint="$t('hint.confirm_password')"
           @keypress.enter.stop="onEnterConfirm"
       ></v-text-field>
     </div>

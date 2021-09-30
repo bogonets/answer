@@ -132,7 +132,7 @@ export default class MainAccount extends VueBase {
   @Emit('click:password')
   password() {
     if (!this.noDefault) {
-      // this.moveToSelfPassword();
+      this.moveToSelfPassword();
     }
   }
 }

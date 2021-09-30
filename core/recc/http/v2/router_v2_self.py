@@ -3,7 +3,7 @@
 from typing import List, Any, Dict
 from aiohttp import web
 from aiohttp.web_routedef import AbstractRouteDef
-from aiohttp.web_exceptions import HTTPUnauthorized, HTTPBadRequest
+from aiohttp.web_exceptions import HTTPUnauthorized
 from recc.core.context import Context
 from recc.http.http_decorator import parameter_matcher
 from recc.http import http_urls as u
@@ -90,9 +90,7 @@ class RouterV2Self:
 
     @parameter_matcher()
     async def patch_password(self, session: SessionEx, body: UpdatePasswordQ) -> None:
-        try:
-            if not self.context.challenge_password(session.audience, body.before):
-                raise HTTPUnauthorized(reason="The password is incorrect.")
-        except ValueError as e:
-            raise HTTPBadRequest(reason=str(e))
-        await self.context.change_password(session.audience, body.after)
+        if await self.context.challenge_password(session.audience, body.before):
+            await self.context.change_password(session.audience, body.after)
+        else:
+            raise HTTPUnauthorized(reason="The password is incorrect.")
