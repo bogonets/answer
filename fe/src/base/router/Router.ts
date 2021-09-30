@@ -26,6 +26,6 @@ export default class Router extends Vue {
             if (reason.name !== 'NavigationDuplicated') {
                 throw reason;
             }
-        })
+        });
     }
 }

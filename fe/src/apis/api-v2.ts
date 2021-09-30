@@ -3,7 +3,7 @@ import type {
     AxiosInstance,
     AxiosResponse,
     AxiosRequestConfig,
-    AxiosBasicCredentials
+    AxiosBasicCredentials,
 } from 'axios';
 import type {
     AirjoySensorA,
@@ -41,7 +41,13 @@ const VALIDATE_STATUS = [
     STATUS_CODE_UNINITIALIZED_SERVICE,
 ];
 
-export class ApiV2TokenError extends Error {
+export class UninitializedServiceError extends Error {
+    constructor() {
+        super('Uninitialized service');
+    }
+}
+
+export class TokenError extends Error {
     constructor(token?: string) {
         let message;
         if (token) {
@@ -53,13 +59,13 @@ export class ApiV2TokenError extends Error {
     }
 }
 
-export class ApiV2AccessTokenError extends ApiV2TokenError {
+export class AccessTokenError extends TokenError {
     constructor(token?: string) {
         super(token);
     }
 }
 
-export class ApiV2RefreshTokenError extends ApiV2TokenError {
+export class RefreshTokenError extends TokenError {
     constructor(token?: string) {
         super(token);
     }
@@ -76,6 +82,7 @@ export function originToBaseUrl(origin: string): string {
 export interface ApiV2Options {
     origin?: string;
     timeout?: number;
+
     tokenErrorCallback?: () => void;
     uninitializedServiceCallback?: () => void;
 }
@@ -148,13 +155,14 @@ export default class ApiV2 {
             if (this.tokenErrorCallback) {
                 this.tokenErrorCallback();
             }
+            throw new AccessTokenError();
         } else if (res.status === STATUS_CODE_UNINITIALIZED_SERVICE) {
             if (this.uninitializedServiceCallback) {
                 this.uninitializedServiceCallback();
             }
-        } else {
-            console.assert(res.status === 200);
+            throw new UninitializedServiceError();
         }
+        console.assert(res.status === 200);
     }
 
     get<T = any>(url: string, config?: AxiosRequestConfig) {
@@ -228,10 +236,10 @@ export default class ApiV2 {
                 const access = result.access;
                 const refresh = result.refresh;
                 if (!access) {
-                    throw new ApiV2AccessTokenError(access);
+                    throw new AccessTokenError(access);
                 }
                 if (!refresh) {
-                    throw new ApiV2RefreshTokenError(refresh);
+                    throw new RefreshTokenError(refresh);
                 }
                 if (updateDefaultAuth) {
                     const user = result.user || createEmptyUserA();

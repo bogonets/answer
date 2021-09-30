@@ -3,6 +3,7 @@ import App from './App.vue';
 import '@/registerServiceWorker';
 import router from '@/router';
 import rootNames from '@/router/names/root';
+import {RawLocation} from "vue-router";
 import vuetify from '@/plugins/vuetify';
 import '@/plugins/chart.js';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
@@ -11,7 +12,9 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import '@/styles/font-face-nanum.css';
 import '@/toast';
 
-import { sessionStore } from '@/store';
+import {LocalStore} from "@/store/LocalStore";
+
+import {sessionStore} from '@/store';
 Vue.prototype.$store = sessionStore;
 
 import i18n from '@/translations';
@@ -51,12 +54,41 @@ Vue.component('vPane', Pane);
 import sha256 from 'sha256';
 Vue.prototype.$sha256 = sha256;
 
-import { REST_API } from '@/apis/api';
+import {REST_API} from '@/apis/api';
 const restApi = REST_API();
 Vue.prototype.$api = restApi;
 
+function moveTo(name: string) {
+  if (router.currentRoute.name === name) {
+    return;
+  }
+
+  const rawLocation = {
+    name: name,
+  } as RawLocation;
+
+  router.push(rawLocation).catch((reason: any) => {
+    if (reason.name !== 'NavigationDuplicated') {
+      throw reason;
+    }
+  });
+}
+
 import VueApiV2 from '@/apis';
-Vue.use(VueApiV2);
+import {ApiV2Options} from '@/apis/api-v2';
+const apiV2Options = {
+  tokenErrorCallback: () => {
+    const localStore = Vue.prototype.$localStore as LocalStore;
+    localStore.clearSession();
+    moveTo(rootNames.signin);
+  },
+  uninitializedServiceCallback: () => {
+    const localStore = Vue.prototype.$localStore as LocalStore;
+    localStore.clearSession();
+    moveTo(rootNames.init);
+  },
+} as ApiV2Options;
+Vue.use(VueApiV2, apiV2Options);
 
 import { ANSWER_UTIL } from './services/answer_util';
 const answerUtil = ANSWER_UTIL();
@@ -150,19 +182,18 @@ Vue.prototype.$buttonColor = function () {
   }
 }
 
-// if (process.env.NODE_ENV === 'production') {
-//   router.beforeEach((to, from, next) => {
-//     if (to.matched.some(record => record.meta.requiresAuth)) {
-//       if (!sessionStore.getters['user/getAccessToken']) {
-//         next('/app/signin');
-//       } else {
-//         next();
-//       }
-//     } else {
-//       next();
-//     }
-//   });
-// }
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    const localStore = Vue.prototype.$localStore as LocalStore;
+    if (!localStore.access) {
+      next('/signin');
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
 
 new Vue({
   router,
