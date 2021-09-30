@@ -631,11 +631,15 @@ export default class ApiV2 {
         begin: string,
         end: string,
         category: string,
+        period?: string,
+        origin?: string,
     ) {
         const body = {
             begin: begin,
             end: end,
             category: category,
+            period: period,
+            origin: origin,
         } as AirjoyChartQ;
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}/chart`;
         return this.post<Array<AirjoyChartA>>(url, body);  // TODO: Change to 'GET' method

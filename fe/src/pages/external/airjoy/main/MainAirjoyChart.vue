@@ -14,10 +14,12 @@ en:
     empty_category: "Empty category"
     no_chart: "No device or category selected"
   range:
-    d90: "90d"
-    d30: "30d"
-    d7: "7d"
-    d1: "1d"
+    d90: "90Days"
+    d30: "30Days"
+    d7: "1Week"
+    d1: "Today"
+  tooltip:
+    download_csv: "Download CSV file"
 
 ko:
   groups: "Groups"
@@ -38,6 +40,8 @@ ko:
     d30: "30일"
     d7: "일주"
     d1: "오늘"
+  tooltip:
+    download_csv: "CSV 파일 다운로드"
 </i18n>
 
 <template>
@@ -163,7 +167,10 @@ ko:
 
       <v-col class="d-flex flex-row align-center" cols="12" sm="5">
         <v-spacer></v-spacer>
-        <v-btn-toggle dense>
+        <v-btn-toggle
+            dense
+            v-model="rangeIndex"
+        >
           <v-btn @click="onClickRange90d">
             {{ $t('range.d90') }}
           </v-btn>
@@ -189,12 +196,35 @@ ko:
           {{ $t('msg.no_chart') }}
         </div>
       </div>
-      <chart
-          v-else
-          type="bar"
-          :chart-data="chartData"
-          :options="chartOptions"
-      ></chart>
+      <div v-else class="d-flex flex-column">
+        <div class="d-flex flex-row justify-end">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                  class="mr-4"
+                  elevation="4"
+                  fab
+                  absolute
+                  small
+                  icon
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="onClickDownloadCsv"
+              >
+                <v-icon>mdi-file-delimited</v-icon>
+              </v-btn>
+            </template>
+            <span>{{ $t('tooltip.download_csv') }}</span>
+          </v-tooltip>
+        </div>
+
+        <chart
+            class="pa-2"
+            type="bar"
+            :chart-data="chartData"
+            :options="chartOptions"
+        ></chart>
+      </div>
     </v-card>
 
   </v-container>
@@ -206,6 +236,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import Chart from '@/chart/Chart.vue';
 import {dateToString, todayString, yesterdayString} from '@/chrono/date';
+import {download} from '@/utils/download';
 import type {AirjoyChartA, AirjoyDeviceA} from '@/packet/airjoy';
 import {
   UNKNOWN_ROUTE_PARAMS_DEVICE,
@@ -225,10 +256,6 @@ export function dateRange(days: number) {
   const start = new Date();
   start.setDate(end.getDate() - days);
   return [dateToString(start), dateToString(end)];
-}
-
-function getRandomInt() {
-  return Math.floor(Math.random() * (50 - 5 + 1)) + 5
 }
 
 @Component({
@@ -301,6 +328,10 @@ export default class MainAirjoyChart extends VueBase {
   showPeriodEndMenu = false;
   periodEnd = todayString();
 
+  rangeIndex = -1;
+
+  period = '';
+
   created() {
     const index = categoryIndexByName(this.$route.params.category);
     if (index !== INDEX_UNKNOWN) {
@@ -340,6 +371,7 @@ export default class MainAirjoyChart extends VueBase {
           } else {
             this.device = undefined;
           }
+          this.updateChart();
         })
         .catch(error => {
           this.loadingDevices = false;
@@ -404,11 +436,13 @@ export default class MainAirjoyChart extends VueBase {
 
   onInputPeriodStart() {
     this.showPeriodStartMenu = true;
+    this.rangeIndex = -1;
     this.updateChart();
   }
 
   onInputPeriodEnd() {
     this.showPeriodEndMenu = true;
+    this.rangeIndex = -1;
     this.updateChart();
   }
 
@@ -446,6 +480,27 @@ export default class MainAirjoyChart extends VueBase {
     this.periodStart = range[0];
     this.periodEnd = range[1];
     this.updateChart();
+  }
+
+  toCsvData() {
+    if (!this.chartData.hasOwnProperty('labels')) {
+      throw Error('no labels');
+    }
+    if (!this.chartData.hasOwnProperty('datasets')) {
+      throw Error('no datasets');
+    }
+
+    const labels = this.chartData['labels'];
+    const data = this.chartData['datasets'][0].data;
+    const lines = [] as Array<string>;
+    for (let i = 0; i < labels.length; ++i) {
+      lines.push(`${labels[i]},${data[i][0]},${data[i][1]}`);
+    }
+    return lines.join('\n');
+  }
+
+  onClickDownloadCsv() {
+    download(this.toCsvData(), `chart-${todayString()}`, 'text/csv');
   }
 }
 </script>

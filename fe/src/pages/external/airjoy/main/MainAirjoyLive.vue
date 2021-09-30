@@ -132,7 +132,12 @@ export default class MainAirjoyLive extends VueBase {
         type: 'realtime',
         realtime: {
           onRefresh: this.onChartRefresh,
-        }
+        },
+        ticks: {
+          callback: function(value, index, values) {
+            return value;
+          }
+        },
       },
       y: {
         min: 0

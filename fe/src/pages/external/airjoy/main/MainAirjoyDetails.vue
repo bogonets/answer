@@ -524,6 +524,7 @@ ko:
     >
       <v-form>
         <v-textarea
+            filled
             auto-grow
             persistent-hint
             :value="description"
