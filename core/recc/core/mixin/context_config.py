@@ -1,42 +1,55 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Any, get_type_hints
+from typing import List, Any, KeysView, get_type_hints
 from recc.core.mixin.context_base import ContextBase
 from recc.packet.config import ConfigA
 from recc.argparse.config.core_config import CoreConfig
 
-_CORE_CONFIG_TYPE_HINTS = get_type_hints(CoreConfig)
-
-CONFIG_KEYS = [
-    "manage_port_min",
-    "manage_port_max",
-    "signature",
-    "public_signup",
-    "access_token_duration",
-    "refresh_token_duration",
-]
-CONFIG_TYPES = {k: _CORE_CONFIG_TYPE_HINTS[k] for k in CONFIG_KEYS}
+IGNORE_CONFIG_KEYS = {
+    "command",
+    "version",
+    "help",
+    "help_message",
+    "unrecognized_arguments",
+}
+CORE_CONFIG_TYPE_HINTS = get_type_hints(CoreConfig)
+CONFIG_TYPES = {
+    k: v for k, v in CORE_CONFIG_TYPE_HINTS.items() if k not in IGNORE_CONFIG_KEYS
+}
 
 
 class ContextConfig(ContextBase):
-    def update_config(self, key: str, val: Any) -> None:
-        setattr(self.config, key, CONFIG_TYPES[key](val))
-
     def get_config_keys(self) -> List[str]:
-        assert self is not None
-        return CONFIG_KEYS
+        return list(
+            filter(
+                lambda x: x not in IGNORE_CONFIG_KEYS,
+                vars(self.config).keys(),
+            )
+        )
+
+    def set_config(self, key: str, val: Any) -> None:
+        if key in CONFIG_TYPES:
+            setattr(self.config, key, CONFIG_TYPES[key](val))
+        else:
+            setattr(self.config, key, val)
 
     def get_configs(self) -> List[ConfigA]:
         result = list()
-        for key in CONFIG_KEYS:
-            type_name = CONFIG_TYPES[key].__name__
+        for key in self.get_config_keys():
             value = getattr(self.config, key)
+            if key in CONFIG_TYPES:
+                type_name = CONFIG_TYPES[key].__name__
+            else:
+                type_name = type(value).__name__
             result.append(ConfigA(key, type_name, str(value)))
         return result
 
     def get_config(self, key: str) -> ConfigA:
-        if key not in CONFIG_KEYS:
+        if key not in self.get_config_keys():
             raise KeyError(f"Not exists {key} key")
-        type_name = CONFIG_TYPES[key].__name__
         value = getattr(self.config, key)
+        if key in CONFIG_TYPES:
+            type_name = CONFIG_TYPES[key].__name__
+        else:
+            type_name = type(value).__name__
         return ConfigA(key, type_name, str(value))

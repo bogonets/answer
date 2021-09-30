@@ -133,7 +133,7 @@ class RouterV2Admin:
     @parameter_matcher()
     async def patch_configs_pkey(self, key: str, body: UpdateConfigValueQ) -> None:
         try:
-            self.context.update_config(key, body.value)
+            self.context.set_config(key, body.value)
         except KeyError as e:
             raise HTTPBadRequest(reason=str(e))
 
