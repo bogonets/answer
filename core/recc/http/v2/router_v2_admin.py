@@ -7,12 +7,15 @@ from aiohttp.web_request import Request
 from aiohttp.web_exceptions import (
     HTTPNotFound,
     HTTPBadRequest,
+    HTTPServiceUnavailable,
 )
+from recc.log.logging import recc_http_logger as logger
 from recc.core.context import Context
-from recc.http.http_decorator import parameter_matcher
 from recc.session.session_ex import SessionEx
 from recc.http import http_urls as u
+from recc.http.http_decorator import parameter_matcher
 from recc.packet.config import ConfigA, UpdateConfigValueQ
+from recc.packet.environment import EnvironmentA
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.info import InfoA, CreateInfoQ, UpdateInfoQ
 from recc.packet.permission import PermissionA, CreatePermissionQ, UpdatePermissionQ
@@ -24,6 +27,11 @@ from recc.packet.user import UserA, UpdateUserQ, SignupQ
 from recc.database.struct.group import Group
 from recc.packet.cvt.project import project_to_answer
 from recc.packet.cvt.permission import permission_to_answer
+from recc.variables.database import INFO_KEY_RECC_ENVS_READ
+
+INFO_KEY_RECC_ENVS_READ_HELP_MESSAGE = (
+    f"Enable '{INFO_KEY_RECC_ENVS_READ}' if you want to check environment variables"
+)
 
 
 class RouterV2Admin:
@@ -100,6 +108,9 @@ class RouterV2Admin:
 
             # plugins
             web.get(u.plugins, self.get_plugins),
+
+            # Environments
+            web.get(u.environments, self.get_environments),
         ]
         # fmt: on
 
@@ -469,3 +480,17 @@ class RouterV2Admin:
     @parameter_matcher()
     async def get_plugins(self) -> List[PluginA]:
         return self.context.get_plugins()
+
+    # ------------
+    # Environments
+    # ------------
+
+    @parameter_matcher()
+    async def get_environments(self) -> List[EnvironmentA]:
+        readable = await self.context.opt_info_bool(INFO_KEY_RECC_ENVS_READ)
+        if readable:
+            return self.context.get_environments()
+        else:
+            if self.context.config.verbose >= 1:
+                logger.debug(INFO_KEY_RECC_ENVS_READ_HELP_MESSAGE)
+            raise HTTPServiceUnavailable(reason="The feature has been disabled")

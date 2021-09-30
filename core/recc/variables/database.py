@@ -46,6 +46,7 @@ VIEW_USER_ADMIN_COUNT = f"{VIEW_PREFIX}user_admin_count"
 # VIEW_LAYOUT_WIDGET = f"{VIEW_PREFIX}layout_widget"
 
 INFO_KEY_RECC_DB_VERSION = "recc.db.version"
+INFO_KEY_RECC_ENVS_READ = "recc.envs.read"
 INFO_KEY_RECC_UUID = "recc.uuid"
 INFO_KEY_RECC_INSTALL_TIMESTAMP = "recc.install.timestamp"
 INFO_KEY_OEM = "oem"

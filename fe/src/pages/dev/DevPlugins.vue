@@ -67,7 +67,7 @@ export default class DevPlugins extends VueBase {
     {
       text: 'Dev',
       disabled: false,
-      href: () => this.moveToAdmin(),
+      href: () => this.moveToDev(),
     },
     {
       text: 'Plugins',

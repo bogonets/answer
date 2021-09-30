@@ -11,6 +11,28 @@ from recc.util.version import database_version
 # INSERT #
 ##########
 
+_SAFE_INSERT_INFO_FORMAT = f"""
+INSERT INTO {TABLE_INFO} (
+    key,
+    value,
+    created_at
+) SELECT
+    '{{key}}',
+    '{{value}}',
+    now()
+WHERE
+    NOT EXISTS(
+        SELECT value
+        FROM {TABLE_INFO}
+        WHERE key LIKE '{{key}}'
+    );
+"""
+
+
+def get_safe_insert_info_query(key: str, value: str) -> str:
+    return _SAFE_INSERT_INFO_FORMAT.format(key=key, value=value)
+
+
 SAFE_INSERT_INFO_DB_VERSION = f"""
 INSERT INTO {TABLE_INFO} (
     key,

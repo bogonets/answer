@@ -27,6 +27,7 @@ import type {ProjectA, CreateProjectQ, UpdateProjectQ} from '@/packet/project';
 import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
 import type {SystemOverviewA} from '@/packet/system';
 import type {UserA, UpdateUserQ, SigninA, SignupQ, UpdatePasswordQ, UserExtra} from '@/packet/user';
+import type {EnvironmentA} from '@/packet/environment';
 import {createEmptySigninA, createEmptyUserA} from '@/packet/user';
 import {PreferenceA, createEmptyPreference} from '@/packet/preference';
 import {encryptSha256} from '@/crypto/sha';
@@ -577,6 +578,14 @@ export default class ApiV2 {
 
     getAdminPlugins() {
         return this.get<Array<PluginA>>('/admin/plugins');
+    }
+
+    // ------------------
+    // Admin/Environments
+    // ------------------
+
+    getAdminEnvironments() {
+        return this.get<Array<EnvironmentA>>('/admin/environments');
     }
 
     // --------------
