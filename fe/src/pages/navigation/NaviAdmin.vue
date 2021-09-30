@@ -6,10 +6,9 @@ en:
   groups: "Groups"
   projects: "Projects"
   permissions: "Permissions"
-  plugins: "Plugins"
   tasks: "Tasks"
   templates: "Templates"
-  features: "Features"
+  configs: "Configs"
   external:
     airjoy:
       devices: "Airjoy Devices"
@@ -21,10 +20,9 @@ ko:
   groups: "그룹"
   projects: "프로젝트"
   permissions: "권한"
-  plugins: "플러그인"
   tasks: "태스크"
   templates: "템플릿"
-  features: "기능 설정"
+  configs: "구성"
   external:
     airjoy:
       devices: "Airjoy 장치 관리"
@@ -125,21 +123,12 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item link @click.stop="plugins">
-          <v-list-item-icon>
-            <v-icon>mdi-toy-brick</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('plugins') }}
-          </v-list-item-title>
-        </v-list-item>
-
-        <v-list-item link @click.stop="features">
+        <v-list-item link @click.stop="configs">
           <v-list-item-icon>
             <v-icon>mdi-format-list-checks</v-icon>
           </v-list-item-icon>
           <v-list-item-title>
-            {{ $t('features') }}
+            {{ $t('configs') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -218,12 +207,10 @@ export default class NaviAdmin extends VueBase {
       this.index = 5;
     } else if (name === adminNames.adminTemplates) {
       this.index = 6;
-    } else if (name === adminNames.adminPlugins) {
-      this.index = 7;
     } else if (name === adminNames.adminConfigs) {
-      this.index = 8;
+      this.index = 7;
     } else if (name === adminNames.adminAirjoyDevices) {
-      this.index = 9;
+      this.index = 8;
     } else {
       this.index = -1;
     }
@@ -284,15 +271,8 @@ export default class NaviAdmin extends VueBase {
     }
   }
 
-  @Emit('click:plugins')
-  plugins() {
-    if (!this.noDefault) {
-      this.moveToAdminPlugins();
-    }
-  }
-
-  @Emit('click:features')
-  features() {
+  @Emit('click:configs')
+  configs() {
     if (!this.noDefault) {
       this.moveToAdminConfigs();
     }

@@ -1,7 +1,5 @@
 <i18n lang="yaml">
 en:
-  admin: "Admin"
-  plugins: "Plugins"
   labels:
     search: "You can filter by plugin name."
   headers:
@@ -11,8 +9,6 @@ en:
     empty: "Empty Plugin"
 
 ko:
-  admin: "Admin"
-  plugins: "Plugins"
   labels:
     search: "플러그인 이름을 필터링할 수 있습니다."
   headers:
@@ -66,15 +62,15 @@ import {PluginA} from '@/packet/plugin';
     ToolbarBreadcrumbs,
   }
 })
-export default class AdminPlugins extends VueBase {
+export default class DevPlugins extends VueBase {
   private readonly navigationItems = [
     {
-      text: this.$t('admin'),
+      text: 'Dev',
       disabled: false,
       href: () => this.moveToAdmin(),
     },
     {
-      text: this.$t('plugins'),
+      text: 'Plugins',
       disabled: true,
     },
   ];

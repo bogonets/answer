@@ -9,7 +9,6 @@ export const adminNames = {
     adminPermissions: 'adminPermissions',
     adminPermissionsEdit: 'adminPermissionsEdit',
     adminPermissionsNew: 'adminPermissionsNew',
-    adminPlugins: 'adminPlugins',
     adminProjects: 'adminProjects',
     adminProjectsEdit: 'adminProjectsEdit',
     adminProjectsNew: 'adminProjectsNew',

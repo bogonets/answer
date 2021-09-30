@@ -3,13 +3,17 @@ en:
   title: "DevTools"
   overview: "Overview"
   envs: "Environment"
-  infos: "Infos"
+  infos: "Preferences"
+  plugins: "Plugins"
+  configs: "Configs"
 
 ko:
   title: "개발 도구"
   overview: "개요"
   envs: "환경 변수"
   infos: "기본 설정"
+  plugins: "플러그인"
+  configs: "구성"
 </i18n>
 
 <template>
@@ -71,6 +75,24 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
+        <v-list-item link @click.stop="plugins">
+          <v-list-item-icon>
+            <v-icon>mdi-toy-brick</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('plugins') }}
+          </v-list-item-title>
+        </v-list-item>
+
+        <v-list-item link @click.stop="configs">
+          <v-list-item-icon>
+            <v-icon>mdi-format-list-checks</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('configs') }}
+          </v-list-item-title>
+        </v-list-item>
+
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
@@ -118,6 +140,20 @@ export default class NaviDev extends VueBase {
   infos() {
     if (!this.noDefault) {
       this.moveToDevInfos();
+    }
+  }
+
+  @Emit('click:plugins')
+  plugins() {
+    if (!this.noDefault) {
+      this.moveToDevPlugins();
+    }
+  }
+
+  @Emit('click:configs')
+  configs() {
+    if (!this.noDefault) {
+      this.moveToDevConfigs();
     }
   }
 }
