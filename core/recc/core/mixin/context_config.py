@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Any, KeysView, get_type_hints
+from typing import List, Any, get_type_hints
 from recc.core.mixin.context_base import ContextBase
 from recc.packet.config import ConfigA
 from recc.argparse.config.core_config import CoreConfig

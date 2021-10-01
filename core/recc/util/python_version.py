@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict
+from typing import Dict, Union
 from sys import version_info
 
 
@@ -13,7 +13,7 @@ PY_38 = version_info >= (3, 8)
 PY_39 = version_info >= (3, 9)
 
 
-def get_python_version_info() -> Dict[str, str]:
+def get_python_version_info() -> Dict[str, Union[int, str]]:
     return {
         "major": version_info[0],
         "minor": version_info[1],

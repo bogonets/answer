@@ -33,11 +33,13 @@ class ContextInfo(ContextBase):
     async def get_info(self, key: str) -> Info:
         return await self.database.select_info_by_key(key)
 
-    async def opt_info_str(self, key: str, default_value='') -> str:
+    async def opt_info_str(self, key: str, default_value="") -> str:
         try:
             info = await self.get_info(key)
             if info.value is not None:
                 return info.value
+            else:
+                return default_value
         except:  # noqa
             return default_value
 
@@ -46,6 +48,8 @@ class ContextInfo(ContextBase):
             info = await self.get_info(key)
             if info.value is not None:
                 return bool(info.value)
+            else:
+                return default_value
         except:  # noqa
             return default_value
 
@@ -54,14 +58,18 @@ class ContextInfo(ContextBase):
             info = await self.get_info(key)
             if info.value is not None:
                 return int(info.value)
+            else:
+                return default_value
         except:  # noqa
             return default_value
 
-    async def opt_info_float(self, key: str, default_value=0.) -> float:
+    async def opt_info_float(self, key: str, default_value=0.0) -> float:
         try:
             info = await self.get_info(key)
             if info.value is not None:
                 return float(info.value)
+            else:
+                return default_value
         except:  # noqa
             return default_value
 

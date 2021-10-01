@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Dict
+from typing import List
 from recc.core.mixin.context_base import ContextBase
 from recc.packet.environment import EnvironmentA
 from recc.packet.system import SystemOverviewA
