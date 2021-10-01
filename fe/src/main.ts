@@ -182,11 +182,13 @@ Vue.prototype.$buttonColor = function () {
   }
 }
 
+import {publicPath as PUBLIC_PATH} from '@/../vue.config';
+
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     const localStore = Vue.prototype.$localStore as LocalStore;
     if (!localStore.access) {
-      next('/signin');
+      next(`${PUBLIC_PATH}signin`);
     } else {
       next();
     }
