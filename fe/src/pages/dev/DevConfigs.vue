@@ -27,9 +27,9 @@ ko:
 
     <v-data-table
         :headers="headers"
-        :items="configs"
+        :items="items"
         :search="filterText"
-        :loading="showLoading"
+        :loading="loading"
         :loading-text="$t('loading')"
     >
       <template v-slot:top>
@@ -47,7 +47,6 @@ ko:
 
       <template v-slot:item.actions="{ item }">
         <v-icon
-            v-if="false"
             small
             class="mr-2"
             @click="onClickEditConfig(item)"
@@ -61,6 +60,25 @@ ko:
       </template>
     </v-data-table>
 
+    <!-- Add Dialog -->
+    <v-dialog
+        v-model="showEditConfigDialog"
+        persistent
+        max-width="360"
+        no-click-animation
+        @keydown.esc.stop="onClickEditConfigCancel"
+    >
+      <config-card
+          mode="edit"
+          :config-key="editCandidateKey"
+          :config-type="editCandidateType"
+          :config-value="editCandidateValue"
+          :loading-submit="loadingEditConfigSubmit"
+          @cancel="onClickEditConfigCancel"
+          @ok="onClickEditConfigOk"
+      ></config-card>
+    </v-dialog>
+
   </v-container>
 </template>
 
@@ -68,10 +86,13 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
+import ConfigCard from '@/config/ConfigCard.vue';
+import {ConfigA, UpdateConfigValueQ} from '@/packet/config';
 
 @Component({
   components: {
-    ToolbarBreadcrumbs
+    ToolbarBreadcrumbs,
+    ConfigCard,
   }
 })
 export default class DevConfigs extends VueBase {
@@ -115,35 +136,59 @@ export default class DevConfigs extends VueBase {
   ];
 
   filterText = '';
-  configs: object = [];
-  showLoading = true;
+  items = [] as Array<ConfigA>;
+  loading = true;
 
-  editCandidateKey = '';
-  editCandidateValue = '';
   showEditConfigDialog = false;
+  loadingEditConfigSubmit = false;
+  editCandidateKey = '';
+  editCandidateType = '';
+  editCandidateValue = '';
 
   mounted() {
     this.updateConfigs();
   }
 
   updateConfigs() {
-    this.showLoading = true;
+    this.loading = true;
     this.$api2.getAdminConfigs()
-        .then((infos) => {
-          this.configs = infos;
-          this.showLoading = false;
+        .then(items => {
+          this.items = items;
+          this.loading = false;
         })
         .catch(error => {
-          console.error(error);
-          this.showLoading = false;
+          this.loading = false;
+          this.toastRequestFailure(error);
         });
   }
 
-  onClickEditConfig(item) {
+  onClickEditConfig(item: ConfigA) {
     this.editCandidateKey = item.key;
+    this.editCandidateType = item.type;
     this.editCandidateValue = item.value;
     this.showEditConfigDialog = true;
   }
 
+  onClickEditConfigCancel() {
+    this.showEditConfigDialog = false;
+  }
+
+  onClickEditConfigOk(item: ConfigA) {
+    this.loadingEditConfigSubmit = true;
+    const body = {
+      value: item.value,
+    } as UpdateConfigValueQ;
+    this.$api2.patchAdminConfigsPkey(item.key, body)
+        .then(() => {
+          this.showEditConfigDialog = false;
+          this.loadingEditConfigSubmit = false;
+          this.toastRequestSuccess();
+          this.updateConfigs();
+        })
+        .catch(error => {
+          this.loadingEditConfigSubmit = false;
+          this.toastRequestFailure(error);
+        });
+  }
 }
 </script>
