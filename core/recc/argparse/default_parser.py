@@ -29,6 +29,7 @@ from recc.argparse.config.global_config import (
 from recc.argparse.config_file import read_config_file_safe
 from recc.argparse.parser.env_parse import get_namespace_by_os_envs
 from recc.argparse.injection_values import injection_default_values
+from recc.variables.environment import RECC_ENV_PREFIX
 
 ConfigType = Union[Namespace, GlobalConfig, CoreConfig, CtrlConfig, TaskConfig]
 
@@ -38,7 +39,6 @@ HOME_CONFIG_PATH = os.path.join(pathlib.Path.home(), "." + CONFIG_FILENAME)
 GLOBAL_CONFIG_PATH = os.path.join("/etc", CONFIG_FILENAME)
 
 RECC_DOM_ROOT = "recc"
-RECC_ENV_PREFIX = "RECC_"
 
 
 def left_join(left: Namespace, *namespaces: Optional[Namespace]) -> Namespace:

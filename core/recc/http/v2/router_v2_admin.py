@@ -27,11 +27,6 @@ from recc.packet.user import UserA, UpdateUserQ, SignupQ
 from recc.database.struct.group import Group
 from recc.packet.cvt.project import project_to_answer
 from recc.packet.cvt.permission import permission_to_answer
-from recc.variables.database import INFO_KEY_RECC_ENVS_READ
-
-INFO_KEY_RECC_ENVS_READ_HELP_MESSAGE = (
-    f"Enable '{INFO_KEY_RECC_ENVS_READ}' if you want to check environment variables"
-)
 
 
 class RouterV2Admin:
@@ -492,10 +487,9 @@ class RouterV2Admin:
 
     @parameter_matcher()
     async def get_environments(self) -> List[EnvironmentA]:
-        readable = await self.context.opt_info_bool(INFO_KEY_RECC_ENVS_READ)
-        if readable:
+        if self.context.config.developer:
             return self.context.get_environments()
-        else:
-            if self.context.config.verbose >= 1:
-                logger.debug(INFO_KEY_RECC_ENVS_READ_HELP_MESSAGE)
-            raise HTTPServiceUnavailable(reason="The feature has been disabled")
+
+        if self.context.config.verbose >= 1:
+            logger.debug("Enable dev-mode if you want to check environment variables")
+        raise HTTPServiceUnavailable(reason="The feature has been disabled")
