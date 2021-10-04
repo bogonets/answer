@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List
+from typing import Optional, List
 from recc.core.mixin.context_base import ContextBase
 from recc.packet.environment import EnvironmentA
 from recc.packet.system import SystemOverviewA
@@ -10,9 +10,11 @@ from recc.util.python_version import get_python_version_simple
 
 class ContextSystem(ContextBase):
     @staticmethod
-    def get_environments() -> List[EnvironmentA]:
+    def get_environments(startswith: Optional[str] = None) -> List[EnvironmentA]:
         result = list()
         for key, value in get_os_envs_dict().items():
+            if startswith is not None and key.startswith(startswith):
+                continue
             result.append(EnvironmentA(key, value))
         return result
 

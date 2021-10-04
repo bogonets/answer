@@ -7,9 +7,7 @@ from aiohttp.web_request import Request
 from aiohttp.web_exceptions import (
     HTTPNotFound,
     HTTPBadRequest,
-    HTTPServiceUnavailable,
 )
-from recc.log.logging import recc_http_logger as logger
 from recc.core.context import Context
 from recc.session.session_ex import SessionEx
 from recc.http import http_urls as u
@@ -27,6 +25,7 @@ from recc.packet.user import UserA, UpdateUserQ, SignupQ
 from recc.database.struct.group import Group
 from recc.packet.cvt.project import project_to_answer
 from recc.packet.cvt.permission import permission_to_answer
+from recc.variables.environment import RECC_ENV_PREFIX
 
 
 class RouterV2Admin:
@@ -489,7 +488,5 @@ class RouterV2Admin:
     async def get_environments(self) -> List[EnvironmentA]:
         if self.context.config.developer:
             return self.context.get_environments()
-
-        if self.context.config.verbose >= 1:
-            logger.debug("Enable dev-mode if you want to check environment variables")
-        raise HTTPServiceUnavailable(reason="The feature has been disabled")
+        else:
+            return self.context.get_environments(RECC_ENV_PREFIX)

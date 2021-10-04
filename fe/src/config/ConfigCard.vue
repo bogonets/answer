@@ -57,14 +57,18 @@ ko:
           </v-list-item>
 
           <v-list-item>
-            <config-value
-                :type="configType"
-                :label="$t('value')"
+            <v-text-field
+                dense
+                outlined
+                hide-details
+                type="text"
+                autocomplete="off"
                 :value="currentValue"
                 @input="updateValue"
-                @esc="cancel"
-                @enter="submit"
-            ></config-value>
+                :label="$t('value')"
+                @keydown.esc.stop="cancel"
+                @keydown.enter.stop="submit"
+            ></v-text-field>
           </v-list-item>
         </v-list>
       </v-container>
@@ -97,18 +101,13 @@ ko:
 <script lang="ts">
 import {Component, Prop, Emit, Watch, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ConfigValue from '@/config/ConfigValue.vue';
 import {VForm} from 'vuetify/lib/components/VForm';
 import requiredField from '@/rules/required';
 import {ConfigA} from '@/packet/config';
 
 type ModeType = '' | 'new' | 'edit';
 
-@Component({
-  components: {
-    ConfigValue,
-  }
-})
+@Component
 export default class ConfigCard extends VueBase {
   private readonly keyRules = [requiredField];
 

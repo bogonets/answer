@@ -8,6 +8,7 @@ from recc.variables.database import INFO_KEY_RECC_DB_VERSION
 from recc.http.http_utils import v2_admin_path
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
+from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.info import InfoA, CreateInfoQ
 from recc.packet.permission import PermissionA, CreatePermissionQ, UpdatePermissionQ
@@ -269,6 +270,46 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertIsNotNone(response.data)
         self.assertIsInstance(response.data, list)
         self.assertEqual(0, len(response.data))
+
+    async def test_configs(self):
+        path1 = v2_admin_path(u.configs)
+        response1 = await self.tester.get(path1, cls=List[ConfigA])
+        self.assertEqual(200, response1.status)
+        self.assertIsNotNone(response1.data)
+        self.assertIsInstance(response1.data, list)
+
+        public_signup_key = "public_signup"
+        verbose_key = "verbose"
+
+        data1 = response1.data
+        public_signup = list(filter(lambda x: x.key == public_signup_key, data1))[0]
+        verbose = list(filter(lambda x: x.key == verbose_key, data1))[0]
+
+        self.assertFalse(self.tester.context.config.public_signup)
+        self.assertEqual("False", public_signup.value)
+
+        self.assertEqual(0, self.tester.context.config.verbose)
+        self.assertEqual("0", verbose.value)
+
+        body2 = UpdateConfigValueQ("True")
+        path2 = v2_admin_path(u.configs_pkey.format(key=public_signup_key))
+        response2 = await self.tester.patch(path2, data=body2)
+        self.assertEqual(200, response2.status)
+
+        body3 = UpdateConfigValueQ("1")
+        path3 = v2_admin_path(u.configs_pkey.format(key=verbose_key))
+        response3 = await self.tester.patch(path3, data=body3)
+        self.assertEqual(200, response3.status)
+
+        response4 = await self.tester.get(path2, cls=ConfigA)
+        self.assertEqual(200, response4.status)
+        self.assertIsInstance(response4.data, ConfigA)
+        self.assertEqual("True", response4.data.value)
+
+        response5 = await self.tester.get(path3, cls=ConfigA)
+        self.assertEqual(200, response5.status)
+        self.assertIsInstance(response5.data, ConfigA)
+        self.assertEqual("1", response5.data.value)
 
 
 if __name__ == "__main__":
