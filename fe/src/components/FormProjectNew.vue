@@ -18,6 +18,8 @@ ko:
     <form-project
         hide-origin-prefix
         hide-cancel-button
+        :hide-features="hideFeatures"
+        :hide-visibility="hideVisibility"
         :loading-groups="loadingGroups"
         :loading-submit="loadingSubmit"
         :disable-group="disableGroup"
@@ -43,6 +45,12 @@ import {CreateProjectQ} from '@/packet/project';
   }
 })
 export default class FormProjectNew extends VueBase {
+  @Prop({type: Boolean})
+  readonly hideFeatures!: boolean;
+
+  @Prop({type: Boolean})
+  readonly hideVisibility!: boolean;
+
   @Prop({type: Boolean})
   readonly loadingGroups!: boolean;
 

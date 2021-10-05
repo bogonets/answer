@@ -44,6 +44,8 @@ ko:
           disable-group
           disable-slug
           hide-cancel-button
+          :hide-features="hideFeatures"
+          :hide-visibility="hideVisibility"
           :disable-submit-button="!modified"
           :group-items="[this.groupSlug]"
           :value="current"
@@ -140,6 +142,12 @@ export function createEmptyProjectA() {
   }
 })
 export default class FormProjectEdit extends VueBase {
+  @Prop({type: Boolean})
+  readonly hideFeatures!: boolean;
+
+  @Prop({type: Boolean})
+  readonly hideVisibility!: boolean;
+
   @Prop({type: Object, default: createEmptyProjectA})
   readonly value!: ProjectA;
 

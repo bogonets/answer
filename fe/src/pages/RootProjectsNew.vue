@@ -4,6 +4,8 @@
     <v-divider></v-divider>
 
     <form-project-new
+        hide-features
+        hide-visibility
         :loading-groups="loadingGroups"
         :loading-submit="loadingSubmit"
         :group-items="groupItems"

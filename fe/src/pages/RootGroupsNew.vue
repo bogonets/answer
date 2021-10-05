@@ -4,6 +4,8 @@
     <v-divider></v-divider>
 
     <form-group-new
+        hide-features
+        hide-visibility
         request-type="self"
         @request:success="onRequestSuccess"
     ></form-group-new>

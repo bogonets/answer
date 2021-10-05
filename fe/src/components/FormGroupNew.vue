@@ -20,6 +20,8 @@ ko:
     <form-group
         hide-origin-prefix
         hide-cancel-button
+        :hide-features="hideFeatures"
+        :hide-visibility="hideVisibility"
         :loading="submitLoading"
         @cancel="cancel"
         @ok="onClickOk"
@@ -44,6 +46,12 @@ const REQUEST_TYPE_ADMIN = 'admin';
   }
 })
 export default class FormGroupNew extends VueBase {
+  @Prop({type: Boolean})
+  readonly hideFeatures!: boolean;
+
+  @Prop({type: Boolean})
+  readonly hideVisibility!: boolean;
+
   @Prop({type: String, default: REQUEST_TYPE_SELF})
   readonly requestType!: string;
 

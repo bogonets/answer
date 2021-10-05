@@ -4,6 +4,8 @@
     <v-divider></v-divider>
 
     <form-project-edit
+        hide-features
+        hide-visibility
         :value="project"
         :loading-submit="loadingSubmit"
         :loading-delete="loadingDelete"

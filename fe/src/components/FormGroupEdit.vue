@@ -44,6 +44,8 @@ ko:
           disable-slug
           hide-cancel-button
           hide-origin-prefix
+          :hide-features="hideFeatures"
+          :hide-visibility="hideVisibility"
           :disable-submit-button="!modified"
           :value="current"
           @input="onUpdateCurrent"
@@ -132,6 +134,12 @@ import * as _ from 'lodash';
   }
 })
 export default class FormGroupEdit extends VueBase {
+  @Prop({type: Boolean})
+  readonly hideFeatures!: boolean;
+
+  @Prop({type: Boolean})
+  readonly hideVisibility!: boolean;
+
   @Prop({type: Object})
   readonly value!: GroupA;
 

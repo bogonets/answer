@@ -109,8 +109,9 @@ ko:
         :hint="$t('hint.description')"
     ></v-textarea>
 
-    <p :class="subtitleClass">{{ $t('label.features') }}</p>
+    <p v-if="!hideFeatures" :class="subtitleClass">{{ $t('label.features') }}</p>
     <v-combobox
+        v-if="!hideFeatures"
         dense
         hide-selected
         multiple
@@ -136,9 +137,21 @@ ko:
       </template>
     </v-combobox>
 
-    <p :class="subtitleClass" class="mb-1">{{ $t('label.visibility') }}</p>
-    <p class="text-caption text--secondary mb-1">{{ $t('hint.visibility') }}</p>
+    <p
+        v-if="!hideVisibility"
+        :class="subtitleClass"
+        class="mb-1"
+    >
+      {{ $t('label.visibility') }}
+    </p>
+    <p
+        v-if="!hideVisibility"
+        class="text-caption text--secondary mb-1"
+    >
+      {{ $t('hint.visibility') }}
+    </p>
     <radio-visibility
+        v-if="!hideVisibility"
         class="mt-0"
         :value="value.visibility"
         @input="inputVisibility"
@@ -226,6 +239,12 @@ export default class FormProject extends VueBase {
 
   @Prop({type: Boolean})
   readonly disableValidate!: boolean;
+
+  @Prop({type: Boolean})
+  readonly hideFeatures!: boolean;
+
+  @Prop({type: Boolean})
+  readonly hideVisibility!: boolean;
 
   @Prop({type: Boolean})
   readonly hideButtons!: boolean;

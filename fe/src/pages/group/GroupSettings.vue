@@ -4,6 +4,8 @@
     <v-divider></v-divider>
 
     <form-group-edit
+        hide-features
+        hide-visibility
         :value="group"
         :loading-submit="loadingSubmit"
         :loading-delete="loadingDelete"
