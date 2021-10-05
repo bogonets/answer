@@ -29,7 +29,7 @@ ko:
 
       <v-list-item link @click.stop="onClickFoldNavigation">
         <v-list-item-icon>
-          <v-icon>mdi-cog-outline</v-icon>
+          <v-icon>mdi-dev-to</v-icon>
         </v-list-item-icon>
         <v-list-item-title>
           {{ $t('title') }}
