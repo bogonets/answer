@@ -31,7 +31,7 @@ export const adminChildren = [
         name: adminNames.adminGroups,
     },
     {
-        path: 'groups/edit',
+        path: 'groups/edit/:group',
         component: AdminGroupsEdit,
         name: adminNames.adminGroupsEdit,
     },
@@ -51,7 +51,7 @@ export const adminChildren = [
         name: adminNames.adminPermissions,
     },
     {
-        path: 'permissions/edit',
+        path: 'permissions/edit/:perm',
         component: AdminPermissionsEdit,
         name: adminNames.adminPermissionsEdit,
     },
@@ -66,7 +66,7 @@ export const adminChildren = [
         name: adminNames.adminProjects,
     },
     {
-        path: 'projects/edit',
+        path: 'projects/edit/:group/:project',
         component: AdminProjectsEdit,
         name: adminNames.adminProjectsEdit,
     },
