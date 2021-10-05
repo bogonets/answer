@@ -60,66 +60,83 @@ ko:
 
 <template>
   <v-container>
-
     <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
-    <v-list flat subheader three-line>
-      <v-subheader>{{ $t('headers.account') }}</v-subheader>
+    <v-subheader>{{ $t('headers.account') }}</v-subheader>
+    <left-title
+        small
+        no-gutter
+        no-wrap-xs
+        :left-ratio="8"
+        :right-ratio="4"
+        :header="$t('titles.public_signup')"
+        :subheader="$t('subtitles.public_signup')"
+    >
+      <div class="d-flex flex-row justify-end">
+        <v-switch
+            inset
+            v-model="public_signup"
+            @change="onChangePublicSignup"
+        ></v-switch>
+      </div>
+    </left-title>
 
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t('titles.public_signup') }}</v-list-item-title>
-          <v-list-item-subtitle>{{ $t('subtitles.public_signup') }}</v-list-item-subtitle>
-        </v-list-item-content>
+    <v-divider></v-divider>
+    <v-subheader>{{ $t('headers.session') }}</v-subheader>
 
-        <v-switch inset v-model="public_signup"></v-switch>
-      </v-list-item>
-
-      <v-divider></v-divider>
-      <v-subheader>{{ $t('headers.session') }}</v-subheader>
-
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t('titles.access_token_duration') }}</v-list-item-title>
-          <v-list-item-subtitle>{{ $t('subtitles.access_token_duration') }}</v-list-item-subtitle>
-        </v-list-item-content>
-
-        <v-text-field
+    <left-title
+        small
+        no-gutter
+        :left-ratio="8"
+        :right-ratio="4"
+        :header="$t('titles.access_token_duration')"
+        :subheader="$t('subtitles.access_token_duration')"
+    >
+      <div class="d-flex flex-row justify-end">
+        <v-combobox
             dense
             outlined
             hide-details
-            type="text"
-            autocomplete="off"
             v-model="access_token_duration"
-        ></v-text-field>
-      </v-list-item>
+            :items="durations"
+            @change="onChangeAccessTokenDuration"
+        ></v-combobox>
+      </div>
+    </left-title>
 
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t('titles.refresh_token_duration') }}</v-list-item-title>
-          <v-list-item-subtitle>{{ $t('subtitles.refresh_token_duration') }}</v-list-item-subtitle>
-        </v-list-item-content>
-
-        <v-text-field
+    <left-title
+        small
+        no-gutter
+        :left-ratio="8"
+        :right-ratio="4"
+        :header="$t('titles.refresh_token_duration')"
+        :subheader="$t('subtitles.refresh_token_duration')"
+    >
+      <div class="d-flex flex-row justify-end">
+        <v-combobox
             dense
             outlined
             hide-details
-            type="text"
-            autocomplete="off"
             v-model="refresh_token_duration"
-        ></v-text-field>
-      </v-list-item>
+            :items="durations"
+            @change="onChangeRefreshTokenDuration"
+        ></v-combobox>
+      </div>
+    </left-title>
 
-      <v-divider></v-divider>
-      <v-subheader>{{ $t('headers.http') }}</v-subheader>
+    <v-divider></v-divider>
+    <v-subheader>{{ $t('headers.http') }}</v-subheader>
 
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t('titles.external_host') }}</v-list-item-title>
-          <v-list-item-subtitle>{{ $t('subtitles.external_host') }}</v-list-item-subtitle>
-        </v-list-item-content>
-
+    <left-title
+        small
+        no-gutter
+        :left-ratio="8"
+        :right-ratio="4"
+        :header="$t('titles.external_host')"
+        :subheader="$t('subtitles.external_host')"
+    >
+      <div class="d-flex flex-row justify-end">
         <v-text-field
             dense
             outlined
@@ -127,15 +144,20 @@ ko:
             type="text"
             autocomplete="off"
             v-model="external_host"
+            @change="onChangeExternalHost"
         ></v-text-field>
-      </v-list-item>
+      </div>
+    </left-title>
 
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t('titles.http_timeout') }}</v-list-item-title>
-          <v-list-item-subtitle>{{ $t('subtitles.http_timeout') }}</v-list-item-subtitle>
-        </v-list-item-content>
-
+    <left-title
+        small
+        no-gutter
+        :left-ratio="8"
+        :right-ratio="4"
+        :header="$t('titles.http_timeout')"
+        :subheader="$t('subtitles.http_timeout')"
+    >
+      <div class="d-flex flex-row justify-end">
         <v-text-field
             dense
             outlined
@@ -143,18 +165,23 @@ ko:
             type="text"
             autocomplete="off"
             v-model="http_timeout"
+            @change="onChangeHttpTimeout"
         ></v-text-field>
-      </v-list-item>
+      </div>
+    </left-title>
 
-      <v-divider></v-divider>
-      <v-subheader>{{ $t('headers.task') }}</v-subheader>
+    <v-divider></v-divider>
+    <v-subheader>{{ $t('headers.task') }}</v-subheader>
 
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t('titles.user') }}</v-list-item-title>
-          <v-list-item-subtitle>{{ $t('subtitles.user') }}</v-list-item-subtitle>
-        </v-list-item-content>
-
+    <left-title
+        small
+        no-gutter
+        :left-ratio="8"
+        :right-ratio="4"
+        :header="$t('titles.user')"
+        :subheader="$t('subtitles.user')"
+    >
+      <div class="d-flex flex-row justify-end">
         <v-text-field
             dense
             outlined
@@ -162,15 +189,20 @@ ko:
             type="text"
             autocomplete="off"
             v-model="user"
+            @change="onChangeUser"
         ></v-text-field>
-      </v-list-item>
+      </div>
+    </left-title>
 
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t('titles.group') }}</v-list-item-title>
-          <v-list-item-subtitle>{{ $t('subtitles.group') }}</v-list-item-subtitle>
-        </v-list-item-content>
-
+    <left-title
+        small
+        no-gutter
+        :left-ratio="8"
+        :right-ratio="4"
+        :header="$t('titles.group')"
+        :subheader="$t('subtitles.group')"
+    >
+      <div class="d-flex flex-row justify-end">
         <v-text-field
             dense
             outlined
@@ -178,45 +210,53 @@ ko:
             type="text"
             autocomplete="off"
             v-model="group"
+            @change="onChangeGroup"
         ></v-text-field>
-      </v-list-item>
+      </div>
+    </left-title>
 
-      <v-divider></v-divider>
-      <v-subheader>{{ $t('headers.logging') }}</v-subheader>
+    <v-divider></v-divider>
+    <v-subheader>{{ $t('headers.logging') }}</v-subheader>
 
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t('titles.log_level') }}</v-list-item-title>
-          <v-list-item-subtitle>{{ $t('subtitles.log_level') }}</v-list-item-subtitle>
-        </v-list-item-content>
-
-        <v-text-field
+    <left-title
+        small
+        no-gutter
+        :left-ratio="8"
+        :right-ratio="4"
+        :header="$t('titles.log_level')"
+        :subheader="$t('subtitles.log_level')"
+    >
+      <div class="d-flex flex-row justify-end">
+        <v-combobox
             dense
             outlined
             hide-details
-            type="text"
-            autocomplete="off"
             v-model="log_level"
-        ></v-text-field>
-      </v-list-item>
+            :items="severities"
+            @change="onChangeLogLevel"
+        ></v-combobox>
+      </div>
+    </left-title>
 
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t('titles.verbose') }}</v-list-item-title>
-          <v-list-item-subtitle>{{ $t('subtitles.verbose') }}</v-list-item-subtitle>
-        </v-list-item-content>
-
-        <v-text-field
+    <left-title
+        small
+        no-gutter
+        :left-ratio="8"
+        :right-ratio="4"
+        :header="$t('titles.verbose')"
+        :subheader="$t('subtitles.verbose')"
+    >
+      <div class="d-flex flex-row justify-end">
+        <v-combobox
             dense
             outlined
             hide-details
-            type="text"
-            autocomplete="off"
             v-model="verbose"
-        ></v-text-field>
-      </v-list-item>
-
-    </v-list>
+            :items="levels"
+            @change="onChangeVerbose"
+        ></v-combobox>
+      </div>
+    </left-title>
   </v-container>
 </template>
 
@@ -224,7 +264,8 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import {ConfigA} from "@/packet/config";
+import LeftTitle from '@/components/LeftTitle.vue';
+import {ConfigA, UpdateConfigValueQ} from '@/packet/config';
 
 export function findBoolean(items: Array<ConfigA>, key: string, defaultValue = false) {
   const config = items.find(x => x.key === key);
@@ -262,9 +303,20 @@ export function findString(items: Array<ConfigA>, key: string, defaultValue = ''
   }
 }
 
+const CONFIG_KEY_PUBLIC_SIGNUP = 'public_signup';
+const CONFIG_KEY_ACCESS_TOKEN_DURATION = 'access_token_duration';
+const CONFIG_KEY_REFRESH_TOKEN_DURATION = 'refresh_token_duration';
+const CONFIG_KEY_EXTERNAL_HOST = 'external_host';
+const CONFIG_KEY_HTTP_TIMEOUT = 'http_timeout';
+const CONFIG_KEY_USER = 'user';
+const CONFIG_KEY_GROUP = 'group';
+const CONFIG_KEY_LOG_LEVEL = 'log_level';
+const CONFIG_KEY_VERBOSE = 'verbose';
+
 @Component({
   components: {
-    ToolbarBreadcrumbs
+    ToolbarBreadcrumbs,
+    LeftTitle,
   }
 })
 export default class AdminConfigs extends VueBase {
@@ -280,17 +332,44 @@ export default class AdminConfigs extends VueBase {
     },
   ];
 
-  loading = false;
+  private readonly durations = [
+    '10 minutes',
+    '30 minutes',
+    '1 hour',
+    '12 hours',
+    '1 day',
+    '7 days',
+  ];
 
+  private readonly severities = [
+    'Critical',
+    'Fatal',
+    'Error',
+    'Warning',
+    'Warn',
+    'Info',
+    'Debug',
+    'Notset',
+    'Off',
+  ];
+
+  private readonly levels = [
+    '0',
+    '1',
+    '2',
+    '3',
+  ];
+
+  loading = false;
+  public_signup = false;
+  access_token_duration = '';
+  refresh_token_duration = '';
+  external_host = '';
+  http_timeout = 0.0;
   user = '';
   group = '';
   log_level = '';
   verbose = 0;
-  external_host = '';
-  http_timeout = 0.0;
-  public_signup = false;
-  access_token_duration = '';
-  refresh_token_duration = '';
 
   mounted() {
     this.updateConfigs();
@@ -310,15 +389,67 @@ export default class AdminConfigs extends VueBase {
   }
 
   updateFields(items: Array<ConfigA>) {
-    this.user = findString(items, 'user');
-    this.group = findString(items, 'group');
-    this.log_level = findString(items, 'log_level');
-    this.verbose = findInteger(items, 'verbose');
-    this.external_host = findString(items, 'external_host');
-    this.http_timeout = findFloat(items, 'http_timeout');
-    this.public_signup = findBoolean(items, 'public_signup');
-    this.access_token_duration = findString(items, 'access_token_duration');
-    this.refresh_token_duration = findString(items, 'refresh_token_duration');
+    this.public_signup = findBoolean(items, CONFIG_KEY_PUBLIC_SIGNUP);
+    this.access_token_duration = findString(items, CONFIG_KEY_ACCESS_TOKEN_DURATION);
+    this.refresh_token_duration = findString(items, CONFIG_KEY_REFRESH_TOKEN_DURATION);
+    this.external_host = findString(items, CONFIG_KEY_EXTERNAL_HOST);
+    this.http_timeout = findFloat(items, CONFIG_KEY_HTTP_TIMEOUT);
+    this.user = findString(items, CONFIG_KEY_USER);
+    this.group = findString(items, CONFIG_KEY_GROUP);
+    this.log_level = findString(items, CONFIG_KEY_LOG_LEVEL);
+    this.verbose = findInteger(items, CONFIG_KEY_VERBOSE);
+  }
+
+  patchConfig(key: string, value: any) {
+    const body = {
+      value: value
+    } as UpdateConfigValueQ;
+    this.loading = true;
+    this.$api2.patchAdminConfigsPkey(key, body)
+        .then(() => {
+          this.loading = false;
+          this.toastRequestSuccess();
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
+
+  onChangePublicSignup(value) {
+    this.patchConfig(CONFIG_KEY_PUBLIC_SIGNUP, value);
+  }
+
+  onChangeAccessTokenDuration(value) {
+    this.patchConfig(CONFIG_KEY_ACCESS_TOKEN_DURATION, value);
+  }
+
+  onChangeRefreshTokenDuration(value) {
+    this.patchConfig(CONFIG_KEY_REFRESH_TOKEN_DURATION, value);
+  }
+
+  onChangeExternalHost(value) {
+    this.patchConfig(CONFIG_KEY_EXTERNAL_HOST, value);
+  }
+
+  onChangeHttpTimeout(value) {
+    this.patchConfig(CONFIG_KEY_HTTP_TIMEOUT, value);
+  }
+
+  onChangeUser(value) {
+    this.patchConfig(CONFIG_KEY_USER, value);
+  }
+
+  onChangeGroup(value) {
+    this.patchConfig(CONFIG_KEY_GROUP, value);
+  }
+
+  onChangeLogLevel(value) {
+    this.patchConfig(CONFIG_KEY_LOG_LEVEL, value);
+  }
+
+  onChangeVerbose(value) {
+    this.patchConfig(CONFIG_KEY_VERBOSE, value);
   }
 }
 </script>

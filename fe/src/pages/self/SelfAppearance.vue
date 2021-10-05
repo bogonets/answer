@@ -32,35 +32,41 @@ ko:
 
 <template>
   <v-container>
-
     <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
-    <v-list flat subheader three-line>
-      <v-subheader>{{ $t('theme.header') }}</v-subheader>
-
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t('theme.dark.title') }}</v-list-item-title>
-          <v-list-item-subtitle>{{ $t('theme.dark.subtitle') }}</v-list-item-subtitle>
-        </v-list-item-content>
-
+    <v-subheader>{{ $t('theme.header') }}</v-subheader>
+    <left-title
+        small
+        no-gutter
+        no-wrap-xs
+        :left-ratio="8"
+        :right-ratio="4"
+        :header="$t('theme.dark.title')"
+        :subheader="$t('theme.dark.subtitle')"
+    >
+      <div class="d-flex flex-row justify-end">
         <v-switch
             inset
             v-model="extra.dark"
             @change="changeDark"
         ></v-switch>
-      </v-list-item>
+      </div>
+    </left-title>
 
-      <v-divider></v-divider>
-      <v-subheader>{{ $t('i18n.header') }}</v-subheader>
+    <v-divider></v-divider>
+    <v-subheader>{{ $t('i18n.header') }}</v-subheader>
 
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t('i18n.lang.title') }}</v-list-item-title>
-          <v-list-item-subtitle>{{ $t('i18n.lang.subtitle') }}</v-list-item-subtitle>
-        </v-list-item-content>
-
+    <left-title
+        small
+        no-gutter
+        no-wrap-xs
+        :left-ratio="8"
+        :right-ratio="4"
+        :header="$t('i18n.lang.title')"
+        :subheader="$t('i18n.lang.subtitle')"
+    >
+      <div class="d-flex flex-row justify-end">
         <v-menu transition="slide-y-transition" :offset-y="true">
           <template v-slot:activator="{ on, attrs }">
             <v-btn v-bind="attrs" v-on="on">
@@ -75,29 +81,30 @@ ko:
               @change-lang="changeLang"
           ></list-languages>
         </v-menu>
-      </v-list-item>
-
-    </v-list>
+      </div>
+    </left-title>
   </v-container>
 </template>
 
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ListLanguages from '@/components/ListLanguages.vue';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
+import LeftTitle from '@/components/LeftTitle.vue';
+import ListLanguages from '@/components/ListLanguages.vue';
 import {UserExtra} from '@/packet/user';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
+    LeftTitle,
     ListLanguages,
   }
 })
 export default class SelfAppearance extends VueBase {
   private readonly navigationItems = [
     {
-      text: 'Account',
+      text: 'Self',
       disabled: false,
       href: () => this.moveToSelf(),
     },

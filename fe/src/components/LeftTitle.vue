@@ -1,21 +1,31 @@
 <template>
   <v-container>
     <v-row>
-      <v-col class="pb-0" cols="0" sm="4" md="4" lg="4" xl="4">
-        <v-card flat color="transparent">
-          <v-card-title>
-            <span :class="headerTextColor">{{ header }}</span>
-          </v-card-title>
-          <v-card-subtitle class="pb-0">
-            <span :class="subheaderTextColor">{{ subheader }}</span>
-          </v-card-subtitle>
-        </v-card>
+      <v-col
+          :class="leftClass"
+          :cols="leftXsRatio"
+          :sm="leftRatio"
+          :md="leftRatio"
+          :lg="leftRatio"
+          :xl="leftRatio"
+      >
+        <div class="text--primary text-h6" :class="headerClass">
+          {{ header }}
+        </div>
+        <div class="text--secondary text-subtitle-2" :class="subheaderClass">
+          {{ subheader }}
+        </div>
       </v-col>
 
-      <v-col cols="12" sm="8" md="8" lg="8" xl="8">
-        <div class="pa-4">
-          <slot></slot>
-        </div>
+      <v-col
+          :class="rightClass"
+          :cols="rightXsRatio"
+          :sm="rightRatio"
+          :md="rightRatio"
+          :lg="rightRatio"
+          :xl="rightRatio"
+      >
+        <slot></slot>
       </v-col>
     </v-row>
   </v-container>
@@ -32,24 +42,43 @@ export default class LeftTitle extends Vue {
   @Prop({type: String, default: ''})
   readonly subheader!: string;
 
-  @Prop({type: String, default: ''})
-  readonly headerColor!: string;
+  @Prop({type: Number, default: 4})
+  readonly leftRatio!: number;
 
-  @Prop({type: String, default: ''})
-  readonly subheaderColor!: string;
+  @Prop({type: Number, default: 8})
+  readonly rightRatio!: number;
 
-  get headerTextColor(): string {
-    if (this.headerColor) {
-      return this.headerColor + '--text';
-    }
-    return ''
+  @Prop({type: Boolean, default: false})
+  readonly noWrapXs!: boolean;
+
+  @Prop({type: Boolean, default: false})
+  readonly small!: boolean;
+
+  @Prop({type: Boolean, default: false})
+  readonly noGutter!: boolean;
+
+  get leftXsRatio() {
+    return this.noWrapXs ? this.leftRatio : 12;
   }
 
-  get subheaderTextColor(): string {
-    if (this.subheaderColor) {
-      return this.subheaderColor + '--text';
-    }
-    return ''
+  get rightXsRatio() {
+    return this.noWrapXs ? this.rightRatio : 12;
+  }
+
+  get headerClass() {
+    return this.small ? 'text-subtitle-1' : 'text-h6';
+  }
+
+  get subheaderClass() {
+    return this.small ? 'text-body-2' : 'text-subtitle-2';
+  }
+
+  get leftClass() {
+    return this.noGutter ? '' : 'px-4 pt-4';
+  }
+
+  get rightClass() {
+    return this.noGutter ? '' : 'pa-4';
   }
 }
 </script>
