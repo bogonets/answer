@@ -13780,6 +13780,11 @@ wide-align@^1.1.0:
   dependencies:
     string-width "^1.0.2 || 2"
 
+winbox@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/winbox/-/winbox-0.2.0.tgz#46f8d0cd3a0eea00b5b9386c76e8f022a73d37c8"
+  integrity sha512-w/FZiz5pmeJ+jNzvMDWlyGCy8a9lBGSsfdRaLxDDWhvsfURXqGgwLpJrGbQiOEVI90YePHgJqnGJvc8qcKWBGw==
+
 with@^7.0.0:
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/with/-/with-7.0.2.tgz#ccee3ad542d25538a7a7a80aad212b9828495bac"
