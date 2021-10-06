@@ -28,6 +28,13 @@ from recc.database.postgresql.query.user import (
 
 
 class PgUser(DbUser, PgBase):
+    @staticmethod
+    def signup_normalize_text(text: Optional[str]) -> Optional[str]:
+        if text is None:
+            return None
+        text = text.strip()
+        return text if text else None
+
     @overrides
     async def insert_user(
         self,
@@ -48,10 +55,10 @@ class PgUser(DbUser, PgBase):
             username,
             password,
             salt,
-            nickname if nickname else None,
-            email if email else None,
-            phone1 if phone1 else None,
-            phone2 if phone2 else None,
+            self.signup_normalize_text(nickname),
+            self.signup_normalize_text(email),
+            self.signup_normalize_text(phone1),
+            self.signup_normalize_text(phone2),
             is_admin,
             extra,
             created_at,
