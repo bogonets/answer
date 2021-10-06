@@ -18,6 +18,7 @@ import type {
     UpdateAirjoyServiceQ,
 } from '@/packet/airjoy';
 import type {ConfigA, UpdateConfigValueQ} from '@/packet/config';
+import type {ContainerA, ControlContainersQ} from '@/packet/container';
 import type {GroupA, CreateGroupQ, UpdateGroupQ} from '@/packet/group';
 import type {InfoA, CreateInfoQ, UpdateInfoQ} from '@/packet/info';
 import type {PermissionA, CreatePermissionQ, UpdatePermissionQ} from '@/packet/permission';
@@ -574,6 +575,18 @@ export default class ApiV2 {
 
     deleteAdminPermissionsPperm(perm: string) {
         return this.delete(`/admin/permissions/${perm}`);
+    }
+
+    // ----------------
+    // Admin/Containers
+    // ----------------
+
+    getAdminContainers() {
+        return this.get<Array<ContainerA>>('/admin/containers');
+    }
+
+    patchAdminContainers(body: ControlContainersQ) {
+        return this.patch('/admin/containers', body);
     }
 
     // -------------

@@ -12,6 +12,10 @@ export default class RouterAdmin extends mixins(RouterAdminAirjoy) {
         this.moveTo(adminNames.adminConfigs);
     }
 
+    moveToAdminContainers() {
+        this.moveTo(adminNames.adminContainers);
+    }
+
     moveToAdminGroups() {
         this.moveTo(adminNames.adminGroups);
     }
@@ -51,10 +55,6 @@ export default class RouterAdmin extends mixins(RouterAdminAirjoy) {
     moveToAdminProjectsNew(group?: string) {
         const params = {group: group || ''};
         this.moveTo(adminNames.adminProjectsNew, params);
-    }
-
-    moveToAdminTasks() {
-        this.moveTo(adminNames.adminTasks);
     }
 
     moveToAdminTemplates() {

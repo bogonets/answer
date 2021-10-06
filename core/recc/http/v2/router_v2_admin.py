@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import List
+from typing import List, Union
+from signal import SIGKILL
 from aiohttp import web
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
@@ -13,6 +14,7 @@ from recc.session.session_ex import SessionEx
 from recc.http import http_urls as u
 from recc.http.http_decorator import parameter_matcher
 from recc.packet.config import ConfigA, UpdateConfigValueQ
+from recc.packet.container import ContainerOperator, ContainerA, ControlContainersQ
 from recc.packet.environment import EnvironmentA
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.info import InfoA, CreateInfoQ, UpdateInfoQ
@@ -22,9 +24,10 @@ from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.system import SystemOverviewA, VersionsA
 from recc.packet.template import TemplateA
 from recc.packet.user import UserA, UpdateUserQ, SignupQ
-from recc.database.struct.group import Group
 from recc.packet.cvt.project import project_to_answer
 from recc.packet.cvt.permission import permission_to_answer
+from recc.packet.cvt.container import container_to_answer
+from recc.database.struct.group import Group
 from recc.variables.environment import RECC_ENV_PREFIX
 
 
@@ -100,6 +103,11 @@ class RouterV2Admin:
             web.get(u.permissions_pperm, self.get_permissions_pperm),
             web.patch(u.permissions_pperm, self.patch_permissions_pperm),
             web.delete(u.permissions_pperm, self.delete_permissions_pperm),
+
+            # containers
+            web.get(u.containers, self.get_containers),
+            web.patch(u.containers, self.patch_containers),
+            web.get(u.containers_pcontainer, self.get_containers_pcontainer),
 
             # plugins
             web.get(u.plugins, self.get_plugins),
@@ -471,6 +479,50 @@ class RouterV2Admin:
     async def delete_permissions_pperm(self, perm: str) -> None:
         uid = await self.context.get_permission_uid(perm)
         await self.context.delete_permission(uid)
+
+    # ----------
+    # Containers
+    # ----------
+
+    @parameter_matcher()
+    async def get_containers(self) -> List[ContainerA]:
+        result = list()
+        for container in await self.context.get_containers():
+            result.append(container_to_answer(container))
+        return result
+
+    @parameter_matcher()
+    async def patch_containers(self, body: ControlContainersQ) -> None:
+        operator = ContainerOperator.from_str(body.operator)
+        if operator == ContainerOperator.Start:
+            for key in body.keys:
+                await self.context.start_container(key)
+        elif operator == ContainerOperator.Stop:
+            for key in body.keys:
+                await self.context.stop_container(key)
+        elif operator == ContainerOperator.Kill:
+            signal: Union[str, int] = body.signal if body.signal else SIGKILL
+            for key in body.keys:
+                await self.context.kill_container(key, signal)
+        elif operator == ContainerOperator.Restart:
+            for key in body.keys:
+                await self.context.restart_container(key)
+        elif operator == ContainerOperator.Pause:
+            for key in body.keys:
+                await self.context.pause_container(key)
+        elif operator == ContainerOperator.Resume:
+            for key in body.keys:
+                await self.context.unpause_container(key)
+        elif operator == ContainerOperator.Remove:
+            force = True if body.force else False
+            for key in body.keys:
+                await self.context.remove_container(key, force)
+        else:
+            assert False, "Not accessible section"
+
+    @parameter_matcher()
+    async def get_containers_pcontainer(self, container: str) -> ContainerA:
+        return container_to_answer(await self.context.get_container(container))
 
     # -------
     # Plugins

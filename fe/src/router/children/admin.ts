@@ -1,5 +1,6 @@
 import adminNames from '@/router/names/admin';
 import AdminConfigs from '@/pages/admin/AdminConfigs.vue';
+import AdminContainers from '@/pages/admin/AdminContainers.vue';
 import AdminGroups from '@/pages/admin/AdminGroups.vue';
 import AdminGroupsEdit from '@/pages/admin/AdminGroupsEdit.vue';
 import AdminGroupsNew from '@/pages/admin/AdminGroupsNew.vue';
@@ -10,7 +11,6 @@ import AdminPermissionsNew from '@/pages/admin/AdminPermissionsNew.vue';
 import AdminProjects from '@/pages/admin/AdminProjects.vue';
 import AdminProjectsEdit from '@/pages/admin/AdminProjectsEdit.vue';
 import AdminProjectsNew from '@/pages/admin/AdminProjectsNew.vue';
-import AdminTasks from '@/pages/admin/AdminTasks.vue';
 import AdminTemplates from '@/pages/admin/AdminTemplates.vue';
 import AdminUsers from '@/pages/admin/AdminUsers.vue';
 import AdminUsersEdit from '@/pages/admin/AdminUsersEdit.vue';
@@ -76,9 +76,9 @@ export const adminChildren = [
         name: adminNames.adminProjectsNew,
     },
     {
-        path: 'tasks',
-        component: AdminTasks,
-        name: adminNames.adminTasks,
+        path: 'containers',
+        component: AdminContainers,
+        name: adminNames.adminContainers,
     },
     {
         path: 'templates',

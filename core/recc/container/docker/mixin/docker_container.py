@@ -45,7 +45,6 @@ def _create_container_info(container: Container) -> ContainerInfo:
     # Reference: https://docs.docker.com/engine/api/v1.41/#operation/ContainerInspect
     key = container.id
     name = container.name
-    state = container.attrs["State"]["Status"]
     if container.labels:
         labels = container.labels
     else:
@@ -54,11 +53,12 @@ def _create_container_info(container: Container) -> ContainerInfo:
         ports = _create_container_ports(container.ports)
     else:
         ports = dict()
-    # created = container.attrs["Created"]
+    created = container.attrs["Created"]
     # path = container.attrs["Path"]
     # args = container.attrs["Args"]
-    # state = container.attrs["State"]
-    # image = container.attrs["Image"]
+    state = container.attrs["State"]
+    status = state["Status"]
+    image = container.attrs["Image"]
     # resolv_conf_path = container.attrs["ResolvConfPath"]
     # hostname_path = container.attrs["HostnamePath"]
     # hosts_path = container.attrs["HostsPath"]
@@ -77,10 +77,19 @@ def _create_container_info(container: Container) -> ContainerInfo:
     # network_settings = container.attrs["NetworkSettings"]
     assert key is not None
     assert name is not None
-    assert state is not None
+    assert created is not None
+    assert status is not None
     assert labels is not None
     assert ports is not None
-    return ContainerInfo(key, name, state, labels, ports)
+    return ContainerInfo(
+        key=key,
+        name=name,
+        status=status,
+        image=image,
+        created=created,
+        labels=labels,
+        ports=ports,
+    )
 
 
 class DockerContainer(ContainerContainer, DockerBase):

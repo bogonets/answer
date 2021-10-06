@@ -26,6 +26,7 @@ v2 = "/v2"
 admin = "/admin"
 already = "/already"
 configs = "/configs"
+containers = "/containers"
 environments = "/environments"
 extra = "/extra"
 groups = "/groups"
@@ -46,6 +47,7 @@ signin = "/signin"
 signup = "/signup"
 state = "/state"
 system = "/system"
+tasks = "/tasks"
 templates = "/templates"
 test = "/test"
 usernames = "/usernames"
@@ -62,6 +64,7 @@ def _param_path(key: str, pattern: Optional[str] = None) -> str:
 
 
 # Params (Use the prefix 'p')
+pcontainer = _param_path(p.container)
 pgroup = _param_path(p.group)
 pkey = _param_path(p.key)
 pname = _param_path(p.name)
@@ -70,6 +73,7 @@ pperm = _param_path(p.perm)
 pplugin = _param_path(p.plugin)
 pproject = _param_path(p.project)
 ptail = _param_path(p.tail, r".*")
+ptask = _param_path(p.task)
 puser = _param_path(p.user)
 
 # Mixin for ROOT
@@ -87,6 +91,7 @@ api_heartbeat = api + heartbeat
 
 # Mixin (/api/v2)
 configs_pkey = configs + pkey
+containers_pcontainer = containers + pcontainer
 groups_pgroup = groups + pgroup
 groups_pgroup_members = groups_pgroup + members
 groups_pgroup_members_pmember = groups_pgroup_members + pmember
@@ -104,4 +109,5 @@ signup_admin = signup + admin
 state_already = state + already
 system_overview = system + overview
 system_versions = system + versions
+tasks_ptask = tasks + ptask
 users_puser = users + puser

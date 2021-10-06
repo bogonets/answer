@@ -2,7 +2,8 @@
 
 import os
 from copy import deepcopy
-from typing import Optional, List, Any, Dict
+from typing import Optional, List, Any, Dict, Union
+from signal import SIGKILL
 from Crypto.PublicKey import RSA
 from recc.blueprint.v1.converter import bp_converter
 from recc.container.struct.container_status import ContainerStatus
@@ -28,6 +29,42 @@ from recc.variables.rpc import (
 
 
 class ContextTask(ContextBase):
+
+    # ---------
+    # Container
+    # ---------
+
+    async def get_containers(self) -> List[ContainerInfo]:
+        return await self.container.containers()
+
+    async def get_container(self, key: str) -> ContainerInfo:
+        return await self.container.get_container(key)
+
+    async def start_container(self, key: str) -> None:
+        await self.container.start_container(key)
+
+    async def stop_container(self, key: str) -> None:
+        await self.container.stop_container(key)
+
+    async def kill_container(self, key: str, signal: Union[str, int] = SIGKILL) -> None:
+        await self.container.kill_container(key, signal)
+
+    async def restart_container(self, key: str) -> None:
+        await self.container.restart_container(key)
+
+    async def pause_container(self, key: str) -> None:
+        await self.container.pause_container(key)
+
+    async def unpause_container(self, key: str) -> None:
+        await self.container.unpause_container(key)
+
+    async def remove_container(self, key: str, force=False) -> None:
+        await self.container.remove_container(key, force)
+
+    # ----
+    # Task
+    # ----
+
     async def prepare_task_network(self, group: str, project: str) -> str:
         network = await self.container.create_task_network_if_not_exist(group, project)
         return network.key
@@ -367,7 +404,7 @@ class ContextTask(ContextBase):
         task = await self.container.get_task(group_name, project_name, task_name)
         await self.container.restart_container(task.key)
 
-    async def get_tasks(
+    async def get_container_infos(
         self, group_name: str, project_name: str
     ) -> List[ContainerInfo]:
         return await self.container.get_tasks(group_name, project_name)

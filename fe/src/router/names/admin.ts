@@ -2,6 +2,7 @@ import adminAirjoyNames from '@/router/names/external/airjoy/admin';
 
 export const adminNames = {
     adminConfigs: 'adminConfigs',
+    adminContainers: 'adminContainers',
     adminGroups: 'adminGroups',
     adminGroupsEdit: 'adminGroupsEdit',
     adminGroupsNew: 'adminGroupsNew',
@@ -12,7 +13,6 @@ export const adminNames = {
     adminProjects: 'adminProjects',
     adminProjectsEdit: 'adminProjectsEdit',
     adminProjectsNew: 'adminProjectsNew',
-    adminTasks: 'adminTasks',
     adminTemplates: 'adminTemplates',
     adminUsers: 'adminUsers',
     adminUsersEdit: 'adminUsersEdit',

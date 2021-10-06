@@ -628,7 +628,7 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_get_graph_status(session={username},project={projname})")
 
-        tasks = await self.context.get_tasks(GLOBAL_GROUP, projname)
+        tasks = await self.context.get_container_infos(GLOBAL_GROUP, projname)
 
         result = list()
         for s in tasks:

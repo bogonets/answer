@@ -8,11 +8,21 @@ from recc.container.struct.port_binding_guest import PortBindingGuest
 
 class ContainerInfo:
 
-    __slots__ = ("key", "name", "status", "labels", "ports")
+    __slots__ = (
+        "key",
+        "name",
+        "status",
+        "image",
+        "created",
+        "labels",
+        "ports",
+    )
 
     key: str
     name: str
     status: ContainerStatus
+    image: str
+    created: str
     labels: Dict[str, str]
     ports: Dict[PortBindingGuest, List[PortBindingHost]]
 
@@ -21,6 +31,8 @@ class ContainerInfo:
         key: str,
         name: str,
         status: ContainerStatus,
+        image: str,
+        created: str,
         labels: Dict[str, str],
         ports: Dict[PortBindingGuest, List[PortBindingHost]],
     ):
@@ -34,5 +46,7 @@ class ContainerInfo:
             self.status = status
         else:
             raise TypeError(f"Unsupported status type: {type(status).__name__}")
+        self.image = image
+        self.created = created
         self.labels = labels
         self.ports = ports

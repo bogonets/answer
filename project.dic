@@ -116,6 +116,7 @@ zoneinfo
 # Parameter prefix ('p')
 # ./core/recc/http/http_path_keys.py
 
+pcontainer
 pgroup
 pkey
 pmember
@@ -124,6 +125,7 @@ pperm
 pplugin
 pproject
 ptail
+ptask
 puser
 pval
 

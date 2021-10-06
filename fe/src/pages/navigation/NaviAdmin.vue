@@ -6,7 +6,7 @@ en:
   groups: "Groups"
   projects: "Projects"
   permissions: "Permissions"
-  tasks: "Tasks"
+  containers: "Containers"
   templates: "Templates"
   configs: "Configs"
   external:
@@ -20,7 +20,7 @@ ko:
   groups: "그룹"
   projects: "프로젝트"
   permissions: "권한"
-  tasks: "태스크"
+  containers: "컨테이너"
   templates: "템플릿"
   configs: "구성"
   external:
@@ -105,12 +105,12 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item link @click.stop="tasks">
+        <v-list-item link @click.stop="containers">
           <v-list-item-icon>
-            <v-icon>mdi-monitor-multiple</v-icon>
+            <v-icon>fa-cubes</v-icon>
           </v-list-item-icon>
           <v-list-item-title>
-            {{ $t('tasks') }}
+            {{ $t('containers') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -203,7 +203,7 @@ export default class NaviAdmin extends VueBase {
       this.index = 4;
     } else if (name === adminNames.adminPermissionsNew) {
       this.index = 4;
-    } else if (name === adminNames.adminTasks) {
+    } else if (name === adminNames.adminContainers) {
       this.index = 5;
     } else if (name === adminNames.adminTemplates) {
       this.index = 6;
@@ -257,10 +257,10 @@ export default class NaviAdmin extends VueBase {
     }
   }
 
-  @Emit('click:tasks')
-  tasks() {
+  @Emit('click:containers')
+  containers() {
     if (!this.noDefault) {
-      this.moveToAdminTasks();
+      this.moveToAdminContainers();
     }
   }
 
