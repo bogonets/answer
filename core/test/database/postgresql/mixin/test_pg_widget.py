@@ -24,8 +24,8 @@ class PgWidgetTestCase(PostgresqlTestCase):
     async def test_create_and_get(self):
         name1 = "widget1"
         name2 = "widget2"
-        created_at1 = datetime.utcnow() + timedelta(days=1)
-        created_at2 = datetime.utcnow() + timedelta(days=2)
+        created_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
+        created_at2 = datetime.utcnow().astimezone() + timedelta(days=2)
         result1_uid = await self.db.insert_widget(
             self.layout.uid, name1, created_at=created_at1
         )
@@ -64,8 +64,8 @@ class PgWidgetTestCase(PostgresqlTestCase):
 
         desc1 = "description1"
         desc2 = "description2"
-        updated_at1 = datetime.utcnow() + timedelta(days=1)
-        updated_at2 = datetime.utcnow() + timedelta(days=2)
+        updated_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
+        updated_at2 = datetime.utcnow().astimezone() + timedelta(days=2)
         await self.db.update_widget_description_by_uid(widget1_uid, desc1, updated_at1)
         await self.db.update_widget_description_by_name(
             self.layout.uid, name2, desc2, updated_at2
@@ -87,8 +87,8 @@ class PgWidgetTestCase(PostgresqlTestCase):
 
         extra1 = {"a": 1, "b": 2}
         extra2 = {"c": 3, "d": 4}
-        updated_at1 = datetime.utcnow() + timedelta(days=1)
-        updated_at2 = datetime.utcnow() + timedelta(days=2)
+        updated_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
+        updated_at2 = datetime.utcnow().astimezone() + timedelta(days=2)
         await self.db.update_widget_extra_by_uid(widget1_uid, extra1, updated_at1)
         await self.db.update_widget_extra_by_name(
             self.layout.uid, name2, extra2, updated_at2

@@ -18,13 +18,13 @@ class DbLayout(metaclass=ABCMeta):
         name: str,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
-        created_at=datetime.utcnow(),
+        created_at=datetime.utcnow().astimezone(),
     ) -> int:
         raise NotImplementedError
 
     @abstractmethod
     async def update_layout_description_by_uid(
-        self, uid: int, description: str, updated_at=datetime.utcnow()
+        self, uid: int, description: str, updated_at=datetime.utcnow().astimezone()
     ) -> None:
         raise NotImplementedError
 
@@ -34,19 +34,23 @@ class DbLayout(metaclass=ABCMeta):
         project_uid: int,
         name: str,
         description: str,
-        updated_at=datetime.utcnow(),
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
     async def update_layout_extra_by_uid(
-        self, uid: int, extra: Any, updated_at=datetime.utcnow()
+        self, uid: int, extra: Any, updated_at=datetime.utcnow().astimezone()
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
     async def update_layout_extra_by_name(
-        self, project_uid: int, name: str, extra: Any, updated_at=datetime.utcnow()
+        self,
+        project_uid: int,
+        name: str,
+        extra: Any,
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         raise NotImplementedError
 

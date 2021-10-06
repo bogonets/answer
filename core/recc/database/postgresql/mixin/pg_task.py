@@ -44,7 +44,7 @@ class PgTask(DbTask, PgBase):
         numa_memory_nodes: Optional[str] = None,
         base_image_name: Optional[str] = None,
         publish_ports: Optional[Dict[str, Any]] = None,
-        created_at=datetime.utcnow(),
+        created_at=datetime.utcnow().astimezone(),
     ) -> int:
         query = INSERT_TASK
         uid = await self.fetch_val(
@@ -70,7 +70,7 @@ class PgTask(DbTask, PgBase):
 
     @overrides
     async def update_task_description_by_uid(
-        self, uid: int, description: str, updated_at=datetime.utcnow()
+        self, uid: int, description: str, updated_at=datetime.utcnow().astimezone()
     ) -> None:
         query = UPDATE_TASK_DESCRIPTION_BY_UID
         await self.execute(query, uid, description, updated_at)
@@ -83,7 +83,7 @@ class PgTask(DbTask, PgBase):
         project_uid: int,
         slug: str,
         description: str,
-        updated_at=datetime.utcnow(),
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         query = UPDATE_TASK_DESCRIPTION_BY_PROJECT_UID_AND_SLUG
         await self.execute(query, project_uid, slug, description, updated_at)
@@ -92,7 +92,7 @@ class PgTask(DbTask, PgBase):
 
     @overrides
     async def update_task_extra_by_uid(
-        self, uid: int, extra: Any, updated_at=datetime.utcnow()
+        self, uid: int, extra: Any, updated_at=datetime.utcnow().astimezone()
     ) -> None:
         query = UPDATE_TASK_EXTRA_BY_UID
         await self.execute(query, uid, extra, updated_at)
@@ -101,7 +101,11 @@ class PgTask(DbTask, PgBase):
 
     @overrides
     async def update_task_extra_by_slug(
-        self, project_uid: int, slug: str, extra: Any, updated_at=datetime.utcnow()
+        self,
+        project_uid: int,
+        slug: str,
+        extra: Any,
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         query = UPDATE_TASK_EXTRA_BY_PROJECT_UID_AND_SLUG
         await self.execute(query, project_uid, slug, extra, updated_at)
@@ -115,7 +119,7 @@ class PgTask(DbTask, PgBase):
         auth_algorithm: str,
         private_key: str,
         public_key: str,
-        updated_at=datetime.utcnow(),
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         query = UPDATE_TASK_KEYS_BY_UID
         await self.execute(
@@ -132,7 +136,7 @@ class PgTask(DbTask, PgBase):
         auth_algorithm: str,
         private_key: str,
         public_key: str,
-        updated_at=datetime.utcnow(),
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         query = UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_SLUG
         await self.execute(
@@ -163,7 +167,7 @@ class PgTask(DbTask, PgBase):
         numa_memory_nodes: Optional[str] = None,
         base_image_name: Optional[str] = None,
         publish_ports: Optional[Dict[str, Any]] = None,
-        updated_at=datetime.utcnow(),
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         query, args = get_update_task_query_by_uid(
             uid=uid,

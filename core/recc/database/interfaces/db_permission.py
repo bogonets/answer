@@ -30,7 +30,7 @@ class DbPermission(metaclass=ABCMeta):
         w_member=False,
         r_setting=False,
         w_setting=False,
-        created_at=datetime.utcnow(),
+        created_at=datetime.utcnow().astimezone(),
     ) -> int:
         raise NotImplementedError
 
@@ -54,7 +54,7 @@ class DbPermission(metaclass=ABCMeta):
         w_member: Optional[bool] = None,
         r_setting: Optional[bool] = None,
         w_setting: Optional[bool] = None,
-        updated_at=datetime.utcnow(),
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         raise NotImplementedError
 

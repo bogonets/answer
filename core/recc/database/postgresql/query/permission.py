@@ -225,7 +225,7 @@ def get_update_permission_query_by_uid(
     w_member: Optional[bool] = None,
     r_setting: Optional[bool] = None,
     w_setting: Optional[bool] = None,
-    updated_at=datetime.utcnow(),
+    updated_at=datetime.utcnow().astimezone(),
 ) -> BuildResult:
     assert updated_at is not None
     builder = UpdateBuilder(

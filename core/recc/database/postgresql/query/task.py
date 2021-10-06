@@ -86,7 +86,7 @@ def get_update_task_query_by_uid(
     numa_memory_nodes: Optional[str] = None,
     base_image_name: Optional[str] = None,
     publish_ports: Optional[Dict[str, Any]] = None,
-    updated_at=datetime.utcnow(),
+    updated_at=datetime.utcnow().astimezone(),
 ) -> BuildResult:
     assert updated_at is not None
     builder = UpdateBuilder(

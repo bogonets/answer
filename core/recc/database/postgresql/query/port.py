@@ -47,7 +47,7 @@ def get_update_port_query_by_number(
     task_uid: Optional[int] = None,
     description: Optional[str] = None,
     extra: Optional[Any] = None,
-    updated_at=datetime.utcnow(),
+    updated_at=datetime.utcnow().astimezone(),
 ) -> BuildResult:
     assert updated_at is not None
     builder = UpdateBuilder(

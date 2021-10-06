@@ -10,7 +10,7 @@ class DbMisc(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    async def create_tables(self, created_at=datetime.utcnow()) -> None:
+    async def create_tables(self, created_at=datetime.utcnow().astimezone()) -> None:
         raise NotImplementedError
 
     @abstractmethod

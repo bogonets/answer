@@ -29,7 +29,7 @@ class PgWidget(DbWidget, PgBase):
         name: str,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
-        created_at=datetime.utcnow(),
+        created_at=datetime.utcnow().astimezone(),
     ) -> int:
         query = INSERT_WIDGET
         uid = await self.fetch_val(
@@ -41,7 +41,7 @@ class PgWidget(DbWidget, PgBase):
 
     @overrides
     async def update_widget_description_by_uid(
-        self, uid: int, description: str, updated_at=datetime.utcnow()
+        self, uid: int, description: str, updated_at=datetime.utcnow().astimezone()
     ) -> None:
         query = UPDATE_WIDGET_DESCRIPTION_BY_UID
         await self.execute(query, uid, description, updated_at)
@@ -50,7 +50,11 @@ class PgWidget(DbWidget, PgBase):
 
     @overrides
     async def update_widget_description_by_name(
-        self, layout_uid: int, name: str, description: str, updated_at=datetime.utcnow()
+        self,
+        layout_uid: int,
+        name: str,
+        description: str,
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         query = UPDATE_WIDGET_DESCRIPTION_BY_LAYOUT_UID_AND_NAME
         await self.execute(query, layout_uid, name, description, updated_at)
@@ -59,7 +63,7 @@ class PgWidget(DbWidget, PgBase):
 
     @overrides
     async def update_widget_extra_by_uid(
-        self, uid: int, extra: Any, updated_at=datetime.utcnow()
+        self, uid: int, extra: Any, updated_at=datetime.utcnow().astimezone()
     ) -> None:
         query = UPDATE_WIDGET_EXTRA_BY_UID
         await self.execute(query, uid, extra, updated_at)
@@ -68,7 +72,11 @@ class PgWidget(DbWidget, PgBase):
 
     @overrides
     async def update_widget_extra_by_name(
-        self, layout_uid: int, name: str, extra: Any, updated_at=datetime.utcnow()
+        self,
+        layout_uid: int,
+        name: str,
+        extra: Any,
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         query = UPDATE_WIDGET_EXTRA_BY_LAYOUT_UID_AND_NAME
         await self.execute(query, layout_uid, name, extra, updated_at)

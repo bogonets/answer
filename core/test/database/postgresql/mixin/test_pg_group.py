@@ -25,8 +25,8 @@ class PgGroupTestCase(PostgresqlTestCase):
         name2 = "name2"
         desc1 = "description1"
         desc2 = "description2"
-        created_at1 = datetime.utcnow() + timedelta(days=1)
-        created_at2 = datetime.utcnow() + timedelta(days=2)
+        created_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
+        created_at2 = datetime.utcnow().astimezone() + timedelta(days=2)
         result1_uid = await self.db.insert_group(
             slug1, name1, desc1, created_at=created_at1
         )
@@ -72,7 +72,7 @@ class PgGroupTestCase(PostgresqlTestCase):
         desc1 = "description1"
         extra1 = {"a": 1, "b": 2}
         features1 = ["c", "d", "e"]
-        updated_at1 = datetime.utcnow() + timedelta(days=1)
+        updated_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
         await self.db.update_group_by_uid(
             uid=group1_uid,
             description=desc1,

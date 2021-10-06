@@ -31,7 +31,7 @@ class PgPort(DbPort, PgBase):
         task_uid: Optional[int] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
-        created_at=datetime.utcnow(),
+        created_at=datetime.utcnow().astimezone(),
     ) -> None:
         query = INSERT_PORT
         await self.execute(
@@ -49,7 +49,7 @@ class PgPort(DbPort, PgBase):
 
     @overrides
     async def update_port_description_by_number(
-        self, number: int, description: str, updated_at=datetime.utcnow()
+        self, number: int, description: str, updated_at=datetime.utcnow().astimezone()
     ) -> None:
         query = UPDATE_PORT_DESCRIPTION_BY_NUMBER
         await self.execute(query, number, description, updated_at)
@@ -58,7 +58,7 @@ class PgPort(DbPort, PgBase):
 
     @overrides
     async def update_port_extra_by_number(
-        self, number: int, extra: Any, updated_at=datetime.utcnow()
+        self, number: int, extra: Any, updated_at=datetime.utcnow().astimezone()
     ) -> None:
         query = UPDATE_PORT_EXTRA_BY_NUMBER
         await self.execute(query, number, extra, updated_at)
@@ -74,7 +74,7 @@ class PgPort(DbPort, PgBase):
         task_uid: Optional[int] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
-        updated_at=datetime.utcnow(),
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         query, args = get_update_port_query_by_number(
             number=number,

@@ -31,7 +31,7 @@ class PgGroup(DbGroup, PgBase):
         features: Optional[List[str]] = None,
         visibility=VISIBILITY_LEVEL_PRIVATE,
         extra: Optional[Any] = None,
-        created_at=datetime.utcnow(),
+        created_at=datetime.utcnow().astimezone(),
     ) -> int:
         query = INSERT_GROUP
         uid = await self.fetch_val(
@@ -51,7 +51,7 @@ class PgGroup(DbGroup, PgBase):
         features: Optional[List[str]] = None,
         visibility: Optional[int] = None,
         extra: Optional[Any] = None,
-        updated_at=datetime.utcnow(),
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         query, args = get_update_group_query_by_uid(
             uid=uid,

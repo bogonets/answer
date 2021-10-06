@@ -18,31 +18,39 @@ class DbWidget(metaclass=ABCMeta):
         name: str,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
-        created_at=datetime.utcnow(),
+        created_at=datetime.utcnow().astimezone(),
     ) -> int:
         raise NotImplementedError
 
     @abstractmethod
     async def update_widget_description_by_uid(
-        self, uid: int, description: str, updated_at=datetime.utcnow()
+        self, uid: int, description: str, updated_at=datetime.utcnow().astimezone()
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
     async def update_widget_description_by_name(
-        self, layout_uid: int, name: str, description: str, updated_at=datetime.utcnow()
+        self,
+        layout_uid: int,
+        name: str,
+        description: str,
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
     async def update_widget_extra_by_uid(
-        self, uid: int, extra: Any, updated_at=datetime.utcnow()
+        self, uid: int, extra: Any, updated_at=datetime.utcnow().astimezone()
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
     async def update_widget_extra_by_name(
-        self, layout_uid: int, name: str, extra: Any, updated_at=datetime.utcnow()
+        self,
+        layout_uid: int,
+        name: str,
+        extra: Any,
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         raise NotImplementedError
 

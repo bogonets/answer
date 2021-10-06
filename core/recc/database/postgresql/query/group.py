@@ -61,7 +61,7 @@ def get_update_group_query_by_uid(
     features: Optional[List[str]] = None,
     visibility: Optional[int] = None,
     extra: Optional[Any] = None,
-    updated_at=datetime.utcnow(),
+    updated_at=datetime.utcnow().astimezone(),
 ) -> BuildResult:
     assert updated_at is not None
     builder = UpdateBuilder(

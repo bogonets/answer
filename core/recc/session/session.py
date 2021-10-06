@@ -103,7 +103,11 @@ class SessionFactory:
         self.algorithm = algorithm
         self.leeway_seconds = leeway_seconds
 
-    def create_session(self, username: str, issued_at=datetime.utcnow()) -> Session:
+    def create_session(
+        self,
+        username: str,
+        issued_at=datetime.utcnow().astimezone(),
+    ) -> Session:
         return Session(
             issuer=self.issuer,
             audience=username,
@@ -111,7 +115,11 @@ class SessionFactory:
             issued_at=issued_at,
         )
 
-    def renew_session(self, session: Session, issued_at=datetime.utcnow()) -> Session:
+    def renew_session(
+        self,
+        session: Session,
+        issued_at=datetime.utcnow().astimezone(),
+    ) -> Session:
         assert self.issuer == session.issuer
         return Session(
             issuer=self.issuer,
@@ -170,7 +178,7 @@ class SessionPairFactory:
         )
 
     def create_sessions(
-        self, username: str, issued_at=datetime.utcnow()
+        self, username: str, issued_at=datetime.utcnow().astimezone()
     ) -> Tuple[Session, Session]:
         return (
             self.access.create_session(username, issued_at),
@@ -184,7 +192,7 @@ class SessionPairFactory:
         return self.refresh.encode(session)
 
     def create_tokens(
-        self, username: str, issued_at=datetime.utcnow()
+        self, username: str, issued_at=datetime.utcnow().astimezone()
     ) -> Tuple[str, str]:
         access_session, refresh_session = self.create_sessions(username, issued_at)
         return self.encode_access(access_session), self.encode_refresh(refresh_session)
@@ -196,11 +204,17 @@ class SessionPairFactory:
         return self.refresh.decode(token)
 
     def renew_access_session(
-        self, session: Session, issued_at=datetime.utcnow()
+        self,
+        session: Session,
+        issued_at=datetime.utcnow().astimezone(),
     ) -> Session:
         return self.access.renew_session(session, issued_at)
 
-    def renew_access_token(self, token: str, issued_at=datetime.utcnow()) -> str:
+    def renew_access_token(
+        self,
+        token: str,
+        issued_at=datetime.utcnow().astimezone(),
+    ) -> str:
         session = self.decode_access(token)
         renew_session = self.renew_access_session(session, issued_at)
         return self.encode_access(renew_session)

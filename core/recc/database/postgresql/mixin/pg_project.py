@@ -33,7 +33,7 @@ class PgProject(DbProject, PgBase):
         features: Optional[List[str]] = None,
         visibility=VISIBILITY_LEVEL_PRIVATE,
         extra: Optional[Any] = None,
-        created_at=datetime.utcnow(),
+        created_at=datetime.utcnow().astimezone(),
     ) -> int:
         query = INSERT_PROJECT
         uid = await self.fetch_val(
@@ -61,7 +61,7 @@ class PgProject(DbProject, PgBase):
         features: Optional[List[str]] = None,
         visibility: Optional[int] = None,
         extra: Optional[Any] = None,
-        updated_at=datetime.utcnow(),
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         query, args = get_update_project_query_by_uid(
             uid=uid,

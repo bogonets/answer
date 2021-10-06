@@ -45,8 +45,8 @@ CREATE TABLE IF NOT EXISTS {TABLE_INFO} (
     key VARCHAR({INFO_KEY_STR_SIZE}) PRIMARY KEY,
     value TEXT,
 
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 """
 
@@ -65,9 +65,9 @@ CREATE TABLE IF NOT EXISTS {TABLE_USER} (
     is_admin BOOLEAN NOT NULL DEFAULT FALSE,
     extra JSONB,
 
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP,
-    last_login TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ,
+    last_login TIMESTAMPTZ
 );
 """
 
@@ -82,8 +82,8 @@ CREATE TABLE IF NOT EXISTS {TABLE_GROUP} (
     visibility INTEGER NOT NULL DEFAULT {VISIBILITY_LEVEL_PRIVATE},
     extra JSONB,
 
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 """
 
@@ -114,8 +114,8 @@ CREATE TABLE IF NOT EXISTS {TABLE_PERMISSION} (
     r_setting BOOLEAN NOT NULL DEFAULT FALSE,
     w_setting BOOLEAN NOT NULL DEFAULT FALSE,
 
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 """
 
@@ -133,8 +133,8 @@ CREATE TABLE IF NOT EXISTS {TABLE_PROJECT} (
     visibility INTEGER NOT NULL DEFAULT {VISIBILITY_LEVEL_PRIVATE},
     extra JSONB,
 
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 """
 
@@ -161,8 +161,8 @@ CREATE TABLE IF NOT EXISTS {TABLE_TASK} (
     base_image_name VARCHAR({TASK_BASE_IMAGE_STR_SIZE}),
     publish_ports JSONB,
 
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 """
 
@@ -177,8 +177,8 @@ CREATE TABLE IF NOT EXISTS {TABLE_LAYOUT} (
     description TEXT,
     extra JSONB,
 
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 """
 
@@ -200,8 +200,8 @@ CREATE TABLE IF NOT EXISTS {TABLE_WIDGET} (
     pos_y2 REAL,
     z_order INTEGER,
 
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 """
 
@@ -220,8 +220,8 @@ CREATE TABLE IF NOT EXISTS {TABLE_PORT} (
     description TEXT,
     extra JSONB,
 
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 """
 

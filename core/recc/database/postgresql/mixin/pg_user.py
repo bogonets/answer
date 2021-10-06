@@ -47,7 +47,7 @@ class PgUser(DbUser, PgBase):
         phone2: Optional[str] = None,
         is_admin=False,
         extra: Optional[Any] = None,
-        created_at=datetime.utcnow(),
+        created_at=datetime.utcnow().astimezone(),
     ) -> int:
         query = INSERT_USER
         uit = await self.fetch_val(
@@ -71,7 +71,7 @@ class PgUser(DbUser, PgBase):
 
     @overrides
     async def update_user_last_login_by_uid(
-        self, uid: int, last_login=datetime.utcnow()
+        self, uid: int, last_login=datetime.utcnow().astimezone()
     ) -> None:
         query = UPDATE_USER_LAST_LOGIN_BY_UID
         await self.execute(query, uid, last_login)
@@ -80,7 +80,11 @@ class PgUser(DbUser, PgBase):
 
     @overrides
     async def update_user_password_and_salt_by_uid(
-        self, uid: int, password: str, salt: str, updated_at=datetime.utcnow()
+        self,
+        uid: int,
+        password: str,
+        salt: str,
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         query = UPDATE_USER_PASSWORD_AND_SALT_BY_UID
         await self.execute(query, uid, password, salt, updated_at)
@@ -89,7 +93,7 @@ class PgUser(DbUser, PgBase):
 
     @overrides
     async def update_user_extra_by_uid(
-        self, uid: int, extra: Any, updated_at=datetime.utcnow()
+        self, uid: int, extra: Any, updated_at=datetime.utcnow().astimezone()
     ) -> None:
         query = UPDATE_USER_EXTRA_BY_UID
         await self.execute(query, uid, extra, updated_at)
@@ -107,7 +111,7 @@ class PgUser(DbUser, PgBase):
         phone2: Optional[str] = None,
         is_admin: Optional[bool] = None,
         extra: Optional[Any] = None,
-        updated_at=datetime.utcnow(),
+        updated_at=datetime.utcnow().astimezone(),
     ) -> None:
         query, args = get_update_user_query_by_uid(
             uid=uid,

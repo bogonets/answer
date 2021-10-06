@@ -11,8 +11,8 @@ class PgPermissionTestCase(PostgresqlTestCase):
         name2 = "permission2"
         desc1 = "description1"
         desc2 = "description2"
-        created_at1 = datetime.utcnow() + timedelta(days=1)
-        created_at2 = datetime.utcnow() + timedelta(days=2)
+        created_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
+        created_at2 = datetime.utcnow().astimezone() + timedelta(days=2)
         result1_uid = await self.db.insert_permission(
             name1, desc1, w_graph=True, w_member=True, created_at=created_at1
         )
@@ -92,7 +92,7 @@ class PgPermissionTestCase(PostgresqlTestCase):
         updated_name = "Unknown"
         updated_desc = "Test Permission"
         updated_extra = {"A": 65, "B": 66}
-        updated_at = datetime.utcnow() + timedelta(days=7)
+        updated_at = datetime.utcnow().astimezone() + timedelta(days=7)
         await self.db.update_permission_by_uid(
             permission1.uid,
             name=updated_name,
