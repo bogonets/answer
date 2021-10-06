@@ -9,4 +9,5 @@ RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
     --color \
     --exclude '/(recc\/proto)/' \
     recc/ \
+    storage/plugin/ \
     test/
