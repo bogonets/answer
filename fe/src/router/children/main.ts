@@ -1,5 +1,6 @@
 import mainNames from '@/router/names/main';
 import MainDashboard from '@/pages/main/MainDashboard.vue';
+import MainLayouts from '@/pages/main/MainLayouts.vue';
 import MainMembers from '@/pages/main/MainMembers.vue';
 import MainSettings from '@/pages/main/MainSettings.vue';
 import MainTables from '@/pages/main/MainTables.vue';
@@ -13,6 +14,11 @@ export const mainChildren = [
         path: ':group/:project/dashboard',
         component: MainDashboard,
         name: mainNames.mainDashboard,
+    },
+    {
+        path: ':group/:project/layouts',
+        component: MainLayouts,
+        name: mainNames.mainLayouts,
     },
     {
         path: ':group/:project/members',

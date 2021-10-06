@@ -96,6 +96,7 @@ export default class MainDashboard extends VueBase {
   }
 
   onClickLayouts() {
+    this.moveToMainLayouts();
   }
 
   onClickTables() {

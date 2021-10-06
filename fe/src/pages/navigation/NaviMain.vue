@@ -274,7 +274,7 @@ export default class NaviMain extends VueBase {
   @Emit('click:layouts')
   layouts() {
     if (!this.noDefault) {
-      // this.moveToMainProjectLayouts();
+      this.moveToMainLayouts();
     }
   }
 
