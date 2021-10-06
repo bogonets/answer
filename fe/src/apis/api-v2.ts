@@ -24,7 +24,12 @@ import type {InfoA, CreateInfoQ, UpdateInfoQ} from '@/packet/info';
 import type {PermissionA, CreatePermissionQ, UpdatePermissionQ} from '@/packet/permission';
 import type {PluginA} from '@/packet/plugin';
 import type {TemplateA} from '@/packet/template';
-import type {ProjectA, CreateProjectQ, UpdateProjectQ} from '@/packet/project';
+import type {
+    ProjectA,
+    CreateProjectQ,
+    UpdateProjectQ,
+    ProjectOverviewA,
+} from '@/packet/project';
 import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
 import type {SystemOverviewA, VersionsA} from '@/packet/system';
 import type {UserA, UpdateUserQ, SigninA, SignupQ, UpdatePasswordQ, UserExtra} from '@/packet/user';
@@ -387,6 +392,15 @@ export default class ApiV2 {
 
     deleteMainProjectsPgroupPprojectMembersPmember(group: string, project: string, member: string) {
         return this.delete(`/main/projects/${group}/${project}/members/${member}`);
+    }
+
+    // ----------------------
+    // Main/Projects/Overview
+    // ----------------------
+
+    getMainProjectsPgroupPprojectOverview(group: string, project: string) {
+        const url = `/main/projects/${group}/${project}/overview`;
+        return this.get<ProjectOverviewA>(url);
     }
 
     // ----------------

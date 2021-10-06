@@ -103,6 +103,7 @@ permissions_pgroup = permissions + pgroup
 permissions_pgroup_pproject = permissions + pgroup + pproject
 pplugin_ptail = pplugin + ptail
 projects_pgroup_pproject = projects + pgroup + pproject
+projects_pgroup_pproject_overview = projects_pgroup_pproject + overview
 projects_pgroup_pproject_members = projects_pgroup_pproject + members
 projects_pgroup_pproject_members_pmember = projects_pgroup_pproject_members + pmember
 signup_admin = signup + admin

@@ -9,7 +9,12 @@ from recc.http.http_decorator import parameter_matcher
 from recc.session.session_ex import SessionEx
 from recc.http import http_urls as u
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
-from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
+from recc.packet.project import (
+    ProjectA,
+    CreateProjectQ,
+    UpdateProjectQ,
+    ProjectOverviewA,
+)
 from recc.packet.member import MemberA, CreateMemberQ, UpdateMemberQ
 from recc.packet.permission import PermissionA
 from recc.packet.info import InfoA
@@ -63,6 +68,7 @@ class RouterV2Main:
             web.get(u.projects_pgroup_pproject, self.get_projects_pgroup_pproject),
             web.patch(u.projects_pgroup_pproject, self.patch_projects_pgroup_pproject),
             web.delete(u.projects_pgroup_pproject, self.delete_projects_pgroup_pproject),  # noqa
+            web.get(u.projects_pgroup_pproject_overview, self.get_projects_pgroup_pproject_overview),  # noqa
 
             # Project members
             web.get(u.projects_pgroup_pproject_members, self.get_projects_pgroup_pproject_members),  # noqa
@@ -329,6 +335,29 @@ class RouterV2Main:
         if permission.uid is None or not permission.w_setting:
             raise HTTPForbidden(reason="You do not have valid permissions")
         await self.context.delete_project(project_uid)
+
+    @parameter_matcher()
+    async def get_projects_pgroup_pproject_overview(
+        self, session: SessionEx, group: str, project: str
+    ) -> ProjectOverviewA:
+        group_uid = await self.context.get_group_uid(group)
+        project_uid = await self.context.get_project_uid(group_uid, project)
+        permission = await self.context.get_best_permission(
+            session.uid, group_uid, project_uid
+        )
+        if not permission.r_member:
+            raise HTTPForbidden(reason="You do not have valid permissions")
+
+        layouts = 0
+        tables = 0
+        tasks = await self.context.get_container_infos(group, project)
+        members = await self.context.get_project_members(project_uid)
+        return ProjectOverviewA(
+            layouts=layouts,
+            tables=tables,
+            tasks=len(tasks),
+            members=len(members),
+        )
 
     # ---------------
     # Project members

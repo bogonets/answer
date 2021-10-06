@@ -5,6 +5,8 @@
 
     <form-project-new
         disable-group
+        hide-features
+        hide-visibility
         :init-group="$route.params.group"
         :loading-groups="loadingGroups"
         :loading-submit="loadingSubmit"

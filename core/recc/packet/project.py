@@ -42,3 +42,11 @@ class UpdateProjectQ:
     features: Optional[List[str]] = None
     visibility: Optional[int] = None
     extra: Optional[Any] = None
+
+
+@dataclass
+class ProjectOverviewA:
+    layouts: int
+    tables: int
+    tasks: int
+    members: int

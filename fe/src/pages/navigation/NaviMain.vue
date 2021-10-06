@@ -50,7 +50,7 @@ ko:
       <v-list-item-group
           mandatory
           color="primary"
-          :value="value"
+          :value="index"
           @change="input"
       >
 
@@ -108,8 +108,8 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-divider v-if="isVms"></v-divider>
-        <v-list-item v-if="isVms" link @click.stop="vms">
+        <v-divider v-show="isVms"></v-divider>
+        <v-list-item v-show="isVms" link @click.stop="vms">
           <v-list-item-icon>
             <v-icon>mdi-cctv</v-icon>
           </v-list-item-icon>
@@ -144,11 +144,12 @@ ko:
 </template>
 
 <script lang='ts'>
-import {Component, Emit, Prop} from 'vue-property-decorator';
+import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {ProjectA} from '@/packet/project';
 import type {PermissionA} from '@/packet/permission';
 import {FEATURE_VMS} from '@/packet/features';
+import mainNames from '@/router/names/main';
 
 @Component
 export default class NaviMain extends VueBase {
@@ -161,9 +162,6 @@ export default class NaviMain extends VueBase {
 
   @Prop({type: Boolean, default: false})
   readonly hideSettings!: boolean;
-
-  @Prop({type: Number, default: 0})
-  readonly value!: number;
 
   index = 0;
   mini = false;
@@ -212,6 +210,32 @@ export default class NaviMain extends VueBase {
     }
   }
 
+  @Watch('$route')
+  onChangeRoute() {
+    const name = this.$route.name;
+    if (name === mainNames.mainDashboard) {
+      this.index = 0;
+    } else if (name === mainNames.mainLayouts) {
+      this.index = 1;
+    } else if (name === mainNames.mainFiles) {
+      this.index = 2;
+    } else if (name === mainNames.mainTables) {
+      this.index = 3;
+    } else if (name === mainNames.mainTasks) {
+      this.index = 4;
+    } else if (name === mainNames.mainVp) {
+      this.index = 5;
+    } else if (name === mainNames.mainVms) {
+      this.index = 6;
+    } else if (name === mainNames.mainMembers) {
+      this.index = 7;
+    } else if (name === mainNames.mainSettings) {
+      this.index = 8;
+    } else {
+      this.index = -1;
+    }
+  }
+
   /**
    * @deprecated
    */
@@ -236,6 +260,7 @@ export default class NaviMain extends VueBase {
 
   @Emit()
   input(index: number) {
+    this.index = index;
     return index;
   }
 

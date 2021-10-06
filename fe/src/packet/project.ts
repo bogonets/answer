@@ -27,3 +27,10 @@ export interface UpdateProjectQ {
     visibility?: number;
     extra?: any;
 }
+
+export interface ProjectOverviewA {
+    layouts: number;
+    tables: number;
+    tasks: number;
+    members: number;
+}
