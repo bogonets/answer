@@ -100,13 +100,14 @@ export default class DevConfigs extends VueBase {
     {
       text: 'Dev',
       disabled: false,
-      href: () => this.moveToAdmin(),
+      href: () => this.moveToDev(),
     },
     {
       text: 'Configs',
       disabled: true,
     },
   ];
+
   private readonly headers = [
     {
       text: this.$t('headers.key').toString(),
@@ -151,7 +152,7 @@ export default class DevConfigs extends VueBase {
 
   updateConfigs() {
     this.loading = true;
-    this.$api2.getAdminConfigs()
+    this.$api2.getDevConfigs()
         .then(items => {
           this.items = items;
           this.loading = false;
@@ -178,7 +179,7 @@ export default class DevConfigs extends VueBase {
     const body = {
       value: item.value,
     } as UpdateConfigValueQ;
-    this.$api2.patchAdminConfigsPkey(item.key, body)
+    this.$api2.patchDevConfigsPkey(item.key, body)
         .then(() => {
           this.showEditConfigDialog = false;
           this.loadingEditConfigSubmit = false;

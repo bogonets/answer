@@ -33,7 +33,7 @@ ko:
 
       <v-col cols="4">
         <card-button @click="onClickUsers">
-          <v-icon large>mdi-table-multiple</v-icon>
+          <v-icon large>mdi-account</v-icon>
           <span class="text--secondary text-subtitle-2 text-no-wrap">
             {{ $t('users', [item.users || 0]) }}
           </span>
@@ -42,7 +42,7 @@ ko:
 
       <v-col cols="4">
         <card-button @click="onClickGroups">
-          <v-icon large>mdi-format-list-checks</v-icon>
+          <v-icon large>mdi-account-group</v-icon>
           <span class="text--secondary text-subtitle-2 text-no-wrap">
             {{ $t('groups', [item.groups || 0]) }}
           </span>
@@ -51,7 +51,7 @@ ko:
 
       <v-col cols="4">
         <card-button @click="onClickProjects">
-          <v-icon large>mdi-account-group</v-icon>
+          <v-icon large>mdi-clipboard-check-multiple</v-icon>
           <span class="text--secondary text-subtitle-2 text-no-wrap">
             {{ $t('projects', [item.projects || 0]) }}
           </span>

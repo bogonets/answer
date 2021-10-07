@@ -44,7 +44,7 @@ ko:
       <v-list-item-group
           mandatory
           color="primary"
-          :value="value"
+          :value="index"
           @change="input"
       >
 
@@ -99,8 +99,9 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop, Emit} from 'vue-property-decorator';
+import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import devNames from '@/router/names/dev';
 
 @Component
 export default class NaviDev extends VueBase {
@@ -108,17 +109,34 @@ export default class NaviDev extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly noDefault!: boolean;
 
-  @Prop({type: Number, default: 0})
-  readonly value!: number;
-
   mini = false;
+  index = 0;
 
   onClickFoldNavigation() {
     this.mini = !this.mini;
   }
 
+  @Watch('$route')
+  onChangeRoute() {
+    const name = this.$route.name;
+    if (name === devNames.devOverview) {
+      this.index = 0;
+    } else if (name === devNames.devEnvs) {
+      this.index = 1;
+    } else if (name === devNames.devInfos) {
+      this.index = 2;
+    } else if (name === devNames.devPlugins) {
+      this.index = 3;
+    } else if (name === devNames.devConfigs) {
+      this.index = 4;
+    } else {
+      this.index = -1;
+    }
+  }
+
   @Emit()
   input(index: number) {
+    this.index = index;
     return index;
   }
 

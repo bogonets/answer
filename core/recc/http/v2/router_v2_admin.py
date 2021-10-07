@@ -5,30 +5,23 @@ from signal import SIGKILL
 from aiohttp import web
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
-from aiohttp.web_exceptions import (
-    HTTPNotFound,
-    HTTPBadRequest,
-)
+from aiohttp.web_exceptions import HTTPBadRequest
 from recc.core.context import Context
 from recc.session.session_ex import SessionEx
 from recc.http import http_urls as u
 from recc.http.http_decorator import parameter_matcher
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.container import ContainerOperator, ContainerA, ControlContainersQ
-from recc.packet.environment import EnvironmentA
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
-from recc.packet.info import InfoA, CreateInfoQ, UpdateInfoQ
 from recc.packet.permission import PermissionA, CreatePermissionQ, UpdatePermissionQ
-from recc.packet.plugin import PluginA
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
-from recc.packet.system import SystemOverviewA, VersionsA
+from recc.packet.system import SystemOverviewA
 from recc.packet.template import TemplateA
 from recc.packet.user import UserA, UpdateUserQ, SignupQ
 from recc.packet.cvt.project import project_to_answer
 from recc.packet.cvt.permission import permission_to_answer
 from recc.packet.cvt.container import container_to_answer
 from recc.database.struct.group import Group
-from recc.variables.environment import RECC_ENV_PREFIX
 
 
 class RouterV2Admin:
@@ -62,16 +55,8 @@ class RouterV2Admin:
             web.get(u.configs_pkey, self.get_configs_pkey),
             web.patch(u.configs_pkey, self.patch_configs_pkey),
 
-            # infos
-            web.get(u.infos, self.get_infos),
-            web.post(u.infos, self.post_infos),
-            web.get(u.infos_pkey, self.get_infos_pkey),
-            web.patch(u.infos_pkey, self.patch_infos_pkey),
-            web.delete(u.infos_pkey, self.delete_infos_pkey),
-
             # system
             web.get(u.system_overview, self.get_system_overview),
-            web.get(u.system_versions, self.get_versions),
 
             # templates
             web.get(u.templates, self.get_templates),
@@ -108,12 +93,6 @@ class RouterV2Admin:
             web.get(u.containers, self.get_containers),
             web.patch(u.containers, self.patch_containers),
             web.get(u.containers_pcontainer, self.get_containers_pcontainer),
-
-            # plugins
-            web.get(u.plugins, self.get_plugins),
-
-            # Environments
-            web.get(u.environments, self.get_environments),
         ]
         # fmt: on
 
@@ -123,71 +102,21 @@ class RouterV2Admin:
 
     @parameter_matcher()
     async def get_configs(self) -> List[ConfigA]:
-        return self.context.get_configs()
+        return self.context.get_configs(dev_mode=False)
 
     @parameter_matcher()
     async def get_configs_pkey(self, key: str) -> ConfigA:
         try:
-            return self.context.get_config(key)
+            return self.context.get_config(key, dev_mode=False)
         except KeyError as e:
             raise HTTPBadRequest(reason=str(e))
 
     @parameter_matcher()
     async def patch_configs_pkey(self, key: str, body: UpdateConfigValueQ) -> None:
         try:
-            self.context.set_config(key, body.value)
+            self.context.set_config(key, body.value, dev_mode=False)
         except KeyError as e:
             raise HTTPBadRequest(reason=str(e))
-
-    # -----
-    # Infos
-    # -----
-
-    @parameter_matcher()
-    async def get_infos(self) -> List[InfoA]:
-        result = list()
-        for info in await self.context.get_infos():
-            assert info.key
-            item = InfoA(
-                key=info.key,
-                value=info.value,
-                created_at=info.created_at,
-                updated_at=info.updated_at,
-            )
-            result.append(item)
-        return result
-
-    @parameter_matcher()
-    async def post_infos(self, body: CreateInfoQ) -> None:
-        try:
-            await self.context.create_info(body.key, body.value)
-        except KeyError as e:
-            raise HTTPBadRequest(reason=str(e))
-
-    @parameter_matcher()
-    async def get_infos_pkey(self, key: str) -> InfoA:
-        try:
-            db_info = await self.context.get_info(key)
-        except RuntimeError as e:
-            raise HTTPNotFound(reason=str(e))
-        assert db_info.key
-        return InfoA(
-            key=db_info.key,
-            value=db_info.value,
-            created_at=db_info.created_at,
-            updated_at=db_info.updated_at,
-        )
-
-    @parameter_matcher()
-    async def patch_infos_pkey(self, key: str, body: UpdateInfoQ) -> None:
-        try:
-            await self.context.update_info(key, body.value)
-        except KeyError as e:
-            raise HTTPBadRequest(reason=str(e))
-
-    @parameter_matcher()
-    async def delete_infos_pkey(self, key: str) -> None:
-        await self.context.delete_info(key)
 
     # ------
     # System
@@ -196,10 +125,6 @@ class RouterV2Admin:
     @parameter_matcher()
     async def get_system_overview(self) -> SystemOverviewA:
         return await self.context.get_system_overview()
-
-    @parameter_matcher()
-    async def get_versions(self) -> VersionsA:
-        return VersionsA(python=self.context.get_python_version_info())
 
     # ---------
     # Templates
@@ -523,22 +448,3 @@ class RouterV2Admin:
     @parameter_matcher()
     async def get_containers_pcontainer(self, container: str) -> ContainerA:
         return container_to_answer(await self.context.get_container(container))
-
-    # -------
-    # Plugins
-    # -------
-
-    @parameter_matcher()
-    async def get_plugins(self) -> List[PluginA]:
-        return self.context.get_plugins()
-
-    # ------------
-    # Environments
-    # ------------
-
-    @parameter_matcher()
-    async def get_environments(self) -> List[EnvironmentA]:
-        if self.context.config.developer:
-            return self.context.get_environments()
-        else:
-            return self.context.get_environments(RECC_ENV_PREFIX)

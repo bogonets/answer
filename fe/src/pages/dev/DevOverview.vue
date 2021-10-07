@@ -64,7 +64,7 @@ export default class DevOverview extends VueBase {
 
   created() {
     this.loading = true;
-    this.$api2.getAdminSystemVersions()
+    this.$api2.getDevSystemVersions()
         .then(item => {
           this.loading = false;
           this.item = item;

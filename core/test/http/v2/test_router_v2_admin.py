@@ -4,15 +4,12 @@ from unittest import main
 from typing import List
 from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
-from recc.variables.database import INFO_KEY_RECC_DB_VERSION
 from recc.http.http_utils import v2_admin_path
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
-from recc.packet.info import InfoA, CreateInfoQ
 from recc.packet.permission import PermissionA, CreatePermissionQ, UpdatePermissionQ
-from recc.packet.plugin import PluginA
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.system import SystemOverviewA
 
@@ -26,32 +23,6 @@ class RouterV2AdminTestCase(AsyncTestCase):
 
     async def tearDown(self):
         await self.tester.teardown()
-
-    async def test_infos(self):
-        response1 = await self.tester.get(v2_admin_path(u.infos), cls=List[InfoA])
-        self.assertEqual(200, response1.status)
-        self.assertIsInstance(response1.data, list)
-        version = list(
-            filter(lambda x: x.key == INFO_KEY_RECC_DB_VERSION, response1.data)
-        )
-        self.assertEqual(1, len(version))
-        self.assertEqual(INFO_KEY_RECC_DB_VERSION, version[0].key)
-
-        info1 = CreateInfoQ("key1", "value2")
-        response2 = await self.tester.post(v2_admin_path(u.infos), data=info1)
-        self.assertEqual(200, response2.status)
-        self.assertIsNone(response2.data)
-
-        path = v2_admin_path(u.infos_pkey.format(**{p.key: info1.key}))
-        response3 = await self.tester.get(path)
-        self.assertEqual(200, response3.status)
-        self.assertIsNotNone(response3.data)
-
-        response4 = await self.tester.delete(path)
-        self.assertEqual(200, response4.status)
-
-        response5 = await self.tester.get(path)
-        self.assertNotEqual(200, response5.status)
 
     async def test_users(self):
         response = await self.tester.get(v2_admin_path(u.users))
@@ -262,14 +233,6 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertLessEqual(0, response.data.users)
         self.assertLessEqual(0, response.data.groups)
         self.assertLessEqual(0, response.data.projects)
-
-    async def test_plugins(self):
-        path = v2_admin_path(u.plugins)
-        response = await self.tester.get(path, cls=List[PluginA])
-        self.assertEqual(200, response.status)
-        self.assertIsNotNone(response.data)
-        self.assertIsInstance(response.data, list)
-        self.assertEqual(0, len(response.data))
 
     async def test_configs(self):
         path1 = v2_admin_path(u.configs)

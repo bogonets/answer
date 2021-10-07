@@ -451,40 +451,12 @@ export default class ApiV2 {
         return this.patch(`/admin/configs/${key}`, body);
     }
 
-    // -----------
-    // Admin/Infos
-    // -----------
-
-    getAdminInfos() {
-        return this.get<Array<InfoA>>('/admin/infos');
-    }
-
-    postAdminInfos(body: CreateInfoQ) {
-        return this.post('/admin/infos', body);
-    }
-
-    getAdminInfosPkey(key: string) {
-        return this.get<InfoA>(`/admin/infos/${key}`);
-    }
-
-    patchAdminInfosPkey(key: string, body: UpdateInfoQ) {
-        return this.patch(`/admin/infos/${key}`, body);
-    }
-
-    deleteAdminInfo(key: string) {
-        return this.delete(`/admin/infos/${key}`);
-    }
-
     // ------------
     // Admin/System
     // ------------
 
     getAdminSystemOverview() {
         return this.get<SystemOverviewA>('/admin/system/overview');
-    }
-
-    getAdminSystemVersions() {
-        return this.get<VersionsA>('/admin/system/versions');
     }
 
     // ---------------
@@ -603,20 +575,68 @@ export default class ApiV2 {
         return this.patch('/admin/containers', body);
     }
 
-    // -------------
-    // Admin/Plugins
-    // -------------
+    // -----------
+    // Dev/Configs
+    // -----------
 
-    getAdminPlugins() {
-        return this.get<Array<PluginA>>('/admin/plugins');
+    getDevConfigs() {
+        return this.get<Array<ConfigA>>('/dev/configs');
     }
 
-    // ------------------
-    // Admin/Environments
-    // ------------------
+    getDevConfigsPkey(key: string) {
+        return this.get<ConfigA>(`/dev/configs/${key}`);
+    }
 
-    getAdminEnvironments() {
-        return this.get<Array<EnvironmentA>>('/admin/environments');
+    patchDevConfigsPkey(key: string, body: UpdateConfigValueQ) {
+        return this.patch(`/dev/configs/${key}`, body);
+    }
+
+    // ---------
+    // Dev/Infos
+    // ---------
+
+    getDevInfos() {
+        return this.get<Array<InfoA>>('/dev/infos');
+    }
+
+    postDevInfos(body: CreateInfoQ) {
+        return this.post('/dev/infos', body);
+    }
+
+    getDevInfosPkey(key: string) {
+        return this.get<InfoA>(`/dev/infos/${key}`);
+    }
+
+    patchDevInfosPkey(key: string, body: UpdateInfoQ) {
+        return this.patch(`/dev/infos/${key}`, body);
+    }
+
+    deleteDevInfo(key: string) {
+        return this.delete(`/dev/infos/${key}`);
+    }
+
+    // ----------
+    // Dev/System
+    // ----------
+
+    getDevSystemVersions() {
+        return this.get<VersionsA>('/dev/system/versions');
+    }
+
+    // -----------
+    // Dev/Plugins
+    // -----------
+
+    getDevPlugins() {
+        return this.get<Array<PluginA>>('/dev/plugins');
+    }
+
+    // ----------------
+    // Dev/Environments
+    // ----------------
+
+    getDevEnvironments() {
+        return this.get<Array<EnvironmentA>>('/dev/environments');
     }
 
     // --------------

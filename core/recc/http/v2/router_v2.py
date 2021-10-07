@@ -7,12 +7,14 @@ from aiohttp.web_response import Response
 from aiohttp.web_exceptions import (
     HTTPNotFound,
     HTTPForbidden,
+    HTTPServiceUnavailable,
 )
 from recc.log.logging import recc_http_logger as logger
 from recc.core.context import Context
 from recc.session.session_ex import SessionEx
 from recc.http.v2.router_v2_public import RouterV2Public
 from recc.http.v2.router_v2_admin import RouterV2Admin
+from recc.http.v2.router_v2_dev import RouterV2Dev
 from recc.http.v2.router_v2_self import RouterV2Self
 from recc.http.v2.router_v2_main import RouterV2Main
 from recc.http.v2.router_v2_plugins import RouterV2Plugins
@@ -40,6 +42,9 @@ class RouterV2:
         self._admin = RouterV2Admin(context)
         self._app.add_subapp(u.admin, self._admin.app)
 
+        self._dev = RouterV2Dev(context)
+        self._app.add_subapp(u.dev, self._dev.app)
+
         self._self = RouterV2Self(context)
         self._app.add_subapp(u.self, self._self.app)
 
@@ -60,6 +65,10 @@ class RouterV2:
     @staticmethod
     def is_admin_router(request: Request) -> bool:
         return request.path.startswith(u.api_v2_admin)
+
+    @staticmethod
+    def is_dev_router(request: Request) -> bool:
+        return request.path.startswith(u.api_v2_dev)
 
     @staticmethod
     def is_main_router(request: Request) -> bool:
@@ -99,6 +108,10 @@ class RouterV2:
         if not self.has_admin_privileges(request):
             raise HTTPForbidden(reason="Administrator privileges are required")
 
+    def test_developer_config(self) -> None:
+        if not self.context.config.developer:
+            raise HTTPServiceUnavailable(reason="Developer mode is not enabled")
+
     # -----------------------------
     # Middleware of the sub-routers
     # -----------------------------
@@ -107,6 +120,13 @@ class RouterV2:
         await self.test_initialized_database()
         await self.assign_session(request)
         await self.test_admin_privileges(request)
+        return await handler(request)
+
+    async def middleware_dev(self, request: Request, handler) -> Response:
+        await self.test_initialized_database()
+        await self.assign_session(request)
+        await self.test_admin_privileges(request)
+        self.test_developer_config()
         return await handler(request)
 
     async def middleware_main(self, request: Request, handler) -> Response:
@@ -135,6 +155,8 @@ class RouterV2:
 
         if self.is_admin_router(request):
             return await self.middleware_admin(request, handler)
+        elif self.is_dev_router(request):
+            return await self.middleware_dev(request, handler)
         elif self.is_main_router(request):
             return await self.middleware_main(request, handler)
         elif self.is_public_router(request):

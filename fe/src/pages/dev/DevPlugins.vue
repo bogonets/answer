@@ -95,7 +95,7 @@ export default class DevPlugins extends VueBase {
 
   updatePlugins() {
     this.loading = true;
-    this.$api2.getAdminPlugins()
+    this.$api2.getDevPlugins()
         .then(items => {
           this.loading = false;
           this.items = items;

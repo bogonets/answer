@@ -104,7 +104,7 @@ export default class DevEnvs extends VueBase {
 
   updatePlugins() {
     this.loading = true;
-    this.$api2.getAdminEnvironments()
+    this.$api2.getDevEnvironments()
         .then(items => {
           this.loading = false;
           this.items = items;
