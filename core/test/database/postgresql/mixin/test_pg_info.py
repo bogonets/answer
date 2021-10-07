@@ -16,8 +16,8 @@ class PgInfoTestCase(PostgresqlTestCase):
         key = "aaa"
         val1 = "bbb"
         val2 = "ccc"
-        created_at = datetime.utcnow().astimezone() + timedelta(days=1)
-        updated_at = datetime.utcnow().astimezone() + timedelta(days=2)
+        created_at = datetime.now().astimezone() + timedelta(days=1)
+        updated_at = datetime.now().astimezone() + timedelta(days=2)
 
         await self.db.upsert_info(key, val1, created_at)
         self.assertEqual(2, len(await self.db.select_infos()))

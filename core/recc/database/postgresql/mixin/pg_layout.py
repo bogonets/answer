@@ -29,7 +29,7 @@ class PgLayout(DbLayout, PgBase):
         name: str,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
-        created_at=datetime.utcnow().astimezone(),
+        created_at=datetime.now().astimezone(),
     ) -> int:
         query = INSERT_LAYOUT
         uid = await self.fetch_val(
@@ -41,7 +41,7 @@ class PgLayout(DbLayout, PgBase):
 
     @overrides
     async def update_layout_description_by_uid(
-        self, uid: int, description: str, updated_at=datetime.utcnow().astimezone()
+        self, uid: int, description: str, updated_at=datetime.now().astimezone()
     ) -> None:
         query = UPDATE_LAYOUT_DESCRIPTION_BY_UID
         await self.execute(query, uid, description, updated_at)
@@ -53,7 +53,7 @@ class PgLayout(DbLayout, PgBase):
         project_uid: int,
         name: str,
         description: str,
-        updated_at=datetime.utcnow().astimezone(),
+        updated_at=datetime.now().astimezone(),
     ) -> None:
         query = UPDATE_LAYOUT_DESCRIPTION_BY_PROJECT_UID_AND_NAME
         await self.execute(query, project_uid, name, description, updated_at)
@@ -62,7 +62,7 @@ class PgLayout(DbLayout, PgBase):
 
     @overrides
     async def update_layout_extra_by_uid(
-        self, uid: int, extra: Any, updated_at=datetime.utcnow().astimezone()
+        self, uid: int, extra: Any, updated_at=datetime.now().astimezone()
     ) -> None:
         query = UPDATE_LAYOUT_EXTRA_BY_UID
         await self.execute(query, uid, extra, updated_at)
@@ -74,7 +74,7 @@ class PgLayout(DbLayout, PgBase):
         project_uid: int,
         name: str,
         extra: Any,
-        updated_at=datetime.utcnow().astimezone(),
+        updated_at=datetime.now().astimezone(),
     ) -> None:
         query = UPDATE_LAYOUT_EXTRA_BY_PROJECT_UID_AND_NAME
         await self.execute(query, project_uid, name, extra, updated_at)

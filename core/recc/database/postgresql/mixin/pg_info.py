@@ -25,7 +25,7 @@ class PgInfo(DbInfo, PgBase):
         self,
         key: str,
         value: str,
-        created_at=datetime.utcnow().astimezone(),
+        created_at=datetime.now().astimezone(),
     ) -> None:
         query = INSERT_INFO
         try:
@@ -37,7 +37,7 @@ class PgInfo(DbInfo, PgBase):
 
     @overrides
     async def update_info_value_by_key(
-        self, key: str, value: str, updated_at=datetime.utcnow().astimezone()
+        self, key: str, value: str, updated_at=datetime.now().astimezone()
     ) -> None:
         query = UPDATE_INFO_VALUE_BY_KEY
         await self.execute(query, key, value, updated_at)
@@ -46,7 +46,7 @@ class PgInfo(DbInfo, PgBase):
 
     @overrides
     async def upsert_info(
-        self, key: str, value: str, created_or_updated_at=datetime.utcnow().astimezone()
+        self, key: str, value: str, created_or_updated_at=datetime.now().astimezone()
     ) -> None:
         query = UPSERT_INFO
         await self.execute(query, key, value, created_or_updated_at)

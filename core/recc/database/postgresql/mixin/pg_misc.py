@@ -26,7 +26,7 @@ from recc.log.logging import recc_database_logger as logger
 
 class PgMisc(DbMisc, PgBase):
     @overrides
-    async def create_tables(self, created_at=datetime.utcnow().astimezone()) -> None:
+    async def create_tables(self, created_at=datetime.now().astimezone()) -> None:
         all_create = CREATE_TABLES + CREATE_INDICES + CREATE_VIEWS
         async with self.conn() as conn:
             async with conn.transaction():

@@ -22,7 +22,7 @@ class PgProjectTestCase(PostgresqlTestCase):
     async def test_create_and_get(self):
         slug1 = "slug1"
         name1 = "name1"
-        created_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
+        created_at1 = datetime.now().astimezone() + timedelta(days=1)
         result1_uid = await self.db.insert_project(
             self.group.uid, slug1, name1, created_at=created_at1
         )
@@ -58,7 +58,7 @@ class PgProjectTestCase(PostgresqlTestCase):
         desc1 = "description1"
         extra1 = {"a": 1, "b": 2}
         features1 = ["a", "b"]
-        updated_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
+        updated_at1 = datetime.now().astimezone() + timedelta(days=1)
         await self.db.update_project_by_uid(
             uid=project1_uid,
             description=desc1,

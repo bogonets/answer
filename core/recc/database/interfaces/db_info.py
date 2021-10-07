@@ -16,19 +16,19 @@ class DbInfo(metaclass=ABCMeta):
         self,
         key: str,
         value: str,
-        created_at=datetime.utcnow().astimezone(),
+        created_at=datetime.now().astimezone(),
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
     async def update_info_value_by_key(
-        self, key: str, value: str, updated_at=datetime.utcnow().astimezone()
+        self, key: str, value: str, updated_at=datetime.now().astimezone()
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
     async def upsert_info(
-        self, key: str, value: str, created_or_updated_at=datetime.utcnow().astimezone()
+        self, key: str, value: str, created_or_updated_at=datetime.now().astimezone()
     ) -> None:
         raise NotImplementedError
 

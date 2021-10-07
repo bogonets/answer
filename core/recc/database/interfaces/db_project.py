@@ -22,7 +22,7 @@ class DbProject(metaclass=ABCMeta):
         features: Optional[List[str]] = None,
         visibility=VISIBILITY_LEVEL_PRIVATE,
         extra: Optional[Any] = None,
-        created_at=datetime.utcnow().astimezone(),
+        created_at=datetime.now().astimezone(),
     ) -> int:
         raise NotImplementedError
 
@@ -36,7 +36,7 @@ class DbProject(metaclass=ABCMeta):
         features: Optional[List[str]] = None,
         visibility: Optional[int] = None,
         extra: Optional[Any] = None,
-        updated_at=datetime.utcnow().astimezone(),
+        updated_at=datetime.now().astimezone(),
     ) -> None:
         raise NotImplementedError
 

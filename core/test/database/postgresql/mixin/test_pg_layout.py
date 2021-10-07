@@ -18,8 +18,8 @@ class PgLayoutTestCase(PostgresqlTestCase):
     async def test_create_and_get(self):
         name1 = "layout1"
         name2 = "layout2"
-        created_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
-        created_at2 = datetime.utcnow().astimezone() + timedelta(days=2)
+        created_at1 = datetime.now().astimezone() + timedelta(days=1)
+        created_at2 = datetime.now().astimezone() + timedelta(days=2)
         result1_uid = await self.db.insert_layout(
             self.project.uid, name1, created_at=created_at1
         )
@@ -58,8 +58,8 @@ class PgLayoutTestCase(PostgresqlTestCase):
 
         desc1 = "description1"
         desc2 = "description2"
-        updated_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
-        updated_at2 = datetime.utcnow().astimezone() + timedelta(days=2)
+        updated_at1 = datetime.now().astimezone() + timedelta(days=1)
+        updated_at2 = datetime.now().astimezone() + timedelta(days=2)
         await self.db.update_layout_description_by_uid(layout1_uid, desc1, updated_at1)
         await self.db.update_layout_description_by_name(
             self.project.uid, name2, desc2, updated_at2
@@ -81,8 +81,8 @@ class PgLayoutTestCase(PostgresqlTestCase):
 
         extra1 = {"a": 1, "b": 2}
         extra2 = {"c": 3, "d": 4}
-        updated_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
-        updated_at2 = datetime.utcnow().astimezone() + timedelta(days=2)
+        updated_at1 = datetime.now().astimezone() + timedelta(days=1)
+        updated_at2 = datetime.now().astimezone() + timedelta(days=2)
         await self.db.update_layout_extra_by_uid(layout1_uid, extra1, updated_at1)
         await self.db.update_layout_extra_by_name(
             self.project.uid, name2, extra2, updated_at2

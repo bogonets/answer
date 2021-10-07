@@ -23,8 +23,8 @@ class PgPortTestCase(PostgresqlTestCase):
     async def test_create_and_get(self):
         number1 = 100
         number2 = 200
-        created_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
-        created_at2 = datetime.utcnow().astimezone() + timedelta(days=2)
+        created_at1 = datetime.now().astimezone() + timedelta(days=1)
+        created_at2 = datetime.now().astimezone() + timedelta(days=2)
         await self.db.insert_port(number1, created_at=created_at1)
         await self.db.insert_port(
             number2,
@@ -67,7 +67,7 @@ class PgPortTestCase(PostgresqlTestCase):
         await self.db.insert_port(number)
 
         desc = "description"
-        updated_at = datetime.utcnow().astimezone()
+        updated_at = datetime.now().astimezone()
         await self.db.update_port_description_by_number(number, desc, updated_at)
 
         port = await self.db.select_port_by_number(number)
@@ -79,7 +79,7 @@ class PgPortTestCase(PostgresqlTestCase):
         await self.db.insert_port(number)
 
         extra = {"a": 1, "b": 2}
-        updated_at = datetime.utcnow().astimezone()
+        updated_at = datetime.now().astimezone()
         await self.db.update_port_extra_by_number(number, extra, updated_at)
 
         port = await self.db.select_port_by_number(number)
@@ -88,7 +88,7 @@ class PgPortTestCase(PostgresqlTestCase):
 
     async def test_update(self):
         number = 100
-        created_at = datetime.utcnow().astimezone()
+        created_at = datetime.now().astimezone()
         await self.db.insert_port(number, created_at=created_at)
         port1 = await self.db.select_port_by_number(number)
         self.assertEqual(number, port1.number)
@@ -104,7 +104,7 @@ class PgPortTestCase(PostgresqlTestCase):
         project_uid = self.project.uid
         task_uid = self.task.uid
         extra = {"a": 1, "b": 2}
-        updated_at = datetime.utcnow().astimezone() + timedelta(days=1)
+        updated_at = datetime.now().astimezone() + timedelta(days=1)
         await self.db.update_port_by_number(
             number,
             group_uid=group_uid,

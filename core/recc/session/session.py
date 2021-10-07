@@ -106,7 +106,7 @@ class SessionFactory:
     def create_session(
         self,
         username: str,
-        issued_at=datetime.utcnow().astimezone(),
+        issued_at=datetime.now().astimezone(),
     ) -> Session:
         return Session(
             issuer=self.issuer,
@@ -118,7 +118,7 @@ class SessionFactory:
     def renew_session(
         self,
         session: Session,
-        issued_at=datetime.utcnow().astimezone(),
+        issued_at=datetime.now().astimezone(),
     ) -> Session:
         assert self.issuer == session.issuer
         return Session(
@@ -178,7 +178,7 @@ class SessionPairFactory:
         )
 
     def create_sessions(
-        self, username: str, issued_at=datetime.utcnow().astimezone()
+        self, username: str, issued_at=datetime.now().astimezone()
     ) -> Tuple[Session, Session]:
         return (
             self.access.create_session(username, issued_at),
@@ -192,7 +192,7 @@ class SessionPairFactory:
         return self.refresh.encode(session)
 
     def create_tokens(
-        self, username: str, issued_at=datetime.utcnow().astimezone()
+        self, username: str, issued_at=datetime.now().astimezone()
     ) -> Tuple[str, str]:
         access_session, refresh_session = self.create_sessions(username, issued_at)
         return self.encode_access(access_session), self.encode_refresh(refresh_session)
@@ -206,14 +206,14 @@ class SessionPairFactory:
     def renew_access_session(
         self,
         session: Session,
-        issued_at=datetime.utcnow().astimezone(),
+        issued_at=datetime.now().astimezone(),
     ) -> Session:
         return self.access.renew_session(session, issued_at)
 
     def renew_access_token(
         self,
         token: str,
-        issued_at=datetime.utcnow().astimezone(),
+        issued_at=datetime.now().astimezone(),
     ) -> str:
         session = self.decode_access(token)
         renew_session = self.renew_access_session(session, issued_at)

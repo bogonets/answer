@@ -235,7 +235,7 @@ async def parameter_matcher_main(
     obj: Any,
     request: Request,
 ) -> Response:
-    now = datetime.utcnow().astimezone()
+    now = datetime.now().astimezone()
 
     # Forwarded
     # X-Forwarded-For
@@ -269,7 +269,7 @@ async def parameter_matcher_main(
 
     status = result.status
     reason = result.reason
-    duration = (datetime.utcnow().astimezone() - now).total_seconds()
+    duration = (datetime.now().astimezone() - now).total_seconds()
     response_info = f"{status} {reason} ({duration:.3f}s)"
     logger.info(f"{request_info} -> {response_info}")
 

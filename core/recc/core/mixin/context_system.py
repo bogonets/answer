@@ -20,12 +20,15 @@ class ContextSystem(ContextBase):
         return result
 
     async def get_system_overview(self) -> SystemOverviewA:
-        time = datetime.utcnow().astimezone()
+        time = datetime.now().astimezone()
         users = await self.database.select_users_count()
         groups = await self.database.select_groups_count()
         projects = await self.database.select_projects_count()
         return SystemOverviewA(
-            time=time, users=users, groups=groups, projects=projects,
+            time=time,
+            users=users,
+            groups=groups,
+            projects=projects,
         )
 
     @staticmethod

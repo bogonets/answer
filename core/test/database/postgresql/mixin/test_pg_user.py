@@ -16,7 +16,7 @@ class PgUserTestCase(PostgresqlTestCase):
         phone2 = "010-0000-0001"
         extra = {"key1": "value1", "key2": "value2"}
         is_admin = False
-        created_at = datetime.utcnow().astimezone()
+        created_at = datetime.now().astimezone()
 
         result_uid = await self.db.insert_user(
             username,
@@ -53,7 +53,7 @@ class PgUserTestCase(PostgresqlTestCase):
         salt = "salt"
         await self.db.insert_user(username, password, salt)
 
-        last_login = datetime.utcnow().astimezone() + timedelta(days=2)
+        last_login = datetime.now().astimezone() + timedelta(days=2)
         user_uid = await self.db.select_user_uid_by_username(username)
         await self.db.update_user_last_login_by_uid(user_uid, last_login)
 
@@ -78,7 +78,7 @@ class PgUserTestCase(PostgresqlTestCase):
         await self.db.insert_user(username, password, salt)
 
         extra = {"key1": 100, "key2": 200}
-        updated_at = datetime.utcnow().astimezone() + timedelta(days=1)
+        updated_at = datetime.now().astimezone() + timedelta(days=1)
 
         user_uid = await self.db.select_user_uid_by_username(username)
         await self.db.update_user_extra_by_uid(user_uid, extra, updated_at)
@@ -96,7 +96,7 @@ class PgUserTestCase(PostgresqlTestCase):
         await self.db.insert_user(username, password, salt)
 
         update_phone2 = "010-0000-0001"
-        updated_at = datetime.utcnow().astimezone() + timedelta(days=3)
+        updated_at = datetime.now().astimezone() + timedelta(days=3)
         user_uid = await self.db.select_user_uid_by_username(username)
         await self.db.update_user_by_uid(
             uid=user_uid, phone2=update_phone2, updated_at=updated_at

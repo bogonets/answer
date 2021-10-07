@@ -42,8 +42,8 @@ class PgTaskTestCase(PostgresqlTestCase):
         slug2 = "slug2"
         name1 = "name1"
         name2 = "name2"
-        created_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
-        created_at2 = datetime.utcnow().astimezone() + timedelta(days=2)
+        created_at1 = datetime.now().astimezone() + timedelta(days=1)
+        created_at2 = datetime.now().astimezone() + timedelta(days=2)
         result1_uid = await self.db.insert_task(
             self.project.uid, slug1, name1, created_at=created_at1
         )
@@ -111,8 +111,8 @@ class PgTaskTestCase(PostgresqlTestCase):
 
         desc1 = "description1"
         desc2 = "description2"
-        updated_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
-        updated_at2 = datetime.utcnow().astimezone() + timedelta(days=2)
+        updated_at1 = datetime.now().astimezone() + timedelta(days=1)
+        updated_at2 = datetime.now().astimezone() + timedelta(days=2)
         await self.db.update_task_description_by_uid(task1_uid, desc1, updated_at1)
         await self.db.update_task_description_by_slug(
             self.project.uid, slug2, desc2, updated_at2
@@ -134,8 +134,8 @@ class PgTaskTestCase(PostgresqlTestCase):
 
         extra1 = {"a": 1, "b": 2}
         extra2 = {"c": 3, "d": 4}
-        updated_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
-        updated_at2 = datetime.utcnow().astimezone() + timedelta(days=2)
+        updated_at1 = datetime.now().astimezone() + timedelta(days=1)
+        updated_at2 = datetime.now().astimezone() + timedelta(days=2)
         await self.db.update_task_extra_by_uid(task1_uid, extra1, updated_at1)
         await self.db.update_task_extra_by_slug(
             self.project.uid, slug2, extra2, updated_at2
@@ -161,8 +161,8 @@ class PgTaskTestCase(PostgresqlTestCase):
         private_key2 = "private2"
         public_key1 = "public1"
         public_key2 = "public2"
-        updated_at1 = datetime.utcnow().astimezone() + timedelta(days=1)
-        updated_at2 = datetime.utcnow().astimezone() + timedelta(days=2)
+        updated_at1 = datetime.now().astimezone() + timedelta(days=1)
+        updated_at2 = datetime.now().astimezone() + timedelta(days=2)
         await self.db.update_task_keys_by_uid(
             task1_uid,
             auth_algorithm1,
@@ -207,7 +207,7 @@ class PgTaskTestCase(PostgresqlTestCase):
         numa_memory_nodes = "1-2"
         base_image_name = ""
         publish_ports = {"9999/tcp": 9999}
-        updated_at = datetime.utcnow().astimezone() + timedelta(days=1)
+        updated_at = datetime.now().astimezone() + timedelta(days=1)
 
         await self.db.update_task_by_uid(
             task_uid,

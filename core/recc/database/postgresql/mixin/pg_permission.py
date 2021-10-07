@@ -41,7 +41,7 @@ class PgPermission(DbPermission, PgBase):
         w_member=False,
         r_setting=False,
         w_setting=False,
-        created_at=datetime.utcnow().astimezone(),
+        created_at=datetime.now().astimezone(),
     ) -> int:
         uid = await self.fetch_val(
             INSERT_PERMISSION,
@@ -86,7 +86,7 @@ class PgPermission(DbPermission, PgBase):
         w_member: Optional[bool] = None,
         r_setting: Optional[bool] = None,
         w_setting: Optional[bool] = None,
-        updated_at=datetime.utcnow().astimezone(),
+        updated_at=datetime.now().astimezone(),
     ) -> None:
         query, args = get_update_permission_query_by_uid(
             uid=uid,
