@@ -125,7 +125,9 @@ import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import LeftTitle from '@/components/LeftTitle.vue';
 import type {ProjectA, UpdateProjectQ} from '@/packet/project';
-import FormProject, {ProjectItem} from '@/components/FormProject.vue';
+import type {ProjectItem} from '@/components/FormProject.vue';
+import FormProject from '@/components/FormProject.vue';
+import {iso8601ToLocal} from '@/chrono/iso8601';
 import * as _ from 'lodash';
 
 export function createEmptyProjectA() {
@@ -169,11 +171,11 @@ export default class FormProjectEdit extends VueBase {
   }
 
   get createdAt() {
-    return this.value?.created_at || '';
+    return iso8601ToLocal(this.value?.created_at || '');
   }
 
   get updatedAt() {
-    return this.value?.updated_at || '';
+    return iso8601ToLocal(this.value?.updated_at || '');
   }
 
   @Watch('value')

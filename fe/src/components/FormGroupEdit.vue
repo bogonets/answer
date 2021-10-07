@@ -125,6 +125,7 @@ import VueBase from '@/base/VueBase';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormGroup, {GroupItem} from '@/components/FormGroup.vue';
 import type {GroupA, UpdateGroupQ} from '@/packet/group';
+import {iso8601ToLocal} from '@/chrono/iso8601';
 import * as _ from 'lodash';
 
 @Component({
@@ -157,11 +158,11 @@ export default class FormGroupEdit extends VueBase {
   modified = false;
 
   get createdAt() {
-    return this.value?.created_at || '';
+    return iso8601ToLocal(this.value?.created_at || '');
   }
 
   get updatedAt() {
-    return this.value?.updated_at || '';
+    return iso8601ToLocal(this.value?.updated_at || '');
   }
 
   @Watch('value')

@@ -132,8 +132,8 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-divider v-if="isAirjoy"></v-divider>
-        <v-list-item  v-if="isAirjoy" link @click.stop="externalAirjoyDevices">
+        <v-divider v-show="false" v-if="isAirjoy"></v-divider>
+        <v-list-item v-show="false" v-if="isAirjoy" link @click.stop="externalAirjoyDevices">
           <v-list-item-icon>
             <v-icon>mdi-weather-windy</v-icon>
           </v-list-item-icon>

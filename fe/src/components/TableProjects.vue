@@ -60,11 +60,11 @@ ko:
     </template>
 
     <template v-slot:item.created_at="{ item }">
-      {{ utcToDate(item.created_at) }}
+      {{ datetimeToDate(item.created_at) }}
     </template>
 
     <template v-slot:item.updated_at="{ item }">
-      {{ utcToDate(item.updated_at) }}
+      {{ datetimeToDate(item.updated_at) }}
     </template>
 
     <template v-if="!hideActions" v-slot:item.actions="{ item }">
@@ -86,10 +86,7 @@ ko:
 import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {ProjectA} from '@/packet/project';
-
-export function createEmptyProjects() {
-  return new Array<ProjectA>();
-}
+import {iso8601ToLocalDate} from '@/chrono/iso8601';
 
 @Component
 export default class TableProjects extends VueBase {
@@ -111,7 +108,7 @@ export default class TableProjects extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly loading!: boolean;
 
-  @Prop({type: Array, default: createEmptyProjects})
+  @Prop({type: Array, default: () => []})
   readonly items!: Array<ProjectA>;
 
   headers = [] as Array<object>;
@@ -198,8 +195,8 @@ export default class TableProjects extends VueBase {
     }
   }
 
-  utcToDate(utc: undefined | string): string {
-    return utc?.split('T')[0] || '';
+  datetimeToDate(text: undefined | string): string {
+    return iso8601ToLocalDate(text);
   }
 
   @Emit('click:new')

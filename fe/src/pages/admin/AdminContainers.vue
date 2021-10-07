@@ -149,6 +149,7 @@ import {
   CONTROL_OPERATOR_RESUME,
   CONTROL_OPERATOR_REMOVE,
 } from '@/packet/container';
+import {iso8601ToLocalDate} from '@/chrono/iso8601';
 
 const ITEMS_PER_PAGE = 15;
 
@@ -263,8 +264,7 @@ export default class AdminContainers extends VueBase {
   }
 
   shortCreated(item: ContainerA) {
-    const [date, time] = item.created.split('T');
-    return `${date} ${time.substring(0, 8)}`;
+    return iso8601ToLocalDate(item.created);
   }
 
   statusColor(item: ContainerA) {

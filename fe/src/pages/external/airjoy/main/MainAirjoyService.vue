@@ -90,7 +90,7 @@ ko:
         </template>
 
         <template v-slot:item.time="{ item }">
-          {{ utcToDate(item.time) }}
+          {{ datetimeToDate(item.time) }}
         </template>
 
         <template v-slot:item.actions="{ item }">
@@ -187,6 +187,7 @@ import {
   UNKNOWN_ROUTE_PARAMS_DEVICE,
   createEmptyAirjoyServiceA,
 } from '@/packet/airjoy';
+import {iso8601ToLocalDate} from '@/chrono/iso8601';
 
 @Component({
   components: {
@@ -343,8 +344,8 @@ export default class MainAirjoyService extends VueBase {
     return this.isManagerWrite;
   }
 
-  utcToDate(utc?: string) {
-    return utc?.split('T')[0] || '';
+  datetimeToDate(text: undefined | string): string {
+    return iso8601ToLocalDate(text);
   }
 
   onChangeDevice(item: AirjoyDeviceA) {

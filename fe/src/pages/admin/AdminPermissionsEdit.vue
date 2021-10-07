@@ -120,6 +120,7 @@ import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormPermission, {PermissionItem} from '@/components/FormPermission.vue';
 import {PermissionA, UpdatePermissionQ} from '@/packet/permission';
+import {iso8601ToLocal} from '@/chrono/iso8601';
 import * as _ from 'lodash';
 
 @Component({
@@ -227,11 +228,11 @@ export default class AdminPermissionsEdit extends VueBase {
     this.detailItems = [
       {
         name: this.$t('label.created_at'),
-        value: createdAt,
+        value: iso8601ToLocal(createdAt),
       },
       {
         name: this.$t('label.updated_at'),
-        value: updatedAt,
+        value: iso8601ToLocal(updatedAt),
       },
     ];
   }

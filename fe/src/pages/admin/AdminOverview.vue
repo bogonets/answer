@@ -67,7 +67,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import CardButton from '@/components/CardButton.vue';
-import type {SystemOverviewA} from "@/packet/system";
+import type {SystemOverviewA} from '@/packet/system';
 
 @Component({
   components: {

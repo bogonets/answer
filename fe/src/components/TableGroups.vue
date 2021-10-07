@@ -58,11 +58,11 @@ ko:
     </template>
 
     <template v-slot:item.created_at="{ item }">
-      {{ utcToDate(item.created_at) }}
+      {{ datetimeToDate(item.created_at) }}
     </template>
 
     <template v-slot:item.updated_at="{ item }">
-      {{ utcToDate(item.updated_at) }}
+      {{ datetimeToDate(item.updated_at) }}
     </template>
 
     <template v-if="!hideActions" v-slot:item.actions="{ item }">
@@ -84,6 +84,7 @@ ko:
 import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {GroupA} from '@/packet/group';
+import {iso8601ToLocalDate} from '@/chrono/iso8601';
 
 @Component
 export default class TableGroups extends VueBase {
@@ -185,9 +186,10 @@ export default class TableGroups extends VueBase {
     }
   }
 
-  utcToDate(utc: undefined | string): string {
-    return utc?.split('T')[0] || '';
+  datetimeToDate(text: undefined | string): string {
+    return iso8601ToLocalDate(text);
   }
+
 
   @Emit('click:new')
   clickNew() {

@@ -57,11 +57,11 @@ ko:
       </template>
 
       <template v-slot:item.created_at="{ item }">
-        {{ utcToDate(item.created_at) }}
+        {{ datetimeToDate(item.created_at) }}
       </template>
 
       <template v-slot:item.updated_at="{ item }">
-        {{ utcToDate(item.updated_at) }}
+        {{ datetimeToDate(item.updated_at) }}
       </template>
 
       <template v-slot:item.actions="{ item }">
@@ -83,6 +83,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import {PermissionA} from '@/packet/permission';
+import {iso8601ToLocalDate} from '@/chrono/iso8601';
 
 @Component({
   components: {
@@ -157,8 +158,8 @@ export default class AdminPermissions extends VueBase {
         });
   }
 
-  utcToDate(utc: undefined | string): string {
-    return utc?.split('T')[0] || '';
+  datetimeToDate(text: undefined | string): string {
+    return iso8601ToLocalDate(text);
   }
 
   onClickNew() {
