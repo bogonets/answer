@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from typing import Tuple
-from datetime import datetime, timedelta
-import jwt
 import os
+from jwt import encode as jwt_encode
+from jwt import decode as jwt_decode
+from typing import Optional, Tuple
+from datetime import datetime, timedelta
+from recc.chrono.datetime import today
 
 VERIFY_AUDIENCE_OPTION_KEY = "verify_aud"
 VERIFY_ISSUED_AT_OPTION_KEY = "verify_iat"
@@ -106,30 +108,36 @@ class SessionFactory:
     def create_session(
         self,
         username: str,
-        issued_at=datetime.now().astimezone(),
+        issued_at: Optional[datetime] = None,
+        max_age: Optional[timedelta] = None,
     ) -> Session:
+        issued = issued_at if issued_at else today()
+        delta = max_age if max_age else timedelta(seconds=self.max_age_seconds)
         return Session(
             issuer=self.issuer,
             audience=username,
-            expiration_time=issued_at + timedelta(self.max_age_seconds),
-            issued_at=issued_at,
+            expiration_time=issued + delta,
+            issued_at=issued,
         )
 
     def renew_session(
         self,
         session: Session,
-        issued_at=datetime.now().astimezone(),
+        issued_at: Optional[datetime] = None,
+        max_age: Optional[timedelta] = None,
     ) -> Session:
         assert self.issuer == session.issuer
+        issued = issued_at if issued_at else today()
+        delta = max_age if max_age else timedelta(seconds=self.max_age_seconds)
         return Session(
             issuer=self.issuer,
             audience=session.audience,
-            expiration_time=issued_at + timedelta(self.max_age_seconds),
-            issued_at=issued_at,
+            expiration_time=issued + delta,
+            issued_at=issued,
         )
 
     def encode(self, session: Session) -> str:
-        return jwt.encode(
+        return jwt_encode(
             payload=session.to_claim_dict(),
             key=self.secret,
             algorithm=self.algorithm,
@@ -137,7 +145,7 @@ class SessionFactory:
 
     def decode(self, token: str) -> Session:
         return Session.create_from_dict(
-            jwt.decode(
+            jwt_decode(
                 jwt=token,
                 key=self.secret,
                 algorithms=[self.algorithm],
@@ -178,11 +186,16 @@ class SessionPairFactory:
         )
 
     def create_sessions(
-        self, username: str, issued_at=datetime.now().astimezone()
+        self,
+        username: str,
+        issued_at: Optional[datetime] = None,
+        access_max_age: Optional[timedelta] = None,
+        refresh_max_age: Optional[timedelta] = None,
     ) -> Tuple[Session, Session]:
+        issued = issued_at if issued_at else today()
         return (
-            self.access.create_session(username, issued_at),
-            self.refresh.create_session(username, issued_at),
+            self.access.create_session(username, issued, access_max_age),
+            self.refresh.create_session(username, issued, refresh_max_age),
         )
 
     def encode_access(self, session: Session) -> str:
@@ -192,9 +205,16 @@ class SessionPairFactory:
         return self.refresh.encode(session)
 
     def create_tokens(
-        self, username: str, issued_at=datetime.now().astimezone()
+        self,
+        username: str,
+        issued_at: Optional[datetime] = None,
+        access_max_age: Optional[timedelta] = None,
+        refresh_max_age: Optional[timedelta] = None,
     ) -> Tuple[str, str]:
-        access_session, refresh_session = self.create_sessions(username, issued_at)
+        issued = issued_at if issued_at else today()
+        access_session, refresh_session = self.create_sessions(
+            username, issued, access_max_age, refresh_max_age
+        )
         return self.encode_access(access_session), self.encode_refresh(refresh_session)
 
     def decode_access(self, token: str) -> Session:
@@ -206,15 +226,19 @@ class SessionPairFactory:
     def renew_access_session(
         self,
         session: Session,
-        issued_at=datetime.now().astimezone(),
+        issued_at: Optional[datetime] = None,
+        max_age: Optional[timedelta] = None,
     ) -> Session:
-        return self.access.renew_session(session, issued_at)
+        issued = issued_at if issued_at else today()
+        return self.access.renew_session(session, issued, max_age)
 
     def renew_access_token(
         self,
         token: str,
-        issued_at=datetime.now().astimezone(),
+        issued_at: Optional[datetime] = None,
+        max_age: Optional[timedelta] = None,
     ) -> str:
+        issued = issued_at if issued_at else today()
         session = self.decode_access(token)
-        renew_session = self.renew_access_session(session, issued_at)
+        renew_session = self.renew_access_session(session, issued, max_age)
         return self.encode_access(renew_session)

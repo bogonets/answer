@@ -40,13 +40,17 @@ import {encryptSha256} from '@/crypto/sha';
 
 const DEFAULT_TIMEOUT = 30 * 1000;
 const STATUS_CODE_ACCESS_TOKEN_ERROR = 461
+const STATUS_CODE_REFRESH_TOKEN_ERROR = 462
 const STATUS_CODE_UNINITIALIZED_SERVICE = 561
 
 const VALIDATE_STATUS = [
     200,
     STATUS_CODE_ACCESS_TOKEN_ERROR,
+    STATUS_CODE_REFRESH_TOKEN_ERROR,
     STATUS_CODE_UNINITIALIZED_SERVICE,
 ];
+
+const HEADER_KEY_AUTHORIZATION = 'Authorization';
 
 export class UninitializedServiceError extends Error {
     constructor() {
@@ -55,26 +59,20 @@ export class UninitializedServiceError extends Error {
 }
 
 export class TokenError extends Error {
-    constructor(token?: string) {
-        let message;
-        if (token) {
-            message = `Invalid token error: ${token}`;
-        } else {
-            message = 'Empty token error';
-        }
+    constructor(message?: string) {
         super(message);
     }
 }
 
 export class AccessTokenError extends TokenError {
-    constructor(token?: string) {
-        super(token);
+    constructor(message = 'Access Token Error') {
+        super(message);
     }
 }
 
 export class RefreshTokenError extends TokenError {
-    constructor(token?: string) {
-        super(token);
+    constructor(message = 'Refresh Token Error') {
+        super(message);
     }
 }
 
@@ -141,6 +139,20 @@ export default class ApiV2 {
         this.api.defaults.baseURL = originToBaseUrl(origin);
     }
 
+    clearDefaultSession() {
+        this.session = createEmptySigninA();
+    }
+
+    clearAccessToken() {
+        this.session.access = '';
+    }
+
+    clearDefaultBearerAuthorization() {
+        if (this.api.defaults.headers.hasOwnProperty(HEADER_KEY_AUTHORIZATION)) {
+            delete this.api.defaults.headers[HEADER_KEY_AUTHORIZATION];
+        }
+    }
+
     setDefaultSession(
         access: string,
         refresh: string,
@@ -154,7 +166,7 @@ export default class ApiV2 {
     }
 
     setDefaultBearerAuthorization(token: string) {
-        this.api.defaults.headers['Authorization'] = `Bearer ${token}`;
+        this.api.defaults.headers[HEADER_KEY_AUTHORIZATION] = `Bearer ${token}`;
     }
 
     private _commonErrorHandling<T>(res: AxiosResponse<T>) {
@@ -162,7 +174,16 @@ export default class ApiV2 {
             if (this.tokenErrorCallback) {
                 this.tokenErrorCallback();
             }
+            this.clearAccessToken();
+            this.clearDefaultBearerAuthorization();
             throw new AccessTokenError();
+        } else if (res.status === STATUS_CODE_REFRESH_TOKEN_ERROR) {
+            if (this.tokenErrorCallback) {
+                this.tokenErrorCallback();
+            }
+            this.clearDefaultSession();
+            this.clearDefaultBearerAuthorization();
+            throw new RefreshTokenError();
         } else if (res.status === STATUS_CODE_UNINITIALIZED_SERVICE) {
             if (this.uninitializedServiceCallback) {
                 this.uninitializedServiceCallback();
@@ -243,10 +264,10 @@ export default class ApiV2 {
                 const access = result.access;
                 const refresh = result.refresh;
                 if (!access) {
-                    throw new AccessTokenError(access);
+                    throw new AccessTokenError('Empty access token error');
                 }
                 if (!refresh) {
-                    throw new RefreshTokenError(refresh);
+                    throw new RefreshTokenError('Empty refresh token error');
                 }
                 if (updateDefaultAuth) {
                     const user = result.user || createEmptyUserA();

@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from typing import Any, Dict, Optional
+from recc.chrono.datetime import today
 from recc.variables.database import TABLE_GROUP, TABLE_PROJECT, TABLE_TASK
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
@@ -86,9 +87,9 @@ def get_update_task_query_by_uid(
     numa_memory_nodes: Optional[str] = None,
     base_image_name: Optional[str] = None,
     publish_ports: Optional[Dict[str, Any]] = None,
-    updated_at=datetime.now().astimezone(),
+    updated_at: Optional[datetime] = None,
 ) -> BuildResult:
-    assert updated_at is not None
+    updated = updated_at if updated_at else today()
     builder = UpdateBuilder(
         if_none_skip=True,
         slug=slug,
@@ -103,7 +104,7 @@ def get_update_task_query_by_uid(
         numa_memory_nodes=numa_memory_nodes,
         base_image_name=base_image_name,
         publish_ports=publish_ports,
-        updated_at=updated_at,
+        updated_at=updated,
     )
     builder.where().eq(uid=uid)
     return builder.build(TABLE_TASK)

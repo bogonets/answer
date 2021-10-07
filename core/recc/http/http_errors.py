@@ -39,6 +39,13 @@ class HTTPReccAccessTokenError(HTTPReccClientError):
         super().__init__(reason=reason)
 
 
+class HTTPReccRefreshTokenError(HTTPReccClientError):
+    status_code = client_status_code(2)
+
+    def __init__(self, reason="Refresh token error"):
+        super().__init__(reason=reason)
+
+
 ######################
 # SERVER ERROR (5xx) #
 ######################

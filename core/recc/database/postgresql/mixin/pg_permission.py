@@ -3,6 +3,7 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
+from recc.chrono.datetime import today
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.permission import Permission
 from recc.database.interfaces.db_permission import DbPermission
@@ -41,8 +42,9 @@ class PgPermission(DbPermission, PgBase):
         w_member=False,
         r_setting=False,
         w_setting=False,
-        created_at=datetime.now().astimezone(),
+        created_at: Optional[datetime] = None,
     ) -> int:
+        created = created_at if created_at else today()
         uid = await self.fetch_val(
             INSERT_PERMISSION,
             name,
@@ -61,7 +63,7 @@ class PgPermission(DbPermission, PgBase):
             w_member,
             r_setting,
             w_setting,
-            created_at,
+            created,
         )
         logger.info(f"insert_permission(name={name}) -> {uid}")
         return uid
@@ -86,8 +88,9 @@ class PgPermission(DbPermission, PgBase):
         w_member: Optional[bool] = None,
         r_setting: Optional[bool] = None,
         w_setting: Optional[bool] = None,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
+        updated = updated_at if updated_at else today()
         query, args = get_update_permission_query_by_uid(
             uid=uid,
             name=name,
@@ -106,7 +109,7 @@ class PgPermission(DbPermission, PgBase):
             w_member=w_member,
             r_setting=r_setting,
             w_setting=w_setting,
-            updated_at=updated_at,
+            updated_at=updated,
         )
         await self.execute(query, *args)
         params_msg = f"name={name}"

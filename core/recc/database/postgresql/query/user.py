@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from typing import Any, Optional
+from recc.chrono.datetime import today
 from recc.variables.database import (
     TABLE_USER,
     TABLE_GROUP_MEMBER,
@@ -85,9 +86,9 @@ def get_update_user_query_by_uid(
     phone2: Optional[str] = None,
     is_admin: Optional[bool] = None,
     extra: Optional[Any] = None,
-    updated_at=datetime.now().astimezone(),
+    updated_at: Optional[datetime] = None,
 ) -> BuildResult:
-    assert updated_at is not None
+    updated = updated_at if updated_at else today()
     builder = UpdateBuilder(
         if_none_skip=True,
         username=username,
@@ -97,7 +98,7 @@ def get_update_user_query_by_uid(
         phone2=phone2,
         is_admin=is_admin,
         extra=extra,
-        updated_at=updated_at,
+        updated_at=updated,
     )
     builder.where().eq(uid=uid)
     return builder.build(TABLE_USER)

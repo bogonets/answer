@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from typing import Optional
 from datetime import datetime
 from abc import ABCMeta, abstractmethod
 
@@ -10,7 +11,7 @@ class DbMisc(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    async def create_tables(self, created_at=datetime.now().astimezone()) -> None:
+    async def create_tables(self, created_at: Optional[datetime] = None) -> None:
         raise NotImplementedError
 
     @abstractmethod

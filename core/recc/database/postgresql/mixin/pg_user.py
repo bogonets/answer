@@ -3,6 +3,7 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
+from recc.chrono.datetime import today
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.user import User, PassInfo
 from recc.database.interfaces.db_user import DbUser
@@ -47,9 +48,10 @@ class PgUser(DbUser, PgBase):
         phone2: Optional[str] = None,
         is_admin=False,
         extra: Optional[Any] = None,
-        created_at=datetime.now().astimezone(),
+        created_at: Optional[datetime] = None,
     ) -> int:
         query = INSERT_USER
+        created = created_at if created_at else today()
         uit = await self.fetch_val(
             query,
             username,
@@ -61,7 +63,7 @@ class PgUser(DbUser, PgBase):
             self.signup_normalize_text(phone2),
             is_admin,
             extra,
-            created_at,
+            created,
         )
         params_msg = f"username={username}"
         if is_admin:
@@ -71,11 +73,14 @@ class PgUser(DbUser, PgBase):
 
     @overrides
     async def update_user_last_login_by_uid(
-        self, uid: int, last_login=datetime.now().astimezone()
+        self,
+        uid: int,
+        last_login: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_USER_LAST_LOGIN_BY_UID
-        await self.execute(query, uid, last_login)
-        params_msg = f"uid={uid},last_login={last_login}"
+        login = last_login if last_login else today()
+        await self.execute(query, uid, login)
+        params_msg = f"uid={uid},last_login={login}"
         logger.info(f"update_user_last_login_by_uid({params_msg}) ok.")
 
     @overrides
@@ -84,19 +89,24 @@ class PgUser(DbUser, PgBase):
         uid: int,
         password: str,
         salt: str,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_USER_PASSWORD_AND_SALT_BY_UID
-        await self.execute(query, uid, password, salt, updated_at)
+        updated = updated_at if updated_at else today()
+        await self.execute(query, uid, password, salt, updated)
         params_msg = f"uid={uid}"
         logger.info(f"update_user_password_and_salt_by_uid({params_msg}) ok.")
 
     @overrides
     async def update_user_extra_by_uid(
-        self, uid: int, extra: Any, updated_at=datetime.now().astimezone()
+        self,
+        uid: int,
+        extra: Any,
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_USER_EXTRA_BY_UID
-        await self.execute(query, uid, extra, updated_at)
+        updated = updated_at if updated_at else today()
+        await self.execute(query, uid, extra, updated)
         params_msg = f"uid={uid}"
         logger.info(f"update_user_extra_by_uid({params_msg}) ok.")
 
@@ -111,8 +121,9 @@ class PgUser(DbUser, PgBase):
         phone2: Optional[str] = None,
         is_admin: Optional[bool] = None,
         extra: Optional[Any] = None,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
+        updated = updated_at if updated_at else today()
         query, args = get_update_user_query_by_uid(
             uid=uid,
             username=username,
@@ -122,7 +133,7 @@ class PgUser(DbUser, PgBase):
             phone2=phone2,
             is_admin=is_admin,
             extra=extra,
-            updated_at=updated_at,
+            updated_at=updated,
         )
         await self.execute(query, *args)
         params_msg = f"uid={uid}"

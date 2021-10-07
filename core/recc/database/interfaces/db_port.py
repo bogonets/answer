@@ -20,19 +20,25 @@ class DbPort(metaclass=ABCMeta):
         task_uid: Optional[int] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
-        created_at=datetime.now().astimezone(),
+        created_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
     async def update_port_description_by_number(
-        self, number: int, description: str, updated_at=datetime.now().astimezone()
+        self,
+        number: int,
+        description: str,
+        updated_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
     async def update_port_extra_by_number(
-        self, number: int, extra: Any, updated_at=datetime.now().astimezone()
+        self,
+        number: int,
+        extra: Any,
+        updated_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 
@@ -45,7 +51,7 @@ class DbPort(metaclass=ABCMeta):
         task_uid: Optional[int] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 

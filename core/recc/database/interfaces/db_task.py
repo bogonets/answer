@@ -27,13 +27,16 @@ class DbTask(metaclass=ABCMeta):
         numa_memory_nodes: Optional[str] = None,
         base_image_name: Optional[str] = None,
         publish_ports: Optional[Dict[str, Any]] = None,
-        created_at=datetime.now().astimezone(),
+        created_at: Optional[datetime] = None,
     ) -> int:
         raise NotImplementedError
 
     @abstractmethod
     async def update_task_description_by_uid(
-        self, uid: int, description: str, updated_at=datetime.now().astimezone()
+        self,
+        uid: int,
+        description: str,
+        updated_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 
@@ -43,13 +46,16 @@ class DbTask(metaclass=ABCMeta):
         project_uid: int,
         slug: str,
         description: str,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
     async def update_task_extra_by_uid(
-        self, uid: int, extra: Any, updated_at=datetime.now().astimezone()
+        self,
+        uid: int,
+        extra: Any,
+        updated_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 
@@ -59,7 +65,7 @@ class DbTask(metaclass=ABCMeta):
         project_uid: int,
         slug: str,
         extra: Any,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 
@@ -70,7 +76,7 @@ class DbTask(metaclass=ABCMeta):
         auth_algorithm: str,
         private_key: str,
         public_key: str,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 
@@ -82,7 +88,7 @@ class DbTask(metaclass=ABCMeta):
         auth_algorithm: str,
         private_key: str,
         public_key: str,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 
@@ -102,7 +108,7 @@ class DbTask(metaclass=ABCMeta):
         numa_memory_nodes: Optional[str] = None,
         base_image_name: Optional[str] = None,
         publish_ports: Optional[Dict[str, Any]] = None,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 

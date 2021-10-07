@@ -3,7 +3,6 @@
 from typing import List, Any, get_origin
 from inspect import signature, isclass, iscoroutinefunction
 from functools import wraps
-from datetime import datetime
 from http import HTTPStatus
 
 from aiohttp.hdrs import AUTHORIZATION
@@ -15,6 +14,7 @@ from aiohttp.web_exceptions import (
     HTTPUnauthorized,
 )
 from recc.core.context import Context
+from recc.chrono.datetime import today
 from recc.session.session import Session
 from recc.log.logging import recc_http_logger as logger
 from recc.serialization.serialize import serialize_default
@@ -235,7 +235,7 @@ async def parameter_matcher_main(
     obj: Any,
     request: Request,
 ) -> Response:
-    now = datetime.now().astimezone()
+    now = today()
 
     # Forwarded
     # X-Forwarded-For
@@ -269,7 +269,7 @@ async def parameter_matcher_main(
 
     status = result.status
     reason = result.reason
-    duration = (datetime.now().astimezone() - now).total_seconds()
+    duration = (today() - now).total_seconds()
     response_info = f"{status} {reason} ({duration:.3f}s)"
     logger.info(f"{request_info} -> {response_info}")
 

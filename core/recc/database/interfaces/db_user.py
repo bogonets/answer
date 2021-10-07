@@ -23,13 +23,15 @@ class DbUser(metaclass=ABCMeta):
         phone2: Optional[str] = None,
         is_admin=False,
         extra: Optional[Any] = None,
-        created_at=datetime.now().astimezone(),
+        created_at: Optional[datetime] = None,
     ) -> int:
         raise NotImplementedError
 
     @abstractmethod
     async def update_user_last_login_by_uid(
-        self, uid: int, last_login=datetime.now().astimezone()
+        self,
+        uid: int,
+        last_login: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 
@@ -39,13 +41,16 @@ class DbUser(metaclass=ABCMeta):
         uid: int,
         password: str,
         salt: str,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
     async def update_user_extra_by_uid(
-        self, uid: int, extra: Any, updated_at=datetime.now().astimezone()
+        self,
+        uid: int,
+        extra: Any,
+        updated_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 
@@ -60,7 +65,7 @@ class DbUser(metaclass=ABCMeta):
         phone2: Optional[str] = None,
         is_admin: Optional[bool] = None,
         extra: Optional[Any] = None,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
 

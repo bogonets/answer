@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from typing import List
+from typing import Optional, List
 from datetime import datetime
 from overrides import overrides
 from asyncpg.exceptions import UniqueViolationError
+from recc.chrono.datetime import today
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.info import Info
 from recc.database.interfaces.db_info import DbInfo
@@ -25,11 +26,12 @@ class PgInfo(DbInfo, PgBase):
         self,
         key: str,
         value: str,
-        created_at=datetime.now().astimezone(),
+        created_at: Optional[datetime] = None,
     ) -> None:
         query = INSERT_INFO
+        created = created_at if created_at else today()
         try:
-            await self.execute(query, key, value, created_at)
+            await self.execute(query, key, value, created)
         except UniqueViolationError:
             raise KeyError(f"The `{key}` key already exists")
         params_msg = f"key={key},value={value}"
@@ -37,19 +39,27 @@ class PgInfo(DbInfo, PgBase):
 
     @overrides
     async def update_info_value_by_key(
-        self, key: str, value: str, updated_at=datetime.now().astimezone()
+        self,
+        key: str,
+        value: str,
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_INFO_VALUE_BY_KEY
-        await self.execute(query, key, value, updated_at)
+        updated = updated_at if updated_at else today()
+        await self.execute(query, key, value, updated)
         params_msg = f"key={key},value={value}"
         logger.info(f"update_info_value_by_key({params_msg}) ok.")
 
     @overrides
     async def upsert_info(
-        self, key: str, value: str, created_or_updated_at=datetime.now().astimezone()
+        self,
+        key: str,
+        value: str,
+        created_or_updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPSERT_INFO
-        await self.execute(query, key, value, created_or_updated_at)
+        time = created_or_updated_at if created_or_updated_at else today()
+        await self.execute(query, key, value, time)
         params_msg = f"key={key},value={value}"
         logger.info(f"upsert_info({params_msg}) ok.")
 

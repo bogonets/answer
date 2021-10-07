@@ -3,6 +3,7 @@
 from datetime import datetime
 from typing import Any, Optional, List
 from re import sub as re_sub
+from recc.chrono.datetime import today
 from recc.variables.database import (
     TABLE_USER,
     TABLE_PROJECT,
@@ -225,9 +226,9 @@ def get_update_permission_query_by_uid(
     w_member: Optional[bool] = None,
     r_setting: Optional[bool] = None,
     w_setting: Optional[bool] = None,
-    updated_at=datetime.now().astimezone(),
+    updated_at: Optional[datetime] = None,
 ) -> BuildResult:
-    assert updated_at is not None
+    updated = updated_at if updated_at else today()
     builder = UpdateBuilder(
         if_none_skip=True,
         name=name,
@@ -246,7 +247,7 @@ def get_update_permission_query_by_uid(
         w_member=w_member,
         r_setting=r_setting,
         w_setting=w_setting,
-        updated_at=updated_at,
+        updated_at=updated,
     )
     builder.where().eq(uid=uid)
     return builder.build(TABLE_PERMISSION)

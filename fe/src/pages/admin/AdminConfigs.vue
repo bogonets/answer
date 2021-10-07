@@ -33,7 +33,7 @@ ko:
     account: "계정"
     session: "세션"
     http: "HTTP"
-    task: "테스크"
+    task: "태스크"
     logging: "로그"
   titles:
     public_signup: "공개 가입 활성화"
@@ -44,7 +44,7 @@ ko:
     user: "사용자"
     group: "그룹"
     log_level: "로그 레벨"
-    verbose: "상세한 (Verbose) 정도"
+    verbose: "상세함 (Verbose) 정도"
   subtitles:
     public_signup: >
       활성화하면 이 사이트를 방문하는 모든 사용자가 계정을 만들 수 있습니다.

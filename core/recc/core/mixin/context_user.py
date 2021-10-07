@@ -2,6 +2,9 @@
 
 from os import urandom
 from typing import Optional, List, Tuple, Any
+from datetime import timedelta
+from recc.chrono.duration import duration_to_timedelta
+from recc.chrono.datetime import today
 from recc.crypto.password import encrypt_password
 from recc.session.session import Session
 from recc.database.struct.user import PassInfo, User
@@ -34,6 +37,14 @@ def salting_password(hashed_password: str) -> PassInfo:
 
 
 class ContextUser(ContextBase):
+    @property
+    def access_max_age(self) -> timedelta:
+        return duration_to_timedelta(self.config.access_token_duration)
+
+    @property
+    def refresh_max_age(self) -> timedelta:
+        return duration_to_timedelta(self.config.refresh_token_duration)
+
     async def get_admin_count(self) -> int:
         return await self.database.select_admin_count()
 
@@ -109,7 +120,12 @@ class ContextUser(ContextBase):
     async def signin(self, username: str) -> Tuple[str, str]:
         user_uid = await self.get_user_uid(username)
         await self.database.update_user_last_login_by_uid(user_uid)
-        return self.session_factory.create_tokens(username)
+        return self.session_factory.create_tokens(
+            username,
+            issued_at=today(),
+            access_max_age=self.access_max_age,
+            refresh_max_age=self.refresh_max_age,
+        )
 
     async def change_password(self, username: str, hashed_password: str) -> None:
         user_uid = await self.get_user_uid(username)
@@ -152,7 +168,9 @@ class ContextUser(ContextBase):
         await self.database.update_user_extra_by_uid(user_uid, extra)
 
     async def renew_access_token(self, token: str) -> str:
-        return self.session_factory.renew_access_token(token)
+        return self.session_factory.renew_access_token(
+            token, max_age=self.access_max_age
+        )
 
     async def get_access_session(self, token: str) -> Session:
         return self.session_factory.decode_access(token)

@@ -8,6 +8,12 @@ from recc.packet.preference import PreferenceA
 
 
 @dataclass
+class UserExtraA:
+    dark: Optional[bool] = None
+    lang: Optional[str] = None
+
+
+@dataclass
 class UserA:
     username: str
     nickname: Optional[str] = None

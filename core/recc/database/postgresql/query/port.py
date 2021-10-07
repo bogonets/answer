@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from typing import Any, Optional
+from recc.chrono.datetime import today
 from recc.variables.database import TABLE_PORT
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
@@ -47,9 +48,9 @@ def get_update_port_query_by_number(
     task_uid: Optional[int] = None,
     description: Optional[str] = None,
     extra: Optional[Any] = None,
-    updated_at=datetime.now().astimezone(),
+    updated_at: Optional[datetime] = None,
 ) -> BuildResult:
-    assert updated_at is not None
+    updated = updated_at if updated_at else today()
     builder = UpdateBuilder(
         if_none_skip=True,
         group_uid=group_uid,
@@ -57,7 +58,7 @@ def get_update_port_query_by_number(
         task_uid=task_uid,
         description=description,
         extra=extra,
-        updated_at=updated_at,
+        updated_at=updated,
     )
     builder.where().eq(number=number)
     return builder.build(TABLE_PORT)

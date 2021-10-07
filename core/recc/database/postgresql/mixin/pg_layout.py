@@ -3,6 +3,7 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
+from recc.chrono.datetime import today
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.layout import Layout
 from recc.database.interfaces.db_layout import DbLayout
@@ -29,11 +30,12 @@ class PgLayout(DbLayout, PgBase):
         name: str,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
-        created_at=datetime.now().astimezone(),
+        created_at: Optional[datetime] = None,
     ) -> int:
         query = INSERT_LAYOUT
+        created = created_at if created_at else today()
         uid = await self.fetch_val(
-            query, project_uid, name, description, extra, created_at
+            query, project_uid, name, description, extra, created
         )
         params_msg = f"project_uid={project_uid},name={name}"
         logger.info(f"insert_layout({params_msg}) -> {uid}")
@@ -41,10 +43,14 @@ class PgLayout(DbLayout, PgBase):
 
     @overrides
     async def update_layout_description_by_uid(
-        self, uid: int, description: str, updated_at=datetime.now().astimezone()
+        self,
+        uid: int,
+        description: str,
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_LAYOUT_DESCRIPTION_BY_UID
-        await self.execute(query, uid, description, updated_at)
+        updated = updated_at if updated_at else today()
+        await self.execute(query, uid, description, updated)
         logger.info(f"update_layout_description_by_uid(uid={uid}) ok.")
 
     @overrides
@@ -53,19 +59,24 @@ class PgLayout(DbLayout, PgBase):
         project_uid: int,
         name: str,
         description: str,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_LAYOUT_DESCRIPTION_BY_PROJECT_UID_AND_NAME
-        await self.execute(query, project_uid, name, description, updated_at)
+        updated = updated_at if updated_at else today()
+        await self.execute(query, project_uid, name, description, updated)
         params_msg = f"project_uid={project_uid},name={name}"
         logger.info(f"update_layout_description_by_name({params_msg}) ok.")
 
     @overrides
     async def update_layout_extra_by_uid(
-        self, uid: int, extra: Any, updated_at=datetime.now().astimezone()
+        self,
+        uid: int,
+        extra: Any,
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_LAYOUT_EXTRA_BY_UID
-        await self.execute(query, uid, extra, updated_at)
+        updated = updated_at if updated_at else today()
+        await self.execute(query, uid, extra, updated)
         logger.info(f"update_layout_extra_by_uid(uid={uid}) ok.")
 
     @overrides
@@ -74,10 +85,11 @@ class PgLayout(DbLayout, PgBase):
         project_uid: int,
         name: str,
         extra: Any,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_LAYOUT_EXTRA_BY_PROJECT_UID_AND_NAME
-        await self.execute(query, project_uid, name, extra, updated_at)
+        updated = updated_at if updated_at else today()
+        await self.execute(query, project_uid, name, extra, updated)
         params_msg = f"project_uid={project_uid},name={name}"
         logger.info(f"update_layout_extra_by_name({params_msg}) ok.")
 

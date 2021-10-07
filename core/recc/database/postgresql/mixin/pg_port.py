@@ -3,6 +3,7 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
+from recc.chrono.datetime import today
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.port import Port
 from recc.database.interfaces.db_port import DbPort
@@ -31,9 +32,10 @@ class PgPort(DbPort, PgBase):
         task_uid: Optional[int] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
-        created_at=datetime.now().astimezone(),
+        created_at: Optional[datetime] = None,
     ) -> None:
         query = INSERT_PORT
+        created = created_at if created_at else today()
         await self.execute(
             query,
             number,
@@ -42,26 +44,34 @@ class PgPort(DbPort, PgBase):
             task_uid,
             description,
             extra,
-            created_at,
+            created,
         )
         params_msg = f"number={number}"
         logger.info(f"insert_port({params_msg}) ok.")
 
     @overrides
     async def update_port_description_by_number(
-        self, number: int, description: str, updated_at=datetime.now().astimezone()
+        self,
+        number: int,
+        description: str,
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_PORT_DESCRIPTION_BY_NUMBER
-        await self.execute(query, number, description, updated_at)
+        updated = updated_at if updated_at else today()
+        await self.execute(query, number, description, updated)
         params_msg = f"number={number}"
         logger.info(f"update_port_description_by_number({params_msg}) ok.")
 
     @overrides
     async def update_port_extra_by_number(
-        self, number: int, extra: Any, updated_at=datetime.now().astimezone()
+        self,
+        number: int,
+        extra: Any,
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_PORT_EXTRA_BY_NUMBER
-        await self.execute(query, number, extra, updated_at)
+        updated = updated_at if updated_at else today()
+        await self.execute(query, number, extra, updated)
         params_msg = f"number={number}"
         logger.info(f"update_port_extra_by_number({params_msg}) ok.")
 
@@ -74,8 +84,9 @@ class PgPort(DbPort, PgBase):
         task_uid: Optional[int] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
+        updated = updated_at if updated_at else today()
         query, args = get_update_port_query_by_number(
             number=number,
             group_uid=group_uid,
@@ -83,7 +94,7 @@ class PgPort(DbPort, PgBase):
             task_uid=task_uid,
             description=description,
             extra=extra,
-            updated_at=updated_at,
+            updated_at=updated,
         )
         await self.execute(query, *args)
         params_msg = f"number={number}"

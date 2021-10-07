@@ -3,6 +3,7 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
+from recc.chrono.datetime import today
 from recc.log.logging import recc_database_logger as logger
 from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 from recc.database.struct.project import Project
@@ -33,9 +34,10 @@ class PgProject(DbProject, PgBase):
         features: Optional[List[str]] = None,
         visibility=VISIBILITY_LEVEL_PRIVATE,
         extra: Optional[Any] = None,
-        created_at=datetime.now().astimezone(),
+        created_at: Optional[datetime] = None,
     ) -> int:
         query = INSERT_PROJECT
+        created = created_at if created_at else today()
         uid = await self.fetch_val(
             query,
             group_uid,
@@ -45,7 +47,7 @@ class PgProject(DbProject, PgBase):
             features,
             visibility,
             extra,
-            created_at,
+            created,
         )
         params_msg = f"group_uid={group_uid},slug={slug}"
         logger.info(f"insert_project({params_msg}) -> {uid}")
@@ -61,8 +63,9 @@ class PgProject(DbProject, PgBase):
         features: Optional[List[str]] = None,
         visibility: Optional[int] = None,
         extra: Optional[Any] = None,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
+        updated = updated_at if updated_at else today()
         query, args = get_update_project_query_by_uid(
             uid=uid,
             slug=slug,
@@ -71,7 +74,7 @@ class PgProject(DbProject, PgBase):
             features=features,
             visibility=visibility,
             extra=extra,
-            updated_at=updated_at,
+            updated_at=updated,
         )
         await self.execute(query, *args)
         params_msg = f"uid={uid}"

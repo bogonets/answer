@@ -3,6 +3,7 @@
 from typing import Optional, Any, List, Dict
 from datetime import datetime
 from overrides import overrides
+from recc.chrono.datetime import today
 from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.task import Task
 from recc.database.interfaces.db_task import DbTask
@@ -44,9 +45,10 @@ class PgTask(DbTask, PgBase):
         numa_memory_nodes: Optional[str] = None,
         base_image_name: Optional[str] = None,
         publish_ports: Optional[Dict[str, Any]] = None,
-        created_at=datetime.now().astimezone(),
+        created_at: Optional[datetime] = None,
     ) -> int:
         query = INSERT_TASK
+        created = created_at if created_at else today()
         uid = await self.fetch_val(
             query,
             project_uid,
@@ -62,7 +64,7 @@ class PgTask(DbTask, PgBase):
             numa_memory_nodes,
             base_image_name,
             publish_ports,
-            created_at,
+            created,
         )
         params_msg = f"project_uid={project_uid},name={name}"
         logger.info(f"insert_task({params_msg}) -> {uid}")
@@ -70,10 +72,14 @@ class PgTask(DbTask, PgBase):
 
     @overrides
     async def update_task_description_by_uid(
-        self, uid: int, description: str, updated_at=datetime.now().astimezone()
+        self,
+        uid: int,
+        description: str,
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_TASK_DESCRIPTION_BY_UID
-        await self.execute(query, uid, description, updated_at)
+        updated = updated_at if updated_at else today()
+        await self.execute(query, uid, description, updated)
         params_msg = f"uid={uid}"
         logger.info(f"update_task_description_by_uid({params_msg}) ok.")
 
@@ -83,19 +89,24 @@ class PgTask(DbTask, PgBase):
         project_uid: int,
         slug: str,
         description: str,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_TASK_DESCRIPTION_BY_PROJECT_UID_AND_SLUG
-        await self.execute(query, project_uid, slug, description, updated_at)
+        updated = updated_at if updated_at else today()
+        await self.execute(query, project_uid, slug, description, updated)
         params_msg = f"project_uid={project_uid},slug={slug}"
         logger.info(f"update_task_description_by_slug({params_msg}) ok.")
 
     @overrides
     async def update_task_extra_by_uid(
-        self, uid: int, extra: Any, updated_at=datetime.now().astimezone()
+        self,
+        uid: int,
+        extra: Any,
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_TASK_EXTRA_BY_UID
-        await self.execute(query, uid, extra, updated_at)
+        updated = updated_at if updated_at else today()
+        await self.execute(query, uid, extra, updated)
         params_msg = f"uid={uid}"
         logger.info(f"update_task_extra_by_uid({params_msg}) ok.")
 
@@ -105,10 +116,11 @@ class PgTask(DbTask, PgBase):
         project_uid: int,
         slug: str,
         extra: Any,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_TASK_EXTRA_BY_PROJECT_UID_AND_SLUG
-        await self.execute(query, project_uid, slug, extra, updated_at)
+        updated = updated_at if updated_at else today()
+        await self.execute(query, project_uid, slug, extra, updated)
         params_msg = f"project_uid={project_uid},slug={slug}"
         logger.info(f"update_task_extra_by_slug({params_msg}) ok.")
 
@@ -119,12 +131,11 @@ class PgTask(DbTask, PgBase):
         auth_algorithm: str,
         private_key: str,
         public_key: str,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_TASK_KEYS_BY_UID
-        await self.execute(
-            query, uid, auth_algorithm, private_key, public_key, updated_at
-        )
+        updated = updated_at if updated_at else today()
+        await self.execute(query, uid, auth_algorithm, private_key, public_key, updated)
         params_msg = f"uid={uid}"
         logger.info(f"update_task_keys_by_uid({params_msg}) ok.")
 
@@ -136,9 +147,10 @@ class PgTask(DbTask, PgBase):
         auth_algorithm: str,
         private_key: str,
         public_key: str,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
         query = UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_SLUG
+        updated = updated_at if updated_at else today()
         await self.execute(
             query,
             project_uid,
@@ -146,7 +158,7 @@ class PgTask(DbTask, PgBase):
             auth_algorithm,
             private_key,
             public_key,
-            updated_at,
+            updated,
         )
         params_msg = f"project_uid={project_uid},slug={slug}"
         logger.info(f"update_task_keys_by_slug({params_msg}) ok.")
@@ -167,8 +179,9 @@ class PgTask(DbTask, PgBase):
         numa_memory_nodes: Optional[str] = None,
         base_image_name: Optional[str] = None,
         publish_ports: Optional[Dict[str, Any]] = None,
-        updated_at=datetime.now().astimezone(),
+        updated_at: Optional[datetime] = None,
     ) -> None:
+        updated = updated_at if updated_at else today()
         query, args = get_update_task_query_by_uid(
             uid=uid,
             slug=slug,
@@ -183,7 +196,7 @@ class PgTask(DbTask, PgBase):
             numa_memory_nodes=numa_memory_nodes,
             base_image_name=base_image_name,
             publish_ports=publish_ports,
-            updated_at=updated_at,
+            updated_at=updated,
         )
         await self.execute(query, *args)
         params_msg = f"uid={uid}"

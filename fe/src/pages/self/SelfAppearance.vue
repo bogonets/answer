@@ -37,7 +37,7 @@ ko:
 
     <v-subheader>{{ $t('theme.header') }}</v-subheader>
     <left-title
-        small
+        x-small
         no-gutter
         no-wrap-xs
         :left-ratio="8"
@@ -58,7 +58,7 @@ ko:
     <v-subheader>{{ $t('i18n.header') }}</v-subheader>
 
     <left-title
-        small
+        x-small
         no-gutter
         no-wrap-xs
         :left-ratio="8"
