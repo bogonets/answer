@@ -2,16 +2,16 @@
 en:
   title: "Overview"
   subtitle: "Prints a summary of the system status."
-  users: "Users"
-  groups: "Groups"
-  projects: "Projects"
+  users: "Users: {0}"
+  groups: "Groups: {0}"
+  projects: "Projects: {0}"
 
 ko:
   title: "개요"
   subtitle: "시스템의 상태를 요약하여 출력합니다."
-  users: "사용자"
-  groups: "그룹"
-  projects: "프로젝트"
+  users: "사용자: {0}"
+  groups: "그룹: {0}"
+  projects: "프로젝트: {0}"
 </i18n>
 
 <template>
@@ -19,35 +19,45 @@ ko:
     <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
-    <v-list flat>
-      <v-list-item>
-        <v-row>
-          <v-col cols="4">
-            <v-card flat outlined>
-              <v-card-text class="text-h6 text-center">
-                <a @click="onClickUsers">{{ $t('users') + `: ${users}` }}</a>
-              </v-card-text>
-            </v-card>
-          </v-col>
+    <v-row class="mt-2">
+      <v-col cols="12">
+        <card-button height="60px" @click="onClickClock">
+          <div>
+            <v-icon left>mdi-clock</v-icon>
+            <span class="text--secondary text-subtitle-2 text-no-wrap">
+              {{ item.time }}
+            </span>
+          </div>
+        </card-button>
+      </v-col>
 
-          <v-col cols="4">
-            <v-card flat outlined>
-              <v-card-text class="text-h6 text-center">
-                <a @click="onClickGroups">{{ $t('groups') + `: ${groups}` }}</a>
-              </v-card-text>
-            </v-card>
-          </v-col>
+      <v-col cols="4">
+        <card-button @click="onClickUsers">
+          <v-icon large>mdi-table-multiple</v-icon>
+          <span class="text--secondary text-subtitle-2 text-no-wrap">
+            {{ $t('users', [item.users || 0]) }}
+          </span>
+        </card-button>
+      </v-col>
 
-          <v-col cols="4">
-            <v-card flat outlined>
-              <v-card-text class="text-h6 text-center">
-                <a @click="onClickProjects">{{ $t('projects') + `: ${projects}` }}</a>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-list-item>
-    </v-list>
+      <v-col cols="4">
+        <card-button @click="onClickGroups">
+          <v-icon large>mdi-format-list-checks</v-icon>
+          <span class="text--secondary text-subtitle-2 text-no-wrap">
+            {{ $t('groups', [item.groups || 0]) }}
+          </span>
+        </card-button>
+      </v-col>
+
+      <v-col cols="4">
+        <card-button @click="onClickProjects">
+          <v-icon large>mdi-account-group</v-icon>
+          <span class="text--secondary text-subtitle-2 text-no-wrap">
+            {{ $t('projects', [item.projects || 0]) }}
+          </span>
+        </card-button>
+      </v-col>
+    </v-row>
 
   </v-container>
 </template>
@@ -56,10 +66,13 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
+import CardButton from '@/components/CardButton.vue';
+import type {SystemOverviewA} from "@/packet/system";
 
 @Component({
   components: {
-    ToolbarBreadcrumbs
+    ToolbarBreadcrumbs,
+    CardButton,
   }
 })
 export default class AdminOverview extends VueBase {
@@ -75,20 +88,28 @@ export default class AdminOverview extends VueBase {
     },
   ];
 
-  users = 0;
-  groups = 0;
-  projects = 0;
+  loading = false;
+  item = {} as SystemOverviewA;
 
   created() {
+    this.updateOverview();
+  }
+
+  updateOverview() {
+    this.loading = true;
     this.$api2.getAdminSystemOverview()
-        .then(response => {
-          this.users = response.users || 0;
-          this.groups = response.groups || 0;
-          this.projects = response.projects || 0;
+        .then(item => {
+          this.loading = false;
+          this.item = item;
         })
         .catch(error => {
+          this.loading = false;
           this.toastRequestFailure(error);
         });
+  }
+
+  onClickClock() {
+    this.updateOverview();
   }
 
   onClickUsers() {

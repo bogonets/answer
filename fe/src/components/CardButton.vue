@@ -1,14 +1,21 @@
 <template>
-  <div v-ripple class="card" @click="click">
+  <div v-ripple class="card" @click="click" :style="styleText">
     <slot></slot>
   </div>
 </template>
 
 <script lang="ts">
-import {Vue, Component, Emit} from 'vue-property-decorator';
+import {Vue, Component, Prop, Emit} from 'vue-property-decorator';
 
 @Component
 export default class CardButton extends Vue {
+  @Prop({type: String, default: '120px'})
+  readonly height!: string;
+
+  get styleText() {
+    return `height: ${this.height};`;
+  }
+
   @Emit()
   click() {
   }
@@ -26,9 +33,6 @@ export default class CardButton extends Vue {
   align-content: center;
   align-items: center;
 
-  height: 120px;
-
-  padding: 24px;
   border-radius: 12px;
   border-style: solid;
   border-width: 1px;
