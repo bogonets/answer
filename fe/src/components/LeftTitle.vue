@@ -52,6 +52,9 @@ export default class LeftTitle extends Vue {
   readonly noWrapXs!: boolean;
 
   @Prop({type: Boolean, default: false})
+  readonly xSmall!: boolean;
+
+  @Prop({type: Boolean, default: false})
   readonly small!: boolean;
 
   @Prop({type: Boolean, default: false})
@@ -66,11 +69,23 @@ export default class LeftTitle extends Vue {
   }
 
   get headerClass() {
-    return this.small ? 'text-subtitle-1' : 'text-h6';
+    if (this.xSmall) {
+      return 'text-subtitle-2';
+    } else if (this.small) {
+      return 'text-subtitle-1';
+    } else {
+      return 'text-h6';
+    }
   }
 
   get subheaderClass() {
-    return this.small ? 'text-body-2' : 'text-subtitle-2';
+    if (this.xSmall) {
+      return 'text-caption';
+    } else if (this.small) {
+      return 'text-body-2';
+    } else {
+      return 'text-subtitle-2';
+    }
   }
 
   get leftClass() {

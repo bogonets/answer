@@ -65,7 +65,7 @@ ko:
 
     <v-subheader>{{ $t('headers.account') }}</v-subheader>
     <left-title
-        small
+        x-small
         no-gutter
         no-wrap-xs
         :left-ratio="8"
@@ -76,6 +76,7 @@ ko:
       <div class="d-flex flex-row justify-end">
         <v-switch
             inset
+            hide-details
             v-model="public_signup"
             @change="onChangePublicSignup"
         ></v-switch>
@@ -86,7 +87,7 @@ ko:
     <v-subheader>{{ $t('headers.session') }}</v-subheader>
 
     <left-title
-        small
+        x-small
         no-gutter
         :left-ratio="8"
         :right-ratio="4"
@@ -106,7 +107,7 @@ ko:
     </left-title>
 
     <left-title
-        small
+        x-small
         no-gutter
         :left-ratio="8"
         :right-ratio="4"
@@ -129,7 +130,7 @@ ko:
     <v-subheader>{{ $t('headers.http') }}</v-subheader>
 
     <left-title
-        small
+        x-small
         no-gutter
         :left-ratio="8"
         :right-ratio="4"
@@ -150,7 +151,7 @@ ko:
     </left-title>
 
     <left-title
-        small
+        x-small
         no-gutter
         :left-ratio="8"
         :right-ratio="4"
@@ -174,7 +175,7 @@ ko:
     <v-subheader>{{ $t('headers.task') }}</v-subheader>
 
     <left-title
-        small
+        x-small
         no-gutter
         :left-ratio="8"
         :right-ratio="4"
@@ -195,7 +196,7 @@ ko:
     </left-title>
 
     <left-title
-        small
+        x-small
         no-gutter
         :left-ratio="8"
         :right-ratio="4"
@@ -219,7 +220,7 @@ ko:
     <v-subheader>{{ $t('headers.logging') }}</v-subheader>
 
     <left-title
-        small
+        x-small
         no-gutter
         :left-ratio="8"
         :right-ratio="4"
@@ -239,7 +240,7 @@ ko:
     </left-title>
 
     <left-title
-        small
+        x-small
         no-gutter
         :left-ratio="8"
         :right-ratio="4"

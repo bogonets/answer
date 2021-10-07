@@ -124,7 +124,8 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormUser, {UserItem} from '@/components/FormUser.vue';
-import {UpdateUserQ, UserA} from '@/packet/user';
+import type {UpdateUserQ, UserA} from '@/packet/user';
+import {iso8601ToLocal} from '@/chrono/iso8601';
 
 @Component({
   components: {
@@ -208,15 +209,15 @@ export default class SelfProfile extends VueBase {
     this.detailItems = [
       {
         name: this.$t('label.created_at'),
-        value: createdAt,
+        value: iso8601ToLocal(createdAt),
       },
       {
         name: this.$t('label.updated_at'),
-        value: updatedAt,
+        value: iso8601ToLocal(updatedAt),
       },
       {
         name: this.$t('label.last_login'),
-        value: lastLogin,
+        value: iso8601ToLocal(lastLogin),
       },
     ];
   }
