@@ -187,7 +187,7 @@ export default class TableProjects extends VueBase {
     return headers;
   }
 
-  get dataTableClass(): string {
+  get dataTableClass() {
     if (this.items.length >= 1 && this.clickableRow) {
       return 'row-pointer';
     } else {
@@ -195,7 +195,7 @@ export default class TableProjects extends VueBase {
     }
   }
 
-  datetimeToDate(text: undefined | string): string {
+  datetimeToDate(text) {
     return iso8601ToLocalDate(text);
   }
 

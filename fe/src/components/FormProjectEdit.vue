@@ -125,8 +125,7 @@ import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import LeftTitle from '@/components/LeftTitle.vue';
 import type {ProjectA, UpdateProjectQ} from '@/packet/project';
-import type {ProjectItem} from '@/components/FormProject.vue';
-import FormProject from '@/components/FormProject.vue';
+import FormProject, {ProjectItem} from '@/components/FormProject.vue';
 import {iso8601ToLocal} from '@/chrono/iso8601';
 import * as _ from 'lodash';
 

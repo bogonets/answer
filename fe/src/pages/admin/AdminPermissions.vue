@@ -158,7 +158,7 @@ export default class AdminPermissions extends VueBase {
         });
   }
 
-  datetimeToDate(text: undefined | string): string {
+  datetimeToDate(text) {
     return iso8601ToLocalDate(text);
   }
 

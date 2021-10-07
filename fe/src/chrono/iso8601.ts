@@ -12,7 +12,7 @@ export function iso8601ToLocal(text: string) {
     }
 }
 
-export function iso8601ToLocalDate(text: string) {
+export function iso8601ToLocalDate(text?: string) {
     if (text) {
         return moment(text).format('YYYY-MM-DD');
     } else {

@@ -178,7 +178,7 @@ export default class TableGroups extends VueBase {
     return headers;
   }
 
-  get dataTableClass(): string {
+  get dataTableClass() {
     if (this.items.length >= 1 && this.clickableRow) {
       return 'row-pointer';
     } else {
@@ -186,7 +186,7 @@ export default class TableGroups extends VueBase {
     }
   }
 
-  datetimeToDate(text: undefined | string): string {
+  datetimeToDate(text) {
     return iso8601ToLocalDate(text);
   }
 

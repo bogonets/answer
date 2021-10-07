@@ -336,15 +336,15 @@ export default class MainAirjoyService extends VueBase {
         });
   }
 
-  get showAdd(): boolean {
+  get showAdd() {
     return this.isManagerWrite;
   }
 
-  get showDelete(): boolean {
+  get showDelete() {
     return this.isManagerWrite;
   }
 
-  datetimeToDate(text: undefined | string): string {
+  datetimeToDate(text) {
     return iso8601ToLocalDate(text);
   }
 
