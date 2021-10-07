@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 export function splitDateAndTime(text: string) {
     return text.split('T');
@@ -6,7 +6,7 @@ export function splitDateAndTime(text: string) {
 
 export function iso8601ToLocal(text: string) {
     if (text) {
-        return moment(text).format('LLLL');
+        return moment(text).tz(moment.tz.guess()).format('LLLL');
     } else {
         return '';
     }
@@ -14,7 +14,7 @@ export function iso8601ToLocal(text: string) {
 
 export function iso8601ToLocalDate(text?: string) {
     if (text) {
-        return moment(text).format('YYYY-MM-DD');
+        return moment(text).tz(moment.tz.guess()).format('YYYY-MM-DD');
     } else {
         return '';
     }

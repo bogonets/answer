@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from hashlib import sha256
-from typing import Optional, Any
+from typing import Optional
 from datetime import datetime
 from recc.packet.preference import PreferenceA
 
@@ -11,6 +11,7 @@ from recc.packet.preference import PreferenceA
 class UserExtraA:
     dark: Optional[bool] = None
     lang: Optional[str] = None
+    timezone: Optional[str] = None
 
 
 @dataclass
@@ -21,7 +22,7 @@ class UserA:
     phone1: Optional[str] = None
     phone2: Optional[str] = None
     is_admin: Optional[bool] = None
-    extra: Optional[Any] = None
+    extra: Optional[UserExtraA] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     last_login: Optional[datetime] = None
@@ -34,7 +35,7 @@ class UpdateUserQ:
     phone1: Optional[str] = None
     phone2: Optional[str] = None
     is_admin: Optional[bool] = None
-    extra: Optional[Any] = None
+    extra: Optional[UserExtraA] = None
 
     def strip(self):
         if self.nickname:
@@ -76,7 +77,7 @@ class SignupQ:
     phone1: Optional[str] = None
     phone2: Optional[str] = None
     is_admin: Optional[bool] = None
-    extra: Optional[Any] = None
+    extra: Optional[UserExtraA] = None
 
     @staticmethod
     def encrypt_password(password: str, encoding="utf-8") -> str:

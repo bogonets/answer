@@ -2,8 +2,8 @@ import VueInterface from 'vue';
 import {PluginObject} from 'vue/types/plugin';
 import {Store, CommitOptions} from 'vuex';
 import VuexPersist from 'vuex-persist'
-import {UserA, UserExtra} from '@/packet/user';
-import {PreferenceA} from '@/packet/preference';
+import type {UserA, UserExtraA} from '@/packet/user';
+import type {PreferenceA} from '@/packet/preference';
 
 // Modules
 import api from '@/store/modules/api';
@@ -17,6 +17,7 @@ const DEFAULT_STRICT = process.env.NODE_ENV !== 'production';
 
 const API_ORIGIN = 'api/origin';
 const APPEARANCE_DARK = 'appearance/dark';
+const APPEARANCE_TIMEZONE = 'appearance/timezone';
 const DEV_ENABLE = 'dev/enable';
 const SESSION_ALREADY = 'session/already';
 const SESSION_ACCESS = 'session/access';
@@ -25,6 +26,7 @@ const SESSION_USER = 'session/user';
 const SESSION_USER_EXTRA = 'session/userExtra';
 const SESSION_USER_EXTRA_DARK = 'session/userExtraDark';
 const SESSION_USER_EXTRA_LANG = 'session/userExtraLang';
+const SESSION_USER_EXTRA_TIMEZONE = 'session/userExtraTimezone';
 const SESSION_PREFERENCE = 'session/preference';
 const TRANSLATION_LANG = 'translation/lang';
 
@@ -98,6 +100,14 @@ export class LocalStore {
         this.setter(APPEARANCE_DARK, val);
     }
 
+    get timezone() {
+        return this.getter(APPEARANCE_TIMEZONE) as string;
+    }
+
+    set timezone(val: string) {
+        this.setter(APPEARANCE_TIMEZONE, val);
+    }
+
     get devEnable() {
         return this.getter(DEV_ENABLE) as boolean;
     }
@@ -143,10 +153,10 @@ export class LocalStore {
     }
 
     get userExtra() {
-        return this.getter(SESSION_USER_EXTRA) as UserExtra;
+        return this.getter(SESSION_USER_EXTRA) as UserExtraA;
     }
 
-    set userExtra(val: UserExtra) {
+    set userExtra(val: UserExtraA) {
         this.setter(SESSION_USER_EXTRA, val);
     }
 
@@ -164,6 +174,14 @@ export class LocalStore {
 
     set userExtraLang(val: string) {
         this.setter(SESSION_USER_EXTRA_LANG, val);
+    }
+
+    get userExtraTimezone() {
+        return this.getter(SESSION_USER_EXTRA_TIMEZONE) as string;
+    }
+
+    set userExtraTimezone(val: string) {
+        this.setter(SESSION_USER_EXTRA_TIMEZONE, val);
     }
 
     clearSession() {

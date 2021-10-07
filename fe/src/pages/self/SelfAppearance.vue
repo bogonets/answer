@@ -3,6 +3,10 @@ en:
   lang: "English"
   title: "Appearance"
   subtitle: "Customize the look and feel of your Answer."
+  headers:
+    timezone: "Timezone"
+  subheaders:
+    timezone: "By setting the time zone, you can change the time format."
   theme:
     header: "Theme"
     dark:
@@ -18,6 +22,10 @@ ko:
   lang: "한글"
   title: "외관 설정"
   subtitle: "Answer의 모양과 느낌을 설정할 수 있습니다."
+  headers:
+    timezone: "시간대"
+  subheaders:
+    timezone: "시간대를 설정하여, 출력 포맷을 변경할 수 있습니다."
   theme:
     header: "테마"
     dark:
@@ -49,7 +57,7 @@ ko:
         <v-switch
             inset
             v-model="extra.dark"
-            @change="changeDark"
+            @change="onChangeDark"
         ></v-switch>
       </div>
     </left-title>
@@ -78,9 +86,30 @@ ko:
           </template>
           <list-languages
               :init-lang="extra.lang"
-              @change-lang="changeLang"
+              @change-lang="onChangeLang"
           ></list-languages>
         </v-menu>
+      </div>
+    </left-title>
+
+    <left-title
+        x-small
+        no-gutter
+        no-wrap-xs
+        :left-ratio="8"
+        :right-ratio="4"
+        :header="$t('headers.timezone')"
+        :subheader="$t('subheaders.timezone')"
+    >
+      <div class="d-flex flex-row justify-end">
+        <v-combobox
+            dense
+            outlined
+            hide-details
+            v-model="extra.timezone"
+            :items="timezoneNames"
+            @change="onChangeTimezone"
+        ></v-combobox>
       </div>
     </left-title>
   </v-container>
@@ -92,7 +121,10 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import ListLanguages from '@/components/ListLanguages.vue';
-import {UserExtra} from '@/packet/user';
+import type {UserExtraA} from '@/packet/user';
+import {createEmptyUserExtraA} from '@/packet/user';
+import momentTimezone from 'moment-timezone';
+import moment from "moment-timezone";
 
 @Component({
   components: {
@@ -114,26 +146,35 @@ export default class SelfAppearance extends VueBase {
     },
   ];
 
-  extra!: UserExtra;
+  private readonly timezoneNames = momentTimezone.tz.names();
+
+  loading = false;
+  extra = createEmptyUserExtraA();
 
   created() {
     this.extra = this.getInitExtra();
   }
 
-  getInitExtra(): UserExtra {
+  getInitExtra(): UserExtraA {
     const userExtra = this.$localStore.user.extra;
-    const result = {} as UserExtra;
+    const result = {} as UserExtraA;
 
-    if (userExtra && userExtra.dark !== undefined) {
+    if (userExtra?.dark) {
       result.dark = userExtra.dark;
     } else {
       result.dark = this.$vuetify.theme.dark;
     }
 
-    if (userExtra && userExtra.lang !== undefined) {
+    if (userExtra?.lang) {
       result.lang = userExtra.lang;
     } else {
       result.lang = this.$vuetify.lang.current;
+    }
+
+    if (userExtra?.timezone) {
+      result.timezone = userExtra.timezone;
+    } else {
+      result.timezone = '';
     }
     return result;
   }
@@ -147,16 +188,19 @@ export default class SelfAppearance extends VueBase {
   }
 
   saveUserExtra() {
+    this.loading = true;
     this.$api2.patchSelfExtra(this.extra)
         .then(() => {
-          console.debug('Upload user information to a remote server.');
+          this.loading = false;
+          this.toastRequestSuccess();
         })
         .catch(error => {
-          console.error(error);
+          this.loading = false;
+          this.toastRequestFailure(error);
         });
   }
 
-  changeDark() {
+  onChangeDark() {
     const dark = this.extra.dark;
     if (dark === undefined) {
       console.error('extra.dark is undefined error.');
@@ -171,7 +215,7 @@ export default class SelfAppearance extends VueBase {
     this.saveUserExtra();
   }
 
-  changeLang(lang: string) {
+  onChangeLang(lang: string) {
     this.extra.lang = lang;
 
     // Local settings should not be changed.
@@ -179,6 +223,18 @@ export default class SelfAppearance extends VueBase {
     this.$i18n.locale = lang;
     this.$localStore.lang = lang;
     this.$localStore.userExtraLang = lang;
+    moment.locale(lang);
+
+    this.saveUserExtra();
+  }
+
+  onChangeTimezone(timezone: string) {
+    this.extra.timezone = timezone;
+
+    // Local settings should not be changed.
+    momentTimezone.tz.setDefault(timezone);
+    this.$localStore.timezone = timezone;
+    this.$localStore.userExtraTimezone = timezone;
 
     this.saveUserExtra();
   }

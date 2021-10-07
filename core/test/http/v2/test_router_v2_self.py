@@ -5,6 +5,7 @@ from tester.unittest.async_test_case import AsyncTestCase
 from tester.http.http_app_tester import HttpAppTester
 from recc.http.http_utils import v2_self_path
 from recc.http import http_urls as u
+from recc.packet.user import UserExtraA
 
 
 class RouterV2SelfTestCase(AsyncTestCase):
@@ -15,9 +16,12 @@ class RouterV2SelfTestCase(AsyncTestCase):
 
         self.username = "user1"
         self.password = "1234"
-        await self.tester.signup_default_admin()
-        await self.tester.signup(self.username, self.password)
-        await self.tester.signin(self.username, self.password, save_session=True)
+        try:
+            await self.tester.signup_default_admin()
+            await self.tester.signup(self.username, self.password)
+            await self.tester.signin(self.username, self.password, save_session=True)
+        except:  # noqa
+            await self.tester.teardown()
 
     async def tearDown(self):
         await self.tester.teardown()
@@ -27,7 +31,7 @@ class RouterV2SelfTestCase(AsyncTestCase):
         self.assertEqual(200, response.status)
         self.assertIn("username", response.data)
 
-    async def test_self_extra(self):
+    async def test_self_unknown_extra(self):
         response = await self.tester.get(v2_self_path(u.extra))
         self.assertEqual(200, response.status)
         self.assertIsNone(response.data)
@@ -49,6 +53,17 @@ class RouterV2SelfTestCase(AsyncTestCase):
         response4 = await self.tester.get(v2_self_path(u.extra))
         self.assertEqual(200, response4.status)
         self.assertEqual(data2, response4.data)
+
+    async def test_self_extra(self):
+        data = UserExtraA(dark=True, lang="ko")
+        response = await self.tester.patch(v2_self_path(u.extra), data=data)
+        self.assertEqual(200, response.status)
+
+        response2 = await self.tester.get(v2_self_path(u.extra), cls=UserExtraA)
+        self.assertEqual(200, response2.status)
+        self.assertIsInstance(response2.data, UserExtraA)
+        self.assertEqual(data.dark, response2.data.dark)
+        self.assertEqual(data.lang, response2.data.lang)
 
 
 if __name__ == "__main__":

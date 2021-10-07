@@ -34,6 +34,12 @@ export default {
             }
             return '';
         },
+        userExtraTimezone: state => {
+            if (state.user.extra !== undefined) {
+                return state.user.extra.timezone || '';
+            }
+            return '';
+        },
         preference: state => {
             return state.preference;
         },
@@ -62,6 +68,12 @@ export default {
                 state.user.extra = {};
             }
             state.user.extra.lang = val;
+        },
+        userExtraTimezone(state, val) {
+            if (state.user.extra === undefined) {
+                state.user.extra = {};
+            }
+            state.user.extra.timezone = val;
         },
         preference(state, val) {
             state.preference = val;

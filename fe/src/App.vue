@@ -6,8 +6,9 @@
 
 <script lang="ts">
 import {Component} from 'vue-property-decorator'
-import VueBase from "@/base/VueBase";
-import {UserExtra} from "@/packet/user";
+import VueBase from '@/base/VueBase';
+import type {UserExtraA} from '@/packet/user';
+import moment from 'moment-timezone';
 
 @Component
 export default class App extends VueBase {
@@ -15,12 +16,15 @@ export default class App extends VueBase {
     const dark = this.$localStore.dark;
     const lang = this.$localStore.lang;
     const api = this.$localStore.origin;
+    const timezone = this.$localStore.timezone;
 
     this.$vuetify.theme.dark = dark;
     this.$vuetify.lang.current = lang;
     this.$i18n.locale = lang;
     this.$api.setUrl(api);
     this.$api2.origin = api;
+    moment.tz.setDefault(timezone);
+    moment.locale(lang);
   }
 
   created() {
@@ -53,7 +57,7 @@ export default class App extends VueBase {
     }
   }
 
-  updateCurrentSettingsFromUserExtra(extra: UserExtra) {
+  updateCurrentSettingsFromUserExtra(extra: UserExtraA) {
     if (extra.dark === undefined) {
       console.warn('[APP] Not exists user\'s extra.dark information.');
     } else {
@@ -72,7 +76,16 @@ export default class App extends VueBase {
       if (this.$vuetify.lang.current != lang) {
         this.$vuetify.lang.current = lang;
         this.$i18n.locale = lang;
+        moment.locale(lang);
       }
+    }
+
+    if (extra.timezone === undefined) {
+      console.warn('[APP] Not exists user\'s extra.timezone information.');
+    } else {
+      const timezone = extra.timezone;
+      console.debug(`[APP] User's extra.timezone is ${timezone}`);
+      moment.tz.setDefault(timezone);
     }
   }
 }

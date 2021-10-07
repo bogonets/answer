@@ -18,7 +18,10 @@ class RouterV2DevTestCase(AsyncTestCase):
         self.tester = HttpAppTester(self.loop)
         await self.tester.setup()
         await self.tester.wait_startup()
-        await self.tester.signup_and_in_default_admin()
+        try:
+            await self.tester.signup_and_in_default_admin()
+        except:  # noqa
+            await self.tester.teardown()
 
     async def tearDown(self):
         await self.tester.teardown()

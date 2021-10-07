@@ -32,7 +32,7 @@ import type {
 } from '@/packet/project';
 import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
 import type {SystemOverviewA, VersionsA} from '@/packet/system';
-import type {UserA, UpdateUserQ, SigninA, SignupQ, UpdatePasswordQ, UserExtra} from '@/packet/user';
+import type {UserA, UpdateUserQ, SigninA, SignupQ, UpdatePasswordQ, UserExtraA} from '@/packet/user';
 import type {EnvironmentA} from '@/packet/environment';
 import {createEmptySigninA, createEmptyUserA} from '@/packet/user';
 import {PreferenceA, createEmptyPreference} from '@/packet/preference';
@@ -292,10 +292,10 @@ export default class ApiV2 {
     }
 
     getSelfExtra() {
-        return this.get<UserExtra>('/self/extra');
+        return this.get<UserExtraA>('/self/extra');
     }
 
-    patchSelfExtra(extra: UserExtra) {
+    patchSelfExtra(extra: UserExtraA) {
         return this.patch('/self/extra', extra);
     }
 

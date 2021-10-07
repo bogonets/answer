@@ -26,6 +26,7 @@
     "lodash": "^4.17.21",
     "material-design-icons-iconfont": "^5.0.1",
     "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
     "paper": "^0.12",
     "register-service-worker": "^1.7.1",
     "roboto-fontface": "^0.10.0",

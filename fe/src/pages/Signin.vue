@@ -144,8 +144,12 @@ import VueBase from '@/base/VueBase';
 import TitleLogo from '@/components/TitleLogo.vue';
 import LinearLoading from '@/components/LinearLoading.vue';
 import ButtonsConfigPublic from '@/components/ButtonsConfigPublic.vue';
-import {UserA, UserExtra, createEmptyUserA} from '@/packet/user';
-import {PreferenceA, createEmptyPreference} from '@/packet/preference';
+import type {UserA, UserExtraA} from '@/packet/user';
+import {createEmptyUserA} from '@/packet/user';
+import type {PreferenceA} from '@/packet/preference';
+import {createEmptyPreference} from '@/packet/preference';
+import momentTimezone from 'moment-timezone';
+import moment from "moment-timezone";
 
 const WAIT_MOMENT_MILLISECONDS = 0;
 const V_TEXT_FIELD_VALIDATE = 'validate';
@@ -293,7 +297,7 @@ export default class Signin extends VueBase {
     });
   }
 
-  updateCurrentSettingsFromUserExtra(extra: UserExtra) {
+  updateCurrentSettingsFromUserExtra(extra: UserExtraA) {
     if (extra.dark === undefined) {
       console.warn('Not exists user\'s extra.dark information.');
     } else {
@@ -312,7 +316,16 @@ export default class Signin extends VueBase {
       if (this.$vuetify.lang.current != lang) {
         this.$vuetify.lang.current = lang;
         this.$i18n.locale = lang;
+        moment.locale(lang);
       }
+    }
+
+    if (extra.timezone === undefined) {
+      console.warn('Not exists user\'s extra.timezone information.');
+    } else {
+      const timezone = extra.timezone;
+      console.debug(`User's extra.timezone is ${timezone}`);
+      momentTimezone.tz.setDefault(timezone);
     }
   }
 

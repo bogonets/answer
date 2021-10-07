@@ -1,5 +1,11 @@
 import {PreferenceA, createEmptyPreference} from '@/packet/preference';
 
+export interface UserExtraA {
+    dark?: boolean;
+    lang?: string;
+    timezone?: string;
+}
+
 export interface UserA {
     username: string;
     nickname?: string;
@@ -7,7 +13,7 @@ export interface UserA {
     phone1?: string;
     phone2?: string;
     is_admin?: boolean;
-    extra?: any;
+    extra?: UserExtraA;
     created_at?: string;
     updated_at?: string;
     last_login?: string;
@@ -19,7 +25,7 @@ export interface UpdateUserQ {
     phone1?: string;
     phone2?: string;
     is_admin?: boolean;
-    extra?: any;
+    extra?: UserExtraA;
 }
 
 export interface SigninA {
@@ -37,21 +43,12 @@ export interface SignupQ {
     phone1?: string;
     phone2?: string;
     is_admin?: boolean;
-    extra?: any;
+    extra?: UserExtraA;
 }
 
 export interface UpdatePasswordQ {
     before: string;
     after: string;
-}
-
-// -----------
-// Client only
-// -----------
-
-export interface UserExtra {
-    dark?: boolean;
-    lang?: string;
 }
 
 export function createEmptyUserA() {
@@ -62,7 +59,7 @@ export function createEmptyUserA() {
         phone1: '',
         phone2: '',
         is_admin: false,
-        extra: createEmptyUserExtra(),
+        extra: createEmptyUserExtraA(),
         created_at: '',
         updated_at: '',
         last_login: '',
@@ -87,13 +84,14 @@ export function createEmptySignupQ() {
         phone1: '',
         phone2: '',
         is_admin: false,
-        extra: createEmptyUserExtra(),
+        extra: createEmptyUserExtraA(),
     } as SignupQ;
 }
 
-export function createEmptyUserExtra() {
+export function createEmptyUserExtraA() {
     return {
         dark: false,
         lang: '',
-    } as UserExtra;
+        timezone: '',
+    } as UserExtraA;
 }

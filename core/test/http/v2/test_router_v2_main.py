@@ -29,9 +29,12 @@ class RouterV2MainTestCase(AsyncTestCase):
 
         self.username = "main1"
         self.password = "1234"
-        await self.tester.signup_default_admin()
-        await self.tester.signup(self.username, self.password)
-        await self.tester.signin(self.username, self.password, save_session=True)
+        try:
+            await self.tester.signup_default_admin()
+            await self.tester.signup(self.username, self.password)
+            await self.tester.signin(self.username, self.password, save_session=True)
+        except:  # noqa
+            await self.tester.teardown()
 
     async def tearDown(self):
         await self.tester.teardown()
