@@ -57,40 +57,19 @@ class ContextGroup(ContextBase):
     async def delete_group(self, uid: int) -> None:
         await self.database.delete_group_by_uid(uid)
 
-    async def get_group(self, uid: int, remove_sensitive=True) -> Group:
-        result = await self.database.select_group_by_uid(uid)
-        if remove_sensitive:
-            result.remove_sensitive()
-        return result
+    async def get_group(self, uid: int) -> Group:
+        return await self.database.select_group_by_uid(uid)
 
-    async def get_groups(self, remove_sensitive=True) -> List[Group]:
-        groups = await self.database.select_groups()
-        if remove_sensitive:
-            for group in groups:
-                group.remove_sensitive()
-        return groups
+    async def get_groups(self) -> List[Group]:
+        return await self.database.select_groups()
 
-    async def get_groups_for_accessible(self, remove_sensitive=True) -> List[Group]:
-        groups = await self.database.select_groups_by_below_visibility(
+    async def get_groups_for_accessible(self) -> List[Group]:
+        return await self.database.select_groups_by_below_visibility(
             VISIBILITY_LEVEL_INTERNAL
         )
-        if remove_sensitive:
-            for group in groups:
-                group.remove_sensitive()
-        return groups
 
-    async def get_groups_by_user(
-        self,
-        user_uid: int,
-        remove_sensitive=True,
-    ) -> List[GroupJoinGroupMember]:
-        groups = await self.database.select_group_members_join_group_by_user_uid(
-            user_uid
-        )
-        if remove_sensitive:
-            for group in groups:
-                group.remove_sensitive()
-        return groups
+    async def get_groups_by_user(self, user_uid: int) -> List[GroupJoinGroupMember]:
+        return await self.database.select_group_members_join_group_by_user_uid(user_uid)
 
     async def get_group_members(self, group_uid: int) -> List[GroupMember]:
         return await self.database.select_group_members_by_group_uid(group_uid)

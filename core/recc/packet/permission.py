@@ -6,6 +6,34 @@ from dataclasses import dataclass
 
 
 @dataclass
+class RawPermission:
+    r_layout: bool = False
+    w_layout: bool = False
+    r_storage: bool = False
+    w_storage: bool = False
+    r_manager: bool = False
+    w_manager: bool = False
+    r_graph: bool = False
+    w_graph: bool = False
+    r_member: bool = False
+    w_member: bool = False
+    r_setting: bool = False
+    w_setting: bool = False
+
+    @classmethod
+    def all(cls, x: bool):
+        return cls(x, x, x, x, x, x, x, x, x, x, x, x)
+
+    @classmethod
+    def all_true(cls):
+        return cls.all(True)
+
+    @classmethod
+    def all_false(cls):
+        return cls.all(False)
+
+
+@dataclass
 class PermissionA:
     name: str
     description: Optional[str] = None

@@ -3,10 +3,11 @@
 from typing import List
 from aiohttp import web
 from aiohttp.web_routedef import AbstractRouteDef
-from aiohttp.web_exceptions import HTTPBadRequest, HTTPForbidden, HTTPNotFound
+from aiohttp.web_exceptions import HTTPBadRequest, HTTPNotFound
 from recc.core.context import Context
-from recc.http.http_decorator import parameter_matcher
 from recc.session.session_ex import SessionEx
+from recc.http.http_decorator import parameter_matcher
+from recc.http.http_decorator_acl import Policy
 from recc.http import http_urls as u
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.project import (
@@ -48,9 +49,9 @@ class RouterV2Main:
             # Groups
             web.get(u.groups, self.get_groups),
             web.post(u.groups, self.post_groups),
-            web.get(u.groups_pgroup, self.get_pgroup),
-            web.patch(u.groups_pgroup, self.patch_pgroup),
-            web.delete(u.groups_pgroup, self.delete_pgroup),
+            web.get(u.groups_pgroup, self.get_groups_pgroup),
+            web.patch(u.groups_pgroup, self.patch_groups_pgroup),
+            web.delete(u.groups_pgroup, self.delete_groups_pgroup),
 
             # Group members
             web.get(u.groups_pgroup_members, self.get_groups_pgroup_members),
@@ -121,25 +122,15 @@ class RouterV2Main:
             owner_uid=session.uid,
         )
 
-    @parameter_matcher()
-    async def get_pgroup(self, session: SessionEx, group: str) -> GroupA:
+    @parameter_matcher(group_policies=[Policy.HasLayoutRead])
+    async def get_groups_pgroup(self, group: str) -> GroupA:
         group_uid = await self.context.get_group_uid(group)
-        if not session.is_admin:
-            permission = await self.context.get_group_permission(session.uid, group_uid)
-            if permission.uid is None:
-                raise HTTPForbidden(reason="You do not have valid permissions")
         db_group = await self.context.get_group(group_uid)
         return group_to_answer(db_group)
 
-    @parameter_matcher()
-    async def patch_pgroup(
-        self, session: SessionEx, group: str, body: UpdateGroupQ
-    ) -> None:
+    @parameter_matcher(group_policies=[Policy.HasSettingWrite])
+    async def patch_groups_pgroup(self, group: str, body: UpdateGroupQ) -> None:
         group_uid = await self.context.get_group_uid(group)
-        if not session.is_admin:
-            permission = await self.context.get_group_permission(session.uid, group_uid)
-            if permission.uid is None or not permission.w_setting:
-                raise HTTPForbidden(reason="You do not have valid permissions")
         await self.context.update_group(
             uid=group_uid,
             name=body.name,
@@ -149,29 +140,18 @@ class RouterV2Main:
             extra=body.extra,
         )
 
-    @parameter_matcher()
-    async def delete_pgroup(self, session: SessionEx, group: str) -> None:
+    @parameter_matcher(group_policies=[Policy.HasSettingWrite])
+    async def delete_groups_pgroup(self, group: str) -> None:
         group_uid = await self.context.get_group_uid(group)
-        if not session.is_admin:
-            permission = await self.context.get_group_permission(session.uid, group_uid)
-            if permission.uid is None or not permission.w_setting:
-                raise HTTPForbidden(reason="You do not have valid permissions")
         await self.context.delete_group(group_uid)
 
     # -------------
     # Group members
     # -------------
 
-    @parameter_matcher()
-    async def get_groups_pgroup_members(
-        self, session: SessionEx, group: str
-    ) -> List[MemberA]:
+    @parameter_matcher(group_policies=[Policy.HasMemberRead])
+    async def get_groups_pgroup_members(self, group: str) -> List[MemberA]:
         group_uid = await self.context.get_group_uid(group)
-        if not session.is_admin:
-            permission = await self.context.get_group_permission(session.uid, group_uid)
-            if not permission.r_member:
-                raise HTTPForbidden(reason="You do not have valid permissions")
-
         members = await self.context.get_group_members(group_uid)
         result = list()
         for member in members:
@@ -184,32 +164,20 @@ class RouterV2Main:
             result.append(MemberA(username, permission_name))
         return result
 
-    @parameter_matcher()
-    async def post_groups_pgroup_members(
-        self, session: SessionEx, group: str, body: CreateMemberQ
-    ) -> None:
+    @parameter_matcher(group_policies=[Policy.HasMemberWrite])
+    async def post_groups_pgroup_members(self, group: str, body: CreateMemberQ) -> None:
         group_uid = await self.context.get_group_uid(group)
-        if not session.is_admin:
-            permission = await self.context.get_group_permission(session.uid, group_uid)
-            if not permission.w_member:
-                raise HTTPForbidden(reason="You do not have valid permissions")
-
         member_user_uid = await self.context.get_user_uid(body.username)
         member_permission_uid = await self.context.get_permission_uid(body.permission)
         await self.context.add_group_member(
             group_uid, member_user_uid, member_permission_uid
         )
 
-    @parameter_matcher()
+    @parameter_matcher(group_policies=[Policy.HasMemberRead])
     async def get_groups_pgroup_members_pmember(
-        self, session: SessionEx, group: str, member: str
+        self, group: str, member: str
     ) -> MemberA:
         group_uid = await self.context.get_group_uid(group)
-        if not session.is_admin:
-            permission = await self.context.get_group_permission(session.uid, group_uid)
-            if not permission.r_member:
-                raise HTTPForbidden(reason="You do not have valid permissions")
-
         member_user_uid = await self.context.get_user_uid(member)
         db_member = await self.context.get_group_member(group_uid, member_user_uid)
         assert db_member.permission_uid is not None
@@ -218,36 +186,22 @@ class RouterV2Main:
         )
         return MemberA(member, member_permission_name)
 
-    @parameter_matcher()
+    @parameter_matcher(group_policies=[Policy.HasMemberWrite])
     async def patch_groups_pgroup_members_pmember(
-        self,
-        session: SessionEx,
-        group: str,
-        member: str,
-        body: UpdateMemberQ,
+        self, group: str, member: str, body: UpdateMemberQ
     ) -> None:
         group_uid = await self.context.get_group_uid(group)
-        if not session.is_admin:
-            permission = await self.context.get_group_permission(session.uid, group_uid)
-            if not permission.w_member:
-                raise HTTPForbidden(reason="You do not have valid permissions")
-
         member_user_uid = await self.context.get_user_uid(member)
         member_permission_uid = await self.context.get_permission_uid(body.permission)
         await self.context.update_group_member(
             group_uid, member_user_uid, member_permission_uid
         )
 
-    @parameter_matcher()
+    @parameter_matcher(group_policies=[Policy.HasMemberWrite])
     async def delete_groups_pgroup_members_pmember(
-        self, session: SessionEx, group: str, member: str
+        self, group: str, member: str
     ) -> None:
         group_uid = await self.context.get_group_uid(group)
-        if not session.is_admin:
-            permission = await self.context.get_group_permission(session.uid, group_uid)
-            if not permission.w_member:
-                raise HTTPForbidden(reason="You do not have valid permissions")
-
         member_user_uid = await self.context.get_user_uid(member)
         await self.context.remove_group_member(group_uid, member_user_uid)
 
@@ -298,37 +252,21 @@ class RouterV2Main:
             owner_uid=session.uid,
         )
 
-    @parameter_matcher()
-    async def get_projects_pgroup_pproject(
-        self, session: SessionEx, group: str, project: str
-    ) -> ProjectA:
+    @parameter_matcher(project_policies=[Policy.HasLayoutRead])
+    async def get_projects_pgroup_pproject(self, group: str, project: str) -> ProjectA:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        if not session.is_admin:
-            permission = await self.context.get_best_permission(
-                session.uid, group_uid, project_uid
-            )
-            if permission.uid is None:
-                raise HTTPForbidden(reason="You do not have valid permissions")
-
         db_project = await self.context.get_project(project_uid)
         assert db_project.slug is not None
         assert project == db_project.slug
         return project_to_answer(db_project, group)
 
-    @parameter_matcher()
+    @parameter_matcher(project_policies=[Policy.HasSettingWrite])
     async def patch_projects_pgroup_pproject(
-        self, session: SessionEx, group: str, project: str, body: UpdateProjectQ
+        self, group: str, project: str, body: UpdateProjectQ
     ) -> None:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        if not session.is_admin:
-            permission = await self.context.get_best_permission(
-                session.uid, group_uid, project_uid
-            )
-            if permission.uid is None or not permission.w_setting:
-                raise HTTPForbidden(reason="You do not have valid permissions")
-
         await self.context.update_project(
             uid=project_uid,
             name=body.name,
@@ -338,32 +276,18 @@ class RouterV2Main:
             extra=body.extra,
         )
 
-    @parameter_matcher()
-    async def delete_projects_pgroup_pproject(
-        self, session: SessionEx, group: str, project: str
-    ) -> None:
+    @parameter_matcher(project_policies=[Policy.HasSettingWrite])
+    async def delete_projects_pgroup_pproject(self, group: str, project: str) -> None:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        if not session.is_admin:
-            permission = await self.context.get_best_permission(
-                session.uid, group_uid, project_uid
-            )
-            if permission.uid is None or not permission.w_setting:
-                raise HTTPForbidden(reason="You do not have valid permissions")
         await self.context.delete_project(project_uid)
 
-    @parameter_matcher()
+    @parameter_matcher(project_policies=[Policy.HasMemberRead])
     async def get_projects_pgroup_pproject_overview(
-        self, session: SessionEx, group: str, project: str
+        self, group: str, project: str
     ) -> ProjectOverviewA:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        if not session.is_admin:
-            permission = await self.context.get_best_permission(
-                session.uid, group_uid, project_uid
-            )
-            if not permission.r_member:
-                raise HTTPForbidden(reason="You do not have valid permissions")
 
         layouts = 0
         tables = 0
@@ -380,19 +304,12 @@ class RouterV2Main:
     # Project members
     # ---------------
 
-    @parameter_matcher()
+    @parameter_matcher(project_policies=[Policy.HasMemberRead])
     async def get_projects_pgroup_pproject_members(
-        self, session: SessionEx, group: str, project: str
+        self, group: str, project: str
     ) -> List[MemberA]:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        if not session.is_admin:
-            permission = await self.context.get_best_permission(
-                session.uid, group_uid, project_uid
-            )
-            if not permission.r_member:
-                raise HTTPForbidden(reason="You do not have valid permissions")
-
         members = await self.context.get_project_members(project_uid)
         result = list()
         for member in members:
@@ -405,38 +322,24 @@ class RouterV2Main:
             result.append(MemberA(username, permission_name))
         return result
 
-    @parameter_matcher()
+    @parameter_matcher(project_policies=[Policy.HasMemberWrite])
     async def post_projects_pgroup_pproject_members(
-        self, session: SessionEx, group: str, project: str, body: CreateMemberQ
+        self, group: str, project: str, body: CreateMemberQ
     ) -> None:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        if not session.is_admin:
-            permission = await self.context.get_best_permission(
-                session.uid, group_uid, project_uid
-            )
-            if not permission.w_member:
-                raise HTTPForbidden(reason="You do not have valid permissions")
-
         member_user_uid = await self.context.get_user_uid(body.username)
         member_permission_uid = await self.context.get_permission_uid(body.permission)
         await self.context.add_project_member(
             project_uid, member_user_uid, member_permission_uid
         )
 
-    @parameter_matcher()
+    @parameter_matcher(project_policies=[Policy.HasMemberRead])
     async def get_projects_pgroup_pproject_members_pmember(
-        self, session: SessionEx, group: str, project: str, member: str
+        self, group: str, project: str, member: str
     ) -> MemberA:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        if not session.is_admin:
-            permission = await self.context.get_best_permission(
-                session.uid, group_uid, project_uid
-            )
-            if not permission.r_member:
-                raise HTTPForbidden(reason="You do not have valid permissions")
-
         member_user_uid = await self.context.get_user_uid(member)
         db_member = await self.context.get_project_member(project_uid, member_user_uid)
         assert db_member.permission_uid is not None
@@ -445,43 +348,24 @@ class RouterV2Main:
         )
         return MemberA(member, member_permission_name)
 
-    @parameter_matcher()
+    @parameter_matcher(project_policies=[Policy.HasMemberWrite])
     async def patch_projects_pgroup_pproject_members_pmember(
-        self,
-        session: SessionEx,
-        group: str,
-        project: str,
-        member: str,
-        body: UpdateMemberQ,
+        self, group: str, project: str, member: str, body: UpdateMemberQ
     ) -> None:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        if not session.is_admin:
-            permission = await self.context.get_best_permission(
-                session.uid, group_uid, project_uid
-            )
-            if not permission.w_member:
-                raise HTTPForbidden(reason="You do not have valid permissions")
-
         member_user_uid = await self.context.get_user_uid(member)
         member_permission_uid = await self.context.get_permission_uid(body.permission)
         await self.context.update_project_member(
             project_uid, member_user_uid, member_permission_uid
         )
 
-    @parameter_matcher()
+    @parameter_matcher(project_policies=[Policy.HasMemberWrite])
     async def delete_projects_pgroup_pproject_members_pmember(
-        self, session: SessionEx, group: str, project: str, member: str
+        self, group: str, project: str, member: str
     ) -> None:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        if not session.is_admin:
-            permission = await self.context.get_best_permission(
-                session.uid, group_uid, project_uid
-            )
-            if not permission.w_member:
-                raise HTTPForbidden(reason="You do not have valid permissions")
-
         member_user_uid = await self.context.get_user_uid(member)
         await self.context.remove_project_member(project_uid, member_user_uid)
 

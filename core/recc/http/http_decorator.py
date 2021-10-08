@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Any, get_origin
+from typing import Optional, List, Any, get_origin
 from inspect import signature, isclass, iscoroutinefunction
 from functools import wraps
 from http import HTTPStatus
@@ -11,28 +11,37 @@ from aiohttp.web_response import Response
 from aiohttp.web_exceptions import (
     HTTPException,
     HTTPBadRequest,
+    HTTPForbidden,
     HTTPUnauthorized,
 )
 from recc.core.context import Context
 from recc.chrono.datetime import today
 from recc.session.session import Session
+from recc.session.session_ex import SessionEx
 from recc.log.logging import recc_http_logger as logger
 from recc.serialization.serialize import serialize_default
 from recc.http.header.basic_auth import BasicAuth
+from recc.http.http_decorator_acl import Policy, test_policies
 from recc.http.http_packet import HttpRequest, HttpResponse
 from recc.http.http_payload import payload_to_object, request_payload_to_class
 from recc.http.http_response import get_accept_type, get_encoding, create_response
-from recc.session.session_ex import SessionEx
 from recc.http.http_status import (
     STATUS_BAD_REQUEST,
     STATUS_UNAUTHORIZED,
     STATUS_INTERNAL_SERVER_ERROR,
 )
 from recc.http import http_cache_keys as c
+from recc.http import http_path_keys as p
+from recc.packet.permission import RawPermission
+from recc.packet.cvt.permission import permission_to_raw
 from recc.variables.http import VERY_VERBOSE_DEBUGGING
 
 CONTEXT_PROPERTY_NAME = "context"
 CONFIG_PROPERTY_NAME = "config"
+
+ERROR_MESSAGE_ONLY_SINGLE_POLICIES = (
+    "`group_policies` or `project_policies` cannot be selected together."
+)
 
 
 def _is_serializable_instance(obj: Any) -> bool:
@@ -63,22 +72,80 @@ def _is_serializable_class(obj: type) -> bool:
     return False
 
 
-# def _test_permission(session: SessionEx, acl: Set[aa]) -> None:
-#     for ac in acl:
-#         if ac == aa.HasAdmin:
-#             if not session.is_admin:
-#                 raise HTTPForbidden(reason="Administrator privileges are required")
-#
-#     # if acl:
-#     #     if c.session not in request:
-#     #         raise HTTPUnauthorized(reason=f"Not exists {c.session}")
-#     #     _test_permission(request[c.session], acl if acl else set())
+async def _get_group_raw_permission(
+    context: Context,
+    session: SessionEx,
+    group_name: str,
+) -> RawPermission:
+    assert group_name
+    try:
+        group_uid = await context.get_group_uid(group_name)
+        permission = await context.get_group_permission(session.uid, group_uid)
+        return permission_to_raw(permission)
+    except:  # noqa
+        return RawPermission.all_false()
+
+
+async def _get_project_raw_permission(
+    context: Context,
+    session: SessionEx,
+    group_name: Optional[str],
+    project_name: Optional[str],
+) -> RawPermission:
+    assert group_name
+    assert project_name
+    try:
+        group_uid = await context.get_group_uid(group_name)
+        project_uid = await context.get_project_uid(group_uid, project_name)
+        permission = await context.get_best_permission(
+            session.uid, group_uid, project_uid
+        )
+        return permission_to_raw(permission)
+    except:  # noqa
+        return RawPermission.all_false()
+
+
+async def _test_group_permission(
+    context: Context,
+    session: SessionEx,
+    group_policies: List[Policy],
+    group_name: Optional[str],
+) -> None:
+    if not group_name:
+        raise HTTPBadRequest(reason="The group name is missing")
+    permission = await _get_group_raw_permission(context, session, group_name)
+    try:
+        test_policies(group_policies, permission)
+    except PermissionError as e:
+        raise HTTPForbidden(reason=str(e))
+
+
+async def _test_project_permission(
+    context: Context,
+    session: SessionEx,
+    project_policies: List[Policy],
+    group_name: Optional[str],
+    project_name: Optional[str],
+) -> None:
+    if not group_name:
+        raise HTTPBadRequest(reason="The group name is missing")
+    if not project_name:
+        raise HTTPBadRequest(reason="The project name is missing")
+    permission = await _get_project_raw_permission(
+        context, session, group_name, project_name
+    )
+    try:
+        test_policies(project_policies, permission)
+    except PermissionError as e:
+        raise HTTPForbidden(reason=str(e))
 
 
 async def _parameter_matcher_main(
     func,
     obj: Any,
     request: Request,
+    group_policies: Optional[List[Policy]] = None,
+    project_policies: Optional[List[Policy]] = None,
 ) -> Response:
     accept = get_accept_type(request)
     encoding = get_encoding(request)
@@ -88,6 +155,9 @@ async def _parameter_matcher_main(
     update_arguments: List[Any] = list()
     match_count = len(request.match_info)
     assign_body = False
+
+    group_name: Optional[str] = None
+    project_name: Optional[str] = None
 
     very_verbose_debugging = False
     context = getattr(obj, CONTEXT_PROPERTY_NAME, None)
@@ -179,7 +249,12 @@ async def _parameter_matcher_main(
 
         # Path
         if match_count >= 1 and key in request.match_info:
-            update_arguments.append(request.match_info[key])
+            path_value = request.match_info[key]
+            if key == p.group:
+                group_name = path_value
+            elif key == p.project:
+                project_name = path_value
+            update_arguments.append(path_value)
             match_count -= 1
             continue
 
@@ -202,6 +277,24 @@ async def _parameter_matcher_main(
                 continue
 
         update_arguments.append(None)
+
+    if group_policies or project_policies:
+        if not context:
+            raise RuntimeError("The context does not exist")
+        if c.session not in request:
+            raise HTTPUnauthorized(reason=f"Not exists session: {c.session}")
+        session = request[c.session]
+        assert isinstance(session, SessionEx)
+        if not session.is_admin:
+            if group_policies:
+                await _test_group_permission(
+                    context, session, group_policies, group_name
+                )
+            else:
+                assert project_policies
+                await _test_project_permission(
+                    context, session, project_policies, group_name, project_name
+                )
 
     if iscoroutinefunction(func):
         result = await func(*update_arguments)
@@ -234,6 +327,8 @@ async def parameter_matcher_main(
     func,
     obj: Any,
     request: Request,
+    group_policies: Optional[List[Policy]] = None,
+    project_policies: Optional[List[Policy]] = None,
 ) -> Response:
     now = today()
 
@@ -248,7 +343,9 @@ async def parameter_matcher_main(
     request_info = f"{remote} {method} {path} HTTP/{version[0]}.{version[1]}"
 
     try:
-        result = await _parameter_matcher_main(func, obj, request)
+        result = await _parameter_matcher_main(
+            func, obj, request, group_policies, project_policies
+        )
     except HTTPException as e:
         logger.error(e)
         result = Response(
@@ -276,11 +373,20 @@ async def parameter_matcher_main(
     return result
 
 
-def parameter_matcher():
+def parameter_matcher(
+    *,
+    group_policies: Optional[List[Policy]] = None,
+    project_policies: Optional[List[Policy]] = None,
+):
+    if group_policies and project_policies:
+        raise RuntimeError(ERROR_MESSAGE_ONLY_SINGLE_POLICIES)
+
     def _wrap(func):
         @wraps(func)
         async def __wrap(obj, request):
-            return await parameter_matcher_main(func, obj, request)
+            return await parameter_matcher_main(
+                func, obj, request, group_policies, project_policies
+            )
 
         return __wrap
 
