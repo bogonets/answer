@@ -69,6 +69,7 @@ export default class AdminProjects extends VueBase {
   }
 
   onClickMove(item: ProjectA) {
+    this.moveToMain(item.group_slug, item.project_slug);
   }
 }
 </script>

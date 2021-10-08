@@ -6,6 +6,8 @@ en:
     filter: "Filter"
     sort: "Sort"
     hide: "Hide Fields"
+  msg:
+    empty: "Empty Tables"
 
 ko:
   tools:
@@ -14,6 +16,8 @@ ko:
     filter: "필터"
     sort: "정렬"
     hide: "숨김"
+  msg:
+    empty: "테이블이 존재하지 않습니다."
 </i18n>
 
 <template>
@@ -62,8 +66,18 @@ ko:
     </v-toolbar>
     <v-divider></v-divider>
 
-    <grid-view>
-    </grid-view>
+<!--    <grid-view>-->
+<!--    </grid-view>-->
+
+    <view-port class="d-flex flex-row align-center justify-center">
+      <div class="d-flex flex-column align-center justify-center">
+        <v-icon x-large>mdi-table</v-icon>
+        <span class="text--secondary text-subtitle-2">
+          {{ $t('msg.empty') }}
+        </span>
+      </div>
+    </view-port>
+
   </div>
 </template>
 
@@ -71,6 +85,7 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import GridView from '@/components/DynamicTable/GridView.vue';
+import ViewPort from '@/components/ViewPort.vue';
 
 const NAVIGATION_DENSE_HEIGHT = 48;
 const DIVIDER_HEIGHT = 1;
@@ -79,10 +94,11 @@ const VIEW_PORT_MARGIN_TOP = (NAVIGATION_DENSE_HEIGHT * 2) + DIVIDER_HEIGHT;
 @Component({
   components: {
     GridView,
+    ViewPort,
   }
 })
 export default class MainTables extends VueBase {
-  private readonly viewPortMarginTop = VIEW_PORT_MARGIN_TOP;
+  readonly viewPortMarginTop = VIEW_PORT_MARGIN_TOP;
 
   onClickView() {
   }

@@ -281,7 +281,7 @@ export default class NaviMain extends VueBase {
   @Emit('click:files')
   files() {
     if (!this.noDefault) {
-      // this.moveToMainProjectFiles();
+      this.moveToMainFiles();
     }
   }
 

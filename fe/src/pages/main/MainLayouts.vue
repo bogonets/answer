@@ -5,6 +5,7 @@ en:
     new_layouts: "New Layout"
     widgets: "Widgets"
   msg:
+    unselected: "Unselected layout."
     empty: "Empty Layouts."
 
 ko:
@@ -13,6 +14,7 @@ ko:
     new_layouts: "새로운 레이아웃"
     widgets: "위젯"
   msg:
+    unselected: "선택된 레이아웃이 없습니다."
     empty: "레이아웃이 존재하지 않습니다."
 </i18n>
 
@@ -20,23 +22,17 @@ ko:
   <div>
     <v-toolbar dense flat>
       <v-btn plain small @click="onClickLayouts">
-        <v-icon left>
-          mdi-view-dashboard
-        </v-icon>
+        <v-icon left>mdi-view-dashboard</v-icon>
         {{ $t('tools.layouts') }}
       </v-btn>
 
       <v-btn plain small @click="onClickLayouts">
-        <v-icon left>
-          mdi-widgets
-        </v-icon>
+        <v-icon left>mdi-widgets</v-icon>
         {{ $t('tools.widgets') }}
       </v-btn>
 
       <v-btn icon plain small @click="onClickMore">
-        <v-icon>
-          mdi-dots-horizontal
-        </v-icon>
+        <v-icon>mdi-dots-horizontal</v-icon>
       </v-btn>
     </v-toolbar>
     <v-divider></v-divider>

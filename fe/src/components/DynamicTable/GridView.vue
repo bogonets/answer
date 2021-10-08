@@ -17,6 +17,7 @@ ko:
           @mousedown="onMouseDownScrollbarVertical"
       ></div>
       <div
+          v-show="false"
           ref="scrollbar-horizontal"
           class="grid-view--scrollbar-horizontal"
           @mousedown="onMouseDownScrollbarHorizontal"

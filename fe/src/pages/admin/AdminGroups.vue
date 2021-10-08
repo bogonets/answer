@@ -69,6 +69,7 @@ export default class AdminGroups extends VueBase {
   }
 
   onClickMove(item: GroupA) {
+    this.moveToGroup(item.slug);
   }
 }
 </script>
