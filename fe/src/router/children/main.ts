@@ -6,6 +6,7 @@ import MainMembers from '@/pages/main/MainMembers.vue';
 import MainSettings from '@/pages/main/MainSettings.vue';
 import MainTables from '@/pages/main/MainTables.vue';
 import MainTasks from '@/pages/main/MainTasks.vue';
+import MainVisualProgramming from '@/pages/main/MainVisualProgramming.vue';
 import MainVms from '@/pages/main/MainVms.vue';
 
 // External
@@ -46,6 +47,11 @@ export const mainChildren = [
         path: ':group/:project/tasks',
         component: MainTasks,
         name: mainNames.mainTasks,
+    },
+    {
+        path: ':group/:project/vp',
+        component: MainVisualProgramming,
+        name: mainNames.mainVisualProgramming,
     },
     {
         path: ':group/:project/vms',

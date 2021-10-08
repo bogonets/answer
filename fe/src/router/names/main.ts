@@ -7,10 +7,8 @@ export const mainNames = {
     mainSettings: 'mainSettings',
     mainTables: 'mainTables',
     mainTasks: 'mainTasks',
+    mainVisualProgramming: 'mainVisualProgramming',
     mainVms: 'mainVms',
-
-    // -- Not yet --
-    mainVp: 'mainVp',
 
     ...mainAirjoyNames,
 };

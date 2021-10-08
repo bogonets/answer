@@ -223,7 +223,7 @@ export default class NaviMain extends VueBase {
       this.index = 3;
     } else if (name === mainNames.mainTasks) {
       this.index = 4;
-    } else if (name === mainNames.mainVp) {
+    } else if (name === mainNames.mainVisualProgramming) {
       this.index = 5;
     } else if (name === mainNames.mainVms) {
       this.index = 6;
@@ -302,7 +302,7 @@ export default class NaviMain extends VueBase {
   @Emit('click:visual-programming')
   visualProgramming() {
     if (!this.noDefault) {
-      // this.moveToMainProjectVisualProgramming();
+      this.moveToMainVisualProgramming();
     }
   }
 
