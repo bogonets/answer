@@ -73,7 +73,7 @@ ko:
                       type="text"
                       ref="usernameField"
                       v-model="currentUsername"
-                      :rules="[rules.required]"
+                      :rules="ruleRequired"
                       :label="usernameFieldLabel"
                   ></v-text-field>
                   <v-text-field
@@ -81,7 +81,7 @@ ko:
                       autocomplete="off"
                       ref="passwordField"
                       v-model="currentPassword"
-                      :rules="[rules.required]"
+                      :rules="ruleRequired"
                       :label="passwordFieldLabel"
                       @keypress.enter.stop="signin"
                   ></v-text-field>
@@ -96,7 +96,7 @@ ko:
                       rounded
                       block
                       color="primary"
-                      :loading="showLoading"
+                      :loading="loading"
                       @click="signin"
                   >
                     {{ $t('signin') }}
@@ -113,7 +113,7 @@ ko:
                     <span class="mx-3"></span>
                     <a
                         class="text-overline text--disabled text-decoration-line-through"
-                        @click="forgetPassword"
+                        @click="onClickForgetPassword"
                     >
                       {{ $t('forgot_password') }}
                     </a>
@@ -130,9 +130,9 @@ ko:
 
     <buttons-config-public
         class="config-buttons-position ma-0 pa-0"
-        @change-dark="changeDark"
-        @change-lang="changeLang"
-        @change-origin="changeOrigin"
+        @change-dark="onChangeDark"
+        @change-lang="onChangeLang"
+        @change-origin="onChangeOrigin"
     ></buttons-config-public>
 
   </v-main>
@@ -144,12 +144,8 @@ import VueBase from '@/base/VueBase';
 import TitleLogo from '@/components/TitleLogo.vue';
 import LinearLoading from '@/components/LinearLoading.vue';
 import ButtonsConfigPublic from '@/components/ButtonsConfigPublic.vue';
-import type {UserA, UserExtraA} from '@/packet/user';
-import {createEmptyUserA} from '@/packet/user';
-import type {PreferenceA} from '@/packet/preference';
-import {createEmptyPreference} from '@/packet/preference';
-import momentTimezone from 'moment-timezone';
-import moment from "moment-timezone";
+import requiredField from '@/rules/required';
+import {onSigninEvent} from '@/event/session';
 
 const WAIT_MOMENT_MILLISECONDS = 0;
 const V_TEXT_FIELD_VALIDATE = 'validate';
@@ -171,21 +167,14 @@ enum LoginPageState {
   }
 })
 export default class Signin extends VueBase {
-
   private readonly waitMoment = WAIT_MOMENT_MILLISECONDS;
-  private readonly rules = {
-    required: (value) => {
-      return !!value || this.$t('msg.required_field');
-    },
-  };
+  private readonly ruleRequired = [requiredField];
 
-  private currentUsername = '';
-  private currentPassword = '';
-  private currentState = LoginPageState.Connecting;
-  private showLoading = false;
-  private errorMessage = '';
-
-  // Lifecycle
+  currentUsername = '';
+  currentPassword = '';
+  currentState = LoginPageState.Connecting;
+  loading = false;
+  errorMessage = '';
 
   created() {
     if (this.$localStore.alreadySession) {
@@ -197,8 +186,6 @@ export default class Signin extends VueBase {
       this.testInit();
     }
   }
-
-  // Computed
 
   get usernameFieldLabel(): string {
     return this.$t('username').toString();
@@ -266,69 +253,6 @@ export default class Signin extends VueBase {
     }
   }
 
-  // Methods
-
-  saveUserToLocal(
-      access: string,
-      refresh: string,
-      user: UserA,
-      preference: PreferenceA,
-  ) {
-    this.$localStore.access = access;
-    this.$localStore.refresh = refresh;
-    this.$localStore.user = user;
-    this.$localStore.preference = preference;
-  }
-
-  /**
-   * @deprecated
-   */
-  saveUserToSession(access: string, refresh: string, user: UserA) {
-    const username = user.username || '';
-    const email = user.email || '';
-    const phone = user.phone1 || '';
-
-    this.$store.commit('user/login', {
-      accessToken: access,
-      refreshToken: refresh,
-      id: username,
-      email: email,
-      phone: phone,
-    });
-  }
-
-  updateCurrentSettingsFromUserExtra(extra: UserExtraA) {
-    if (extra.dark === undefined) {
-      console.warn('Not exists user\'s extra.dark information.');
-    } else {
-      const dark = extra.dark;
-      console.debug(`User's extra.dark is ${dark}`);
-      if (this.$vuetify.theme.dark != dark) {
-        this.$vuetify.theme.dark = dark
-      }
-    }
-
-    if (extra.lang === undefined) {
-      console.warn('Not exists user\'s extra.lang information.');
-    } else {
-      const lang = extra.lang;
-      console.debug(`User's extra.lang is ${lang}`);
-      if (this.$vuetify.lang.current != lang) {
-        this.$vuetify.lang.current = lang;
-        this.$i18n.locale = lang;
-        moment.locale(lang);
-      }
-    }
-
-    if (extra.timezone === undefined) {
-      console.warn('Not exists user\'s extra.timezone information.');
-    } else {
-      const timezone = extra.timezone;
-      console.debug(`User's extra.timezone is ${timezone}`);
-      momentTimezone.tz.setDefault(timezone);
-    }
-  }
-
   testInit() {
     this.updateState(LoginPageState.Connecting);
 
@@ -345,6 +269,7 @@ export default class Signin extends VueBase {
         })
         .catch(error => {
           this.updateState(LoginPageState.Unreachable);
+          console.error(error);
         });
   }
 
@@ -353,14 +278,6 @@ export default class Signin extends VueBase {
     const newVal = LoginPageState[state];
     this.currentState = state;
     console.debug(`Change login page state: ${oldVal} -> ${newVal}`);
-  }
-
-  showErrorMessage(msg: string) {
-    this.errorMessage = msg;
-  }
-
-  hideErrorMessage() {
-    this.errorMessage = '';
   }
 
   validateForms(): boolean {
@@ -407,14 +324,14 @@ export default class Signin extends VueBase {
     return result;
   }
 
-  changeDark(dark: boolean) {
+  onChangeDark(dark: boolean) {
     // Changes only public local settings.
     this.$localStore.dark = dark;
 
     this.$vuetify.theme.dark = dark;
   }
 
-  changeLang(lang: string) {
+  onChangeLang(lang: string) {
     // Changes only public local settings.
     this.$localStore.lang = lang;
 
@@ -424,7 +341,7 @@ export default class Signin extends VueBase {
     this.updateValidations();
   }
 
-  changeOrigin(origin: string) {
+  onChangeOrigin(origin: string) {
     // Changes only public local settings.
     this.$localStore.origin = origin;
 
@@ -439,38 +356,18 @@ export default class Signin extends VueBase {
       return;
     }
 
-    const username = this.currentUsername;
-    const password = this.currentPassword;
-    console.debug(`User ${username} is trying to login ...`);
-    this.showLoading = true;
-
-    this.$api2.postSignin(username, password)
-        .then(response => {
-          console.debug(`Login for user ${username} was successful !!`);
-
-          this.showLoading = false;
-          this.hideErrorMessage();
-
-          const access = response.access || '';
-          const refresh = response.refresh || '';
-          const user = response.user || createEmptyUserA();
-          const preference = response.preference || createEmptyPreference();
-          this.saveUserToLocal(access, refresh, user, preference);
-          this.saveUserToSession(access, refresh, user);
-
-          if (user.extra) {
-            this.updateCurrentSettingsFromUserExtra(user.extra);
-          } else {
-            console.warn('Not exists user\'s extra information.');
-          }
-
+    this.loading = true;
+    this.$api2.postSignin(this.currentUsername, this.currentPassword)
+        .then(item => {
+          this.loading = false;
+          this.errorMessage = '';
+          onSigninEvent(this, item);
           this.moveToRoot();
         })
         .catch(error => {
+          this.loading = false;
+          this.errorMessage = this.$t('msg.invalid_fields').toString();
           console.error(error);
-          this.showLoading = false;
-          const msg = this.$t('msg.invalid_fields').toString();
-          this.showErrorMessage(msg);
         });
   }
 
@@ -478,7 +375,7 @@ export default class Signin extends VueBase {
     this.moveToSignup();
   }
 
-  forgetPassword() {
+  onClickForgetPassword() {
     // EMPTY.
   }
 }
