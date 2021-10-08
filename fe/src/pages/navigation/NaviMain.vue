@@ -295,7 +295,7 @@ export default class NaviMain extends VueBase {
   @Emit('click:tasks')
   tasks() {
     if (!this.noDefault) {
-      // this.moveToMainProjectTasks();
+      this.moveToMainTasks();
     }
   }
 

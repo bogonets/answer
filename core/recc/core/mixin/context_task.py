@@ -61,9 +61,16 @@ class ContextTask(ContextBase):
     async def remove_container(self, key: str, force=False) -> None:
         await self.container.remove_container(key, force)
 
-    # ----
-    # Task
-    # ----
+    # -----
+    # Tasks
+    # -----
+
+    async def get_tasks(self, group: str, project: str) -> List[ContainerInfo]:
+        return await self.container.get_tasks(group, project)
+
+    # --------
+    # Networks
+    # --------
 
     async def prepare_task_network(self, group: str, project: str) -> str:
         network = await self.container.create_task_network_if_not_exist(group, project)

@@ -85,12 +85,10 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import ViewPort from '@/components/ViewPort.vue';
 
 @Component({
   components: {
-    BreadcrumbMain,
     ViewPort,
   }
 })

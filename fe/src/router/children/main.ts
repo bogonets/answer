@@ -5,6 +5,7 @@ import MainLayouts from '@/pages/main/MainLayouts.vue';
 import MainMembers from '@/pages/main/MainMembers.vue';
 import MainSettings from '@/pages/main/MainSettings.vue';
 import MainTables from '@/pages/main/MainTables.vue';
+import MainTasks from '@/pages/main/MainTasks.vue';
 import MainVms from '@/pages/main/MainVms.vue';
 
 // External
@@ -40,6 +41,11 @@ export const mainChildren = [
         path: ':group/:project/tables',
         component: MainTables,
         name: mainNames.mainTables,
+    },
+    {
+        path: ':group/:project/tasks',
+        component: MainTasks,
+        name: mainNames.mainTasks,
     },
     {
         path: ':group/:project/vms',

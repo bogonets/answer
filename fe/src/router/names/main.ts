@@ -6,10 +6,10 @@ export const mainNames = {
     mainMembers: 'mainMembers',
     mainSettings: 'mainSettings',
     mainTables: 'mainTables',
+    mainTasks: 'mainTasks',
     mainVms: 'mainVms',
 
     // -- Not yet --
-    mainTasks: 'mainTasks',
     mainVp: 'mainVp',
 
     ...mainAirjoyNames,

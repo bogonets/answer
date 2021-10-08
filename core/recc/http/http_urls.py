@@ -113,4 +113,5 @@ state_already = state + already
 system_overview = system + overview
 system_versions = system + versions
 tasks_ptask = tasks + ptask
+tasks_pgroup_pproject = tasks + pgroup + pproject
 users_puser = users + puser

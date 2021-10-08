@@ -85,6 +85,10 @@ class RouterV2Main:
             # Users
             web.get(u.usernames, self.get_usernames),
 
+            # Tasks
+            # web.get(u.tasks_pgroup_pproject, self.get_tasks_pgroup_pproject),
+            # web.patch(u.tasks_pgroup_pproject, self.patch_tasks_pgroup_pproject),
+
             # Infos
             web.get(u.infos_oem, self.get_infos_oem),
         ]
@@ -514,9 +518,85 @@ class RouterV2Main:
         )
         return permission_to_answer(permission)
 
+    # -----
+    # Users
+    # -----
+
     @parameter_matcher()
     async def get_usernames(self) -> List[str]:
+        """
+        Used from members page.
+        """
         return await self.context.get_usernames()
+
+    # -----
+    # Tasks
+    # -----
+
+    # @parameter_matcher()
+    # async def get_tasks_pgroup_pproject(
+    #     self,
+    #     session: SessionEx,
+    #     group: str,
+    #     project: str,
+    # ) -> List[ContainerA]:
+    #     group_uid = await self.context.get_group_uid(group)
+    #     project_uid = await self.context.get_project_uid(group_uid, project)
+    #     if not session.is_admin:
+    #         permission = await self.context.get_best_permission(
+    #             session.uid, group_uid, project_uid
+    #         )
+    #         if not permission.r_manager:
+    #             raise HTTPForbidden(reason="You do not have valid permissions")
+    #
+    #     result = list()
+    #     for container in await self.context.get_tasks(group, project):
+    #         result.append(container_to_answer(container))
+    #     return result
+    #
+    # @parameter_matcher()
+    # async def patch_tasks_pgroup_pproject(
+    #     self,
+    #     session: SessionEx,
+    #     group: str,
+    #     project: str,
+    #     body: ControlContainersQ,
+    # ) -> None:
+    #     group_uid = await self.context.get_group_uid(group)
+    #     project_uid = await self.context.get_project_uid(group_uid, project)
+    #     if not session.is_admin:
+    #         permission = await self.context.get_best_permission(
+    #             session.uid, group_uid, project_uid
+    #         )
+    #         if not permission.w_manager:
+    #             raise HTTPForbidden(reason="You do not have valid permissions")
+    #
+    #     operator = ContainerOperator.from_str(body.operator)
+    #     if operator == ContainerOperator.Start:
+    #         for key in body.keys:
+    #             await self.context.start_container(key)
+    #     elif operator == ContainerOperator.Stop:
+    #         for key in body.keys:
+    #             await self.context.stop_container(key)
+    #     elif operator == ContainerOperator.Kill:
+    #         signal: Union[str, int] = body.signal if body.signal else SIGKILL
+    #         for key in body.keys:
+    #             await self.context.kill_container(key, signal)
+    #     elif operator == ContainerOperator.Restart:
+    #         for key in body.keys:
+    #             await self.context.restart_container(key)
+    #     elif operator == ContainerOperator.Pause:
+    #         for key in body.keys:
+    #             await self.context.pause_container(key)
+    #     elif operator == ContainerOperator.Resume:
+    #         for key in body.keys:
+    #             await self.context.unpause_container(key)
+    #     elif operator == ContainerOperator.Remove:
+    #         force = True if body.force else False
+    #         for key in body.keys:
+    #             await self.context.remove_container(key, force)
+    #     else:
+    #         assert False, "Not accessible section"
 
     # -----
     # Infos
