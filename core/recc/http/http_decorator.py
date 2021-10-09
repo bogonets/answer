@@ -243,6 +243,9 @@ async def _parameter_matcher_main(
 
         update_arguments.append(None)
 
+    # if hasattr(func, "__recc_group_permissions__"):
+    #     logger.error("Has __recc_group_permissions__")
+
     if group_policies or project_policies:
         if not context:
             raise RuntimeError("The context does not exist")

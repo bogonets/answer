@@ -66,6 +66,7 @@ en:
     exchange: "Filter Exchange"
     unknown: "Filter Unknown"
   tooltip:
+    edit_name: "Edit AIRJOY device name"
     power:
       on: "Click the button to power off"
       off: "Click the button to power on"
@@ -163,6 +164,7 @@ ko:
     exchange: "필터 교체"
     unknown: "알수 없음"
   tooltip:
+    edit_name: "AIRJOY 기기 이름을 수정합니다"
     power:
       on: "버튼을 클릭하여 전원을 끕니다"
       off: "버튼을 클릭하여 전원을 켭니다"
@@ -209,7 +211,7 @@ ko:
     <v-divider></v-divider>
 
     <v-row class="mt-2">
-      <v-col cols="auto">
+      <v-col class="d-flex flex-row align-center" cols="auto">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -228,14 +230,42 @@ ko:
           <span>{{ powerTooltip }}</span>
         </v-tooltip>
 
-        <span class="text--primary text-h6 text-no-wrap">
+        <span v-if="!showEditNameDialog" class="text--primary text-h6 text-no-wrap">
           {{ item.name }}
         </span>
+        <v-text-field
+            v-else
+            dense
+            outlined
+            hide-details
+            autofocus
+            v-model="editName"
+            @change="onChangeEditName"
+            @keydown.enter.stop="onChangeEditName"
+            @keydown.esc.stop="onChangeEditNameCancel"
+        ></v-text-field>
       </v-col>
 
       <v-spacer></v-spacer>
 
       <v-col cols="auto">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                class="mr-2"
+                x-small
+                plain
+                icon
+                @click="onClickEditName"
+                v-bind="attrs"
+                v-on="on"
+            >
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+          </template>
+          <span>{{ $t('tooltip.edit_name') }}</span>
+        </v-tooltip>
+
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-icon
@@ -742,6 +772,9 @@ export default class MainAirjoyDetails extends VueBase {
   originalDescription = '';
   description = '';
 
+  showEditNameDialog = false;
+  editName = '';
+
   created() {
     this.updateDevice(true);
   }
@@ -1123,7 +1156,7 @@ export default class MainAirjoyDetails extends VueBase {
       name: name,
       description: description,
     } as UpdateAirjoyDeviceQ;
-    this.loadingSubmit = false;
+    this.loadingSubmit = true;
     this.$api2.patchAirjoyDevice(group, project, device, body)
         .then(() => {
           this.loadingSubmit = false;
@@ -1144,6 +1177,43 @@ export default class MainAirjoyDetails extends VueBase {
       power_state = POWER_STATE_ON;
     }
     this.controlDevice({power_state: power_state});
+  }
+
+  onClickEditName() {
+    this.editName = this.item.name;
+    this.showEditNameDialog = true;
+  }
+
+  onChangeEditName() {
+    if (!this.showEditNameDialog) {
+      return;
+    }
+
+    this.showEditNameDialog = false;
+    if (this.editName === this.item.name) {
+      return;
+    }
+
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    const body = {
+      name: this.editName,
+      description: this.originalDescription,
+    } as UpdateAirjoyDeviceQ;
+
+    this.$api2.patchAirjoyDevice(group, project, device, body)
+        .then(() => {
+          this.item.name = this.editName;
+          this.toastRequestSuccess();
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+        });
+  }
+
+  onChangeEditNameCancel() {
+    this.showEditNameDialog = false;
   }
 
   onClickPm10() {

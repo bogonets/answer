@@ -18,6 +18,7 @@ class Policy(Enum):
     HasMemberWrite = auto()
     HasSettingRead = auto()
     HasSettingWrite = auto()
+    HasAdmin = auto()
 
 
 def has_layout_read(permission: RawPermission) -> None:
@@ -80,6 +81,11 @@ def has_setting_write(permission: RawPermission) -> None:
         raise PermissionError("You do not have write access to the setting")
 
 
+def has_admin(permission: RawPermission) -> None:
+    if not permission.is_admin:
+        raise PermissionError("You do not have administrator privileges")
+
+
 POLICY_TO_TESTER_MAP = {
     Policy.HasLayoutRead: has_layout_read,
     Policy.HasLayoutWrite: has_layout_write,
@@ -93,6 +99,7 @@ POLICY_TO_TESTER_MAP = {
     Policy.HasMemberWrite: has_member_write,
     Policy.HasSettingRead: has_setting_read,
     Policy.HasSettingWrite: has_setting_write,
+    Policy.HasAdmin: has_admin,
 }
 
 
