@@ -53,6 +53,21 @@ export const STREAMING_DURATION_MILLISECONDS = 10 * STREAMING_UNIT;
 export const STREAMING_UPDATE_INTERVAL_MILLISECONDS = STREAMING_UNIT;
 export const STREAMING_FRAME_RATE = 30;
 
+export const VALID_PM10_MIN = undefined;
+export const VALID_PM10_MAX = 101;
+
+export const VALID_PM2_5_MIN = undefined;
+export const VALID_PM2_5_MAX = 51;
+
+export const VALID_CO2_MIN = 200;
+export const VALID_CO2_MAX = 2000;
+
+export const VALID_HUMIDITY_MIN = 0;
+export const VALID_HUMIDITY_MAX = 95;
+
+export const VALID_TEMPERATURE_MIN = -20;
+export const VALID_TEMPERATURE_MAX = 70;
+
 export function calcHumidity(value: number) {
     return (value / 10.0);
 }
@@ -77,6 +92,40 @@ export function calcFilterLifeMinutes(value: number) {
 export function calcFilterLifeDays(value: number) {
     const minutes = calcFilterLifeMinutes(value);
     return Math.ceil(minutes / MINUTES_IN_DAY);
+}
+
+export function validRange(value: number, min?: number, max?: number) {
+    if (typeof min !== 'undefined') {
+        if (value <= min) {
+            return false;
+        }
+    }
+    if (typeof max !== 'undefined') {
+        if (value >= max) {
+            return false;
+        }
+    }
+    return true;
+}
+
+export function validPm10(value: number) {
+    return validRange(value, VALID_PM10_MIN, VALID_PM10_MAX);
+}
+
+export function validPm2_5(value: number) {
+    return validRange(value, VALID_PM2_5_MIN, VALID_PM2_5_MAX);
+}
+
+export function validCo2(value: number) {
+    return validRange(value, VALID_CO2_MIN, VALID_CO2_MAX);
+}
+
+export function validHumidity(value: number) {
+    return validRange(value, VALID_HUMIDITY_MIN, VALID_HUMIDITY_MAX);
+}
+
+export function validTemperature(value: number) {
+    return validRange(value, VALID_TEMPERATURE_MIN, VALID_TEMPERATURE_MAX);
 }
 
 export function categoryIndexByName(name: string) {

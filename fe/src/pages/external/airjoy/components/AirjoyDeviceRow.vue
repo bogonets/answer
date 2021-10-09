@@ -186,7 +186,9 @@ ko:
             <template v-slot:activator="{ on, attrs }">
               <v-chip class="mr-1" @click.stop="clickPm10" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-dots-hexagon</v-icon>
-                {{ item.pm10 }}
+                <span :class="textColorPm10">
+                  {{ item.pm10 }}
+                </span>
               </v-chip>
             </template>
             <span>{{ $t('tooltip.pm10', [item.pm10]) }}</span>
@@ -196,7 +198,9 @@ ko:
             <template v-slot:activator="{ on, attrs }">
               <v-chip class="mr-1" @click.stop="clickPm2_5" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-blur</v-icon>
-                {{ item.pm2_5 }}
+                <span :class="textColorPm2_5">
+                  {{ item.pm2_5 }}
+                </span>
               </v-chip>
             </template>
             <span>{{ $t('tooltip.pm2_5', [item.pm2_5]) }}</span>
@@ -206,7 +210,9 @@ ko:
             <template v-slot:activator="{ on, attrs }">
               <v-chip class="mr-1" @click.stop="clickCo2" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-molecule-co2</v-icon>
-                {{ item.co2 }}
+                <span :class="textColorCo2">
+                  {{ item.co2 }}
+                </span>
               </v-chip>
             </template>
             <span>{{ $t('tooltip.co2', [item.co2]) }}</span>
@@ -216,7 +222,9 @@ ko:
             <template v-slot:activator="{ on, attrs }">
               <v-chip class="mr-1" @click.stop="clickHumidity" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-water</v-icon>
-                {{ calcHumidityText(item.humidity) }}
+                <span :class="textColorHumidity">
+                  {{ calcHumidityText(item.humidity) }}
+                </span>
               </v-chip>
             </template>
             <span>{{ $t('tooltip.humidity', [calcHumidityText(item.humidity)]) }}</span>
@@ -226,7 +234,9 @@ ko:
             <template v-slot:activator="{ on, attrs }">
               <v-chip class="mr-1" @click.stop="clickTemperature" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-thermometer</v-icon>
-                {{ calcTemperature(item.temperature) }}
+                <span :class="textColorTemperature">
+                  {{ calcTemperature(item.temperature) }}
+                </span>
               </v-chip>
             </template>
             <span>{{ $t('tooltip.temperature', [calcTemperature(item.temperature)]) }}</span>
@@ -368,13 +378,21 @@ import {
   LOCK,
   OFFLINE_CONVERSION_TIMEOUT_SECONDS,
   createEmptyAirjoyDeviceA,
+  calcHumidity as _calcHumidity,
   calcHumidityText as _calcHumidityText,
   calcTemperature as _calcTemperature,
   calcFilterLifeMinutes,
+  validPm10,
+  validPm2_5,
+  validCo2,
+  validHumidity,
+  validTemperature,
 } from '@/packet/airjoy';
 import AirjoyFanSpeedGroup from '@/pages/external/airjoy/components/AirjoyFanSpeedGroup.vue';
 import AirjoyTimerGroup from '@/pages/external/airjoy/components/AirjoyTimerGroup.vue';
 import {createMoment, momentDurationSeconds} from '@/chrono/date';
+
+const INVALID_TEXT_CLASSES = 'red--text text--darken-3';
 
 @Component({
   components: {
@@ -407,6 +425,46 @@ export default class AirjoyDeviceRow extends VueBase {
 
   calcTemperature(value: number) {
     return _calcTemperature(value);
+  }
+
+  get textColorPm10() {
+    if (validPm10(this.item.pm10)) {
+      return '';
+    } else {
+      return INVALID_TEXT_CLASSES;
+    }
+  }
+
+  get textColorPm2_5() {
+    if (validPm2_5(this.item.pm2_5)) {
+      return '';
+    } else {
+      return INVALID_TEXT_CLASSES;
+    }
+  }
+
+  get textColorCo2() {
+    if (validCo2(this.item.co2)) {
+      return '';
+    } else {
+      return INVALID_TEXT_CLASSES;
+    }
+  }
+
+  get textColorHumidity() {
+    if (validHumidity(_calcHumidity(this.item.humidity))) {
+      return '';
+    } else {
+      return INVALID_TEXT_CLASSES;
+    }
+  }
+
+  get textColorTemperature() {
+    if (validTemperature(_calcTemperature(this.item.temperature))) {
+      return '';
+    } else {
+      return INVALID_TEXT_CLASSES;
+    }
   }
 
   get powerColor() {

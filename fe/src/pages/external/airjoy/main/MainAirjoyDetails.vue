@@ -833,7 +833,7 @@ export default class MainAirjoyDetails extends VueBase {
 
   get filterLifeColor() {
     if (this.item.filter_life == 0) {
-      return 'red--text text--darken-3'
+      return 'red--text text--darken-3';
     } else {
       return '';
     }
