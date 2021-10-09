@@ -132,8 +132,8 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-divider v-show="isAirjoy"></v-divider>
-        <v-list-item v-show="isAirjoy" link @click.stop="externalAirjoyDevices">
+        <v-divider v-show="false"></v-divider>
+        <v-list-item v-show="false" link @click.stop="externalAirjoyDevices">
           <v-list-item-icon>
             <v-icon>mdi-weather-windy</v-icon>
           </v-list-item-icon>
@@ -164,10 +164,6 @@ export default class NaviAdmin extends VueBase {
 
   get oem() {
     return this.$localStore.preference.oem;
-  }
-
-  get isAirjoy() {
-    return this.oem === OEM_AIRJOY;
   }
 
   onClickFoldNavigation() {

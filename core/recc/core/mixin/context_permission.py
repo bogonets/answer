@@ -130,7 +130,10 @@ class ContextPermission(ContextBase):
             permission = await self.get_group_permission(session.uid, group_uid)
             return permission_to_raw(permission, session.is_admin)
         except:  # noqa
-            return RawPermission.all_false()
+            if session.is_admin:
+                return RawPermission.all_true()
+            else:
+                return RawPermission.all_false()
 
     async def get_project_raw_permission(
         self, session: SessionEx, group: Union[str, int], project: Union[str, int]
@@ -155,4 +158,7 @@ class ContextPermission(ContextBase):
             )
             return permission_to_raw(permission, session.is_admin)
         except:  # noqa
-            return RawPermission.all_false()
+            if session.is_admin:
+                return RawPermission.all_true()
+            else:
+                return RawPermission.all_false()

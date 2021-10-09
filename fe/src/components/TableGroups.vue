@@ -170,7 +170,7 @@ export default class TableGroups extends VueBase {
         },
     );
 
-    if (this.hideActions) {
+    if (!this.hideActions) {
       headers.push({
         text: this.$t('headers.actions').toString(),
         align: 'center',

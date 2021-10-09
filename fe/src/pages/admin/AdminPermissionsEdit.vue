@@ -44,7 +44,6 @@ ko:
         :subheader="$t('subheader.basic')"
     >
       <form-permission
-          disable-name
           hide-cancel-button
           :disable-submit-button="!modified"
           :value="current"
