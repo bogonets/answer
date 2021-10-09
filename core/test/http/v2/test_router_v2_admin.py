@@ -12,6 +12,8 @@ from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.permission import PermissionA, CreatePermissionQ, UpdatePermissionQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.system import SystemOverviewA
+from recc.log.logging import get_root_level
+from logging import CRITICAL, DEBUG
 
 
 class RouterV2AdminTestCase(AsyncTestCase):
@@ -276,6 +278,27 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertEqual(200, response5.status)
         self.assertIsInstance(response5.data, ConfigA)
         self.assertEqual("1", response5.data.value)
+
+    async def test_log_level_configs(self):
+        current_level = get_root_level()
+        if current_level == CRITICAL:
+            change_log_level = "Debug"
+            expected_log_level = DEBUG
+        else:
+            change_log_level = "Critical"
+            expected_log_level = CRITICAL
+
+        key = "log_level"
+        body = UpdateConfigValueQ(change_log_level)
+        path = v2_admin_path(u.configs_pkey.format(key=key))
+        response1 = await self.tester.patch(path, data=body)
+        self.assertEqual(200, response1.status)
+
+        response2 = await self.tester.get(path, cls=ConfigA)
+        self.assertEqual(200, response2.status)
+        self.assertIsInstance(response2.data, ConfigA)
+        self.assertEqual(change_log_level, response2.data.value)
+        self.assertEqual(expected_log_level, get_root_level())
 
 
 if __name__ == "__main__":

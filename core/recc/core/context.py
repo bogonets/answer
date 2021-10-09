@@ -110,6 +110,9 @@ class Context(
         logger.info("The context has been opened")
 
     async def _after_open(self) -> None:
+        await self.setup_context_config()
+        logger.info("Setup context configurations")
+
         if self.container.is_open() and self.is_guest_mode():
             await self.connect_global_network()
             logger.info("Connect global network.")
