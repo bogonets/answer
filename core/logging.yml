@@ -44,21 +44,21 @@ handlers:
     encoding: utf-8
     delay: false
 
-loggers:
-  aiohttp:
-    level: DEBUG
-  asyncio:
-    level: DEBUG
-  docker:
-    level: DEBUG
-  elasticsearch:
-    level: DEBUG
-  grpc:
-    level: DEBUG
-  recc:
-    level: DEBUG
-  urllib3:
-    level: DEBUG
+#loggers:
+#  aiohttp:
+#    level: DEBUG
+#  asyncio:
+#    level: DEBUG
+#  docker:
+#    level: DEBUG
+#  elasticsearch:
+#    level: DEBUG
+#  grpc:
+#    level: DEBUG
+#  recc:
+#    level: DEBUG
+#  urllib3:
+#    level: DEBUG
 
 root:
   level: DEBUG

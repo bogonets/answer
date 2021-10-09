@@ -16,6 +16,13 @@ LOGGER_NAME_RECC_COMMON = "recc.common"
 LOGGER_NAME_RECC_LAMDA = "recc.lamda"
 LOGGER_NAME_RECC_NETWORK = "recc.network"
 
+LOGGER_NAME_AIOHTTP = "aiohttp"
+LOGGER_NAME_ASYNCIO = "asyncio"
+LOGGER_NAME_DOCKER = "docker"
+LOGGER_NAME_ELASTICSEARCH = "elasticsearch"
+LOGGER_NAME_GRPC = "grpc"
+LOGGER_NAME_URLLIB3 = "urllib3"
+
 recc_logger = logging.getLogger(LOGGER_NAME_RECC)
 recc_core_logger = logging.getLogger(LOGGER_NAME_CORE_RECC)
 recc_http_logger = logging.getLogger(LOGGER_NAME_RECC_HTTP)
@@ -178,31 +185,19 @@ _DEFAULT_LOGGING_CONFIG = {
             "formatter": "color",
             "stream": "ext://sys.stdout",
         },
+        "file_default": {
+            "class": "logging.FileHandler",
+            "level": "DEBUG",
+            "formatter": "default",
+            "filename": "recc.log",
+            "mode": "a",
+            "encoding": "utf-8",
+            "delay": False,
+        },
     },
     "loggers": {
         "": {  # root logger
             "handlers": ["console_color"],
-            "level": "DEBUG",
-        },
-        "aiohttp": {
-            "level": "DEBUG",
-        },
-        "asyncio": {
-            "level": "DEBUG",
-        },
-        "docker": {
-            "level": "DEBUG",
-        },
-        "elasticsearch": {
-            "level": "DEBUG",
-        },
-        "grpc": {
-            "level": "DEBUG",
-        },
-        LOGGER_NAME_RECC: {
-            "level": "DEBUG",
-        },
-        "urllib3": {
             "level": "DEBUG",
         },
     },
