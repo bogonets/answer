@@ -2,7 +2,7 @@
 
 from typing import Optional, Any, List
 from datetime import datetime
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -19,18 +19,22 @@ class RawPermission:
     w_member: bool = False
     r_setting: bool = False
     w_setting: bool = False
+    is_admin: bool = False
+    features: List[str] = field(default_factory=list)
+    extra: Any = None
 
     @classmethod
-    def all(cls, x: bool):
-        return cls(x, x, x, x, x, x, x, x, x, x, x, x)
+    def all(cls, x: bool, features: Optional[List[str]] = None, extra: Any = None):
+        f = features if features else list()
+        return cls(x, x, x, x, x, x, x, x, x, x, x, x, x, f, extra)
 
     @classmethod
-    def all_true(cls):
-        return cls.all(True)
+    def all_true(cls, features: Optional[List[str]] = None, extra: Any = None):
+        return cls.all(True, features, extra)
 
     @classmethod
-    def all_false(cls):
-        return cls.all(False)
+    def all_false(cls, features: Optional[List[str]] = None, extra: Any = None):
+        return cls.all(False, features, extra)
 
 
 @dataclass

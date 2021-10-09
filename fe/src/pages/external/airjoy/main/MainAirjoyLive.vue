@@ -96,6 +96,10 @@ import {
   INDEX_HUMIDITY,
   INDEX_TEMPERATURE,
   INDEX_VOC,
+  STREAMING_DURATION_MILLISECONDS,
+  STREAMING_REFRESH_MILLISECONDS,
+  STREAMING_UPDATE_INTERVAL_MILLISECONDS,
+  STREAMING_FRAME_RATE,
   categoryIndexByName,
   printableCategoryNames,
   printableCategoryIndexByName,
@@ -104,8 +108,12 @@ import {
 } from '@/packet/airjoy';
 import * as _ from 'lodash';
 
-const UPDATE_INTERVAL_MILLISECONDS = 1000;
-const STREAMING_FRAME_RATE = 30;
+/**
+ * For avoid type checking in typescript.
+ */
+function yMaxDefault(): undefined | number {
+  return undefined;
+}
 
 @Component({
   components: {
@@ -125,6 +133,8 @@ export default class MainAirjoyLive extends VueBase {
       streaming: {
         pause: false,
         frameRate: STREAMING_FRAME_RATE,
+        duration: STREAMING_DURATION_MILLISECONDS,
+        refresh: STREAMING_REFRESH_MILLISECONDS,
       },
     },
     scales: {
@@ -140,7 +150,8 @@ export default class MainAirjoyLive extends VueBase {
         },
       },
       y: {
-        min: 0
+        min: 0,
+        max: yMaxDefault(),
       },
     }
   };
@@ -170,7 +181,7 @@ export default class MainAirjoyLive extends VueBase {
       if (!this.isPause()) {
         this.updateChart();
       }
-    }, UPDATE_INTERVAL_MILLISECONDS);
+    }, STREAMING_UPDATE_INTERVAL_MILLISECONDS);
   }
 
   beforeDestroy() {
@@ -182,6 +193,10 @@ export default class MainAirjoyLive extends VueBase {
 
   isPause() {
     return this.chartOptions.plugins.streaming.pause;
+  }
+
+  getCurrentCategoryIndex() {
+    return printableCategoryIndexByName(this.category, this.$vuetify.lang.current);
   }
 
   get categories() {
@@ -253,8 +268,7 @@ export default class MainAirjoyLive extends VueBase {
   }
 
   getSensorValue(item: AirjoySensorA) {
-    const lang = this.$vuetify.lang.current;
-    const index = printableCategoryIndexByName(this.category, lang);
+    const index = this.getCurrentCategoryIndex();
     switch (index) {
       case INDEX_PM10:
         return item.pm10;
@@ -296,6 +310,13 @@ export default class MainAirjoyLive extends VueBase {
   onChangeCategory(value) {
     console.assert(value == this.category);
     this.chartData = _.cloneDeep(this.originalChartData);
+
+    const index = this.getCurrentCategoryIndex();
+    if (index === INDEX_VOC) {
+      this.chartOptions.scales.y.max = 3;
+    } else {
+      this.chartOptions.scales.y.max = undefined;
+    }
   }
 
   onClickPlay() {

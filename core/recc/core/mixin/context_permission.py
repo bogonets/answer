@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Union
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.permission import Permission
+from recc.packet.permission import RawPermission
+from recc.packet.cvt.permission import permission_to_raw
+from recc.session.session_ex import SessionEx
 
 
 class ContextPermission(ContextBase):
@@ -112,3 +115,44 @@ class ContextPermission(ContextBase):
             return await self.get_project_permission(user_uid, project_uid)
         except:  # noqa
             return await self.get_group_permission(user_uid, group_uid)
+
+    async def get_group_raw_permission(
+        self, session: SessionEx, group: Union[str, int]
+    ) -> RawPermission:
+        try:
+            if isinstance(group, int):
+                group_uid = group
+            elif isinstance(group, str):
+                group_uid = await self.get_group_uid(group)
+            else:
+                group_uid = await self.get_group_uid(str(group))
+
+            permission = await self.get_group_permission(session.uid, group_uid)
+            return permission_to_raw(permission, session.is_admin)
+        except:  # noqa
+            return RawPermission.all_false()
+
+    async def get_project_raw_permission(
+        self, session: SessionEx, group: Union[str, int], project: Union[str, int]
+    ) -> RawPermission:
+        try:
+            if isinstance(group, int):
+                group_uid = group
+            elif isinstance(group, str):
+                group_uid = await self.get_group_uid(group)
+            else:
+                group_uid = await self.get_group_uid(str(group))
+
+            if isinstance(project, int):
+                project_uid = project
+            elif isinstance(project, str):
+                project_uid = await self.get_project_uid(group_uid, project)
+            else:
+                project_uid = await self.get_project_uid(group_uid, str(project))
+
+            permission = await self.get_best_permission(
+                session.uid, group_uid, project_uid
+            )
+            return permission_to_raw(permission, session.is_admin)
+        except:  # noqa
+            return RawPermission.all_false()

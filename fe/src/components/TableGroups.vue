@@ -101,6 +101,9 @@ export default class TableGroups extends VueBase {
   readonly hideActionMove!: boolean;
 
   @Prop({type: Boolean, default: false})
+  readonly showGroupSlug!: boolean;
+
+  @Prop({type: Boolean, default: false})
   readonly clickableRow!: boolean;
 
   @Prop({type: Boolean, default: false})
@@ -113,11 +116,7 @@ export default class TableGroups extends VueBase {
   filter = '';
 
   created() {
-    if (this.hideActions) {
-      this.headers = this.createHeaders(false);
-    } else {
-      this.headers = this.createHeaders(true);
-    }
+    this.headers = this.createHeaders();
   }
 
   get hideTopBar(): boolean {
@@ -128,45 +127,50 @@ export default class TableGroups extends VueBase {
     return this.hideActionEdit && this.hideActionMove;
   }
 
-  createHeaders(includeActions = true) {
-    const headers = [
-      {
+  createHeaders() {
+    const headers = [] as Array<any>;
+    if (this.showGroupSlug) {
+      headers.push({
         text: this.$t('headers.slug').toString(),
         align: 'left',
         filterable: true,
         sortable: true,
         value: 'slug',
-      },
-      {
-        text: this.$t('headers.name').toString(),
-        align: 'center',
-        filterable: true,
-        sortable: true,
-        value: 'name',
-      },
-      {
-        text: this.$t('headers.description').toString(),
-        align: 'center',
-        filterable: true,
-        sortable: true,
-        value: 'description',
-      },
-      {
-        text: this.$t('headers.created_at').toString(),
-        align: 'center',
-        filterable: false,
-        sortable: true,
-        value: 'created_at',
-      },
-      {
-        text: this.$t('headers.updated_at').toString(),
-        align: 'center',
-        filterable: false,
-        sortable: true,
-        value: 'updated_at',
-      },
-    ];
-    if (includeActions) {
+      });
+    }
+
+    headers.push(
+        {
+          text: this.$t('headers.name').toString(),
+          align: 'center',
+          filterable: true,
+          sortable: true,
+          value: 'name',
+        },
+        {
+          text: this.$t('headers.description').toString(),
+          align: 'center',
+          filterable: true,
+          sortable: true,
+          value: 'description',
+        },
+        {
+          text: this.$t('headers.created_at').toString(),
+          align: 'center',
+          filterable: false,
+          sortable: true,
+          value: 'created_at',
+        },
+        {
+          text: this.$t('headers.updated_at').toString(),
+          align: 'center',
+          filterable: false,
+          sortable: true,
+          value: 'updated_at',
+        },
+    );
+
+    if (this.hideActions) {
       headers.push({
         text: this.$t('headers.actions').toString(),
         align: 'center',

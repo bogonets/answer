@@ -4,19 +4,36 @@ from recc.database.struct.permission import Permission
 from recc.packet.permission import RawPermission, PermissionA
 
 
-def permission_to_raw(permission: Permission) -> RawPermission:
-    r_layout = permission.r_layout if permission.r_layout else False
-    w_layout = permission.w_layout if permission.w_layout else False
-    r_storage = permission.r_storage if permission.r_storage else False
-    w_storage = permission.w_storage if permission.w_storage else False
-    r_manager = permission.r_manager if permission.r_manager else False
-    w_manager = permission.w_manager if permission.w_manager else False
-    r_graph = permission.r_graph if permission.r_graph else False
-    w_graph = permission.w_graph if permission.w_graph else False
-    r_member = permission.r_member if permission.r_member else False
-    w_member = permission.w_member if permission.w_member else False
-    r_setting = permission.r_setting if permission.r_setting else False
-    w_setting = permission.w_setting if permission.w_setting else False
+def permission_to_raw(permission: Permission, is_admin: bool) -> RawPermission:
+    if is_admin:
+        r_layout = True
+        w_layout = True
+        r_storage = True
+        w_storage = True
+        r_manager = True
+        w_manager = True
+        r_graph = True
+        w_graph = True
+        r_member = True
+        w_member = True
+        r_setting = True
+        w_setting = True
+    else:
+        r_layout = permission.r_layout if permission.r_layout else False
+        w_layout = permission.w_layout if permission.w_layout else False
+        r_storage = permission.r_storage if permission.r_storage else False
+        w_storage = permission.w_storage if permission.w_storage else False
+        r_manager = permission.r_manager if permission.r_manager else False
+        w_manager = permission.w_manager if permission.w_manager else False
+        r_graph = permission.r_graph if permission.r_graph else False
+        w_graph = permission.w_graph if permission.w_graph else False
+        r_member = permission.r_member if permission.r_member else False
+        w_member = permission.w_member if permission.w_member else False
+        r_setting = permission.r_setting if permission.r_setting else False
+        w_setting = permission.w_setting if permission.w_setting else False
+
+    features = permission.features if permission.features else list()
+    extra = permission.extra
 
     return RawPermission(
         r_layout=r_layout,
@@ -31,6 +48,9 @@ def permission_to_raw(permission: Permission) -> RawPermission:
         w_member=w_member,
         r_setting=r_setting,
         w_setting=w_setting,
+        is_admin=is_admin,
+        features=features,
+        extra=extra,
     )
 
 

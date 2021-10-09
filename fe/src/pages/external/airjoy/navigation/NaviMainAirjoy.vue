@@ -136,7 +136,7 @@ ko:
 import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {ProjectA} from '@/packet/project';
-import type {PermissionA} from '@/packet/permission';
+import type {RawPermission} from '@/packet/permission';
 import mainAirjoyNames from '@/router/names/external/airjoy/main';
 import mainNames from '@/router/names/main';
 
@@ -160,7 +160,7 @@ export default class NaviMainAirjoy extends VueBase {
   index = 0;
   mini = false;
   project = {} as ProjectA;
-  permission = {} as PermissionA;
+  permission = {} as RawPermission;
 
   get projectSlug(): string {
     const name = this.$route.params.project;
@@ -197,27 +197,27 @@ export default class NaviMainAirjoy extends VueBase {
   }
 
   get showDevices() {
-    return this.permission?.r_manager || false;
+    return this.permission.r_manager;
   }
 
   get showLive() {
-    return this.permission?.r_manager || false;
+    return this.permission.r_manager;
   }
 
   get showChart() {
-    return this.permission?.r_manager || false;
+    return this.permission.r_manager;
   }
 
   get showService() {
-    return this.permission?.r_manager || false;
+    return this.permission.r_manager;
   }
 
   get showMember() {
-    return this.permission?.r_member || false;
+    return this.permission.r_member;
   }
 
   get showSetting() {
-    return this.permission?.r_setting;
+    return this.permission.r_setting;
   }
 
   onClickFoldNavigation() {

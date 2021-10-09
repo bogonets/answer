@@ -1,3 +1,21 @@
+export interface RawPermission {
+    r_layout: boolean;
+    w_layout: boolean;
+    r_storage: boolean;
+    w_storage: boolean;
+    r_manager: boolean;
+    w_manager: boolean;
+    r_graph: boolean;
+    w_graph: boolean;
+    r_member: boolean;
+    w_member: boolean;
+    r_setting: boolean;
+    w_setting: boolean;
+    is_admin: boolean;
+    features: Array<string>;
+    extra: any;
+}
+
 export interface PermissionA {
     name: string;
     description?: string;

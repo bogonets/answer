@@ -1,3 +1,13 @@
+import moment from 'moment-timezone';
+
+export function createMoment(inp?: moment.MomentInput) {
+    return moment(inp).tz(moment.tz.guess());
+}
+
+export function momentDurationSeconds(x: moment.Moment, y: moment.Moment) {
+    return x.diff(y, 'seconds');
+}
+
 export function today() {
     return new Date(Date.now());
 }

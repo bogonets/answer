@@ -171,7 +171,7 @@ ko:
             <span>{{ uvLedDescription }}</span>
           </v-tooltip>
 
-          <v-tooltip v-if="!item.online" bottom>
+          <v-tooltip v-if="!online" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-chip small :color="onlineColor" v-bind="attrs" v-on="on">
                 <v-icon>mdi-lan-connect</v-icon>
@@ -366,6 +366,7 @@ import {
   FAN_CONTROL_SLEEP,
   UNLOCK,
   LOCK,
+  OFFLINE_CONVERSION_TIMEOUT_SECONDS,
   createEmptyAirjoyDeviceA,
   calcHumidityText as _calcHumidityText,
   calcTemperature as _calcTemperature,
@@ -373,6 +374,7 @@ import {
 } from '@/packet/airjoy';
 import AirjoyFanSpeedGroup from '@/pages/external/airjoy/components/AirjoyFanSpeedGroup.vue';
 import AirjoyTimerGroup from '@/pages/external/airjoy/components/AirjoyTimerGroup.vue';
+import {createMoment, momentDurationSeconds} from '@/chrono/date';
 
 @Component({
   components: {
@@ -490,6 +492,17 @@ export default class AirjoyDeviceRow extends VueBase {
     } else {
       return this.$t('uv.alarm');
     }
+  }
+
+  get online() {
+    if (this.item.online) {
+      return true;
+    }
+
+    const now = createMoment();
+    const time = createMoment(this.item.time);
+    const durationSeconds = momentDurationSeconds(now, time);
+    return durationSeconds <= OFFLINE_CONVERSION_TIMEOUT_SECONDS;
   }
 
   get onlineColor() {

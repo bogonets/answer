@@ -2,7 +2,7 @@ import VueInterface from 'vue';
 import {PluginObject} from 'vue/types/plugin';
 import {Store, CommitOptions} from 'vuex';
 import VuexPersist from 'vuex-persist'
-import {PermissionA} from '@/packet/permission';
+import type {RawPermission} from '@/packet/permission';
 
 // Modules
 import permission from '@/store/modules/permission';
@@ -12,8 +12,6 @@ const DEFAULT_STRICT = process.env.NODE_ENV !== 'production';
 
 const PERMISSION_GROUP = 'permission/group';
 const PERMISSION_PROJECT = 'permission/project';
-const PERMISSION_FEATURES = 'permission/features';
-const PERMISSION_EXTRA = 'permission/extra';
 const PERMISSION_ADMIN = 'permission/admin';
 const PERMISSION_LAYOUT_READ = 'permission/layoutRead';
 const PERMISSION_LAYOUT_WRITE = 'permission/layoutWrite';
@@ -27,6 +25,9 @@ const PERMISSION_MEMBER_READ = 'permission/memberRead';
 const PERMISSION_MEMBER_WRITE = 'permission/memberWrite';
 const PERMISSION_SETTING_READ = 'permission/settingRead';
 const PERMISSION_SETTING_WRITE = 'permission/settingWrite';
+const PERMISSION_IS_ADMIN = 'permission/isAdmin';
+const PERMISSION_FEATURES = 'permission/features';
+const PERMISSION_EXTRA = 'permission/extra';
 
 export interface SessionStoreOptions {
     key?: string;
@@ -110,9 +111,7 @@ export class SessionStore {
         this.setter(PERMISSION_ADMIN, val);
     }
 
-    set permission(val: PermissionA) {
-        this.setter(PERMISSION_FEATURES, val.features);
-        this.setter(PERMISSION_EXTRA, val.extra);
+    set permission(val: RawPermission) {
         this.setter(PERMISSION_LAYOUT_READ, val.r_layout);
         this.setter(PERMISSION_LAYOUT_WRITE, val.w_layout);
         this.setter(PERMISSION_STORAGE_READ, val.r_storage);
@@ -125,6 +124,8 @@ export class SessionStore {
         this.setter(PERMISSION_MEMBER_WRITE, val.w_member);
         this.setter(PERMISSION_SETTING_READ, val.r_setting);
         this.setter(PERMISSION_SETTING_WRITE, val.w_setting);
+        this.setter(PERMISSION_FEATURES, val.features);
+        this.setter(PERMISSION_EXTRA, val.extra);
     }
 
     get permissionLayoutRead() {

@@ -21,7 +21,12 @@ import type {ConfigA, UpdateConfigValueQ} from '@/packet/config';
 import type {ContainerA, ControlContainersQ} from '@/packet/container';
 import type {GroupA, CreateGroupQ, UpdateGroupQ} from '@/packet/group';
 import type {InfoA, CreateInfoQ, UpdateInfoQ} from '@/packet/info';
-import type {PermissionA, CreatePermissionQ, UpdatePermissionQ} from '@/packet/permission';
+import type {
+    RawPermission,
+    PermissionA,
+    CreatePermissionQ,
+    UpdatePermissionQ,
+} from '@/packet/permission';
 import type {PluginA} from '@/packet/plugin';
 import type {TemplateA} from '@/packet/template';
 import type {
@@ -291,6 +296,10 @@ export default class ApiV2 {
         return this.patch<UserA>('/self', body);
     }
 
+    deleteSelf() {
+        return this.delete('/self');
+    }
+
     getSelfExtra() {
         return this.get<UserExtraA>('/self/extra');
     }
@@ -303,8 +312,12 @@ export default class ApiV2 {
         return this.patch('/self/password', body);
     }
 
-    deleteSelf() {
-        return this.delete('/self');
+    getSelfRawPermissionPgroup(group: string) {
+        return this.get<RawPermission>(`/self/raw/permission/${group}`);
+    }
+
+    getSelfRawPermissionPgroupPproject(group: string, project: string) {
+        return this.get<RawPermission>(`/self/raw/permission/${group}/${project}`);
     }
 
     // -----------

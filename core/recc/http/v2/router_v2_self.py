@@ -9,6 +9,7 @@ from recc.http.http_decorator import parameter_matcher
 from recc.http import http_urls as u
 from recc.session.session_ex import SessionEx
 from recc.packet.user import UserA, UpdateUserQ, UpdatePasswordQ
+from recc.packet.permission import RawPermission
 
 
 class RouterV2Self:
@@ -31,6 +32,7 @@ class RouterV2Self:
 
     # noinspection PyTypeChecker
     def _routes(self) -> List[AbstractRouteDef]:
+        # fmt: off
         return [
             web.get(u.empty, self.get_root),
             web.patch(u.empty, self.patch_root),
@@ -41,7 +43,10 @@ class RouterV2Self:
             web.get(u.extra, self.get_extra),
             web.patch(u.extra, self.patch_extra),
             web.patch(u.password, self.patch_password),
+            web.get(u.raw_permission_pgroup, self.get_raw_permission_pgroup),
+            web.get(u.raw_permission_pgroup_pproject, self.get_raw_permission_pgroup_pproject),  # noqa
         ]
+        # fmt: on
 
     # --------
     # Handlers
@@ -94,3 +99,15 @@ class RouterV2Self:
             await self.context.change_password(session.audience, body.after)
         else:
             raise HTTPUnauthorized(reason="The password is incorrect.")
+
+    @parameter_matcher()
+    async def get_raw_permission_pgroup(
+        self, session: SessionEx, group: str
+    ) -> RawPermission:
+        return await self.context.get_group_raw_permission(session, group)
+
+    @parameter_matcher()
+    async def get_raw_permission_pgroup_pproject(
+        self, session: SessionEx, group: str, project: str
+    ) -> RawPermission:
+        return await self.context.get_project_raw_permission(session, group, project)

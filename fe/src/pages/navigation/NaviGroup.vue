@@ -82,8 +82,8 @@ ko:
 <script lang="ts">
 import {Component, Emit, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import {GroupA} from "@/packet/group";
-import {PermissionA} from "@/packet/permission";
+import type {GroupA} from '@/packet/group';
+import type {RawPermission} from '@/packet/permission';
 
 @Component
 export default class MainAccount extends VueBase {
@@ -100,7 +100,7 @@ export default class MainAccount extends VueBase {
   index = 0;
   mini = false;
   group = {} as GroupA;
-  permission = {} as PermissionA;
+  permission = {} as RawPermission;
 
   get groupSlug(): string {
     const name = this.$route.params.group;

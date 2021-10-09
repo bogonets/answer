@@ -26,11 +26,12 @@ ko:
         @click:row="onClickGroupRow"
     ></table-groups>
 
-    <span class="ml-2 text--primary text-overline">
+    <span v-if="!hideProjects" class="ml-2 text--primary text-overline">
       {{ $t('projects') }}
     </span>
-    <v-divider></v-divider>
+    <v-divider v-if="!hideProjects"></v-divider>
     <table-projects
+        v-if="!hideProjects"
         hide-filter-input
         hide-new-item-button
         hide-action-edit
@@ -49,8 +50,9 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import TableGroups from '@/components/TableGroups.vue';
 import TableProjects from '@/components/TableProjects.vue';
-import {GroupA} from "@/packet/group";
-import {ProjectA} from "@/packet/project";
+import type {GroupA} from '@/packet/group';
+import type {ProjectA} from '@/packet/project';
+import {OEMS_TO_HIDE_ROOT_PROJECT} from '@/packet/oem';
 
 @Component({
   components: {
@@ -70,6 +72,10 @@ export default class Root extends VueBase {
     }
 
     this.requestSetup();
+  }
+
+  get hideProjects() {
+    return OEMS_TO_HIDE_ROOT_PROJECT.includes(this.$localStore.preference.oem);
   }
 
   requestSetup() {

@@ -147,7 +147,7 @@ ko:
 import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {ProjectA} from '@/packet/project';
-import type {PermissionA} from '@/packet/permission';
+import type {RawPermission} from '@/packet/permission';
 import {FEATURE_VMS} from '@/packet/features';
 import mainNames from '@/router/names/main';
 
@@ -166,7 +166,7 @@ export default class NaviMain extends VueBase {
   index = 0;
   mini = false;
   project = {} as ProjectA;
-  permission = {} as PermissionA;
+  permission = {} as RawPermission;
 
   get projectSlug(): string {
     const project = this.$route.params.project;

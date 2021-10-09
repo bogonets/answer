@@ -32,8 +32,6 @@ from recc.http.http_status import (
 )
 from recc.http import http_cache_keys as c
 from recc.http import http_path_keys as p
-from recc.packet.permission import RawPermission
-from recc.packet.cvt.permission import permission_to_raw
 from recc.variables.http import VERY_VERBOSE_DEBUGGING
 
 CONTEXT_PROPERTY_NAME = "context"
@@ -72,39 +70,6 @@ def _is_serializable_class(obj: type) -> bool:
     return False
 
 
-async def _get_group_raw_permission(
-    context: Context,
-    session: SessionEx,
-    group_name: str,
-) -> RawPermission:
-    assert group_name
-    try:
-        group_uid = await context.get_group_uid(group_name)
-        permission = await context.get_group_permission(session.uid, group_uid)
-        return permission_to_raw(permission)
-    except:  # noqa
-        return RawPermission.all_false()
-
-
-async def _get_project_raw_permission(
-    context: Context,
-    session: SessionEx,
-    group_name: Optional[str],
-    project_name: Optional[str],
-) -> RawPermission:
-    assert group_name
-    assert project_name
-    try:
-        group_uid = await context.get_group_uid(group_name)
-        project_uid = await context.get_project_uid(group_uid, project_name)
-        permission = await context.get_best_permission(
-            session.uid, group_uid, project_uid
-        )
-        return permission_to_raw(permission)
-    except:  # noqa
-        return RawPermission.all_false()
-
-
 async def _test_group_permission(
     context: Context,
     session: SessionEx,
@@ -113,7 +78,7 @@ async def _test_group_permission(
 ) -> None:
     if not group_name:
         raise HTTPBadRequest(reason="The group name is missing")
-    permission = await _get_group_raw_permission(context, session, group_name)
+    permission = await context.get_group_raw_permission(session, group_name)
     try:
         test_policies(group_policies, permission)
     except PermissionError as e:
@@ -131,8 +96,8 @@ async def _test_project_permission(
         raise HTTPBadRequest(reason="The group name is missing")
     if not project_name:
         raise HTTPBadRequest(reason="The project name is missing")
-    permission = await _get_project_raw_permission(
-        context, session, group_name, project_name
+    permission = await context.get_project_raw_permission(
+        session, group_name, project_name
     )
     try:
         test_policies(project_policies, permission)
