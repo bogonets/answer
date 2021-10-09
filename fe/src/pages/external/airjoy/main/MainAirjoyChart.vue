@@ -239,16 +239,18 @@ import {dateToString, todayString, yesterdayString} from '@/chrono/date';
 import {download} from '@/utils/download';
 import type {AirjoyChartA, AirjoyDeviceA} from '@/packet/airjoy';
 import {
-  UNKNOWN_ROUTE_PARAMS_DEVICE,
-  INDEX_UNKNOWN,
-  INDEX_HUMIDITY,
-  INDEX_TEMPERATURE,
-  categoryIndexByName,
-  printableCategoryNames,
-  printableCategoryIndexByName,
-  categoryNameByIndex,
   calcHumidity,
   calcTemperature,
+  categoryIndexByName,
+  categoryNameByIndex,
+  getChartScaleYMax,
+  INDEX_HUMIDITY,
+  INDEX_TEMPERATURE,
+  INDEX_UNKNOWN,
+  INDEX_VOC,
+  printableCategoryIndexByName,
+  printableCategoryNames,
+  UNKNOWN_ROUTE_PARAMS_DEVICE,
 } from '@/packet/airjoy';
 
 export function dateRange(days: number) {
@@ -256,6 +258,13 @@ export function dateRange(days: number) {
   const start = new Date();
   start.setDate(end.getDate() - days);
   return [dateToString(start), dateToString(end)];
+}
+
+/**
+ * For avoid type checking in typescript.
+ */
+function yMaxDefault(): undefined | number {
+  return undefined;
 }
 
 @Component({
@@ -307,6 +316,7 @@ export default class MainAirjoyChart extends VueBase {
     scales: {
       y: {
         min: 0,
+        max: yMaxDefault(),
       }
     },
   };
@@ -341,6 +351,10 @@ export default class MainAirjoyChart extends VueBase {
     }
 
     this.updateDevices();
+  }
+
+  getCurrentCategoryIndex() {
+    return printableCategoryIndexByName(this.category, this.$vuetify.lang.current);
   }
 
   get categories() {
@@ -389,10 +403,10 @@ export default class MainAirjoyChart extends VueBase {
     const device = this.device.uid;
     const start = this.periodStart;
     const end = this.periodEnd;
-    const lang = this.$vuetify.lang.current;
-    const categoryIndex = printableCategoryIndexByName(this.category, lang);
+    const categoryIndex = this.getCurrentCategoryIndex();
     const category = categoryNameByIndex(categoryIndex);
 
+    this.chartOptions.scales.y.max = getChartScaleYMax(categoryIndex);
     this.$api2.getAirjoyChart(group, project, device, start, end, category)
         .then(items => {
           this.updateSeries(categoryIndex, items);

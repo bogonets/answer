@@ -105,6 +105,7 @@ import {
   printableCategoryIndexByName,
   calcTemperature,
   calcHumidity,
+  getChartScaleYMax,
 } from '@/packet/airjoy';
 import * as _ from 'lodash';
 
@@ -312,11 +313,7 @@ export default class MainAirjoyLive extends VueBase {
     this.chartData = _.cloneDeep(this.originalChartData);
 
     const index = this.getCurrentCategoryIndex();
-    if (index === INDEX_VOC) {
-      this.chartOptions.scales.y.max = 3;
-    } else {
-      this.chartOptions.scales.y.max = undefined;
-    }
+    this.chartOptions.scales.y.max = getChartScaleYMax(index);
   }
 
   onClickPlay() {

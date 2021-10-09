@@ -68,6 +68,13 @@ export const VALID_HUMIDITY_MAX = 95;
 export const VALID_TEMPERATURE_MIN = -20;
 export const VALID_TEMPERATURE_MAX = 70;
 
+export const CHART_SCALE_Y_MAX_PM10 = undefined;
+export const CHART_SCALE_Y_MAX_PM2_5 = undefined;
+export const CHART_SCALE_Y_MAX_CO2 = undefined;
+export const CHART_SCALE_Y_MAX_HUMIDITY = 100;
+export const CHART_SCALE_Y_MAX_TEMPERATURE = 100;
+export const CHART_SCALE_Y_MAX_VOC = 3;
+
 export function calcHumidity(value: number) {
     return (value / 10.0);
 }
@@ -183,6 +190,25 @@ export const PRINTABLE_CATEGORY_NAME = {
         'voc': 'VOC',
     },
 };
+
+export function getChartScaleYMax(index: number) {
+    switch (index) {
+        case INDEX_PM10:
+            return CHART_SCALE_Y_MAX_PM10;
+        case INDEX_PM2_5:
+            return CHART_SCALE_Y_MAX_PM2_5;
+        case INDEX_CO2:
+            return CHART_SCALE_Y_MAX_CO2;
+        case INDEX_HUMIDITY:
+            return CHART_SCALE_Y_MAX_HUMIDITY;
+        case INDEX_TEMPERATURE:
+            return CHART_SCALE_Y_MAX_TEMPERATURE;
+        case INDEX_VOC:
+            return CHART_SCALE_Y_MAX_VOC;
+        default:
+            return undefined;
+    }
+}
 
 export function printableCategoryNameByIndex(index: number, lang: string) {
     switch (index) {
