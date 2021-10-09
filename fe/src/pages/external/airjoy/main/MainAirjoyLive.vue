@@ -261,7 +261,7 @@ export default class MainAirjoyLive extends VueBase {
       case INDEX_PM2_5:
         return item.pm2_5;
       case INDEX_CO2:
-        return item.pm2_5;
+        return item.co2;
       case INDEX_HUMIDITY:
         return calcHumidity(item.humidity);
       case INDEX_TEMPERATURE:
