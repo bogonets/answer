@@ -10,9 +10,10 @@ from aiohttp.web_exceptions import (
 )
 from recc.core.context import Context
 from recc.http.header.basic_auth import BasicAuth
+from recc.http.header.bearer_auth import BearerAuth
 from recc.http.http_decorator import parameter_matcher
 from recc.util.version import version_text
-from recc.packet.user import UserA, SigninA, SignupQ
+from recc.packet.user import UserA, SigninA, SignupQ, RefreshTokenA
 from recc.packet.preference import PreferenceA
 from recc.http import http_urls as u
 
@@ -44,6 +45,7 @@ class RouterV2Public:
             web.post(u.signup_admin, self.post_signup_admin),
             web.post(u.signup, self.post_signup),
             web.post(u.signin, self.post_signin),
+            web.post(u.token_refresh, self.post_token_refresh),
         ]
 
     # --------
@@ -114,3 +116,13 @@ class RouterV2Public:
         )
         preference = PreferenceA(oem=oem)
         return SigninA(access, refresh, user, preference)
+
+    # -----
+    # Token
+    # -----
+
+    @parameter_matcher()
+    async def post_token_refresh(self, bearer: BearerAuth) -> RefreshTokenA:
+        refresh_token = bearer.token
+        token = await self.context.renew_access_token(refresh_token)
+        return RefreshTokenA(access=token)

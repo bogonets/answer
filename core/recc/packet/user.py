@@ -114,3 +114,8 @@ class SignupQ:
 class UpdatePasswordQ:
     before: str
     after: str
+
+
+@dataclass
+class RefreshTokenA:
+    access: str

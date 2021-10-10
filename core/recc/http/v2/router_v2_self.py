@@ -34,23 +34,30 @@ class RouterV2Self:
     def _routes(self) -> List[AbstractRouteDef]:
         # fmt: off
         return [
+            # User
             web.get(u.empty, self.get_root),
             web.patch(u.empty, self.patch_root),
             web.delete(u.empty, self.delete_root),
             web.get(u.root, self.get_root),
             web.patch(u.root, self.patch_root),
             web.delete(u.root, self.delete_root),
+
+            # User Extra
             web.get(u.extra, self.get_extra),
             web.patch(u.extra, self.patch_extra),
+
+            # Password
             web.patch(u.password, self.patch_password),
+
+            # Permission
             web.get(u.raw_permission_pgroup, self.get_raw_permission_pgroup),
             web.get(u.raw_permission_pgroup_pproject, self.get_raw_permission_pgroup_pproject),  # noqa
         ]
         # fmt: on
 
-    # --------
-    # Handlers
-    # --------
+    # ----
+    # User
+    # ----
 
     @parameter_matcher()
     async def get_root(self, session: SessionEx) -> UserA:
@@ -84,6 +91,10 @@ class RouterV2Self:
     async def delete_root(self, session: SessionEx) -> None:
         await self.context.remove_user_by_uid(session.uid)
 
+    # ----------
+    # User Extra
+    # ----------
+
     @parameter_matcher()
     async def get_extra(self, session: SessionEx) -> Any:
         db_user = await self.context.get_user(session.uid)
@@ -93,12 +104,20 @@ class RouterV2Self:
     async def patch_extra(self, session: SessionEx, body: Dict[str, Any]) -> None:
         await self.context.update_user_extra(session.audience, body)
 
+    # --------
+    # Password
+    # --------
+
     @parameter_matcher()
     async def patch_password(self, session: SessionEx, body: UpdatePasswordQ) -> None:
         if await self.context.challenge_password(session.audience, body.before):
             await self.context.change_password(session.audience, body.after)
         else:
             raise HTTPUnauthorized(reason="The password is incorrect.")
+
+    # ----------
+    # Permission
+    # ----------
 
     @parameter_matcher()
     async def get_raw_permission_pgroup(

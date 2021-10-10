@@ -51,6 +51,10 @@ export interface UpdatePasswordQ {
     after: string;
 }
 
+export interface RefreshTokenA {
+    access: string;
+}
+
 export function createEmptyUserA() {
     return {
         username: '',

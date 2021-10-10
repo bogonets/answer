@@ -167,9 +167,9 @@ class ContextUser(ContextBase):
         user_uid = await self.get_user_uid(username)
         await self.database.update_user_extra_by_uid(user_uid, extra)
 
-    async def renew_access_token(self, token: str) -> str:
+    async def renew_access_token(self, refresh_token: str) -> str:
         return self.session_factory.renew_access_token(
-            token, max_age=self.access_max_age
+            refresh_token, max_age=self.access_max_age
         )
 
     async def get_access_session(self, token: str) -> Session:

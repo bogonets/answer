@@ -101,6 +101,7 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import {onSignoutEvent} from '@/event/session';
 
 @Component
 export default class MenuAccount extends VueBase {
@@ -149,8 +150,7 @@ export default class MenuAccount extends VueBase {
   }
 
   onClickLogout() {
-    this.$localStore.clearSession();
-    this.$store.commit('user/logout');
+    onSignoutEvent(this);
     this.moveToSignin();
   }
 }

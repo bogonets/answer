@@ -72,7 +72,6 @@ function initApiV2Session(
     preference: PreferenceA,
 ) {
     vue.$api2.setDefaultSession(access, refresh, user, preference);
-    vue.$api2.setDefaultBearerAuthorization(access);
 }
 
 // ------------
@@ -133,6 +132,12 @@ function loadSessionFromLocalStorage(vue: Vue) {
     loadAppearanceFromUserExtraA(vue, userExtra);
 }
 
+function clearSessionInLocalStorage(vue: Vue) {
+    vue.$store.commit('user/logout');
+    vue.$localStore.clearSession();
+    vue.$api2.clearDefaultSession();
+}
+
 // -------------
 // Export events
 // -------------
@@ -143,4 +148,8 @@ export function onSigninEvent(vue: Vue, signin: SigninA) {
 
 export function onLoadSession(vue: Vue) {
     loadSessionFromLocalStorage(vue);
+}
+
+export function onSignoutEvent(vue: Vue) {
+    clearSessionInLocalStorage(vue);
 }

@@ -37,16 +37,27 @@ import type {
 } from '@/packet/project';
 import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
 import type {SystemOverviewA, VersionsA} from '@/packet/system';
-import type {UserA, UpdateUserQ, SigninA, SignupQ, UpdatePasswordQ, UserExtraA} from '@/packet/user';
+import type {
+    UserA,
+    UpdateUserQ,
+    SigninA,
+    SignupQ,
+    UpdatePasswordQ,
+    UserExtraA,
+    RefreshTokenA,
+} from '@/packet/user';
 import type {EnvironmentA} from '@/packet/environment';
 import {createEmptySigninA, createEmptyUserA} from '@/packet/user';
 import {PreferenceA, createEmptyPreference} from '@/packet/preference';
 import {encryptSha256} from '@/crypto/sha';
+import moment from 'moment-timezone';
 
 const DEFAULT_TIMEOUT = 30 * 1000;
 const STATUS_CODE_ACCESS_TOKEN_ERROR = 461
 const STATUS_CODE_REFRESH_TOKEN_ERROR = 462
 const STATUS_CODE_UNINITIALIZED_SERVICE = 561
+
+const LEEWAY_MILLISECONDS = DEFAULT_TIMEOUT;
 
 const VALIDATE_STATUS = [
     200,
@@ -102,9 +113,11 @@ export default class ApiV2 {
     readonly tokenErrorCallback?: () => void;
     readonly uninitializedServiceCallback?: () => void;
 
-    private originAddress: string;
-    private api: AxiosInstance;
-    private session: SigninA;
+    originAddress: string;
+    api: AxiosInstance;
+    session: SigninA;
+
+    refreshTimeoutId?: number = undefined;
 
     constructor(options?: ApiV2Options) {
         this.tokenErrorCallback = options?.tokenErrorCallback;
@@ -144,18 +157,83 @@ export default class ApiV2 {
         this.api.defaults.baseURL = originToBaseUrl(origin);
     }
 
+    refreshToken(refresh: string) {
+        console.debug('Refreshing access token ...');
+        this.refreshTimeoutId = undefined;
+
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${refresh}`,
+            },
+        } as AxiosRequestConfig;
+
+        this.api.post('/public/token/refresh', undefined, config)
+            .then((response: AxiosResponse) => {
+                const result = response.data as RefreshTokenA;
+                this.setDefaultAccessToken(result.access, refresh);
+                console.info('Access token renewal successful');
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    private cancelTokenRenewal() {
+        if (typeof this.refreshTimeoutId === 'undefined') {
+            return;
+        }
+
+        window.clearTimeout(this.refreshTimeoutId);
+        this.refreshTimeoutId = undefined;
+        console.debug(`Token renewal canceled`);
+    }
+
+    private reservationTokenRenewal(access: string, refresh: string) {
+        const encodedPayload = access.split('.')[1];
+        const payloadJsonText = atob(encodedPayload)
+        const parsed = JSON.parse(payloadJsonText.toString());
+        const hasExp = parsed.hasOwnProperty("exp");
+        const hasIat = parsed.hasOwnProperty("iat");
+
+        if (!hasExp || !hasIat) {
+            if (!hasExp) {
+                console.error('Missing `exp` in JWT payload');
+            }
+            if (!hasIat) {
+                console.error('Missing `iat` in JWT payload');
+            }
+            return;
+        }
+
+        // const nowUtc = moment();
+        // const expUtc = moment(parsed.exp * 1000);
+        // const iatUtc = moment(parsed.iat * 1000);
+        // console.debug('Access token expiration: ' + expUtc.toISOString());
+
+        const expMilliseconds = (parsed.exp * 1000 - LEEWAY_MILLISECONDS);
+        const timeout = expMilliseconds - Date.now();
+        if (typeof this.refreshTimeoutId !== 'undefined') {
+            window.clearTimeout(this.refreshTimeoutId);
+            this.refreshTimeoutId = undefined;
+        }
+
+        this.refreshTimeoutId = window.setTimeout(() => {
+            this.refreshToken(refresh);
+        }, timeout >= 0 ? timeout : 0);
+
+        const renewalTime = moment(Date.now() + timeout).toISOString();
+        console.debug(`Token renewal timeout: ${timeout}ms (${renewalTime})`);
+    }
+
     clearDefaultSession() {
-        this.session = createEmptySigninA();
-    }
-
-    clearAccessToken() {
         this.session.access = '';
-    }
-
-    clearDefaultBearerAuthorization() {
+        this.session.refresh = '';
+        this.session.user = createEmptyUserA();
+        this.session.preference = createEmptyPreference();
         if (this.api.defaults.headers.hasOwnProperty(HEADER_KEY_AUTHORIZATION)) {
             delete this.api.defaults.headers[HEADER_KEY_AUTHORIZATION];
         }
+        this.cancelTokenRenewal();
     }
 
     setDefaultSession(
@@ -168,26 +246,28 @@ export default class ApiV2 {
         this.session.refresh = refresh;
         this.session.user = user;
         this.session.preference = preference;
+        this.api.defaults.headers[HEADER_KEY_AUTHORIZATION] = `Bearer ${access}`;
+        this.reservationTokenRenewal(access, refresh);
     }
 
-    setDefaultBearerAuthorization(token: string) {
-        this.api.defaults.headers[HEADER_KEY_AUTHORIZATION] = `Bearer ${token}`;
+    setDefaultAccessToken(access: string, refresh: string) {
+        this.session.access = access;
+        this.api.defaults.headers[HEADER_KEY_AUTHORIZATION] = `Bearer ${access}`;
+        this.reservationTokenRenewal(access, refresh);
     }
 
-    private _commonErrorHandling<T>(res: AxiosResponse<T>) {
+    private commonErrorHandling<T>(res: AxiosResponse<T>) {
         if (res.status === STATUS_CODE_ACCESS_TOKEN_ERROR) {
             if (this.tokenErrorCallback) {
                 this.tokenErrorCallback();
             }
-            this.clearAccessToken();
-            this.clearDefaultBearerAuthorization();
+            this.clearDefaultSession();
             throw new AccessTokenError();
         } else if (res.status === STATUS_CODE_REFRESH_TOKEN_ERROR) {
             if (this.tokenErrorCallback) {
                 this.tokenErrorCallback();
             }
             this.clearDefaultSession();
-            this.clearDefaultBearerAuthorization();
             throw new RefreshTokenError();
         } else if (res.status === STATUS_CODE_UNINITIALIZED_SERVICE) {
             if (this.uninitializedServiceCallback) {
@@ -200,28 +280,28 @@ export default class ApiV2 {
 
     get<T = any>(url: string, config?: AxiosRequestConfig) {
         return this.api.get<T>(url, config).then(res => {
-            this._commonErrorHandling(res);
+            this.commonErrorHandling(res);
             return res.data;
         });
     }
 
     post<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
         return this.api.post<T>(url, data, config).then(res => {
-            this._commonErrorHandling(res);
+            this.commonErrorHandling(res);
             return res.data;
         });
     }
 
     patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
         return this.api.patch<T>(url, data, config).then(res => {
-            this._commonErrorHandling(res);
+            this.commonErrorHandling(res);
             return res.data;
         });
     }
 
     delete(url: string, config?: AxiosRequestConfig) {
         return this.api.delete(url, config).then(res => {
-            this._commonErrorHandling(res);
+            this.commonErrorHandling(res);
         });
     }
 
@@ -278,7 +358,6 @@ export default class ApiV2 {
                     const user = result.user || createEmptyUserA();
                     const preference = result.preference || createEmptyPreference();
                     this.setDefaultSession(access, refresh, user, preference);
-                    this.setDefaultBearerAuthorization(access);
                 }
                 return result;
             });

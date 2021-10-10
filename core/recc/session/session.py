@@ -41,8 +41,8 @@ DEFAULT_SIGNATURE_BYTE = 32
 
 ISS_KEY = "iss"  # Issuer, a.k.a. Server Name
 AUD_KEY = "aud"  # Audience, a.k.a. User Name
-EXP_KEY = "exp"  # Expiration Time, a.k.a. Expiration Time
-IAT_KEY = "iat"  # Issued At, a.k.a. Created Time
+EXP_KEY = "exp"  # Expiration Time (UTC, Seconds, Number), a.k.a. Expiration Time
+IAT_KEY = "iat"  # Issued At (UTC, Seconds, Number), a.k.a. Created Time
 SUB_KEY = "sub"  # Subject
 NBF_KEY = "nbf"  # Not Before
 JTI_KEY = "jti"  # JWT ID
@@ -120,22 +120,6 @@ class SessionFactory:
             issued_at=issued,
         )
 
-    def renew_session(
-        self,
-        session: Session,
-        issued_at: Optional[datetime] = None,
-        max_age: Optional[timedelta] = None,
-    ) -> Session:
-        assert self.issuer == session.issuer
-        issued = issued_at if issued_at else today()
-        delta = max_age if max_age else timedelta(seconds=self.max_age_seconds)
-        return Session(
-            issuer=self.issuer,
-            audience=session.audience,
-            expiration_time=issued + delta,
-            issued_at=issued,
-        )
-
     def encode(self, session: Session) -> str:
         return jwt_encode(
             payload=session.to_claim_dict(),
@@ -163,8 +147,8 @@ class SessionPairFactory:
         refresh_issuer=DEFAULT_ISSUER_RECC_REFRESH,
         access_max_age_seconds=DEFAULT_ACCESS_MAX_AGE_SECONDS,
         refresh_max_age_seconds=DEFAULT_REFRESH_MAX_AGE_SECONDS,
-        access_secret=_create_signature(),
-        refresh_secret=_create_signature(),
+        access_secret: Optional[str] = None,
+        refresh_secret: Optional[str] = None,
         access_algorithm=DEFAULT_JWT_ALGORITHM,
         refresh_algorithm=DEFAULT_JWT_ALGORITHM,
         access_leeway_seconds=DEFAULT_LEEWAY_SECONDS,
@@ -173,14 +157,14 @@ class SessionPairFactory:
         self.access = SessionFactory(
             issuer=access_issuer,
             max_age_seconds=access_max_age_seconds,
-            secret=access_secret,
+            secret=access_secret if access_secret else _create_signature(),
             algorithm=access_algorithm,
             leeway_seconds=access_leeway_seconds,
         )
         self.refresh = SessionFactory(
             issuer=refresh_issuer,
             max_age_seconds=refresh_max_age_seconds,
-            secret=refresh_secret,
+            secret=refresh_secret if refresh_secret else _create_signature(),
             algorithm=refresh_algorithm,
             leeway_seconds=refresh_leeway_seconds,
         )
@@ -223,22 +207,13 @@ class SessionPairFactory:
     def decode_refresh(self, token: str) -> Session:
         return self.refresh.decode(token)
 
-    def renew_access_session(
-        self,
-        session: Session,
-        issued_at: Optional[datetime] = None,
-        max_age: Optional[timedelta] = None,
-    ) -> Session:
-        issued = issued_at if issued_at else today()
-        return self.access.renew_session(session, issued, max_age)
-
     def renew_access_token(
         self,
-        token: str,
+        refresh_token: str,
         issued_at: Optional[datetime] = None,
         max_age: Optional[timedelta] = None,
     ) -> str:
-        issued = issued_at if issued_at else today()
-        session = self.decode_access(token)
-        renew_session = self.renew_access_session(session, issued, max_age)
-        return self.encode_access(renew_session)
+        refresh_session = self.decode_refresh(refresh_token)
+        username = refresh_session.audience
+        access_session = self.access.create_session(username, issued_at, max_age)
+        return self.encode_access(access_session)

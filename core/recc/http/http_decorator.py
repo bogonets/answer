@@ -21,6 +21,7 @@ from recc.session.session_ex import SessionEx
 from recc.log.logging import recc_http_logger as logger
 from recc.serialization.serialize import serialize_default
 from recc.http.header.basic_auth import BasicAuth
+from recc.http.header.bearer_auth import BearerAuth
 from recc.http.http_decorator_acl import Policy, test_policies
 from recc.http.http_packet import HttpRequest, HttpResponse
 from recc.http.http_payload import payload_to_object, request_payload_to_class
@@ -179,6 +180,18 @@ async def _parameter_matcher_main(
             except ValueError as e:
                 raise HTTPBadRequest(reason=str(e))
             update_arguments.append(basic)
+            continue
+
+        # BearerAuth
+        if issubclass(type_origin, BearerAuth):
+            if AUTHORIZATION not in request.headers:
+                raise HTTPBadRequest(reason=f"Not exists {AUTHORIZATION} header")
+            try:
+                authorization = request.headers[AUTHORIZATION]
+                bearer = BearerAuth.decode_from_authorization_header(authorization)
+            except ValueError as e:
+                raise HTTPBadRequest(reason=str(e))
+            update_arguments.append(bearer)
             continue
 
         # Request
