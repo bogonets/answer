@@ -223,25 +223,25 @@ class ContextBase:
                 pass
         return uid
 
-    async def get_permission_uid(self, permission_name: str, caching=True) -> int:
-        if not permission_name:
-            raise ValueError("The `permission_name` argument is empty.")
+    async def get_permission_uid(self, permission_slug: str, caching=True) -> int:
+        if not permission_slug:
+            raise ValueError("The `permission_slug` argument is empty.")
 
-        uid = self.cache.get_permission_uid(permission_name)
+        uid = self.cache.get_permission_uid(permission_slug)
         if uid is None:
             try:
-                uid = await self.database.select_permission_uid_by_name(permission_name)
+                uid = await self.database.select_permission_uid_by_slug(permission_slug)
                 if caching:
-                    self.cache.set_permission(uid, permission_name)
+                    self.cache.set_permission(uid, permission_slug)
             except RuntimeError:
                 pass
         return uid
 
-    async def get_permission_name(self, permission_uid: int, caching=True) -> str:
-        slug = self.cache.get_permission_name(permission_uid)
+    async def get_permission_slug(self, permission_uid: int, caching=True) -> str:
+        slug = self.cache.get_permission_slug(permission_uid)
         if slug is None:
             try:
-                slug = await self.database.select_permission_name_by_uid(permission_uid)
+                slug = await self.database.select_permission_slug_by_uid(permission_uid)
                 if caching:
                     self.cache.set_permission(permission_uid, slug)
             except RuntimeError:

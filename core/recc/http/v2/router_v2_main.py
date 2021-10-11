@@ -158,10 +158,10 @@ class RouterV2Main:
             assert member.user_uid is not None
             assert member.permission_uid is not None
             username = await self.context.get_username(member.user_uid)
-            permission_name = await self.context.get_permission_name(
+            permission_slug = await self.context.get_permission_slug(
                 member.permission_uid
             )
-            result.append(MemberA(username, permission_name))
+            result.append(MemberA(username, permission_slug))
         return result
 
     @parameter_matcher(group_policies=[Policy.HasMemberWrite])
@@ -181,10 +181,10 @@ class RouterV2Main:
         member_user_uid = await self.context.get_user_uid(member)
         db_member = await self.context.get_group_member(group_uid, member_user_uid)
         assert db_member.permission_uid is not None
-        member_permission_name = await self.context.get_permission_name(
+        member_permission_slug = await self.context.get_permission_slug(
             db_member.permission_uid
         )
-        return MemberA(member, member_permission_name)
+        return MemberA(member, member_permission_slug)
 
     @parameter_matcher(group_policies=[Policy.HasMemberWrite])
     async def patch_groups_pgroup_members_pmember(
@@ -316,10 +316,10 @@ class RouterV2Main:
             assert member.user_uid is not None
             assert member.permission_uid is not None
             username = await self.context.get_username(member.user_uid)
-            permission_name = await self.context.get_permission_name(
+            permission_slug = await self.context.get_permission_slug(
                 member.permission_uid
             )
-            result.append(MemberA(username, permission_name))
+            result.append(MemberA(username, permission_slug))
         return result
 
     @parameter_matcher(project_policies=[Policy.HasMemberWrite])
@@ -343,10 +343,10 @@ class RouterV2Main:
         member_user_uid = await self.context.get_user_uid(member)
         db_member = await self.context.get_project_member(project_uid, member_user_uid)
         assert db_member.permission_uid is not None
-        member_permission_name = await self.context.get_permission_name(
+        member_permission_slug = await self.context.get_permission_slug(
             db_member.permission_uid
         )
-        return MemberA(member, member_permission_name)
+        return MemberA(member, member_permission_slug)
 
     @parameter_matcher(project_policies=[Policy.HasMemberWrite])
     async def patch_projects_pgroup_pproject_members_pmember(

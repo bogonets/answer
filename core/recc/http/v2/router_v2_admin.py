@@ -349,10 +349,11 @@ class RouterV2Admin:
 
     @parameter_matcher()
     async def post_permissions(self, body: CreatePermissionQ) -> None:
-        if not body.name:
-            raise HTTPBadRequest(reason="Not exists `name` field")
+        if not body.slug:
+            raise HTTPBadRequest(reason="Not exists `slug` field")
         body.normalize_booleans()
         await self.context.create_permission(
+            slug=body.slug,
             name=body.name,
             description=body.description,
             features=body.features,
@@ -369,6 +370,8 @@ class RouterV2Admin:
             w_member=body.w_member,
             r_setting=body.r_setting,
             w_setting=body.w_setting,
+            hidden=body.hidden,
+            lock=body.lock,
         )
 
     @parameter_matcher()
@@ -382,6 +385,7 @@ class RouterV2Admin:
         uid = await self.context.get_permission_uid(perm)
         await self.context.update_permission(
             uid,
+            slug=body.slug,
             name=body.name,
             description=body.description,
             features=body.features,
@@ -398,6 +402,8 @@ class RouterV2Admin:
             w_member=body.w_member,
             r_setting=body.r_setting,
             w_setting=body.w_setting,
+            hidden=body.hidden,
+            lock=body.lock,
         )
 
     @parameter_matcher()

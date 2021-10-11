@@ -11,8 +11,8 @@ from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.permission import (
     INSERT_PERMISSION,
     SAFE_DELETE_PERMISSION_BY_UID,
-    SELECT_PERMISSION_UID_BY_NAME,
-    SELECT_PERMISSION_NAME_BY_UID,
+    SELECT_PERMISSION_UID_BY_SLUG,
+    SELECT_PERMISSION_SLUG_BY_UID,
     SELECT_PERMISSION_BY_UID,
     SELECT_PERMISSION_ALL,
     SELECT_BEST_PERMISSION_OF_PROJECT_NO_COMMENT,
@@ -26,7 +26,8 @@ class PgPermission(DbPermission, PgBase):
     @overrides
     async def insert_permission(
         self,
-        name: str,
+        slug: str,
+        name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
@@ -42,11 +43,14 @@ class PgPermission(DbPermission, PgBase):
         w_member=False,
         r_setting=False,
         w_setting=False,
+        hidden=False,
+        lock=False,
         created_at: Optional[datetime] = None,
     ) -> int:
         created = created_at if created_at else today()
         uid = await self.fetch_val(
             INSERT_PERMISSION,
+            slug,
             name,
             description,
             features,
@@ -63,6 +67,8 @@ class PgPermission(DbPermission, PgBase):
             w_member,
             r_setting,
             w_setting,
+            hidden,
+            lock,
             created,
         )
         logger.info(f"insert_permission(name={name}) -> {uid}")
@@ -72,6 +78,7 @@ class PgPermission(DbPermission, PgBase):
     async def update_permission_by_uid(
         self,
         uid: int,
+        slug: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
@@ -88,10 +95,12 @@ class PgPermission(DbPermission, PgBase):
         w_member: Optional[bool] = None,
         r_setting: Optional[bool] = None,
         w_setting: Optional[bool] = None,
+        hidden: Optional[bool] = None,
+        lock: Optional[bool] = None,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
         query, args = get_update_permission_query_by_uid(
+            slug=slug,
             uid=uid,
             name=name,
             description=description,
@@ -109,10 +118,12 @@ class PgPermission(DbPermission, PgBase):
             w_member=w_member,
             r_setting=r_setting,
             w_setting=w_setting,
-            updated_at=updated,
+            hidden=hidden,
+            lock=lock,
+            updated_at=updated_at,
         )
         await self.execute(query, *args)
-        params_msg = f"name={name}"
+        params_msg = f"slug={slug}"
         logger.info(f"update_permission_by_uid({params_msg}) ok.")
 
     @overrides
@@ -123,25 +134,25 @@ class PgPermission(DbPermission, PgBase):
         logger.info(f"delete_permission_by_uid({params_msg}) ok.")
 
     @overrides
-    async def select_permission_uid_by_name(self, name: str) -> int:
-        query = SELECT_PERMISSION_UID_BY_NAME
-        row = await self.fetch_row(query, name)
-        params_msg = f"name={name}"
+    async def select_permission_uid_by_slug(self, slug: str) -> int:
+        query = SELECT_PERMISSION_UID_BY_SLUG
+        row = await self.fetch_row(query, slug)
+        params_msg = f"slug={slug}"
         if not row:
             raise RuntimeError(f"Not found permission: {params_msg}")
         result = int(row["uid"])
-        logger.info(f"select_permission_uid_by_name({params_msg}) -> {result}")
+        logger.info(f"select_permission_uid_by_slug({params_msg}) -> {result}")
         return result
 
     @overrides
-    async def select_permission_name_by_uid(self, uid: int) -> str:
-        query = SELECT_PERMISSION_NAME_BY_UID
+    async def select_permission_slug_by_uid(self, uid: int) -> str:
+        query = SELECT_PERMISSION_SLUG_BY_UID
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
         if not row:
             raise RuntimeError(f"Not found permission: {params_msg}")
-        result = str(row["name"])
-        logger.info(f"select_permission_name_by_uid({params_msg}) -> {result}")
+        result = str(row["slug"])
+        logger.info(f"select_permission_slug_by_uid({params_msg}) -> {result}")
         return result
 
     @overrides

@@ -11,7 +11,8 @@ from recc.session.session_ex import SessionEx
 class ContextPermission(ContextBase):
     async def create_permission(
         self,
-        name: str,
+        slug: str,
+        name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
@@ -27,8 +28,11 @@ class ContextPermission(ContextBase):
         w_member=False,
         r_setting=False,
         w_setting=False,
+        hidden=False,
+        lock=False,
     ) -> int:
         return await self.database.insert_permission(
+            slug=slug,
             name=name,
             description=description,
             features=features,
@@ -45,11 +49,14 @@ class ContextPermission(ContextBase):
             w_member=w_member,
             r_setting=r_setting,
             w_setting=w_setting,
+            hidden=hidden,
+            lock=lock,
         )
 
     async def update_permission(
         self,
         uid: int,
+        slug: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
@@ -66,9 +73,12 @@ class ContextPermission(ContextBase):
         w_member: Optional[bool] = None,
         r_setting: Optional[bool] = None,
         w_setting: Optional[bool] = None,
+        hidden: Optional[bool] = None,
+        lock: Optional[bool] = None,
     ) -> None:
         await self.database.update_permission_by_uid(
             uid=uid,
+            slug=slug,
             name=name,
             description=description,
             features=features,
@@ -85,6 +95,8 @@ class ContextPermission(ContextBase):
             w_member=w_member,
             r_setting=r_setting,
             w_setting=w_setting,
+            hidden=hidden,
+            lock=lock,
         )
 
     async def delete_permission(self, uid: int) -> None:

@@ -36,8 +36,8 @@ class Cache:
 
         # Permission
         self._permission_lock = Lock()
-        self._permission_name_to_uid: Dict[str, int] = dict()
-        self._permission_uid_to_name: Dict[int, str] = dict()
+        self._permission_slug_to_uid: Dict[str, int] = dict()
+        self._permission_uid_to_slug: Dict[int, str] = dict()
 
     # ------------
     # Store bypass
@@ -151,26 +151,26 @@ class Cache:
             self._project_key_to_project_uid[key] = project_uid
 
     # ----------------------
-    # permission name -> uid
+    # permission slug -> uid
     # ----------------------
 
-    def exists_permission_name(self, name: str) -> bool:
+    def exists_permission_slug(self, slug: str) -> bool:
         with self._permission_lock:
-            return name in self._permission_name_to_uid
+            return slug in self._permission_slug_to_uid
 
     def exists_permission_uid(self, uid: int) -> bool:
         with self._permission_lock:
-            return uid in self._permission_uid_to_name
+            return uid in self._permission_uid_to_slug
 
-    def get_permission_uid(self, name: str) -> Optional[int]:
+    def get_permission_uid(self, slug: str) -> Optional[int]:
         with self._permission_lock:
-            return self._permission_name_to_uid.get(name, None)
+            return self._permission_slug_to_uid.get(slug, None)
 
-    def get_permission_name(self, uid: int) -> Optional[str]:
+    def get_permission_slug(self, uid: int) -> Optional[str]:
         with self._permission_lock:
-            return self._permission_uid_to_name.get(uid, None)
+            return self._permission_uid_to_slug.get(uid, None)
 
-    def set_permission(self, uid: int, name: str) -> None:
+    def set_permission(self, uid: int, slug: str) -> None:
         with self._permission_lock:
-            self._permission_name_to_uid[name] = uid
-            self._permission_uid_to_name[uid] = name
+            self._permission_slug_to_uid[slug] = uid
+            self._permission_uid_to_slug[uid] = slug

@@ -14,7 +14,8 @@ class DbPermission(metaclass=ABCMeta):
     @abstractmethod
     async def insert_permission(
         self,
-        name: str,
+        slug: str,
+        name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
@@ -30,6 +31,8 @@ class DbPermission(metaclass=ABCMeta):
         w_member=False,
         r_setting=False,
         w_setting=False,
+        hidden=False,
+        lock=False,
         created_at: Optional[datetime] = None,
     ) -> int:
         raise NotImplementedError
@@ -38,6 +41,7 @@ class DbPermission(metaclass=ABCMeta):
     async def update_permission_by_uid(
         self,
         uid: int,
+        slug: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
@@ -54,6 +58,8 @@ class DbPermission(metaclass=ABCMeta):
         w_member: Optional[bool] = None,
         r_setting: Optional[bool] = None,
         w_setting: Optional[bool] = None,
+        hidden: Optional[bool] = None,
+        lock: Optional[bool] = None,
         updated_at: Optional[datetime] = None,
     ) -> None:
         raise NotImplementedError
@@ -63,11 +69,11 @@ class DbPermission(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def select_permission_uid_by_name(self, name: str) -> int:
+    async def select_permission_uid_by_slug(self, slug: str) -> int:
         raise NotImplementedError
 
     @abstractmethod
-    async def select_permission_name_by_uid(self, uid: int) -> str:
+    async def select_permission_slug_by_uid(self, uid: int) -> str:
         raise NotImplementedError
 
     @abstractmethod

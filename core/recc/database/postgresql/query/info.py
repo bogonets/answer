@@ -41,7 +41,7 @@ INSERT INTO {TABLE_INFO} (
 ) SELECT
     '{INFO_KEY_RECC_DB_VERSION}',
     '{database_version}',
-    $1
+    NOW()
 WHERE
     NOT EXISTS(
         SELECT value

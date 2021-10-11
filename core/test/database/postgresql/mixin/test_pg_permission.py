@@ -7,26 +7,36 @@ from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 class PgPermissionTestCase(PostgresqlTestCase):
     async def test_create_and_get(self):
-        name1 = "permission1"
-        name2 = "permission2"
+        slug1 = "permission1"
+        slug2 = "permission2"
         desc1 = "description1"
         desc2 = "description2"
         created_at1 = datetime.now().astimezone() + timedelta(days=1)
         created_at2 = datetime.now().astimezone() + timedelta(days=2)
         result1_uid = await self.db.insert_permission(
-            name1, desc1, w_graph=True, w_member=True, created_at=created_at1
+            slug1,
+            description=desc1,
+            w_graph=True,
+            w_member=True,
+            created_at=created_at1,
         )
         result2_uid = await self.db.insert_permission(
-            name2, desc2, r_layout=True, r_storage=True, created_at=created_at2
+            slug2,
+            description=desc2,
+            r_layout=True,
+            r_storage=True,
+            created_at=created_at2,
         )
-        permission1_uid = await self.db.select_permission_uid_by_name(name1)
-        permission2_uid = await self.db.select_permission_uid_by_name(name2)
+        permission1_uid = await self.db.select_permission_uid_by_slug(slug1)
+        permission2_uid = await self.db.select_permission_uid_by_slug(slug2)
         self.assertEqual(result1_uid, permission1_uid)
         self.assertEqual(result2_uid, permission2_uid)
         permission1 = await self.db.select_permission_by_uid(permission1_uid)
         permission2 = await self.db.select_permission_by_uid(permission2_uid)
-        self.assertEqual(name1, permission1.name)
-        self.assertEqual(name2, permission2.name)
+        self.assertEqual(slug1, permission1.slug)
+        self.assertEqual(slug2, permission2.slug)
+        self.assertIsNone(permission1.name)
+        self.assertIsNone(permission2.name)
         self.assertEqual(desc1, permission1.description)
         self.assertEqual(desc2, permission2.description)
         self.assertEqual(created_at1, permission1.created_at)
@@ -44,6 +54,8 @@ class PgPermissionTestCase(PostgresqlTestCase):
         self.assertTrue(permission1.w_member)
         self.assertFalse(permission1.r_setting)
         self.assertFalse(permission1.w_setting)
+        self.assertFalse(permission1.hidden)
+        self.assertFalse(permission1.lock)
 
         self.assertTrue(permission2.r_layout)
         self.assertFalse(permission2.w_layout)
@@ -57,6 +69,8 @@ class PgPermissionTestCase(PostgresqlTestCase):
         self.assertFalse(permission2.w_member)
         self.assertFalse(permission2.r_setting)
         self.assertFalse(permission2.w_setting)
+        self.assertFalse(permission2.hidden)
+        self.assertFalse(permission2.lock)
 
         self.assertIsNone(permission1.extra)
         self.assertIsNone(permission2.extra)
@@ -68,11 +82,12 @@ class PgPermissionTestCase(PostgresqlTestCase):
         self.assertNotEqual(permission1_uid, permission2_uid)
 
     async def test_update_permission(self):
-        name1 = "permission1"
-        await self.db.insert_permission(name1)
-        permission1_uid = await self.db.select_permission_uid_by_name(name1)
+        slug1 = "permission1"
+        await self.db.insert_permission(slug1)
+        permission1_uid = await self.db.select_permission_uid_by_slug(slug1)
         permission1 = await self.db.select_permission_by_uid(permission1_uid)
-        self.assertEqual(name1, permission1.name)
+        self.assertEqual(slug1, permission1.slug)
+        self.assertIsNone(permission1.name)
         self.assertIsNone(permission1.description)
         self.assertIsNone(permission1.extra)
         self.assertIsNone(permission1.updated_at)
@@ -89,13 +104,13 @@ class PgPermissionTestCase(PostgresqlTestCase):
         self.assertFalse(permission1.r_setting)
         self.assertFalse(permission1.w_setting)
 
-        updated_name = "Unknown"
+        updated_slug = "Unknown"
         updated_desc = "Test Permission"
         updated_extra = {"A": 65, "B": 66}
         updated_at = datetime.now().astimezone() + timedelta(days=7)
         await self.db.update_permission_by_uid(
             permission1.uid,
-            name=updated_name,
+            slug=updated_slug,
             description=updated_desc,
             extra=updated_extra,
             r_layout=True,
@@ -104,7 +119,8 @@ class PgPermissionTestCase(PostgresqlTestCase):
             updated_at=updated_at,
         )
         updated_permission1 = await self.db.select_permission_by_uid(permission1.uid)
-        self.assertEqual(updated_name, updated_permission1.name)
+        self.assertEqual(updated_slug, updated_permission1.slug)
+        self.assertIsNone(updated_permission1.name)
         self.assertEqual(updated_desc, updated_permission1.description)
         self.assertEqual(updated_extra, updated_permission1.extra)
         self.assertEqual(updated_at, updated_permission1.updated_at)
@@ -120,11 +136,13 @@ class PgPermissionTestCase(PostgresqlTestCase):
         self.assertFalse(updated_permission1.w_member)
         self.assertFalse(updated_permission1.r_setting)
         self.assertFalse(updated_permission1.w_setting)
+        self.assertFalse(updated_permission1.hidden)
+        self.assertFalse(updated_permission1.lock)
 
     async def test_delete(self):
-        name1 = "permission1"
-        await self.db.insert_permission(name1)
-        permission1_uid = await self.db.select_permission_uid_by_name(name1)
+        slug1 = "permission1"
+        await self.db.insert_permission(slug1)
+        permission1_uid = await self.db.select_permission_uid_by_slug(slug1)
 
         permissions1 = await self.db.select_permissions()
         permissions1_ids = [g.uid for g in permissions1]
@@ -309,12 +327,12 @@ class PgPermissionTestCase(PostgresqlTestCase):
         self.assertIsNone(u5p4.uid)
 
     async def test_features(self):
-        name1 = "name1"
+        slug1 = "slug1"
         features1 = ["a", "b"]
-        await self.db.insert_permission(name=name1, features=features1)
-        uid1 = await self.db.select_permission_uid_by_name(name1)
+        await self.db.insert_permission(slug1, features=features1)
+        uid1 = await self.db.select_permission_uid_by_slug(slug1)
         perm1 = await self.db.select_permission_by_uid(uid1)
-        self.assertEqual(name1, perm1.name)
+        self.assertEqual(slug1, perm1.slug)
         self.assertEqual(features1, perm1.features)
 
         features2 = ["c", "d", "e"]

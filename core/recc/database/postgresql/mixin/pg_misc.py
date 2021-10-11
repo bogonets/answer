@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
 from functools import reduce
-from datetime import datetime
 from overrides import overrides
-from recc.chrono.datetime import today
 from recc.database.interfaces.db_misc import DbMisc
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.tables import CREATE_TABLES, DROP_TABLES
@@ -28,16 +25,15 @@ from recc.log.logging import recc_database_logger as logger
 
 class PgMisc(DbMisc, PgBase):
     @overrides
-    async def create_tables(self, created_at: Optional[datetime] = None) -> None:
+    async def create_tables(self) -> None:
         all_create = CREATE_TABLES + CREATE_INDICES + CREATE_VIEWS
-        created = created_at if created_at else today()
         async with self.conn() as conn:
             async with conn.transaction():
                 await conn.execute(reduce(lambda x, y: x + y, all_create))
-                await conn.execute(SAFE_INSERT_INFO_DB_VERSION, created)
-                await conn.execute(SAFE_INSERT_GROUP_ANONYMOUS, created)
+                await conn.execute(SAFE_INSERT_INFO_DB_VERSION)
+                await conn.execute(SAFE_INSERT_GROUP_ANONYMOUS)
                 for perm_query in SAFE_INSERT_PERMISSION_DEFAULTS:
-                    await conn.execute(perm_query, created)
+                    await conn.execute(perm_query)
 
     @overrides
     async def drop_tables(self) -> None:

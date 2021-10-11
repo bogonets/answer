@@ -55,9 +55,10 @@ def permission_to_raw(permission: Permission, is_admin: bool) -> RawPermission:
 
 
 def permission_to_answer(permission: Permission) -> PermissionA:
-    name = permission.name if permission.name else ""
+    slug = permission.slug if permission.slug else ""
     return PermissionA(
-        name=name,
+        slug=slug,
+        name=permission.name,
         description=permission.description,
         features=permission.features,
         extra=permission.extra,
@@ -73,6 +74,8 @@ def permission_to_answer(permission: Permission) -> PermissionA:
         w_member=permission.w_member,
         r_setting=permission.r_setting,
         w_setting=permission.w_setting,
+        hidden=permission.hidden,
+        lock=permission.lock,
         created_at=permission.created_at,
         updated_at=permission.updated_at,
     )

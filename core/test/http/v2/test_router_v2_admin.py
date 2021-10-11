@@ -145,7 +145,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertEqual(0, len(response7_data))
 
     async def test_permission(self):
-        perm1 = CreatePermissionQ(name="perm1", r_storage=True)
+        perm1 = CreatePermissionQ("perm1", r_storage=True)
         response1 = await self.tester.post(v2_admin_path(u.permissions), data=perm1)
         self.assertEqual(200, response1.status)
 
@@ -158,10 +158,11 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertIsNotNone(response2_data)
         self.assertIsInstance(response2_data, list)
         after_creation_num_permissions = len(response2_data)
-        response2_datas = list(filter(lambda x: x.name == perm1.name, response2_data))
+        response2_datas = list(filter(lambda x: x.slug == perm1.slug, response2_data))
         response2_data0 = response2_datas[0]
         self.assertIsInstance(response2_data0, PermissionA)
-        self.assertEqual(perm1.name, response2_data0.name)
+        self.assertEqual(perm1.slug, response2_data0.slug)
+        self.assertIsNone(response2_data0.name)
         self.assertIsNone(response2_data0.description)
         self.assertIsNone(response2_data0.features)
         self.assertIsNone(response2_data0.extra)
@@ -177,22 +178,25 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertFalse(response2_data0.w_member)
         self.assertFalse(response2_data0.r_setting)
         self.assertFalse(response2_data0.w_setting)
+        self.assertFalse(response2_data0.hidden)
+        self.assertFalse(response2_data0.lock)
         self.assertIsNotNone(response2_data0.created_at)
         self.assertIsNone(response2_data0.updated_at)
 
-        perm2_name = "perm2"
-        path1 = v2_admin_path(u.permissions_pperm).format(perm=perm1.name)
-        update = UpdatePermissionQ(name=perm2_name, w_layout=True)
+        perm2_slug = "perm2"
+        path1 = v2_admin_path(u.permissions_pperm).format(perm=perm1.slug)
+        update = UpdatePermissionQ(slug=perm2_slug, w_layout=True)
         response3 = await self.tester.patch(path1, data=update)
         self.assertEqual(200, response3.status)
 
-        path2 = v2_admin_path(u.permissions_pperm).format(perm=perm2_name)
+        path2 = v2_admin_path(u.permissions_pperm).format(perm=perm2_slug)
         response4 = await self.tester.get(path2, cls=PermissionA)
         self.assertEqual(200, response4.status)
         response4_data = response4.data
         self.assertIsNotNone(response4_data)
         self.assertIsInstance(response4_data, PermissionA)
-        self.assertEqual(update.name, response4_data.name)
+        self.assertEqual(update.slug, response4_data.slug)
+        self.assertIsNone(response4_data.name)
         self.assertIsNone(response4_data.description)
         self.assertIsNone(response4_data.features)
         self.assertIsNone(response4_data.extra)
@@ -208,6 +212,8 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertFalse(response4_data.w_member)
         self.assertFalse(response4_data.r_setting)
         self.assertFalse(response4_data.w_setting)
+        self.assertFalse(response4_data.hidden)
+        self.assertFalse(response4_data.lock)
         self.assertIsNotNone(response4_data.created_at)
         self.assertIsNotNone(response4_data.updated_at)
 
