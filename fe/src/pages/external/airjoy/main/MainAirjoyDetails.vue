@@ -1181,7 +1181,7 @@ export default class MainAirjoyDetails extends VueBase {
 
   onClickEditName() {
     this.editName = this.item.name;
-    this.showEditNameDialog = true;
+    this.showEditNameDialog = !this.showEditNameDialog;
   }
 
   onChangeEditName() {

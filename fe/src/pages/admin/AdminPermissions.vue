@@ -61,11 +61,11 @@ ko:
       </template>
 
       <template v-slot:item.hidden="{ item }">
-        <v-icon dense>{{ hiddenIcon(item) }}</v-icon>
+        <v-icon dense v-if="item.hidden">{{ hiddenIcon(item) }}</v-icon>
       </template>
 
       <template v-slot:item.lock="{ item }">
-        <v-icon dense>{{ lockIcon(item) }}</v-icon>
+        <v-icon dense v-if="item.lock">{{ lockIcon(item) }}</v-icon>
       </template>
 
       <template v-slot:item.created_at="{ item }">

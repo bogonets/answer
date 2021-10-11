@@ -28,7 +28,7 @@ ko:
         dense
         persistent-hint
         v-model="username"
-        :rules="rules.username"
+        :rules="usernameRules"
         :items="usernames"
         :hint="$t('hint.member')"
     ></v-combobox>
@@ -38,10 +38,29 @@ ko:
         dense
         persistent-hint
         v-model="permission"
-        :rules="rules.permission"
-        :items="visiblePermissionNames"
+        :rules="permissionRules"
+        :items="visiblePermissions"
         :hint="$t('hint.permission')"
-    ></v-select>
+        item-value="slug"
+        item-disabled="hidden"
+        return-object
+    >
+      <template v-slot:item="{ item }">
+        {{ item.name }}
+        <v-chip class="ml-2" x-small outlined color="primary">
+          <v-icon left>mdi-identifier</v-icon>
+          {{ item.slug }}
+        </v-chip>
+      </template>
+
+      <template v-slot:selection="{ item }">
+        {{ item.name }}
+        <v-chip class="ml-2" x-small outlined color="primary">
+          <v-icon left>mdi-identifier</v-icon>
+          {{ item.slug }}
+        </v-chip>
+      </template>
+    </v-select>
 
     <v-row v-if="!hideButtons" class="mt-2" no-gutters>
       <v-spacer></v-spacer>
@@ -72,17 +91,20 @@ import {Component, Prop, Ref, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {VForm} from 'vuetify/lib/components/VForm';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
-import {USERNAME_RULES, PERMISSION_SLUG_RULES} from '@/rules';
+import {USERNAME_RULES} from '@/rules';
 import type {CreateMemberQ} from '@/packet/member';
 import type {PermissionA} from '@/packet/permission';
+import requiredField from '@/rules/required';
+import slugFormat from '@/rules/slug';
 
 @Component
 export default class FormInviteMember extends VueBase {
-  private readonly subtitleClass = SUBTITLE_CLASS;
-  private readonly rules = {
-    username: USERNAME_RULES,
-    permission: PERMISSION_SLUG_RULES,
-  };
+  readonly subtitleClass = SUBTITLE_CLASS;
+  readonly usernameRules = USERNAME_RULES;
+  readonly permissionRules = [
+    value => requiredField(value.slug),
+    value => slugFormat(value.slug),
+  ];
 
   @Prop({type: Boolean})
   readonly disableValidate!: boolean;
@@ -111,10 +133,10 @@ export default class FormInviteMember extends VueBase {
   @Ref()
   readonly form!: VForm;
 
-  visiblePermissionNames = [] as Array<string>;
+  visiblePermissions = [] as Array<PermissionA>;
   valid = false;
   username = '';
-  permission = '';
+  permission = {} as PermissionA;
 
   created() {
     this.updateVisiblePermissionNames();
@@ -126,13 +148,13 @@ export default class FormInviteMember extends VueBase {
   }
 
   updateVisiblePermissionNames() {
-    const names = [] as Array<string>;
+    const result = [] as Array<PermissionA>;
     for (const permission of this.permissions) {
       if (!permission.hidden) {
-        names.push(permission.slug);
+        result.push(permission);
       }
     }
-    this.visiblePermissionNames = names;
+    this.visiblePermissions = result;
   }
 
   get disableSubmit(): boolean {
@@ -162,7 +184,7 @@ export default class FormInviteMember extends VueBase {
   ok() {
     return {
       username: this.username,
-      permission: this.permission,
+      permission: this.permission.slug,
     } as CreateMemberQ;
   }
 }

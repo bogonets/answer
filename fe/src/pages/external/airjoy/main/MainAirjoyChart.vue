@@ -60,6 +60,9 @@ ko:
             :loading="loadingDevices"
             :items="devices"
             :label="$t('labels.device')"
+            item-text="name"
+            item-value="uid"
+            return-object
             @change="onChangeDevice"
         >
           <template v-slot:item="{ item }">

@@ -217,9 +217,13 @@ export default class ApiV2 {
             this.refreshTimeoutId = undefined;
         }
 
-        this.refreshTimeoutId = window.setTimeout(() => {
+        if (timeout >= 0) {
+            this.refreshTimeoutId = window.setTimeout(() => {
+                this.refreshToken(refresh);
+            }, timeout);
+        } else {
             this.refreshToken(refresh);
-        }, timeout >= 0 ? timeout : 0);
+        }
 
         const renewalTime = moment(Date.now() + timeout).toISOString();
         console.debug(`Token renewal timeout: ${timeout}ms (${renewalTime})`);

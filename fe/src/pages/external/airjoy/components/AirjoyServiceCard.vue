@@ -56,6 +56,9 @@ ko:
                 :rules="uidRules"
                 :items="devices"
                 :label="$t('label.uid')"
+                item-text="name"
+                item-value="uid"
+                return-object
             >
               <template v-slot:item="{ item }">
                 {{ item.name }}

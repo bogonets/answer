@@ -70,7 +70,7 @@ ko:
       </v-card>
     </left-title>
 
-    <v-alert outlined prominent type="error" class="ma-4">
+    <v-alert v-if="!current.hidden" outlined prominent type="error" class="ma-4">
       <v-row align="center" class="pl-4">
         <v-col>
           <v-row>

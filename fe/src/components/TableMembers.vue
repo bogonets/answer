@@ -2,6 +2,7 @@
 en:
   label:
     search: "You can filter by name or description."
+    owner: "Owner"
   headers:
     username: "Username"
     permission: "Permission"
@@ -13,6 +14,7 @@ en:
 ko:
   label:
     search: "이름 또는 설명을 필터링할 수 있습니다."
+    owner: "소유자"
   headers:
     username: "사용자명"
     permission: "권한"
@@ -48,8 +50,11 @@ ko:
 
     <template v-slot:item.permission="{ item }">
       <div class="d-flex justify-center">
-        <v-combobox
-            class="permission-select"
+        <span class="font-weight-bold" v-if="item.permission === owner">
+          {{ $t('label.owner') }}
+        </span>
+        <v-select
+            v-else
             dense
             solo
             flat
@@ -57,10 +62,31 @@ ko:
             rounded
             hide-details
             :disabled="item.permission === owner"
-            v-model="item.permission"
-            :items="visiblePermissionNames"
+            :value="selectPermission(item)"
+            @input="inputPermission($event, item)"
+            :items="visiblePermissions"
             @change="change($event, item)"
-        ></v-combobox>
+            item-text="slug"
+            item-value="slug"
+            item-disabled="hidden"
+            return-object
+        >
+          <template v-slot:item="{ item }">
+            {{ item.name }}
+            <v-chip class="ml-2" x-small outlined color="primary">
+              <v-icon left>mdi-identifier</v-icon>
+              {{ item.slug }}
+            </v-chip>
+          </template>
+
+          <template v-slot:selection="{ item }">
+            {{ item.name }}
+            <v-chip class="ml-2" x-small outlined color="primary">
+              <v-icon left>mdi-identifier</v-icon>
+              {{ item.slug }}
+            </v-chip>
+          </template>
+        </v-select>
       </div>
     </template>
 
@@ -110,7 +136,7 @@ export default class TableMembers extends VueBase {
   @Prop({type: Array, default: () => new Array<PermissionA>()})
   readonly permissions!: Array<PermissionA>;
 
-  visiblePermissionNames = [] as Array<string>;
+  visiblePermissions = [] as Array<PermissionA>;
   headers = [] as Array<object>;
   filter = '';
 
@@ -129,13 +155,13 @@ export default class TableMembers extends VueBase {
   }
 
   updateVisiblePermissionNames() {
-    const names = [] as Array<string>;
+    const result = [] as Array<PermissionA>;
     for (const permission of this.permissions) {
       if (!permission.hidden) {
-        names.push(permission.slug);
+        result.push(permission);
       }
     }
-    this.visiblePermissionNames = names;
+    this.visiblePermissions = result;
   }
 
   get hideTopBar(): boolean {
@@ -158,8 +184,8 @@ export default class TableMembers extends VueBase {
       {
         text: this.$t('headers.permission').toString(),
         align: 'center',
-        filterable: true,
-        sortable: true,
+        filterable: false,
+        sortable: false,
         value: 'permission',
       },
     ];
@@ -183,16 +209,24 @@ export default class TableMembers extends VueBase {
     }
   }
 
+  selectPermission(item: MemberA) {
+    return this.permissions.find(p => p.slug === item.permission);
+  }
+
+  inputPermission(event: PermissionA, item: MemberA) {
+    item.permission = event.slug;
+  }
+
   @Emit('click:row')
   clickRow(item: MemberA) {
     return item;
   }
 
   @Emit()
-  change(event: string, item: MemberA) {
+  change(event: PermissionA, item: MemberA) {
     return {
       username: item.username,
-      permission: event,
+      permission: event.slug,
     } as UpdateMemberQ;
   }
 
@@ -212,9 +246,5 @@ export default class TableMembers extends VueBase {
 <style lang="scss" scoped>
 .row-pointer::v-deep tr {
   cursor: pointer;
-}
-
-.permission-select {
-  max-width: 180px;
 }
 </style>
