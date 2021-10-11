@@ -27,6 +27,7 @@ import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import FormInviteMemberEdit from '@/components/FormInviteMemberEdit.vue';
 import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
+import type {PermissionA} from '@/packet/permission';
 
 @Component({
   components: {
@@ -41,7 +42,7 @@ export default class MainMembers extends VueBase {
   loadingMembers = false;
 
   items = [] as Array<MemberA>;
-  permissions = [] as Array<string>;
+  permissions = [] as Array<PermissionA>;
   usernames = [] as Array<string>;
 
   created() {
@@ -57,13 +58,16 @@ export default class MainMembers extends VueBase {
 
   private async onRequestSetupDatas() {
     try {
-      this.usernames = await this.$api2.getMainUsernames();
-      const permissions = await this.$api2.getMainPermissions();
-      this.permissions = permissions.map(i => i.name || '');
+      const group = this.$route.params.group;
+      const project = this.$route.params.project;
+      const usernames = await this.$api2.getMainUsernames();
+      this.permissions = await this.$api2.getMainPermissions();
       this.items = await this.$api2.getMainProjectsPgroupPprojectMembers(
-          this.$route.params.group,
-          this.$route.params.project,
+          group, project
       );
+      this.usernames = usernames.filter(name => {
+        return this.items.findIndex(i => i.username === name) === -1;
+      });
     } catch (error) {
       this.toastRequestFailure(error);
     } finally {

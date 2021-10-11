@@ -39,7 +39,7 @@ ko:
         persistent-hint
         v-model="permission"
         :rules="rules.permission"
-        :items="permissions"
+        :items="visiblePermissionNames"
         :hint="$t('hint.permission')"
     ></v-select>
 
@@ -68,19 +68,20 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop, Ref, Emit} from 'vue-property-decorator';
+import {Component, Prop, Ref, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {VForm} from 'vuetify/lib/components/VForm';
-import {CreateMemberQ} from '@/packet/member';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
-import {USERNAME_RULES, PERMISSION_NAME_RULES} from '@/rules';
+import {USERNAME_RULES, PERMISSION_SLUG_RULES} from '@/rules';
+import type {CreateMemberQ} from '@/packet/member';
+import type {PermissionA} from '@/packet/permission';
 
 @Component
 export default class FormInviteMember extends VueBase {
   private readonly subtitleClass = SUBTITLE_CLASS;
   private readonly rules = {
     username: USERNAME_RULES,
-    permission: PERMISSION_NAME_RULES,
+    permission: PERMISSION_SLUG_RULES,
   };
 
   @Prop({type: Boolean})
@@ -104,15 +105,35 @@ export default class FormInviteMember extends VueBase {
   @Prop({type: Array, default: () => new Array<string>()})
   readonly usernames!: Array<string>;
 
-  @Prop({type: Array, default: () => new Array<string>()})
-  readonly permissions!: Array<string>;
+  @Prop({type: Array, default: () => new Array<PermissionA>()})
+  readonly permissions!: Array<PermissionA>;
 
   @Ref()
   readonly form!: VForm;
 
+  visiblePermissionNames = [] as Array<string>;
   valid = false;
   username = '';
   permission = '';
+
+  created() {
+    this.updateVisiblePermissionNames();
+  }
+
+  @Watch('permissions')
+  onWatchPermissions(value) {
+    this.updateVisiblePermissionNames();
+  }
+
+  updateVisiblePermissionNames() {
+    const names = [] as Array<string>;
+    for (const permission of this.permissions) {
+      if (!permission.hidden) {
+        names.push(permission.slug);
+      }
+    }
+    this.visiblePermissionNames = names;
+  }
 
   get disableSubmit(): boolean {
     return this.loading || !this.valid || this.disableSubmitButton;

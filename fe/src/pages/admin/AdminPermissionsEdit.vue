@@ -44,6 +44,7 @@ ko:
         :subheader="$t('subheader.basic')"
     >
       <form-permission
+          disable-slug
           hide-cancel-button
           :disable-submit-button="!modified"
           :value="current"
@@ -188,6 +189,7 @@ export default class AdminPermissionsEdit extends VueBase {
   }
 
   updatePermission(permission: PermissionA) {
+    const slug = permission.slug || '';
     const name = permission.name || '';
     const description = permission.description || '';
     const features = permission.features || [];
@@ -203,9 +205,12 @@ export default class AdminPermissionsEdit extends VueBase {
     const w_member = permission.w_member || false;
     const r_setting = permission.r_setting || false;
     const w_setting = permission.w_setting || false;
+    const hidden = permission.hidden || false;
+    const lock = permission.lock || false;
     const createdAt = permission.created_at || '';
     const updatedAt = permission.updated_at || '';
 
+    this.current.slug = slug;
     this.current.name = name;
     this.current.description = description;
     this.current.features = features;
@@ -221,6 +226,8 @@ export default class AdminPermissionsEdit extends VueBase {
     this.current.w_member = w_member;
     this.current.r_setting = r_setting;
     this.current.w_setting = w_setting;
+    this.current.hidden = hidden;
+    this.current.lock = lock;
     this.original.fromObject(this.current);
     this.modified = !_.isEqual(this.original, this.current);
 
@@ -243,6 +250,7 @@ export default class AdminPermissionsEdit extends VueBase {
 
   onClickOk(event: PermissionItem) {
     const body = {
+      slug: event.slug,
       name: event.name,
       description: event.description,
       features: event.features,
@@ -258,6 +266,8 @@ export default class AdminPermissionsEdit extends VueBase {
       w_member: event.w_member,
       r_setting: event.r_setting,
       w_setting: event.w_setting,
+      hidden: event.hidden,
+      lock: event.lock,
     } as UpdatePermissionQ;
 
     this.showSubmitLoading = true;

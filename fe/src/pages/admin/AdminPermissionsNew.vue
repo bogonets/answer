@@ -69,6 +69,7 @@ export default class AdminPermissionsNew extends VueBase {
 
   onClickOk(event: PermissionItem) {
     const body = {
+      slug: event.slug,
       name: event.name,
       description: event.description,
       features: event.features,

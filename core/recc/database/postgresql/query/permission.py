@@ -15,6 +15,11 @@ from recc.variables.database import (
     DEFAULT_PERMISSION_SLUG_OPERATOR,
     DEFAULT_PERMISSION_SLUG_MAINTAINER,
     DEFAULT_PERMISSION_SLUG_OWNER,
+    DEFAULT_PERMISSION_NAME_GUEST,
+    DEFAULT_PERMISSION_NAME_REPORTER,
+    DEFAULT_PERMISSION_NAME_OPERATOR,
+    DEFAULT_PERMISSION_NAME_MAINTAINER,
+    DEFAULT_PERMISSION_NAME_OWNER,
 )
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
@@ -89,7 +94,7 @@ def get_safe_insert_permission(
 ) -> str:
     return _SAFE_INSERT_PERMISSION_FORMAT.format(
         slug=slug,
-        name=name,
+        name=name if name else "",
         r_layout=r_layout,
         w_layout=w_layout,
         r_storage=r_storage,
@@ -109,11 +114,13 @@ def get_safe_insert_permission(
 
 SAFE_INSERT_PERMISSION_GUEST = get_safe_insert_permission(
     DEFAULT_PERMISSION_SLUG_GUEST,
+    DEFAULT_PERMISSION_NAME_GUEST,
     r_layout=True,
     lock=True,
 )
 SAFE_INSERT_PERMISSION_REPORTER = get_safe_insert_permission(
     DEFAULT_PERMISSION_SLUG_REPORTER,
+    DEFAULT_PERMISSION_NAME_REPORTER,
     r_layout=True,
     r_storage=True,
     r_manager=True,
@@ -122,6 +129,7 @@ SAFE_INSERT_PERMISSION_REPORTER = get_safe_insert_permission(
 )
 SAFE_INSERT_PERMISSION_OPERATOR = get_safe_insert_permission(
     DEFAULT_PERMISSION_SLUG_OPERATOR,
+    DEFAULT_PERMISSION_NAME_OPERATOR,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -134,6 +142,7 @@ SAFE_INSERT_PERMISSION_OPERATOR = get_safe_insert_permission(
 )
 SAFE_INSERT_PERMISSION_MAINTAINER = get_safe_insert_permission(
     DEFAULT_PERMISSION_SLUG_MAINTAINER,
+    DEFAULT_PERMISSION_NAME_MAINTAINER,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -150,6 +159,7 @@ SAFE_INSERT_PERMISSION_MAINTAINER = get_safe_insert_permission(
 )
 SAFE_INSERT_PERMISSION_OWNER = get_safe_insert_permission(
     DEFAULT_PERMISSION_SLUG_OWNER,
+    DEFAULT_PERMISSION_NAME_OWNER,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -329,6 +339,12 @@ WHERE uid=$1;
 
 SELECT_PERMISSION_BY_UID = f"""
 SELECT *
+FROM {TABLE_PERMISSION}
+WHERE uid=$1;
+"""
+
+SELECT_PERMISSION_LOCK_BY_UID = f"""
+SELECT lock
 FROM {TABLE_PERMISSION}
 WHERE uid=$1;
 """

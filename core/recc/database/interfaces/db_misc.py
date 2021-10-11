@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from typing import List
 from abc import ABCMeta, abstractmethod
 
 
@@ -42,4 +43,8 @@ class DbMisc(metaclass=ABCMeta):
 
     @abstractmethod
     def get_owner_permission_uid(self) -> int:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_default_permission_uids(self) -> List[int]:
         raise NotImplementedError

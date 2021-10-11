@@ -26,7 +26,8 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import FormInviteMemberEdit from '@/components/FormInviteMemberEdit.vue';
-import {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
+import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
+import type {PermissionA} from '@/packet/permission';
 
 @Component({
   components: {
@@ -58,7 +59,7 @@ export default class GroupMembers extends VueBase {
   loadingMembers = false;
 
   items = [] as Array<MemberA>;
-  permissions = [] as Array<string>;
+  permissions = [] as Array<PermissionA>;
   usernames = [] as Array<string>;
 
   created() {
@@ -74,12 +75,13 @@ export default class GroupMembers extends VueBase {
 
   private async onRequestSetupDatas() {
     try {
-      this.usernames = await this.$api2.getMainUsernames();
-      const permissions = await this.$api2.getMainPermissions();
-      this.permissions = permissions.map(i => i.name || '');
-      this.items = await this.$api2.getMainGroupsPgroupMembers(
-          this.$route.params.group
-      );
+      const group = this.$route.params.group;
+      const usernames = await this.$api2.getMainUsernames();
+      this.permissions = await this.$api2.getMainPermissions();
+      this.items = await this.$api2.getMainGroupsPgroupMembers(group);
+      this.usernames = usernames.filter(name => {
+        return this.items.findIndex(i => i.username === name) === -1;
+      });
     } catch (error) {
       this.toastRequestFailure(error);
     } finally {

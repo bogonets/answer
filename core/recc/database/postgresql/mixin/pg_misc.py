@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from typing import List
 from functools import reduce
 from overrides import overrides
 from recc.database.interfaces.db_misc import DbMisc
@@ -109,3 +110,14 @@ class PgMisc(DbMisc, PgBase):
         if self._owner_permission_uid is None:
             raise RuntimeError("The cache has not been updated")
         return self._owner_permission_uid
+
+    @overrides
+    def get_default_permission_uids(self) -> List[int]:
+        return [
+            self.get_anonymous_group_uid(),
+            self.get_guest_permission_uid(),
+            self.get_reporter_permission_uid(),
+            self.get_operator_permission_uid(),
+            self.get_maintainer_permission_uid(),
+            self.get_owner_permission_uid(),
+        ]

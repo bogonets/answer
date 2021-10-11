@@ -1,28 +1,40 @@
 <i18n lang="yaml">
 en:
   label:
+    slug: "Slug"
     name: "Name"
     description: "Description"
     features: "Features"
     permissions: "Permissions"
+    hidden: "Hidden"
+    lock: "Lock"
   hint:
+    slug: "Permission slug to be used in the URL."
     name: "The name of the permission as it is displayed on the screen."
     description: "A specific description of the permission."
     features: "A list of features to apply to the permission."
+    hidden: "When enabled, it is not visible to the user."
+    lock: "When enabled, it cannot be edited or removed."
   no_matching: "No results matching \"{search}\". Press {key} to create a new one."
   cancel: "Cancel"
   submit: "Submit"
 
 ko:
   label:
+    slug: "슬러그"
     name: "이름"
     description: "설명"
     features: "기능"
     permissions: "권한"
+    hidden: "숨김"
+    lock: "잠금"
   hint:
+    slug: "URL 경로에 사용될 권한 슬러그."
     name: "화면에 출력되는 권한명."
     description: "프로젝트의 구체적인 설명."
     features: "프로젝트에 적용할 기능 목록 입니다."
+    hidden: "활성화되면 사용자에게 표시되지 않습니다."
+    lock: "활성화되면 편집하거나 제거할 수 없습니다."
   no_matching: "\"{search}\" 와 일치하는 결과가 없습니다. {key} 키를 눌러 추가할 수 있습니다."
   cancel: "취소"
   submit: "제출"
@@ -31,16 +43,25 @@ ko:
 <template>
   <v-form ref="form" v-model="valid">
 
+    <p :class="subtitleClass">{{ $t('label.slug') }}</p>
+    <v-text-field
+        dense
+        :value="value.slug"
+        @input="inputSlug"
+        :rules="slugRules"
+        :disabled="disableSlug"
+        :filled="disableSlug"
+        :persistent-hint="!disableSlug"
+        :hide-details="disableSlug"
+        :hint="$t('hint.name')"
+    ></v-text-field>
+
     <p :class="subtitleClass">{{ $t('label.name') }}</p>
     <v-text-field
         dense
         :value="value.name"
         @input="inputName"
-        :rules="rules.name"
-        :disabled="disableName"
-        :filled="disableName"
-        :persistent-hint="!disableName"
-        :hide-details="disableName"
+        persistent-hint
         :hint="$t('hint.name')"
     ></v-text-field>
 
@@ -91,6 +112,36 @@ ko:
       </v-card-text>
     </v-card>
 
+    <v-row class="mt-2" no-gutters>
+      <div>
+        <p :class="subtitleClass">{{ $t('label.hidden') }}</p>
+        <p class="text-caption text--secondary">{{ $t('hint.hidden') }}</p>
+      </div>
+      <v-spacer></v-spacer>
+      <div>
+        <v-switch
+            inset
+            :value="value.hidden"
+            @change="onChangeHidden"
+        ></v-switch>
+      </div>
+    </v-row>
+
+    <v-row v-if="showLock" class="mt-2" no-gutters>
+      <div>
+        <p :class="subtitleClass">{{ $t('label.lock') }}</p>
+        <p class="text-caption text--secondary">{{ $t('hint.lock') }}</p>
+      </div>
+      <v-spacer></v-spacer>
+      <div>
+        <v-switch
+            inset
+            :value="value.lock"
+            @change="onChangeLock"
+        ></v-switch>
+      </div>
+    </v-row>
+
     <v-row v-if="!hideButtons" class="mt-2" no-gutters>
       <v-spacer></v-spacer>
       <v-btn
@@ -120,19 +171,25 @@ import {Component, Prop, Ref, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import TablePermissions, {Perms} from '@/components/TablePermissions.vue';
 import {VForm} from 'vuetify/lib/components/VForm';
-import {PERMISSION_NAME_RULES} from '@/rules';
+import {PERMISSION_SLUG_RULES} from '@/rules';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {CAPTION_CLASS} from '@/styles/caption';
 
 export class PermissionItem extends Perms {
+  slug = '';
   name = '';
   description = '';
   features = [] as Array<string>;
+  hidden = false;
+  lock = false;
 
   fromObject(obj?: any) {
+    this.slug = obj?.slug || '';
     this.name = obj?.name || '';
     this.description = obj?.description || '';
     this.features = obj?.features || [];
+    this.hidden = obj?.hidden || false;
+    this.lock = obj?.lock || false;
     super.fromObject(obj);
   }
 }
@@ -143,18 +200,18 @@ export class PermissionItem extends Perms {
   }
 })
 export default class FormPermission extends VueBase {
-  private readonly subtitleClass = SUBTITLE_CLASS;
-  private readonly captionClass = CAPTION_CLASS;
-
-  private readonly rules = {
-    name: PERMISSION_NAME_RULES,
-  };
+  readonly subtitleClass = SUBTITLE_CLASS;
+  readonly captionClass = CAPTION_CLASS;
+  readonly slugRules = PERMISSION_SLUG_RULES;
 
   @Prop({type: Boolean})
   readonly loading!: boolean;
 
   @Prop({type: Boolean})
-  readonly disableName!: boolean;
+  readonly showLock!: boolean;
+
+  @Prop({type: Boolean})
+  readonly disableSlug!: boolean;
 
   @Prop({type: Boolean})
   readonly disableSubmitButton!: boolean;
@@ -184,6 +241,11 @@ export default class FormPermission extends VueBase {
   searchFeature = '';
   perms = new PermissionItem();
 
+  inputSlug(event: string) {
+    this.value.slug = event;
+    this.input();
+  }
+
   inputName(event: string) {
     this.value.name = event;
     this.input();
@@ -201,6 +263,16 @@ export default class FormPermission extends VueBase {
 
   inputPerms(event: Perms) {
     (this.value as Perms).fromObject(event);
+    this.input();
+  }
+
+  onChangeHidden(event: null | boolean) {
+    this.value.hidden = !!event;
+    this.input();
+  }
+
+  onChangeLock(event: null | boolean) {
+    this.value.lock = !!event;
     this.input();
   }
 

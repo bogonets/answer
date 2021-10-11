@@ -48,7 +48,7 @@ ko:
 
     <template v-slot:item.permission="{ item }">
       <div class="d-flex justify-center">
-        <v-select
+        <v-combobox
             class="permission-select"
             dense
             solo
@@ -58,9 +58,9 @@ ko:
             hide-details
             :disabled="item.permission === owner"
             v-model="item.permission"
-            :items="permissions"
+            :items="visiblePermissionNames"
             @change="change($event, item)"
-        ></v-select>
+        ></v-combobox>
       </div>
     </template>
 
@@ -82,14 +82,15 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop, Emit} from 'vue-property-decorator';
+import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import {MemberA, UpdateMemberQ} from '@/packet/member';
-import {PERMISSION_NAME_OWNER} from '@/packet/permission';
+import type {MemberA, UpdateMemberQ} from '@/packet/member';
+import type {PermissionA} from '@/packet/permission';
+import {PERMISSION_SLUG_OWNER} from '@/packet/permission';
 
 @Component
 export default class TableMembers extends VueBase {
-  private readonly owner = PERMISSION_NAME_OWNER;
+  private readonly owner = PERMISSION_SLUG_OWNER;
 
   @Prop({type: Boolean, default: false})
   readonly hideFilterInput!: boolean;
@@ -106,9 +107,10 @@ export default class TableMembers extends VueBase {
   @Prop({type: Array, default: () => new Array<MemberA>()})
   readonly items!: Array<MemberA>;
 
-  @Prop({type: Array, default: () => new Array<string>()})
-  readonly permissions!: Array<string>;
+  @Prop({type: Array, default: () => new Array<PermissionA>()})
+  readonly permissions!: Array<PermissionA>;
 
+  visiblePermissionNames = [] as Array<string>;
   headers = [] as Array<object>;
   filter = '';
 
@@ -118,6 +120,22 @@ export default class TableMembers extends VueBase {
     } else {
       this.headers = this.createHeaders(true);
     }
+    this.updateVisiblePermissionNames();
+  }
+
+  @Watch('permissions')
+  onWatchPermissions(value) {
+    this.updateVisiblePermissionNames();
+  }
+
+  updateVisiblePermissionNames() {
+    const names = [] as Array<string>;
+    for (const permission of this.permissions) {
+      if (!permission.hidden) {
+        names.push(permission.slug);
+      }
+    }
+    this.visiblePermissionNames = names;
   }
 
   get hideTopBar(): boolean {

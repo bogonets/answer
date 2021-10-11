@@ -81,6 +81,10 @@ class DbPermission(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def select_permission_lock_by_uid(self, uid: int) -> bool:
+        raise NotImplementedError
+
+    @abstractmethod
     async def select_permissions(self) -> List[Permission]:
         raise NotImplementedError
 

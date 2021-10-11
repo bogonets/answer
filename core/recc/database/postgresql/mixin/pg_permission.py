@@ -14,6 +14,7 @@ from recc.database.postgresql.query.permission import (
     SELECT_PERMISSION_UID_BY_SLUG,
     SELECT_PERMISSION_SLUG_BY_UID,
     SELECT_PERMISSION_BY_UID,
+    SELECT_PERMISSION_LOCK_BY_UID,
     SELECT_PERMISSION_ALL,
     SELECT_BEST_PERMISSION_OF_PROJECT_NO_COMMENT,
     SELECT_PERMISSION_BY_USER_UID_AND_GROUP_UID,
@@ -166,6 +167,14 @@ class PgPermission(DbPermission, PgBase):
         result.uid = uid
         logger.info(f"select_permission_by_uid({params_msg}) ok.")
         return result
+
+    @overrides
+    async def select_permission_lock_by_uid(self, uid: int) -> bool:
+        query = SELECT_PERMISSION_LOCK_BY_UID
+        lock = await self.fetch_val(query, uid)
+        params_msg = f"uid={uid}"
+        logger.info(f"select_permission_lock_by_uid({params_msg}) -> {lock}")
+        return lock
 
     @overrides
     async def select_permissions(self) -> List[Permission]:

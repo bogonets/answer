@@ -80,7 +80,8 @@ import VueBase from '@/base/VueBase';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormInviteMember from '@/components/FormInviteMember.vue';
 import TableMembers from "@/components/TableMembers.vue";
-import {MemberA, CreateMemberQ, UpdateMemberQ} from "@/packet/member";
+import type {MemberA, CreateMemberQ, UpdateMemberQ} from "@/packet/member";
+import type {PermissionA} from '@/packet/permission';
 import {TITLE_CLASS} from '@/styles/title';
 
 @Component({
@@ -108,8 +109,8 @@ export default class FormInviteMemberEdit extends VueBase {
   @Prop({type: Array, default: () => new Array<MemberA>()})
   readonly items!: Array<MemberA>;
 
-  @Prop({type: Array, default: () => new Array<string>()})
-  readonly permissions!: Array<string>;
+  @Prop({type: Array, default: () => new Array<PermissionA>()})
+  readonly permissions!: Array<PermissionA>;
 
   @Prop({type: Array, default: () => new Array<string>()})
   readonly usernames!: Array<string>;

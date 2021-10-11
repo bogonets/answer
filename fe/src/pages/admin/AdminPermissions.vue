@@ -7,6 +7,8 @@ en:
     slug: "Slug"
     name: "Name"
     description: "Description"
+    hidden: "Hidden"
+    lock: "Lock"
     created_at: "Created at"
     updated_at: "Updated at"
     actions: "Actions"
@@ -21,6 +23,8 @@ ko:
     slug: "슬러그"
     name: "이름"
     description: "설명"
+    hidden: "숨김"
+    lock: "잠금"
     created_at: "생성일"
     updated_at: "수정일"
     actions: "관리"
@@ -54,6 +58,14 @@ ko:
             {{ $t('new_item') }}
           </v-btn>
         </v-toolbar>
+      </template>
+
+      <template v-slot:item.hidden="{ item }">
+        <v-icon dense>{{ hiddenIcon(item) }}</v-icon>
+      </template>
+
+      <template v-slot:item.lock="{ item }">
+        <v-icon dense>{{ lockIcon(item) }}</v-icon>
       </template>
 
       <template v-slot:item.created_at="{ item }">
@@ -105,6 +117,12 @@ export default class AdminPermissions extends VueBase {
 
   private readonly headers = [
     {
+      text: this.$t('headers.slug').toString(),
+      align: 'center',
+      filterable: true,
+      value: 'slug',
+    },
+    {
       text: this.$t('headers.name').toString(),
       align: 'center',
       filterable: true,
@@ -115,6 +133,20 @@ export default class AdminPermissions extends VueBase {
       align: 'center',
       filterable: true,
       value: 'description',
+    },
+    {
+      text: this.$t('headers.hidden').toString(),
+      align: 'center',
+      sortable: false,
+      filterable: false,
+      value: 'hidden',
+    },
+    {
+      text: this.$t('headers.lock').toString(),
+      align: 'center',
+      sortable: false,
+      filterable: false,
+      value: 'lock',
     },
     {
       text: this.$t('headers.created_at').toString(),
@@ -167,7 +199,23 @@ export default class AdminPermissions extends VueBase {
   }
 
   onClickEdit(item: PermissionA) {
-    this.moveToAdminPermissionsEdit(item.name);
+    this.moveToAdminPermissionsEdit(item.slug);
+  }
+
+  hiddenIcon(item: PermissionA) {
+    if (item.hidden) {
+      return 'mdi-eye-off';
+    } else {
+      return 'mdi-eye';
+    }
+  }
+
+  lockIcon(item: PermissionA) {
+    if (item.lock) {
+      return 'mdi-lock';
+    } else {
+      return 'mdi-lock-open-variant';
+    }
   }
 }
 </script>
