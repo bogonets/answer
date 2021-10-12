@@ -64,8 +64,25 @@ services:
       timeout: 5s
       retries: 5
 
+  coturn:
+    container_name: answer-coturn
+    image: coturn/coturn:4.5
+    restart: always
+    volumes:
+      - coturn_data:/var/lib/coturn/
+    ports:
+      - 3478:3478/tcp
+      - 3478:3478/udp
+      - 49160-49200:49160-49200/udp
+    labels:
+      - com.bogonets.answer.cluster=true
+      - com.bogonets.answer.cluster.category=turn
+    command: ["turnserver", "-n", "--min-port=49160", "--max-port=49200"]
+    environment:
+      - TZ=Asia/Seoul
+
 volumes:
   postgres_data:
   minio_data:
   redis_data:
-
+  coturn_data:
