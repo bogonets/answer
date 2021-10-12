@@ -80,7 +80,7 @@ class ContextPermission(ContextBase):
         if not force:
             if await self.database.select_permission_lock_by_uid(uid):
                 raise RuntimeError(f"Locked permission: {uid}")
-            if slug is not None:
+            if slug:
                 default_uids = self.database.get_default_permission_uids()
                 if uid in default_uids:
                     raise RuntimeError("Slug of default permissions cannot be updated")

@@ -451,33 +451,3 @@ class ContextTask(ContextBase):
             await client.set_task_blueprint(task)
 
         await self.database.update_project_by_uid(project_uid, extra=extra)
-
-    async def send_signal_v1(
-        self,
-        project_name: str,
-        task_name: str,
-        signal_name: str,
-        lambda_name: str,
-        input_queries: List[str],
-        output_queries: List[str],
-    ) -> Any:
-        return ""
-
-    async def get_lambda_property_value(
-        self,
-        project_name: str,
-        task_name: str,
-        lambda_name: str,
-        property_name: str,
-    ) -> Any:
-        return ""
-
-    async def set_lambda_property_value(
-        self,
-        project_name: str,
-        task_name: str,
-        lambda_name: str,
-        property_name: str,
-        property_value: Any,
-    ) -> None:
-        pass

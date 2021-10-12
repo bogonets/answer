@@ -78,22 +78,6 @@ function initApiV2Session(
 // Main Process
 // ------------
 
-function saveSessionToLocalStorage(vue: Vue, signin: SigninA) {
-    const access = signin.access;
-    const refresh = signin.refresh;
-    const user = signin.user;
-    const preference = signin.preference;
-    console.assert(!!access);
-    console.assert(!!refresh);
-    console.assert(!!user);
-    console.assert(!!preference);
-
-    vue.$localStore.access = access;
-    vue.$localStore.refresh = refresh;
-    vue.$localStore.user = user;
-    vue.$localStore.preference = preference;
-}
-
 function loadSessionFromLocalStorage(vue: Vue) {
     const userExtra = getUserExtraFromLocalStorage(vue);
     if (vue.$localStore.alreadySession) {
@@ -132,6 +116,22 @@ function loadSessionFromLocalStorage(vue: Vue) {
     loadAppearanceFromUserExtraA(vue, userExtra);
 }
 
+function saveSessionToLocalStorage(vue: Vue, signin: SigninA) {
+    const access = signin.access;
+    const refresh = signin.refresh;
+    const user = signin.user;
+    const preference = signin.preference;
+    console.assert(!!access);
+    console.assert(!!refresh);
+    console.assert(!!user);
+    console.assert(!!preference);
+
+    vue.$localStore.access = access;
+    vue.$localStore.refresh = refresh;
+    vue.$localStore.user = user;
+    vue.$localStore.preference = preference;
+}
+
 function clearSessionInLocalStorage(vue: Vue) {
     vue.$store.commit('user/logout');
     vue.$localStore.clearSession();
@@ -142,14 +142,18 @@ function clearSessionInLocalStorage(vue: Vue) {
 // Export events
 // -------------
 
-export function onSigninEvent(vue: Vue, signin: SigninA) {
-    saveSessionToLocalStorage(vue, signin);
+export function onCreateApplicationEvent(vue: Vue) {
+    console.debug('[EVENT] Create Application');
+    loadSessionFromLocalStorage(vue);
 }
 
-export function onLoadSession(vue: Vue) {
+export function onSigninEvent(vue: Vue, signin: SigninA) {
+    console.debug('[EVENT] Sign In');
+    saveSessionToLocalStorage(vue, signin);
     loadSessionFromLocalStorage(vue);
 }
 
 export function onSignoutEvent(vue: Vue) {
+    console.debug('[EVENT] Sign Out');
     clearSessionInLocalStorage(vue);
 }

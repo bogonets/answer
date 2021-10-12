@@ -198,6 +198,10 @@ export default class NaviMain extends VueBase {
     })();
   }
 
+  mounted() {
+    this.legacyMounted();
+  }
+
   async requestSetup() {
     try {
       const group = this.$route.params.group;
@@ -240,8 +244,11 @@ export default class NaviMain extends VueBase {
    * @deprecated
    */
   private legacyMounted() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const projectName = `${group}@${project}`;
     this.$store.commit('drawer/setNaviShow', {bool: true});
-    this.$store.commit('project/setSelectProject', {name: this.$route.params.project});
+    this.$store.commit('project/setSelectProject', {name: projectName});
     this.$store.commit('project/setViewNaviList', {menus: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]});
     this.$store.commit('signal/setLayoutMainSignal', {bool: true});
   }

@@ -7,12 +7,12 @@
 <script lang="ts">
 import {Component} from 'vue-property-decorator'
 import VueBase from '@/base/VueBase';
-import {onLoadSession} from '@/event/session';
+import {onCreateApplicationEvent} from '@/event/session';
 
 @Component
 export default class App extends VueBase {
   created() {
-    onLoadSession(this);
+    onCreateApplicationEvent(this);
   }
 }
 </script>

@@ -8,7 +8,7 @@ from aiohttp.web import HTTPException
 from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
-from aiohttp.web_exceptions import HTTPUnauthorized
+from aiohttp.web_exceptions import HTTPUnauthorized, HTTPServiceUnavailable
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.header.bearer_auth import BearerAuth
 from recc.core.context import Context
@@ -38,10 +38,7 @@ from recc.database.struct.layout import Layout
 from recc.database.struct.user import User
 from recc.driver.json import global_json_encoder, global_json_decoder
 from recc.util.version import version_text
-from recc.variables.database import ANONYMOUS_GROUP_SLUG
 from recc.variables.labels import RECC_TASK_TASK_KEY
-
-GLOBAL_GROUP = ANONYMOUS_GROUP_SLUG
 
 
 class RouterV1:
@@ -434,15 +431,16 @@ class RouterV1:
         }
 
     async def on_get_projects(self, request: Request):
-        name = "getAll-project"
-        session = request[at_session]
-        username = session.audience
-        logger.info(f"on_get_projects(session={username})")
-
-        group_uid = await self.context.get_group_uid(GLOBAL_GROUP)
-        projects = await self.context.get_projects(group_uid)
-        result = [self._project_to_v1_dict(project) for project in projects]
-        return response_ok_without_detail(name, {"t": name, "obj": result})
+        # name = "getAll-project"
+        # session = request[at_session]
+        # username = session.audience
+        # logger.info(f"on_get_projects(session={username})")
+        #
+        # group_uid = await self.context.get_group_uid(GLOBAL_GROUP)
+        # projects = await self.context.get_projects(group_uid)
+        # result = [self._project_to_v1_dict(project) for project in projects]
+        # return response_ok_without_detail(name, {"t": name, "obj": result})
+        raise HTTPServiceUnavailable()
 
     async def on_set_project(self, _: Request):
         assert self
@@ -464,23 +462,26 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_get_project(session={username},project={projname})")
 
-        group_name = GLOBAL_GROUP
+        group_name, project_name = str(projname).split("@")
         group_uid = await self.context.get_group_uid(group_name)
-        project_uid = await self.context.get_project_uid(group_uid, projname)
+        project_uid = await self.context.get_project_uid(group_uid, project_name)
         project = await self.context.get_project(project_uid)
 
         result = self._project_to_v1_dict(project)
         return response_ok_without_detail(name, result)
 
     async def on_create_project(self, request: Request):
+        logger.critical("Unsupported API")
+
         name = "create-project"
         session = request[at_session]
         username = session.audience
         projname = request.match_info[k_project]
         logger.info(f"on_create_project(session={username},project={projname})")
 
-        group_uid = await self.context.get_group_uid(GLOBAL_GROUP)
-        await self.context.create_project(group_uid, projname)
+        group_name, project_name = str(projname).split("@")
+        group_uid = await self.context.get_group_uid(group_name)
+        await self.context.create_project(group_uid, project_name)
         return response_ok_without_detail(name)
 
     async def on_delete_project(self, request: Request):
@@ -490,8 +491,9 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_delete_project(session={username},project={projname})")
 
-        group_uid = await self.context.get_group_uid(GLOBAL_GROUP)
-        project_uid = await self.context.get_project_uid(group_uid, projname)
+        group_name, project_name = str(projname).split("@")
+        group_uid = await self.context.get_group_uid(group_name)
+        project_uid = await self.context.get_project_uid(group_uid, project_name)
 
         await self.context.delete_project(project_uid)
         return response_ok_without_detail(name)
@@ -602,9 +604,9 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_get_graph(session={username},project={projname})")
 
-        group_name = ANONYMOUS_GROUP_SLUG
+        group_name, project_name = str(projname).split("@")
         group_uid = await self.context.get_group_uid(group_name)
-        project_uid = await self.context.get_project_uid(group_uid, projname)
+        project_uid = await self.context.get_project_uid(group_uid, project_name)
         project = await self.context.get_project(project_uid)
         return response_ok_without_detail(name, {"obj": project.extra, "t": name})
 
@@ -616,8 +618,10 @@ class RouterV1:
         logger.info(f"on_set_graph(session={username},project={projname})")
 
         request_json = await request.json(loads=global_json_decoder)
-        group_name = ANONYMOUS_GROUP_SLUG
-        await self.context.set_graph_with_extra_v1(group_name, projname, request_json)
+        group_name, project_name = str(projname).split("@")
+        await self.context.set_graph_with_extra_v1(
+            group_name, project_name, request_json
+        )
         result = [{"msg": "", "status": "OK", "taskId": 1}]
         return response_ok_without_detail(name, {"t": name, "obj": result})
 
@@ -628,7 +632,8 @@ class RouterV1:
         projname = request.match_info[k_project]
         logger.info(f"on_get_graph_status(session={username},project={projname})")
 
-        tasks = await self.context.get_container_infos(GLOBAL_GROUP, projname)
+        group_name, project_name = str(projname).split("@")
+        tasks = await self.context.get_container_infos(group_name, project_name)
 
         result = list()
         for s in tasks:
@@ -647,84 +652,88 @@ class RouterV1:
         params = f"session={username},project={projname},task={taskname}"
         logger.info(f"on_stop_task({params})")
 
-        group_name = ANONYMOUS_GROUP_SLUG
-        await self.context.stop_task(group_name, projname, taskname)
-        await self.context.remove_task(group_name, projname, taskname)
+        group_name, project_name = str(projname).split("@")
+        await self.context.stop_task(group_name, project_name, taskname)
+        await self.context.remove_task(group_name, project_name, taskname)
         return response_ok_without_detail(name)
 
     async def on_get_task_property_value(self, request: Request):
-        name = "get-lambda-properties"
-        session = request[at_session]
-        username = session.audience
-        projname = request.match_info[k_project]
-        taskname = request.match_info[k_task]
-        params = f"session={username},project={projname},task={taskname}"
-        logger.info(f"on_stop_task({params})")
-
-        # q: {"lambda": "image/manage_rois7", "property": "infos"}
-        q_txt = request.url.query.get("q")
-        if q_txt is None:
-            return response_error(name)
-
-        q_obj = global_json_decoder(q_txt)
-        lambda_name = q_obj["lambda"]
-        property_name = q_obj["property"]
-
-        result = await self.context.get_lambda_property_value(
-            projname,
-            taskname,
-            lambda_name,
-            property_name,
-        )
-        return response_ok_without_detail(name, {"obj": result, "t": name})
+        # name = "get-lambda-properties"
+        # session = request[at_session]
+        # username = session.audience
+        # projname = request.match_info[k_project]
+        # taskname = request.match_info[k_task]
+        # params = f"session={username},project={projname},task={taskname}"
+        # logger.info(f"on_stop_task({params})")
+        #
+        # # q: {"lambda": "image/manage_rois7", "property": "infos"}
+        # q_txt = request.url.query.get("q")
+        # if q_txt is None:
+        #     return response_error(name)
+        #
+        # q_obj = global_json_decoder(q_txt)
+        # lambda_name = q_obj["lambda"]
+        # property_name = q_obj["property"]
+        #
+        # result = await self.context.get_lambda_property_value(
+        #     projname,
+        #     taskname,
+        #     lambda_name,
+        #     property_name,
+        # )
+        # return response_ok_without_detail(name, {"obj": result, "t": name})
+        raise HTTPServiceUnavailable()
 
     async def on_set_task_property_value(self, request: Request):
-        name = "set-lambda-properties"
-        session = request[at_session]
-        username = session.audience
-        projname = request.match_info[k_project]
-        taskname = request.match_info[k_task]
-        params = f"session={username},project={projname},task={taskname}"
-        logger.info(f"on_set_task_property_value({params})")
-
-        request_json = await request.json(loads=global_json_decoder)
-        lambda_name = request_json["lambda"]
-        property_name = request_json["property"]
-        property_value = request_json["value"]
-
-        await self.context.set_lambda_property_value(
-            projname,
-            taskname,
-            lambda_name,
-            property_name,
-            property_value,
-        )
-        return response_ok_without_detail(name, {"obj": {"updateDB": True}, "t": name})
+        # name = "set-lambda-properties"
+        # session = request[at_session]
+        # username = session.audience
+        # projname = request.match_info[k_project]
+        # taskname = request.match_info[k_task]
+        # params = f"session={username},project={projname},task={taskname}"
+        # logger.info(f"on_set_task_property_value({params})")
+        #
+        # request_json = await request.json(loads=global_json_decoder)
+        # lambda_name = request_json["lambda"]
+        # property_name = request_json["property"]
+        # property_value = request_json["value"]
+        #
+        # await self.context.set_lambda_property_value(
+        #     projname,
+        #     taskname,
+        #     lambda_name,
+        #     property_name,
+        #     property_value,
+        # )
+        # return response_ok_without_detail(
+        #     name, {"obj": {"updateDB": True}, "t": name},
+        # )
+        raise HTTPServiceUnavailable()
 
     async def on_send_signal_lambda(self, request: Request):
-        # name = "send-signal"
-        session = request[at_session]
-        username = session.audience
-        projname = request.match_info[k_project]
-        taskname = request.match_info[k_task]
-        params = f"session={username},project={projname},task={taskname}"
-        logger.info(f"on_send_signal_lambda({params})")
-
-        request_json = await request.json(loads=global_json_decoder)
-        signal_name = request_json["name"]
-        lambda_name = request_json["lambda_name"]
-        input_queries = request_json["input_queries"]
-        output_queries = request_json["output_queries"]
-
-        result = await self.context.send_signal_v1(
-            projname,
-            taskname,
-            signal_name,
-            lambda_name,
-            input_queries,
-            output_queries,
-        )
-        return Response(body=result)
+        # # name = "send-signal"
+        # session = request[at_session]
+        # username = session.audience
+        # projname = request.match_info[k_project]
+        # taskname = request.match_info[k_task]
+        # params = f"session={username},project={projname},task={taskname}"
+        # logger.info(f"on_send_signal_lambda({params})")
+        #
+        # request_json = await request.json(loads=global_json_decoder)
+        # signal_name = request_json["name"]
+        # lambda_name = request_json["lambda_name"]
+        # input_queries = request_json["input_queries"]
+        # output_queries = request_json["output_queries"]
+        #
+        # result = await self.context.send_signal_v1(
+        #     projname,
+        #     taskname,
+        #     signal_name,
+        #     lambda_name,
+        #     input_queries,
+        #     output_queries,
+        # )
+        raise HTTPServiceUnavailable()
 
     async def on_get_property_hint(self, _: Request):
         assert self
