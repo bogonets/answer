@@ -104,14 +104,18 @@ export interface ApiV2Options {
     origin?: string;
     timeout?: number;
 
-    tokenErrorCallback?: () => void;
+    accessTokenErrorCallback?: () => void;
+    refreshTokenErrorCallback?: () => void;
     uninitializedServiceCallback?: () => void;
+    renewalAccessTokenCallback?: (access: string) => void;
 }
 
 export default class ApiV2 {
 
-    readonly tokenErrorCallback?: () => void;
+    readonly accessTokenErrorCallback?: () => void;
+    readonly refreshTokenErrorCallback?: () => void;
     readonly uninitializedServiceCallback?: () => void;
+    readonly renewalAccessTokenCallback?: (access: string) => void;
 
     originAddress: string;
     api: AxiosInstance;
@@ -120,8 +124,10 @@ export default class ApiV2 {
     refreshTimeoutId?: number = undefined;
 
     constructor(options?: ApiV2Options) {
-        this.tokenErrorCallback = options?.tokenErrorCallback;
+        this.accessTokenErrorCallback = options?.accessTokenErrorCallback;
+        this.refreshTokenErrorCallback = options?.refreshTokenErrorCallback;
         this.uninitializedServiceCallback = options?.uninitializedServiceCallback;
+        this.renewalAccessTokenCallback = options?.renewalAccessTokenCallback;
 
         const origin = options?.origin || document.location.origin;
         const timeout = options?.timeout || DEFAULT_TIMEOUT;
@@ -167,9 +173,12 @@ export default class ApiV2 {
             },
         } as AxiosRequestConfig;
 
-        this.api.post('/public/token/refresh', undefined, config)
+        return this.api.post('/public/token/refresh', undefined, config)
             .then((response: AxiosResponse) => {
                 const result = response.data as RefreshTokenA;
+                if (this.renewalAccessTokenCallback) {
+                    this.renewalAccessTokenCallback(result.access);
+                }
                 this.setDefaultAccessToken(result.access, refresh);
                 console.info('Access token renewal successful');
             })
@@ -219,10 +228,10 @@ export default class ApiV2 {
 
         if (timeout >= 0) {
             this.refreshTimeoutId = window.setTimeout(() => {
-                this.refreshToken(refresh);
+                this.refreshToken(refresh).finally();
             }, timeout);
         } else {
-            this.refreshToken(refresh);
+            this.refreshToken(refresh).finally();
         }
 
         const renewalTime = moment(Date.now() + timeout).toISOString();
@@ -262,14 +271,14 @@ export default class ApiV2 {
 
     private commonErrorHandling<T>(res: AxiosResponse<T>) {
         if (res.status === STATUS_CODE_ACCESS_TOKEN_ERROR) {
-            if (this.tokenErrorCallback) {
-                this.tokenErrorCallback();
+            if (this.accessTokenErrorCallback) {
+                this.accessTokenErrorCallback();
             }
             this.clearDefaultSession();
             throw new AccessTokenError();
         } else if (res.status === STATUS_CODE_REFRESH_TOKEN_ERROR) {
-            if (this.tokenErrorCallback) {
-                this.tokenErrorCallback();
+            if (this.refreshTokenErrorCallback) {
+                this.refreshTokenErrorCallback();
             }
             this.clearDefaultSession();
             throw new RefreshTokenError();

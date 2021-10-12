@@ -25,6 +25,9 @@ const getters = {
 }
 
 const mutations = {
+  renewalAccessToken(state, {accessToken}) {
+    state.accessToken = accessToken;
+  },
   login(state, {accessToken, refreshToken, id, email, phone}) {
     state.accessToken = accessToken;
     state.refreshToken = refreshToken;

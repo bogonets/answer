@@ -77,15 +77,30 @@ function moveTo(name: string) {
 import VueApiV2 from '@/apis';
 import {ApiV2Options} from '@/apis/api-v2';
 const apiV2Options = {
-  tokenErrorCallback: () => {
+  accessTokenErrorCallback: () => {
     const localStore = Vue.prototype.$localStore as LocalStore;
     localStore.clearSession();
+    sessionStore.commit('user/logout');
+    moveTo(rootNames.signin);
+  },
+  refreshTokenErrorCallback: () => {
+    const localStore = Vue.prototype.$localStore as LocalStore;
+    localStore.clearSession();
+    sessionStore.commit('user/logout');
     moveTo(rootNames.signin);
   },
   uninitializedServiceCallback: () => {
     const localStore = Vue.prototype.$localStore as LocalStore;
     localStore.clearSession();
+    sessionStore.commit('user/logout');
     moveTo(rootNames.init);
+  },
+  renewalAccessTokenCallback: (access: string) => {
+    const localStore = Vue.prototype.$localStore as LocalStore;
+    localStore.access = access;
+    sessionStore.commit('user/renewalAccessToken', {
+      accessToken: access,
+    });
   },
 } as ApiV2Options;
 Vue.use(VueApiV2, apiV2Options);
