@@ -1,17 +1,15 @@
 <template>
-  <div class="viewport" :style="contentStyle">
+  <div class="viewport" ref="root" :style="contentStyle">
     <slot></slot>
   </div>
 </template>
 
 <script lang="ts">
-import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
-
-const APP_BAR_HEIGHT = 48;
+import {Vue, Component, Ref, Prop, Watch} from 'vue-property-decorator';
 
 @Component
 export default class ViewPort extends Vue {
-  @Prop({type: Number, default: APP_BAR_HEIGHT})
+  @Prop({type: Number, default: 0})
   readonly marginTop!: number;
 
   @Prop({type: Number, default: 0})
@@ -23,17 +21,40 @@ export default class ViewPort extends Vue {
   @Prop({type: Number, default: 0})
   readonly marginRight!: number;
 
+  @Ref()
+  readonly root!: HTMLDivElement;
+
   contentWidth = window.innerWidth;
   contentHeight = window.innerHeight;
 
+  @Watch('marginTop')
+  onWatchMarginTop() {
+    this.onResize();
+  }
+
+  @Watch('marginBottom')
+  onWatchMarginBottom() {
+    this.onResize();
+  }
+
+  @Watch('marginLeft')
+  onWatchMarginLeft() {
+    this.onResize();
+  }
+
+  @Watch('marginRight')
+  onWatchMarginRight() {
+    this.onResize();
+  }
+
   @Watch('contentWidth')
-  onChangeContentWidth(newVal: string, oldVal: string) {
-    console.debug(`Update content-width: ${oldVal} -> ${newVal}`);
+  onWatchContentWidth(newVal: string, oldVal: string) {
+    console.debug(`ViewPort width: ${oldVal} -> ${newVal}`);
   }
 
   @Watch('contentHeight')
-  onChangeContentHeight(newVal: string, oldVal: string) {
-    console.debug(`Update content-height: ${oldVal} -> ${newVal}`);
+  onWatchContentHeight(newVal: string, oldVal: string) {
+    console.debug(`ViewPort height: ${oldVal} -> ${newVal}`);
   }
 
   get contentStyle() {
@@ -56,8 +77,9 @@ export default class ViewPort extends Vue {
   }
 
   onResize() {
+    const rootRect = this.root.getBoundingClientRect();
     const width = window.innerWidth - this.marginLeft - this.marginRight;
-    const height = window.innerHeight - this.marginTop - this.marginBottom;
+    const height = window.innerHeight - rootRect.y - this.marginTop - this.marginBottom;
 
     if (this.contentWidth != width) {
       this.contentWidth = width;
