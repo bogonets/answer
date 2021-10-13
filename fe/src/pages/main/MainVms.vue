@@ -58,23 +58,12 @@ ko:
       <v-card
           v-for="i in maxCards"
           :key="i"
+          color="grey"
           outlined
           tile
-          class="disconnected-background"
           :style="cardStyle(i)"
       >
-        <div class="pa-0 fill-height d-flex align-center justify-center">
-          <v-system-bar absolute lights-out>
-            <v-icon small color="red">mdi-record</v-icon>
-            {{ `CCTV ${i}` }}
-            <v-spacer></v-spacer>
-            <v-icon>mdi-video-4k-box</v-icon>
-            <v-icon>mdi-video-off</v-icon>
-            <v-icon>mdi-volume-off</v-icon>
-            <v-icon>mdi-signal-cellular-outline</v-icon>
-          </v-system-bar>
-          <v-img src="@/assets/logo/answer-logo-notext.svg" max-width="200px" max-height="200px" contain></v-img>
-        </div>
+        <media-player></media-player>
       </v-card>
     </view-port>
 
@@ -82,7 +71,7 @@ ko:
       <v-system-bar absolute>
         <v-icon>mdi-application</v-icon>
         <v-spacer></v-spacer>
-        <v-btn icon small max-width="22px" max-height="22px">
+        <v-btn icon small max-width="22px" max-height="22px" @click="onClickCloseFooter">
           <v-icon small class="ma-0">mdi-close</v-icon>
         </v-btn>
       </v-system-bar>
@@ -96,10 +85,12 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ViewPort from '@/components/ViewPort.vue';
+import MediaPlayer from '@/media/MediaPlayer.vue';
 
 @Component({
   components: {
     ViewPort,
+    MediaPlayer,
   }
 })
 export default class MainVms extends VueBase {
@@ -121,15 +112,14 @@ export default class MainVms extends VueBase {
 
   onClickCameras() {
   }
+
+  onClickCloseFooter() {
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .fill-width {
   max-width: 100%;
-}
-
-.disconnected-background {
-  background: gray;
 }
 </style>
