@@ -30,8 +30,11 @@ class CoreStorageTestCase(AsyncTestCase):
 
         self.assertTrue(self.sm.plugin.is_dir())
         plugin_path = get_module_path(plugin_simple)
-        plugin_name = os.path.split(plugin_path)[1]
-        plugin_output = os.path.join(self.sm.plugin, plugin_name)
+        plugin_filename = os.path.split(plugin_path)[1]
+        plugin_name = os.path.splitext(plugin_filename)[0]
+        plugin_dir = os.path.join(self.sm.plugin, plugin_name)
+        plugin_output = os.path.join(plugin_dir, plugin_filename)
+        os.mkdir(plugin_dir)
         copyfile(plugin_path, plugin_output)
 
     async def tearDown(self):
@@ -54,7 +57,7 @@ class CoreStorageTestCase(AsyncTestCase):
                 self.assertIn(expect_name, tar_names)
 
     async def test_plugin(self):
-        plugins = self.sm.find_python_plugins()
+        plugins = self.sm.find_plugin_dirs()
         self.assertEqual(1, len(plugins))
 
 

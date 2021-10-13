@@ -156,15 +156,15 @@ class ContextInit(ContextBase):
     def _init_plugin_manager(self) -> None:
         assert self._storage
 
-        plugin_script_paths = self._storage.find_python_plugins()
-        plugin_scripts = list(map(lambda x: str(x), plugin_script_paths))
+        plugin_dirs = self._storage.find_plugin_dirs()
+        plugin_names = list(map(lambda x: x.name, plugin_dirs))
 
         self._plugins = PluginManager()
-        self._plugins.create(self, *plugin_scripts)
+        self._plugins.create(self, *plugin_dirs)
         for plugin_name, plugin in self._plugins.items():
             if plugin.exists_routes:
                 plugin.update_routes()
-        logger.info("Created plugin-manager.")
+        logger.info(f"Created plugin-manager: {plugin_names}")
 
     def init_all(
         self,

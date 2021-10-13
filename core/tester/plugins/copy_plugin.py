@@ -15,11 +15,16 @@ def read_plugin(filename: str, encoding=DEFAULT_ENCODING) -> str:
 
 def copy_plugin(
     plugin_filename: str,
-    destination_directory: str,
+    plugin_root_directory: str,
     encoding=DEFAULT_ENCODING,
 ) -> str:
+    plugin_name = os.path.splitext(plugin_filename)[0]
+    plugin_dir = os.path.join(plugin_root_directory, plugin_name)
+    os.mkdir(plugin_dir)
+
     plugin_content = read_plugin(plugin_filename, encoding)
-    destination_path = os.path.join(destination_directory, plugin_filename)
+    destination_path = os.path.join(plugin_dir, plugin_filename)
+
     with open(destination_path, "w", encoding=encoding) as f:
         f.write(plugin_content)
     return destination_path

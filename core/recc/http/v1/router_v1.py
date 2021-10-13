@@ -471,8 +471,6 @@ class RouterV1:
         return response_ok_without_detail(name, result)
 
     async def on_create_project(self, request: Request):
-        logger.critical("Unsupported API")
-
         name = "create-project"
         session = request[at_session]
         username = session.audience

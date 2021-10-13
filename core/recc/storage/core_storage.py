@@ -3,7 +3,6 @@
 import os
 from typing import List
 from pathlib import Path
-from fnmatch import fnmatch
 from recc.storage.sock.sock_path import get_socket_url
 from recc.storage.mixin.storage_base import StorageBaseMixin
 from recc.storage.mixin.storage_template_manager import StorageTemplateManagerMixin
@@ -59,5 +58,9 @@ class CoreStorage(
         prefix = self.get_project_dir(group_name, project_name)
         return get_socket_url(prefix, task_name)
 
-    def find_python_plugins(self) -> List[Path]:
-        return list(filter(lambda x: fnmatch(str(x), "*.py"), self.plugin.iterdir()))
+    def find_plugin_dirs(self) -> List[Path]:
+        result: List[Path] = list()
+        for file in self.plugin.iterdir():
+            if file.is_dir():
+                result.append(file)
+        return result
