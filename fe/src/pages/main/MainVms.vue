@@ -51,7 +51,8 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item link @click.stop="onClickMedias">
+          <v-divider v-show="hasAdminPermission"></v-divider>
+          <v-list-item v-show="hasAdminPermission" link @click.stop="onClickDevices">
             <v-list-item-icon>
               <v-icon>mdi-cctv</v-icon>
             </v-list-item-icon>
@@ -59,8 +60,6 @@ ko:
               {{ $t('devices') }}
             </v-list-item-title>
           </v-list-item>
-
-          <v-divider v-show="hasAdminPermission"></v-divider>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -96,6 +95,8 @@ export default class MainVms extends VueBase {
     const name = this.$route.name;
     if (name === mainNames.mainVmsLive) {
       this.index = 0;
+    } else if (name === mainNames.mainVmsDevices) {
+      this.index = 1;
     } else {
       this.index = -1;
     }
@@ -107,6 +108,10 @@ export default class MainVms extends VueBase {
 
   onClickLive() {
     this.moveToMainVmsLive();
+  }
+
+  onClickDevices() {
+    this.moveToMainVmsDevices();
   }
 }
 </script>

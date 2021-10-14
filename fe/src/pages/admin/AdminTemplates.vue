@@ -5,14 +5,14 @@ en:
     builtin: "Builtin"
     package: "Package"
     storage: "Storage"
-  search_label: "You can filter by category or name."
   headers:
     position: "Position"
     category: "Category"
     name: "Name"
     actions: "Actions"
+  search: "You can filter by category or name."
   loading: "Loading... Please wait"
-  empty_lamdas: "Empty Lamdas"
+  empty: "Empty Lamdas"
 
 ko:
   refresh: "갱신"
@@ -20,14 +20,14 @@ ko:
     builtin: "내장"
     package: "패키지"
     storage: "저장소"
-  search_label: "범주 또는 이름을 필터링할 수 있습니다."
   headers:
     position: "위치"
     category: "범주"
     name: "이름"
     actions: "관리"
+  search: "범주 또는 이름을 필터링할 수 있습니다."
   loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-  empty_lamdas: "람다가 존재하지 않습니다."
+  empty: "람다가 존재하지 않습니다."
 </i18n>
 
 <template>
@@ -53,18 +53,18 @@ ko:
     <v-data-table
         :items-per-page="itemsPerPage"
         :headers="headers"
-        :items="currentLamdas"
-        :search="filterText"
-        :loading="showLoading"
+        :items="currentItems"
+        :search="filter"
+        :loading="loading"
         :loading-text="$t('loading')"
     >
       <template v-slot:top>
         <v-toolbar flat>
           <v-text-field
               class="mr-4"
-              v-model="filterText"
+              v-model="filter"
               append-icon="mdi-magnify"
-              :label="$t('search_label')"
+              :label="$t('search')"
               single-line
               hide-details
           ></v-text-field>
@@ -83,7 +83,7 @@ ko:
       </template>
 
       <template v-slot:no-data>
-        {{ $t('empty_lamdas') }}
+        {{ $t('empty') }}
       </template>
     </v-data-table>
 
@@ -144,10 +144,11 @@ export default class AdminTemplates extends VueBase {
   ];
 
   tabIndex = 0;
-  filterText = '';
-  totalLamdas: Array<TemplateA> = [];
-  currentLamdas: Array<TemplateA> = [];
-  showLoading = true;
+
+  loading = true;
+  filter = '';
+  totalItems = [] as Array<TemplateA>;
+  currentItems = [] as Array<TemplateA>;
 
   editCandidateKey = '';
   editCandidateValue = '';
@@ -163,16 +164,16 @@ export default class AdminTemplates extends VueBase {
   }
 
   updateLamdas() {
-    this.showLoading = true;
+    this.loading = true;
     this.$api2.getAdminTemplates()
         .then(lamdas => {
-          this.totalLamdas = lamdas;
-          this.showLoading = false;
+          this.totalItems = lamdas;
+          this.loading = false;
           this.updateCurrentLamdasWithTabIndex();
         })
         .catch(error => {
           console.error(error);
-          this.showLoading = false;
+          this.loading = false;
         });
   }
 
@@ -191,7 +192,7 @@ export default class AdminTemplates extends VueBase {
     if (!this.isPositionIndex(position)) {
       throw Error(`Unknown tab index: ${position}`)
     }
-    this.currentLamdas = _.filter(this.totalLamdas, o => {
+    this.currentItems = _.filter(this.totalItems, o => {
       return o.position == position;
     });
   }

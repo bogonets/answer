@@ -17,6 +17,7 @@ import type {
     CreateAirjoyServiceQ,
     UpdateAirjoyServiceQ,
 } from '@/packet/airjoy';
+import type {VmsDeviceA} from '@/packet/vms';
 import type {ConfigA, UpdateConfigValueQ} from '@/packet/config';
 import type {ContainerA, ControlContainersQ} from '@/packet/container';
 import type {GroupA, CreateGroupQ, UpdateGroupQ} from '@/packet/group';
@@ -896,4 +897,9 @@ export default class ApiV2 {
     //     const url = `/plugins/airjoy/${group}/${project}/live`;
     //     return this.get<Array<AirjoySensorA>>(url);
     // }
+
+    getVmsDevices(group: string, project: string) {
+        const url = `/plugins/vms/${group}/${project}/devices`;
+        return this.get<Array<VmsDeviceA>>(url);
+    }
 }
