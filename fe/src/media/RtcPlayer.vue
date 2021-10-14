@@ -6,12 +6,15 @@
       muted
       playsinline
       preload="auto"
+      :src="onlineDemoUrl"
   ></video>
 </template>
 
 <script lang="ts">
 import {Component, Prop, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+
+const ONLINE_DEMO_URL = "http://techslides.com/demos/sample-videos/small.mp4";
 
 const DEFAULT_STUN_SERVER_01 = 'stun:stun.l.google.com:19302';
 const DEFAULT_ICE_SERVERS = [
@@ -20,6 +23,7 @@ const DEFAULT_ICE_SERVERS = [
 
 @Component
 export default class RtcPlayer extends VueBase {
+  readonly onlineDemoUrl = ONLINE_DEMO_URL;
   readonly defaultRtcConfig = {
     sdpSemantics: 'unified-plan',
   } as RTCConfiguration;

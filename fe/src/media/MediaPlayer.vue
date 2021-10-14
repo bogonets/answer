@@ -85,6 +85,7 @@ ko:
 import {Component, Prop, Ref, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import RtcPlayer from '@/media/RtcPlayer.vue';
+import * as Pixi from 'pixi.js';
 
 interface MediaPlayerOptions {
   index: number;
@@ -162,16 +163,64 @@ export default class MediaPlayer extends VueBase {
   enableAudio = false;
   signalLevel = 0;
 
-  disconnected = true;
+  disconnected = false;
   status = {} as MediaPlayerStatus;
 
+  pixiUser?: Pixi.Application = undefined;
+  pixiMeta?: Pixi.Application = undefined;
+
   mounted() {
-    const ctx = this.canvasMeta.getContext("2d");
-    if (ctx) {
-      ctx.fillStyle = "rgb(200,0,0)";
-      ctx.fillRect (10, 10, 50, 50);
-      ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
-      ctx.fillRect (30, 30, 50, 50);
+    this.createPixi();
+
+    if (this.pixiUser) {
+      let graphics = new Pixi.Graphics()
+      graphics.lineStyle(8, 0x000000)
+
+      //start
+      graphics.moveTo(300, 250)
+      //end
+      graphics.lineTo(500, 250)
+      this.pixiUser.stage.addChild(graphics)
+    }
+  }
+
+  beforeDestroy() {
+    this.destroyPixi();
+  }
+
+  createPixi() {
+    if (this.pixiUser) {
+      this.pixiUser.destroy();
+    }
+    if (this.pixiMeta) {
+      this.pixiMeta.destroy();
+    }
+
+    const defaultOptions = {
+      width: this.canvasWidth,
+      height: this.canvasHeight,
+      antialias: true,
+      transparent: true,
+    } as Pixi.IApplicationOptions;
+
+    this.pixiUser = new Pixi.Application({
+      ...defaultOptions,
+      view: this.canvasUser,
+    } as Pixi.IApplicationOptions);
+    this.pixiMeta = new Pixi.Application({
+      ...defaultOptions,
+      view: this.canvasMeta,
+    } as Pixi.IApplicationOptions);
+  }
+
+  destroyPixi() {
+    if (this.pixiUser) {
+      this.pixiUser.destroy();
+      this.pixiUser = undefined;
+    }
+    if (this.pixiMeta) {
+      this.pixiMeta.destroy();
+      this.pixiMeta = undefined;
     }
   }
 
