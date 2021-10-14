@@ -8,6 +8,7 @@ import MainTables from '@/pages/main/MainTables.vue';
 import MainTasks from '@/pages/main/MainTasks.vue';
 import MainVisualProgramming from '@/pages/main/MainVisualProgramming.vue';
 import MainVms from '@/pages/main/MainVms.vue';
+import MainVmsLive from '@/pages/main/MainVmsLive.vue';
 
 // External
 import mainAirjoyChildren from '@/router/children/external/airjoy/main';
@@ -56,7 +57,13 @@ export const mainChildren = [
     {
         path: ':group/:project/vms',
         component: MainVms,
-        name: mainNames.mainVms,
+        children: [
+            {
+                path: '',
+                component: MainVmsLive,
+                name: mainNames.mainVmsLive,
+            },
+        ]
     },
 
     ...mainAirjoyChildren,

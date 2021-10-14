@@ -36,7 +36,6 @@ from recc.http import http_path_keys as p
 from recc.variables.http import VERY_VERBOSE_DEBUGGING
 
 CONTEXT_PROPERTY_NAME = "context"
-CONFIG_PROPERTY_NAME = "config"
 
 ERROR_MESSAGE_ONLY_SINGLE_POLICIES = (
     "`group_policies` or `project_policies` cannot be selected together."
@@ -127,10 +126,13 @@ async def _parameter_matcher_main(
 
     very_verbose_debugging = False
     context = getattr(obj, CONTEXT_PROPERTY_NAME, None)
-    if context and isinstance(context, Context):
-        config = getattr(obj, CONFIG_PROPERTY_NAME, None)
-        if config and config.developer and config.verbose >= VERY_VERBOSE_DEBUGGING:
-            very_verbose_debugging = True
+    if context:
+        if isinstance(context, Context):
+            config = context.config
+            if config and config.developer and config.verbose >= VERY_VERBOSE_DEBUGGING:
+                very_verbose_debugging = True
+        else:
+            context = None
 
     if obj is None:
         argument_keys = keys

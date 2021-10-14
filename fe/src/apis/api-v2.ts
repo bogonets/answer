@@ -887,4 +887,13 @@ export default class ApiV2 {
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}/services/${service}`;
         return this.delete(url);
     }
+
+    // -----------
+    // Plugins/VMS
+    // -----------
+
+    // getVms(group: string, project: string) {
+    //     const url = `/plugins/airjoy/${group}/${project}/live`;
+    //     return this.get<Array<AirjoySensorA>>(url);
+    // }
 }
