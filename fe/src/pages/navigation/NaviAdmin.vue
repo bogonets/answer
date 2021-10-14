@@ -238,6 +238,8 @@ export default class NaviAdmin extends VueBase {
       this.index = 9;
     } else if (name === adminNames.adminVmsDevicesDiscovery) {
       this.index = 9;
+    } else if (name === adminNames.adminVmsDevicesEdit) {
+      this.index = 9;
     } else if (name === adminNames.adminVmsDevicesNew) {
       this.index = 9;
     } else {

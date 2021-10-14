@@ -1,9 +1,12 @@
 export interface VmsDeviceA {
+    slug: string;
+    name: string;
+
     type: string;
     device: string;
-    name: string;
     url: string;
     user: string;
+
     online: boolean;
 }
 

@@ -175,6 +175,7 @@ export default class AdminVmsMediaSetting extends VueBase {
   }
 
   onClickDevice(item: VmsDeviceA) {
+    this.moveToAdminVmsDevicesEdit(item.slug);
   }
 }
 </script>

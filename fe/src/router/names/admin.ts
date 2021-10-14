@@ -19,6 +19,7 @@ export const adminNames = {
     adminUsersNew: 'adminUsersNew',
     adminVmsDevices: 'adminVmsDevices',
     adminVmsDevicesDiscovery: 'adminVmsDevicesDiscovery',
+    adminVmsDevicesEdit: 'adminVmsDevicesEdit',
     adminVmsDevicesNew: 'adminVmsDevicesNew',
 
     ...adminAirjoyNames,
