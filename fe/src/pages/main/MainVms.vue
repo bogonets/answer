@@ -2,10 +2,12 @@
 en:
   menu: "VMS Menu"
   live: "Live"
+  devices: "Devices"
 
 ko:
   menu: "VMS 메뉴"
   live: "실시간"
+  devices: "장치 목록"
 </i18n>
 
 <template>
@@ -42,10 +44,19 @@ ko:
         >
           <v-list-item link @click.stop="onClickLive">
             <v-list-item-icon>
-              <v-icon>mdi-webcam</v-icon>
+              <v-icon>mdi-broadcast</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('live') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click.stop="onClickMedias">
+            <v-list-item-icon>
+              <v-icon>mdi-cctv</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('devices') }}
             </v-list-item-title>
           </v-list-item>
 

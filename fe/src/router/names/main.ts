@@ -9,6 +9,7 @@ export const mainNames = {
     mainTasks: 'mainTasks',
     mainVisualProgramming: 'mainVisualProgramming',
     mainVmsLive: 'mainVmsLive',
+    mainVmsMediaSetting: 'mainVmsMediaSetting',
 
     ...mainAirjoyNames,
 };

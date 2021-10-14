@@ -2,23 +2,26 @@
 en:
   unknown: "Unknown Media"
   disconnected: "Disconnected"
-  menu:
-    connect: "Connect"
 
 ko:
   unknown: "알 수 없는 미디어"
   disconnected: "연결이 끊어졌습니다"
-  menu:
-    connect: "연결"
 </i18n>
 
 <template>
   <v-hover v-slot="{ hover }">
-    <v-sheet
+    <v-card
+        outlined
+        tile
         class="media-player"
-        v-click-outside="onClickOutside"
+        @contextmenu="contextmenu"
     >
-      <v-system-bar v-if="!hideSystemBar" v-show="showSystemBar(hover)" absolute lights-out>
+      <v-system-bar
+          v-if="!hideSystemBar"
+          v-show="showSystemBar(hover)"
+          absolute
+          lights-out
+      >
         <v-icon v-if="recoding" color="red">mdi-record</v-icon>
         <span>{{ displayName }}</span>
         <v-spacer></v-spacer>
@@ -31,21 +34,22 @@ ko:
       <v-img
           v-if="disconnected"
           src="@/assets/logo/answer-logo-notext.svg"
-          min-width="120px"
+          min-width="80px"
           max-width="200px"
-          min-height="120px"
+          min-height="80px"
           max-height="200px"
           contain
       ></v-img>
       <rtc-player
           v-else
       ></rtc-player>
-    </v-sheet>
+
+    </v-card>
   </v-hover>
 </template>
 
 <script lang="ts">
-import {Component, Prop, Watch} from 'vue-property-decorator';
+import {Component, Prop, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import RtcPlayer from '@/media/RtcPlayer.vue';
 
@@ -154,6 +158,11 @@ export default class MediaPlayer extends VueBase {
   onWatchStatus(newVal: MediaPlayerStatus, oldVal: MediaPlayerStatus) {
     this.disconnected = newVal.mediaRecoding || false;
     this.name = newVal.name || '';
+  }
+
+  @Emit()
+  contextmenu(event) {
+    return event;
   }
 }
 </script>

@@ -1,27 +1,22 @@
 <i18n lang="yaml">
 en:
   menu:
-    connect: "Connect"
+    setting: "Setting"
 
 ko:
   menu:
-    connect: "연결"
+    setting: "설정"
 </i18n>
 
 <template>
   <div class="d-flex flex-column fill-height">
     <div class="d-flex flex-wrap main">
-      <v-card
+      <media-player
           v-for="i in maxCards"
           :key="i"
-          color="grey"
-          outlined
-          tile
           :style="cardStyle(i)"
           @contextmenu="onShowContextMenu(i, $event)"
-      >
-        <media-player></media-player>
-      </v-card>
+      ></media-player>
     </div>
 
     <v-footer>
@@ -43,8 +38,8 @@ ko:
         offset-y
     >
       <v-list dense>
-        <v-list-item @click="onClickConnect">
-          <v-list-item-title>{{ $t('menu.connect') }}</v-list-item-title>
+        <v-list-item @click="onClickEdit">
+          <v-list-item-title>{{ $t('menu.setting') }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -54,12 +49,10 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import ViewPort from '@/components/ViewPort.vue';
 import MediaPlayer from '@/media/MediaPlayer.vue';
 
 @Component({
   components: {
-    ViewPort,
     MediaPlayer,
   }
 })
@@ -70,6 +63,7 @@ export default class MainVmsLive extends VueBase {
   showFooter = true;
 
   showContextMenu = false;
+  contextMenuIndex = 0;
   contextMenuPositionX = 0;
   contextMenuPositionY = 0;
 
@@ -80,17 +74,22 @@ export default class MainVmsLive extends VueBase {
     };
   }
 
-  onClickConnect() {
-  }
-
   onShowContextMenu(index: number, event) {
     event.preventDefault();
     this.showContextMenu = false;
+    this.contextMenuIndex = index;
     this.contextMenuPositionX = event.clientX;
     this.contextMenuPositionY = event.clientY;
     this.$nextTick(() => {
       this.showContextMenu = true;
     })
+  }
+
+  onClickEdit() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const media = this.contextMenuIndex.toString();
+    this.moveToMainVmsMediaSetting(group, project, media);
   }
 
   onClickCloseFooter() {

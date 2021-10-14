@@ -9,6 +9,7 @@ import MainTasks from '@/pages/main/MainTasks.vue';
 import MainVisualProgramming from '@/pages/main/MainVisualProgramming.vue';
 import MainVms from '@/pages/main/MainVms.vue';
 import MainVmsLive from '@/pages/main/MainVmsLive.vue';
+import MainVmsMediaSetting from '@/pages/main/MainVmsMediaSetting.vue';
 
 // External
 import mainAirjoyChildren from '@/router/children/external/airjoy/main';
@@ -62,6 +63,11 @@ export const mainChildren = [
                 path: '',
                 component: MainVmsLive,
                 name: mainNames.mainVmsLive,
+            },
+            {
+                path: ':media/setting',
+                component: MainVmsMediaSetting,
+                name: mainNames.mainVmsMediaSetting,
             },
         ]
     },
