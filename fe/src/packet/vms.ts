@@ -7,9 +7,15 @@ export interface VmsDeviceA {
     online: boolean;
 }
 
+export interface VmsCreateDeviceQ {
+    url: string;
+    username: string;
+    password: string;
+}
+
 export interface VmsDeviceDiscoveryQ {
     session: string;
-    user: string;
+    username: string;
     password: string;
     timeout: number;
 }

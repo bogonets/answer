@@ -190,6 +190,7 @@ export default class MainVmsMediaSetting extends VueBase {
   }
 
   onClickAdd() {
+    this.moveToMainVmsDevicesNew();
   }
 
   onClickDevice(item: VmsDeviceA) {

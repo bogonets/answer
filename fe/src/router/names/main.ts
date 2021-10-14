@@ -10,6 +10,7 @@ export const mainNames = {
     mainVisualProgramming: 'mainVisualProgramming',
     mainVmsDevices: 'mainVmsDevices',
     mainVmsDevicesDiscovery: 'mainVmsDevicesDiscovery',
+    mainVmsDevicesNew: 'mainVmsDevicesNew',
     mainVmsLive: 'mainVmsLive',
     mainVmsMediaSetting: 'mainVmsMediaSetting',
 

@@ -97,6 +97,10 @@ export default class MainVms extends VueBase {
       this.index = 0;
     } else if (name === mainNames.mainVmsDevices) {
       this.index = 1;
+    } else if (name === mainNames.mainVmsDevicesDiscovery) {
+      this.index = 1;
+    } else if (name === mainNames.mainVmsDevicesNew) {
+      this.index = 1;
     } else {
       this.index = -1;
     }
