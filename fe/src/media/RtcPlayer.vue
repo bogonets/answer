@@ -2,7 +2,6 @@
   <video
       class="video-player"
       ref="video"
-      controls
       autoplay
       muted
       playsinline
@@ -43,6 +42,10 @@ export default class RtcPlayer extends VueBase {
       const transceiverInit = this.defaultTransceiverInit;
       await this.doNegotiate(config, transceiverInit, this.onTrack);
     })();
+  }
+
+  beforeDestroy() {
+    this.close();
   }
 
   async doNegotiate(

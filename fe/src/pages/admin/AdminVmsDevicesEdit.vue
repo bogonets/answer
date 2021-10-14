@@ -3,13 +3,17 @@ en:
   devices: "VMS Devices"
   edit: "Edit"
   tab:
-    source: "Source"
+    info: "Information"
+    record: "Record"
+    event: "Event"
 
 ko:
   devices: "VMS Devices"
   edit: "Edit"
   tab:
-    source: "Source"
+    info: "정보"
+    record: "녹화"
+    event: "이벤트"
 </i18n>
 
 <template>
@@ -39,13 +43,21 @@ ko:
     </v-row>
 
     <v-tabs v-model="tabIndex">
-      <v-tab>{{ $t('tab.source') }}</v-tab>
+      <v-tab>{{ $t('tab.info') }}</v-tab>
+      <v-tab v-show="false">{{ $t('tab.record') }}</v-tab>
+      <v-tab>{{ $t('tab.event') }}</v-tab>
     </v-tabs>
     <v-divider></v-divider>
 
     <v-tabs-items v-model="tabIndex">
       <v-tab-item>
-        AAB
+        1
+      </v-tab-item>
+      <v-tab-item>
+        2
+      </v-tab-item>
+      <v-tab-item>
+        3
       </v-tab-item>
     </v-tabs-items>
 

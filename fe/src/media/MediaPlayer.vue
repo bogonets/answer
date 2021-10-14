@@ -17,6 +17,7 @@ ko:
         @contextmenu="contextmenu"
     >
       <v-system-bar
+          class="status-bar"
           v-if="!hideSystemBar"
           v-show="showSystemBar(hover)"
           absolute
@@ -31,7 +32,23 @@ ko:
         <v-icon>{{ signalIcon }}</v-icon>
       </v-system-bar>
 
+      <canvas
+          v-show="!hideCanvasUser"
+          class="canvas-user"
+          ref="canvas-user"
+          :width="canvasWidth"
+          :height="canvasHeight"
+      ></canvas>
+      <canvas
+          v-show="!hideCanvasMeta"
+          class="canvas-meta"
+          ref="canvas-meta"
+          :width="canvasWidth"
+          :height="canvasHeight"
+      ></canvas>
+
       <v-img
+          class="brand-logo"
           v-if="disconnected"
           src="@/assets/logo/answer-logo-notext.svg"
           min-width="80px"
@@ -41,15 +58,31 @@ ko:
           contain
       ></v-img>
       <rtc-player
+          class="rtc-player"
+          ref="rtc-player"
           v-else
       ></rtc-player>
+
+      <div
+          class="controller"
+          v-if="!disconnected"
+          v-show="!hideController"
+      >
+        <v-btn icon>
+          <v-icon>mdi-play</v-icon>
+        </v-btn>
+        <v-progress-linear></v-progress-linear>
+        <v-btn icon>
+          <v-icon>mdi-dots-horizontal</v-icon>
+        </v-btn>
+      </div>
 
     </v-card>
   </v-hover>
 </template>
 
 <script lang="ts">
-import {Component, Prop, Watch, Emit} from 'vue-property-decorator';
+import {Component, Prop, Ref, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import RtcPlayer from '@/media/RtcPlayer.vue';
 
@@ -78,6 +111,8 @@ function createEmptyMediaPlayerOptions() {
 }
 
 const UNKNOWN_ID = -1;
+const DEFAULT_CANVAS_WIDTH = 1024;
+const DEFAULT_CANVAS_HEIGHT = 1024;
 
 @Component({
   components: {
@@ -89,13 +124,37 @@ export default class MediaPlayer extends VueBase {
   readonly hideSystemBar!: boolean;
 
   @Prop({type: Boolean, default: false})
+  readonly hideCanvasUser!: boolean;
+
+  @Prop({type: Boolean, default: false})
+  readonly hideCanvasMeta!: boolean;
+
+  @Prop({type: Boolean, default: false})
+  readonly hideController!: boolean;
+
+  @Prop({type: Boolean, default: false})
   readonly hoverSystemBar!: boolean;
+
+  @Prop({type: Number, default: DEFAULT_CANVAS_WIDTH})
+  readonly canvasWidth!: number;
+
+  @Prop({type: Number, default: DEFAULT_CANVAS_HEIGHT})
+  readonly canvasHeight!: number;
 
   @Prop({type: Number, default: UNKNOWN_ID})
   readonly index!: number;
 
   @Prop({type: Object, default: createEmptyMediaPlayerOptions})
   readonly options!: MediaPlayerOptions;
+
+  @Ref('canvas-user')
+  readonly canvasUser!: HTMLCanvasElement;
+
+  @Ref('canvas-meta')
+  readonly canvasMeta!: HTMLCanvasElement;
+
+  @Ref('rtc-player')
+  readonly rtcPlayer!: RtcPlayer;
 
   recoding = false;
   name = '';
@@ -105,6 +164,16 @@ export default class MediaPlayer extends VueBase {
 
   disconnected = true;
   status = {} as MediaPlayerStatus;
+
+  mounted() {
+    const ctx = this.canvasMeta.getContext("2d");
+    if (ctx) {
+      ctx.fillStyle = "rgb(200,0,0)";
+      ctx.fillRect (10, 10, 50, 50);
+      ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+      ctx.fillRect (30, 30, 50, 50);
+    }
+  }
 
   showSystemBar(hover) {
     if (this.hoverSystemBar) {
@@ -178,5 +247,53 @@ export default class MediaPlayer extends VueBase {
   height: 100%;
 
   background: gray;
+
+  .controller {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+
+    z-index: 60;
+  }
+
+  .status-bar {
+    z-index: 50;
+  }
+
+  .canvas-user {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    z-index: 40;
+  }
+
+  .canvas-meta {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    z-index: 30;
+  }
+
+  .brand-logo {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    z-index: 20;
+  }
+
+  .rtc-player {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    z-index: 10;
+  }
 }
 </style>
