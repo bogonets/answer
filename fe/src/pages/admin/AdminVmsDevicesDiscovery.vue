@@ -1,8 +1,6 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  vms: "VMS"
-  devices: "Devices"
+  devices: "VMS Devices"
   discovery: "Discovery"
   headers:
     name: "Name"
@@ -25,9 +23,7 @@ en:
     timeout: "Device discovery timeout (Seconds)"
 
 ko:
-  groups: "Groups"
-  vms: "VMS"
-  devices: "Devices"
+  devices: "VMS Devices"
   discovery: "Discovery"
   headers:
     name: "이름"
@@ -129,34 +125,19 @@ const DEFAULT_TIMEOUT = 30;
     ToolbarBreadcrumbs,
   }
 })
-export default class MainVmsDevicesDiscovery extends VueBase {
+export default class AdminVmsDevicesDiscovery extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly itemsPerPage = ITEMS_PER_PAGE;
   readonly breadcrumbs = [
     {
-      text: this.$t('groups'),
+      text: 'Admin',
       disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
-    {
-      text: this.$route.params.group,
-      disabled: false,
-      href: () => this.moveToGroup(),
-    },
-    {
-      text: this.$route.params.project,
-      disabled: false,
-      href: () => this.moveToMain(),
-    },
-    {
-      text: this.$t('vms'),
-      disabled: false,
-      href: () => this.moveToMainVmsLive(),
+      href: () => this.moveToAdmin(),
     },
     {
       text: this.$t('devices'),
       disabled: false,
-      href: () => this.moveToMainVmsDevices(),
+      href: () => this.moveToAdminVmsDevices(),
     },
     {
       text: this.$t('discovery'),

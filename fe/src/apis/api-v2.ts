@@ -28,7 +28,7 @@ import type {
     CreatePermissionQ,
     UpdatePermissionQ,
 } from '@/packet/permission';
-import type {PluginA} from '@/packet/plugin';
+import type {PluginA, PluginNameA} from '@/packet/plugin';
 import type {TemplateA} from '@/packet/template';
 import type {
     ProjectA,
@@ -584,6 +584,14 @@ export default class ApiV2 {
 
     getAdminSystemOverview() {
         return this.get<SystemOverviewA>('/admin/system/overview');
+    }
+
+    // ------------
+    // Admin/Plugin
+    // ------------
+
+    getAdminPluginNames() {
+        return this.get<Array<PluginNameA>>('/admin/plugin/names');
     }
 
     // ---------------

@@ -8,9 +8,6 @@ export const mainNames = {
     mainTables: 'mainTables',
     mainTasks: 'mainTasks',
     mainVisualProgramming: 'mainVisualProgramming',
-    mainVmsDevices: 'mainVmsDevices',
-    mainVmsDevicesDiscovery: 'mainVmsDevicesDiscovery',
-    mainVmsDevicesNew: 'mainVmsDevicesNew',
     mainVmsLive: 'mainVmsLive',
     mainVmsMediaSetting: 'mainVmsMediaSetting',
 

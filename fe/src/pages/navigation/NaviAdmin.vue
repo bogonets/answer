@@ -11,7 +11,9 @@ en:
   configs: "Configs"
   external:
     airjoy:
-      devices: "Airjoy Devices"
+      devices: "AIRJOY Devices"
+  vms:
+    devices: "VMS Devices"
 
 ko:
   title: "관리자 설정"
@@ -25,7 +27,9 @@ ko:
   configs: "구성"
   external:
     airjoy:
-      devices: "Airjoy 장치 관리"
+      devices: "AIRJOY 장치 관리"
+  vms:
+    devices: "VMS 장치 관리"
 </i18n>
 
 <template>
@@ -142,6 +146,16 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
+        <v-divider v-show="hasVms"></v-divider>
+        <v-list-item v-show="hasVms" link @click.stop="vms">
+          <v-list-item-icon>
+            <v-icon>mdi-cctv</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('vms.devices') }}
+          </v-list-item-title>
+        </v-list-item>
+
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
@@ -150,7 +164,8 @@ ko:
 <script lang="ts">
 import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import {OEM_AIRJOY} from '@/packet/oem';
+import type {PluginNameA} from '@/packet/plugin';
+import {PLUGIN_NAME_VMS} from '@/packet/plugin';
 import adminNames from '@/router/names/admin';
 
 @Component
@@ -161,9 +176,21 @@ export default class NaviAdmin extends VueBase {
 
   index = 0;
   mini = false;
+  plugins = [] as Array<PluginNameA>;
+
+  created() {
+    this.$api2.getAdminPluginNames()
+    .then(items => {
+      this.plugins = items;
+    })
+  }
 
   get oem() {
     return this.$localStore.preference.oem;
+  }
+
+  get hasVms() {
+    return this.plugins.findIndex(i => i.name === PLUGIN_NAME_VMS) !== -1;
   }
 
   onClickFoldNavigation() {
@@ -207,6 +234,12 @@ export default class NaviAdmin extends VueBase {
       this.index = 7;
     } else if (name === adminNames.adminAirjoyDevices) {
       this.index = 8;
+    } else if (name === adminNames.adminVmsDevices) {
+      this.index = 9;
+    } else if (name === adminNames.adminVmsDevicesDiscovery) {
+      this.index = 9;
+    } else if (name === adminNames.adminVmsDevicesNew) {
+      this.index = 9;
     } else {
       this.index = -1;
     }
@@ -278,6 +311,13 @@ export default class NaviAdmin extends VueBase {
   externalAirjoyDevices() {
     if (!this.noDefault) {
       this.moveToAdminAirjoyDevices();
+    }
+  }
+
+  @Emit('click:vms')
+  vms() {
+    if (!this.noDefault) {
+      this.moveToAdminVmsDevices();
     }
   }
 }

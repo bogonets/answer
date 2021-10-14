@@ -1,8 +1,6 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  vms: "VMS"
-  devices: "Devices"
+  devices: "VMS Devices"
   new: "New"
   labels:
     url: "URL"
@@ -15,9 +13,7 @@ en:
     password: "Please enter the password."
 
 ko:
-  groups: "Groups"
-  vms: "VMS"
-  devices: "Devices"
+  devices: "VMS Devices"
   new: "New"
   labels:
     url: "URL"
@@ -90,34 +86,19 @@ const ITEMS_PER_PAGE = 15;
     ToolbarBreadcrumbs,
   }
 })
-export default class MainVmsDevicesDiscovery extends VueBase {
+export default class AdminVmsDevicesNew extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly itemsPerPage = ITEMS_PER_PAGE;
   readonly breadcrumbs = [
     {
-      text: this.$t('groups'),
+      text: 'Admin',
       disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
-    {
-      text: this.$route.params.group,
-      disabled: false,
-      href: () => this.moveToGroup(),
-    },
-    {
-      text: this.$route.params.project,
-      disabled: false,
-      href: () => this.moveToMain(),
-    },
-    {
-      text: this.$t('vms'),
-      disabled: false,
-      href: () => this.moveToMainVmsLive(),
+      href: () => this.moveToAdmin(),
     },
     {
       text: this.$t('devices'),
       disabled: false,
-      href: () => this.moveToMainVmsDevices(),
+      href: () => this.moveToAdminVmsDevices(),
     },
     {
       text: this.$t('new'),

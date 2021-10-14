@@ -15,6 +15,7 @@ from recc.packet.container import ContainerOperator, ContainerA, ControlContaine
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.permission import PermissionA, CreatePermissionQ, UpdatePermissionQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
+from recc.packet.plugin import PluginNameA
 from recc.packet.system import SystemOverviewA
 from recc.packet.template import TemplateA
 from recc.packet.user import UserA, UpdateUserQ, SignupQ
@@ -57,6 +58,9 @@ class RouterV2Admin:
 
             # system
             web.get(u.system_overview, self.get_system_overview),
+
+            # plugin
+            web.get(u.plugin_names, self.get_plugin_names),
 
             # templates
             web.get(u.templates, self.get_templates),
@@ -125,6 +129,14 @@ class RouterV2Admin:
     @parameter_matcher()
     async def get_system_overview(self) -> SystemOverviewA:
         return await self.context.get_system_overview()
+
+    # ------
+    # Plugin
+    # ------
+
+    @parameter_matcher()
+    async def get_plugin_names(self) -> List[PluginNameA]:
+        return list(map(lambda x: PluginNameA(x), self.context.get_plugin_keys()))
 
     # ---------
     # Templates

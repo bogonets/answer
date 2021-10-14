@@ -1,8 +1,6 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  vms: "VMS"
-  devices: "Devices"
+  devices: "VMS Devices"
   headers:
     name: "Name"
     url: "URL"
@@ -18,9 +16,7 @@ en:
     discovery: "Device Discovery"
 
 ko:
-  groups: "Groups"
-  vms: "VMS"
-  devices: "Devices"
+  devices: "VMS Devices"
   headers:
     name: "이름"
     url: "URL"
@@ -96,28 +92,13 @@ const ITEMS_PER_PAGE = 15;
     ToolbarBreadcrumbs,
   }
 })
-export default class MainVmsMediaSetting extends VueBase {
+export default class AdminVmsMediaSetting extends VueBase {
   readonly itemsPerPage = ITEMS_PER_PAGE;
   readonly breadcrumbs = [
     {
-      text: this.$t('groups'),
+      text: 'Admin',
       disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
-    {
-      text: this.$route.params.group,
-      disabled: false,
-      href: () => this.moveToGroup(),
-    },
-    {
-      text: this.$route.params.project,
-      disabled: false,
-      href: () => this.moveToMain(),
-    },
-    {
-      text: this.$t('vms'),
-      disabled: false,
-      href: () => this.moveToMainVmsLive(),
+      href: () => this.moveToAdmin(),
     },
     {
       text: this.$t('devices'),
@@ -186,11 +167,11 @@ export default class MainVmsMediaSetting extends VueBase {
   }
 
   onClickDiscovery() {
-    this.moveToMainVmsDevicesDiscovery();
+    this.moveToAdminVmsDevicesDiscovery();
   }
 
   onClickAdd() {
-    this.moveToMainVmsDevicesNew();
+    this.moveToAdminVmsDevicesNew();
   }
 
   onClickDevice(item: VmsDeviceA) {

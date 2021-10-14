@@ -72,4 +72,16 @@ export default class RouterAdmin extends mixins(RouterAdminAirjoy) {
     moveToAdminUsersNew() {
         this.moveTo(adminNames.adminUsersNew);
     }
+
+    moveToAdminVmsDevices() {
+        this.moveTo(adminNames.adminVmsDevices);
+    }
+
+    moveToAdminVmsDevicesDiscovery() {
+        this.moveTo(adminNames.adminVmsDevicesDiscovery);
+    }
+
+    moveToAdminVmsDevicesNew() {
+        this.moveTo(adminNames.adminVmsDevicesNew);
+    }
 }
