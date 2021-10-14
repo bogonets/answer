@@ -3,37 +3,51 @@ en:
   groups: "Groups"
   vms: "VMS"
   devices: "Devices"
+  discovery: "Discovery"
   headers:
     name: "Name"
-    url: "URL"
+    ip: "IP"
+    port: "Port"
     user: "User"
     online: "Online"
     actions: "Actions"
   msg:
-    search: "You can filter by ip or name."
     loading: "Loading... Please wait"
     empty: "Empty Devices"
   labels:
-    add: "Add Device"
-    discovery: "Device Discovery"
+    username: "Username"
+    password: "Password"
+    timeout: "Timeout"
+    discovery: "Discovery"
+  hints:
+    username: "Please enter the ID."
+    password: "Please enter the password."
+    timeout: "Device discovery timeout (Seconds)"
 
 ko:
   groups: "Groups"
   vms: "VMS"
   devices: "Devices"
+  discovery: "Discovery"
   headers:
     name: "이름"
-    url: "URL"
+    ip: "IP"
+    port: "포트"
     user: "사용자"
     online: "온라인"
     actions: "관리"
   msg:
-    search: "IP 또는 이름을 필터링할 수 있습니다."
     loading: "불러오는중 입니다... 잠시만 기다려 주세요."
     empty: "장치가 존재하지 않습니다."
   labels:
-    add: "장치 추가"
-    discovery: "장치 탐색"
+    username: "사용자명"
+    password: "비밀번호"
+    timeout: "검색 시간"
+    discovery: "탐색"
+  hints:
+    username: "아이디를 입력해 주세요."
+    password: "비밀번호를 입력해 주세요."
+    timeout: "장치 검색 제한시간 (초)"
 </i18n>
 
 <template>
@@ -41,34 +55,51 @@ ko:
     <toolbar-breadcrumbs :items="breadcrumbs"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
+    <p :class="subtitleClass">{{ $t('labels.username') }}</p>
+    <v-text-field
+        dense
+        persistent-hint
+        type="text"
+        autocomplete="off"
+        v-model="username"
+        :hint="$t('hints.username')"
+    ></v-text-field>
+
+    <p :class="subtitleClass">{{ $t('labels.password') }}</p>
+    <v-text-field
+        dense
+        persistent-hint
+        type="password"
+        autocomplete="off"
+        v-model="password"
+        :hint="$t('hints.password')"
+    ></v-text-field>
+
+    <p :class="subtitleClass">{{ $t('labels.timeout') }}</p>
+    <v-text-field
+        dense
+        persistent-hint
+        type="number"
+        v-model="timeout"
+        :hint="$t('hints.timeout')"
+    ></v-text-field>
+
+    <v-row class="mt-4 mb-2" no-gutters>
+      <v-spacer></v-spacer>
+      <v-btn color="primary" @click="onClickSearch">
+        {{ $t('labels.discovery') }}
+      </v-btn>
+    </v-row>
+
+    <v-divider></v-divider>
+
     <v-data-table
         :items-per-page="itemsPerPage"
         :headers="headers"
         :items="items"
-        :search="filter"
         :loading="loading"
         :loading-text="$t('msg.loading')"
     >
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-text-field
-              class="mr-4"
-              v-model="filter"
-              append-icon="mdi-magnify"
-              :label="$t('msg.search')"
-              single-line
-              hide-details
-          ></v-text-field>
-
-          <v-btn color="primary" class="align-self-center mr-2" @click="onClickDiscovery">
-            {{ $t('labels.discovery') }}
-          </v-btn>
-          <v-btn color="primary" class="align-self-center mr-2" @click="onClickAdd">
-            {{ $t('labels.add') }}
-          </v-btn>
-        </v-toolbar>
-      </template>
-
       <template v-slot:item.actions="{ item }">
         <v-icon small disabled class="mr-2" @click="onClickDevice(item)">
           mdi-pencil
@@ -88,15 +119,18 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import type {VmsDeviceA} from '@/packet/vms';
+import {SUBTITLE_CLASS} from '@/styles/subtitle';
 
 const ITEMS_PER_PAGE = 15;
+const DEFAULT_TIMEOUT = 30;
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
   }
 })
-export default class MainVmsMediaSetting extends VueBase {
+export default class MainVmsDevicesDiscovery extends VueBase {
+  readonly subtitleClass = SUBTITLE_CLASS;
   readonly itemsPerPage = ITEMS_PER_PAGE;
   readonly breadcrumbs = [
     {
@@ -121,6 +155,11 @@ export default class MainVmsMediaSetting extends VueBase {
     },
     {
       text: this.$t('devices'),
+      disabled: false,
+      href: () => this.moveToMainVmsDevices(),
+    },
+    {
+      text: this.$t('discovery'),
       disabled: true,
     },
   ];
@@ -134,11 +173,18 @@ export default class MainVmsMediaSetting extends VueBase {
       value: 'name',
     },
     {
-      text: this.$t('headers.url').toString(),
+      text: this.$t('headers.ip').toString(),
+      align: 'center',
+      filterable: true,
+      sortable: true,
+      value: 'ip',
+    },
+    {
+      text: this.$t('headers.port').toString(),
       align: 'center',
       filterable: false,
       sortable: false,
-      value: 'url',
+      value: 'port',
     },
     {
       text: this.$t('headers.user').toString(),
@@ -165,31 +211,24 @@ export default class MainVmsMediaSetting extends VueBase {
 
   loading = false;
   items = [] as Array<VmsDeviceA>;
-  filter = '';
+
+  exploring = false;
+  session = '';
+  username = '';
+  password = '';
+  timeout = DEFAULT_TIMEOUT;
 
   created() {
     this.updateItems();
   }
 
   updateItems() {
-    const group = this.$route.params.group;
-    const project = this.$route.params.project;
-    this.$api2.getVmsDevices(group, project)
-        .then(items => {
-          this.loading = false;
-          this.items = items;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
   }
 
-  onClickDiscovery() {
-    this.moveToMainVmsDevicesDiscovery();
+  onClickRefresh() {
   }
 
-  onClickAdd() {
+  onClickSearch() {
   }
 
   onClickDevice(item: VmsDeviceA) {

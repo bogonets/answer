@@ -61,6 +61,10 @@ export default class RouterMain extends mixins(RouterMainAirjoy) {
         this._moveToMainSubpage(mainNames.mainVmsDevices, group, project);
     }
 
+    moveToMainVmsDevicesDiscovery(group?: string, project?: string) {
+        this._moveToMainSubpage(mainNames.mainVmsDevicesDiscovery, group, project);
+    }
+
     moveToMainVmsLive(group?: string, project?: string) {
         this._moveToMainSubpage(mainNames.mainVmsLive, group, project);
     }

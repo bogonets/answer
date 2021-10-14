@@ -8,6 +8,7 @@ import MainTables from '@/pages/main/MainTables.vue';
 import MainTasks from '@/pages/main/MainTasks.vue';
 import MainVisualProgramming from '@/pages/main/MainVisualProgramming.vue';
 import MainVms from '@/pages/main/MainVms.vue';
+import MainVmsDevicesDiscovery from '@/pages/main/MainVmsDevicesDiscovery.vue';
 import MainVmsDevices from '@/pages/main/MainVmsDevices.vue';
 import MainVmsLive from '@/pages/main/MainVmsLive.vue';
 import MainVmsMediaSetting from '@/pages/main/MainVmsMediaSetting.vue';
@@ -69,6 +70,11 @@ export const mainChildren = [
                 path: 'devices',
                 component: MainVmsDevices,
                 name: mainNames.mainVmsDevices,
+            },
+            {
+                path: 'devices/discovery',
+                component: MainVmsDevicesDiscovery,
+                name: mainNames.mainVmsDevicesDiscovery,
             },
             {
                 path: ':media/setting',
