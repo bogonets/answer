@@ -36,6 +36,7 @@ ko:
         :position-y="contextMenuPositionY"
         absolute
         offset-y
+        z-index="100"
     >
       <v-list dense>
         <v-list-item @click="onClickEdit">
@@ -88,8 +89,8 @@ export default class MainVmsLive extends VueBase {
   onClickEdit() {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    const media = this.contextMenuIndex.toString();
-    this.moveToMainVmsMediaSetting(group, project, media);
+    const index = this.contextMenuIndex;
+    // this.moveToMainVmsDevicesEdit(group, project, media);
   }
 
   onClickCloseFooter() {

@@ -47,9 +47,14 @@ ko:
           :height="canvasHeight"
       ></canvas>
 
+      <rtc-player
+          v-if="online"
+          class="rtc-player"
+          ref="rtc-player"
+      ></rtc-player>
       <v-img
+          v-else
           class="brand-logo"
-          v-if="disconnected"
           src="@/assets/logo/answer-logo-notext.svg"
           min-width="80px"
           max-width="200px"
@@ -57,16 +62,11 @@ ko:
           max-height="200px"
           contain
       ></v-img>
-      <rtc-player
-          class="rtc-player"
-          ref="rtc-player"
-          v-else
-      ></rtc-player>
 
       <div
+          v-if="online && !hideController"
           class="controller"
-          v-if="!disconnected"
-          v-show="!hideController"
+          v-show="showController(hover)"
       >
         <v-btn icon>
           <v-icon>mdi-play</v-icon>
@@ -85,7 +85,6 @@ ko:
 import {Component, Prop, Ref, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import RtcPlayer from '@/media/RtcPlayer.vue';
-import * as Pixi from 'pixi.js';
 
 interface MediaPlayerOptions {
   index: number;
@@ -136,6 +135,9 @@ export default class MediaPlayer extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly hoverSystemBar!: boolean;
 
+  @Prop({type: Boolean, default: false})
+  readonly hoverController!: boolean;
+
   @Prop({type: Number, default: DEFAULT_CANVAS_WIDTH})
   readonly canvasWidth!: number;
 
@@ -163,76 +165,25 @@ export default class MediaPlayer extends VueBase {
   enableAudio = false;
   signalLevel = 0;
 
-  disconnected = false;
+  online = false;
   status = {} as MediaPlayerStatus;
 
-  pixiUser?: Pixi.Application = undefined;
-  pixiMeta?: Pixi.Application = undefined;
-
-  mounted() {
-    this.createPixi();
-
-    if (this.pixiUser) {
-      let graphics = new Pixi.Graphics()
-      graphics.lineStyle(8, 0x000000)
-
-      //start
-      graphics.moveTo(300, 250)
-      //end
-      graphics.lineTo(500, 250)
-      this.pixiUser.stage.addChild(graphics)
-    }
-  }
-
-  beforeDestroy() {
-    this.destroyPixi();
-  }
-
-  createPixi() {
-    if (this.pixiUser) {
-      this.pixiUser.destroy();
-    }
-    if (this.pixiMeta) {
-      this.pixiMeta.destroy();
-    }
-
-    const defaultOptions = {
-      width: this.canvasWidth,
-      height: this.canvasHeight,
-      antialias: true,
-      transparent: true,
-    } as Pixi.IApplicationOptions;
-
-    this.pixiUser = new Pixi.Application({
-      ...defaultOptions,
-      view: this.canvasUser,
-    } as Pixi.IApplicationOptions);
-    this.pixiMeta = new Pixi.Application({
-      ...defaultOptions,
-      view: this.canvasMeta,
-    } as Pixi.IApplicationOptions);
-  }
-
-  destroyPixi() {
-    if (this.pixiUser) {
-      this.pixiUser.destroy();
-      this.pixiUser = undefined;
-    }
-    if (this.pixiMeta) {
-      this.pixiMeta.destroy();
-      this.pixiMeta = undefined;
-    }
-  }
-
-  showSystemBar(hover) {
+  showSystemBar(hover?: boolean) {
     if (this.hoverSystemBar) {
       return !!hover;
     }
     return true;
   }
 
+  showController(hover?: boolean) {
+    if (this.hoverController) {
+      return !!hover;
+    }
+    return true;
+  }
+
   get displayName() {
-    if (this.disconnected) {
+    if (!this.online) {
       return this.$t('disconnected').toString();
     }
 
@@ -274,7 +225,6 @@ export default class MediaPlayer extends VueBase {
 
   @Watch('status')
   onWatchStatus(newVal: MediaPlayerStatus, oldVal: MediaPlayerStatus) {
-    this.disconnected = newVal.mediaRecoding || false;
     this.name = newVal.name || '';
   }
 

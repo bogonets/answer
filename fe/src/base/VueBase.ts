@@ -8,6 +8,7 @@ import RouterMain from '@/base/router/RouterMain';
 import RouterRoot from '@/base/router/RouterRoot';
 import RouterSelf from '@/base/router/RouterSelf';
 import StorePermission from '@/base/store/StorePermission';
+import {PLUGIN_NAME_VMS} from "@/packet/plugin";
 
 export class PermissionError extends Error {
     constructor(message?: string) {
@@ -27,6 +28,14 @@ export default class VueBase extends mixins(
     RouterSelf,
     StorePermission,
 ) {
+    getOem() {
+        return this.$localStore.preference.oem;
+    }
+
+    hasAdmin() {
+        return this.$localStore.user.is_admin || false;
+    }
+
     moveToMainGroups() {
     }
 

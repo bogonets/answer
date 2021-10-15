@@ -16,11 +16,13 @@ en:
     username: "Username"
     password: "Password"
     timeout: "Timeout"
+    session: "Session"
     discovery: "Discovery"
   hints:
     username: "Please enter the ID."
     password: "Please enter the password."
     timeout: "Device discovery timeout (Seconds)"
+    session: "A key value to maintain the session."
 
 ko:
   devices: "VMS Devices"
@@ -39,11 +41,13 @@ ko:
     username: "사용자명"
     password: "비밀번호"
     timeout: "검색 시간"
+    session: "세션"
     discovery: "탐색"
   hints:
     username: "아이디를 입력해 주세요."
     password: "비밀번호를 입력해 주세요."
     timeout: "장치 검색 제한시간 (초)"
+    session: "세션을 유지하기 위한 키 값입니다."
 </i18n>
 
 <template>
@@ -80,9 +84,20 @@ ko:
         :hint="$t('hints.timeout')"
     ></v-text-field>
 
+    <p :class="subtitleClass">{{ $t('labels.session') }}</p>
+    <v-text-field
+        append-outer-icon="mdi-refresh"
+        dense
+        persistent-hint
+        type="text"
+        v-model="session"
+        :hint="$t('hints.session')"
+        @click:append-outer="onClickSessionRefresh"
+    ></v-text-field>
+
     <v-row class="mt-4 mb-2" no-gutters>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="onClickSearch">
+      <v-btn color="primary" @click="onClickDiscovery">
         {{ $t('labels.discovery') }}
       </v-btn>
     </v-row>
@@ -118,26 +133,47 @@ import type {VmsDeviceA} from '@/packet/vms';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 
 const ITEMS_PER_PAGE = 15;
-const DEFAULT_TIMEOUT = 30;
+const DEFAULT_TIMEOUT = 3;
+
+const HEX_REF = "0123456789abcdef";
+
+function generateRandomSessionKey(size = 64) {
+  let result = '';
+  for (let n = 0; n < size; n++) {
+    result += HEX_REF[Math.floor(Math.random() * 16)];
+  }
+  return result;
+}
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
   }
 })
-export default class AdminVmsDevicesDiscovery extends VueBase {
+export default class MainVmsDevicesDiscovery extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly itemsPerPage = ITEMS_PER_PAGE;
+
   readonly breadcrumbs = [
     {
-      text: 'Admin',
+      text: this.$t('groups'),
       disabled: false,
-      href: () => this.moveToAdmin(),
+      href: () => this.moveToRootGroups(),
+    },
+    {
+      text: this.$route.params.group,
+      disabled: false,
+      href: () => this.moveToGroup(),
+    },
+    {
+      text: this.$route.params.project,
+      disabled: false,
+      href: () => this.moveToMain(),
     },
     {
       text: this.$t('devices'),
       disabled: false,
-      href: () => this.moveToAdminVmsDevices(),
+      href: () => this.moveToMainVmsDevices(),
     },
     {
       text: this.$t('discovery'),
@@ -201,15 +237,17 @@ export default class AdminVmsDevicesDiscovery extends VueBase {
 
   created() {
     this.updateItems();
+    this.session = generateRandomSessionKey();
   }
 
   updateItems() {
   }
 
-  onClickRefresh() {
+  onClickSessionRefresh() {
+    this.session = generateRandomSessionKey();
   }
 
-  onClickSearch() {
+  onClickDiscovery() {
   }
 
   onClickDevice(item: VmsDeviceA) {

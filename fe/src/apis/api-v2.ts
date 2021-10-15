@@ -17,7 +17,7 @@ import type {
     CreateAirjoyServiceQ,
     UpdateAirjoyServiceQ,
 } from '@/packet/airjoy';
-import type {VmsDeviceA} from '@/packet/vms';
+import type {VmsDeviceA, CreateVmsDeviceQ, UpdateVmsDeviceQ} from '@/packet/vms';
 import type {ConfigA, UpdateConfigValueQ} from '@/packet/config';
 import type {ContainerA, ControlContainersQ} from '@/packet/container';
 import type {GroupA, CreateGroupQ, UpdateGroupQ} from '@/packet/group';
@@ -901,13 +901,42 @@ export default class ApiV2 {
     // Plugins/VMS
     // -----------
 
-    // getVms(group: string, project: string) {
-    //     const url = `/plugins/airjoy/${group}/${project}/live`;
-    //     return this.get<Array<AirjoySensorA>>(url);
-    // }
-
     getVmsDevices(group: string, project: string) {
         const url = `/plugins/vms/${group}/${project}/devices`;
         return this.get<Array<VmsDeviceA>>(url);
+    }
+
+    postVmsDevices(group: string, project: string, body: CreateVmsDeviceQ) {
+        const url = `/plugins/vms/${group}/${project}/devices`;
+        return this.post(url, body);
+    }
+
+    getVmsDevice(
+        group: string,
+        project: string,
+        device: string,
+        body: UpdateVmsDeviceQ,
+    ) {
+        const url = `/plugins/vms/${group}/${project}/devices/${device}`;
+        return this.get<VmsDeviceA>(url, body);
+    }
+
+    patchVmsDevice(
+        group: string,
+        project: string,
+        device: string,
+        body: UpdateVmsDeviceQ,
+    ) {
+        const url = `/plugins/vms/${group}/${project}/devices/${device}`;
+        return this.patch(url, body);
+    }
+
+    deleteVmsDevice(
+        group: string,
+        project: string,
+        device: string,
+    ) {
+        const url = `/plugins/vms/${group}/${project}/devices/${device}`;
+        return this.delete(url);
     }
 }

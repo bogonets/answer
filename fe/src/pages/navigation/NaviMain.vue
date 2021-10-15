@@ -229,6 +229,14 @@ export default class NaviMain extends VueBase {
       this.index = 4;
     } else if (name === mainNames.mainVisualProgramming) {
       this.index = 5;
+    } else if (name === mainNames.mainVmsDevices) {
+      this.index = 6;
+    } else if (name === mainNames.mainVmsDevicesDiscovery) {
+      this.index = 6;
+    } else if (name === mainNames.mainVmsDevicesEdit) {
+      this.index = 6;
+    } else if (name === mainNames.mainVmsDevicesNew) {
+      this.index = 6;
     } else if (name === mainNames.mainVmsLive) {
       this.index = 6;
     } else if (name === mainNames.mainMembers) {

@@ -51,6 +51,16 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
+          <v-divider v-show="hasManagerRead"></v-divider>
+          <v-list-item v-show="hasManagerRead" link @click.stop="onClickDevices">
+            <v-list-item-icon>
+              <v-icon>mdi-cctv</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('devices') }}
+            </v-list-item-title>
+          </v-list-item>
+
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -77,8 +87,8 @@ export default class MainVms extends VueBase {
   mini = false;
   index = 0;
 
-  get hasAdminPermission(): boolean {
-    return this.$localStore.user.is_admin || false;
+  get hasManagerRead(): boolean {
+    return this.$sessionStore.permissionManagerRead || false;
   }
 
   @Watch('$route')
@@ -86,6 +96,14 @@ export default class MainVms extends VueBase {
     const name = this.$route.name;
     if (name === mainNames.mainVmsLive) {
       this.index = 0;
+    } else if (name === mainNames.mainVmsDevices) {
+      this.index = 1;
+    } else if (name === mainNames.mainVmsDevicesDiscovery) {
+      this.index = 1;
+    } else if (name === mainNames.mainVmsDevicesEdit) {
+      this.index = 1;
+    } else if (name === mainNames.mainVmsDevicesNew) {
+      this.index = 1;
     } else {
       this.index = -1;
     }
@@ -97,6 +115,10 @@ export default class MainVms extends VueBase {
 
   onClickLive() {
     this.moveToMainVmsLive();
+  }
+
+  onClickDevices() {
+    this.moveToMainVmsDevices();
   }
 }
 </script>

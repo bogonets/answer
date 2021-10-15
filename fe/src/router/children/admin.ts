@@ -15,10 +15,6 @@ import AdminTemplates from '@/pages/admin/AdminTemplates.vue';
 import AdminUsers from '@/pages/admin/AdminUsers.vue';
 import AdminUsersEdit from '@/pages/admin/AdminUsersEdit.vue';
 import AdminUsersNew from '@/pages/admin/AdminUsersNew.vue';
-import AdminVmsDevices from '@/pages/admin/AdminVmsDevices.vue';
-import AdminVmsDevicesDiscovery from '@/pages/admin/AdminVmsDevicesDiscovery.vue';
-import AdminVmsDevicesEdit from '@/pages/admin/AdminVmsDevicesEdit.vue';
-import AdminVmsDevicesNew from '@/pages/admin/AdminVmsDevicesNew.vue';
 
 // External
 import adminAirjoyChildren from '@/router/children/external/airjoy/admin';
@@ -103,26 +99,6 @@ export const adminChildren = [
         path: 'users/new',
         component: AdminUsersNew,
         name: adminNames.adminUsersNew,
-    },
-    {
-        path: 'vms/devices',
-        component: AdminVmsDevices,
-        name: adminNames.adminVmsDevices,
-    },
-    {
-        path: 'vms/devices/discovery',
-        component: AdminVmsDevicesDiscovery,
-        name: adminNames.adminVmsDevicesDiscovery,
-    },
-    {
-        path: 'vms/devices/edit/:device',
-        component: AdminVmsDevicesEdit,
-        name: adminNames.adminVmsDevicesEdit,
-    },
-    {
-        path: 'vms/devices/new',
-        component: AdminVmsDevicesNew,
-        name: adminNames.adminVmsDevicesNew,
     },
 
     ...adminAirjoyChildren,

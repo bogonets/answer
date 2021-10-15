@@ -92,13 +92,23 @@ const ITEMS_PER_PAGE = 15;
     ToolbarBreadcrumbs,
   }
 })
-export default class AdminVmsMediaSetting extends VueBase {
+export default class MainVmsDevices extends VueBase {
   readonly itemsPerPage = ITEMS_PER_PAGE;
   readonly breadcrumbs = [
     {
-      text: 'Admin',
+      text: this.$t('groups'),
       disabled: false,
-      href: () => this.moveToAdmin(),
+      href: () => this.moveToRootGroups(),
+    },
+    {
+      text: this.$route.params.group,
+      disabled: false,
+      href: () => this.moveToGroup(),
+    },
+    {
+      text: this.$route.params.project,
+      disabled: false,
+      href: () => this.moveToMain(),
     },
     {
       text: this.$t('devices'),
@@ -167,15 +177,18 @@ export default class AdminVmsMediaSetting extends VueBase {
   }
 
   onClickDiscovery() {
-    this.moveToAdminVmsDevicesDiscovery();
+    this.moveToMainVmsDevicesDiscovery();
   }
 
   onClickAdd() {
-    this.moveToAdminVmsDevicesNew();
+    this.moveToMainVmsDevicesNew();
   }
 
   onClickDevice(item: VmsDeviceA) {
-    this.moveToAdminVmsDevicesEdit(item.slug);
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = item.device_uid.toString();
+    this.moveToMainVmsDevicesEdit(group, project, device);
   }
 }
 </script>

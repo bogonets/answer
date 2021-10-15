@@ -35,7 +35,6 @@ from recc.http.http_status import (
 from recc.http import http_cache_keys as c
 from recc.http import http_path_keys as p
 from recc.variables.http import VERY_VERBOSE_DEBUGGING
-from recc.variables.plugin import CONTEXT_PROPERTY_NAME
 
 ERROR_MESSAGE_ONLY_SINGLE_POLICIES = (
     "Group and project permissions cannot be checked at the same time."
@@ -93,7 +92,7 @@ async def _parameter_matcher_main(
     project_name: Optional[str] = None
 
     very_verbose_debugging = False
-    context = getattr(obj, CONTEXT_PROPERTY_NAME, None)
+    context = request[c.context] if c.context in request else None
     if context:
         if isinstance(context, Context):
             config = context.config

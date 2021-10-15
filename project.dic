@@ -100,6 +100,7 @@ testdb
 tzdata
 uids
 uint
+unicast
 unprocessable
 username
 uvloop
@@ -118,6 +119,7 @@ zoneinfo
 # ./core/recc/http/http_path_keys.py
 
 pcontainer
+pdevice
 pgroup
 pkey
 pmember

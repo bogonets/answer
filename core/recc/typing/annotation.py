@@ -20,14 +20,13 @@ def eval_annotations(
     update_annotations: Dict[str, Any] = dict()
 
     for key, annotation in obj.__annotations__.items():
-        if isinstance(annotation, type):
-            update_annotations[key] = annotation
-            continue
-
-        type_origin = eval(annotation, global_variables, local_variables)
-        if type_origin is not None:
-            eval_annotations(type_origin, global_variables, local_variables)
-            update_annotations[key] = type_origin
+        if isinstance(annotation, str):
+            type_origin = eval(annotation, global_variables, local_variables)
+            if type_origin is not None:
+                eval_annotations(type_origin, global_variables, local_variables)
+                update_annotations[key] = type_origin
+            else:
+                update_annotations[key] = annotation
         else:
             update_annotations[key] = annotation
 

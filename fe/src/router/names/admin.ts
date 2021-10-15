@@ -17,10 +17,6 @@ export const adminNames = {
     adminUsers: 'adminUsers',
     adminUsersEdit: 'adminUsersEdit',
     adminUsersNew: 'adminUsersNew',
-    adminVmsDevices: 'adminVmsDevices',
-    adminVmsDevicesDiscovery: 'adminVmsDevicesDiscovery',
-    adminVmsDevicesEdit: 'adminVmsDevicesEdit',
-    adminVmsDevicesNew: 'adminVmsDevicesNew',
 
     ...adminAirjoyNames,
 };

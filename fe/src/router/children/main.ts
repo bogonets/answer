@@ -8,8 +8,11 @@ import MainTables from '@/pages/main/MainTables.vue';
 import MainTasks from '@/pages/main/MainTasks.vue';
 import MainVisualProgramming from '@/pages/main/MainVisualProgramming.vue';
 import MainVms from '@/pages/main/MainVms.vue';
+import MainVmsDevices from '@/pages/main/MainVmsDevices.vue';
+import MainVmsDevicesDiscovery from '@/pages/main/MainVmsDevicesDiscovery.vue';
+import MainVmsDevicesEdit from '@/pages/main/MainVmsDevicesEdit.vue';
+import MainVmsDevicesNew from '@/pages/main/MainVmsDevicesNew.vue';
 import MainVmsLive from '@/pages/main/MainVmsLive.vue';
-import MainVmsMediaSetting from '@/pages/main/MainVmsMediaSetting.vue';
 
 // External
 import mainAirjoyChildren from '@/router/children/external/airjoy/main';
@@ -65,9 +68,24 @@ export const mainChildren = [
                 name: mainNames.mainVmsLive,
             },
             {
-                path: ':media/setting',
-                component: MainVmsMediaSetting,
-                name: mainNames.mainVmsMediaSetting,
+                path: 'devices',
+                component: MainVmsDevices,
+                name: mainNames.mainVmsDevices,
+            },
+            {
+                path: 'devices/discovery',
+                component: MainVmsDevicesDiscovery,
+                name: mainNames.mainVmsDevicesDiscovery,
+            },
+            {
+                path: 'devices/edit/:device',
+                component: MainVmsDevicesEdit,
+                name: mainNames.mainVmsDevicesEdit,
+            },
+            {
+                path: 'devices/new',
+                component: MainVmsDevicesNew,
+                name: mainNames.mainVmsDevicesNew,
             },
         ]
     },

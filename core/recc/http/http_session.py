@@ -14,6 +14,7 @@ async def assign_session(context: Context, request: Request) -> None:
     session = await context.get_access_session(bearer.token)
     audience_uid = await context.get_user_uid(session.audience)
     db_user = await context.get_user(audience_uid)
+    request[c.context] = context
     request[c.session] = SessionEx(
         session,
         audience_uid,

@@ -77,18 +77,28 @@ import {SUBTITLE_CLASS} from '@/styles/subtitle';
     MediaPlayer,
   }
 })
-export default class AdminVmsDevicesEdit extends VueBase {
+export default class MainVmsDevicesEdit extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly breadcrumbs = [
     {
-      text: 'Admin',
+      text: this.$t('groups'),
       disabled: false,
-      href: () => this.moveToAdmin(),
+      href: () => this.moveToRootGroups(),
+    },
+    {
+      text: this.$route.params.group,
+      disabled: false,
+      href: () => this.moveToGroup(),
+    },
+    {
+      text: this.$route.params.project,
+      disabled: false,
+      href: () => this.moveToMain(),
     },
     {
       text: this.$t('devices'),
       disabled: false,
-      href: () => this.moveToAdminVmsDevices(),
+      href: () => this.moveToMainVmsDevices(),
     },
     {
       text: this.$t('edit'),
