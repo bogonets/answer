@@ -17,6 +17,12 @@ export const PROTOCOLS = [
     PROTOCOL_HTTP,
 ];
 
+export const SECOND_IN_MILLISECONDS = 1000;
+export const MINUTE_IN_MILLISECONDS = 60 * SECOND_IN_MILLISECONDS;
+
+export const DISCOVERY_HEARTBEAT_INTERVAL = SECOND_IN_MILLISECONDS;
+export const DISCOVERY_LEEWAY_SECONDS = 1;
+
 export interface VmsDeviceA {
     device_uid: number;
     group_slug: string;
@@ -35,7 +41,7 @@ export interface VmsDeviceA {
     updated_at: string;
 }
 
-export interface CreateVmsDeviceQ {
+export interface VmsCreateDeviceQ {
     name: string;
     description: string;
     url: string;
@@ -48,7 +54,7 @@ export interface CreateVmsDeviceQ {
     daemon: boolean;
 }
 
-export interface UpdateVmsDeviceQ {
+export interface VmsUpdateDeviceQ {
     group_slug?: string;
     project_slug?: string;
     name?: string;
@@ -63,25 +69,38 @@ export interface UpdateVmsDeviceQ {
     daemon?: boolean;
 }
 
-export interface VmsDeviceDiscoveryQ {
-    session: string;
-    username: string;
-    password: string;
+export interface VmsDiscoveryQ {
     timeout: number;
+    session: string;
+    ipv6: boolean;
 }
 
-export interface VmsDeviceDiscoveryA {
-    expired: string;
+export interface VmsDiscoveredDeviceA {
+    epr: string;
+    address: string;
 }
 
-export interface VmsDeviceDiscoveryInterpolationQ {
+export interface VmsDiscoveredHeartbeatQ {
     session: string;
 }
 
-export interface VmsDeviceDiscoveryInterpolationA {
-    type: string;
-    device: string;
-    ip: string;
-    profile: string;
-    url: string;
+export interface VmsDiscoveredHeartbeatA {
+    done: boolean;
+    devices?: Array<VmsDiscoveredDeviceA>;
 }
+
+// export interface VmsDeviceDiscoveryA {
+//     expired: string;
+// }
+//
+// export interface VmsDeviceDiscoveryInterpolationQ {
+//     session: string;
+// }
+//
+// export interface VmsDeviceDiscoveryInterpolationA {
+//     type: string;
+//     device: string;
+//     ip: string;
+//     profile: string;
+//     url: string;
+// }

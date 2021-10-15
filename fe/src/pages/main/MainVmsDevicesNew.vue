@@ -72,14 +72,14 @@ ko:
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.password') }}</p>
-    <v-text-field
+    <v-text-fieleprd
         dense
         persistent-hint
         type="password"
         autocomplete="off"
         v-model="password"
         :hint="$t('hints.password')"
-    ></v-text-field>
+    ></v-text-fieleprd>
 
     <p :class="subtitleClass">{{ $t('labels.stream') }}</p>
     <v-radio-group class="mt-2" row hide-details v-model="stream">
@@ -124,7 +124,7 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import type {CreateVmsDeviceQ} from '@/packet/vms';
+import type {VmsCreateDeviceQ} from '@/packet/vms';
 import {STREAM_TYPES, PROTOCOLS} from '@/packet/vms';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 
@@ -191,7 +191,7 @@ export default class MainVmsDevicesNew extends VueBase {
       protocol: this.protocol,
       active: false,
       daemon: false,
-    } as CreateVmsDeviceQ;
+    } as VmsCreateDeviceQ;
 
     const group = this.$route.params.group;
     const project = this.$route.params.project;

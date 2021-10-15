@@ -17,7 +17,14 @@ import type {
     CreateAirjoyServiceQ,
     UpdateAirjoyServiceQ,
 } from '@/packet/airjoy';
-import type {VmsDeviceA, CreateVmsDeviceQ, UpdateVmsDeviceQ} from '@/packet/vms';
+import type {
+    VmsDeviceA,
+    VmsCreateDeviceQ,
+    VmsUpdateDeviceQ,
+    VmsDiscoveryQ,
+    VmsDiscoveredHeartbeatQ,
+    VmsDiscoveredHeartbeatA,
+} from '@/packet/vms';
 import type {ConfigA, UpdateConfigValueQ} from '@/packet/config';
 import type {ContainerA, ControlContainersQ} from '@/packet/container';
 import type {GroupA, CreateGroupQ, UpdateGroupQ} from '@/packet/group';
@@ -906,7 +913,7 @@ export default class ApiV2 {
         return this.get<Array<VmsDeviceA>>(url);
     }
 
-    postVmsDevices(group: string, project: string, body: CreateVmsDeviceQ) {
+    postVmsDevices(group: string, project: string, body: VmsCreateDeviceQ) {
         const url = `/plugins/vms/${group}/${project}/devices`;
         return this.post(url, body);
     }
@@ -915,7 +922,7 @@ export default class ApiV2 {
         group: string,
         project: string,
         device: string,
-        body: UpdateVmsDeviceQ,
+        body: VmsUpdateDeviceQ,
     ) {
         const url = `/plugins/vms/${group}/${project}/devices/${device}`;
         return this.get<VmsDeviceA>(url, body);
@@ -925,7 +932,7 @@ export default class ApiV2 {
         group: string,
         project: string,
         device: string,
-        body: UpdateVmsDeviceQ,
+        body: VmsUpdateDeviceQ,
     ) {
         const url = `/plugins/vms/${group}/${project}/devices/${device}`;
         return this.patch(url, body);
@@ -938,5 +945,23 @@ export default class ApiV2 {
     ) {
         const url = `/plugins/vms/${group}/${project}/devices/${device}`;
         return this.delete(url);
+    }
+
+    postVmsDiscovery(
+        group: string,
+        project: string,
+        body: VmsDiscoveryQ,
+    ) {
+        const url = `/plugins/vms/${group}/${project}/discovery`;
+        return this.post(url, body);
+    }
+
+    postVmsDiscoveryHeartbeat(
+        group: string,
+        project: string,
+        body: VmsDiscoveredHeartbeatQ,
+    ) {
+        const url = `/plugins/vms/${group}/${project}/discovery/heartbeat`;
+        return this.post<VmsDiscoveredHeartbeatA>(url, body);
     }
 }
