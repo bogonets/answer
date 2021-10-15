@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from typing import List
-from enum import Enum, auto
+from enum import Enum, auto, unique
 from recc.packet.permission import RawPermission
 
 
+@unique
 class Policy(Enum):
+
     HasLayoutRead = auto()
     HasLayoutWrite = auto()
     HasStorageRead = auto()
@@ -18,7 +20,8 @@ class Policy(Enum):
     HasMemberWrite = auto()
     HasSettingRead = auto()
     HasSettingWrite = auto()
-    HasAdmin = auto()
+
+    HasFeatures = auto()
 
 
 def has_layout_read(permission: RawPermission) -> None:
@@ -81,11 +84,6 @@ def has_setting_write(permission: RawPermission) -> None:
         raise PermissionError("You do not have write access to the setting")
 
 
-def has_admin(permission: RawPermission) -> None:
-    if not permission.is_admin:
-        raise PermissionError("You do not have administrator privileges")
-
-
 POLICY_TO_TESTER_MAP = {
     Policy.HasLayoutRead: has_layout_read,
     Policy.HasLayoutWrite: has_layout_write,
@@ -99,15 +97,17 @@ POLICY_TO_TESTER_MAP = {
     Policy.HasMemberWrite: has_member_write,
     Policy.HasSettingRead: has_setting_read,
     Policy.HasSettingWrite: has_setting_write,
-    Policy.HasAdmin: has_admin,
 }
 
 
 def test_policy(policy: Policy, permission: RawPermission) -> None:
+    assert policy is not Policy.HasFeatures
     assert policy in POLICY_TO_TESTER_MAP
     POLICY_TO_TESTER_MAP[policy](permission)
 
 
 def test_policies(policies: List[Policy], permission: RawPermission) -> None:
     for policy in policies:
+        if policy == Policy.HasFeatures:
+            continue
         test_policy(policy, permission)

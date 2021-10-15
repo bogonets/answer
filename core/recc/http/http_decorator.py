@@ -11,9 +11,10 @@ from aiohttp.web_response import Response
 from aiohttp.web_exceptions import (
     HTTPException,
     HTTPBadRequest,
-    HTTPForbidden,
     HTTPUnauthorized,
 )
+
+from recc.access_control.acl import AccessControlList
 from recc.core.context import Context
 from recc.chrono.datetime import today
 from recc.session.session import Session
@@ -22,7 +23,7 @@ from recc.log.logging import recc_http_logger as logger
 from recc.serialization.serialize import serialize_default
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.header.bearer_auth import BearerAuth
-from recc.http.http_decorator_acl import Policy, test_policies
+from recc.access_control.policy import Policy
 from recc.http.http_packet import HttpRequest, HttpResponse
 from recc.http.http_payload import payload_to_object, request_payload_to_class
 from recc.http.http_response import get_accept_type, get_encoding, create_response
@@ -34,11 +35,10 @@ from recc.http.http_status import (
 from recc.http import http_cache_keys as c
 from recc.http import http_path_keys as p
 from recc.variables.http import VERY_VERBOSE_DEBUGGING
-
-CONTEXT_PROPERTY_NAME = "context"
+from recc.variables.plugin import CONTEXT_PROPERTY_NAME
 
 ERROR_MESSAGE_ONLY_SINGLE_POLICIES = (
-    "`group_policies` or `project_policies` cannot be selected together."
+    "Group and project permissions cannot be checked at the same time."
 )
 
 
@@ -52,6 +52,8 @@ def _is_serializable_instance(obj: Any) -> bool:
     if isinstance(obj, list):
         return True
     if isinstance(obj, float):
+        return True
+    if isinstance(obj, bool):
         return True
     return False
 
@@ -67,50 +69,16 @@ def _is_serializable_class(obj: type) -> bool:
         return True
     if issubclass(obj, float):
         return True
+    if issubclass(obj, bool):
+        return True
     return False
-
-
-async def _test_group_permission(
-    context: Context,
-    session: SessionEx,
-    group_policies: List[Policy],
-    group_name: Optional[str],
-) -> None:
-    if not group_name:
-        raise HTTPBadRequest(reason="The group name is missing")
-    permission = await context.get_group_raw_permission(session, group_name)
-    try:
-        test_policies(group_policies, permission)
-    except PermissionError as e:
-        raise HTTPForbidden(reason=str(e))
-
-
-async def _test_project_permission(
-    context: Context,
-    session: SessionEx,
-    project_policies: List[Policy],
-    group_name: Optional[str],
-    project_name: Optional[str],
-) -> None:
-    if not group_name:
-        raise HTTPBadRequest(reason="The group name is missing")
-    if not project_name:
-        raise HTTPBadRequest(reason="The project name is missing")
-    permission = await context.get_project_raw_permission(
-        session, group_name, project_name
-    )
-    try:
-        test_policies(project_policies, permission)
-    except PermissionError as e:
-        raise HTTPForbidden(reason=str(e))
 
 
 async def _parameter_matcher_main(
     func,
     obj: Any,
     request: Request,
-    group_policies: Optional[List[Policy]] = None,
-    project_policies: Optional[List[Policy]] = None,
+    acl: AccessControlList,
 ) -> Response:
     accept = get_accept_type(request)
     encoding = get_encoding(request)
@@ -258,26 +226,25 @@ async def _parameter_matcher_main(
 
         update_arguments.append(None)
 
-    # if hasattr(func, "__recc_group_permissions__"):
-    #     logger.error("Has __recc_group_permissions__")
-
-    if group_policies or project_policies:
+    if acl.exists():
         if not context:
             raise RuntimeError("The context does not exist")
         if c.session not in request:
             raise HTTPUnauthorized(reason=f"Not exists session: {c.session}")
+
         session = request[c.session]
         assert isinstance(session, SessionEx)
+
         if not session.is_admin:
-            if group_policies:
-                await _test_group_permission(
-                    context, session, group_policies, group_name
-                )
+            if acl.admin:
+                raise PermissionError("You do not have administrator privileges")
+            if acl.groups and acl.projects:
+                raise RuntimeError(ERROR_MESSAGE_ONLY_SINGLE_POLICIES)
+            if acl.groups:
+                await acl.test_groups(context, session, group_name)
             else:
-                assert project_policies
-                await _test_project_permission(
-                    context, session, project_policies, group_name, project_name
-                )
+                assert acl.projects
+                await acl.test_projects(context, session, group_name, project_name)
 
     if iscoroutinefunction(func):
         result = await func(*update_arguments)
@@ -312,6 +279,8 @@ async def parameter_matcher_main(
     request: Request,
     group_policies: Optional[List[Policy]] = None,
     project_policies: Optional[List[Policy]] = None,
+    has_features: Optional[List[str]] = None,
+    has_admin=False,
 ) -> Response:
     now = today()
 
@@ -326,9 +295,14 @@ async def parameter_matcher_main(
     request_info = f"{remote} {method} {path} HTTP/{version[0]}.{version[1]}"
 
     try:
-        result = await _parameter_matcher_main(
-            func, obj, request, group_policies, project_policies
+        acl = AccessControlList(
+            func,
+            group_policies,
+            project_policies,
+            has_features,
+            has_admin,
         )
+        result = await _parameter_matcher_main(func, obj, request, acl)
     except HTTPException as e:
         logger.error(e)
         result = Response(
@@ -360,6 +334,8 @@ def parameter_matcher(
     *,
     group_policies: Optional[List[Policy]] = None,
     project_policies: Optional[List[Policy]] = None,
+    has_features: Optional[List[str]] = None,
+    has_admin=False,
 ):
     if group_policies and project_policies:
         raise RuntimeError(ERROR_MESSAGE_ONLY_SINGLE_POLICIES)
@@ -368,7 +344,13 @@ def parameter_matcher(
         @wraps(func)
         async def __wrap(obj, request):
             return await parameter_matcher_main(
-                func, obj, request, group_policies, project_policies
+                func,
+                obj,
+                request,
+                group_policies,
+                project_policies,
+                has_features,
+                has_admin,
             )
 
         return __wrap

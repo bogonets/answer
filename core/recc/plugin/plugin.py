@@ -18,6 +18,12 @@ NAME_ON_OPEN = "on_open"
 NAME_ON_CLOSE = "on_close"
 NAME_ON_REQUEST = "on_request"
 
+PYTHON_PLUGIN_PREFIX = """# -*- coding: utf-8 -*-
+import sys
+if "{plugin_dir}":
+    sys.path.insert(0, "{plugin_dir}")
+"""
+
 
 class Route:
     def __init__(self, method: str, path: str, func):
@@ -52,6 +58,9 @@ def exec_python_plugin(
     global_variables: Dict[str, Any],
     local_variables: Dict[str, Any],
 ) -> None:
+    prefix = PYTHON_PLUGIN_PREFIX.format(plugin_dir=os.path.split(path)[0])
+    exec(prefix, global_variables, local_variables)
+
     with open(path, "r") as f:
         source = f.read()
     ast = compile(source, path, COMPILE_MODE_EXEC, COMPILE_FLAGS)
