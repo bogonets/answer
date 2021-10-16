@@ -78,6 +78,8 @@ export interface VmsDiscoveryQ {
 export interface VmsDiscoveredDeviceA {
     epr: string;
     address: string;
+    types: Array<string>;
+    scopes: Array<string>;
 }
 
 export interface VmsDiscoveredHeartbeatQ {
@@ -88,6 +90,34 @@ export interface VmsDiscoveredHeartbeatA {
     done: boolean;
     devices?: Array<VmsDiscoveredDeviceA>;
 }
+
+export interface VmsOnvifMediaStreamUriQ {
+    address: string;
+    username: string;
+    password: string;
+    timeout: number;
+    session: string;
+    digest: boolean;
+    protocol: string;
+    stream: string;
+}
+
+export interface VmsOnvifMediaStreamUriA {
+    profile_name: string;
+    profile_token: string;
+    stream_uri: string;
+    snapshot_uri: string;
+}
+
+export interface VmsOnvifMediaStreamUriHeartbeatQ {
+    session: string;
+}
+
+export interface VmsOnvifMediaStreamUriHeartbeatA {
+    done: boolean;
+    medias?: Array<VmsOnvifMediaStreamUriA>;
+}
+
 
 // export interface VmsDeviceDiscoveryA {
 //     expired: string;

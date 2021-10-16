@@ -1,5 +1,6 @@
 <i18n lang="yaml">
 en:
+  groups: "Groups"
   devices: "VMS Devices"
   new: "New"
   labels:
@@ -18,6 +19,7 @@ en:
     password: "Please enter the password."
 
 ko:
+  groups: "Groups"
   devices: "VMS Devices"
   new: "New"
   labels:
@@ -125,7 +127,12 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import type {VmsCreateDeviceQ} from '@/packet/vms';
-import {STREAM_TYPES, PROTOCOLS} from '@/packet/vms';
+import {
+  STREAM_TYPE_RTP_UNICAST,
+  STREAM_TYPES,
+  PROTOCOL_TCP,
+  PROTOCOLS,
+} from '@/packet/vms';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 
 const ITEMS_PER_PAGE = 15;
@@ -138,6 +145,7 @@ const ITEMS_PER_PAGE = 15;
 export default class MainVmsDevicesNew extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly itemsPerPage = ITEMS_PER_PAGE;
+
   readonly streamTypes = STREAM_TYPES;
   readonly protocols = PROTOCOLS;
 
@@ -173,8 +181,8 @@ export default class MainVmsDevicesNew extends VueBase {
   url = '';
   username = '';
   password = '';
-  stream = STREAM_TYPES[0];
-  protocol = PROTOCOLS[0];
+  stream = STREAM_TYPE_RTP_UNICAST;
+  protocol = PROTOCOL_TCP;
 
   onClickTest() {
   }

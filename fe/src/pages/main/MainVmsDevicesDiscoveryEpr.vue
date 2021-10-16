@@ -3,9 +3,11 @@ en:
   groups: "Groups"
   devices: "VMS Devices"
   discovery: "Discovery"
+  epr: "EPR"
   headers:
-    epr: "EndPoint Reference (EPR)"
-    address: "Address"
+    profile: "Profile"
+    token: "Token"
+    stream: "Stream URI"
     actions: "Actions"
   msg:
     loading: "Loading... Please wait"
@@ -13,26 +15,38 @@ en:
     left_time: "About {0} seconds remaining"
     after_while: "After a while it will be done."
   labels:
+    epr: "Endpoint Reference"
+    address: "Address"
+    username: "Username"
+    password: "Password"
     timeout: "Timeout"
     session: "Session"
-    ipv6: "IPv6"
-    submit: "Discovery"
-    exploring: "Exploring"
+    submit: "Request"
+    security: "WS-Security"
+    protocol: "Transport Protocol"
+    stream: "Stream Type"
+    requesting: "Requesting"
     cancel: "Cancel"
+  security:
+    digest: "Digest"
+    text: "Text"
   hints:
-    timeout: "Device discovery timeout (Seconds)"
+    epr: "An endpoint is any user device connected to a network."
+    address: "The address to request device information from."
+    username: "Username to access the device."
+    password: "Password to access the device."
+    timeout: "Device information request timeout (Seconds)"
     session: "A key value to maintain the session."
-  ipv6:
-    on: "ON"
-    off: "OFF"
 
 ko:
   groups: "Groups"
   devices: "VMS Devices"
   discovery: "Discovery"
+  epr: "EPR"
   headers:
-    epr: "엔드포인트 참조 (EPR)"
-    address: "주소"
+    profile: "프로필"
+    token: "토큰"
+    stream: "스트림 주소"
     actions: "관리"
   msg:
     loading: "불러오는중 입니다... 잠시만 기다려 주세요."
@@ -40,24 +54,76 @@ ko:
     left_time: "남은 시간 약 {0}초"
     after_while: "잠시 후 완료됩니다."
   labels:
-    timeout: "검색 시간"
+    epr: "엔드포인트 참조"
+    address: "주소"
+    username: "사용자명"
+    password: "비밀번호"
+    timeout: "제한 시간"
     session: "세션"
-    ipv6: "IPv6"
-    submit: "탐색"
-    exploring: "탐색중 입니다"
+    submit: "요청"
+    security: "WS-Security"
+    protocol: "전송 프로토콜"
+    stream: "스트림 유형"
+    requesting: "요청중 입니다"
     cancel: "취소"
+  security:
+    digest: "Digest"
+    text: "Text"
   hints:
-    timeout: "장치 검색 제한시간 (초)"
+    epr: "엔드포인트는 네트워크에 연결된 모든 사용자 장치입니다."
+    address: "장치 정보를 요청할 주소입니다."
+    username: "장치에 액세스하기 위한 사용자 이름입니다."
+    password: "장치에 액세스하기 위한 비밀번호입니다."
+    timeout: "기기 정보 요청의 제한시간 (초)"
     session: "세션을 유지하기 위한 키 값입니다."
-  ipv6:
-    on: "ON"
-    off: "OFF"
 </i18n>
 
 <template>
   <v-container>
     <toolbar-breadcrumbs :items="breadcrumbs"></toolbar-breadcrumbs>
     <v-divider></v-divider>
+
+    <p :class="subtitleClass">{{ $t('labels.epr') }}</p>
+    <v-text-field
+        dense
+        persistent-hint
+        type="text"
+        disabled
+        filled
+        :value="this.discoveredDevice.epr"
+        :hint="$t('hints.epr')"
+    ></v-text-field>
+
+    <p :class="subtitleClass">{{ $t('labels.address') }}</p>
+    <v-text-field
+        dense
+        persistent-hint
+        type="text"
+        disabled
+        filled
+        :value="this.discoveredDevice.address"
+        :hint="$t('hints.address')"
+    ></v-text-field>
+
+    <p :class="subtitleClass">{{ $t('labels.username') }}</p>
+    <v-text-field
+        dense
+        persistent-hint
+        type="text"
+        :disabled="discovering"
+        v-model="username"
+        :hint="$t('hints.username')"
+    ></v-text-field>
+
+    <p :class="subtitleClass">{{ $t('labels.password') }}</p>
+    <v-text-field
+        dense
+        persistent-hint
+        type="password"
+        :disabled="discovering"
+        v-model="password"
+        :hint="$t('hints.password')"
+    ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.timeout') }}</p>
     <v-text-field
@@ -81,16 +147,48 @@ ko:
         @click:append-outer="onClickSessionRefresh"
     ></v-text-field>
 
-    <p :class="subtitleClass">{{ $t('labels.ipv6') }}</p>
+    <p :class="subtitleClass">{{ $t('labels.security') }}</p>
     <v-radio-group
         class="mt-2"
         row
         hide-details
         :disabled="discovering"
-        v-model="ipv6"
+        v-model="digest"
     >
-      <v-radio :label="$t('off')" :value="false"></v-radio>
-      <v-radio :label="$t('on')" :value="true"></v-radio>
+      <v-radio :label="$t('security.digest')" :value="true"></v-radio>
+      <v-radio :label="$t('security.text')" :value="false"></v-radio>
+    </v-radio-group>
+
+    <p :class="subtitleClass">{{ $t('labels.stream') }}</p>
+    <v-radio-group
+        class="mt-2"
+        row
+        hide-details
+        :disabled="discovering"
+        v-model="stream"
+    >
+      <v-radio
+          v-for="stream in streamTypes"
+          :key="stream"
+          :label="stream"
+          :value="stream"
+      ></v-radio>
+    </v-radio-group>
+
+    <p :class="subtitleClass">{{ $t('labels.protocol') }}</p>
+    <v-radio-group
+        class="mt-2"
+        row
+        hide-details
+        :disabled="discovering"
+        v-model="protocol"
+    >
+      <v-radio
+          v-for="proto in protocols"
+          :key="proto"
+          :label="proto"
+          :value="proto"
+      ></v-radio>
     </v-radio-group>
 
     <v-row class="mt-4 mb-2" no-gutters>
@@ -114,8 +212,16 @@ ko:
         :loading-text="$t('msg.loading')"
     >
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="onClickDevice(item)">
-          mdi-pencil
+        <v-icon
+            :disabled="!!item.snapshot"
+            small
+            class="mr-2"
+            @click="onClickPreview(item)"
+        >
+          mdi-image
+        </v-icon>
+        <v-icon small @click="onClickPickup(item)">
+          mdi-exit-to-app
         </v-icon>
       </template>
 
@@ -127,7 +233,7 @@ ko:
     <v-dialog v-model="discovering" max-width="320">
       <v-card>
         <div class="d-flex flex-column align-center justify-center text-h6 text--secondary pa-2 orange">
-          {{ $t('labels.exploring') }}
+          {{ $t('labels.requesting') }}
         </div>
         <v-divider></v-divider>
 
@@ -137,7 +243,7 @@ ko:
               color="primary"
           ></v-progress-circular>
           <span class="text-subtitle-2 text--secondary mt-4">
-            {{ exploringLabel }}
+            {{ requestingLabel }}
           </span>
         </div>
 
@@ -159,27 +265,35 @@ import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {generateRandomSession} from '@/crypto/session';
 import type {
-  VmsDiscoveryQ,
+  VmsCreateDeviceQ,
   VmsDiscoveredDeviceA,
-  VmsDiscoveredHeartbeatQ,
+  VmsOnvifMediaStreamUriA,
+  VmsOnvifMediaStreamUriHeartbeatQ,
 } from '@/packet/vms';
 import {
+  STREAM_TYPE_RTP_UNICAST,
+  STREAM_TYPES,
+  PROTOCOL_TCP,
+  PROTOCOLS,
   DISCOVERY_HEARTBEAT_INTERVAL,
   SECOND_IN_MILLISECONDS,
-  DISCOVERY_LEEWAY_SECONDS,
+  DISCOVERY_LEEWAY_SECONDS, VmsOnvifMediaStreamUriQ,
 } from '@/packet/vms';
 
 const ITEMS_PER_PAGE = 15;
-const DEFAULT_TIMEOUT_SECONDS = 3;
+const DEFAULT_TIMEOUT_SECONDS = 8;
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
   }
 })
-export default class MainVmsDevicesDiscovery extends VueBase {
+export default class MainVmsDevicesDiscoveryEpr extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly itemsPerPage = ITEMS_PER_PAGE;
+
+  readonly streamTypes = STREAM_TYPES;
+  readonly protocols = PROTOCOLS;
 
   readonly breadcrumbs = [
     {
@@ -204,24 +318,36 @@ export default class MainVmsDevicesDiscovery extends VueBase {
     },
     {
       text: this.$t('discovery'),
+      disabled: false,
+      href: () => this.moveToMainVmsDevicesDiscovery(),
+    },
+    {
+      text: this.$t('epr'),
       disabled: true,
     },
   ];
 
   readonly headers = [
     {
-      text: this.$t('headers.epr').toString(),
+      text: this.$t('headers.profile').toString(),
       align: 'center',
       filterable: true,
       sortable: true,
-      value: 'epr',
+      value: 'profile_name',
     },
     {
-      text: this.$t('headers.address').toString(),
+      text: this.$t('headers.token').toString(),
       align: 'center',
       filterable: true,
       sortable: true,
-      value: 'address',
+      value: 'profile_token',
+    },
+    {
+      text: this.$t('headers.stream').toString(),
+      align: 'center',
+      filterable: true,
+      sortable: true,
+      value: 'stream_uri',
     },
     {
       text: this.$t('headers.actions').toString(),
@@ -237,23 +363,31 @@ export default class MainVmsDevicesDiscovery extends VueBase {
   beginTime = 0;
   leftSeconds = 0;
 
-  items = [] as Array<VmsDiscoveredDeviceA>;
+  discoveredDevice = {} as VmsDiscoveredDeviceA;
+  items = [] as Array<VmsOnvifMediaStreamUriA>;
 
-  session = generateRandomSession();
+  username = '';
+  password = '';
   timeoutSeconds = DEFAULT_TIMEOUT_SECONDS;
-  ipv6 = false;
+  session = generateRandomSession();
+  digest = true;
+  stream = STREAM_TYPE_RTP_UNICAST;
+  protocol = PROTOCOL_TCP;
+
+  requestedStream = '';
+  requestedProtocol = '';
 
   intervalHandle?: number = undefined;
 
   created() {
-    this.items = this.$sessionStore.vmsWds;
+    const wds = this.$sessionStore.vmsWds;
+    const wd = wds.find(i => i.epr === this.$route.params.epr)
+    if (wd) {
+      this.discoveredDevice = wd;
+    }
   }
 
-  beforeDestroy() {
-    this.stopHeartbeat();
-  }
-
-  get exploringLabel() {
+  get requestingLabel() {
     if (this.leftSeconds >= 1) {
       return this.$t('msg.left_time', [this.leftSeconds]);
     } else {
@@ -291,18 +425,17 @@ export default class MainVmsDevicesDiscovery extends VueBase {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     const body = {
-      session: this.session,
-    } as VmsDiscoveredHeartbeatQ;
+      session: this.session
+    } as VmsOnvifMediaStreamUriHeartbeatQ;
 
-    this.$api2.postVmsDiscoveryHeartbeat(group, project, body)
+    this.$api2.postVmsOnvifMediaHeartbeat(group, project, body)
         .then(item => {
           if (item.done) {
-            if (item.devices) {
-              this.items = item.devices;
+            if (item.medias) {
+              this.items = item.medias;
             } else {
-              this.items = [] as Array<VmsDiscoveredDeviceA>;
+              this.items = [] as Array<VmsOnvifMediaStreamUriA>;
             }
-            this.$sessionStore.vmsWds = this.items;
             this.stopHeartbeat();
           }
         })
@@ -320,13 +453,20 @@ export default class MainVmsDevicesDiscovery extends VueBase {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     const body = {
+      address: this.discoveredDevice.address,
+      username: this.username,
+      password: this.password,
       timeout: this.timeoutSeconds,
       session: this.session,
-      ipv6: this.ipv6,
-    } as VmsDiscoveryQ;
+      digest: this.digest,
+      protocol: this.protocol,
+      stream: this.stream,
+    } as VmsOnvifMediaStreamUriQ;
 
     this.loading = true;
-    this.$api2.postVmsDiscovery(group, project, body)
+    this.requestedStream = this.stream;
+    this.requestedProtocol = this.protocol;
+    this.$api2.postVmsOnvifMedia(group, project, body)
         .then(() => {
           this.loading = false;
           this.discovering = true;
@@ -343,11 +483,36 @@ export default class MainVmsDevicesDiscovery extends VueBase {
     this.stopHeartbeat();
   }
 
-  onClickDevice(item: VmsDiscoveredDeviceA) {
+  onClickPreview(item: VmsOnvifMediaStreamUriA) {
+  }
+
+  onClickPickup(item: VmsOnvifMediaStreamUriA) {
+    const body = {
+      name: item.profile_name,
+      description: this.discoveredDevice.epr,
+      url: item.stream_uri,
+      onvif_url: this.discoveredDevice.address,
+      username: this.username,
+      password: this.password,
+      stream: this.requestedStream,
+      protocol: this.requestedProtocol,
+      active: false,
+      daemon: false,
+    } as VmsCreateDeviceQ;
+
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    const epr = item.epr;
-    this.moveToMainVmsDevicesDiscoveryEpr(group, project, epr);
+    this.loading = true;
+    this.$api2.postVmsDevices(group, project, body)
+        .then(() => {
+          this.loading = false;
+          this.toastRequestSuccess();
+          this.moveToMainVmsDevices();
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
   }
 }
 </script>

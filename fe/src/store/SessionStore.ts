@@ -6,6 +6,10 @@ import type {RawPermission} from '@/packet/permission';
 
 // Modules
 import permission from '@/store/modules/permission';
+import vms from '@/store/modules/vms';
+
+// Types
+import type {VmsDiscoveredDeviceA} from '@/packet/vms';
 
 const DEFAULT_PERSIST_KEY = 'answer.store.session';
 const DEFAULT_STRICT = process.env.NODE_ENV !== 'production';
@@ -28,6 +32,7 @@ const PERMISSION_SETTING_WRITE = 'permission/settingWrite';
 const PERMISSION_IS_ADMIN = 'permission/isAdmin';
 const PERMISSION_FEATURES = 'permission/features';
 const PERMISSION_EXTRA = 'permission/extra';
+const VMS_WSD = 'vms/wsd';
 
 export interface SessionStoreOptions {
     key?: string;
@@ -53,6 +58,7 @@ export class SessionStore {
         this.store = new Store({
             modules: {
                 permission,
+                vms,
             },
             strict: strict,
             plugins: [this.persist.plugin],
@@ -174,6 +180,18 @@ export class SessionStore {
 
     get permissionSettingWrite() {
         return this.getter(PERMISSION_SETTING_WRITE) as boolean;
+    }
+
+    // ---
+    // VMS
+    // ---
+
+    get vmsWds() {
+        return this.getter(VMS_WSD) as Array<VmsDiscoveredDeviceA>;
+    }
+
+    set vmsWds(val: Array<VmsDiscoveredDeviceA>) {
+        this.setter(VMS_WSD, val);
     }
 }
 

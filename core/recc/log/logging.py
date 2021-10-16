@@ -200,6 +200,9 @@ _DEFAULT_LOGGING_CONFIG = {
             "handlers": ["console_color"],
             "level": "DEBUG",
         },
+        "zeep": {
+            "level": "WARNING",
+        },
     },
 }
 

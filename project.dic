@@ -1,6 +1,7 @@
 # IDEA plugin: Dictionary
 # https://plugins.jetbrains.com/plugin/12089-dictionary
 
+addr
 aiodns
 aiodocker
 aioredis
@@ -27,6 +28,7 @@ datalist
 datas
 datefmt
 dest
+devicemgmt
 dirname
 dtype
 dunder
@@ -107,6 +109,7 @@ uvloop
 vender
 webrtcurls
 websocket
+xaddr
 xaxis
 xlabels
 xmltodict

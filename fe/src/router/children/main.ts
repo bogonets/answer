@@ -10,6 +10,7 @@ import MainVisualProgramming from '@/pages/main/MainVisualProgramming.vue';
 import MainVms from '@/pages/main/MainVms.vue';
 import MainVmsDevices from '@/pages/main/MainVmsDevices.vue';
 import MainVmsDevicesDiscovery from '@/pages/main/MainVmsDevicesDiscovery.vue';
+import MainVmsDevicesDiscoveryEpr from '@/pages/main/MainVmsDevicesDiscoveryEpr.vue';
 import MainVmsDevicesEdit from '@/pages/main/MainVmsDevicesEdit.vue';
 import MainVmsDevicesNew from '@/pages/main/MainVmsDevicesNew.vue';
 import MainVmsLive from '@/pages/main/MainVmsLive.vue';
@@ -76,6 +77,11 @@ export const mainChildren = [
                 path: 'devices/discovery',
                 component: MainVmsDevicesDiscovery,
                 name: mainNames.mainVmsDevicesDiscovery,
+            },
+            {
+                path: 'devices/discovery/:epr',
+                component: MainVmsDevicesDiscoveryEpr,
+                name: mainNames.mainVmsDevicesDiscoveryEpr,
             },
             {
                 path: 'devices/edit/:device',

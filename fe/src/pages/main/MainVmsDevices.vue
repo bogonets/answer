@@ -1,5 +1,6 @@
 <i18n lang="yaml">
 en:
+  groups: "Groups"
   devices: "VMS Devices"
   headers:
     name: "Name"
@@ -16,6 +17,7 @@ en:
     discovery: "Device Discovery"
 
 ko:
+  groups: "Groups"
   devices: "VMS Devices"
   headers:
     name: "이름"

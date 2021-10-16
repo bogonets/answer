@@ -1,5 +1,6 @@
 <i18n lang="yaml">
 en:
+  groups: "Groups"
   devices: "VMS Devices"
   edit: "Edit"
   tab:
@@ -8,6 +9,7 @@ en:
     event: "Event"
 
 ko:
+  groups: "Groups"
   devices: "VMS Devices"
   edit: "Edit"
   tab:
