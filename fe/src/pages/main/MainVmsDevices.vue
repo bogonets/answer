@@ -4,9 +4,9 @@ en:
   devices: "VMS Devices"
   headers:
     name: "Name"
-    url: "URL"
-    user: "User"
-    online: "Online"
+    stream_address: "Stream URL"
+    server_running: "Server Running"
+    server_status: "Server Status"
     actions: "Actions"
   msg:
     search: "You can filter by ip or name."
@@ -15,15 +15,24 @@ en:
   labels:
     add: "Add Device"
     discovery: "Device Discovery"
+  control:
+    start: "Start"
+    stop: "Stop"
+    sync: "Sync"
+  status:
+    normal: "Normal"
+    abnormal: "Abnormal"
+    unknown: "Unknown"
+    undefined: "Undefined"
 
 ko:
   groups: "Groups"
   devices: "VMS Devices"
   headers:
     name: "이름"
-    url: "URL"
-    user: "사용자"
-    online: "온라인"
+    stream_address: "스트리밍 주소"
+    server_running: "서버 실행"
+    server_status: "서버 상태"
     actions: "관리"
   msg:
     search: "IP 또는 이름을 필터링할 수 있습니다."
@@ -32,6 +41,15 @@ ko:
   labels:
     add: "장치 추가"
     discovery: "장치 탐색"
+  control:
+    start: "Start"
+    stop: "Stop"
+    sync: "Sync"
+  status:
+    normal: "Normal"
+    abnormal: "Abnormal"
+    unknown: "Unknown"
+    undefined: "Undefined"
 </i18n>
 
 <template>
@@ -40,6 +58,10 @@ ko:
     <v-divider></v-divider>
 
     <v-data-table
+        :value="selected"
+        @input="onInputSelected"
+        show-select
+        item-key="device_uid"
         :items-per-page="itemsPerPage"
         :headers="headers"
         :items="items"
@@ -48,27 +70,79 @@ ko:
         :loading-text="$t('msg.loading')"
     >
       <template v-slot:top>
-        <v-toolbar flat>
-          <v-text-field
-              class="mr-4"
-              v-model="filter"
-              append-icon="mdi-magnify"
-              :label="$t('msg.search')"
-              single-line
-              hide-details
-          ></v-text-field>
+        <div>
+          <v-toolbar flat>
+            <v-text-field
+                class="mr-4"
+                v-model="filter"
+                append-icon="mdi-magnify"
+                :label="$t('msg.search')"
+                single-line
+                hide-details
+            ></v-text-field>
 
-          <v-btn color="primary" class="align-self-center mr-2" @click="onClickDiscovery">
-            {{ $t('labels.discovery') }}
+            <v-btn color="primary" class="align-self-center mr-2" @click="onClickDiscovery">
+              {{ $t('labels.discovery') }}
+            </v-btn>
+            <v-btn color="primary" class="align-self-center mr-2" @click="onClickAdd">
+              {{ $t('labels.add') }}
+            </v-btn>
+          </v-toolbar>
+        </div>
+        <div class="d-flex flex-row">
+          <v-btn
+              class="ml-2 rounded-xl"
+              color="green"
+              small
+              rounded
+              tile
+              :disabled="disabledStart"
+              @click="onClickStart"
+          >
+            <v-icon left>mdi-play</v-icon>
+            {{ $t('control.start') }}
           </v-btn>
-          <v-btn color="primary" class="align-self-center mr-2" @click="onClickAdd">
-            {{ $t('labels.add') }}
+          <v-btn
+              class="ml-2 rounded-xl"
+              color="red"
+              small
+              rounded
+              tile
+              :disabled="disabledStop"
+              @click="onClickStop"
+          >
+            <v-icon left>mdi-stop</v-icon>
+            {{ $t('control.stop') }}
           </v-btn>
-        </v-toolbar>
+          <v-btn
+              class="ml-2 rounded-xl"
+              color="primary"
+              small
+              outlined
+              rounded
+              tile
+              @click="onClickSync"
+          >
+            <v-icon left>mdi-sync</v-icon>
+            {{ $t('control.sync') }}
+          </v-btn>
+        </div>
+      </template>
+
+      <template v-slot:item.server_running="{ item }">
+        <v-icon v-show="item.server_running" small disabled>
+          mdi-check
+        </v-icon>
+      </template>
+
+      <template v-slot:item.server_status="{ item }">
+        <v-chip small :color="serverStatusColor(item)">
+          {{ serverStatusText(item) }}
+        </v-chip>
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon small disabled class="mr-2" @click="onClickDevice(item)">
+        <v-icon small class="mr-2" @click="onClickDevice(item)">
           mdi-pencil
         </v-icon>
       </template>
@@ -86,6 +160,10 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import type {VmsDeviceA} from '@/packet/vms';
+import {
+  SERVER_NORMAL,
+  SERVER_ABNORMAL,
+} from '@/packet/vms';
 
 const ITEMS_PER_PAGE = 15;
 
@@ -127,38 +205,45 @@ export default class MainVmsDevices extends VueBase {
       value: 'name',
     },
     {
-      text: this.$t('headers.url').toString(),
+      text: this.$t('headers.stream_address').toString(),
       align: 'center',
       filterable: false,
       sortable: false,
-      value: 'url',
+      value: 'stream_address',
     },
     {
-      text: this.$t('headers.user').toString(),
+      text: this.$t('headers.server_running').toString(),
       align: 'center',
       filterable: false,
       sortable: false,
-      value: 'user',
+      width: '100px',
+      value: 'server_running',
     },
     {
-      text: this.$t('headers.online').toString(),
+      text: this.$t('headers.server_status').toString(),
       align: 'center',
       filterable: false,
       sortable: false,
-      value: 'online',
+      width: '100px',
+      value: 'server_status',
     },
     {
       text: this.$t('headers.actions').toString(),
       align: 'center',
       filterable: false,
       sortable: false,
+      width: '1px',
       value: 'actions',
     },
   ];
 
   loading = false;
   items = [] as Array<VmsDeviceA>;
+  selected = [] as Array<VmsDeviceA>;
   filter = '';
+
+  disabledStart = true;
+  disabledStop = true;
 
   created() {
     this.updateItems();
@@ -167,6 +252,7 @@ export default class MainVmsDevices extends VueBase {
   updateItems() {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
+    this.loading = true;
     this.$api2.getVmsDevices(group, project)
         .then(items => {
           this.loading = false;
@@ -176,6 +262,81 @@ export default class MainVmsDevices extends VueBase {
           this.loading = false;
           this.toastRequestFailure(error);
         });
+  }
+
+  serverStatusColor(item: VmsDeviceA) {
+    if (typeof item.server_status === 'undefined') {
+      return 'grey';
+    }
+    switch (item.server_status) {
+      case SERVER_NORMAL:
+        return 'green';
+      case SERVER_ABNORMAL:
+        return 'red';
+      default:
+        return 'grey';
+    }
+  }
+
+  serverStatusText(item: VmsDeviceA) {
+    if (typeof item.server_status === 'undefined') {
+      return this.$t('status.undefined').toString();
+    }
+    switch (item.server_status) {
+      case SERVER_NORMAL:
+        return this.$t('status.normal').toString();
+      case SERVER_ABNORMAL:
+        return this.$t('status.abnormal').toString();
+      default:
+        return this.$t('status.unknown').toString();
+    }
+  }
+
+  onClickStart() {
+    for (const item of this.selected) {
+      const group = this.$route.params.group;
+      const project = this.$route.params.project;
+      const device = item.device_uid.toString();
+      this.$api2.postVmsDeviceProcessStart(group, project, device)
+          .then(() => {
+            this.toastRequestSuccess();
+            this.updateItems();
+          })
+          .catch(error => {
+            this.toastRequestFailure(error);
+          });
+    }
+  }
+
+  onClickStop() {
+    for (const item of this.selected) {
+      const group = this.$route.params.group;
+      const project = this.$route.params.project;
+      const device = item.device_uid.toString();
+      this.$api2.postVmsDeviceProcessStop(group, project, device)
+          .then(() => {
+            this.toastRequestSuccess();
+            this.updateItems();
+          })
+          .catch(error => {
+            this.toastRequestFailure(error);
+          });
+    }
+  }
+
+  onClickSync() {
+    this.updateItems();
+  }
+
+  onInputSelected(value) {
+    this.selected = value;
+    if (this.selected.length == 0) {
+      this.disabledStart = true;
+      this.disabledStop = true;
+    } else {
+      this.disabledStart = false;
+      this.disabledStop = false;
+    }
   }
 
   onClickDiscovery() {

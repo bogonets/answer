@@ -191,8 +191,9 @@ export default class MainVmsDevicesNew extends VueBase {
     const body = {
       name: this.name,
       description: '',
-      url: this.url,
-      onvif_url: '',
+      stream_address: this.url,
+      onvif_address: '',
+      server_address: '',
       username: this.username,
       password: this.password,
       stream: this.stream,

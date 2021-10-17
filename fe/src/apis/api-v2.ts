@@ -921,14 +921,9 @@ export default class ApiV2 {
         return this.post(url, body);
     }
 
-    getVmsDevice(
-        group: string,
-        project: string,
-        device: string,
-        body: VmsUpdateDeviceQ,
-    ) {
+    getVmsDevice(group: string, project: string, device: string) {
         const url = `/plugins/vms/${group}/${project}/devices/${device}`;
-        return this.get<VmsDeviceA>(url, body);
+        return this.get<VmsDeviceA>(url);
     }
 
     patchVmsDevice(
@@ -941,13 +936,19 @@ export default class ApiV2 {
         return this.patch(url, body);
     }
 
-    deleteVmsDevice(
-        group: string,
-        project: string,
-        device: string,
-    ) {
+    deleteVmsDevice(group: string, project: string, device: string) {
         const url = `/plugins/vms/${group}/${project}/devices/${device}`;
         return this.delete(url);
+    }
+
+    postVmsDeviceProcessStart(group: string, project: string, device: string) {
+        const url = `/plugins/vms/${group}/${project}/devices/${device}/process/start`;
+        return this.post(url);
+    }
+
+    postVmsDeviceProcessStop(group: string, project: string, device: string) {
+        const url = `/plugins/vms/${group}/${project}/devices/${device}/process/stop`;
+        return this.post(url);
     }
 
     postVmsDiscovery(

@@ -490,8 +490,9 @@ export default class MainVmsDevicesDiscoveryEpr extends VueBase {
     const body = {
       name: item.profile_name,
       description: this.discoveredDevice.epr,
-      url: item.stream_uri,
-      onvif_url: this.discoveredDevice.address,
+      stream_address: item.stream_uri,
+      onvif_address: this.discoveredDevice.address,
+      server_address: '',
       username: this.username,
       password: this.password,
       stream: this.requestedStream,

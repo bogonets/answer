@@ -15,16 +15,16 @@ en:
   labels:
     timeout: "Timeout"
     session: "Session"
-    ipv6: "IPv6"
+    ip_ver: "IP Version"
     submit: "Discovery"
     exploring: "Exploring"
     cancel: "Cancel"
   hints:
     timeout: "Device discovery timeout (Seconds)"
     session: "A key value to maintain the session."
-  ipv6:
-    on: "ON"
-    off: "OFF"
+  ip_ver:
+    ipv4: "IPv4"
+    ipv6: "IPv6"
 
 ko:
   groups: "Groups"
@@ -42,16 +42,16 @@ ko:
   labels:
     timeout: "검색 시간"
     session: "세션"
-    ipv6: "IPv6"
+    ip_ver: "IP 버전"
     submit: "탐색"
     exploring: "탐색중 입니다"
     cancel: "취소"
   hints:
     timeout: "장치 검색 제한시간 (초)"
     session: "세션을 유지하기 위한 키 값입니다."
-  ipv6:
-    on: "ON"
-    off: "OFF"
+  ip_ver:
+    ipv4: "IPv4"
+    ipv6: "IPv6"
 </i18n>
 
 <template>
@@ -81,7 +81,7 @@ ko:
         @click:append-outer="onClickSessionRefresh"
     ></v-text-field>
 
-    <p :class="subtitleClass">{{ $t('labels.ipv6') }}</p>
+    <p :class="subtitleClass">{{ $t('labels.ip_ver') }}</p>
     <v-radio-group
         class="mt-2"
         row
@@ -89,8 +89,8 @@ ko:
         :disabled="discovering"
         v-model="ipv6"
     >
-      <v-radio :label="$t('off')" :value="false"></v-radio>
-      <v-radio :label="$t('on')" :value="true"></v-radio>
+      <v-radio :label="$t('ip_ver.ipv4')" :value="false"></v-radio>
+      <v-radio :label="$t('ip_ver.ipv6')" :value="true"></v-radio>
     </v-radio-group>
 
     <v-row class="mt-4 mb-2" no-gutters>

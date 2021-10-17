@@ -10,6 +10,7 @@ airjoy
 answerdoc
 argparse
 asctime
+autodect
 bogonet
 bogonets
 brotlipy
@@ -37,6 +38,7 @@ ensurepip
 envparse
 envs
 eventlist
+fflags
 fullnames
 fullpath
 furo
@@ -67,6 +69,7 @@ nanum
 ndmin
 netbase
 newshape
+nobuffer
 nocov
 noninteractive
 oem
@@ -74,6 +77,7 @@ oems
 objname
 objs
 onlytext
+onvifs
 orjson
 osom
 outname

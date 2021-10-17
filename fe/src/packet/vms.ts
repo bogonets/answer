@@ -23,14 +23,18 @@ export const MINUTE_IN_MILLISECONDS = 60 * SECOND_IN_MILLISECONDS;
 export const DISCOVERY_HEARTBEAT_INTERVAL = SECOND_IN_MILLISECONDS;
 export const DISCOVERY_LEEWAY_SECONDS = 1;
 
+export const SERVER_NORMAL = 0;
+export const SERVER_ABNORMAL = 1;
+
 export interface VmsDeviceA {
     device_uid: number;
     group_slug: string;
     project_slug: string;
     name: string;
     description: string;
-    url: string;
-    onvif_url: string;
+    stream_address: string;
+    onvif_address: string;
+    server_address: string;
     username: string;
     password: string;
     stream: string;
@@ -39,13 +43,17 @@ export interface VmsDeviceA {
     daemon: boolean;
     created_at: string;
     updated_at: string;
+
+    server_running?: boolean;
+    server_status?: number;
 }
 
 export interface VmsCreateDeviceQ {
     name: string;
     description: string;
-    url: string;
-    onvif_url: string;
+    stream_address: string;
+    onvif_address: string;
+    server_address: string;
     username: string;
     password: string;
     stream: string;
@@ -59,8 +67,9 @@ export interface VmsUpdateDeviceQ {
     project_slug?: string;
     name?: string;
     description?: string;
-    url?: string;
-    onvif_url?: string;
+    stream_address?: string;
+    onvif_address?: string;
+    server_address?: string;
     username?: string;
     password?: string;
     stream?: string;
