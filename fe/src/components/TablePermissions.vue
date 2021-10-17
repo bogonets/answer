@@ -63,6 +63,7 @@ ko:
             <td :class="tableDataClass">{{ $t('label.layout') }}</td>
             <td>
               <v-simple-checkbox
+                  :disabled="disabled"
                   :class="checkboxClass"
                   :value="value.r_layout"
                   @input="inputLayoutRead"
@@ -70,6 +71,7 @@ ko:
             </td>
             <td>
               <v-simple-checkbox
+                  :disabled="disabled"
                   :class="checkboxClass"
                   :value="value.w_layout"
                   @input="inputLayoutWrite"
@@ -89,6 +91,7 @@ ko:
             <td :class="tableDataClass">{{ $t('label.storage') }}</td>
             <td>
               <v-simple-checkbox
+                  :disabled="disabled"
                   :class="checkboxClass"
                   :value="value.r_storage"
                   @input="inputStorageRead"
@@ -97,6 +100,7 @@ ko:
             </td>
             <td>
               <v-simple-checkbox
+                  :disabled="disabled"
                   :class="checkboxClass"
                   :value="value.w_storage"
                   @input="inputStorageWrite"
@@ -116,6 +120,7 @@ ko:
             <td :class="tableDataClass">{{ $t('label.manager') }}</td>
             <td>
               <v-simple-checkbox
+                  :disabled="disabled"
                   :class="checkboxClass"
                   :value="value.r_manager"
                   @input="inputManagerRead"
@@ -124,6 +129,7 @@ ko:
             </td>
             <td>
               <v-simple-checkbox
+                  :disabled="disabled"
                   :class="checkboxClass"
                   :value="value.w_manager"
                   @input="inputManagerWrite"
@@ -143,6 +149,7 @@ ko:
             <td :class="tableDataClass">{{ $t('label.graph') }}</td>
             <td>
               <v-simple-checkbox
+                  :disabled="disabled"
                   :class="checkboxClass"
                   :value="value.r_graph"
                   @input="inputGraphRead"
@@ -151,6 +158,7 @@ ko:
             </td>
             <td>
               <v-simple-checkbox
+                  :disabled="disabled"
                   :class="checkboxClass"
                   :value="value.w_graph"
                   @input="inputGraphWrite"
@@ -170,6 +178,7 @@ ko:
             <td :class="tableDataClass">{{ $t('label.member') }}</td>
             <td>
               <v-simple-checkbox
+                  :disabled="disabled"
                   :class="checkboxClass"
                   :value="value.r_member"
                   @input="inputMemberRead"
@@ -178,6 +187,7 @@ ko:
             </td>
             <td>
               <v-simple-checkbox
+                  :disabled="disabled"
                   :class="checkboxClass"
                   :value="value.w_member"
                   @input="inputMemberWrite"
@@ -197,6 +207,7 @@ ko:
             <td :class="tableDataClass">{{ $t('label.setting') }}</td>
             <td>
               <v-simple-checkbox
+                  :disabled="disabled"
                   :class="checkboxClass"
                   :value="value.r_setting"
                   @input="inputSettingRead"
@@ -205,6 +216,7 @@ ko:
             </td>
             <td>
               <v-simple-checkbox
+                  :disabled="disabled"
                   :class="checkboxClass"
                   :value="value.w_setting"
                   @input="inputSettingWrite"
@@ -276,6 +288,9 @@ export class Perms {
 export default class TablePermissions extends VueBase {
   private readonly tableDataClass = TABLE_DATA_CLASS;
   private readonly checkboxClass = CHECKBOX_CLASS;
+
+  @Prop({type: Boolean})
+  readonly disabled!: boolean;
 
   @Prop({type: Object, default: new Perms()})
   readonly value!: Perms;

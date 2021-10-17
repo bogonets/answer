@@ -53,6 +53,88 @@ class ContextPermission(ContextBase):
             lock=lock,
         )
 
+    @staticmethod
+    def _is_permission_equals_for_update(
+        permission: Permission,
+        slug: Optional[str] = None,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        features: Optional[List[str]] = None,
+        extra: Optional[Any] = None,
+        r_layout: Optional[bool] = None,
+        w_layout: Optional[bool] = None,
+        r_storage: Optional[bool] = None,
+        w_storage: Optional[bool] = None,
+        r_manager: Optional[bool] = None,
+        w_manager: Optional[bool] = None,
+        r_graph: Optional[bool] = None,
+        w_graph: Optional[bool] = None,
+        r_member: Optional[bool] = None,
+        w_member: Optional[bool] = None,
+        r_setting: Optional[bool] = None,
+        w_setting: Optional[bool] = None,
+        hidden: Optional[bool] = None,
+    ) -> bool:
+        """When permission is 'locked',
+        all attributes except `lock` must not be changed.
+        """
+
+        if slug is not None:
+            if permission.slug != slug:
+                return False
+        if name is not None:
+            if permission.name != name:
+                return False
+        if description is not None:
+            if permission.description != description:
+                return False
+        if features is not None:
+            if permission.features != features:
+                return False
+        if extra is not None:
+            if permission.extra != extra:
+                return False
+        if r_layout is not None:
+            if permission.r_layout != r_layout:
+                return False
+        if w_layout is not None:
+            if permission.w_layout != w_layout:
+                return False
+        if r_storage is not None:
+            if permission.r_storage != r_storage:
+                return False
+        if w_storage is not None:
+            if permission.w_storage != w_storage:
+                return False
+        if r_manager is not None:
+            if permission.r_manager != r_manager:
+                return False
+        if w_manager is not None:
+            if permission.w_manager != w_manager:
+                return False
+        if r_graph is not None:
+            if permission.r_graph != r_graph:
+                return False
+        if w_graph is not None:
+            if permission.w_graph != w_graph:
+                return False
+        if r_member is not None:
+            if permission.r_member != r_member:
+                return False
+        if w_member is not None:
+            if permission.w_member != w_member:
+                return False
+        if r_setting is not None:
+            if permission.r_setting != r_setting:
+                return False
+        if w_setting is not None:
+            if permission.w_setting != w_setting:
+                return False
+        if hidden is not None:
+            if permission.hidden != hidden:
+                return False
+        return True
+
     async def update_permission(
         self,
         uid: int,
@@ -78,12 +160,32 @@ class ContextPermission(ContextBase):
         force=False,
     ) -> None:
         if not force:
-            if await self.database.select_permission_lock_by_uid(uid):
-                raise RuntimeError(f"Locked permission: {uid}")
-            if slug:
-                default_uids = self.database.get_default_permission_uids()
-                if uid in default_uids:
-                    raise RuntimeError("Slug of default permissions cannot be updated")
+            permission = await self.database.select_permission_by_uid(uid)
+            if permission.lock:
+                permission_equals = self._is_permission_equals_for_update(
+                    permission,
+                    slug,
+                    name,
+                    description,
+                    features,
+                    extra,
+                    r_layout,
+                    w_layout,
+                    r_storage,
+                    w_storage,
+                    r_manager,
+                    w_manager,
+                    r_graph,
+                    w_graph,
+                    r_member,
+                    w_member,
+                    r_setting,
+                    w_setting,
+                    hidden,
+                )
+                if not permission_equals:
+                    raise RuntimeError(f"Locked permission: {uid}")
+
         await self.database.update_permission_by_uid(
             uid=uid,
             slug=slug,

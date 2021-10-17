@@ -46,6 +46,7 @@ ko:
       <form-permission
           disable-slug
           hide-cancel-button
+          :disable-all-ignore-lock="original.lock"
           :disable-submit-button="!modified"
           :value="current"
           @input="inputCurrent"
@@ -70,7 +71,7 @@ ko:
       </v-card>
     </left-title>
 
-    <v-alert v-if="!current.hidden" outlined prominent type="error" class="ma-4">
+    <v-alert v-if="!original.lock" outlined prominent type="error" class="ma-4">
       <v-row align="center" class="pl-4">
         <v-col>
           <v-row>

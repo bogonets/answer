@@ -49,7 +49,7 @@ ko:
         :value="value.slug"
         @input="inputSlug"
         :rules="slugRules"
-        :disabled="disableSlug"
+        :disabled="disableSlug || disableAllIgnoreLock"
         :filled="disableSlug"
         :persistent-hint="!disableSlug"
         :hide-details="disableSlug"
@@ -59,6 +59,7 @@ ko:
     <p :class="subtitleClass">{{ $t('label.name') }}</p>
     <v-text-field
         dense
+        :disabled="disableAllIgnoreLock"
         :value="value.name"
         @input="inputName"
         persistent-hint
@@ -70,6 +71,7 @@ ko:
         dense
         auto-grow
         persistent-hint
+        :disabled="disableAllIgnoreLock"
         :value="value.description"
         @input="inputDescription"
         :hint="$t('hint.description')"
@@ -82,6 +84,7 @@ ko:
         multiple
         small-chips
         persistent-hint
+        :disabled="disableAllIgnoreLock"
         :value="value.features"
         @input="inputFeatures"
         :items="featureItems"
@@ -106,6 +109,7 @@ ko:
     <v-card flat outlined class="mb-4">
       <v-card-text class="pa-0">
         <table-permissions
+            :disabled="disableAllIgnoreLock"
             :value="value"
             @input="inputPerms"
         ></table-permissions>
@@ -121,13 +125,14 @@ ko:
       <div>
         <v-switch
             inset
+            :disabled="disableAllIgnoreLock"
             :value="value.hidden"
             @change="onChangeHidden"
         ></v-switch>
       </div>
     </v-row>
 
-    <v-row v-if="showLock" class="mt-2" no-gutters>
+    <v-row class="mt-2" no-gutters>
       <div>
         <p :class="subtitleClass">{{ $t('label.lock') }}</p>
         <p class="text-caption text--secondary">{{ $t('hint.lock') }}</p>
@@ -208,9 +213,6 @@ export default class FormPermission extends VueBase {
   readonly loading!: boolean;
 
   @Prop({type: Boolean})
-  readonly showLock!: boolean;
-
-  @Prop({type: Boolean})
   readonly disableSlug!: boolean;
 
   @Prop({type: Boolean})
@@ -218,6 +220,9 @@ export default class FormPermission extends VueBase {
 
   @Prop({type: Boolean})
   readonly disableValidate!: boolean;
+
+  @Prop({type: Boolean})
+  readonly disableAllIgnoreLock!: boolean;
 
   @Prop({type: Boolean})
   readonly hideButtons!: boolean;
