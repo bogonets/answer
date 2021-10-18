@@ -26,10 +26,10 @@ class GlobalConfigTestCase(TestCase):
         self.assertIsNone(config.loop_driver)
         self.assertIsNone(config.json_driver)
 
-        self.assertFalse(config.suppress_print)
-        self.assertEqual(0, config.verbose)
-        self.assertFalse(config.teardown)
-        self.assertFalse(config.developer)
+        self.assertIsNone(config.suppress_print)
+        self.assertIsNone(config.verbose)
+        self.assertIsNone(config.teardown)
+        self.assertIsNone(config.developer)
 
         self.assertLess(0, len(config.help_message))
         self.assertEqual(0, len(config.unrecognized_arguments))

@@ -188,7 +188,9 @@ class Argument:
             return self._kwargs["type"]
 
         if "default" in self._kwargs:
-            return type(self._kwargs["default"])
+            default_value = self._kwargs["default"]
+            if default_value is not None:
+                return type(default_value)
 
         if self._last_injection_value is not None:
             return type(self._last_injection_value)
@@ -199,7 +201,9 @@ class Argument:
         cast_type = self.inference_type()
 
         if "default" in self._kwargs:
-            return cast_type(self._kwargs["default"])
+            default_value = self._kwargs["default"]
+            if default_value is not None:
+                return cast_type(self._kwargs["default"])
 
         if self._last_injection_value is not None:
             return cast_type(self._last_injection_value)

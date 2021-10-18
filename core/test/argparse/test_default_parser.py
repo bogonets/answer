@@ -17,6 +17,8 @@ from recc.system.environ import exchange_env
 
 RECC_HTTP_BIND = "RECC_HTTP_BIND"
 RECC_HTTP_PORT = "RECC_HTTP_PORT"
+RECC_VERBOSE = "RECC_VERBOSE"
+RECC_DEVELOPER = "RECC_DEVELOPER"
 
 
 def _parse_arguments_to_config(*args) -> ConfigType:
@@ -95,7 +97,24 @@ class DefaultParserTestCase(TestCase):
         self.assertEqual(config, namespace)
         self.assertEqual(Command.task.name, config.command)
 
-    def test_parse_arguments_to_config(self):
+    def test_parse_arguments_to_global_config(self):
+        original_verbose = exchange_env(RECC_VERBOSE, "100")
+        original_developer = exchange_env(RECC_DEVELOPER, "True")
+
+        config1 = _parse_arguments_to_config("core")
+        self.assertIsInstance(config1, CoreConfig)
+        self.assertEqual(100, config1.verbose)
+        self.assertTrue(config1.developer)
+
+        config2 = _parse_arguments_to_config("-vv", "task")
+        self.assertIsInstance(config2, TaskConfig)
+        self.assertEqual(2, config2.verbose)
+        self.assertTrue(config2.developer)
+
+        exchange_env(RECC_VERBOSE, original_verbose)
+        exchange_env(RECC_DEVELOPER, original_developer)
+
+    def test_parse_arguments_to_core_config(self):
         original_http_bind = exchange_env(RECC_HTTP_BIND, "1.2.3.4")
         original_http_port = exchange_env(RECC_HTTP_PORT, "8888")
 

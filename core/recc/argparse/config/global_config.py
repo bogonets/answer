@@ -72,13 +72,14 @@ ARG_CONFIG = Argument(
     key="--config",
     last_injection_value="",
     shortcut=Shortcut.c,
+    default=None,
     metavar="file",
     help="Use the given config file.",
 )
 ARG_VERSION = Argument(
     key="--version",
     last_injection_value=False,
-    default=False,
+    default=False,  # It can only be set as a command line argument.
     action="store_true",
     help="Print the version number and exit.",
 )
@@ -86,7 +87,7 @@ ARG_HELP = Argument(
     key="--help",
     last_injection_value=False,
     shortcut=Shortcut.h,
-    default=False,
+    default=False,  # It can only be set as a command line argument.
     action="store_true",
     help="Print help message.",
 )
@@ -94,22 +95,26 @@ ARG_HELP = Argument(
 ARG_USER = Argument(
     key="--user",
     last_injection_value="recc",
+    default=None,
     help="User name",
 )
 ARG_GROUP = Argument(
     key="--group",
     last_injection_value="recc",
+    default=None,
     help="Group name",
 )
 
 ARG_LOG_CONFIG = Argument(
     key="--log-config",
     last_injection_value="logging.yml",
+    default=None,
     help="Reads the logging configuration from a format file.",
 )
 ARG_LOG_LEVEL = Argument(
     key="--log-level",
     last_injection_value="",
+    default=None,
     choices=LOG_LEVELS,
     help="Root logger severity. This value is set after configuring the log.",
 )
@@ -117,24 +122,28 @@ ARG_LOG_LEVEL = Argument(
 ARG_LOOP_DRIVER = Argument(
     key="--loop-driver",
     last_injection_value=LOOP_DRIVER_AIO,
+    default=None,
     choices=(LOOP_DRIVER_AIO, LOOP_DRIVER_UV),
     help="Async loop driver.",
 )
 ARG_JSON_DRIVER = Argument(
     key="--json-driver",
     last_injection_value=JSON_DRIVER_ORJSON,
+    default=None,
     choices=(JSON_DRIVER_JSON, JSON_DRIVER_ORJSON),
     help="JSON encoder/decoder driver.",
 )
 ARG_XML_DRIVER = Argument(
     key="--xml-driver",
     last_injection_value=XML_DRIVER_XMLTODICT,
+    default=None,
     choices=(XML_DRIVER_XMLTODICT,),
     help="XML encoder/decoder driver.",
 )
 ARG_YAML_DRIVER = Argument(
     key="--yaml-driver",
     last_injection_value=YAML_DRIVER_PYYAML,
+    default=None,
     choices=(YAML_DRIVER_PYYAML,),
     help="YAML encoder/decoder driver.",
 )
@@ -143,6 +152,7 @@ ARG_YAML_DRIVER = Argument(
 ARG_SUPPRESS_PRINT = Argument(
     key="--suppress-print",
     last_injection_value=False,
+    default=None,
     action="store_true",
     help="Suppress printing.",
 )
@@ -150,13 +160,14 @@ ARG_VERBOSE = Argument(
     key="--verbose",
     last_injection_value=0,
     shortcut=Shortcut.v,
-    default=0,
+    default=None,
     action="count",
     help="Be more verbose/talkative during the operation.",
 )
 ARG_TEARDOWN = Argument(
     key="--teardown",
     last_injection_value=False,
+    default=None,
     action="store_true",
     help="When the server is shut down, all resources created are released.",
 )
@@ -164,6 +175,7 @@ ARG_DEVELOPER = Argument(
     key="--developer",
     last_injection_value=False,
     shortcut=Shortcut.d,
+    default=None,
     action="store_true",
     help="Developer mode.",
 )

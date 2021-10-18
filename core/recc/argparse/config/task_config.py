@@ -34,12 +34,14 @@ ARG_HELP = Argument(
 ARG_TASK_ADDRESS = Argument(
     key="--task-address",
     last_injection_value="",
+    default=None,
     metavar="bind",
     help="RPC server bind address.",
 )
 ARG_TASK_REGISTER = Argument(
     key="--task-register",
     last_injection_value="",
+    default=None,
     metavar="key",
     help="Register key.",  # RSA public key
 )
@@ -47,18 +49,21 @@ ARG_TASK_REGISTER = Argument(
 ARG_TASK_GROUP = Argument(
     key="--task-group",
     last_injection_value="",
+    default=None,
     metavar="name",
     help="Group name",
 )
 ARG_TASK_PROJECT = Argument(
     key="--task-project",
     last_injection_value="",
+    default=None,
     metavar="name",
     help="Project name",
 )
 ARG_TASK_NAME = Argument(
     key="--task-name",
     last_injection_value="",
+    default=None,
     metavar="name",
     help="Task name",
 )
@@ -66,18 +71,21 @@ ARG_TASK_NAME = Argument(
 ARG_TASK_WORKSPACE_DIR = Argument(
     key="--task-workspace-dir",
     last_injection_value="",
+    default=None,
     metavar="dir",
     help="Task working directory.",
 )
 ARG_TASK_PACKAGE_DIR = Argument(
     key="--task-package-dir",
     last_injection_value="",
+    default=None,
     metavar="dir",
     help="Task package directory.",
 )
 ARG_TASK_CACHE_DIR = Argument(
     key="--task-cache-dir",
     last_injection_value="",
+    default=None,
     metavar="dir",
     help="Task cache directory.",
 )
