@@ -153,3 +153,24 @@ export interface VmsOnvifMediaSnapshotA {
 //     profile: string;
 //     url: string;
 // }
+
+export function createEmptyVmsDeviceA() {
+    return {
+        device_uid: 0,
+        group_slug: '',
+        project_slug: '',
+        name: '',
+        description: '',
+        stream_address: '',
+        onvif_address: '',
+        server_address: '',
+        username: '',
+        password: '',
+        stream: '',
+        protocol: '',
+        active: false,
+        daemon: false,
+        created_at: '',
+        updated_at: '',
+    } as VmsDeviceA;
+}

@@ -53,7 +53,14 @@ ko:
 
     <v-tabs-items v-model="tabIndex">
       <v-tab-item>
-        1
+        <form-vms-device
+            hide-cancel-button
+            :disable-submit-button="!modified"
+            :loading-submit="loadingSubmit"
+            :value="current"
+            @input="onUpdateCurrent"
+            @ok="onClickOk"
+        ></form-vms-device>
       </v-tab-item>
       <v-tab-item>
         2
@@ -67,16 +74,20 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component} from 'vue-property-decorator';
+import {Component, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import MediaPlayer from '@/media/MediaPlayer.vue';
+import FormVmsDevice from '@/components/FormVmsDevice.vue';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
+import type {VmsDeviceA, VmsUpdateDeviceQ} from '@/packet/vms';
+import * as _ from 'lodash';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
     MediaPlayer,
+    FormVmsDevice,
   }
 })
 export default class MainVmsDevicesEdit extends VueBase {
@@ -113,5 +124,68 @@ export default class MainVmsDevicesEdit extends VueBase {
   ];
 
   tabIndex = 0;
+
+  loading = false;
+  original = {} as VmsDeviceA;
+  current = {} as VmsDeviceA;
+  loadingSubmit = false;
+  modified = false;
+
+  created() {
+    this.requestDevice();
+  }
+
+  requestDevice() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    this.loading = true;
+    this.$api2.getVmsDevice(group, project, device)
+        .then(item => {
+          this.loading = false;
+          this.original = _.cloneDeep(item);
+          this.current = _.cloneDeep(item);
+          this.modified = false;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
+
+  onUpdateCurrent(value: VmsDeviceA) {
+    this.current = value;
+    this.modified = !_.isEqual(this.original, this.current);
+  }
+
+  onClickOk(value: VmsDeviceA) {
+    const body = {
+      name: value.name,
+      description: value.description,
+      stream_address: value.stream_address,
+      onvif_address: value.onvif_address,
+      server_address: value.server_address,
+      username: value.username,
+      password: value.password,
+      stream: value.stream,
+      protocol: value.protocol,
+      active: value.active,
+      daemon: value.daemon,
+    } as VmsUpdateDeviceQ;
+
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    this.loadingSubmit = true;
+    this.$api2.patchVmsDevice(group, project, device, body)
+        .then(item => {
+          this.loadingSubmit = true;
+          this.toastRequestSuccess();
+        })
+        .catch(error => {
+          this.loadingSubmit = false;
+          this.toastRequestFailure(error);
+        });
+  }
 }
 </script>
