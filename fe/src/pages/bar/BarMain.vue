@@ -9,7 +9,7 @@ ko:
 </i18n>
 
 <template>
-  <v-app-bar app dense fixed clipped-left clipped-right>
+  <v-app-bar class="app-bar" app dense fixed clipped-left clipped-right>
 
     <v-btn plain small @click="onClickLogo">
       <title-logo-small>
@@ -71,3 +71,9 @@ export default class BarMain extends VueBase {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.app-bar {
+  z-index: 9999;
+}
+</style>

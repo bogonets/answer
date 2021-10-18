@@ -2,6 +2,7 @@
 en:
   cancel: "Cancel"
   submit: "Submit"
+  delete: "Delete"
   labels:
     device_uid: "Device UID"
     name: "Name"
@@ -15,6 +16,7 @@ en:
     stream: "Stream Type"
     active: "Active"
     daemon: "Daemon"
+    delete: "Delete a device"
   hints:
     device_uid: "This is a number that identifies the device."
     name: "The name of the device as it appears on the screen."
@@ -26,10 +28,14 @@ en:
     password: "This is the password for accessing media streaming."
     active: "When enabled, all features are activate."
     daemon: "When enabled, it works as a service."
+    delete: "Please be careful! It cannot be recovered."
+  msg:
+    delete_confirm: "Are you sure? Are you really removing this device?"
 
 ko:
   cancel: "취소"
   submit: "제출"
+  delete: "제거"
   labels:
     device_uid: "장치 UID"
     name: "이름"
@@ -41,8 +47,9 @@ ko:
     password: "비밀번호"
     protocol: "전송 프로토콜"
     stream: "스트림 유형"
-    active: "Active"
-    daemon: "Daemon"
+    active: "활성화"
+    daemon: "데몬"
+    delete: "장치 제거"
   hints:
     device_uid: "장치를 식별할 수 있는 번호 입니다."
     name: "화면에 표시되는 장치의 이름입니다."
@@ -54,174 +61,230 @@ ko:
     password: "미디어 스트리밍 접속을 위한 비밀번호 입니다."
     active: "활성화 되면, 모든 기능을 사용합니다."
     daemon: "활성화 되면, 서비스로 작동합니다."
+    delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
+  msg:
+    delete_confirm: "이 장치를 정말 제거합니까?"
 </i18n>
 
 <template>
-  <v-form ref="form" v-model="valid">
+  <div>
+    <v-form ref="form" v-model="valid">
 
-    <p v-if="showDeviceUid" :class="subtitleClass">{{ $t('labels.device_uid') }}</p>
-    <v-text-field
-        v-if="showDeviceUid"
-        dense
-        disabled
-        filled
-        persistent-hint
-        :value="value.device_uid"
-        @input="onInputDeviceUid"
-        :hint="$t('hints.device_uid')"
-    ></v-text-field>
+      <p v-if="showDeviceUid" :class="subtitleClass">{{ $t('labels.device_uid') }}</p>
+      <v-text-field
+          v-if="showDeviceUid"
+          dense
+          disabled
+          filled
+          persistent-hint
+          :value="value.device_uid"
+          @input="onInputDeviceUid"
+          :hint="$t('hints.device_uid')"
+      ></v-text-field>
 
-    <p :class="subtitleClass">{{ $t('labels.name') }}</p>
-    <v-text-field
-        dense
-        persistent-hint
-        :value="value.name"
-        @input="onInputName"
-        :hint="$t('hints.name')"
-    ></v-text-field>
+      <p :class="subtitleClass">{{ $t('labels.name') }}</p>
+      <v-text-field
+          dense
+          persistent-hint
+          :disabled="disabled"
+          :value="value.name"
+          @input="onInputName"
+          :hint="$t('hints.name')"
+      ></v-text-field>
 
-    <p :class="subtitleClass">{{ $t('labels.description') }}</p>
-    <v-textarea
-        dense
-        auto-grow
-        persistent-hint
-        :value="value.description"
-        @input="onInputDescription"
-        :hint="$t('hints.description')"
-    ></v-textarea>
+      <p :class="subtitleClass">{{ $t('labels.description') }}</p>
+      <v-textarea
+          dense
+          auto-grow
+          persistent-hint
+          :disabled="disabled"
+          :value="value.description"
+          @input="onInputDescription"
+          :hint="$t('hints.description')"
+      ></v-textarea>
 
-    <p :class="subtitleClass">{{ $t('labels.stream_address') }}</p>
-    <v-text-field
-        dense
-        persistent-hint
-        :value="value.stream_address"
-        @input="onInputStreamAddress"
-        :hint="$t('hints.stream_address')"
-    ></v-text-field>
+      <p :class="subtitleClass">{{ $t('labels.stream_address') }}</p>
+      <v-text-field
+          dense
+          persistent-hint
+          :disabled="disabled"
+          :value="value.stream_address"
+          @input="onInputStreamAddress"
+          :hint="$t('hints.stream_address')"
+      ></v-text-field>
 
-    <p :class="subtitleClass">{{ $t('labels.onvif_address') }}</p>
-    <v-text-field
-        dense
-        persistent-hint
-        :value="value.onvif_address"
-        @input="onInputOnvifAddress"
-        :hint="$t('hints.onvif_address')"
-    ></v-text-field>
+      <p :class="subtitleClass">{{ $t('labels.onvif_address') }}</p>
+      <v-text-field
+          dense
+          persistent-hint
+          :disabled="disabled"
+          :value="value.onvif_address"
+          @input="onInputOnvifAddress"
+          :hint="$t('hints.onvif_address')"
+      ></v-text-field>
 
-    <p :class="subtitleClass">{{ $t('labels.server_address') }}</p>
-    <v-text-field
-        dense
-        persistent-hint
-        :value="value.server_address"
-        @input="onInputServerAddress"
-        :hint="$t('hints.server_address')"
-    ></v-text-field>
+      <p :class="subtitleClass">{{ $t('labels.server_address') }}</p>
+      <v-text-field
+          dense
+          persistent-hint
+          :disabled="disabled"
+          :value="value.server_address"
+          @input="onInputServerAddress"
+          :hint="$t('hints.server_address')"
+      ></v-text-field>
 
-    <p :class="subtitleClass">{{ $t('labels.username') }}</p>
-    <v-text-field
-        dense
-        persistent-hint
-        :value="value.username"
-        @input="onInputUsername"
-        :hint="$t('hints.username')"
-    ></v-text-field>
+      <p :class="subtitleClass">{{ $t('labels.username') }}</p>
+      <v-text-field
+          dense
+          persistent-hint
+          :disabled="disabled"
+          :value="value.username"
+          @input="onInputUsername"
+          :hint="$t('hints.username')"
+      ></v-text-field>
 
-    <p :class="subtitleClass">{{ $t('labels.password') }}</p>
-    <v-text-field
-        dense
-        persistent-hint
-        :type="showPassword ? 'text' : 'password'"
-        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-        :value="value.password"
-        @input="onInputPassword"
-        :hint="$t('hints.password')"
-        @click:append="showPassword = !showPassword"
-    ></v-text-field>
+      <p :class="subtitleClass">{{ $t('labels.password') }}</p>
+      <v-text-field
+          dense
+          persistent-hint
+          :disabled="disabled"
+          :type="showPassword ? 'text' : 'password'"
+          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :value="value.password"
+          @input="onInputPassword"
+          :hint="$t('hints.password')"
+          @click:append="showPassword = !showPassword"
+      ></v-text-field>
 
-    <p :class="subtitleClass">{{ $t('labels.stream') }}</p>
-    <v-radio-group
-        class="mt-2"
-        row
-        hide-details
-        :value="value.stream"
-        @change="onChangeStream"
-    >
-      <v-radio
-          v-for="stream in streamTypes"
-          :key="stream"
-          :label="stream"
-          :value="stream"
-      ></v-radio>
-    </v-radio-group>
-
-    <p :class="subtitleClass">{{ $t('labels.protocol') }}</p>
-    <v-radio-group
-        class="mt-2"
-        row
-        hide-details
-        :value="value.protocol"
-        @change="onChangeProtocol"
-    >
-      <v-radio
-          v-for="proto in protocols"
-          :key="proto"
-          :label="proto"
-          :value="proto"
-      ></v-radio>
-    </v-radio-group>
-
-    <v-row class="mt-2" no-gutters>
-      <div>
-        <p :class="subtitleClass">{{ $t('labels.active') }}</p>
-        <p class="text-caption text--secondary">{{ $t('hints.active') }}</p>
-      </div>
-      <v-spacer></v-spacer>
-      <div>
-        <v-switch
-            inset
-            :value="value.active"
-            @change="onChangeActive"
-        ></v-switch>
-      </div>
-    </v-row>
-
-    <v-row class="mt-2" no-gutters>
-      <div>
-        <p :class="subtitleClass">{{ $t('labels.daemon') }}</p>
-        <p class="text-caption text--secondary">{{ $t('hints.daemon') }}</p>
-      </div>
-      <v-spacer></v-spacer>
-      <div>
-        <v-switch
-            inset
-            :value="value.daemon"
-            @change="onChangeDaemon"
-        ></v-switch>
-      </div>
-    </v-row>
-
-    <v-row v-if="!hideButtons" class="mt-4 mb-2" no-gutters>
-      <v-spacer></v-spacer>
-      <v-btn
-          v-if="!hideCancelButton"
-          class="mr-4"
-          color="second"
-          @click="cancel"
+      <p :class="subtitleClass">{{ $t('labels.stream') }}</p>
+      <v-radio-group
+          class="mt-2"
+          row
+          hide-details
+          :disabled="disabled"
+          :value="value.stream"
+          @change="onChangeStream"
       >
-        {{ $t('cancel') }}
-      </v-btn>
-      <v-btn
-          v-if="!hideSubmitButton"
-          color="primary"
-          :loading="loading"
-          :disabled="disableSubmit"
-          @click="onSubmit"
-      >
-        {{ $t('submit') }}
-      </v-btn>
-    </v-row>
+        <v-radio
+            v-for="stream in streamTypes"
+            :key="stream"
+            :label="stream"
+            :value="stream"
+        ></v-radio>
+      </v-radio-group>
 
-  </v-form>
+      <p :class="subtitleClass">{{ $t('labels.protocol') }}</p>
+      <v-radio-group
+          class="mt-2"
+          row
+          hide-details
+          :disabled="disabled"
+          :value="value.protocol"
+          @change="onChangeProtocol"
+      >
+        <v-radio
+            v-for="proto in protocols"
+            :key="proto"
+            :label="proto"
+            :value="proto"
+        ></v-radio>
+      </v-radio-group>
+
+      <v-row class="mt-2" no-gutters>
+        <div>
+          <p :class="subtitleClass">{{ $t('labels.active') }}</p>
+          <p class="text-caption text--secondary">{{ $t('hints.active') }}</p>
+        </div>
+        <v-spacer></v-spacer>
+        <div>
+          <v-switch
+              inset
+              :disabled="disabled"
+              :value="value.active"
+              @change="onChangeActive"
+          ></v-switch>
+        </div>
+      </v-row>
+
+      <v-row class="mt-2" no-gutters>
+        <div>
+          <p :class="subtitleClass">{{ $t('labels.daemon') }}</p>
+          <p class="text-caption text--secondary">{{ $t('hints.daemon') }}</p>
+        </div>
+        <v-spacer></v-spacer>
+        <div>
+          <v-switch
+              inset
+              :disabled="disabled"
+              :value="value.daemon"
+              @change="onChangeDaemon"
+          ></v-switch>
+        </div>
+      </v-row>
+
+      <v-row v-if="!hideButtons" class="mt-4 mb-2" no-gutters>
+        <v-spacer></v-spacer>
+        <v-btn
+            v-if="!hideCancelButton"
+            class="mr-4"
+            color="second"
+            @click="cancel"
+        >
+          {{ $t('cancel') }}
+        </v-btn>
+        <v-btn
+            v-if="!hideSubmitButton"
+            color="primary"
+            :loading="loading"
+            :disabled="disableSubmit"
+            @click="onSubmit"
+        >
+          {{ $t('submit') }}
+        </v-btn>
+      </v-row>
+    </v-form>
+
+    <v-alert class="mt-6" outlined prominent type="error">
+      <v-row align="center" class="pl-4">
+        <v-col>
+          <v-row>
+            <h6 class="text-h6">{{ $t('labels.delete') }}</h6>
+          </v-row>
+          <v-row>
+            <span class="text-body-2">{{ $t('hints.delete') }}</span>
+          </v-row>
+        </v-col>
+        <v-col class="shrink">
+          <v-btn color="error" @click.stop="onClickDelete">
+            {{ $t('delete') }}
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-alert>
+
+    <!-- Delete dialog. -->
+    <v-dialog v-model="showDeleteDialog" max-width="320">
+      <v-card>
+        <v-card-title class="text-h5 error--text">
+          {{ $t('labels.delete') }}
+        </v-card-title>
+        <v-card-text>
+          {{ $t('msg.delete_confirm') }}
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="onClickDeleteCancel">
+            {{ $t('cancel') }}
+          </v-btn>
+          <v-btn :loading="loadingDelete" color="error" @click="onClickDeleteOk">
+            {{ $t('delete') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+  </div>
 </template>
 
 <script lang="ts">
@@ -246,6 +309,9 @@ export default class FormVmsDevice extends VueBase {
   readonly showDeviceUid!: boolean;
 
   @Prop({type: Boolean})
+  readonly disabled!: boolean;
+
+  @Prop({type: Boolean})
   readonly disableSubmitButton!: boolean;
 
   @Prop({type: Boolean})
@@ -259,6 +325,12 @@ export default class FormVmsDevice extends VueBase {
 
   @Prop({type: Boolean})
   readonly hideSubmitButton!: boolean;
+
+  @Prop({type: Boolean})
+  readonly showDeleteDialog!: boolean;
+
+  @Prop({type: Boolean})
+  readonly loadingDelete!: boolean;
 
   @Prop({type: Object, default: createEmptyVmsDeviceA})
   readonly value!: VmsDeviceA;
@@ -360,6 +432,21 @@ export default class FormVmsDevice extends VueBase {
   @Emit()
   ok() {
     return this.value;
+  }
+
+  @Emit('delete:show')
+  onClickDelete() {
+    // EMPTY
+  }
+
+  @Emit('delete:cancel')
+  onClickDeleteCancel() {
+    // EMPTY
+  }
+
+  @Emit('delete:ok')
+  onClickDeleteOk() {
+    // EMPTY
   }
 }
 </script>
