@@ -27,6 +27,8 @@ import type {
     VmsOnvifMediaStreamUriQ,
     VmsOnvifMediaStreamUriHeartbeatQ,
     VmsOnvifMediaStreamUriHeartbeatA,
+    VmsOnvifMediaSnapshotQ,
+    VmsOnvifMediaSnapshotA,
 } from '@/packet/vms';
 import type {ConfigA, UpdateConfigValueQ} from '@/packet/config';
 import type {ContainerA, ControlContainersQ} from '@/packet/container';
@@ -985,5 +987,14 @@ export default class ApiV2 {
     ) {
         const url = `/plugins/vms/${group}/${project}/onvif/media/heartbeat`;
         return this.post<VmsOnvifMediaStreamUriHeartbeatA>(url, body);
+    }
+
+    postVmsOnvifMediaSnapshot(
+        group: string,
+        project: string,
+        body: VmsOnvifMediaSnapshotQ,
+    ) {
+        const url = `/plugins/vms/${group}/${project}/onvif/media/snapshot`;
+        return this.post<VmsOnvifMediaSnapshotA>(url, body);
     }
 }

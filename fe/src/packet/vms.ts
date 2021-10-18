@@ -127,6 +127,16 @@ export interface VmsOnvifMediaStreamUriHeartbeatA {
     medias?: Array<VmsOnvifMediaStreamUriA>;
 }
 
+export interface VmsOnvifMediaSnapshotQ {
+    snapshot_uri: string;
+}
+
+export interface VmsOnvifMediaSnapshotA {
+    content_type: string;
+    encoding: string;
+    content: string;
+}
+
 
 // export interface VmsDeviceDiscoveryA {
 //     expired: string;

@@ -14,6 +14,7 @@ en:
     empty: "Empty Devices"
     left_time: "About {0} seconds remaining"
     after_while: "After a while it will be done."
+    image_failed: "Image request failed."
   labels:
     epr: "Endpoint Reference"
     address: "Address"
@@ -27,6 +28,9 @@ en:
     stream: "Stream Type"
     requesting: "Requesting"
     cancel: "Cancel"
+    snapshot: "Snapshot"
+    reload: "Reload"
+    close: "Close"
   security:
     digest: "Digest"
     text: "Text"
@@ -53,6 +57,7 @@ ko:
     empty: "장치가 존재하지 않습니다."
     left_time: "남은 시간 약 {0}초"
     after_while: "잠시 후 완료됩니다."
+    image_failed: "이미지 요청에 실패했습니다."
   labels:
     epr: "엔드포인트 참조"
     address: "주소"
@@ -66,6 +71,9 @@ ko:
     stream: "스트림 유형"
     requesting: "요청중 입니다"
     cancel: "취소"
+    snapshot: "스냅샷"
+    reload: "새로고침"
+    close: "닫기"
   security:
     digest: "Digest"
     text: "Text"
@@ -255,6 +263,36 @@ ko:
       </v-card>
     </v-dialog>
 
+    <v-dialog v-model="showSnapshotDialog" max-width="640">
+      <v-card>
+        <div class="d-flex flex-column align-center justify-center text-h6 text--secondary pa-2 orange">
+          {{ $t('labels.snapshot') }}
+        </div>
+        <v-progress-linear
+            :active="loadingSnapshot"
+            :indeterminate="loadingSnapshot"
+            color="deep-orange accent-4"
+        ></v-progress-linear>
+
+        <div class="d-flex flex-column align-center justify-center mt-4">
+
+          <v-img
+              :src="snapshotData"
+              :alt="$t('msg.image_failed')"
+          ></v-img>
+        </div>
+
+        <div class="d-flex flex-row align-center justify-center pa-4">
+          <v-btn class="mr-2" @click="onClickSnapshotReload">
+            {{ $t('labels.reload') }}
+          </v-btn>
+          <v-btn @click="onClickSnapshotClose">
+            {{ $t('labels.close') }}
+          </v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
+
   </v-container>
 </template>
 
@@ -269,6 +307,8 @@ import type {
   VmsDiscoveredDeviceA,
   VmsOnvifMediaStreamUriA,
   VmsOnvifMediaStreamUriHeartbeatQ,
+  VmsOnvifMediaStreamUriQ,
+  VmsOnvifMediaSnapshotQ,
 } from '@/packet/vms';
 import {
   STREAM_TYPE_RTP_UNICAST,
@@ -277,7 +317,7 @@ import {
   PROTOCOLS,
   DISCOVERY_HEARTBEAT_INTERVAL,
   SECOND_IN_MILLISECONDS,
-  DISCOVERY_LEEWAY_SECONDS, VmsOnvifMediaStreamUriQ,
+  DISCOVERY_LEEWAY_SECONDS,
 } from '@/packet/vms';
 
 const ITEMS_PER_PAGE = 15;
@@ -379,6 +419,13 @@ export default class MainVmsDevicesDiscoveryEpr extends VueBase {
 
   intervalHandle?: number = undefined;
 
+  showSnapshotDialog = false;
+  loadingSnapshot = false;
+  snapshotUri = '';
+  snapshotContentType = '';
+  snapshotEncoding = '';
+  snapshotContent = '';
+
   created() {
     const wds = this.$sessionStore.vmsWds;
     const wd = wds.find(i => i.epr === this.$route.params.epr)
@@ -397,6 +444,20 @@ export default class MainVmsDevicesDiscoveryEpr extends VueBase {
 
   get leftTimeMilliseconds() {
     return (this.timeoutSeconds + DISCOVERY_LEEWAY_SECONDS) * SECOND_IN_MILLISECONDS;
+  }
+
+  get existsSnapshot() {
+    const contentType = this.snapshotContentType;
+    const encoding = this.snapshotEncoding;
+    const content = this.snapshotContent;
+    return contentType && encoding && content;
+  }
+
+  get snapshotData() {
+    const contentType = this.snapshotContentType;
+    const encoding = this.snapshotEncoding;
+    const content = this.snapshotContent;
+    return `data:${contentType};${encoding}, ${content}`;
   }
 
   startHeartbeat() {
@@ -483,7 +544,31 @@ export default class MainVmsDevicesDiscoveryEpr extends VueBase {
     this.stopHeartbeat();
   }
 
+  requestSnapshot(snapshot_uri: string) {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const body = {snapshot_uri: snapshot_uri} as VmsOnvifMediaSnapshotQ;
+    this.showSnapshotDialog = true;
+    this.loadingSnapshot = true;
+    this.snapshotUri = snapshot_uri;
+    this.$api2.postVmsOnvifMediaSnapshot(group, project, body)
+        .then(item => {
+          this.snapshotContentType = item.content_type;
+          this.snapshotEncoding = item.encoding;
+          this.snapshotContent = item.content;
+          this.loadingSnapshot = false;
+        })
+        .catch(error => {
+          this.snapshotContentType = '';
+          this.snapshotEncoding = '';
+          this.snapshotContent = '';
+          this.loadingSnapshot = false;
+          this.toastRequestFailure(error);
+        });
+  }
+
   onClickPreview(item: VmsOnvifMediaStreamUriA) {
+    this.requestSnapshot(item.snapshot_uri);
   }
 
   onClickPickup(item: VmsOnvifMediaStreamUriA) {
@@ -514,6 +599,15 @@ export default class MainVmsDevicesDiscoveryEpr extends VueBase {
           this.loading = false;
           this.toastRequestFailure(error);
         });
+  }
+
+  onClickSnapshotReload() {
+    this.requestSnapshot(this.snapshotUri);
+  }
+
+  onClickSnapshotClose() {
+    this.showSnapshotDialog = false;
+    this.loadingSnapshot = false;
   }
 }
 </script>
