@@ -81,8 +81,12 @@ function install_service
 
 function uninstall_service
 {
-    sudo rm "$SERVICE_DESTINATION"
-    echo "Remove service file: $SERVICE_DESTINATION"
+    if [[ -f "$SERVICE_DESTINATION" ]]; then
+        sudo rm "$SERVICE_DESTINATION"
+        echo "Remove service file: $SERVICE_DESTINATION"
+    else
+        echo "Not exists service file: $SERVICE_DESTINATION"
+    fi
 }
 
 COMMAND=$1
@@ -106,15 +110,15 @@ uninstall)
     ;;
 up)
     install_service
-    systemctl $SERVICE_OPT daemon-reload
-    systemctl $SERVICE_OPT enable $SERVICE_NAME
-    systemctl $SERVICE_OPT start $SERVICE_NAME
+    sudo systemctl $SERVICE_OPT daemon-reload
+    sudo systemctl $SERVICE_OPT enable $SERVICE_NAME
+    sudo systemctl $SERVICE_OPT start $SERVICE_NAME
     ;;
 down)
     uninstall_service
-    systemctl $SERVICE_OPT stop $SERVICE_NAME
-    systemctl $SERVICE_OPT disable $SERVICE_NAME
-    systemctl $SERVICE_OPT daemon-reload
+    sudo systemctl $SERVICE_OPT stop $SERVICE_NAME
+    sudo systemctl $SERVICE_OPT disable $SERVICE_NAME
+    sudo systemctl $SERVICE_OPT daemon-reload
     ;;
 enable)
     systemctl $SERVICE_OPT enable $SERVICE_NAME "$@"
