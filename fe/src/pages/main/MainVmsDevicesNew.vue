@@ -88,14 +88,14 @@ ko:
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.password') }}</p>
-    <v-text-fieleprd
+    <v-text-field
         dense
         persistent-hint
         type="password"
         autocomplete="off"
         v-model="password"
         :hint="$t('hints.password')"
-    ></v-text-fieleprd>
+    ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.stream') }}</p>
     <v-radio-group class="mt-2" row hide-details v-model="stream">

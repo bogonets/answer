@@ -139,6 +139,15 @@ export interface VmsOnvifMediaSnapshotA {
     content: string;
 }
 
+export interface RtcOfferQ {
+    type: string;
+    sdp: string;
+}
+
+export interface RtcAnswerA {
+    type: string;
+    sdp: string;
+}
 
 // export interface VmsDeviceDiscoveryA {
 //     expired: string;

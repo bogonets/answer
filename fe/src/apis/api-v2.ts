@@ -29,6 +29,8 @@ import type {
     VmsOnvifMediaStreamUriHeartbeatA,
     VmsOnvifMediaSnapshotQ,
     VmsOnvifMediaSnapshotA,
+    RtcOfferQ,
+    RtcAnswerA,
 } from '@/packet/vms';
 import type {ConfigA, UpdateConfigValueQ} from '@/packet/config';
 import type {ContainerA, ControlContainersQ} from '@/packet/container';
@@ -951,6 +953,16 @@ export default class ApiV2 {
     postVmsDeviceProcessStop(group: string, project: string, device: string) {
         const url = `/plugins/vms/${group}/${project}/devices/${device}/process/stop`;
         return this.post(url);
+    }
+
+    postVmsDeviceRtcIce(
+        group: string,
+        project: string,
+        device: string,
+        body: RtcOfferQ,
+    ) {
+        const url = `/plugins/vms/${group}/${project}/devices/${device}/rtc/ice`;
+        return this.post<RtcAnswerA>(url, body);
     }
 
     postVmsDiscovery(

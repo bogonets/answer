@@ -51,6 +51,9 @@ ko:
           v-if="online"
           class="rtc-player"
           ref="rtc-player"
+          :group="group"
+          :project="project"
+          :device="device"
       ></rtc-player>
       <v-img
           v-else
@@ -68,7 +71,7 @@ ko:
           class="controller"
           v-show="showController(hover)"
       >
-        <v-btn icon>
+        <v-btn icon @click="onClickPlay">
           <v-icon>mdi-play</v-icon>
         </v-btn>
         <v-progress-linear></v-progress-linear>
@@ -86,10 +89,6 @@ import {Component, Prop, Ref, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import RtcPlayer from '@/media/RtcPlayer.vue';
 
-interface MediaPlayerOptions {
-  index: number;
-}
-
 interface MediaPlayerStatus {
   name?: string;
 
@@ -104,13 +103,6 @@ interface MediaPlayerStatus {
   volumeLevel?: number;
 }
 
-function createEmptyMediaPlayerOptions() {
-  return {
-    index: -1,
-  } as MediaPlayerOptions;
-}
-
-const UNKNOWN_ID = -1;
 const DEFAULT_CANVAS_WIDTH = 1024;
 const DEFAULT_CANVAS_HEIGHT = 1024;
 
@@ -144,11 +136,14 @@ export default class MediaPlayer extends VueBase {
   @Prop({type: Number, default: DEFAULT_CANVAS_HEIGHT})
   readonly canvasHeight!: number;
 
-  @Prop({type: Number, default: UNKNOWN_ID})
-  readonly index!: number;
+  @Prop({type: String})
+  readonly group!: string;
 
-  @Prop({type: Object, default: createEmptyMediaPlayerOptions})
-  readonly options!: MediaPlayerOptions;
+  @Prop({type: String})
+  readonly project!: string;
+
+  @Prop({type: Number})
+  readonly device!: number;
 
   @Ref('canvas-user')
   readonly canvasUser!: HTMLCanvasElement;
@@ -165,7 +160,7 @@ export default class MediaPlayer extends VueBase {
   enableAudio = false;
   signalLevel = 0;
 
-  online = false;
+  online = true;
   status = {} as MediaPlayerStatus;
 
   showSystemBar(hover?: boolean) {
@@ -188,8 +183,8 @@ export default class MediaPlayer extends VueBase {
     }
 
     let result = '';
-    if (this.index !== UNKNOWN_ID) {
-      result += this.index.toString();
+    if (this.device) {
+      result += this.device.toString();
     }
     if (this.name) {
       result += this.name;
@@ -219,10 +214,6 @@ export default class MediaPlayer extends VueBase {
     }
   }
 
-  @Watch('options')
-  onWatchOptions(newVal: MediaPlayerOptions, oldVal: MediaPlayerOptions) {
-  }
-
   @Watch('status')
   onWatchStatus(newVal: MediaPlayerStatus, oldVal: MediaPlayerStatus) {
     this.name = newVal.name || '';
@@ -231,6 +222,10 @@ export default class MediaPlayer extends VueBase {
   @Emit()
   contextmenu(event) {
     return event;
+  }
+
+  onClickPlay() {
+    this.rtcPlayer.play();
   }
 }
 </script>

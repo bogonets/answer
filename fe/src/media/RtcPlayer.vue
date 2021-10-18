@@ -6,15 +6,13 @@
       muted
       playsinline
       preload="auto"
-      :src="onlineDemoUrl"
   ></video>
 </template>
 
 <script lang="ts">
 import {Component, Prop, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-
-const ONLINE_DEMO_URL = "http://techslides.com/demos/sample-videos/small.mp4";
+import type {RtcOfferQ} from '@/packet/vms';
 
 const DEFAULT_STUN_SERVER_01 = 'stun:stun.l.google.com:19302';
 const DEFAULT_ICE_SERVERS = [
@@ -23,7 +21,7 @@ const DEFAULT_ICE_SERVERS = [
 
 @Component
 export default class RtcPlayer extends VueBase {
-  readonly onlineDemoUrl = ONLINE_DEMO_URL;
+
   readonly defaultRtcConfig = {
     sdpSemantics: 'unified-plan',
   } as RTCConfiguration;
@@ -34,6 +32,15 @@ export default class RtcPlayer extends VueBase {
 
   @Prop({type: Object})
   readonly config!: RTCConfiguration;
+
+  @Prop({type: String})
+  readonly group!: string;
+
+  @Prop({type: String})
+  readonly project!: string;
+
+  @Prop({type: Number})
+  readonly device!: number;
 
   @Ref('video')
   video!: HTMLVideoElement;
@@ -65,7 +72,6 @@ export default class RtcPlayer extends VueBase {
       // if (this.audio_object) {
       //   this.pc.addTransceiver('audio', {direction: 'recvonly'});
       // }
-
       // if (this.meta_object) {
       //   this.pc.addTransceiver('meta', {direction: 'recvonly'});
       // }
@@ -74,10 +80,19 @@ export default class RtcPlayer extends VueBase {
       await pc.setLocalDescription(offer);
       await this.waitToCompleteIceGathering(pc);
 
-      // const type = pc.localDescription.type;
-      // const sdp = pc.localDescription.sdp;
-      // const answer = await this.$api2.postVmsOffer(pc.localDescription);
-      // this.pc.setRemoteDescription(answer);
+      const group = this.group;
+      const project = this.project;
+      const device = this.device.toString();
+      const body = {
+        type: pc.localDescription?.type || '',
+        sdp: pc.localDescription?.sdp || '',
+      } as RtcOfferQ;
+      const answer = await this.$api2.postVmsDeviceRtcIce(group, project, device, body);
+      const answerInit = {
+        type: answer.type,
+        sdp: answer.sdp,
+      } as RTCSessionDescriptionInit;
+      await pc.setRemoteDescription(answerInit);
 
       this.pc = pc;
     } catch (error) {
@@ -86,12 +101,11 @@ export default class RtcPlayer extends VueBase {
   }
 
   onTrack(event: RTCTrackEvent) {
-    //   this.print_debug('on_track()');
-    //   if (event.track.kind == 'video') {
-    //     this.video_object.srcObject = event.streams[0];
-    //   } else if (event.track.kind == 'audio') {
-    //     this.audio_object.srcObject = event.streams[0];
-    //   }
+    if (event.track.kind == 'video') {
+      this.video.srcObject = event.streams[0];
+    } else if (event.track.kind == 'audio') {
+      // this.audio.srcObject = event.streams[0];
+    }
   }
 
   waitToCompleteIceGathering(pc: RTCPeerConnection) {
