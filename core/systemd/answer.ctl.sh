@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if [[ $(id -u) -eq 0 ]]; then
+    echo 'Please do not run as root.'
+    exit 1
+fi
+
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)
 CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
 
@@ -7,11 +12,21 @@ SERVICE_NAME=answer
 LOGGING_PATH="$CORE_DIR/logging.yml"
 STORAGE_DIR="$CORE_DIR/storage"
 
-OPY_EXECUTABLE=$HOME/.pyenv/versions/opy-zer0-3.8.9/bin/python
+OPY_EXECUTABLE=$(opy -c 'import sys; print(sys.executable)')
 PYTHON_EXECUTABLE=$OPY_EXECUTABLE
 
-SERVICE_PREFIX=$HOME/.config/systemd/user
+SERVICE_PREFIX_FOR_USER=$HOME/.config/systemd/user
+SERVICE_PREFIX_FOR_ROOT=/etc/systemd/system/
+
+DEFAULT_OPT_FOR_USER="--user"
+DEFAULT_OPT_FOR_ROOT=""
+
+SERVICE_PREFIX=SERVICE_PREFIX_FOR_ROOT
 SERVICE_DESTINATION=$SERVICE_PREFIX/answer.service
+SERVICE_OPT=$DEFAULT_OPT_FOR_ROOT
+
+CURRENT_USER=$USER
+CURRENT_GROUP=$(id -Gn | awk '{print $1}')
 
 USAGE_MESSAGE="
 systemctl for answer service.
@@ -40,16 +55,19 @@ Description=The ANSWER, No-code development platform
 [Service]
 Environment=RECC_VERBOSE=2
 Environment=RECC_DEVELOPER=true
+Environment=PYTHONPATH=\"$CORE_DIR\"
 ExecStart=\"$PYTHON_EXECUTABLE\" -m recc core --storage-root \"$STORAGE_DIR\"
+User=$CURRENT_USER
+Group=$CURRENT_GROUP
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
 "
 
 function install_service
 {
     if [[ ! -d "$SERVICE_PREFIX" ]]; then
-        mkdir -p "$SERVICE_PREFIX"
+        sudo mkdir -p "$SERVICE_PREFIX"
     fi
 
     if [[ -f "$service_destination" ]]; then
@@ -57,13 +75,13 @@ function install_service
         exit 1
     fi
 
-    echo "$SERVICE_CONTENT" > "$SERVICE_DESTINATION"
+    sudo echo "$SERVICE_CONTENT" > "$SERVICE_DESTINATION"
     echo "Create service file: $SERVICE_DESTINATION"
 }
 
 function uninstall_service
 {
-    rm "$SERVICE_DESTINATION"
+    sudo rm "$SERVICE_DESTINATION"
     echo "Remove service file: $SERVICE_DESTINATION"
 }
 
@@ -86,34 +104,41 @@ install)
 uninstall)
     uninstall_service
     ;;
-setup)
-    systemctl --user daemon-reload
-    systemctl --user enable $SERVICE_NAME
-    systemctl --user start $SERVICE_NAME
+up)
+    install_service
+    systemctl $SERVICE_OPT daemon-reload
+    systemctl $SERVICE_OPT enable $SERVICE_NAME
+    systemctl $SERVICE_OPT start $SERVICE_NAME
+    ;;
+down)
+    uninstall_service
+    systemctl $SERVICE_OPT stop $SERVICE_NAME
+    systemctl $SERVICE_OPT disable $SERVICE_NAME
+    systemctl $SERVICE_OPT daemon-reload
     ;;
 enable)
-    systemctl --user enable $SERVICE_NAME "$@"
+    systemctl $SERVICE_OPT enable $SERVICE_NAME "$@"
     ;;
 disable)
-    systemctl --user disable $SERVICE_NAME "$@"
+    systemctl $SERVICE_OPT disable $SERVICE_NAME "$@"
     ;;
 reload)
-    systemctl --user reload $SERVICE_NAME "$@"
+    systemctl $SERVICE_OPT reload $SERVICE_NAME "$@"
     ;;
 status)
-    systemctl --user status $SERVICE_NAME "$@"
+    systemctl $SERVICE_OPT status $SERVICE_NAME "$@"
     ;;
 start)
-    systemctl --user start $SERVICE_NAME "$@"
+    systemctl $SERVICE_OPT start $SERVICE_NAME "$@"
     ;;
 stop)
-    systemctl --user stop $SERVICE_NAME "$@"
+    systemctl $SERVICE_OPT stop $SERVICE_NAME "$@"
     ;;
 restart)
-    systemctl --user restart $SERVICE_NAME "$@"
+    systemctl $SERVICE_OPT restart $SERVICE_NAME "$@"
     ;;
 log)
-    journalctl --user -u $SERVICE_NAME "$@"
+    journalctl $SERVICE_OPT -u $SERVICE_NAME "$@"
     ;;
 *)
     echo "Unrecognized argument: $1"
