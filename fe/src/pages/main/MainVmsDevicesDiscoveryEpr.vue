@@ -17,7 +17,8 @@ en:
     image_failed: "Image request failed."
   labels:
     epr: "Endpoint Reference"
-    address: "Address"
+    onvif_address: "ONVIF Address"
+    server_address: "Server Address"
     username: "Username"
     password: "Password"
     timeout: "Timeout"
@@ -36,7 +37,8 @@ en:
     text: "Text"
   hints:
     epr: "An endpoint is any user device connected to a network."
-    address: "The address to request device information from."
+    onvif_address: "ONVIF Device Manager address."
+    server_address: "Internal server address for media streaming."
     username: "Username to access the device."
     password: "Password to access the device."
     timeout: "Device information request timeout (Seconds)"
@@ -60,7 +62,8 @@ ko:
     image_failed: "이미지 요청에 실패했습니다."
   labels:
     epr: "엔드포인트 참조"
-    address: "주소"
+    onvif_address: "ONVIF 주소"
+    server_address: "내부 서버 주소"
     username: "사용자명"
     password: "비밀번호"
     timeout: "제한 시간"
@@ -79,7 +82,8 @@ ko:
     text: "Text"
   hints:
     epr: "엔드포인트는 네트워크에 연결된 모든 사용자 장치입니다."
-    address: "장치 정보를 요청할 주소입니다."
+    onvif_address: "ONVIF 장치 관리 주소 입니다."
+    server_address: "미디어 스트리밍을 위한 내부 서버 주소 입니다."
     username: "장치에 액세스하기 위한 사용자 이름입니다."
     password: "장치에 액세스하기 위한 비밀번호입니다."
     timeout: "기기 정보 요청의 제한시간 (초)"
@@ -102,7 +106,7 @@ ko:
         :hint="$t('hints.epr')"
     ></v-text-field>
 
-    <p :class="subtitleClass">{{ $t('labels.address') }}</p>
+    <p :class="subtitleClass">{{ $t('labels.onvif_address') }}</p>
     <v-text-field
         dense
         persistent-hint
@@ -110,7 +114,15 @@ ko:
         disabled
         filled
         :value="this.discoveredDevice.address"
-        :hint="$t('hints.address')"
+        :hint="$t('hints.onvif_address')"
+    ></v-text-field>
+
+    <p :class="subtitleClass">{{ $t('labels.server_address') }}</p>
+    <v-text-field
+        dense
+        persistent-hint
+        :value="server_address"
+        :hint="$t('hints.server_address')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.username') }}</p>
@@ -275,18 +287,20 @@ ko:
         ></v-progress-linear>
 
         <div class="d-flex flex-column align-center justify-center mt-4">
-
-          <v-img
-              :src="snapshotData"
-              :alt="$t('msg.image_failed')"
-          ></v-img>
+          <v-img :src="snapshotData" :alt="$t('msg.image_failed')"></v-img>
         </div>
 
         <div class="d-flex flex-row align-center justify-center pa-4">
           <v-btn class="mr-2" @click="onClickSnapshotReload">
+            <v-icon left>
+              mdi-refresh
+            </v-icon>
             {{ $t('labels.reload') }}
           </v-btn>
           <v-btn @click="onClickSnapshotClose">
+            <v-icon left>
+              mdi-close
+            </v-icon>
             {{ $t('labels.close') }}
           </v-btn>
         </div>
@@ -318,6 +332,7 @@ import {
   DISCOVERY_HEARTBEAT_INTERVAL,
   SECOND_IN_MILLISECONDS,
   DISCOVERY_LEEWAY_SECONDS,
+  DEFAULT_SERVER_ADDRESS,
 } from '@/packet/vms';
 
 const ITEMS_PER_PAGE = 15;
@@ -406,6 +421,7 @@ export default class MainVmsDevicesDiscoveryEpr extends VueBase {
   discoveredDevice = {} as VmsDiscoveredDeviceA;
   items = [] as Array<VmsOnvifMediaStreamUriA>;
 
+  server_address = DEFAULT_SERVER_ADDRESS;
   username = '';
   password = '';
   timeoutSeconds = DEFAULT_TIMEOUT_SECONDS;
@@ -577,7 +593,7 @@ export default class MainVmsDevicesDiscoveryEpr extends VueBase {
       description: this.discoveredDevice.epr,
       stream_address: item.stream_uri,
       onvif_address: this.discoveredDevice.address,
-      server_address: '',
+      server_address: this.server_address,
       username: this.username,
       password: this.password,
       stream: this.requestedStream,

@@ -5,7 +5,8 @@ en:
   new: "New"
   labels:
     name: "Name"
-    url: "URL"
+    stream_address: "Stream Address"
+    server_address: "Server Address"
     username: "Username"
     password: "Password"
     stream: "Stream"
@@ -14,7 +15,8 @@ en:
     save: "Save"
   hints:
     name: "The device name to display on the screen."
-    url: "Enter the address of the device to be connected."
+    stream_address: "Media streaming address."
+    server_address: "Internal server address for media streaming."
     username: "Please enter the ID."
     password: "Please enter the password."
 
@@ -24,7 +26,8 @@ ko:
   new: "New"
   labels:
     name: "이름"
-    url: "URL"
+    stream_address: "스트림 주소"
+    server_address: "내부 서버 주소"
     username: "사용자명"
     password: "비밀번호"
     stream: "스트림"
@@ -33,7 +36,8 @@ ko:
     save: "저장"
   hints:
     name: "화면에 표시할 장치 이름 입니다."
-    url: "연결할 장치의 주소를 입력해 주세요."
+    stream_address: "미디어 스트리밍 주소 입니다."
+    server_address: "미디어 스트리밍을 위한 내부 서버 주소 입니다."
     username: "아이디를 입력해 주세요."
     password: "비밀번호를 입력해 주세요."
 </i18n>
@@ -53,14 +57,24 @@ ko:
         :hint="$t('hints.name')"
     ></v-text-field>
 
-    <p :class="subtitleClass">{{ $t('labels.url') }}</p>
+    <p :class="subtitleClass">{{ $t('labels.stream_address') }}</p>
     <v-text-field
         dense
         persistent-hint
         type="text"
         autocomplete="off"
-        v-model="url"
-        :hint="$t('hints.url')"
+        v-model="stream_address"
+        :hint="$t('hints.stream_address')"
+    ></v-text-field>
+
+    <p :class="subtitleClass">{{ $t('labels.server_address') }}</p>
+    <v-text-field
+        dense
+        persistent-hint
+        type="text"
+        autocomplete="off"
+        v-model="server_address"
+        :hint="$t('hints.server_address')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.username') }}</p>
@@ -132,6 +146,7 @@ import {
   STREAM_TYPES,
   PROTOCOL_TCP,
   PROTOCOLS,
+  DEFAULT_SERVER_ADDRESS,
 } from '@/packet/vms';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 
@@ -178,7 +193,8 @@ export default class MainVmsDevicesNew extends VueBase {
 
   loading = false;
   name = '';
-  url = '';
+  stream_address = '';
+  server_address = DEFAULT_SERVER_ADDRESS;
   username = '';
   password = '';
   stream = STREAM_TYPE_RTP_UNICAST;
@@ -191,9 +207,9 @@ export default class MainVmsDevicesNew extends VueBase {
     const body = {
       name: this.name,
       description: '',
-      stream_address: this.url,
+      stream_address: this.stream_address,
       onvif_address: '',
-      server_address: '',
+      server_address: this.server_address,
       username: this.username,
       password: this.password,
       stream: this.stream,

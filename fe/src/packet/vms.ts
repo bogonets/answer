@@ -26,6 +26,8 @@ export const DISCOVERY_LEEWAY_SECONDS = 1;
 export const SERVER_NORMAL = 0;
 export const SERVER_ABNORMAL = 1;
 
+export const DEFAULT_SERVER_ADDRESS = 'http://0.0.0.0:9999';
+
 export interface VmsDeviceA {
     device_uid: number;
     group_slug: string;

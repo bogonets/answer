@@ -115,7 +115,7 @@ ko:
     >
       <template v-slot:item.actions="{ item }">
         <v-icon small class="mr-2" @click="onClickDevice(item)">
-          mdi-pencil
+          mdi-exit-to-app
         </v-icon>
       </template>
 
