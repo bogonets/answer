@@ -47,6 +47,12 @@ handlers:
 loggers:
   zeep:
     level: WARNING
+  aiortc:
+    level: ERROR
+  aioice:
+    level: ERROR
+  libav:
+    level: OFF
 
 #  aiohttp:
 #    level: DEBUG

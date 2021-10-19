@@ -203,6 +203,15 @@ _DEFAULT_LOGGING_CONFIG = {
         "zeep": {
             "level": "WARNING",
         },
+        "aiortc": {
+            "level": "ERROR",
+        },
+        "aioice": {
+            "level": "ERROR",
+        },
+        "libav": {
+            "level": "OFF",
+        },
     },
 }
 

@@ -97,6 +97,7 @@ ko:
           dense
           auto-grow
           persistent-hint
+          rows="1"
           :disabled="disabled"
           :value="value.description"
           @input="onInputDescription"
@@ -147,6 +148,7 @@ ko:
       <v-text-field
           dense
           persistent-hint
+          autocomplete="off"
           :disabled="disabled"
           :type="showPassword ? 'text' : 'password'"
           :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"

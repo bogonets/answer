@@ -60,7 +60,7 @@ import MediaPlayer from '@/media/MediaPlayer.vue';
 export default class MainVmsLive extends VueBase {
   readonly footerHeight = 200;
 
-  maxCards = 9;
+  maxCards = 4;
   showFooter = true;
 
   showContextMenu = false;
@@ -69,9 +69,13 @@ export default class MainVmsLive extends VueBase {
   contextMenuPositionY = 0;
 
   cardStyle(index: number) {
+    // return {
+    //   width: '33.333%',
+    //   height: '33.333%',
+    // };
     return {
-      width: '33.333%',
-      height: '33.333%',
+      width: '50%',
+      height: '50%',
     };
   }
 

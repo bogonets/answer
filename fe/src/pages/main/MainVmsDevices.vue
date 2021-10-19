@@ -161,8 +161,8 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import type {VmsDeviceA} from '@/packet/vms';
 import {
-  SERVER_NORMAL,
-  SERVER_ABNORMAL,
+  VMS_SERVER_STATUS_UNKNOWN,
+  VMS_SERVER_STATUS_NORMAL,
 } from '@/packet/vms';
 
 const ITEMS_PER_PAGE = 15;
@@ -269,10 +269,10 @@ export default class MainVmsDevices extends VueBase {
       return 'grey';
     }
     switch (item.server_status) {
-      case SERVER_NORMAL:
-        return 'green';
-      case SERVER_ABNORMAL:
+      case VMS_SERVER_STATUS_UNKNOWN:
         return 'red';
+      case VMS_SERVER_STATUS_NORMAL:
+        return 'green';
       default:
         return 'grey';
     }
@@ -283,10 +283,10 @@ export default class MainVmsDevices extends VueBase {
       return this.$t('status.undefined').toString();
     }
     switch (item.server_status) {
-      case SERVER_NORMAL:
-        return this.$t('status.normal').toString();
-      case SERVER_ABNORMAL:
+      case VMS_SERVER_STATUS_UNKNOWN:
         return this.$t('status.abnormal').toString();
+      case VMS_SERVER_STATUS_NORMAL:
+        return this.$t('status.normal').toString();
       default:
         return this.$t('status.unknown').toString();
     }

@@ -23,10 +23,35 @@ export const MINUTE_IN_MILLISECONDS = 60 * SECOND_IN_MILLISECONDS;
 export const DISCOVERY_HEARTBEAT_INTERVAL = SECOND_IN_MILLISECONDS;
 export const DISCOVERY_LEEWAY_SECONDS = 1;
 
-export const SERVER_NORMAL = 0;
-export const SERVER_ABNORMAL = 1;
+export const VMS_SERVER_STATUS_UNKNOWN = 0;
+export const VMS_SERVER_STATUS_NORMAL = 1;
 
 export const DEFAULT_SERVER_ADDRESS = 'http://0.0.0.0:9999';
+
+export const TRANSCEIVER_KIND_VIDEO = 'video';
+export const TRANSCEIVER_KIND_AUDIO = 'audio';
+export const DATA_CHANNEL_LABEL = 'meta';
+
+const DEFAULT_STUN_SERVER_01 = 'stun:stun.l.google.com:19302';
+
+const DEFAULT_ICE_SERVERS = [
+    { urls: [DEFAULT_STUN_SERVER_01] }
+] as Array<RTCIceServer>;
+
+export const DEFAULT_RTC_CONFIGURATION = {
+    sdpSemantics: 'unified-plan',
+} as RTCConfiguration;
+
+export const DEFAULT_VIDEO_TRANSCEIVER_INIT = {
+    direction: 'recvonly'
+} as RTCRtpTransceiverInit;
+
+export const DEFAULT_AUDIO_TRANSCEIVER_INIT = {
+    direction: 'recvonly'
+} as RTCRtpTransceiverInit;
+
+export const DEFAULT_DATA_CHANNEL_INIT = {
+} as RTCDataChannelInit;
 
 export interface VmsDeviceA {
     device_uid: number;

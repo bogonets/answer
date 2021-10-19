@@ -4,6 +4,7 @@
 addr
 aiodns
 aiodocker
+aioice
 aioredis
 aiortc
 airjoy
@@ -62,6 +63,7 @@ lamda
 lamdas
 layname
 levelname
+libav
 mems
 metatags
 mountpoint
