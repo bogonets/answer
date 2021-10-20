@@ -3,11 +3,13 @@ en:
   menu: "VMS Menu"
   live: "Live"
   devices: "Devices"
+  layouts: "Layouts"
 
 ko:
   menu: "VMS 메뉴"
   live: "실시간"
   devices: "장치 목록"
+  layouts: "레이아웃"
 </i18n>
 
 <template>
@@ -61,6 +63,15 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
+          <v-list-item v-show="hasManagerRead" link @click.stop="onClickLayouts">
+            <v-list-item-icon>
+              <v-icon>mdi-view-dashboard</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('layouts') }}
+            </v-list-item-title>
+          </v-list-item>
+
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -104,6 +115,12 @@ export default class MainVms extends VueBase {
       this.index = 1;
     } else if (name === mainNames.mainVmsDevicesNew) {
       this.index = 1;
+    } else if (name === mainNames.mainVmsLayouts) {
+      this.index = 2;
+    } else if (name === mainNames.mainVmsLayoutsEdit) {
+      this.index = 2;
+    } else if (name === mainNames.mainVmsLayoutsNew) {
+      this.index = 2;
     } else {
       this.index = -1;
     }
@@ -119,6 +136,10 @@ export default class MainVms extends VueBase {
 
   onClickDevices() {
     this.moveToMainVmsDevices();
+  }
+
+  onClickLayouts() {
+    this.moveToMainVmsLayouts();
   }
 }
 </script>

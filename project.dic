@@ -134,6 +134,7 @@ pcontainer
 pdevice
 pgroup
 pkey
+playout
 pmember
 pname
 pperm

@@ -9,7 +9,7 @@ en:
     server_status: "Server Status"
     actions: "Actions"
   msg:
-    search: "You can filter by ip or name."
+    search: "You can filter by name."
     loading: "Loading... Please wait"
     empty: "Empty Devices"
   labels:
@@ -35,7 +35,7 @@ ko:
     server_status: "서버 상태"
     actions: "관리"
   msg:
-    search: "IP 또는 이름을 필터링할 수 있습니다."
+    search: "이름을 필터링할 수 있습니다."
     loading: "불러오는중 입니다... 잠시만 기다려 주세요."
     empty: "장치가 존재하지 않습니다."
   labels:

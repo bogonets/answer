@@ -48,7 +48,7 @@ ko:
 
         <v-spacer></v-spacer>
         <v-progress-circular
-            v-if="loading"
+            v-if="loading || loadingStatusCode"
             size="14"
             width="2"
             indeterminate
@@ -186,6 +186,9 @@ export default class MediaPlayer extends VueBase {
 
   @Prop({type: Number, default: DEFAULT_CANVAS_HEIGHT})
   readonly canvasHeight!: number;
+
+  @Prop({type: Boolean, default: false})
+  readonly loading!: boolean;
 
   @Prop({type: String})
   readonly group!: string;
@@ -425,7 +428,7 @@ export default class MediaPlayer extends VueBase {
     return this.statusCode === STATUS_ONLINE;
   }
 
-  get loading() {
+  get loadingStatusCode() {
     switch (this.statusCode) {
       case STATUS_LOADING:
         return true;

@@ -13,6 +13,9 @@ import MainVmsDevicesDiscovery from '@/pages/main/MainVmsDevicesDiscovery.vue';
 import MainVmsDevicesDiscoveryEpr from '@/pages/main/MainVmsDevicesDiscoveryEpr.vue';
 import MainVmsDevicesEdit from '@/pages/main/MainVmsDevicesEdit.vue';
 import MainVmsDevicesNew from '@/pages/main/MainVmsDevicesNew.vue';
+import MainVmsLayouts from '@/pages/main/MainVmsLayouts.vue';
+import MainVmsLayoutsEdit from '@/pages/main/MainVmsLayoutsEdit.vue';
+import MainVmsLayoutsNew from '@/pages/main/MainVmsLayoutsNew.vue';
 import MainVmsLive from '@/pages/main/MainVmsLive.vue';
 
 // External
@@ -92,6 +95,21 @@ export const mainChildren = [
                 path: 'devices/new',
                 component: MainVmsDevicesNew,
                 name: mainNames.mainVmsDevicesNew,
+            },
+            {
+                path: 'layouts',
+                component: MainVmsLayouts,
+                name: mainNames.mainVmsLayouts,
+            },
+            {
+                path: 'layouts/edit/:layout',
+                component: MainVmsLayoutsEdit,
+                name: mainNames.mainVmsLayoutsEdit,
+            },
+            {
+                path: 'layouts/new',
+                component: MainVmsLayoutsNew,
+                name: mainNames.mainVmsLayoutsNew,
             },
         ]
     },

@@ -21,6 +21,9 @@ import type {
     VmsDeviceA,
     VmsCreateDeviceQ,
     VmsUpdateDeviceQ,
+    VmsLayoutA,
+    VmsCreateLayoutQ,
+    VmsUpdateLayoutQ,
     VmsDiscoveryQ,
     VmsDiscoveredHeartbeatQ,
     VmsDiscoveredHeartbeatA,
@@ -912,9 +915,9 @@ export default class ApiV2 {
         return this.delete(url);
     }
 
-    // -----------
-    // Plugins/VMS
-    // -----------
+    // -------------------
+    // Plugins/VMS/Devices
+    // -------------------
 
     getVmsDevices(group: string, project: string) {
         const url = `/plugins/vms/${group}/${project}/devices`;
@@ -971,6 +974,44 @@ export default class ApiV2 {
         return this.post<RtcAnswerA>(url, body);
     }
 
+    // -------------------
+    // Plugins/VMS/Layouts
+    // -------------------
+
+    getVmsLayouts(group: string, project: string) {
+        const url = `/plugins/vms/${group}/${project}/layouts`;
+        return this.get<Array<VmsLayoutA>>(url);
+    }
+
+    postVmsLayouts(group: string, project: string, body: VmsCreateLayoutQ) {
+        const url = `/plugins/vms/${group}/${project}/layouts`;
+        return this.post(url, body);
+    }
+
+    getVmsLayout(group: string, project: string, layout: string) {
+        const url = `/plugins/vms/${group}/${project}/layouts/${layout}`;
+        return this.get<VmsLayoutA>(url);
+    }
+
+    patchVmsLayout(
+        group: string,
+        project: string,
+        layout: string,
+        body: VmsUpdateLayoutQ,
+    ) {
+        const url = `/plugins/vms/${group}/${project}/layouts/${layout}`;
+        return this.patch(url, body);
+    }
+
+    deleteVmsLayout(group: string, project: string, layout: string) {
+        const url = `/plugins/vms/${group}/${project}/layouts/${layout}`;
+        return this.delete(url);
+    }
+
+    // ---------------------
+    // Plugins/VMS/Discovery
+    // ---------------------
+
     postVmsDiscovery(
         group: string,
         project: string,
@@ -988,6 +1029,10 @@ export default class ApiV2 {
         const url = `/plugins/vms/${group}/${project}/discovery/heartbeat`;
         return this.post<VmsDiscoveredHeartbeatA>(url, body);
     }
+
+    // -----------------------
+    // Plugins/VMS/ONVIF/Media
+    // -----------------------
 
     postVmsOnvifMedia(
         group: string,
