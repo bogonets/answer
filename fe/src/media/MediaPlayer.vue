@@ -277,7 +277,35 @@ export default class MediaPlayer extends VueBase {
   }
 
   async createPeerAndMetaChannel() {
-    const pc = new RTCPeerConnection(this.rtcConfig);
+    const group = this.group;
+    const project = this.project;
+    const device = this.device.toString();
+    const ices = await this.$api2.getVmsDeviceRtcIces(group, project, device);
+
+    const iceServers = [] as Array<RTCIceServer>;
+    for (const ice of ices) {
+      let credentialType: undefined | 'password' | 'oauth' = undefined;
+      if (typeof ice.credential_type !== 'undefined') {
+        if (ice.credential_type === 'password') {
+          credentialType = 'password';
+        } else if (ice.credential_type === 'oauth') {
+          credentialType = 'oauth';
+        }
+      }
+      iceServers.push({
+        urls: ice.urls,
+        username: ice.username,
+        credential: ice.credential,
+        credentialType: credentialType,
+      });
+    }
+
+    const rtcConfig = {
+      ...this.rtcConfig,
+      iceServers: iceServers,
+    } as RTCConfiguration;
+
+    const pc = new RTCPeerConnection(rtcConfig);
     pc.ontrack = this.onTrack;
     pc.addTransceiver(TRANSCEIVER_KIND_VIDEO, this.videoTransceiverInit);
     // pc.addTransceiver(TRANSCEIVER_KIND_AUDIO, this.audioTransceiverInit);
@@ -299,14 +327,11 @@ export default class MediaPlayer extends VueBase {
 
     this.statusCode = STATUS_SDP_EXCHANGE;
 
-    const group = this.group;
-    const project = this.project;
-    const device = this.device.toString();
     const body = {
       type: pc.localDescription?.type || '',
       sdp: pc.localDescription?.sdp || '',
     } as RtcOfferQ;
-    const answer = await this.$api2.postVmsDeviceRtcIce(group, project, device, body);
+    const answer = await this.$api2.postVmsDeviceRtcJsep(group, project, device, body);
     const answerInit = {
       type: answer.type,
       sdp: answer.sdp,
@@ -443,7 +468,11 @@ export default class MediaPlayer extends VueBase {
       case STATUS_SDP_EXCHANGE:
         return 'blue accent-4';
       case STATUS_ONLINE:
-        return 'green';
+        if (this.paused) {
+          return '';
+        } else {
+          return 'green';
+        }
       case STATUS_NEGOTIATION_FAILED:
         return 'red';
       case STATUS_ICE_UNKNOWN:

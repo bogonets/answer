@@ -40,6 +40,11 @@ const DEFAULT_ICE_SERVERS = [
 
 export const DEFAULT_RTC_CONFIGURATION = {
     sdpSemantics: 'unified-plan',
+    // iceServers: [
+    //     {
+    //         urls: 'stun:192.168.0.6:3478',
+    //     } as RTCIceServer,
+    // ],
 } as RTCConfiguration;
 
 export const DEFAULT_VIDEO_TRANSCEIVER_INIT = {
@@ -62,6 +67,7 @@ export interface VmsDeviceA {
     stream_address: string;
     onvif_address: string;
     server_address: string;
+    ices: Array<string>;
     username: string;
     password: string;
     stream: string;
@@ -81,6 +87,7 @@ export interface VmsCreateDeviceQ {
     stream_address: string;
     onvif_address: string;
     server_address: string;
+    ices: Array<string>;
     username: string;
     password: string;
     stream: string;
@@ -97,6 +104,7 @@ export interface VmsUpdateDeviceQ {
     stream_address?: string;
     onvif_address?: string;
     server_address?: string;
+    ices?: Array<string>;
     username?: string;
     password?: string;
     stream?: string;
@@ -164,6 +172,13 @@ export interface VmsOnvifMediaSnapshotA {
     content: string;
 }
 
+export interface IceServerA {
+    urls: string;
+    username?: string;
+    credential?: string;
+    credential_type?: string;
+}
+
 export interface RtcOfferQ {
     type: string;
     sdp: string;
@@ -200,6 +215,7 @@ export function createEmptyVmsDeviceA() {
         stream_address: '',
         onvif_address: '',
         server_address: '',
+        ices: [],
         username: '',
         password: '',
         stream: '',

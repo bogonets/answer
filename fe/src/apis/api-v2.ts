@@ -29,6 +29,7 @@ import type {
     VmsOnvifMediaStreamUriHeartbeatA,
     VmsOnvifMediaSnapshotQ,
     VmsOnvifMediaSnapshotA,
+    IceServerA,
     RtcOfferQ,
     RtcAnswerA,
 } from '@/packet/vms';
@@ -955,13 +956,18 @@ export default class ApiV2 {
         return this.post(url);
     }
 
-    postVmsDeviceRtcIce(
+    getVmsDeviceRtcIces(group: string, project: string, device: string) {
+        const url = `/plugins/vms/${group}/${project}/devices/${device}/rtc/ices`;
+        return this.get<Array<IceServerA>>(url);
+    }
+
+    postVmsDeviceRtcJsep(
         group: string,
         project: string,
         device: string,
         body: RtcOfferQ,
     ) {
-        const url = `/plugins/vms/${group}/${project}/devices/${device}/rtc/ice`;
+        const url = `/plugins/vms/${group}/${project}/devices/${device}/rtc/jsep`;
         return this.post<RtcAnswerA>(url, body);
     }
 

@@ -10,6 +10,8 @@ en:
     stream_address: "Stream Address"
     onvif_address: "ONVIF Address"
     server_address: "Server Address"
+    ices: "ICE Servers"
+    add: "Add"
     username: "Username"
     password: "Password"
     protocol: "Transport Protocol"
@@ -24,6 +26,7 @@ en:
     stream_address: "Media streaming address."
     onvif_address: "ONVIF Device Manager address."
     server_address: "Internal server address for media streaming."
+    ices: "STUN or TURN servers."
     username: "This is the username for accessing media streaming."
     password: "This is the password for accessing media streaming."
     active: "When enabled, all features are activate."
@@ -31,6 +34,9 @@ en:
     delete: "Please be careful! It cannot be recovered."
   msg:
     delete_confirm: "Are you sure? Are you really removing this device?"
+    empty_ices: >
+      There is no registered ICE server.
+      Please add it in the same format as {stun}.
 
 ko:
   cancel: "취소"
@@ -43,6 +49,8 @@ ko:
     stream_address: "스트림 주소"
     onvif_address: "ONVIF 주소"
     server_address: "내부 서버 주소"
+    ices: "ICE 서버 목록"
+    add: "추가"
     username: "사용자명"
     password: "비밀번호"
     protocol: "전송 프로토콜"
@@ -57,6 +65,7 @@ ko:
     stream_address: "미디어 스트리밍 주소 입니다."
     onvif_address: "ONVIF 장치 관리 주소 입니다."
     server_address: "미디어 스트리밍을 위한 내부 서버 주소 입니다."
+    ices: "STUN 또는 TURN 서버."
     username: "미디어 스트리밍 접속을 위한 사용자 이름 입니다."
     password: "미디어 스트리밍 접속을 위한 비밀번호 입니다."
     active: "활성화 되면, 모든 기능을 사용합니다."
@@ -64,6 +73,9 @@ ko:
     delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
   msg:
     delete_confirm: "이 장치를 정말 제거합니까?"
+    empty_ices: >
+      등록된 ICE 서버가 없습니다.
+      {stun} 와 같은 형식으로 추가해 주세요.
 </i18n>
 
 <template>
@@ -133,6 +145,40 @@ ko:
           @input="onInputServerAddress"
           :hint="$t('hints.server_address')"
       ></v-text-field>
+
+      <p :class="subtitleClass">{{ $t('labels.ices') }}</p>
+      <v-sheet outlined>
+        <i18n
+            v-if="ices.length === 0"
+            :class="captionClass"
+            path="msg.empty_ices"
+            tag="span"
+        >
+          <template #stun>
+            <code>stun:localhost:3478</code>
+          </template>
+        </i18n>
+        <v-text-field
+            v-for="index in ices.length"
+            :key="index"
+            class="ma-2"
+            dense
+            hide-details
+            append-outer-icon="mdi-minus"
+            :disabled="disabled"
+            :value="ices[index-1]"
+            @input="onInputIce(index, $event)"
+            @click:append-outer="onClickIceRemove(index)"
+        ></v-text-field>
+
+        <v-row no-gutters>
+          <v-spacer></v-spacer>
+          <v-btn class="ma-2" small @click="onClickIceAdd">
+            <v-icon left>mdi-plus</v-icon>
+            {{ $t('labels.add') }}
+          </v-btn>
+        </v-row>
+      </v-sheet>
 
       <p :class="subtitleClass">{{ $t('labels.username') }}</p>
       <v-text-field
@@ -290,16 +336,18 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop, Emit, Ref} from 'vue-property-decorator';
+import {Component, Prop, Watch, Emit, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {VForm} from 'vuetify/lib/components/VForm';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
+import {CAPTION_CLASS} from '@/styles/caption';
 import type {VmsDeviceA} from '@/packet/vms';
 import {PROTOCOLS, STREAM_TYPES, createEmptyVmsDeviceA} from '@/packet/vms';
 
 @Component
 export default class FormVmsDevice extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
+  readonly captionClass = CAPTION_CLASS;
 
   readonly streamTypes = STREAM_TYPES;
   readonly protocols = PROTOCOLS;
@@ -341,7 +389,29 @@ export default class FormVmsDevice extends VueBase {
   readonly form!: VForm;
 
   valid = false;
+  ices = [] as Array<string>;
   showPassword = false;
+
+  created() {
+    this.updateIces(this.value.ices);
+  }
+
+  updateIces(source?: Array<string>) {
+    const result = [] as Array<string>;
+    if (typeof source !== 'undefined') {
+      if (source) {
+        for (const item of source) {
+          result.push(item);
+        }
+      }
+    }
+    this.ices = result;
+  }
+
+  @Watch('value.ices')
+  onWatchValueIces(newVal, oldVal) {
+    this.updateIces(newVal);
+  }
 
   onInputDeviceUid(event: number) {
     this.value.device_uid = event;
@@ -370,6 +440,26 @@ export default class FormVmsDevice extends VueBase {
 
   onInputServerAddress(event: string) {
     this.value.server_address = event;
+    this.input();
+  }
+
+  onInputIce(index: number, event: string) {
+    const arrayIndex = index - 1;
+    this.ices[arrayIndex] = event;
+    this.value.ices[arrayIndex] = event;
+    this.input();
+  }
+
+  onClickIceRemove(index: number) {
+    const arrayIndex = index - 1;
+    this.ices.splice(arrayIndex, 1);
+    this.value.ices.splice(arrayIndex, 1);
+    this.input();
+  }
+
+  onClickIceAdd() {
+    this.ices.push('');
+    this.value.ices.push('');
     this.input();
   }
 

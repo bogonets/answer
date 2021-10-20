@@ -12,6 +12,7 @@ answerdoc
 argparse
 asctime
 autodect
+blackhole
 bogonet
 bogonets
 brotlipy
@@ -54,6 +55,7 @@ infos
 intl
 iomgr
 ipam
+jsep
 jsonparse
 jsons
 jupyters

@@ -178,6 +178,7 @@ export default class MainVmsDevicesEdit extends VueBase {
       stream_address: value.stream_address,
       onvif_address: value.onvif_address,
       server_address: value.server_address,
+      ices: value.ices,
       username: value.username,
       password: value.password,
       stream: value.stream,
