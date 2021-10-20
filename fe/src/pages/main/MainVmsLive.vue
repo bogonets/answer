@@ -33,6 +33,42 @@ ko:
       </v-system-bar>
       <v-sheet :height="footerHeight">
 
+        <v-virtual-scroll
+            :bench="benched"
+            :items="events"
+            height="300"
+            item-height="64"
+        >
+          <template v-slot:default="{ item }">
+            <v-list-item :key="item">
+              <v-list-item-action>
+                <v-btn
+                    fab
+                    small
+                    depressed
+                    color="primary"
+                >
+                  {{ item }}
+                </v-btn>
+              </v-list-item-action>
+
+              <v-list-item-content>
+                <v-list-item-title>
+                  User Database Record <strong>ID {{ item }}</strong>
+                </v-list-item-title>
+              </v-list-item-content>
+
+              <v-list-item-action>
+                <v-icon small>
+                  mdi-open-in-new
+                </v-icon>
+              </v-list-item-action>
+            </v-list-item>
+
+            <v-divider></v-divider>
+          </template>
+        </v-virtual-scroll>
+
       </v-sheet>
     </v-footer>
 
@@ -57,7 +93,9 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import MediaPlayer from '@/media/MediaPlayer.vue';
-import type {VmsDeviceA, VmsLayoutA} from '@/packet/vms';
+import type {VmsDeviceA, VmsLayoutA, VmsEventA} from '@/packet/vms';
+import {DEFAULT_EVENT_UPDATE_INTERVAL_MILLISECONDS, VmsNewsEventQ} from '@/packet/vms';
+import moment from 'moment-timezone';
 
 @Component({
   components: {
@@ -66,6 +104,9 @@ import type {VmsDeviceA, VmsLayoutA} from '@/packet/vms';
 })
 export default class MainVmsLive extends VueBase {
   readonly footerHeight = 200;
+  readonly benched = 1;
+  readonly eventChunkSize = 10;
+  readonly eventTotalSize = 100;
 
   maxCards = 4;
   showFooter = true;
@@ -82,8 +123,22 @@ export default class MainVmsLive extends VueBase {
 
   layoutToDevice = {};
 
+  latestTime = Date.now();
+  events = [] as Array<VmsEventA>;
+  intervalHandle = -1;
+
   created() {
     this.requestSetup();
+  }
+
+  mounted() {
+    this.intervalHandle = window.setInterval(() => {
+      this.updateEvent();
+    }, DEFAULT_EVENT_UPDATE_INTERVAL_MILLISECONDS);
+  }
+
+  beforeDestroy() {
+    window.clearInterval(this.intervalHandle);
   }
 
   requestSetup() {
@@ -114,13 +169,36 @@ export default class MainVmsLive extends VueBase {
         layoutToDevice[i] = device;
       }
       this.layoutToDevice = layoutToDevice;
-      console.dir(this.layoutToDevice);
 
     } catch (error) {
       this.toastRequestFailure(error);
     } finally {
       this.loading = false;
     }
+  }
+
+  updateEvent() {
+    const body = {
+      time: moment(this.latestTime).format(),
+      max: this.eventChunkSize,
+    } as VmsNewsEventQ;
+
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    this.$api2.postVmsEventsNews(group, project, body)
+        .then(items => {
+          console.log(`updateEvent: ${items}`);
+          console.dir(items);
+          for (const item of items) {
+            if (this.events.length >= this.eventTotalSize) {
+              this.events.pop();
+            }
+            this.events.push(item);
+          }
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);  // TODO: Remove it !!
+        });
   }
 
   cardStyle(index: number) {

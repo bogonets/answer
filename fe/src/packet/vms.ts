@@ -32,6 +32,8 @@ export const TRANSCEIVER_KIND_VIDEO = 'video';
 export const TRANSCEIVER_KIND_AUDIO = 'audio';
 export const DATA_CHANNEL_LABEL = 'meta';
 
+export const DEFAULT_EVENT_UPDATE_INTERVAL_MILLISECONDS = SECOND_IN_MILLISECONDS;
+
 const DEFAULT_STUN_SERVER_01 = 'stun:stun.l.google.com:19302';
 
 const DEFAULT_ICE_SERVERS = [
@@ -148,6 +150,11 @@ export interface VmsEventA {
     file?: string;
     extra?: any;
     tag_uid?: number;
+}
+
+export interface VmsNewsEventQ {
+    time: string;
+    max: number;
 }
 
 export interface VmsDiscoveryQ {

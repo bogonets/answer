@@ -24,6 +24,8 @@ import type {
     VmsLayoutA,
     VmsCreateLayoutQ,
     VmsUpdateLayoutQ,
+    VmsEventA,
+    VmsNewsEventQ,
     VmsDiscoveryQ,
     VmsDiscoveredHeartbeatQ,
     VmsDiscoveredHeartbeatA,
@@ -1006,6 +1008,15 @@ export default class ApiV2 {
     deleteVmsLayout(group: string, project: string, layout: string) {
         const url = `/plugins/vms/${group}/${project}/layouts/${layout}`;
         return this.delete(url);
+    }
+
+    // -----------------
+    // Plugins/VMS/Event
+    // -----------------
+
+    postVmsEventsNews(group: string, project: string, body: VmsNewsEventQ) {
+        const url = `/plugins/vms/${group}/${project}/events/news`;
+        return this.post<Array<VmsEventA>>(url, body);
     }
 
     // ---------------------
