@@ -241,7 +241,7 @@ export default class MainVmsLive extends VueBase {
 
     for (const item of event) {
       if (this.events.length >= this.eventTotalSize) {
-        this.events.pop();
+        this.events.splice(0, (this.events.length - this.eventTotalSize) + 1);
       }
       const data = {
         time: moment().format(),
