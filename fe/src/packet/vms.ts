@@ -146,7 +146,7 @@ export interface VmsUpdateLayoutQ {
 export interface VmsEventA {
     time: string;
     event: number;
-    device_uid: string;
+    device_uid: number;
     file?: string;
     extra?: any;
     tag_uid?: number;

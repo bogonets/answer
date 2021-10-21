@@ -369,9 +369,9 @@ export default class MediaPlayer extends VueBase {
   }
 
   onMetaOpen() {
-    if (this.metaChannel) {
-      this.metaChannel.send('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    }
+    // if (this.metaChannel) {
+    //   this.metaChannel.send('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    // }
   }
 
   onMetaClose() {
@@ -380,6 +380,40 @@ export default class MediaPlayer extends VueBase {
 
   onMetaMessage(event: MessageEvent) {
     console.debug(`Meta message: ${event.data}`);
+    const canvasWidth = this.canvasMeta.width;
+    const canvasHeight = this.canvasMeta.height;
+    const context = this.canvasMeta.getContext('2d');
+    if (!context) {
+      return;
+    }
+
+    try {
+      const obj = JSON.parse(event.data);
+      const x1 = canvasWidth * obj.x1;
+      const y1 = canvasHeight * obj.y1;
+      const x2 = canvasWidth * obj.x2;
+      const y2 = canvasHeight * obj.y2;
+      const w = x2 - x1;
+      const h = y2 - y1;
+      const score = obj.score;
+      const success = obj.success;
+
+      context.clearRect(0, 0, canvasWidth, canvasHeight);
+      if (success) {
+        context.strokeStyle = 'green';
+      } else {
+        context.strokeStyle = 'orange';
+      }
+
+      context.lineWidth = 3;
+      context.strokeRect(x1, y1, w, h);
+      context.fillText(`${score}`, x1, y1);
+
+      this.predict([obj]);
+    } catch (error) {
+      context.clearRect(0, 0, canvasWidth, canvasHeight);
+      this.predict([]);
+    }
   }
 
   onMetaError(event: RTCErrorEvent) {
@@ -603,6 +637,11 @@ export default class MediaPlayer extends VueBase {
 
   @Watch('value.server_status')
   onWatchServerStatus(newVal, oldVal) {
+  }
+
+  @Emit()
+  predict(obj: Array<object>) {
+    return obj;
   }
 
   @Emit()

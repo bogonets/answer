@@ -51,8 +51,6 @@ loggers:
     level: ERROR
   aioice:
     level: ERROR
-  libav:
-    level: OFF
 
 #  aiohttp:
 #    level: DEBUG

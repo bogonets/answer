@@ -12,50 +12,58 @@ ko:
   <div class="d-flex flex-column fill-height">
     <div class="d-flex flex-wrap main">
       <media-player
-          v-for="i in maxCards"
-          :key="`${i}-${loading}`"
-          :style="cardStyle(i)"
+          v-for="n in maxCards"
+          :key="`${n}-${loading}`"
+          :style="cardStyle(n)"
           :group="$route.params.group"
           :project="$route.params.project"
-          :device="getDeviceUid(i)"
+          :device="getDeviceUid(n)"
           :loading="loading"
-          @contextmenu="onShowContextMenu(i, $event)"
+          @predict="onPredict(n, $event)"
+          @contextmenu="onShowContextMenu(n, $event)"
       ></media-player>
     </div>
 
-    <v-footer>
-      <v-system-bar absolute>
-        <v-icon>mdi-application</v-icon>
-        <v-spacer></v-spacer>
-        <v-btn icon small max-width="22px" max-height="22px" @click="onClickCloseFooter">
-          <v-icon small class="ma-0">mdi-close</v-icon>
-        </v-btn>
-      </v-system-bar>
-      <v-sheet :height="footerHeight">
+    <v-footer :height="footerHeight" padless>
+      <v-sheet width="100%">
+        <v-system-bar :height="footerSystemBarHeight">
+          <v-icon>mdi-application</v-icon>
+          <v-spacer></v-spacer>
+          <v-btn icon small max-width="22px" max-height="22px" @click="onClickCloseFooter">
+            <v-icon small class="ma-0">mdi-close</v-icon>
+          </v-btn>
+        </v-system-bar>
 
         <v-virtual-scroll
+            ref="event-scroll"
             :bench="benched"
             :items="events"
-            height="300"
-            item-height="64"
+            :height="footerContentHeight"
+            :item-height="footerContentItemHeight"
         >
           <template v-slot:default="{ item }">
-            <v-list-item :key="item">
+            <v-list-item dense :key="item">
               <v-list-item-action>
-                <v-btn
-                    fab
-                    small
-                    depressed
-                    color="primary"
-                >
-                  {{ item }}
-                </v-btn>
+                <v-icon>mdi-cube-scan</v-icon>
               </v-list-item-action>
 
               <v-list-item-content>
-                <v-list-item-title>
-                  User Database Record <strong>ID {{ item }}</strong>
-                </v-list-item-title>
+                <div>
+                  <span>
+                    {{ item.time }}
+                  </span>
+                  <span>
+                    {{ getDeviceName(item.device_uid) }}
+                  </span>
+                  <v-chip small color="blue">
+                    <v-icon left>mdi-identifier</v-icon>
+                    {{ item.device_uid }}
+                  </v-chip>
+                  <v-chip class="ml-2" small>
+                    <v-icon left>mdi-label-percent</v-icon>
+                    {{ getScorePercentage(item.extra) }}
+                  </v-chip>
+                </div>
               </v-list-item-content>
 
               <v-list-item-action>
@@ -90,11 +98,11 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component} from 'vue-property-decorator';
+import {Component, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import MediaPlayer from '@/media/MediaPlayer.vue';
+import {VVirtualScroll} from 'vuetify/lib/components/VVirtualScroll';
 import type {VmsDeviceA, VmsLayoutA, VmsEventA} from '@/packet/vms';
-import {DEFAULT_EVENT_UPDATE_INTERVAL_MILLISECONDS, VmsNewsEventQ} from '@/packet/vms';
 import moment from 'moment-timezone';
 
 @Component({
@@ -104,15 +112,21 @@ import moment from 'moment-timezone';
 })
 export default class MainVmsLive extends VueBase {
   readonly footerHeight = 200;
+  readonly footerSystemBarHeight = 24;
+  readonly footerContentHeight = this.footerHeight - this.footerSystemBarHeight;
+  readonly footerContentItemHeight = 48;
   readonly benched = 1;
   readonly eventChunkSize = 10;
   readonly eventTotalSize = 100;
+
+  @Ref('event-scroll')
+  eventScroll!: VVirtualScroll;
 
   maxCards = 4;
   showFooter = true;
 
   showContextMenu = false;
-  contextMenuIndex = 0;
+  contextMenuNumber = 0;
   contextMenuPositionX = 0;
   contextMenuPositionY = 0;
 
@@ -120,25 +134,29 @@ export default class MainVmsLive extends VueBase {
 
   layouts = [] as Array<VmsLayoutA>;
   devices = [] as Array<VmsDeviceA>;
-
   layoutToDevice = {};
 
   latestTime = Date.now();
   events = [] as Array<VmsEventA>;
-  intervalHandle = -1;
 
   created() {
     this.requestSetup();
-  }
 
-  mounted() {
-    this.intervalHandle = window.setInterval(() => {
-      this.updateEvent();
-    }, DEFAULT_EVENT_UPDATE_INTERVAL_MILLISECONDS);
-  }
-
-  beforeDestroy() {
-    window.clearInterval(this.intervalHandle);
+    // const data = {
+    //   time: moment().format(),
+    //   event: 1,
+    //   device_uid: 1,
+    //   file: '',
+    //   extra: {score: 0.8},
+    //   tag_uid: undefined,
+    // } as VmsEventA;
+    // this.events.push(data);
+    // this.events.push(data);
+    // this.events.push(data);
+    // this.events.push(data);
+    // this.$nextTick(() => {
+    //   this.eventScroll.$el.scrollTop = this.eventScroll.$el.scrollHeight;
+    // });
   }
 
   requestSetup() {
@@ -177,31 +195,7 @@ export default class MainVmsLive extends VueBase {
     }
   }
 
-  updateEvent() {
-    const body = {
-      time: moment(this.latestTime).format(),
-      max: this.eventChunkSize,
-    } as VmsNewsEventQ;
-
-    const group = this.$route.params.group;
-    const project = this.$route.params.project;
-    this.$api2.postVmsEventsNews(group, project, body)
-        .then(items => {
-          console.log(`updateEvent: ${items}`);
-          console.dir(items);
-          for (const item of items) {
-            if (this.events.length >= this.eventTotalSize) {
-              this.events.pop();
-            }
-            this.events.push(item);
-          }
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);  // TODO: Remove it !!
-        });
-  }
-
-  cardStyle(index: number) {
+  cardStyle(cardNumber: number) {
     // return {
     //   width: '33.333%',
     //   height: '33.333%',
@@ -212,8 +206,16 @@ export default class MainVmsLive extends VueBase {
     };
   }
 
-  getDeviceUid(index: number) {
-    const layoutIndex = index - 1;
+  getDeviceName(deviceUid: number) {
+    const device = this.devices.find(d => d.device_uid === deviceUid);
+    if (typeof device === 'undefined') {
+      return undefined;
+    }
+    return device.name;
+  }
+
+  getDeviceUid(cardNumber: number) {
+    const layoutIndex = cardNumber - 1;
     const device = this.layoutToDevice[layoutIndex] as VmsDeviceA;
     if (typeof device === 'undefined') {
       return undefined;
@@ -221,10 +223,46 @@ export default class MainVmsLive extends VueBase {
     return device.device_uid;
   }
 
-  onShowContextMenu(index: number, event) {
+  getScorePercentage(extra: any) {
+    if (!extra.hasOwnProperty("score")) {
+      return undefined;
+    }
+    return Math.ceil(extra["score"] * 100);
+  }
+
+  onPredict(cardNumber: number, event: Array<object>) {
+    const layoutIndex = cardNumber - 1;
+    const device = this.layoutToDevice[layoutIndex] as VmsDeviceA;
+    if (typeof device === 'undefined') {
+      return;
+    }
+    const deviceUid = device.device_uid;
+    console.debug(event);
+
+    for (const item of event) {
+      if (this.events.length >= this.eventTotalSize) {
+        this.events.pop();
+      }
+      const data = {
+        time: moment().format(),
+        event: 1,
+        device_uid: deviceUid,
+        file: '',
+        extra: item,
+        tag_uid: undefined,
+      } as VmsEventA;
+      this.events.push(data);
+    }
+
+    this.$nextTick(() => {
+      this.eventScroll.$el.scrollTop = this.eventScroll.$el.scrollHeight;
+    });
+  }
+
+  onShowContextMenu(cardNumber: number, event) {
     event.preventDefault();
     this.showContextMenu = false;
-    this.contextMenuIndex = index;
+    this.contextMenuNumber = cardNumber;
     this.contextMenuPositionX = event.clientX;
     this.contextMenuPositionY = event.clientY;
     this.$nextTick(() => {
@@ -235,7 +273,7 @@ export default class MainVmsLive extends VueBase {
   onClickEdit() {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    const index = this.contextMenuIndex;
+    const index = this.contextMenuNumber;
     // this.moveToMainVmsDevicesEdit(group, project, media);
   }
 
@@ -252,5 +290,10 @@ export default class MainVmsLive extends VueBase {
 
 .main {
   flex: auto;
+}
+
+.control-panel {
+  width: 100%;
+  height: 100%;
 }
 </style>

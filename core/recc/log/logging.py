@@ -209,9 +209,6 @@ _DEFAULT_LOGGING_CONFIG = {
         "aioice": {
             "level": "ERROR",
         },
-        "libav": {
-            "level": "OFF",
-        },
     },
 }
 
