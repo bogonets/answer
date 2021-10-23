@@ -42,6 +42,10 @@ class DaemonServicer(DaemonApiServicer):
         self._pickling_protocol_version = DEFAULT_PICKLE_PROTOCOL_VERSION
         self._unpickling_encoding = DEFAULT_PICKLE_ENCODING
 
+    @property
+    def plugin(self) -> Plugin:
+        return self._plugin
+
     def _pickling(self, data: Any) -> bytes:
         return pickle.dumps(data, protocol=self._pickling_protocol_version)
 
@@ -90,8 +94,8 @@ class _AcceptInfo(object):
         self.accepted_port_number = accepted_port_number
 
 
-def create_daemon_server(address: str, plugin: Plugin) -> _AcceptInfo:
-    servicer = DaemonServicer(plugin)
+def create_daemon_server(address: str, daemon_file: str) -> _AcceptInfo:
+    servicer = DaemonServicer(Plugin(daemon_file))
     logger.info(f"Daemon servicer address: {address}")
 
     server = grpc.aio.server(options=DEFAULT_GRPC_OPTIONS)
@@ -141,13 +145,15 @@ async def wait_connectable(address: str) -> bool:
 
 async def run_daemon_server(config: DaemonConfig, wait_connect=True) -> None:
     logger.info(f"Start the daemon server: {config.daemon_file}")
-    plugin = Plugin(config.daemon_file)
+
+    accept_info = create_daemon_server(config.daemon_address, config.daemon_file)
+    plugin = accept_info.servicer.plugin
+    server = accept_info.server
+    accepted_port_number = accept_info.accepted_port_number
+
     if plugin.exists_open:
         await plugin.call_open()
 
-    accept_info = create_daemon_server(config.daemon_address, plugin)
-    server = accept_info.server
-    accepted_port_number = accept_info.accepted_port_number
     await server.start()
 
     if wait_connect:
