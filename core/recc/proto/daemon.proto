@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package recc.proto;
+
+service DaemonApi {
+    rpc Packet (PacketQ) returns (PacketA) {}
+    rpc Pickling (PacketQ) returns (PacketA) {}
+}
+
+message PacketQ {
+    int32 method = 1;
+    map<string, string> headers = 2;
+    optional bytes content = 3;
+}
+
+message PacketA {
+    int32 code = 1;
+    map<string, string> headers = 2;
+    optional bytes content = 3;
+}

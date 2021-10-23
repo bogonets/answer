@@ -6,6 +6,7 @@ from recc.argparse.command import Command
 from recc.argparse.config.core_config import CORE_ARGS
 from recc.argparse.config.ctrl_config import CTRL_ARGS
 from recc.argparse.config.task_config import TASK_ARGS
+from recc.argparse.config.daemon_config import DAEMON_ARGS
 from recc.argparse.config.global_config import GLOBAL_ARGS, ARG_COMMAND
 
 
@@ -51,6 +52,10 @@ def injection_task_default_values(namespace: Namespace) -> Namespace:
     return injection_values_by_args(namespace, *TASK_ARGS)
 
 
+def injection_daemon_default_values(namespace: Namespace) -> Namespace:
+    return injection_values_by_args(namespace, *DAEMON_ARGS)
+
+
 def injection_default_values(namespace: Namespace) -> Namespace:
     injection_global_default_values(namespace)
     command = getattr(namespace, ARG_COMMAND.normalize_key)
@@ -61,4 +66,6 @@ def injection_default_values(namespace: Namespace) -> Namespace:
             return injection_ctrl_default_values(namespace)
         elif command == Command.task.name:
             return injection_task_default_values(namespace)
+        elif command == Command.daemon.name:
+            return injection_daemon_default_values(namespace)
     return namespace

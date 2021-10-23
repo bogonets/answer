@@ -20,6 +20,11 @@ from recc.argparse.config.task_config import (
     get_task_namespace,
     cast_task_config,
 )
+from recc.argparse.config.daemon_config import (
+    DaemonConfig,
+    get_daemon_namespace,
+    cast_daemon_config,
+)
 from recc.argparse.config.global_config import (
     GlobalConfig,
     ARG_COMMAND,
@@ -31,7 +36,14 @@ from recc.argparse.parser.env_parse import get_namespace_by_os_envs
 from recc.argparse.injection_values import injection_default_values
 from recc.variables.environment import RECC_ENV_PREFIX
 
-ConfigType = Union[Namespace, GlobalConfig, CoreConfig, CtrlConfig, TaskConfig]
+ConfigType = Union[
+    Namespace,
+    GlobalConfig,
+    CoreConfig,
+    CtrlConfig,
+    TaskConfig,
+    DaemonConfig,
+]
 
 CONFIG_FILENAME = "recc.cfg"
 WORKING_CONFIG_PATH = os.path.join(os.getcwd(), CONFIG_FILENAME)
@@ -81,6 +93,8 @@ def get_command_line_namespace(
         return get_ctrl_namespace(*command_args, namespace=global_namespace)
     elif cmd == Command.task:
         return get_task_namespace(*command_args, namespace=global_namespace)
+    elif cmd == Command.daemon:
+        return get_daemon_namespace(*command_args, namespace=global_namespace)
 
     assert cmd == Command.unknown
     return global_namespace
@@ -94,6 +108,8 @@ def cast_config_type(namespace: Namespace) -> ConfigType:
         return cast_ctrl_config(namespace)
     elif cmd == Command.task:
         return cast_task_config(namespace)
+    elif cmd == Command.daemon:
+        return cast_daemon_config(namespace)
 
     assert cmd == Command.unknown
     return cast_global_config(namespace)
@@ -200,4 +216,15 @@ def parse_arguments_to_task_config(
     args = _none_optional_args(global_options, [Command.task.name], task_options)
     result = parse_arguments_to_config2(args, **kwargs)
     assert isinstance(result, TaskConfig)
+    return result
+
+
+def parse_arguments_to_daemon_config(
+    global_options: Optional[List[Any]] = None,
+    daemon_options: Optional[List[Any]] = None,
+    **kwargs,
+) -> DaemonConfig:
+    args = _none_optional_args(global_options, [Command.daemon.name], daemon_options)
+    result = parse_arguments_to_config2(args, **kwargs)
+    assert isinstance(result, DaemonConfig)
     return result

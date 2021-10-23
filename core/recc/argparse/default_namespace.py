@@ -18,6 +18,11 @@ from recc.argparse.config.task_config import (
     TASK_ARGS,
     cast_task_config,
 )
+from recc.argparse.config.daemon_config import (
+    DaemonConfig,
+    DAEMON_ARGS,
+    cast_daemon_config,
+)
 from recc.argparse.config.global_config import (
     GlobalConfig,
     ARG_COMMAND,
@@ -57,6 +62,12 @@ def get_default_task_namespace() -> Namespace:
     return result
 
 
+def get_default_daemon_namespace() -> Namespace:
+    result = get_default_namespace(*GLOBAL_ARGS, *DAEMON_ARGS)
+    setattr(result, ARG_COMMAND.normalize_key, Command.daemon.name)
+    return result
+
+
 def get_default_global_config() -> GlobalConfig:
     return cast_global_config(get_default_global_namespace())
 
@@ -71,3 +82,7 @@ def get_default_ctrl_config() -> CtrlConfig:
 
 def get_default_task_config() -> TaskConfig:
     return cast_task_config(get_default_task_namespace())
+
+
+def get_default_daemon_config() -> DaemonConfig:
+    return cast_daemon_config(get_default_daemon_namespace())

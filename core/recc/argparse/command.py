@@ -9,6 +9,7 @@ class Command(Enum):
     core = 1
     task = 2
     ctrl = 3
+    daemon = 4
 
 
 def get_available_commands() -> List[str]:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Optional, Any, Dict, Tuple, Iterable, List
+from typing import Optional, Any, Dict, Tuple, Iterable, List, Mapping, Text
 from inspect import iscoroutinefunction
 from copy import deepcopy
 from aiohttp.web_urldispatcher import DynamicResource
@@ -16,7 +16,9 @@ NAME_ON_DESTROY = "on_destroy"
 NAME_ON_ROUTES = "on_routes"
 NAME_ON_OPEN = "on_open"
 NAME_ON_CLOSE = "on_close"
-NAME_ON_REQUEST = "on_request"
+
+NAME_ON_PACKET = "on_packet"
+NAME_ON_PICKLING = "on_pickling"
 
 PYTHON_PLUGIN_PREFIX = """# -*- coding: utf-8 -*-
 import sys
@@ -113,6 +115,18 @@ class Plugin:
     def exists_close(self) -> bool:
         return NAME_ON_CLOSE in self._global_variables
 
+    @property
+    def exists_packet_func(self) -> bool:
+        return NAME_ON_PACKET in self._global_variables
+
+    @property
+    def exists_pickling_func(self) -> bool:
+        return NAME_ON_PICKLING in self._global_variables
+
+    # ----------
+    # Get Caller
+    # ----------
+
     def get_on_create_func(self) -> Any:
         return self._global_variables.get(NAME_ON_CREATE, None)
 
@@ -128,25 +142,35 @@ class Plugin:
     def get_on_close_func(self) -> Any:
         return self._global_variables.get(NAME_ON_CLOSE, None)
 
+    def get_on_packet_func(self) -> Any:
+        return self._global_variables.get(NAME_ON_PACKET, None)
+
+    def get_on_pickling_func(self) -> Any:
+        return self._global_variables.get(NAME_ON_PICKLING, None)
+
+    # ------
+    # Caller
+    # ------
+
     def call_create(self, context: Any, **kwargs) -> None:
         on_create = self._global_variables.get(NAME_ON_CREATE)
         assert on_create is not None
         if iscoroutinefunction(on_create):
-            raise RuntimeError("`on_create` is not a coroutine function")
+            raise RuntimeError(f"`{NAME_ON_CREATE}` is not a coroutine function")
         on_create(context, **kwargs)
 
     def call_destroy(self) -> None:
         on_destroy = self._global_variables.get(NAME_ON_DESTROY)
         assert on_destroy is not None
         if iscoroutinefunction(on_destroy):
-            raise RuntimeError("`on_destroy` is not a coroutine function")
+            raise RuntimeError(f"`{NAME_ON_DESTROY}` is not a coroutine function")
         on_destroy()
 
     def _call_get_routes(self) -> Iterable[Tuple[str, str, Any]]:
         on_routes = self._global_variables.get(NAME_ON_ROUTES)
         assert on_routes is not None
         if iscoroutinefunction(on_routes):
-            raise RuntimeError("`on_routes` is not a coroutine function")
+            raise RuntimeError(f"`{NAME_ON_ROUTES}` is not a coroutine function")
         return on_routes()
 
     def update_routes(self) -> None:
@@ -176,12 +200,78 @@ class Plugin:
         on_open = self._global_variables.get(NAME_ON_OPEN)
         assert on_open is not None
         if not iscoroutinefunction(on_open):
-            raise RuntimeError("'on_open' must be a coroutine function")
+            raise RuntimeError(f"'{NAME_ON_OPEN}' must be a coroutine function")
         await on_open()
 
     async def call_close(self) -> None:
         on_close = self._global_variables.get(NAME_ON_CLOSE)
         assert on_close is not None
         if not iscoroutinefunction(on_close):
-            raise RuntimeError("'on_close' must be a coroutine function")
+            raise RuntimeError(f"'{NAME_ON_CLOSE}' must be a coroutine function")
         await on_close()
+
+    @staticmethod
+    def object_to_packet_answer(
+        obj: Any,
+    ) -> Tuple[int, Mapping[Text, Text], Optional[Any]]:
+        if obj is None:
+            return 0, dict(), None
+        if isinstance(obj, int):
+            return obj, dict(), None
+        if not isinstance(obj, tuple) and not isinstance(obj, list):
+            raise TypeError("Only list or tuple types are supported")
+
+        if len(obj) == 0:
+            return 0, dict(), None
+
+        if not isinstance(obj[0], int):
+            raise TypeError(
+                "The first element of the tuple must be a `int` type. "
+                f"({type(obj[0]).__name__})"
+            )
+        if len(obj) == 1:
+            return obj[0], dict(), None
+
+        if not isinstance(obj[1], Mapping):
+            raise TypeError(
+                "The second element of the tuple must be a `Mapping` type. "
+                f"({type(obj[1]).__name__})"
+            )
+        if len(obj) == 2:
+            return obj[0], obj[1], None
+        return obj[0], obj[1], obj[2]
+
+    async def call_packet(
+        self,
+        method: int,
+        headers: Optional[Mapping[Text, Text]] = None,
+        content: Optional[bytes] = None,
+    ) -> Tuple[int, Mapping[Text, Text], Optional[bytes]]:
+        func = self._global_variables.get(NAME_ON_PACKET)
+        assert func is not None
+        if iscoroutinefunction(func):
+            result = await func(method, headers, content)
+        else:
+            result = func(method, headers, content)
+        updated_result = self.object_to_packet_answer(result)
+        content = updated_result[2]
+        if content is not None and not isinstance(content, bytes):
+            raise TypeError(
+                "The third element of the tuple must be a `bytes` type. "
+                f"({type(content).__name__})"
+            )
+        return updated_result
+
+    async def call_pickling(
+        self,
+        method: int,
+        headers: Optional[Mapping[Text, Text]] = None,
+        content: Optional[Any] = None,
+    ) -> Tuple[int, Mapping[Text, Text], Optional[Any]]:
+        func = self._global_variables.get(NAME_ON_PICKLING)
+        assert func is not None
+        if iscoroutinefunction(func):
+            result = await func(method, headers, content)
+        else:
+            result = func(method, headers, content)
+        return self.object_to_packet_answer(result)
