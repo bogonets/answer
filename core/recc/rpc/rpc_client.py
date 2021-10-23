@@ -15,7 +15,7 @@ from recc.rpc.rpc_converter import (
     cvt_node_slot_data_requests,
     cvt_node_slot_datas,
 )
-from recc.proto.rpc.rpc_api_pb2_grpc import ReccApiStub
+from recc.proto.rpc.rpc_api_pb2_grpc import RpcApiStub
 from recc.proto.rpc.rpc_api_pb2 import (
     Pit,
     Pat,
@@ -52,19 +52,19 @@ DEFAULT_HEARTBEAT_TIMEOUT = 5.0
 #         yield api.TestQ(msg=f"Q[{i}]")
 #
 #
-# async def guide_list(stub: ReccApiStub) -> None:
+# async def guide_list(stub: RpcApiStub) -> None:
 #     async for response in stub.ServerStreamingTest(api.TestQ(msg="Q")):
 #         print(f"SS -> TestA({response.msg})")
 #
 #
-# async def guide_route_chat(stub: ReccApiStub) -> None:
+# async def guide_route_chat(stub: RpcApiStub) -> None:
 #     async for response in stub.BidirectionalStreamingTest(generate_test_q()):
 #         print(f"BS -> {response.msg}")
 #
 #
 # async def test_node_client(address=DEFAULT_NODE_ADDRESS) -> None:
 #     async with grpc.aio.insecure_channel(address) as channel:
-#         stub = ReccApiStub(channel)
+#         stub = RpcApiStub(channel)
 #         response = await stub.Test(api.TestQ(msg="Hello Node !"))
 #         print(f"TestA({response.msg})")
 #
@@ -84,7 +84,7 @@ async def heartbeat(
         address, options=DEFAULT_GRPC_OPTIONS
     ) as channel:
         # grpc.channel_ready_future(channel)
-        stub = ReccApiStub(channel)
+        stub = RpcApiStub(channel)
         options = dict()
         if timeout is not None:
             options["timeout"] = timeout
@@ -132,7 +132,7 @@ async def try_connection(
 class RpcClient:
 
     _channel: Optional[Channel] = None
-    _stub: Optional[ReccApiStub] = None
+    _stub: Optional[RpcApiStub] = None
 
     def __init__(
         self,
@@ -161,7 +161,7 @@ class RpcClient:
         self._channel = grpc.aio.insecure_channel(
             self._address, options=DEFAULT_GRPC_OPTIONS
         )
-        self._stub = ReccApiStub(self._channel)
+        self._stub = RpcApiStub(self._channel)
         await self._channel.channel_ready()
 
     async def close(self) -> None:

@@ -5,7 +5,7 @@ import grpc
 import recc.proto.rpc.rpc_api_pb2 as rpc__api__pb2
 
 
-class ReccApiStub(object):
+class RpcApiStub(object):
     """rpc Test (TestQ) returns (TestA) {}
     rpc ClientStreamingTest (stream TestQ) returns (TestA) {}
     rpc ServerStreamingTest (TestQ) returns (stream TestA) {}
@@ -19,58 +19,58 @@ class ReccApiStub(object):
             channel: A grpc.Channel.
         """
         self.Heartbeat = channel.unary_unary(
-                '/recc.proto.rpc.ReccApi/Heartbeat',
+                '/recc.proto.rpc.RpcApi/Heartbeat',
                 request_serializer=rpc__api__pb2.Pit.SerializeToString,
                 response_deserializer=rpc__api__pb2.Pat.FromString,
                 )
         self.Echo = channel.unary_unary(
-                '/recc.proto.rpc.ReccApi/Echo',
+                '/recc.proto.rpc.RpcApi/Echo',
                 request_serializer=rpc__api__pb2.Ping.SerializeToString,
                 response_deserializer=rpc__api__pb2.Pong.FromString,
                 )
         self.EchoData = channel.unary_unary(
-                '/recc.proto.rpc.ReccApi/EchoData',
+                '/recc.proto.rpc.RpcApi/EchoData',
                 request_serializer=rpc__api__pb2.Data.SerializeToString,
                 response_deserializer=rpc__api__pb2.Data.FromString,
                 )
         self.GetWorkspaceSubdir = channel.unary_unary(
-                '/recc.proto.rpc.ReccApi/GetWorkspaceSubdir',
+                '/recc.proto.rpc.RpcApi/GetWorkspaceSubdir',
                 request_serializer=rpc__api__pb2.Empty.SerializeToString,
                 response_deserializer=rpc__api__pb2.Names.FromString,
                 )
         self.GetTemplateNames = channel.unary_unary(
-                '/recc.proto.rpc.ReccApi/GetTemplateNames',
+                '/recc.proto.rpc.RpcApi/GetTemplateNames',
                 request_serializer=rpc__api__pb2.Empty.SerializeToString,
                 response_deserializer=rpc__api__pb2.Names.FromString,
                 )
         self.UploadTemplate = channel.unary_unary(
-                '/recc.proto.rpc.ReccApi/UploadTemplate',
+                '/recc.proto.rpc.RpcApi/UploadTemplate',
                 request_serializer=rpc__api__pb2.UploadTemplateQ.SerializeToString,
                 response_deserializer=rpc__api__pb2.UploadTemplateA.FromString,
                 )
         self.SetTaskBlueprint = channel.unary_unary(
-                '/recc.proto.rpc.ReccApi/SetTaskBlueprint',
+                '/recc.proto.rpc.RpcApi/SetTaskBlueprint',
                 request_serializer=rpc__api__pb2.SetTaskBlueprintQ.SerializeToString,
                 response_deserializer=rpc__api__pb2.SetTaskBlueprintA.FromString,
                 )
         self.GetNodeProperty = channel.unary_unary(
-                '/recc.proto.rpc.ReccApi/GetNodeProperty',
+                '/recc.proto.rpc.RpcApi/GetNodeProperty',
                 request_serializer=rpc__api__pb2.GetNodePropertyQ.SerializeToString,
                 response_deserializer=rpc__api__pb2.GetNodePropertyA.FromString,
                 )
         self.SetNodeProperty = channel.unary_unary(
-                '/recc.proto.rpc.ReccApi/SetNodeProperty',
+                '/recc.proto.rpc.RpcApi/SetNodeProperty',
                 request_serializer=rpc__api__pb2.SetNodePropertyQ.SerializeToString,
                 response_deserializer=rpc__api__pb2.SetNodePropertyA.FromString,
                 )
         self.SendSignal = channel.unary_unary(
-                '/recc.proto.rpc.ReccApi/SendSignal',
+                '/recc.proto.rpc.RpcApi/SendSignal',
                 request_serializer=rpc__api__pb2.SendSignalQ.SerializeToString,
                 response_deserializer=rpc__api__pb2.SendSignalA.FromString,
                 )
 
 
-class ReccApiServicer(object):
+class RpcApiServicer(object):
     """rpc Test (TestQ) returns (TestA) {}
     rpc ClientStreamingTest (stream TestQ) returns (TestA) {}
     rpc ServerStreamingTest (TestQ) returns (stream TestA) {}
@@ -138,7 +138,7 @@ class ReccApiServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_ReccApiServicer_to_server(servicer, server):
+def add_RpcApiServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Heartbeat': grpc.unary_unary_rpc_method_handler(
                     servicer.Heartbeat,
@@ -192,12 +192,12 @@ def add_ReccApiServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'recc.proto.rpc.ReccApi', rpc_method_handlers)
+            'recc.proto.rpc.RpcApi', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class ReccApi(object):
+class RpcApi(object):
     """rpc Test (TestQ) returns (TestA) {}
     rpc ClientStreamingTest (stream TestQ) returns (TestA) {}
     rpc ServerStreamingTest (TestQ) returns (stream TestA) {}
@@ -215,7 +215,7 @@ class ReccApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.ReccApi/Heartbeat',
+        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.RpcApi/Heartbeat',
             rpc__api__pb2.Pit.SerializeToString,
             rpc__api__pb2.Pat.FromString,
             options, channel_credentials,
@@ -232,7 +232,7 @@ class ReccApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.ReccApi/Echo',
+        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.RpcApi/Echo',
             rpc__api__pb2.Ping.SerializeToString,
             rpc__api__pb2.Pong.FromString,
             options, channel_credentials,
@@ -249,7 +249,7 @@ class ReccApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.ReccApi/EchoData',
+        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.RpcApi/EchoData',
             rpc__api__pb2.Data.SerializeToString,
             rpc__api__pb2.Data.FromString,
             options, channel_credentials,
@@ -266,7 +266,7 @@ class ReccApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.ReccApi/GetWorkspaceSubdir',
+        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.RpcApi/GetWorkspaceSubdir',
             rpc__api__pb2.Empty.SerializeToString,
             rpc__api__pb2.Names.FromString,
             options, channel_credentials,
@@ -283,7 +283,7 @@ class ReccApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.ReccApi/GetTemplateNames',
+        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.RpcApi/GetTemplateNames',
             rpc__api__pb2.Empty.SerializeToString,
             rpc__api__pb2.Names.FromString,
             options, channel_credentials,
@@ -300,7 +300,7 @@ class ReccApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.ReccApi/UploadTemplate',
+        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.RpcApi/UploadTemplate',
             rpc__api__pb2.UploadTemplateQ.SerializeToString,
             rpc__api__pb2.UploadTemplateA.FromString,
             options, channel_credentials,
@@ -317,7 +317,7 @@ class ReccApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.ReccApi/SetTaskBlueprint',
+        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.RpcApi/SetTaskBlueprint',
             rpc__api__pb2.SetTaskBlueprintQ.SerializeToString,
             rpc__api__pb2.SetTaskBlueprintA.FromString,
             options, channel_credentials,
@@ -334,7 +334,7 @@ class ReccApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.ReccApi/GetNodeProperty',
+        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.RpcApi/GetNodeProperty',
             rpc__api__pb2.GetNodePropertyQ.SerializeToString,
             rpc__api__pb2.GetNodePropertyA.FromString,
             options, channel_credentials,
@@ -351,7 +351,7 @@ class ReccApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.ReccApi/SetNodeProperty',
+        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.RpcApi/SetNodeProperty',
             rpc__api__pb2.SetNodePropertyQ.SerializeToString,
             rpc__api__pb2.SetNodePropertyA.FromString,
             options, channel_credentials,
@@ -368,7 +368,7 @@ class ReccApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.ReccApi/SendSignal',
+        return grpc.experimental.unary_unary(request, target, '/recc.proto.rpc.RpcApi/SendSignal',
             rpc__api__pb2.SendSignalQ.SerializeToString,
             rpc__api__pb2.SendSignalA.FromString,
             options, channel_credentials,

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\rrpc_api.proto\x12\x0erecc.proto.rpc\"\x14\n\x03Pit\x12\r\n\x05\x64\x65lay\x18\x01 \x01(\x02\"\x11\n\x03Pat\x12\n\n\x02ok\x18\x01 \x01(\x08\"\x13\n\x04Ping\x12\x0b\n\x03msg\x18\x01 \x01(\t\"\x13\n\x04Pong\x12\x0b\n\x03msg\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\"\x14\n\x04\x44\x61ta\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"0\n\x06Result\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\x10\n\x03msg\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\x06\n\x04_msg\"\x16\n\x05Names\x12\r\n\x05names\x18\x01 \x03(\t\"1\n\x07TarFile\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\x12\x10\n\x03\x66mt\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\x06\n\x04_fmt\"7\n\x0fUploadTemplateQ\x12$\n\x03tar\x18\x01 \x01(\x0b\x32\x17.recc.proto.rpc.TarFile\"9\n\x0fUploadTemplateA\x12&\n\x06result\x18\x01 \x01(\x0b\x32\x16.recc.proto.rpc.Result\"!\n\x11SetTaskBlueprintQ\x12\x0c\n\x04json\x18\x01 \x01(\t\";\n\x11SetTaskBlueprintA\x12&\n\x06result\x18\x01 \x01(\x0b\x32\x16.recc.proto.rpc.Result\".\n\x10NodePropertyPath\x12\x0c\n\x04node\x18\x01 \x01(\t\x12\x0c\n\x04prop\x18\x02 \x01(\t\"B\n\x10GetNodePropertyQ\x12.\n\x04path\x18\x01 \x01(\x0b\x32 .recc.proto.rpc.NodePropertyPath\"H\n\x10GetNodePropertyA\x12&\n\x06result\x18\x01 \x01(\x0b\x32\x16.recc.proto.rpc.Result\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"P\n\x10SetNodePropertyQ\x12.\n\x04path\x18\x01 \x01(\x0b\x32 .recc.proto.rpc.NodePropertyPath\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\":\n\x10SetNodePropertyA\x12&\n\x06result\x18\x01 \x01(\x0b\x32\x16.recc.proto.rpc.Result\"*\n\x0cNodeSlotPath\x12\x0c\n\x04node\x18\x01 \x01(\t\x12\x0c\n\x04slot\x18\x02 \x01(\t\"H\n\x0cNodeSlotData\x12*\n\x04path\x18\x01 \x01(\x0b\x32\x1c.recc.proto.rpc.NodeSlotPath\x12\x0c\n\x04\x64\x61ta\x18\x03 \x01(\x0c\"A\n\x13NodeSlotDataRequest\x12*\n\x04path\x18\x01 \x01(\x0b\x32\x1c.recc.proto.rpc.NodeSlotPath\"\x8b\x01\n\x0bSendSignalQ\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x32\n\x0cinject_slots\x18\x02 \x03(\x0b\x32\x1c.recc.proto.rpc.NodeSlotData\x12:\n\rextract_slots\x18\x03 \x03(\x0b\x32#.recc.proto.rpc.NodeSlotDataRequest\"l\n\x0bSendSignalA\x12&\n\x06result\x18\x01 \x01(\x0b\x32\x16.recc.proto.rpc.Result\x12\x35\n\x0f\x65xtracted_slots\x18\x02 \x03(\x0b\x32\x1c.recc.proto.rpc.NodeSlotData2\xea\x05\n\x07ReccApi\x12\x37\n\tHeartbeat\x12\x13.recc.proto.rpc.Pit\x1a\x13.recc.proto.rpc.Pat\"\x00\x12\x34\n\x04\x45\x63ho\x12\x14.recc.proto.rpc.Ping\x1a\x14.recc.proto.rpc.Pong\"\x00\x12\x38\n\x08\x45\x63hoData\x12\x14.recc.proto.rpc.Data\x1a\x14.recc.proto.rpc.Data\"\x00\x12\x44\n\x12GetWorkspaceSubdir\x12\x15.recc.proto.rpc.Empty\x1a\x15.recc.proto.rpc.Names\"\x00\x12\x42\n\x10GetTemplateNames\x12\x15.recc.proto.rpc.Empty\x1a\x15.recc.proto.rpc.Names\"\x00\x12T\n\x0eUploadTemplate\x12\x1f.recc.proto.rpc.UploadTemplateQ\x1a\x1f.recc.proto.rpc.UploadTemplateA\"\x00\x12Z\n\x10SetTaskBlueprint\x12!.recc.proto.rpc.SetTaskBlueprintQ\x1a!.recc.proto.rpc.SetTaskBlueprintA\"\x00\x12W\n\x0fGetNodeProperty\x12 .recc.proto.rpc.GetNodePropertyQ\x1a .recc.proto.rpc.GetNodePropertyA\"\x00\x12W\n\x0fSetNodeProperty\x12 .recc.proto.rpc.SetNodePropertyQ\x1a .recc.proto.rpc.SetNodePropertyA\"\x00\x12H\n\nSendSignal\x12\x1b.recc.proto.rpc.SendSignalQ\x1a\x1b.recc.proto.rpc.SendSignalA\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\rrpc_api.proto\x12\x0erecc.proto.rpc\"\x14\n\x03Pit\x12\r\n\x05\x64\x65lay\x18\x01 \x01(\x02\"\x11\n\x03Pat\x12\n\n\x02ok\x18\x01 \x01(\x08\"\x13\n\x04Ping\x12\x0b\n\x03msg\x18\x01 \x01(\t\"\x13\n\x04Pong\x12\x0b\n\x03msg\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\"\x14\n\x04\x44\x61ta\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"0\n\x06Result\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\x10\n\x03msg\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\x06\n\x04_msg\"\x16\n\x05Names\x12\r\n\x05names\x18\x01 \x03(\t\"1\n\x07TarFile\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\x12\x10\n\x03\x66mt\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\x06\n\x04_fmt\"7\n\x0fUploadTemplateQ\x12$\n\x03tar\x18\x01 \x01(\x0b\x32\x17.recc.proto.rpc.TarFile\"9\n\x0fUploadTemplateA\x12&\n\x06result\x18\x01 \x01(\x0b\x32\x16.recc.proto.rpc.Result\"!\n\x11SetTaskBlueprintQ\x12\x0c\n\x04json\x18\x01 \x01(\t\";\n\x11SetTaskBlueprintA\x12&\n\x06result\x18\x01 \x01(\x0b\x32\x16.recc.proto.rpc.Result\".\n\x10NodePropertyPath\x12\x0c\n\x04node\x18\x01 \x01(\t\x12\x0c\n\x04prop\x18\x02 \x01(\t\"B\n\x10GetNodePropertyQ\x12.\n\x04path\x18\x01 \x01(\x0b\x32 .recc.proto.rpc.NodePropertyPath\"H\n\x10GetNodePropertyA\x12&\n\x06result\x18\x01 \x01(\x0b\x32\x16.recc.proto.rpc.Result\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"P\n\x10SetNodePropertyQ\x12.\n\x04path\x18\x01 \x01(\x0b\x32 .recc.proto.rpc.NodePropertyPath\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\":\n\x10SetNodePropertyA\x12&\n\x06result\x18\x01 \x01(\x0b\x32\x16.recc.proto.rpc.Result\"*\n\x0cNodeSlotPath\x12\x0c\n\x04node\x18\x01 \x01(\t\x12\x0c\n\x04slot\x18\x02 \x01(\t\"H\n\x0cNodeSlotData\x12*\n\x04path\x18\x01 \x01(\x0b\x32\x1c.recc.proto.rpc.NodeSlotPath\x12\x0c\n\x04\x64\x61ta\x18\x03 \x01(\x0c\"A\n\x13NodeSlotDataRequest\x12*\n\x04path\x18\x01 \x01(\x0b\x32\x1c.recc.proto.rpc.NodeSlotPath\"\x8b\x01\n\x0bSendSignalQ\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x32\n\x0cinject_slots\x18\x02 \x03(\x0b\x32\x1c.recc.proto.rpc.NodeSlotData\x12:\n\rextract_slots\x18\x03 \x03(\x0b\x32#.recc.proto.rpc.NodeSlotDataRequest\"l\n\x0bSendSignalA\x12&\n\x06result\x18\x01 \x01(\x0b\x32\x16.recc.proto.rpc.Result\x12\x35\n\x0f\x65xtracted_slots\x18\x02 \x03(\x0b\x32\x1c.recc.proto.rpc.NodeSlotData2\xe9\x05\n\x06RpcApi\x12\x37\n\tHeartbeat\x12\x13.recc.proto.rpc.Pit\x1a\x13.recc.proto.rpc.Pat\"\x00\x12\x34\n\x04\x45\x63ho\x12\x14.recc.proto.rpc.Ping\x1a\x14.recc.proto.rpc.Pong\"\x00\x12\x38\n\x08\x45\x63hoData\x12\x14.recc.proto.rpc.Data\x1a\x14.recc.proto.rpc.Data\"\x00\x12\x44\n\x12GetWorkspaceSubdir\x12\x15.recc.proto.rpc.Empty\x1a\x15.recc.proto.rpc.Names\"\x00\x12\x42\n\x10GetTemplateNames\x12\x15.recc.proto.rpc.Empty\x1a\x15.recc.proto.rpc.Names\"\x00\x12T\n\x0eUploadTemplate\x12\x1f.recc.proto.rpc.UploadTemplateQ\x1a\x1f.recc.proto.rpc.UploadTemplateA\"\x00\x12Z\n\x10SetTaskBlueprint\x12!.recc.proto.rpc.SetTaskBlueprintQ\x1a!.recc.proto.rpc.SetTaskBlueprintA\"\x00\x12W\n\x0fGetNodeProperty\x12 .recc.proto.rpc.GetNodePropertyQ\x1a .recc.proto.rpc.GetNodePropertyA\"\x00\x12W\n\x0fSetNodeProperty\x12 .recc.proto.rpc.SetNodePropertyQ\x1a .recc.proto.rpc.SetNodePropertyA\"\x00\x12H\n\nSendSignal\x12\x1b.recc.proto.rpc.SendSignalQ\x1a\x1b.recc.proto.rpc.SendSignalA\"\x00\x62\x06proto3'
 )
 
 
@@ -1040,19 +1040,19 @@ _sym_db.RegisterMessage(SendSignalA)
 
 
 
-_RECCAPI = _descriptor.ServiceDescriptor(
-  name='ReccApi',
-  full_name='recc.proto.rpc.ReccApi',
+_RPCAPI = _descriptor.ServiceDescriptor(
+  name='RpcApi',
+  full_name='recc.proto.rpc.RpcApi',
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
   serialized_start=1254,
-  serialized_end=2000,
+  serialized_end=1999,
   methods=[
   _descriptor.MethodDescriptor(
     name='Heartbeat',
-    full_name='recc.proto.rpc.ReccApi.Heartbeat',
+    full_name='recc.proto.rpc.RpcApi.Heartbeat',
     index=0,
     containing_service=None,
     input_type=_PIT,
@@ -1062,7 +1062,7 @@ _RECCAPI = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='Echo',
-    full_name='recc.proto.rpc.ReccApi.Echo',
+    full_name='recc.proto.rpc.RpcApi.Echo',
     index=1,
     containing_service=None,
     input_type=_PING,
@@ -1072,7 +1072,7 @@ _RECCAPI = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='EchoData',
-    full_name='recc.proto.rpc.ReccApi.EchoData',
+    full_name='recc.proto.rpc.RpcApi.EchoData',
     index=2,
     containing_service=None,
     input_type=_DATA,
@@ -1082,7 +1082,7 @@ _RECCAPI = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='GetWorkspaceSubdir',
-    full_name='recc.proto.rpc.ReccApi.GetWorkspaceSubdir',
+    full_name='recc.proto.rpc.RpcApi.GetWorkspaceSubdir',
     index=3,
     containing_service=None,
     input_type=_EMPTY,
@@ -1092,7 +1092,7 @@ _RECCAPI = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='GetTemplateNames',
-    full_name='recc.proto.rpc.ReccApi.GetTemplateNames',
+    full_name='recc.proto.rpc.RpcApi.GetTemplateNames',
     index=4,
     containing_service=None,
     input_type=_EMPTY,
@@ -1102,7 +1102,7 @@ _RECCAPI = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='UploadTemplate',
-    full_name='recc.proto.rpc.ReccApi.UploadTemplate',
+    full_name='recc.proto.rpc.RpcApi.UploadTemplate',
     index=5,
     containing_service=None,
     input_type=_UPLOADTEMPLATEQ,
@@ -1112,7 +1112,7 @@ _RECCAPI = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='SetTaskBlueprint',
-    full_name='recc.proto.rpc.ReccApi.SetTaskBlueprint',
+    full_name='recc.proto.rpc.RpcApi.SetTaskBlueprint',
     index=6,
     containing_service=None,
     input_type=_SETTASKBLUEPRINTQ,
@@ -1122,7 +1122,7 @@ _RECCAPI = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='GetNodeProperty',
-    full_name='recc.proto.rpc.ReccApi.GetNodeProperty',
+    full_name='recc.proto.rpc.RpcApi.GetNodeProperty',
     index=7,
     containing_service=None,
     input_type=_GETNODEPROPERTYQ,
@@ -1132,7 +1132,7 @@ _RECCAPI = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='SetNodeProperty',
-    full_name='recc.proto.rpc.ReccApi.SetNodeProperty',
+    full_name='recc.proto.rpc.RpcApi.SetNodeProperty',
     index=8,
     containing_service=None,
     input_type=_SETNODEPROPERTYQ,
@@ -1142,7 +1142,7 @@ _RECCAPI = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='SendSignal',
-    full_name='recc.proto.rpc.ReccApi.SendSignal',
+    full_name='recc.proto.rpc.RpcApi.SendSignal',
     index=9,
     containing_service=None,
     input_type=_SENDSIGNALQ,
@@ -1151,8 +1151,8 @@ _RECCAPI = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
 ])
-_sym_db.RegisterServiceDescriptor(_RECCAPI)
+_sym_db.RegisterServiceDescriptor(_RPCAPI)
 
-DESCRIPTOR.services_by_name['ReccApi'] = _RECCAPI
+DESCRIPTOR.services_by_name['RpcApi'] = _RPCAPI
 
 # @@protoc_insertion_point(module_scope)

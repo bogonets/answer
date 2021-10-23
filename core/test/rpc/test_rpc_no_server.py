@@ -4,7 +4,7 @@ import unittest
 import grpc
 from tester.unittest.async_test_case import AsyncTestCase
 from recc.proto.rpc import rpc_api_pb2 as api
-from recc.proto.rpc.rpc_api_pb2_grpc import ReccApiStub
+from recc.proto.rpc.rpc_api_pb2_grpc import RpcApiStub
 
 
 class RpcNoServerTestCase(AsyncTestCase):
@@ -19,7 +19,7 @@ class RpcNoServerTestCase(AsyncTestCase):
 
     async def test_healthcheck(self):
         with self.assertRaises(grpc.aio.AioRpcError):
-            pat = ReccApiStub(self.client).Heartbeat(api.Pit(delay=0), timeout=1.0)
+            pat = RpcApiStub(self.client).Heartbeat(api.Pit(delay=0), timeout=1.0)
             await pat
 
 

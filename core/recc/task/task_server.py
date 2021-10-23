@@ -13,7 +13,7 @@ from recc.init.default import (
     init_loop_driver,
 )
 from recc.log.logging import recc_rpc_logger as logger
-from recc.proto.rpc.rpc_api_pb2_grpc import add_ReccApiServicer_to_server
+from recc.proto.rpc.rpc_api_pb2_grpc import add_RpcApiServicer_to_server
 from recc.rpc.rpc_client import try_connection
 from recc.rpc.rpc_servicer import RpcServicer
 from recc.variables.rpc import (
@@ -65,7 +65,7 @@ def create_task_server(config: TaskConfig) -> _ServerInfo:
     server = grpc.aio.server(options=DEFAULT_GRPC_OPTIONS)
     accepted_port_number = server.add_insecure_port(rpc_address)
 
-    add_ReccApiServicer_to_server(servicer, server)
+    add_RpcApiServicer_to_server(servicer, server)
 
     if _is_uds_family(rpc_address):
         assert accepted_port_number == ACCEPTED_UDS_PORT_NUMBER

@@ -5,7 +5,7 @@ import grpc
 from tester.unittest.async_test_case import AsyncTestCase
 from recc.argparse.default_namespace import get_default_task_config
 from recc.proto.rpc import rpc_api_pb2 as api
-from recc.proto.rpc.rpc_api_pb2_grpc import ReccApiStub
+from recc.proto.rpc.rpc_api_pb2_grpc import RpcApiStub
 from recc.task.task_server import create_task_server
 
 
@@ -27,13 +27,13 @@ class RpcHeartbeatTestCase(AsyncTestCase):
         await self.server.stop(None)
 
     async def test_heartbeat(self):
-        pat = ReccApiStub(self.client).Heartbeat(api.Pit(delay=0))
+        pat = RpcApiStub(self.client).Heartbeat(api.Pit(delay=0))
         response = await pat
         self.assertTrue(response.ok)
 
     async def test_heartbeat_timeout(self):
         with self.assertRaises(grpc.aio.AioRpcError):
-            pat = ReccApiStub(self.client).Heartbeat(api.Pit(delay=5.0), timeout=1.0)
+            pat = RpcApiStub(self.client).Heartbeat(api.Pit(delay=5.0), timeout=1.0)
             await pat
 
 

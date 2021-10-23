@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package recc.proto.rpc;
 
-service ReccApi {
+service RpcApi {
     // rpc Test (TestQ) returns (TestA) {}
     // rpc ClientStreamingTest (stream TestQ) returns (TestA) {}
     // rpc ServerStreamingTest (TestQ) returns (stream TestA) {}
