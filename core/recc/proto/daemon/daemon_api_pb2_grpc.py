@@ -14,6 +14,11 @@ class DaemonApiStub(object):
         Args:
             channel: A grpc.Channel.
         """
+        self.Heartbeat = channel.unary_unary(
+                '/recc.proto.daemon.DaemonApi/Heartbeat',
+                request_serializer=daemon__api__pb2.Pit.SerializeToString,
+                response_deserializer=daemon__api__pb2.Pat.FromString,
+                )
         self.Packet = channel.unary_unary(
                 '/recc.proto.daemon.DaemonApi/Packet',
                 request_serializer=daemon__api__pb2.PacketQ.SerializeToString,
@@ -28,6 +33,12 @@ class DaemonApiStub(object):
 
 class DaemonApiServicer(object):
     """Missing associated documentation comment in .proto file."""
+
+    def Heartbeat(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
     def Packet(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -44,6 +55,11 @@ class DaemonApiServicer(object):
 
 def add_DaemonApiServicer_to_server(servicer, server):
     rpc_method_handlers = {
+            'Heartbeat': grpc.unary_unary_rpc_method_handler(
+                    servicer.Heartbeat,
+                    request_deserializer=daemon__api__pb2.Pit.FromString,
+                    response_serializer=daemon__api__pb2.Pat.SerializeToString,
+            ),
             'Packet': grpc.unary_unary_rpc_method_handler(
                     servicer.Packet,
                     request_deserializer=daemon__api__pb2.PacketQ.FromString,
@@ -63,6 +79,23 @@ def add_DaemonApiServicer_to_server(servicer, server):
  # This class is part of an EXPERIMENTAL API.
 class DaemonApi(object):
     """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def Heartbeat(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/recc.proto.daemon.DaemonApi/Heartbeat',
+            daemon__api__pb2.Pit.SerializeToString,
+            daemon__api__pb2.Pat.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def Packet(request,

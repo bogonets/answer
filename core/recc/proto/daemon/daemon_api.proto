@@ -3,8 +3,17 @@ syntax = "proto3";
 package recc.proto.daemon;
 
 service DaemonApi {
+    rpc Heartbeat (Pit) returns (Pat) {}
     rpc Packet (PacketQ) returns (PacketA) {}
     rpc Pickling (PacketQ) returns (PacketA) {}
+}
+
+message Pit {
+    float delay = 1;
+}
+
+message Pat {
+    bool ok = 1;
 }
 
 message PacketQ {

@@ -21,7 +21,7 @@ from recc.rpc.rpc_servicer import RpcServicer
 from recc.variables.rpc import DEFAULT_GRPC_OPTIONS, ACCEPTED_UDS_PORT_NUMBER
 
 
-class AcceptInfo(object):
+class _AcceptInfo(object):
 
     __slots__ = ("servicer", "server", "accepted_port_number")
 
@@ -36,7 +36,7 @@ class AcceptInfo(object):
         self.accepted_port_number = accepted_port_number
 
 
-def create_task_server(config: TaskConfig) -> AcceptInfo:
+def create_task_server(config: TaskConfig) -> _AcceptInfo:
     servicer = RpcServicer(config)
     rpc_address = servicer.get_rpc_address()
 
@@ -50,12 +50,12 @@ def create_task_server(config: TaskConfig) -> AcceptInfo:
     if is_uds_family(rpc_address):
         assert accepted_port_number == ACCEPTED_UDS_PORT_NUMBER
         logger.info("RPC socket type: Unix Domain Socket")
-        return AcceptInfo(servicer, server)
+        return _AcceptInfo(servicer, server)
     else:
         assert accepted_port_number != ACCEPTED_UDS_PORT_NUMBER
         logger.info("RPC socket type: IP Address")
         logger.info(f"Accepted port number: {accepted_port_number}")
-        return AcceptInfo(servicer, server, accepted_port_number)
+        return _AcceptInfo(servicer, server, accepted_port_number)
 
 
 async def wait_connectable(address: str) -> bool:
@@ -120,10 +120,10 @@ async def run_task_server(config: TaskConfig, wait_connect=True) -> None:
     logger.info("Start the task server")
     _logging_config(config)
 
-    server_info = create_task_server(config)
-    servicer = server_info.servicer
-    server = server_info.server
-    accepted_port_number = server_info.accepted_port_number
+    accept_info = create_task_server(config)
+    servicer = accept_info.servicer
+    server = accept_info.server
+    accepted_port_number = accept_info.accepted_port_number
     await server.start()
 
     if wait_connect:

@@ -6,12 +6,30 @@ from typing import Optional, Any, Mapping, Text, Tuple
 from grpc.aio._channel import Channel  # noqa
 from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_register
 from recc.proto.daemon.daemon_api_pb2_grpc import DaemonApiStub
-from recc.proto.daemon.daemon_api_pb2 import PacketQ, PacketA
+from recc.proto.daemon.daemon_api_pb2 import Pit, Pat, PacketQ, PacketA
 from recc.variables.rpc import (
     DEFAULT_GRPC_OPTIONS,
     DEFAULT_PICKLE_PROTOCOL_VERSION,
     DEFAULT_PICKLE_ENCODING,
+    DEFAULT_HEARTBEAT_TIMEOUT,
 )
+
+
+async def heartbeat(
+    address: str,
+    delay: float = 0,
+    timeout: Optional[float] = DEFAULT_HEARTBEAT_TIMEOUT,
+) -> bool:
+    async with grpc.aio.insecure_channel(
+        address, options=DEFAULT_GRPC_OPTIONS
+    ) as channel:
+        # grpc.channel_ready_future(channel)
+        stub = DaemonApiStub(channel)
+        options = dict()
+        if timeout is not None:
+            options["timeout"] = timeout
+        response = await stub.Heartbeat(Pit(delay=delay), **options)
+    return response.ok
 
 
 class DaemonClient:
@@ -61,6 +79,12 @@ class DaemonClient:
 
     def _unpickling(self, data: bytes) -> Any:
         return pickle.loads(data, encoding=self._unpickling_encoding)
+
+    async def heartbeat(self, delay: float = 0) -> bool:
+        assert self._stub is not None
+        response = await self._stub.Heartbeat(Pit(delay=delay), **self._options)
+        assert isinstance(response, Pat)
+        return response.ok
 
     async def packet(
         self,
