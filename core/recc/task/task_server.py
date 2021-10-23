@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import asyncio
 import grpc
+
 from typing import Optional
-from ipaddress import ip_address
+from asyncio import run as asyncio_run
+from recc.aio.connection import try_connection
 from recc.argparse.config.task_config import TaskConfig, get_task_config_members
 from recc.init.default import (
     init_logger,
@@ -14,17 +15,13 @@ from recc.init.default import (
 )
 from recc.log.logging import recc_rpc_logger as logger
 from recc.proto.rpc.rpc_api_pb2_grpc import add_RpcApiServicer_to_server
-from recc.rpc.rpc_client import try_connection
+from recc.network.uds import is_uds_family
+from recc.rpc.rpc_client import heartbeat
 from recc.rpc.rpc_servicer import RpcServicer
-from recc.variables.rpc import (
-    DEFAULT_GRPC_OPTIONS,
-    ACCEPTED_UDS_PORT_NUMBER,
-    UNIX_URI_PREFIX,
-    UNIX_ABSTRACT_URI_PREFIX,
-)
+from recc.variables.rpc import DEFAULT_GRPC_OPTIONS, ACCEPTED_UDS_PORT_NUMBER
 
 
-class _ServerInfo(object):
+class AcceptInfo(object):
 
     __slots__ = ("servicer", "server", "accepted_port_number")
 
@@ -39,24 +36,7 @@ class _ServerInfo(object):
         self.accepted_port_number = accepted_port_number
 
 
-def _is_uds_family(address: str) -> bool:
-    if address.startswith(UNIX_URI_PREFIX):
-        return True
-    if address.startswith(UNIX_ABSTRACT_URI_PREFIX):
-        return True
-    return False
-
-
-def _is_ip_address(address: str) -> int:
-    try:
-        ip_address(address)
-    except ValueError:
-        return False
-    else:
-        return True
-
-
-def create_task_server(config: TaskConfig) -> _ServerInfo:
+def create_task_server(config: TaskConfig) -> AcceptInfo:
     servicer = RpcServicer(config)
     rpc_address = servicer.get_rpc_address()
 
@@ -67,18 +47,18 @@ def create_task_server(config: TaskConfig) -> _ServerInfo:
 
     add_RpcApiServicer_to_server(servicer, server)
 
-    if _is_uds_family(rpc_address):
+    if is_uds_family(rpc_address):
         assert accepted_port_number == ACCEPTED_UDS_PORT_NUMBER
         logger.info("RPC socket type: Unix Domain Socket")
-        return _ServerInfo(servicer, server)
+        return AcceptInfo(servicer, server)
     else:
         assert accepted_port_number != ACCEPTED_UDS_PORT_NUMBER
         logger.info("RPC socket type: IP Address")
         logger.info(f"Accepted port number: {accepted_port_number}")
-        return _ServerInfo(servicer, server, accepted_port_number)
+        return AcceptInfo(servicer, server, accepted_port_number)
 
 
-async def wait_connectable(address: str) -> None:
+async def wait_connectable(address: str) -> bool:
     def _try_cb(i: int, max_attempts: int) -> None:
         assert 0 <= i <= max_attempts
         attempts_msg = f"{i+1}/{max_attempts}"
@@ -98,8 +78,8 @@ async def wait_connectable(address: str) -> None:
         logger.debug("wait_connectable() -> Self connection failure.")
 
     logger.info(f"Try connection address: {address}")
-    await try_connection(
-        address,
+    return await try_connection(
+        lambda: heartbeat(address),
         try_cb=_try_cb,
         retry_cb=_retry_cb,
         success_cb=_success_cb,
@@ -171,7 +151,7 @@ def run_task_until_complete(config: TaskConfig) -> int:
         init_yaml_driver(config.yaml_driver)
         init_loop_driver(config.loop_driver)
 
-        asyncio.run(run_task_server(config))
+        asyncio_run(run_task_server(config))
         logger.info("Task server completed successfully.")
         return 0
     except KeyboardInterrupt:

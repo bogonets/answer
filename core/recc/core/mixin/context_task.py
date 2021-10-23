@@ -5,6 +5,7 @@ from copy import deepcopy
 from typing import Optional, List, Any, Dict, Union
 from signal import SIGKILL
 from Crypto.PublicKey import RSA
+from recc.aio.connection import try_connection
 from recc.blueprint.v1.converter import bp_converter
 from recc.container.struct.container_status import ContainerStatus
 from recc.container.struct.container_info import ContainerInfo
@@ -14,7 +15,7 @@ from recc.rule.naming_base import valid_naming
 from recc.rule.naming_task import naming_task
 from recc.log.logging import recc_core_logger as logger
 from recc.rpc.rpc_client import (
-    try_connection,
+    heartbeat,
     RpcClient,
     create_rpc_client,
 )
@@ -315,7 +316,7 @@ class ContextTask(ContextBase):
                 logger.debug(f"Self connection failure. ({i + 1}/{max_attempts})")
 
             connection_result = await try_connection(
-                rpc_address,
+                lambda: heartbeat(rpc_address),
                 try_cb=_try_cb,
                 retry_cb=_retry_cb,
                 success_cb=_success_cb,

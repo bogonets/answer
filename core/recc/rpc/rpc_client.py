@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import asyncio
 import grpc
 import pickle
-from typing import Optional, Callable, List, Any, TypeVar
+from typing import Optional, List, Any
 from grpc.aio._channel import Channel  # noqa
 from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_register
 from recc.serialization.json import serialize_json_text
 from recc.blueprint.blueprint import BpTask
-from recc.variables.rpc import DEFAULT_GRPC_OPTIONS
+from recc.variables.rpc import DEFAULT_GRPC_OPTIONS, DEFAULT_HEARTBEAT_TIMEOUT
 from recc.vs.box import BoxData, BoxRequest
 from recc.rpc.rpc_converter import (
     cvt_box_datas,
@@ -38,13 +37,6 @@ from recc.proto.rpc.rpc_api_pb2 import (
     SendSignalQ,
     SendSignalA,
 )
-
-_T = TypeVar("_T")
-
-DEFAULT_TIMEOUT = 32.0
-DEFAULT_RESTART_DURATION = 5.0
-DEFAULT_RESTART_COUNT = 5
-DEFAULT_HEARTBEAT_TIMEOUT = 5.0
 
 
 # def generate_test_q():
@@ -78,7 +70,7 @@ DEFAULT_HEARTBEAT_TIMEOUT = 5.0
 async def heartbeat(
     address: str,
     delay: float = 0,
-    timeout: Optional[float] = None,
+    timeout: Optional[float] = DEFAULT_HEARTBEAT_TIMEOUT,
 ) -> bool:
     async with grpc.aio.insecure_channel(
         address, options=DEFAULT_GRPC_OPTIONS
@@ -90,43 +82,6 @@ async def heartbeat(
             options["timeout"] = timeout
         response = await stub.Heartbeat(Pit(delay=delay), **options)
     return response.ok
-
-
-async def try_connection(
-    address: str,
-    heartbeat_timeout: Optional[float] = None,
-    delay: Optional[float] = None,
-    max_attempts: Optional[int] = None,
-    *,
-    try_cb: Callable[[int, int], None] = None,
-    retry_cb: Callable[[int, int], None] = None,
-    success_cb: Callable[[int, int], None] = None,
-    failure_cb: Callable[[int, int], None] = None,
-) -> bool:
-    retry_delay = delay if delay else DEFAULT_RESTART_DURATION
-    retry_count = max_attempts if max_attempts else DEFAULT_RESTART_COUNT
-    loop_timeout = heartbeat_timeout if heartbeat_timeout else DEFAULT_HEARTBEAT_TIMEOUT
-    i = 0
-    while i < retry_count:
-        try:
-            if try_cb:
-                try_cb(i, retry_count)
-            if await heartbeat(address, 0, loop_timeout):
-                if success_cb:
-                    success_cb(i, retry_count)
-                return True
-        except:  # noqa
-            pass
-
-        i += 1
-        if i < retry_count:
-            if retry_cb:
-                retry_cb(i, retry_count)
-            await asyncio.sleep(retry_delay)
-
-    if failure_cb:
-        failure_cb(i, retry_count)
-    return False
 
 
 class RpcClient:
