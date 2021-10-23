@@ -1,0 +1,12 @@
+[Unit]
+Description=The ANSWER, No-code development platform
+
+[Service]
+Environment=PYTHONPATH=/usr/local/recc
+Environment=RECC_VERBOSE=0
+Environment=RECC_DEVELOPER=false
+Environment=RECC_STORAGE_ROOT=/usr/local/recc/storage
+ExecStart=/usr/local/recc/python/bin/python3.8 -m recc core
+
+[Install]
+WantedBy=multi-user.target
