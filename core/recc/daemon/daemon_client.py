@@ -5,8 +5,8 @@ import pickle
 from typing import Optional, Any, Mapping, Text, Tuple
 from grpc.aio._channel import Channel  # noqa
 from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_register
-from recc.proto.daemon_pb2_grpc import DaemonApiStub
-from recc.proto.daemon_pb2 import PacketQ, PacketA
+from recc.proto.daemon.daemon_api_pb2_grpc import DaemonApiStub
+from recc.proto.daemon.daemon_api_pb2 import PacketQ, PacketA
 from recc.variables.rpc import (
     DEFAULT_GRPC_OPTIONS,
     DEFAULT_PICKLE_PROTOCOL_VERSION,

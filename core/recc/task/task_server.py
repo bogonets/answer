@@ -13,7 +13,7 @@ from recc.init.default import (
     init_loop_driver,
 )
 from recc.log.logging import recc_rpc_logger as logger
-from recc.proto.api_pb2_grpc import add_ReccApiServicer_to_server
+from recc.proto.rpc.rpc_api_pb2_grpc import add_ReccApiServicer_to_server
 from recc.rpc.rpc_client import try_connection
 from recc.rpc.rpc_servicer import RpcServicer
 from recc.variables.rpc import (

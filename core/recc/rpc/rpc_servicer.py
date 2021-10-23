@@ -20,10 +20,8 @@ from recc.rpc.rpc_converter import (
 )
 from recc.variables.rpc import DEFAULT_RPC_ADDRESS
 from recc.vs.task_graph import TaskGraph
-from recc.proto.api_pb2_grpc import (
-    ReccApiServicer,
-)
-from recc.proto.api_pb2 import (
+from recc.proto.rpc.rpc_api_pb2_grpc import ReccApiServicer
+from recc.proto.rpc.rpc_api_pb2 import (
     Pit,
     Pat,
     Ping,

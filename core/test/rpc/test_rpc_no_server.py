@@ -3,8 +3,8 @@
 import unittest
 import grpc
 from tester.unittest.async_test_case import AsyncTestCase
-from recc.proto import api_pb2 as api
-from recc.proto.api_pb2_grpc import ReccApiStub
+from recc.proto.rpc import rpc_api_pb2 as api
+from recc.proto.rpc.rpc_api_pb2_grpc import ReccApiStub
 
 
 class RpcNoServerTestCase(AsyncTestCase):

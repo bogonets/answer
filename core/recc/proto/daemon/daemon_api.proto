@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package recc.proto;
+package recc.proto.daemon;
 
 service DaemonApi {
     rpc Packet (PacketQ) returns (PacketA) {}

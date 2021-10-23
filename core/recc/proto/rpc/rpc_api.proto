@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package recc.proto;
+package recc.proto.rpc;
 
 service ReccApi {
     // rpc Test (TestQ) returns (TestA) {}

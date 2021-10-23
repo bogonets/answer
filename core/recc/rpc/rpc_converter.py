@@ -2,7 +2,7 @@
 
 from typing import Optional, List, Iterable, Any, Callable
 from recc.vs.box import BoxData, BoxRequest
-from recc.proto.api_pb2 import (
+from recc.proto.rpc.rpc_api_pb2 import (
     NodeSlotPath,
     NodeSlotData,
     NodeSlotDataRequest,

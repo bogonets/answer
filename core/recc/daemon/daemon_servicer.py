@@ -12,8 +12,8 @@ from recc.plugin.plugin import (
     NAME_ON_PICKLING,
 )
 from recc.log.logging import recc_daemon_logger as logger
-from recc.proto.daemon_pb2 import PacketQ, PacketA
-from recc.proto.daemon_pb2_grpc import (
+from recc.proto.daemon.daemon_api_pb2 import PacketQ, PacketA
+from recc.proto.daemon.daemon_api_pb2_grpc import (
     DaemonApiServicer,
     add_DaemonApiServicer_to_server,
 )

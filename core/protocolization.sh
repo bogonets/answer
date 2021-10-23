@@ -12,22 +12,23 @@ fi
 function run_proto
 {
     local module=$1
+    local name=$2
 
-    echo "Protocolizing module ${module} ..."
+    echo "Protocolizing module ${module}/${name} ..."
 
     "$RECC_DIR/python" -m grpc_tools.protoc \
-        -Irecc/proto \
-        --python_out=recc/proto \
-        --mypy_out=recc/proto \
-        --grpc_python_out=recc/proto \
-        recc/proto/${module}.proto
+        -Irecc/proto/${module} \
+        --python_out=recc/proto/${module} \
+        --mypy_out=recc/proto/${module} \
+        --grpc_python_out=recc/proto/${module} \
+        recc/proto/${module}/${name}.proto
 
     # Do not use this flag: `--mypy_grpc_out=recc/proto`
     # I need to generate an asynchronous function, but generating a normal function.
 
-    local pattern_regex="^import ${module}_pb2 as ${module}__pb2$"
-    local replace_regex="import recc\\.proto\\.${module}_pb2 as ${module}__pb2"
-    local grpc_python_out_path="recc/proto/${module}_pb2_grpc.py"
+    local pattern_regex="^import ${name}_pb2 as "
+    local replace_regex="import recc\\.proto\\.${module}\\.${name}_pb2 as "
+    local grpc_python_out_path="recc/proto/${module}/${name}_pb2_grpc.py"
 
     sed -i.tmp \
         -e "s/${pattern_regex}/${replace_regex}/" \
@@ -35,5 +36,6 @@ function run_proto
     rm "${grpc_python_out_path}.tmp"
 }
 
-run_proto api
-run_proto daemon
+run_proto rpc rpc_api
+run_proto daemon daemon_api
+

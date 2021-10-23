@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import recc.proto.daemon_pb2 as daemon__pb2
+import recc.proto.daemon.daemon_api_pb2 as daemon__api__pb2
 
 
 class DaemonApiStub(object):
@@ -15,14 +15,14 @@ class DaemonApiStub(object):
             channel: A grpc.Channel.
         """
         self.Packet = channel.unary_unary(
-                '/recc.proto.DaemonApi/Packet',
-                request_serializer=daemon__pb2.PacketQ.SerializeToString,
-                response_deserializer=daemon__pb2.PacketA.FromString,
+                '/recc.proto.daemon.DaemonApi/Packet',
+                request_serializer=daemon__api__pb2.PacketQ.SerializeToString,
+                response_deserializer=daemon__api__pb2.PacketA.FromString,
                 )
         self.Pickling = channel.unary_unary(
-                '/recc.proto.DaemonApi/Pickling',
-                request_serializer=daemon__pb2.PacketQ.SerializeToString,
-                response_deserializer=daemon__pb2.PacketA.FromString,
+                '/recc.proto.daemon.DaemonApi/Pickling',
+                request_serializer=daemon__api__pb2.PacketQ.SerializeToString,
+                response_deserializer=daemon__api__pb2.PacketA.FromString,
                 )
 
 
@@ -46,17 +46,17 @@ def add_DaemonApiServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Packet': grpc.unary_unary_rpc_method_handler(
                     servicer.Packet,
-                    request_deserializer=daemon__pb2.PacketQ.FromString,
-                    response_serializer=daemon__pb2.PacketA.SerializeToString,
+                    request_deserializer=daemon__api__pb2.PacketQ.FromString,
+                    response_serializer=daemon__api__pb2.PacketA.SerializeToString,
             ),
             'Pickling': grpc.unary_unary_rpc_method_handler(
                     servicer.Pickling,
-                    request_deserializer=daemon__pb2.PacketQ.FromString,
-                    response_serializer=daemon__pb2.PacketA.SerializeToString,
+                    request_deserializer=daemon__api__pb2.PacketQ.FromString,
+                    response_serializer=daemon__api__pb2.PacketA.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'recc.proto.DaemonApi', rpc_method_handlers)
+            'recc.proto.daemon.DaemonApi', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -75,9 +75,9 @@ class DaemonApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/recc.proto.DaemonApi/Packet',
-            daemon__pb2.PacketQ.SerializeToString,
-            daemon__pb2.PacketA.FromString,
+        return grpc.experimental.unary_unary(request, target, '/recc.proto.daemon.DaemonApi/Packet',
+            daemon__api__pb2.PacketQ.SerializeToString,
+            daemon__api__pb2.PacketA.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -92,8 +92,8 @@ class DaemonApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/recc.proto.DaemonApi/Pickling',
-            daemon__pb2.PacketQ.SerializeToString,
-            daemon__pb2.PacketA.FromString,
+        return grpc.experimental.unary_unary(request, target, '/recc.proto.daemon.DaemonApi/Pickling',
+            daemon__api__pb2.PacketQ.SerializeToString,
+            daemon__api__pb2.PacketA.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
