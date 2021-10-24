@@ -8,11 +8,7 @@ from typing import Optional, Any
 from grpc.aio import ServicerContext
 from recc.aio.connection import try_connection
 from recc.argparse.config.daemon_config import DaemonConfig
-from recc.plugin.plugin import (
-    Plugin,
-    NAME_ON_PACKET,
-    NAME_ON_PICKLING,
-)
+from recc.plugin.plugin import Plugin, NAME_ON_PACKET, NAME_ON_PICKLING
 from recc.log.logging import recc_daemon_logger as logger
 from recc.network.uds import is_uds_family
 from recc.proto.daemon.daemon_api_pb2 import Pit, Pat, PacketQ, PacketA

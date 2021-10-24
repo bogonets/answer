@@ -2,6 +2,7 @@
 
 from typing import Optional
 from recc.database.interfaces.db_interface import DbInterface
+from recc.database.postgresql.mixin.pg_daemon import PgDaemon
 from recc.database.postgresql.mixin.pg_group import PgGroup
 from recc.database.postgresql.mixin.pg_group_member import PgGroupMember
 from recc.database.postgresql.mixin.pg_info import PgInfo
@@ -23,6 +24,7 @@ EX_KEY_TIMEOUT = "timeout"
 
 class PgDb(
     DbInterface,
+    PgDaemon,
     PgGroup,
     PgGroupMember,
     PgInfo,
