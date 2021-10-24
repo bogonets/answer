@@ -12,6 +12,7 @@ class DaemonConfig(GlobalConfig):
 
     daemon_address: str
     daemon_file: str
+    daemon_packages_dir: str
 
 
 ARG_HELP = Argument(
@@ -37,6 +38,14 @@ ARG_DAEMON_FILE = Argument(
     metavar="file",
     help="Daemon python file.",
 )
+ARG_DAEMON_PACKAGES_DIR = Argument(
+    key="--daemon-packages-dir",
+    last_injection_value="",
+    default=None,
+    metavar="dir",
+    help="site-packages directory.",
+)
+
 
 DAEMON_USAGE: Final[str] = f"recc {Command.daemon.name} [options]"
 DAEMON_DESCRIPTION: Final[str] = "Daemon runner"
@@ -44,6 +53,7 @@ DAEMON_ARGS = (
     ARG_HELP,
     ARG_DAEMON_ADDRESS,
     ARG_DAEMON_FILE,
+    ARG_DAEMON_PACKAGES_DIR,
 )
 
 

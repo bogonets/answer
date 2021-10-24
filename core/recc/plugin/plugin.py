@@ -22,6 +22,8 @@ NAME_ON_PICKLING = "on_pickling"
 
 PYTHON_PLUGIN_PREFIX = """# -*- coding: utf-8 -*-
 import sys
+if "{site_packages_dir}":
+    sys.path.insert(0, "{site_packages_dir}")
 if "{plugin_dir}":
     sys.path.insert(0, "{plugin_dir}")
 """
@@ -47,6 +49,10 @@ class Route:
         return self.dynamic_resource._match(normalize_path)  # noqa
 
 
+def get_python_plugin_directory(path: str) -> str:
+    return os.path.split(path)[0]
+
+
 def get_python_plugin_name(path: str) -> str:
     name = str(os.path.split(path)[1])
     if name.endswith(".py"):
@@ -59,8 +65,12 @@ def exec_python_plugin(
     path: str,
     global_variables: Dict[str, Any],
     local_variables: Dict[str, Any],
+    site_packages_dir: Optional[str] = None,
 ) -> None:
-    prefix = PYTHON_PLUGIN_PREFIX.format(plugin_dir=os.path.split(path)[0])
+    prefix = PYTHON_PLUGIN_PREFIX.format(
+        site_packages_dir=site_packages_dir if site_packages_dir else str(),
+        plugin_dir=os.path.split(path)[0],
+    )
     exec(prefix, global_variables, local_variables)
 
     with open(path, "r") as f:
@@ -70,11 +80,12 @@ def exec_python_plugin(
 
 
 class Plugin:
-    def __init__(self, path: str):
+    def __init__(self, path: str, site_packages_dir: Optional[str] = None):
         global_variables: Dict[str, Any] = dict()
-        exec_python_plugin(path, global_variables, global_variables)
+        exec_python_plugin(path, global_variables, global_variables, site_packages_dir)
 
         self._path = path
+        self._directory = get_python_plugin_directory(path)
         self._name = get_python_plugin_name(path)
         self._global_variables = global_variables
         self._routes: List[Route] = list()
@@ -82,6 +93,10 @@ class Plugin:
     @property
     def path(self) -> str:
         return self._path
+
+    @property
+    def directory(self) -> str:
+        return self._directory
 
     @property
     def name(self) -> str:

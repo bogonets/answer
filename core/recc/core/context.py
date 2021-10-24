@@ -4,6 +4,7 @@ from asyncio import AbstractEventLoop
 from typing import Optional
 from recc.argparse.config.core_config import CoreConfig
 from recc.log.logging import recc_core_logger as logger
+from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
 from recc.core.mixin.context_config import ContextConfig
 from recc.core.mixin.context_group import ContextGroup
 from recc.core.mixin.context_info import ContextInfo
@@ -74,7 +75,22 @@ class Context(
     def database_info(cls) -> tuple:
         return database_info
 
+    @staticmethod
+    async def _test_recc_subprocess() -> None:
+        try:
+            python = AsyncPythonSubprocess.create_system()
+            version = await python.recc_version()
+            logger.info(f"The `recc` module version is {version}.")
+        except BaseException as e:
+            logger.warning(
+                "Could not find module `recc`. "
+                "Some functions that run as subprocesses are not available. "
+                f"{e}"
+            )
+
     async def open(self) -> None:
+        await self._test_recc_subprocess()
+
         await self._database.open()
         logger.info("Opened database")
 

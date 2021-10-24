@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 from typing import Optional, List, Dict, Tuple
 from functools import reduce
 from recc.subprocess.async_subprocess import (
@@ -36,6 +37,10 @@ class AsyncPythonSubprocess:
     ):
         self._python_executable_path = python_executable_path
         self._pip_timeout = pip_timeout if pip_timeout else 0.0
+
+    @classmethod
+    def create_system(cls, pip_timeout: Optional[float] = None):
+        return cls(sys.executable, pip_timeout)
 
     async def start_python(
         self,
@@ -130,6 +135,11 @@ class AsyncPythonSubprocess:
             "--upgrade",
             "--default-pip",
         )
+
+    async def recc_version(self) -> str:
+        stdout_lines, _ = await self.start_python_simply("-m", "recc", "--version")
+        assert len(stdout_lines) == 1
+        return stdout_lines[0].strip()
 
     async def version(self) -> str:
         stdout_lines, _ = await self.start_python_simply("--version")

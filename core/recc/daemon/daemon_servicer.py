@@ -52,13 +52,25 @@ class DaemonServicer(DaemonApiServicer):
     def _unpickling(self, data: bytes) -> Any:
         return pickle.loads(data, encoding=self._unpickling_encoding)
 
+    async def on_open(self) -> None:
+        logger.info("Daemon opening ...")
+        if self._plugin.exists_open:
+            await self._plugin.call_open()
+        logger.info("Daemon opened.")
+
+    async def on_close(self) -> None:
+        logger.info("Daemon closing ...")
+        if self._plugin.exists_close:
+            await self._plugin.call_close()
+        logger.info("Daemon closed.")
+
     async def Heartbeat(self, request: Pit, context: ServicerContext) -> Pat:
-        logger.info(f"Heartbeat(delay={request.delay})")
+        logger.debug(f"Heartbeat(delay={request.delay})")
         await sleep(delay=request.delay)
         return Pat(ok=True)
 
     async def Packet(self, request: PacketQ, context: ServicerContext) -> PacketA:
-        logger.info(f"Packet(method={request.method})")
+        logger.debug(f"Packet(method={request.method})")
         if not self._plugin.exists_packet_func:
             raise RuntimeError(f"Not exists `{NAME_ON_PACKET}` method")
         code, headers, content = await self._plugin.call_packet(
@@ -68,7 +80,7 @@ class DaemonServicer(DaemonApiServicer):
         return PacketA(code=code, headers=headers, content=result_content)
 
     async def Pickling(self, request: PacketQ, context: ServicerContext) -> PacketA:
-        logger.info(f"Pickling(method={request.method})")
+        logger.debug(f"Pickling(method={request.method})")
         if not self._plugin.exists_pickling_func:
             raise RuntimeError(f"Not exists `{NAME_ON_PICKLING}` method")
         decoded_content = self._unpickling(request.content)
@@ -94,8 +106,12 @@ class _AcceptInfo(object):
         self.accepted_port_number = accepted_port_number
 
 
-def create_daemon_server(address: str, daemon_file: str) -> _AcceptInfo:
-    servicer = DaemonServicer(Plugin(daemon_file))
+def create_daemon_server(
+    address: str,
+    daemon_file: str,
+    daemon_packages_dir: Optional[str] = None,
+) -> _AcceptInfo:
+    servicer = DaemonServicer(Plugin(daemon_file, daemon_packages_dir))
     logger.info(f"Daemon servicer address: {address}")
 
     server = grpc.aio.server(options=DEFAULT_GRPC_OPTIONS)
@@ -146,13 +162,15 @@ async def wait_connectable(address: str) -> bool:
 async def run_daemon_server(config: DaemonConfig, wait_connect=True) -> None:
     logger.info(f"Start the daemon server: {config.daemon_file}")
 
-    accept_info = create_daemon_server(config.daemon_address, config.daemon_file)
-    plugin = accept_info.servicer.plugin
+    accept_info = create_daemon_server(
+        config.daemon_address,
+        config.daemon_file,
+        config.daemon_packages_dir,
+    )
+    servicer = accept_info.servicer
+    await servicer.on_open()
     server = accept_info.server
     accepted_port_number = accept_info.accepted_port_number
-
-    if plugin.exists_open:
-        await plugin.call_open()
 
     await server.start()
 
@@ -171,8 +189,7 @@ async def run_daemon_server(config: DaemonConfig, wait_connect=True) -> None:
         # existing RPCs to continue within the grace period.
         await server.stop(0)
     finally:
-        if plugin.exists_close:
-            await plugin.call_close()
+        await servicer.on_close()
         logger.info(f"Daemon server done: {config.daemon_file}")
 
 
