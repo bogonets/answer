@@ -15,6 +15,7 @@ from recc.database.postgresql.query.daemon import (
     DELETE_DAEMON_BY_NAME,
     SELECT_DAEMON_BY_UID,
     SELECT_DAEMON_UID_BY_NAME,
+    SELECT_DAEMON_ADDRESS_BY_NAME,
     SELECT_DAEMON_BY_NAME,
     SELECT_DAEMON_ALL,
     get_update_daemon_query_by_uid,
@@ -127,6 +128,16 @@ class PgDaemon(DbDaemon, PgBase):
             raise RuntimeError(f"Not found daemon: {params_msg}")
         logger.info(f"select_daemon_uid_by_name({params_msg}) -> {uid}")
         return uid
+
+    @overrides
+    async def select_daemon_address_by_name(self, name: str) -> str:
+        query = SELECT_DAEMON_ADDRESS_BY_NAME
+        address = await self.fetch_val(query, name)
+        params_msg = f"name={name}"
+        if not isinstance(address, str):
+            raise RuntimeError(f"Not found daemon: {params_msg}")
+        logger.info(f"select_daemon_address_by_name({params_msg}) -> {address}")
+        return address
 
     @overrides
     async def select_daemon_by_name(self, name: str) -> Daemon:

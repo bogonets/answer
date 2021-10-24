@@ -71,8 +71,21 @@ class ContextDaemon(ContextBase):
     async def get_daemon_uid_by_name(self, name: str) -> int:
         return await self.database.select_daemon_uid_by_name(name)
 
+    async def get_daemon_address_by_name(self, name: str) -> str:
+        return await self.database.select_daemon_address_by_name(name)
+
     async def get_daemon_by_name(self, name: str) -> Daemon:
         return await self.database.select_daemon_by_name(name)
 
     async def get_daemons(self) -> List[Daemon]:
         return await self.database.select_daemons()
+
+    def is_running(self, name: str) -> bool:
+        return self.daemons.is_running(name)
+
+    async def start_daemon(self, name: str) -> None:
+        address = await self.database.select_daemon_address_by_name(name)
+        await self.daemons.start(name, address)
+
+    async def stop_daemon(self, name: str) -> None:
+        await self.daemons.stop(name)

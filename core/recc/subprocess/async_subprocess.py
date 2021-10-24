@@ -12,6 +12,7 @@ from asyncio.subprocess import Process, PIPE
 from asyncio.streams import StreamReader, StreamWriter
 from typing import Optional, Callable
 from functools import reduce
+import psutil
 
 ReaderCallable = Callable[[bytes], None]
 
@@ -185,6 +186,27 @@ class AsyncSubprocess:
 
     def get_pid(self) -> int:
         return self.process.pid
+
+    @property
+    def status(self) -> str:
+        return psutil.Process(self.process.pid).status()
+        # psutil.STATUS_RUNNING
+        # psutil.STATUS_SLEEPING
+        # psutil.STATUS_DISK_SLEEP
+        # psutil.STATUS_STOPPED
+        # psutil.STATUS_TRACING_STOP
+        # psutil.STATUS_ZOMBIE
+        # psutil.STATUS_DEAD
+        # psutil.STATUS_WAKE_KILL
+        # psutil.STATUS_WAKING
+        # psutil.STATUS_PARKED(Linux)
+        # psutil.STATUS_IDLE(Linux, macOS, FreeBSD)
+        # psutil.STATUS_LOCKED(FreeBSD)
+        # psutil.STATUS_WAITING(FreeBSD)
+        # psutil.STATUS_SUSPENDED(NetBSD)
+
+    def is_running(self) -> bool:
+        return self.status == psutil.STATUS_RUNNING
 
 
 async def start_async_subprocess(

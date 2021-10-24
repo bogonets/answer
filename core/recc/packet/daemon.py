@@ -17,7 +17,7 @@ class DaemonA:
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
-    running: bool = False
+    running: Optional[bool] = None
     exit_code: Optional[int] = None
 
 

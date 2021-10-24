@@ -144,6 +144,14 @@ class ContextBase:
         assert self._plugins is not None
         return self._plugins
 
+    @property
+    def daemons(self):
+        """
+        Daemon Manager.
+        """
+        assert self._daemons is not None
+        return self._daemons
+
     # ----------------
     # Database caching
     # ----------------

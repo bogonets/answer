@@ -1,0 +1,154 @@
+<i18n lang="yaml">
+en:
+  labels:
+    search: "You can filter by daemon name."
+  headers:
+    plugin: "Plugin"
+    name: "Name"
+    address: "Address"
+    enable: "Enable"
+    running: "Running"
+    actions: "Actions"
+  msg:
+    loading: "Loading... Please wait"
+    empty: "Empty Daemon"
+
+ko:
+  labels:
+    search: "데몬 이름을 필터링할 수 있습니다."
+  headers:
+    plugin: "플러그인"
+    name: "이름"
+    address: "주소"
+    enable: "활성화"
+    running: "실행중"
+    actions: "관리"
+  msg:
+    loading: "불러오는중 입니다... 잠시만 기다려 주세요."
+    empty: "데몬이 존재하지 않습니다."
+</i18n>
+
+<template>
+  <v-container>
+    <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
+    <v-divider></v-divider>
+
+    <v-data-table
+        :headers="headers"
+        :items="items"
+        :search="filter"
+        :loading="loading"
+        :loading-text="$t('msg.loading')"
+    >
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-text-field
+              class="mr-4"
+              v-model="filter"
+              append-icon="mdi-magnify"
+              single-line
+              hide-details
+              :label="$t('labels.search')"
+          ></v-text-field>
+        </v-toolbar>
+      </template>
+
+      <template v-slot:no-data>
+        {{ $t('msg.empty') }}
+      </template>
+    </v-data-table>
+
+  </v-container>
+</template>
+
+<script lang="ts">
+import {Component} from 'vue-property-decorator';
+import VueBase from '@/base/VueBase';
+import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
+import type {DaemonA} from '@/packet/daemon';
+
+@Component({
+  components: {
+    ToolbarBreadcrumbs,
+  }
+})
+export default class DevPlugins extends VueBase {
+  private readonly navigationItems = [
+    {
+      text: 'Dev',
+      disabled: false,
+      href: () => this.moveToDev(),
+    },
+    {
+      text: 'Daemons',
+      disabled: true,
+    },
+  ];
+
+  private readonly headers = [
+    {
+      text: this.$t('headers.plugin'),
+      align: 'center',
+      filterable: true,
+      sortable: true,
+      value: 'plugin',
+    },
+    {
+      text: this.$t('headers.name'),
+      align: 'center',
+      filterable: true,
+      sortable: true,
+      value: 'name',
+    },
+    {
+      text: this.$t('headers.address'),
+      align: 'center',
+      filterable: true,
+      sortable: true,
+      value: 'address',
+    },
+    {
+      text: this.$t('headers.enable'),
+      align: 'center',
+      filterable: false,
+      sortable: true,
+      value: 'enable',
+    },
+    {
+      text: this.$t('headers.running'),
+      align: 'center',
+      filterable: false,
+      sortable: true,
+      value: 'running',
+    },
+    {
+      text: this.$t('headers.actions'),
+      align: 'center',
+      filterable: false,
+      sortable: false,
+      value: 'actions',
+    },
+  ];
+
+  loading = false;
+  items = [] as Array<DaemonA>;
+  filter = '';
+
+  created() {
+    this.updateItems();
+  }
+
+  updateItems() {
+    this.loading = true;
+    this.$api2.getDevDaemons()
+        .then(items => {
+          this.loading = false;
+          this.items = items;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
+}
+</script>

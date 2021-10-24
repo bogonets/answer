@@ -1,5 +1,6 @@
 import devNames from '@/router/names/dev';
 import DevConfigs from '@/pages/dev/DevConfigs.vue';
+import DevDaemons from '@/pages/dev/DevDaemons.vue';
 import DevEnvs from '@/pages/dev/DevEnvs.vue';
 import DevInfos from '@/pages/dev/DevInfos.vue';
 import DevOverview from '@/pages/dev/DevOverview.vue';
@@ -7,14 +8,19 @@ import DevPlugins from '@/pages/dev/DevPlugins.vue';
 
 export const devChildren = [
     {
-        path: 'envs',
-        component: DevEnvs,
-        name: devNames.devEnvs,
-    },
-    {
         path: 'configs',
         component: DevConfigs,
         name: devNames.devConfigs,
+    },
+    {
+        path: 'daemons',
+        component: DevDaemons,
+        name: devNames.devDaemons,
+    },
+    {
+        path: 'envs',
+        component: DevEnvs,
+        name: devNames.devEnvs,
     },
     {
         path: 'infos',

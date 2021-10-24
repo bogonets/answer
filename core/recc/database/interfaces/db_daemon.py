@@ -63,6 +63,10 @@ class DbDaemon(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def select_daemon_address_by_name(self, name: str) -> str:
+        raise NotImplementedError
+
+    @abstractmethod
     async def select_daemon_by_name(self, name: str) -> Daemon:
         raise NotImplementedError
 

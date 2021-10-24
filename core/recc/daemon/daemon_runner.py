@@ -122,6 +122,11 @@ class DaemonRunner:
     def is_opened(self) -> bool:
         return self.process is not None
 
+    def is_running(self) -> bool:
+        if not self.process:
+            return False
+        return self.process.is_running()
+
     async def open(self, address: str) -> None:
         if self.process is not None:
             raise RuntimeError("Already process.")

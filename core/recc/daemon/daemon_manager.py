@@ -25,6 +25,9 @@ class DaemonManager(Dict[str, DaemonRunner]):
     ) -> str:
         return await self.__getitem__(name).install_requirements(requirements_sha256)
 
+    def is_running(self, name: str) -> bool:
+        return self.__getitem__(name).is_running()
+
     async def start(self, name: str, address: str) -> None:
         await self.__getitem__(name).open(address)
 
@@ -34,10 +37,10 @@ class DaemonManager(Dict[str, DaemonRunner]):
     async def open(
         self,
         plugin_root_directory: Path,
-        db: DbInterface,
+        database: DbInterface,
         loop: Optional[AbstractEventLoop] = None,
     ) -> None:
-        daemons = await db.select_daemons()
+        daemons = await database.select_daemons()
         for daemon in daemons:
             if not daemon.uid:
                 raise RuntimeError("The `uid` of the daemon must exist.")
@@ -51,7 +54,7 @@ class DaemonManager(Dict[str, DaemonRunner]):
 
             updated_hash = await self.install(daemon.name, daemon.requirements_sha256)
             if daemon.requirements_sha256 != updated_hash:
-                await db.update_daemon_requirements_sha256_by_uid(
+                await database.update_daemon_requirements_sha256_by_uid(
                     daemon.uid, updated_hash
                 )
 

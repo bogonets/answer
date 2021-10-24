@@ -49,6 +49,7 @@ import type {
     UpdatePermissionQ,
 } from '@/packet/permission';
 import type {PluginA, PluginNameA} from '@/packet/plugin';
+import type {DaemonA, CreateDaemonQ, UpdateDaemonQ} from '@/packet/daemon';
 import type {TemplateA} from '@/packet/template';
 import type {
     ProjectA,
@@ -792,6 +793,42 @@ export default class ApiV2 {
 
     getDevEnvironments() {
         return this.get<Array<EnvironmentA>>('/dev/environments');
+    }
+
+    // ----------
+    // Dev/Daemon
+    // ----------
+
+    getDevDaemonPlugins() {
+        return this.get<Array<string>>('/dev/daemon/plugins');
+    }
+
+    getDevDaemons() {
+        return this.get<Array<DaemonA>>('/dev/daemons');
+    }
+
+    postDevDaemons(body: CreateDaemonQ) {
+        return this.post('/dev/daemons', body);
+    }
+
+    getDevDaemonsPdaemon(daemon: string) {
+        return this.get<DaemonA>(`/dev/daemons/${daemon}`);
+    }
+
+    patchDevDaemonsPdaemon(daemon: string, body: UpdateDaemonQ) {
+        return this.patch(`/dev/daemons/${daemon}`, body);
+    }
+
+    deleteDevDaemonsPdaemon(daemon: string) {
+        return this.delete(`/dev/daemons/${daemon}`);
+    }
+
+    postDevDaemonsPdaemonStart(daemon: string) {
+        return this.post(`/dev/daemons/${daemon}/start`);
+    }
+
+    postDevDaemonsPdaemonStop(daemon: string) {
+        return this.post(`/dev/daemons/${daemon}/stop`);
     }
 
     // --------------
