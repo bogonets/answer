@@ -28,7 +28,7 @@ class PgDaemonTestCase(PostgresqlTestCase):
         self.assertIsNotNone(uid2)
 
         daemon1 = await self.db.select_daemon_by_uid(uid1)
-        daemon2 = await self.db.select_daemon_by_uid(uid2)
+        daemon2 = await self.db.select_daemon_by_name(name2)
         self.assertEqual(uid1, daemon1.uid)
         self.assertEqual(uid2, daemon2.uid)
         self.assertEqual(plugin1, daemon1.plugin)
@@ -50,14 +50,18 @@ class PgDaemonTestCase(PostgresqlTestCase):
         self.assertIsNone(daemon1.updated_at)
         self.assertIsNone(daemon2.updated_at)
 
+        self.assertEqual(uid1, await self.db.select_daemon_uid_by_name(name1))
+        self.assertEqual(uid2, await self.db.select_daemon_uid_by_name(name2))
+
     async def test_update(self):
         plugin = "plugin"
+        name = "name"
         created_at = datetime.now().astimezone()
-        uid = await self.db.insert_daemon(plugin, created_at=created_at)
+        uid = await self.db.insert_daemon(plugin, name, created_at=created_at)
         daemon1 = await self.db.select_daemon_by_uid(uid)
         self.assertEqual(uid, daemon1.uid)
         self.assertEqual(plugin, daemon1.plugin)
-        self.assertIsNone(daemon1.name)
+        self.assertEqual(name, daemon1.name)
         self.assertIsNone(daemon1.address)
         self.assertIsNone(daemon1.requirements_sha256)
         self.assertIsNone(daemon1.description)
@@ -66,7 +70,6 @@ class PgDaemonTestCase(PostgresqlTestCase):
         self.assertEqual(created_at, daemon1.created_at)
         self.assertIsNone(daemon1.updated_at)
 
-        name = "name"
         address = "localhost:9999"
         requirements_sha256 = sha256(b"2").hexdigest()
         extra = {"a": 1, "b": 2}
@@ -74,7 +77,6 @@ class PgDaemonTestCase(PostgresqlTestCase):
         updated_at = datetime.now().astimezone() + timedelta(days=1)
         await self.db.update_daemon_by_uid(
             uid,
-            name=name,
             address=address,
             requirements_sha256=requirements_sha256,
             extra=extra,
@@ -97,11 +99,15 @@ class PgDaemonTestCase(PostgresqlTestCase):
     async def test_delete(self):
         plugin1 = "plugin1"
         plugin2 = "plugin2"
-        uid1 = await self.db.insert_daemon(plugin1)
-        uid2 = await self.db.insert_daemon(plugin2)
+        name1 = "name1"
+        name2 = "name2"
+        uid1 = await self.db.insert_daemon(plugin1, name1)
+        uid2 = await self.db.insert_daemon(plugin2, name2)
+        self.assertIsNotNone(uid1)
+        self.assertIsNotNone(uid2)
         self.assertEqual(2, len(await self.db.select_daemons()))
         await self.db.delete_daemon_by_uid(uid1)
-        await self.db.delete_daemon_by_uid(uid2)
+        await self.db.delete_daemon_by_name(name2)
         self.assertEqual(0, len(await self.db.select_daemons()))
 
 

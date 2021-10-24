@@ -6,6 +6,7 @@ from recc.argparse.config.core_config import CoreConfig
 from recc.log.logging import recc_core_logger as logger
 from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
 from recc.core.mixin.context_config import ContextConfig
+from recc.core.mixin.context_daemon import ContextDaemon
 from recc.core.mixin.context_group import ContextGroup
 from recc.core.mixin.context_info import ContextInfo
 from recc.core.mixin.context_init import ContextInit
@@ -29,6 +30,7 @@ from recc.util.version import (
 
 class Context(
     ContextConfig,
+    ContextDaemon,
     ContextGroup,
     ContextInfo,
     ContextInit,

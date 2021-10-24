@@ -27,6 +27,8 @@ admin = "/admin"
 already = "/already"
 configs = "/configs"
 containers = "/containers"
+daemon = "/daemon"
+daemons = "/daemons"
 dev = "/dev"
 environments = "/environments"
 extra = "/extra"
@@ -72,6 +74,7 @@ def _param_path(key: str, pattern: Optional[str] = None) -> str:
 
 # Params (Use the prefix 'p')
 pcontainer = _param_path(p.container)
+pdaemon = _param_path(p.daemon)
 pgroup = _param_path(p.group)
 pkey = _param_path(p.key)
 pname = _param_path(p.name)
@@ -100,6 +103,8 @@ api_heartbeat = api + heartbeat
 # Mixin (/api/v2)
 configs_pkey = configs + pkey
 containers_pcontainer = containers + pcontainer
+daemon_plugins = daemon + plugins
+daemons_pdaemon = daemons + pdaemon
 groups_pgroup = groups + pgroup
 groups_pgroup_members = groups_pgroup + members
 groups_pgroup_members_pmember = groups_pgroup_members + pmember

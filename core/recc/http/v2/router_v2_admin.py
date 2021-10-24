@@ -12,6 +12,7 @@ from recc.http import http_urls as u
 from recc.http.http_decorator import parameter_matcher
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.container import ContainerOperator, ContainerA, ControlContainersQ
+from recc.packet.daemon import DaemonA, CreateDaemonQ, UpdateDaemonQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.permission import PermissionA, CreatePermissionQ, UpdatePermissionQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
@@ -19,6 +20,7 @@ from recc.packet.plugin import PluginNameA
 from recc.packet.system import SystemOverviewA
 from recc.packet.template import TemplateA
 from recc.packet.user import UserA, UpdateUserQ, SignupQ
+from recc.packet.cvt.daemon import daemon_to_answer
 from recc.packet.cvt.project import project_to_answer
 from recc.packet.cvt.permission import permission_to_answer
 from recc.packet.cvt.container import container_to_answer
@@ -61,6 +63,14 @@ class RouterV2Admin:
 
             # plugin
             web.get(u.plugin_names, self.get_plugin_names),
+
+            # daemon
+            web.get(u.daemon_plugins, self.get_daemon_plugins),
+            web.get(u.daemons, self.get_daemons),
+            web.post(u.daemons, self.post_daemons),
+            web.get(u.daemons_pdaemon, self.get_daemons_pdaemon),
+            web.patch(u.daemons_pdaemon, self.patch_daemons_pdaemon),
+            web.delete(u.daemons_pdaemon, self.delete_daemons_pdaemon),
 
             # templates
             web.get(u.templates, self.get_templates),
@@ -137,6 +147,63 @@ class RouterV2Admin:
     @parameter_matcher()
     async def get_plugin_names(self) -> List[PluginNameA]:
         return list(map(lambda x: PluginNameA(x), self.context.get_plugin_keys()))
+
+    # ------
+    # Daemon
+    # ------
+
+    @parameter_matcher()
+    async def get_daemon_plugins(self) -> List[str]:
+        return self.context.get_daemon_plugins()
+
+    @parameter_matcher()
+    async def get_daemons(self) -> List[DaemonA]:
+        result = list()
+        daemons = await self.context.get_daemons()
+        for daemon in daemons:
+            answer = daemon_to_answer(daemon)
+            answer.running = False
+            answer.exit_code = None
+            result.append(answer)
+        return result
+
+    @parameter_matcher()
+    async def post_daemons(self, body: CreateDaemonQ) -> None:
+        await self.context.create_daemon(
+            body.plugin,
+            body.name,
+            body.address,
+            None,
+            body.description,
+            body.extra,
+            body.enable,
+        )
+
+    @parameter_matcher()
+    async def get_daemons_pdaemon(self, daemon: str) -> DaemonA:
+        db_daemon = await self.context.get_daemon_by_name(daemon)
+        answer = daemon_to_answer(db_daemon)
+        answer.running = False
+        answer.exit_code = None
+        return answer
+
+    @parameter_matcher()
+    async def patch_daemons_pdaemon(self, daemon: str, body: UpdateDaemonQ) -> None:
+        uid = await self.context.get_daemon_uid_by_name(daemon)
+        await self.context.update_daemon(
+            uid=uid,
+            plugin=None,
+            name=body.name,
+            address=body.address,
+            requirements_sha256=None,
+            description=body.description,
+            extra=body.extra,
+            enable=body.enable,
+        )
+
+    @parameter_matcher()
+    async def delete_daemons_pdaemon(self, daemon: str) -> None:
+        await self.context.delete_daemon_by_name(daemon)
 
     # ---------
     # Templates

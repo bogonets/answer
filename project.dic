@@ -133,6 +133,7 @@ zoneinfo
 # ./core/recc/http/http_path_keys.py
 
 pcontainer
+pdaemon
 pdevice
 pgroup
 pkey
