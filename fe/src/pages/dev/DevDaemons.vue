@@ -2,6 +2,7 @@
 en:
   labels:
     search: "You can filter by daemon name."
+    add: "Add Daemon"
   headers:
     plugin: "Plugin"
     name: "Name"
@@ -12,10 +13,15 @@ en:
   msg:
     loading: "Loading... Please wait"
     empty: "Empty Daemon"
+  control:
+    start: "Start"
+    stop: "Stop"
+    sync: "Sync"
 
 ko:
   labels:
     search: "데몬 이름을 필터링할 수 있습니다."
+    add: "데몬 추가"
   headers:
     plugin: "플러그인"
     name: "이름"
@@ -26,6 +32,10 @@ ko:
   msg:
     loading: "불러오는중 입니다... 잠시만 기다려 주세요."
     empty: "데몬이 존재하지 않습니다."
+  control:
+    start: "Start"
+    stop: "Stop"
+    sync: "Sync"
 </i18n>
 
 <template>
@@ -34,6 +44,10 @@ ko:
     <v-divider></v-divider>
 
     <v-data-table
+        :value="selected"
+        @input="onInputSelected"
+        show-select
+        item-key="device_uid"
         :headers="headers"
         :items="items"
         :search="filter"
@@ -41,16 +55,72 @@ ko:
         :loading-text="$t('msg.loading')"
     >
       <template v-slot:top>
-        <v-toolbar flat>
-          <v-text-field
-              class="mr-4"
-              v-model="filter"
-              append-icon="mdi-magnify"
-              single-line
-              hide-details
-              :label="$t('labels.search')"
-          ></v-text-field>
-        </v-toolbar>
+        <div>
+          <v-toolbar flat>
+            <v-text-field
+                class="mr-4"
+                v-model="filter"
+                append-icon="mdi-magnify"
+                single-line
+                hide-details
+                :label="$t('labels.search')"
+            ></v-text-field>
+
+            <v-btn color="primary" class="align-self-center mr-2" @click="onClickAdd">
+              {{ $t('labels.add') }}
+            </v-btn>
+          </v-toolbar>
+        </div>
+        <div class="d-flex flex-row">
+          <v-btn
+              class="ml-2 rounded-xl"
+              color="green"
+              small
+              rounded
+              tile
+              :disabled="disabledStart"
+              @click="onClickStart"
+          >
+            <v-icon left>mdi-play</v-icon>
+            {{ $t('control.start') }}
+          </v-btn>
+          <v-btn
+              class="ml-2 rounded-xl"
+              color="red"
+              small
+              rounded
+              tile
+              :disabled="disabledStop"
+              @click="onClickStop"
+          >
+            <v-icon left>mdi-stop</v-icon>
+            {{ $t('control.stop') }}
+          </v-btn>
+          <v-btn
+              class="ml-2 rounded-xl"
+              color="primary"
+              small
+              outlined
+              rounded
+              tile
+              @click="onClickSync"
+          >
+            <v-icon left>mdi-sync</v-icon>
+            {{ $t('control.sync') }}
+          </v-btn>
+        </div>
+      </template>
+
+      <template v-slot:item.running="{ item }">
+        <v-icon v-show="item.running" small disabled>
+          mdi-check
+        </v-icon>
+      </template>
+
+      <template v-slot:item.actions="{ item }">
+        <v-icon small class="mr-2" @click="onClickDevice(item)">
+          mdi-pencil
+        </v-icon>
       </template>
 
       <template v-slot:no-data>
@@ -72,7 +142,7 @@ import type {DaemonA} from '@/packet/daemon';
     ToolbarBreadcrumbs,
   }
 })
-export default class DevPlugins extends VueBase {
+export default class DevDaemons extends VueBase {
   private readonly navigationItems = [
     {
       text: 'Dev',
@@ -132,7 +202,11 @@ export default class DevPlugins extends VueBase {
 
   loading = false;
   items = [] as Array<DaemonA>;
+  selected = [] as Array<DaemonA>;
   filter = '';
+
+  disabledStart = true;
+  disabledStop = true;
 
   created() {
     this.updateItems();
@@ -149,6 +223,61 @@ export default class DevPlugins extends VueBase {
           this.loading = false;
           this.toastRequestFailure(error);
         });
+  }
+
+  onInputSelected(value) {
+    this.selected = value;
+    if (this.selected.length == 0) {
+      this.disabledStart = true;
+      this.disabledStop = true;
+    } else {
+      this.disabledStart = false;
+      this.disabledStop = false;
+    }
+  }
+
+  onClickAdd() {
+    this.moveToDevDaemonsNew();
+  }
+
+  onClickStart() {
+    // for (const item of this.selected) {
+    //   const group = this.$route.params.group;
+    //   const project = this.$route.params.project;
+    //   const device = item.device_uid.toString();
+    //   this.$api2.postVmsDeviceProcessStart(group, project, device)
+    //       .then(() => {
+    //         this.toastRequestSuccess();
+    //         this.updateItems();
+    //       })
+    //       .catch(error => {
+    //         this.toastRequestFailure(error);
+    //       });
+    // }
+  }
+
+  onClickStop() {
+    // for (const item of this.selected) {
+    //   const group = this.$route.params.group;
+    //   const project = this.$route.params.project;
+    //   const device = item.device_uid.toString();
+    //   this.$api2.postVmsDeviceProcessStop(group, project, device)
+    //       .then(() => {
+    //         this.toastRequestSuccess();
+    //         this.updateItems();
+    //       })
+    //       .catch(error => {
+    //         this.toastRequestFailure(error);
+    //       });
+    // }
+  }
+
+  onClickSync() {
+    this.updateItems();
+  }
+
+  onClickDevice(item: DaemonA) {
+    this.moveToDevDaemonsEdit(item.name);
   }
 }
 </script>

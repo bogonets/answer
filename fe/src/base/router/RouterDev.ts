@@ -16,6 +16,14 @@ export default class RouterDev extends Router {
         this.moveTo(devNames.devDaemons);
     }
 
+    moveToDevDaemonsEdit(daemon: string) {
+        this.moveTo(devNames.devDaemonsEdit, {daemon});
+    }
+
+    moveToDevDaemonsNew() {
+        this.moveTo(devNames.devDaemonsNew);
+    }
+
     moveToDevEnvs() {
         this.moveTo(devNames.devEnvs);
     }

@@ -140,6 +140,12 @@ export default class NaviDev extends VueBase {
       this.index = 3;
     } else if (name === devNames.devConfigs) {
       this.index = 4;
+    } else if (name === devNames.devDaemons) {
+      this.index = 5;
+    } else if (name === devNames.devDaemonsEdit) {
+      this.index = 5;
+    } else if (name === devNames.devDaemonsNew) {
+      this.index = 5;
     } else {
       this.index = -1;
     }
