@@ -10,6 +10,7 @@ from recc.database.interfaces.db_daemon import DbDaemon
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.daemon import (
     INSERT_DAEMON,
+    UPDATE_DAEMON_REQUIREMENTS_SHA256_BY_UID,
     DELETE_DAEMON_BY_UID,
     DELETE_DAEMON_BY_NAME,
     SELECT_DAEMON_BY_UID,
@@ -49,6 +50,19 @@ class PgDaemon(DbDaemon, PgBase):
         params_msg = f"plugin={plugin}"
         logger.info(f"insert_daemon({params_msg}) -> {uid}")
         return uid
+
+    @overrides
+    async def update_daemon_requirements_sha256_by_uid(
+        self,
+        uid: int,
+        requirements_sha256: str,
+        updated_at: Optional[datetime] = None,
+    ) -> None:
+        query = UPDATE_DAEMON_REQUIREMENTS_SHA256_BY_UID
+        updated = updated_at if updated_at else today()
+        await self.execute(query, uid, requirements_sha256, updated)
+        params_msg = f"uid={uid}"
+        logger.info(f"update_daemon_requirements_sha256_by_uid({params_msg}) ok.")
 
     @overrides
     async def update_daemon_by_uid(

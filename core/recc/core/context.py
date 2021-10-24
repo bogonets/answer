@@ -147,7 +147,18 @@ class Context(
         if self.config.developer:
             logger.debug(f"Allocated ports: {list(self.ports.alloc_ports)}")
 
+        # self._daemons.create(self._storage.daemon, daemons, self._loop)
+        # await self._daemons.install_requirements()
+        # for daemon in daemons:
+        #     install_
+
+        await self._daemons.open(self._storage.daemon, self.database, self._loop)
+        logger.info(f"Daemon-manager initialization complete: {len(self._daemons)}")
+
     async def _before_close(self) -> None:
+        await self._daemons.close()
+        logger.info("Daemon-manager de-initialization is complete")
+
         if self.container.is_open() and self.is_guest_mode():
             await self.disconnect_global_network()
             logger.info("Disconnect global network")

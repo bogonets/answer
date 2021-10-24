@@ -10,6 +10,7 @@ from recc.database.interfaces.db_interface import DbInterface
 from recc.task.task_connection_pool import TaskConnectionPool
 from recc.resource.port_manager import PortManager
 from recc.plugin.plugin_manager import PluginManager
+from recc.daemon.daemon_manager import DaemonManager
 
 
 class ContextBase:
@@ -26,6 +27,7 @@ class ContextBase:
     _tasks: TaskConnectionPool
     _ports: PortManager
     _plugins: PluginManager
+    _daemons: DaemonManager
 
     @property
     def config(self) -> CoreConfig:

@@ -29,6 +29,13 @@ def _flush_buffer(buffer: BytesIO, encoding: str) -> str:
 
 
 class DaemonRunner:
+    @staticmethod
+    def is_daemon_plugin_directory(directory: Path) -> bool:
+        if not directory.is_dir():
+            return False
+        script_path = directory / (directory.name + DAEMON_SCRIPT_EXTENSION)
+        return script_path.is_file()
+
     def __init__(
         self,
         directory: Path,
@@ -82,7 +89,16 @@ class DaemonRunner:
             text = _flush_buffer(self.buffer_stderr, self.output_encoding)
             run_coroutine_threadsafe(self._flush_stderr_callback(text), self.loop)
 
-    async def install_requirements(self) -> None:
+    async def install_requirements(
+        self, prev_requirements_sha256: Optional[str] = None
+    ) -> str:
+        if self.requirements_sha256 and prev_requirements_sha256 is not None:
+            if prev_requirements_sha256 == self.requirements_sha256:
+                logger.debug("The requirements file has not changed")
+                return self.requirements_sha256
+
+        await self.venv.create_if_not_exists()
+
         py_for_pip = self.venv.create_python_subprocess()
         proc = await py_for_pip.start_pip(
             "-r",
@@ -101,21 +117,14 @@ class DaemonRunner:
         if pip_exit_code != 0:
             raise RuntimeError(f"PIP Installation failed: {pip_exit_code}")
 
-    async def open(
-        self,
-        address: str,
-        prev_requirements_sha256: Optional[str] = None,
-    ) -> None:
+        return self.requirements_sha256
+
+    def is_opened(self) -> bool:
+        return self.process is not None
+
+    async def open(self, address: str) -> None:
         if self.process is not None:
             raise RuntimeError("Already process.")
-
-        await self.venv.create_if_not_exists()
-
-        if self.requirements_sha256 and prev_requirements_sha256 is not None:
-            if prev_requirements_sha256 == self.requirements_sha256:
-                logger.debug("The requirements file has not changed")
-            else:
-                await self.install_requirements()
 
         # [WARNING] Do not use the `self.venv.create_python_subprocess()`
         python_for_daemon = AsyncPythonSubprocess.create_system()

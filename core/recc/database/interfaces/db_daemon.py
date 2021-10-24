@@ -26,6 +26,12 @@ class DbDaemon(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def update_daemon_requirements_sha256_by_uid(
+        self, uid: int, requirements_sha256: str
+    ) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def update_daemon_by_uid(
         self,
         uid: int,

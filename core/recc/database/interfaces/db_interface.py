@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABCMeta
+from recc.database.interfaces.db_daemon import DbDaemon
 from recc.database.interfaces.db_group import DbGroup
 from recc.database.interfaces.db_group_member import DbGroupMember
 from recc.database.interfaces.db_info import DbInfo
@@ -18,6 +19,7 @@ from recc.database.interfaces.db_widget import DbWidget
 
 
 class DbInterface(
+    DbDaemon,
     DbGroup,
     DbGroupMember,
     DbInfo,

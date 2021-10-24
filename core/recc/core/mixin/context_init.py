@@ -24,6 +24,7 @@ from recc.task.task_connection_pool import create_task_connection_pool
 from recc.resource.port_manager import PortManager
 from recc.log.logging import recc_core_logger as logger
 from recc.plugin.plugin_manager import PluginManager
+from recc.daemon.daemon_manager import DaemonManager
 from recc.session.session import (
     DEFAULT_ISSUER_RECC_ACCESS,
     DEFAULT_ISSUER_RECC_REFRESH,
@@ -166,6 +167,10 @@ class ContextInit(ContextBase):
                 plugin.update_routes()
         logger.info(f"Created plugin-manager: {plugin_names}")
 
+    def _init_daemons(self) -> None:
+        self._daemons = DaemonManager()
+        logger.info("Created daemon-manager")
+
     def init_all(
         self,
         config: Optional[CoreConfig] = None,
@@ -191,6 +196,7 @@ class ContextInit(ContextBase):
         self._init_task_manager()
         self._init_port_manager()
         self._init_plugin_manager()
+        self._init_daemons()
 
         if skip_assertion:
             return

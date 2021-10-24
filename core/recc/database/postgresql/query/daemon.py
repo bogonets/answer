@@ -29,6 +29,12 @@ INSERT INTO {TABLE_DAEMON} (
 # UPDATE #
 ##########
 
+UPDATE_DAEMON_REQUIREMENTS_SHA256_BY_UID = f"""
+UPDATE {TABLE_DAEMON}
+SET requirements_sha256=$2, updated_at=$3
+WHERE uid=$1;
+"""
+
 
 def get_update_daemon_query_by_uid(
     uid: int,
