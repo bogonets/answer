@@ -91,6 +91,7 @@ projname
 pycache
 pythonpath
 pyvenv
+rcnn
 recc
 reccx
 recommonmark

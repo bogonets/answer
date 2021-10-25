@@ -147,6 +147,7 @@ class DaemonRunner:
         if self.process is None:
             raise RuntimeError("Not exists process.")
 
-        self.process.send_signal(SIGINT)
+        # self.process.send_signal(SIGINT)
+        self.process.kill()
         await self.process.wait()
         self.process = None
