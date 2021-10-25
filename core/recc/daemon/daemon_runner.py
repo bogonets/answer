@@ -10,7 +10,6 @@ from recc.log.logging import recc_daemon_logger as logger
 from recc.subprocess.async_subprocess import AsyncSubprocess
 from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
 from recc.venv.async_virtual_environment import AsyncVirtualEnvironment
-from recc.daemon.daemon_client import DaemonClient, create_daemon_client
 
 DAEMON_SCRIPT_EXTENSION = ".py"
 DAEMON_REQUIREMENTS_TXT = "requirements.txt"
@@ -20,21 +19,16 @@ DEFAULT_PROCESS_JOIN_TIMEOUT = 30.0
 
 
 class DaemonRunner:
-    @staticmethod
-    def is_daemon_plugin_directory(directory: Path) -> bool:
-        if not directory.is_dir():
-            return False
-        script_path = directory / (directory.name + DAEMON_SCRIPT_EXTENSION)
-        return script_path.is_file()
-
     def __init__(
         self,
         directory: Path,
+        address: str,
         loop: Optional[AbstractEventLoop] = None,
     ) -> None:
         assert directory.is_dir()
 
         self.directory = directory
+        self.address = address
         self.loop = loop if loop else get_event_loop()
 
         self.name = directory.name
@@ -54,10 +48,16 @@ class DaemonRunner:
             self.requirements_sha256 = ""
             logger.warning(f"Daemon {DAEMON_REQUIREMENTS_TXT} not found")
 
-        self.client: Optional[DaemonClient] = None
         self.process: Optional[AsyncSubprocess] = None
         self.process_join_timeout = DEFAULT_PROCESS_JOIN_TIMEOUT
         self.output_encoding = "utf-8"
+
+    @staticmethod
+    def is_daemon_plugin_directory(directory: Path) -> bool:
+        if not directory.is_dir():
+            return False
+        script_path = directory / (directory.name + DAEMON_SCRIPT_EXTENSION)
+        return script_path.is_file()
 
     async def _flush_stdout_callback(self, text: str) -> None:
         logger.info(f"[Daemon:{self.name}:stdout] {text}")
@@ -117,7 +117,7 @@ class DaemonRunner:
             return "unallocated"
         return self.process.status
 
-    async def open(self, address: str) -> None:
+    async def open(self) -> None:
         if self.process is not None:
             raise RuntimeError("Already process.")
 
@@ -129,7 +129,7 @@ class DaemonRunner:
             "recc",
             "daemon",
             "--daemon-address",
-            address,
+            self.address,
             "--daemon-file",
             self.script_path,
             "--daemon-packages-dir",
@@ -138,18 +138,11 @@ class DaemonRunner:
             stderr_callback=self._stderr_callback,
             writable=False,
         )
-        self.client = create_daemon_client(address)
 
     async def close(self) -> None:
         if self.process is None:
             raise RuntimeError("Not exists process.")
 
-        assert self.client is not None
-        if self.client.is_open():
-            await self.client.close()
-        self.client = None
-
         self.process.send_signal(SIGINT)
         await self.process.wait()
-
         self.process = None
