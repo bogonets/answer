@@ -22,6 +22,23 @@ class SubprocessMethod(Enum):
     Shell = 1
 
 
+# class SubprocessStatus(Enum):
+#     STATUS_RUNNING
+#     STATUS_SLEEPING
+#     STATUS_DISK_SLEEP
+#     STATUS_STOPPED
+#     STATUS_TRACING_STOP
+#     STATUS_ZOMBIE
+#     STATUS_DEAD
+#     STATUS_WAKE_KILL
+#     STATUS_WAKING
+#     STATUS_PARKED(Linux)
+#     STATUS_IDLE(Linux, macOS, FreeBSD)
+#     STATUS_LOCKED(FreeBSD)
+#     STATUS_WAITING(FreeBSD)
+#     STATUS_SUSPENDED(NetBSD)
+
+
 class AsyncSubprocess:
     def __init__(
         self,

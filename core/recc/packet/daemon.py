@@ -8,7 +8,8 @@ from dataclasses import dataclass
 @dataclass
 class DaemonA:
     plugin: str
-    name: str
+    slug: str
+    name: Optional[str] = None
     address: Optional[str] = None
     requirements_sha256: Optional[str] = None
     description: Optional[str] = None
@@ -17,14 +18,15 @@ class DaemonA:
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
-    running: Optional[bool] = None
+    status: Optional[str] = None
     exit_code: Optional[int] = None
 
 
 @dataclass
 class CreateDaemonQ:
     plugin: str
-    name: str
+    slug: str
+    name: Optional[str] = None
     address: Optional[str] = None
     description: Optional[str] = None
     extra: Optional[Any] = None
@@ -33,7 +35,8 @@ class CreateDaemonQ:
 
 @dataclass
 class UpdateDaemonQ:
-    name: str
+    slug: Optional[str] = None
+    name: Optional[str] = None
     address: Optional[str] = None
     description: Optional[str] = None
     extra: Optional[Any] = None

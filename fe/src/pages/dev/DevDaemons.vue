@@ -5,10 +5,11 @@ en:
     add: "Add Daemon"
   headers:
     plugin: "Plugin"
+    slug: "Slug"
     name: "Name"
     address: "Address"
     enable: "Enable"
-    running: "Running"
+    status: "Status"
     actions: "Actions"
   msg:
     loading: "Loading... Please wait"
@@ -24,10 +25,11 @@ ko:
     add: "데몬 추가"
   headers:
     plugin: "플러그인"
+    slug: "슬러그"
     name: "이름"
     address: "주소"
     enable: "활성화"
-    running: "실행중"
+    status: "상태"
     actions: "관리"
   msg:
     loading: "불러오는중 입니다... 잠시만 기다려 주세요."
@@ -111,11 +113,18 @@ ko:
         </div>
       </template>
 
-      <template v-slot:item.running="{ item }">
-        <v-icon v-show="item.running" small disabled>
+      <template v-slot:item.enable="{ item }">
+        <v-icon v-show="item.enable" small disabled>
           mdi-check
         </v-icon>
       </template>
+
+      <template v-slot:item.status="{ item }">
+        <v-chip small :color="serverStatusColor(item)">
+          {{ item.status }}
+        </v-chip>
+      </template>
+
 
       <template v-slot:item.actions="{ item }">
         <v-icon small class="mr-2" @click="onClickDevice(item)">
@@ -136,6 +145,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import type {DaemonA} from '@/packet/daemon';
+import {getStatusColor} from '@/packet/daemon';
 
 @Component({
   components: {
@@ -164,6 +174,13 @@ export default class DevDaemons extends VueBase {
       value: 'plugin',
     },
     {
+      text: this.$t('headers.slug'),
+      align: 'center',
+      filterable: true,
+      sortable: true,
+      value: 'slug',
+    },
+    {
       text: this.$t('headers.name'),
       align: 'center',
       filterable: true,
@@ -185,11 +202,11 @@ export default class DevDaemons extends VueBase {
       value: 'enable',
     },
     {
-      text: this.$t('headers.running'),
+      text: this.$t('headers.status'),
       align: 'center',
       filterable: false,
       sortable: true,
-      value: 'running',
+      value: 'status',
     },
     {
       text: this.$t('headers.actions'),
@@ -223,6 +240,10 @@ export default class DevDaemons extends VueBase {
           this.loading = false;
           this.toastRequestFailure(error);
         });
+  }
+
+  serverStatusColor(item: DaemonA) {
+    return getStatusColor(item.status)
   }
 
   onInputSelected(value) {
@@ -277,7 +298,7 @@ export default class DevDaemons extends VueBase {
   }
 
   onClickDevice(item: DaemonA) {
-    this.moveToDevDaemonsEdit(item.name);
+    this.moveToDevDaemonsEdit(item.slug);
   }
 }
 </script>

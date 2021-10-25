@@ -127,6 +127,12 @@ class DaemonRunner:
             return False
         return self.process.is_running()
 
+    @property
+    def status(self) -> str:
+        if not self.process:
+            return "unallocated"
+        return self.process.status
+
     async def open(self, address: str) -> None:
         if self.process is not None:
             raise RuntimeError("Already process.")

@@ -12,11 +12,11 @@ from recc.database.postgresql.query.daemon import (
     INSERT_DAEMON,
     UPDATE_DAEMON_REQUIREMENTS_SHA256_BY_UID,
     DELETE_DAEMON_BY_UID,
-    DELETE_DAEMON_BY_NAME,
+    DELETE_DAEMON_BY_SLUG,
     SELECT_DAEMON_BY_UID,
-    SELECT_DAEMON_UID_BY_NAME,
-    SELECT_DAEMON_ADDRESS_BY_NAME,
-    SELECT_DAEMON_BY_NAME,
+    SELECT_DAEMON_UID_BY_SLUG,
+    SELECT_DAEMON_ADDRESS_BY_SLUG,
+    SELECT_DAEMON_BY_SLUG,
     SELECT_DAEMON_ALL,
     get_update_daemon_query_by_uid,
 )
@@ -27,7 +27,8 @@ class PgDaemon(DbDaemon, PgBase):
     async def insert_daemon(
         self,
         plugin: str,
-        name: str,
+        slug: str,
+        name: Optional[str] = None,
         address: Optional[str] = None,
         requirements_sha256: Optional[str] = None,
         description: Optional[str] = None,
@@ -40,6 +41,7 @@ class PgDaemon(DbDaemon, PgBase):
         uid = await self.fetch_val(
             query,
             plugin,
+            slug,
             name,
             address,
             requirements_sha256,
@@ -70,6 +72,7 @@ class PgDaemon(DbDaemon, PgBase):
         self,
         uid: int,
         plugin: Optional[str] = None,
+        slug: Optional[str] = None,
         name: Optional[str] = None,
         address: Optional[str] = None,
         requirements_sha256: Optional[str] = None,
@@ -81,6 +84,7 @@ class PgDaemon(DbDaemon, PgBase):
         query, args = get_update_daemon_query_by_uid(
             uid=uid,
             plugin=plugin,
+            slug=slug,
             name=name,
             address=address,
             requirements_sha256=requirements_sha256,
@@ -101,11 +105,11 @@ class PgDaemon(DbDaemon, PgBase):
         logger.info(f"delete_daemon_by_uid({params_msg}) ok.")
 
     @overrides
-    async def delete_daemon_by_name(self, name: str) -> None:
-        query = DELETE_DAEMON_BY_NAME
-        await self.execute(query, name)
-        params_msg = f"name={name}"
-        logger.info(f"delete_daemon_by_name({params_msg}) ok.")
+    async def delete_daemon_by_slug(self, slug: str) -> None:
+        query = DELETE_DAEMON_BY_SLUG
+        await self.execute(query, slug)
+        params_msg = f"slug={slug}"
+        logger.info(f"delete_daemon_by_slug({params_msg}) ok.")
 
     @overrides
     async def select_daemon_by_uid(self, uid: int) -> Daemon:
@@ -114,41 +118,39 @@ class PgDaemon(DbDaemon, PgBase):
         params_msg = f"uid={uid}"
         if not row:
             raise RuntimeError(f"Not found daemon: {params_msg}")
-        assert len(row) == 10
         result = Daemon(**dict(row))
         logger.info(f"select_daemon_by_uid({params_msg}) ok.")
         return result
 
     @overrides
-    async def select_daemon_uid_by_name(self, name: str) -> int:
-        query = SELECT_DAEMON_UID_BY_NAME
-        uid = await self.fetch_val(query, name)
-        params_msg = f"name={name}"
+    async def select_daemon_uid_by_slug(self, slug: str) -> int:
+        query = SELECT_DAEMON_UID_BY_SLUG
+        uid = await self.fetch_val(query, slug)
+        params_msg = f"slug={slug}"
         if not isinstance(uid, int):
             raise RuntimeError(f"Not found daemon: {params_msg}")
-        logger.info(f"select_daemon_uid_by_name({params_msg}) -> {uid}")
+        logger.info(f"select_daemon_uid_by_slug({params_msg}) -> {uid}")
         return uid
 
     @overrides
-    async def select_daemon_address_by_name(self, name: str) -> str:
-        query = SELECT_DAEMON_ADDRESS_BY_NAME
-        address = await self.fetch_val(query, name)
-        params_msg = f"name={name}"
+    async def select_daemon_address_by_slug(self, slug: str) -> str:
+        query = SELECT_DAEMON_ADDRESS_BY_SLUG
+        address = await self.fetch_val(query, slug)
+        params_msg = f"slug={slug}"
         if not isinstance(address, str):
             raise RuntimeError(f"Not found daemon: {params_msg}")
-        logger.info(f"select_daemon_address_by_name({params_msg}) -> {address}")
+        logger.info(f"select_daemon_address_by_slug({params_msg}) -> {address}")
         return address
 
     @overrides
-    async def select_daemon_by_name(self, name: str) -> Daemon:
-        query = SELECT_DAEMON_BY_NAME
-        row = await self.fetch_row(query, name)
-        params_msg = f"name={name}"
+    async def select_daemon_by_slug(self, slug: str) -> Daemon:
+        query = SELECT_DAEMON_BY_SLUG
+        row = await self.fetch_row(query, slug)
+        params_msg = f"slug={slug}"
         if not row:
             raise RuntimeError(f"Not found daemon: {params_msg}")
-        assert len(row) == 10
         result = Daemon(**dict(row))
-        logger.info(f"select_daemon_by_name({params_msg}) ok.")
+        logger.info(f"select_daemon_by_slug({params_msg}) ok.")
         return result
 
     @overrides

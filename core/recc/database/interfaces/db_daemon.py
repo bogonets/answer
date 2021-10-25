@@ -15,7 +15,8 @@ class DbDaemon(metaclass=ABCMeta):
     async def insert_daemon(
         self,
         plugin: str,
-        name: str,
+        slug: str,
+        name: Optional[str] = None,
         address: Optional[str] = None,
         requirements_sha256: Optional[str] = None,
         description: Optional[str] = None,
@@ -36,6 +37,7 @@ class DbDaemon(metaclass=ABCMeta):
         self,
         uid: int,
         plugin: Optional[str] = None,
+        slug: Optional[str] = None,
         name: Optional[str] = None,
         address: Optional[str] = None,
         requirements_sha256: Optional[str] = None,
@@ -51,7 +53,7 @@ class DbDaemon(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def delete_daemon_by_name(self, name: str) -> None:
+    async def delete_daemon_by_slug(self, slug: str) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -59,15 +61,15 @@ class DbDaemon(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def select_daemon_uid_by_name(self, name: str) -> int:
+    async def select_daemon_uid_by_slug(self, slug: str) -> int:
         raise NotImplementedError
 
     @abstractmethod
-    async def select_daemon_address_by_name(self, name: str) -> str:
+    async def select_daemon_address_by_slug(self, slug: str) -> str:
         raise NotImplementedError
 
     @abstractmethod
-    async def select_daemon_by_name(self, name: str) -> Daemon:
+    async def select_daemon_by_slug(self, slug: str) -> Daemon:
         raise NotImplementedError
 
     @abstractmethod

@@ -27,6 +27,11 @@ export const PROJECT_SLUG_RULES = [
     slugFormat,
 ];
 
+export const DAEMON_SLUG_RULES = [
+    requiredField,
+    slugFormat,
+];
+
 export const PASSWORD_RULES = [
     requiredField,
     atLeast4Char,

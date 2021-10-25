@@ -13,6 +13,7 @@ from recc.database.query_builder import UpdateBuilder, BuildResult
 INSERT_DAEMON = f"""
 INSERT INTO {TABLE_DAEMON} (
     plugin,
+    slug,
     name,
     address,
     requirements_sha256,
@@ -21,7 +22,7 @@ INSERT INTO {TABLE_DAEMON} (
     enable,
     created_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8
+    $1, $2, $3, $4, $5, $6, $7, $8, $9
 ) RETURNING uid;
 """
 
@@ -39,6 +40,7 @@ WHERE uid=$1;
 def get_update_daemon_query_by_uid(
     uid: int,
     plugin: Optional[str] = None,
+    slug: Optional[str] = None,
     name: Optional[str] = None,
     address: Optional[str] = None,
     requirements_sha256: Optional[str] = None,
@@ -51,6 +53,7 @@ def get_update_daemon_query_by_uid(
     builder = UpdateBuilder(
         if_none_skip=True,
         plugin=plugin,
+        slug=slug,
         name=name,
         address=address,
         requirements_sha256=requirements_sha256,
@@ -72,9 +75,9 @@ DELETE FROM {TABLE_DAEMON}
 WHERE uid=$1;
 """
 
-DELETE_DAEMON_BY_NAME = f"""
+DELETE_DAEMON_BY_SLUG = f"""
 DELETE FROM {TABLE_DAEMON}
-WHERE name=$1;
+WHERE slug=$1;
 """
 
 ##########
@@ -87,22 +90,22 @@ FROM {TABLE_DAEMON}
 WHERE uid=$1;
 """
 
-SELECT_DAEMON_UID_BY_NAME = f"""
+SELECT_DAEMON_UID_BY_SLUG = f"""
 SELECT uid
 FROM {TABLE_DAEMON}
-WHERE name=$1;
+WHERE slug=$1;
 """
 
-SELECT_DAEMON_ADDRESS_BY_NAME = f"""
+SELECT_DAEMON_ADDRESS_BY_SLUG = f"""
 SELECT address
 FROM {TABLE_DAEMON}
-WHERE name=$1;
+WHERE slug=$1;
 """
 
-SELECT_DAEMON_BY_NAME = f"""
+SELECT_DAEMON_BY_SLUG = f"""
 SELECT *
 FROM {TABLE_DAEMON}
-WHERE name=$1;
+WHERE slug=$1;
 """
 
 SELECT_DAEMON_ALL = f"""

@@ -192,10 +192,10 @@ class RouterV2Dev:
         result = list()
         daemons = await self.context.get_daemons()
         for daemon in daemons:
-            if not daemon.name:
-                raise RuntimeError("The `name` of the daemon must exist.")
+            if not daemon.slug:
+                raise RuntimeError("The `slug` of the daemon must exist.")
             answer = daemon_to_answer(daemon)
-            answer.running = self.context.is_running(daemon.name)
+            answer.status = self.context.status(daemon.slug)
             answer.exit_code = None
             result.append(answer)
         return result
@@ -203,31 +203,33 @@ class RouterV2Dev:
     @parameter_matcher()
     async def post_daemons(self, body: CreateDaemonQ) -> None:
         await self.context.create_daemon(
-            body.plugin,
-            body.name,
-            body.address,
-            None,
-            body.description,
-            body.extra,
-            body.enable,
+            plugin=body.plugin,
+            slug=body.slug,
+            name=body.name,
+            address=body.address,
+            requirements_sha256=None,
+            description=body.description,
+            extra=body.extra,
+            enable=body.enable,
         )
 
     @parameter_matcher()
     async def get_daemons_pdaemon(self, daemon: str) -> DaemonA:
-        db_daemon = await self.context.get_daemon_by_name(daemon)
-        if not db_daemon.name:
-            raise RuntimeError("The `name` of the daemon must exist.")
+        db_daemon = await self.context.get_daemon_by_slug(daemon)
+        if not db_daemon.slug:
+            raise RuntimeError("The `slug` of the daemon must exist.")
         answer = daemon_to_answer(db_daemon)
-        answer.running = self.context.is_running(db_daemon.name)
+        answer.status = self.context.status(db_daemon.slug)
         answer.exit_code = None
         return answer
 
     @parameter_matcher()
     async def patch_daemons_pdaemon(self, daemon: str, body: UpdateDaemonQ) -> None:
-        uid = await self.context.get_daemon_uid_by_name(daemon)
+        uid = await self.context.get_daemon_uid_by_slug(daemon)
         await self.context.update_daemon(
             uid=uid,
             plugin=None,
+            slug=body.slug,
             name=body.name,
             address=body.address,
             requirements_sha256=None,
@@ -238,7 +240,7 @@ class RouterV2Dev:
 
     @parameter_matcher()
     async def delete_daemons_pdaemon(self, daemon: str) -> None:
-        await self.context.delete_daemon_by_name(daemon)
+        await self.context.delete_daemon_by_slug(daemon)
 
     @parameter_matcher()
     async def post_daemons_pdaemon_start(self, daemon: str) -> None:

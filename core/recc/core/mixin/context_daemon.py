@@ -18,7 +18,8 @@ class ContextDaemon(ContextBase):
     async def create_daemon(
         self,
         plugin: str,
-        name: str,
+        slug: str,
+        name: Optional[str] = None,
         address: Optional[str] = None,
         requirements_sha256: Optional[str] = None,
         description: Optional[str] = None,
@@ -29,6 +30,7 @@ class ContextDaemon(ContextBase):
             raise ValueError(f"Not exists plugin: {plugin}")
         return await self.database.insert_daemon(
             plugin=plugin,
+            slug=slug,
             name=name,
             address=address,
             requirements_sha256=requirements_sha256,
@@ -41,6 +43,7 @@ class ContextDaemon(ContextBase):
         self,
         uid: int,
         plugin: Optional[str] = None,
+        slug: Optional[str] = None,
         name: Optional[str] = None,
         address: Optional[str] = None,
         requirements_sha256: Optional[str] = None,
@@ -51,6 +54,7 @@ class ContextDaemon(ContextBase):
         await self.database.update_daemon_by_uid(
             uid=uid,
             plugin=plugin,
+            slug=slug,
             name=name,
             address=address,
             requirements_sha256=requirements_sha256,
@@ -62,30 +66,33 @@ class ContextDaemon(ContextBase):
     async def delete_daemon(self, uid: int) -> None:
         await self.database.delete_daemon_by_uid(uid)
 
-    async def delete_daemon_by_name(self, name: str) -> None:
-        await self.database.delete_daemon_by_name(name)
+    async def delete_daemon_by_slug(self, slug: str) -> None:
+        await self.database.delete_daemon_by_slug(slug)
 
     async def get_daemon(self, uid: int) -> Daemon:
         return await self.database.select_daemon_by_uid(uid)
 
-    async def get_daemon_uid_by_name(self, name: str) -> int:
-        return await self.database.select_daemon_uid_by_name(name)
+    async def get_daemon_uid_by_slug(self, slug: str) -> int:
+        return await self.database.select_daemon_uid_by_slug(slug)
 
-    async def get_daemon_address_by_name(self, name: str) -> str:
-        return await self.database.select_daemon_address_by_name(name)
+    async def get_daemon_address_by_slug(self, slug: str) -> str:
+        return await self.database.select_daemon_address_by_slug(slug)
 
-    async def get_daemon_by_name(self, name: str) -> Daemon:
-        return await self.database.select_daemon_by_name(name)
+    async def get_daemon_by_slug(self, slug: str) -> Daemon:
+        return await self.database.select_daemon_by_slug(slug)
 
     async def get_daemons(self) -> List[Daemon]:
         return await self.database.select_daemons()
 
-    def is_running(self, name: str) -> bool:
-        return self.daemons.is_running(name)
+    def is_running(self, slug: str) -> bool:
+        return self.daemons.is_running(slug)
 
-    async def start_daemon(self, name: str) -> None:
-        address = await self.database.select_daemon_address_by_name(name)
-        await self.daemons.start(name, address)
+    def status(self, slug: str) -> str:
+        return self.daemons.status(slug)
 
-    async def stop_daemon(self, name: str) -> None:
-        await self.daemons.stop(name)
+    async def start_daemon(self, slug: str) -> None:
+        address = await self.database.select_daemon_address_by_slug(slug)
+        await self.daemons.start(slug, address)
+
+    async def stop_daemon(self, slug: str) -> None:
+        await self.daemons.stop(slug)
