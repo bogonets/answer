@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional
-from io import BytesIO, SEEK_SET
 from signal import SIGINT
 from pathlib import Path
 from hashlib import sha256
@@ -18,14 +17,6 @@ DAEMON_REQUIREMENTS_TXT = "requirements.txt"
 DAEMON_VENV_DIRECTORY = ".venv"
 
 DEFAULT_PROCESS_JOIN_TIMEOUT = 30.0
-DEFAULT_BUFFER_FLUSH_SIZE = 256
-
-
-def _flush_buffer(buffer: BytesIO, encoding: str) -> str:
-    result = str(buffer.getvalue(), encoding=encoding)
-    buffer.truncate(0)
-    buffer.seek(0, SEEK_SET)
-    return result
 
 
 class DaemonRunner:
@@ -66,28 +57,23 @@ class DaemonRunner:
         self.client: Optional[DaemonClient] = None
         self.process: Optional[AsyncSubprocess] = None
         self.process_join_timeout = DEFAULT_PROCESS_JOIN_TIMEOUT
-        self.buffer_stdout = BytesIO()
-        self.buffer_stderr = BytesIO()
-        self.buffer_flush_size = DEFAULT_BUFFER_FLUSH_SIZE
         self.output_encoding = "utf-8"
 
     async def _flush_stdout_callback(self, text: str) -> None:
-        logger.debug(f"[Daemon:{self.name}]\n{text}")
+        logger.info(f"[Daemon:{self.name}:stdout] {text}")
 
     async def _flush_stderr_callback(self, text: str) -> None:
-        logger.error(f"[Daemon:{self.name}]\n{text}")
+        logger.error(f"[Daemon:{self.name}:stderr] {text}")
 
     def _stdout_callback(self, data: bytes) -> None:
-        self.buffer_stdout.write(data)
-        if self.buffer_stdout.tell() >= self.buffer_flush_size:
-            text = _flush_buffer(self.buffer_stdout, self.output_encoding)
-            run_coroutine_threadsafe(self._flush_stdout_callback(text), self.loop)
+        message = str(data, encoding=self.output_encoding).strip()
+        if message:
+            run_coroutine_threadsafe(self._flush_stdout_callback(message), self.loop)
 
     def _stderr_callback(self, data: bytes) -> None:
-        self.buffer_stderr.write(data)
-        if self.buffer_stderr.tell() >= self.buffer_flush_size:
-            text = _flush_buffer(self.buffer_stderr, self.output_encoding)
-            run_coroutine_threadsafe(self._flush_stderr_callback(text), self.loop)
+        message = str(data, encoding=self.output_encoding).strip()
+        if message:
+            run_coroutine_threadsafe(self._flush_stderr_callback(message), self.loop)
 
     async def install_requirements(
         self, prev_requirements_sha256: Optional[str] = None
@@ -100,7 +86,9 @@ class DaemonRunner:
         await self.venv.create_if_not_exists()
 
         py_for_pip = self.venv.create_python_subprocess()
+        logger.info(f"[Daemon:{self.name}] Initiate package installation by PIP.")
         proc = await py_for_pip.start_pip(
+            "install",
             "-r",
             self.requirements_path,
             stdout_callback=self._stdout_callback,
@@ -108,15 +96,11 @@ class DaemonRunner:
             writable=False,
         )
 
-        text_stdout = _flush_buffer(self.buffer_stdout, self.output_encoding)
-        await self._flush_stdout_callback(text_stdout)
-        text_stderr = _flush_buffer(self.buffer_stderr, self.output_encoding)
-        await self._flush_stderr_callback(text_stderr)
-
         pip_exit_code = await proc.wait()
         if pip_exit_code != 0:
             raise RuntimeError(f"PIP Installation failed: {pip_exit_code}")
 
+        logger.info(f"[Daemon:{self.name}] Completed package installation by PIP.")
         return self.requirements_sha256
 
     def is_opened(self) -> bool:
@@ -167,10 +151,5 @@ class DaemonRunner:
 
         self.process.send_signal(SIGINT)
         await self.process.wait()
-
-        text = _flush_buffer(self.buffer_stdout, self.output_encoding)
-        await self._flush_stdout_callback(text)
-        text = _flush_buffer(self.buffer_stderr, self.output_encoding)
-        await self._flush_stderr_callback(text)
 
         self.process = None
