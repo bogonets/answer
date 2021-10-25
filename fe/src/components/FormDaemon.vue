@@ -58,10 +58,13 @@ ko:
     <p :class="subtitleClass">{{ $t('labels.slug') }}</p>
     <v-text-field
         dense
-        persistent-hint
         :rules="rulesSlug"
         :value="value.slug"
         @input="inputSlug"
+        :disabled="disableSlug"
+        :filled="disableSlug"
+        :persistent-hint="!disableSlug"
+        :hide-details="disableSlug"
         :hint="$t('hints.slug')"
     ></v-text-field>
 
@@ -161,6 +164,9 @@ export default class FormProject extends VueBase {
 
   @Prop({type: Boolean})
   readonly disablePlugin!: boolean;
+
+  @Prop({type: Boolean})
+  readonly disableSlug!: boolean;
 
   @Prop({type: Boolean})
   readonly loadingSubmit!: boolean;

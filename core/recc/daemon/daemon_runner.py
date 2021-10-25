@@ -161,7 +161,8 @@ class DaemonRunner:
             raise RuntimeError("Not exists process.")
 
         assert self.client is not None
-        await self.client.close()
+        if self.client.is_open():
+            await self.client.close()
         self.client = None
 
         self.process.send_signal(SIGINT)

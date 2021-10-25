@@ -45,6 +45,34 @@ export function getStatusColor(status?: string) {
         case DAEMON_STATUS_UNALLOCATED:
         case DAEMON_STATUS_ERROR:
             return 'red';
+        default:
+            return '';
+    }
+}
+
+export function isStatusRunning(status: string) {
+    switch (status) {
+        case DAEMON_STATUS_RUNNING:
+        case DAEMON_STATUS_SLEEPING:
+        case DAEMON_STATUS_DISK_SLEEP:
+        case DAEMON_STATUS_STOPPED:
+        case DAEMON_STATUS_TRACING_STOP:
+        case DAEMON_STATUS_ZOMBIE:
+        case DAEMON_STATUS_DEAD:
+        case DAEMON_STATUS_WAKE_KILL:
+        case DAEMON_STATUS_WAKING:
+        case DAEMON_STATUS_IDLE:
+        case DAEMON_STATUS_LOCKED:
+        case DAEMON_STATUS_WAITING:
+        case DAEMON_STATUS_SUSPENDED:
+        case DAEMON_STATUS_PARKED:
+            return true;
+        case DAEMON_STATUS_UNREGISTERED:
+        case DAEMON_STATUS_UNALLOCATED:
+        case DAEMON_STATUS_ERROR:
+            return false;
+        default:
+            return false;
     }
 }
 

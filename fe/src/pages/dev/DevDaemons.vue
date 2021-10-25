@@ -262,35 +262,39 @@ export default class DevDaemons extends VueBase {
   }
 
   onClickStart() {
-    // for (const item of this.selected) {
-    //   const group = this.$route.params.group;
-    //   const project = this.$route.params.project;
-    //   const device = item.device_uid.toString();
-    //   this.$api2.postVmsDeviceProcessStart(group, project, device)
-    //       .then(() => {
-    //         this.toastRequestSuccess();
-    //         this.updateItems();
-    //       })
-    //       .catch(error => {
-    //         this.toastRequestFailure(error);
-    //       });
-    // }
+    (async () => {
+      await this.startSelected();
+    })();
   }
 
   onClickStop() {
-    // for (const item of this.selected) {
-    //   const group = this.$route.params.group;
-    //   const project = this.$route.params.project;
-    //   const device = item.device_uid.toString();
-    //   this.$api2.postVmsDeviceProcessStop(group, project, device)
-    //       .then(() => {
-    //         this.toastRequestSuccess();
-    //         this.updateItems();
-    //       })
-    //       .catch(error => {
-    //         this.toastRequestFailure(error);
-    //       });
-    // }
+    (async () => {
+      await this.stopSelected();
+    })();
+  }
+
+  async startSelected() {
+    try {
+      for (const item of this.selected) {
+        await this.$api2.postDevDaemonsPdaemonStart(item.slug);
+      }
+      this.toastRequestSuccess();
+      this.updateItems();
+    } catch (error) {
+      this.toastRequestFailure(error);
+    }
+  }
+
+  async stopSelected() {
+    try {
+      for (const item of this.selected) {
+        await this.$api2.postDevDaemonsPdaemonStop(item.slug);
+      }
+      this.toastRequestSuccess();
+      this.updateItems();
+    } catch (error) {
+      this.toastRequestFailure(error);
+    }
   }
 
   onClickSync() {
