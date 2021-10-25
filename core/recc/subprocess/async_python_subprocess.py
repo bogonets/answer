@@ -38,6 +38,10 @@ class AsyncPythonSubprocess:
         self._python_executable_path = python_executable_path
         self._pip_timeout = pip_timeout if pip_timeout else 0.0
 
+    @property
+    def executable(self):
+        return self._python_executable_path
+
     @classmethod
     def create_system(cls, pip_timeout: Optional[float] = None):
         return cls(sys.executable, pip_timeout)

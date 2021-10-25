@@ -114,8 +114,7 @@ class ContextDaemon(ContextBase):
         return self.daemons.status(slug)
 
     async def start_daemon(self, slug: str) -> None:
-        address = await self.database.select_daemon_address_by_slug(slug)
-        await self.daemons.start(slug, address)
+        await self.daemons.start(slug)
 
     async def stop_daemon(self, slug: str) -> None:
         await self.daemons.stop(slug)

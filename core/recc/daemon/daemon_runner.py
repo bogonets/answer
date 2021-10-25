@@ -124,7 +124,7 @@ class DaemonRunner:
         # [WARNING] Do not use the `self.venv.create_python_subprocess()`
         python_for_daemon = AsyncPythonSubprocess.create_system()
 
-        self.process = await python_for_daemon.start_python(
+        subcommands = [
             "-m",
             "recc",
             "daemon",
@@ -134,10 +134,14 @@ class DaemonRunner:
             self.script_path,
             "--daemon-packages-dir",
             self.venv.site_packages_dir,
+        ]
+        self.process = await python_for_daemon.start_python(
+            *subcommands,
             stdout_callback=self._stdout_callback,
             stderr_callback=self._stderr_callback,
             writable=False,
         )
+        logger.info(f"[Daemon:{self.name}] Start process: {subcommands}")
 
     async def close(self) -> None:
         if self.process is None:
