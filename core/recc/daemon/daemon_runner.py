@@ -13,7 +13,6 @@ from recc.argparse.config.daemon_config import (
     ARG_DAEMON_ADDRESS,
     ARG_DAEMON_FILE,
     ARG_DAEMON_PACKAGES_DIR,
-    ARG_SIMPLY_LOGGING,
 )
 
 DAEMON_SCRIPT_EXTENSION = ".py"
@@ -139,7 +138,7 @@ class DaemonRunner:
             self.script_path,
             ARG_DAEMON_PACKAGES_DIR.long_key,
             self.venv.site_packages_dir,
-            ARG_SIMPLY_LOGGING.long_key,
+            # ARG_SIMPLY_LOGGING.long_key,
         ]
         self.process = await python_for_daemon.start_python(
             *subcommands,
