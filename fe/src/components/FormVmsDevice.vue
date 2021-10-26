@@ -10,6 +10,7 @@ en:
     stream_address: "Stream Address"
     onvif_address: "ONVIF Address"
     server_address: "Server Address"
+    ai_address: "AI Address"
     ices: "ICE Servers"
     add: "Add"
     username: "Username"
@@ -26,6 +27,7 @@ en:
     stream_address: "Media streaming address."
     onvif_address: "ONVIF Device Manager address."
     server_address: "Internal server address for media streaming."
+    ai_address: "Server address providing AI services."
     ices: "STUN or TURN servers."
     username: "This is the username for accessing media streaming."
     password: "This is the password for accessing media streaming."
@@ -49,6 +51,7 @@ ko:
     stream_address: "스트림 주소"
     onvif_address: "ONVIF 주소"
     server_address: "내부 서버 주소"
+    ai_address: "인공지능 서버 주소"
     ices: "ICE 서버 목록"
     add: "추가"
     username: "사용자명"
@@ -65,6 +68,7 @@ ko:
     stream_address: "미디어 스트리밍 주소 입니다."
     onvif_address: "ONVIF 장치 관리 주소 입니다."
     server_address: "미디어 스트리밍을 위한 내부 서버 주소 입니다."
+    ai_address: "AI 서비스를 제공하는 서버 주소입니다."
     ices: "STUN 또는 TURN 서버."
     username: "미디어 스트리밍 접속을 위한 사용자 이름 입니다."
     password: "미디어 스트리밍 접속을 위한 비밀번호 입니다."
@@ -144,6 +148,16 @@ ko:
           :value="value.server_address"
           @input="onInputServerAddress"
           :hint="$t('hints.server_address')"
+      ></v-text-field>
+
+      <p :class="subtitleClass">{{ $t('labels.ai_address') }}</p>
+      <v-text-field
+          dense
+          persistent-hint
+          :disabled="disabled"
+          :value="value.ai_address"
+          @input="onInputAiAddress"
+          :hint="$t('hints.ai_address')"
       ></v-text-field>
 
       <p :class="subtitleClass">{{ $t('labels.ices') }}</p>
@@ -440,6 +454,11 @@ export default class FormVmsDevice extends VueBase {
 
   onInputServerAddress(event: string) {
     this.value.server_address = event;
+    this.input();
+  }
+
+  onInputAiAddress(event: string) {
+    this.value.ai_address = event;
     this.input();
   }
 

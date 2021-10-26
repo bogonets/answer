@@ -69,6 +69,7 @@ export interface VmsDeviceA {
     stream_address: string;
     onvif_address: string;
     server_address: string;
+    ai_address: string;
     ices: Array<string>;
     username: string;
     password: string;
@@ -89,6 +90,7 @@ export interface VmsCreateDeviceQ {
     stream_address: string;
     onvif_address: string;
     server_address: string;
+    ai_address: string;
     ices: Array<string>;
     username: string;
     password: string;
@@ -104,6 +106,7 @@ export interface VmsUpdateDeviceQ {
     name?: string;
     description?: string;
     stream_address?: string;
+    ai_address?: string;
     onvif_address?: string;
     server_address?: string;
     ices?: Array<string>;
@@ -259,6 +262,7 @@ export function createEmptyVmsDeviceA() {
         stream_address: '',
         onvif_address: '',
         server_address: '',
+        ai_address: '',
         ices: [],
         username: '',
         password: '',

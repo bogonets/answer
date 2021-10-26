@@ -210,6 +210,7 @@ export default class MainVmsDevicesNew extends VueBase {
       stream_address: this.stream_address,
       onvif_address: '',
       server_address: this.server_address,
+      ai_address: '',
       ices: [],
       username: this.username,
       password: this.password,
