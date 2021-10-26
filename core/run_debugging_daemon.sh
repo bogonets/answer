@@ -13,16 +13,18 @@ if [[ -z $DAEMON_PLUGIN_NAME ]]; then
     exit 1
 fi
 
-DAEMON_PLUGIN_PATH="$STORAGE_DIR/daemon/$DAEMON_PLUGIN_NAME/$DAEMON_PLUGIN_NAME.py"
-DAEMON_SITE_PACKAGES_DIR="$STORAGE_DIR/daemon/$DAEMON_PLUGIN_NAME/.venv/lib/python3.8/site-packages"
+DAEMON_PLUGIN_DIR="$STORAGE_DIR/daemon/$DAEMON_PLUGIN_NAME"
+DAEMON_PLUGIN_SCRIPT_PATH="$DAEMON_PLUGIN_DIR/$DAEMON_PLUGIN_NAME.py"
+DAEMON_VENV_DIR="$DAEMON_PLUGIN_DIR/.venv"
+DAEMON_SITE_PACKAGES_DIR="$DAEMON_VENV_DIR/lib/python3.8/site-packages"
 
-if [[ ! -f $DAEMON_PLUGIN_PATH ]]; then
-    echo "Not exists plugin file: $DAEMON_PLUGIN_PATH"
+if [[ ! -f "$DAEMON_PLUGIN_SCRIPT_PATH" ]]; then
+    echo "Not exists plugin file: $DAEMON_PLUGIN_SCRIPT_PATH"
     exit 1
 fi
 
 "$RECC_DIR/python" "$CORE_DIR/main.py" -vv -d \
     daemon \
     --daemon-address "$DAEMON_ADDRESS" \
-    --daemon-file "$DAEMON_PLUGIN_PATH" \
+    --daemon-file "$DAEMON_PLUGIN_SCRIPT_PATH" \
     --daemon-packages-dir "$DAEMON_SITE_PACKAGES_DIR"

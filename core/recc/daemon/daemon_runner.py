@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional
-from signal import SIGINT
 from pathlib import Path
 from hashlib import sha256
 from asyncio import AbstractEventLoop, get_event_loop, run_coroutine_threadsafe
