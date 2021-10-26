@@ -151,6 +151,9 @@ class StorageBaseMixin:
     def get_root_directory(self) -> str:
         return self._root_dir
 
+    def get_subdirectory(self, name: str) -> str:
+        return os.path.join(self._root_dir, name)
+
     def get_subdirectories(self) -> List[str]:
         """Returns the subdirectories of the workspace."""
 
