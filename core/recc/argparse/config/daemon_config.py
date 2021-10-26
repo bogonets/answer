@@ -13,6 +13,7 @@ class DaemonConfig(GlobalConfig):
     daemon_address: str
     daemon_file: str
     daemon_packages_dir: str
+    simply_logging: bool
 
 
 ARG_HELP = Argument(
@@ -45,6 +46,13 @@ ARG_DAEMON_PACKAGES_DIR = Argument(
     metavar="dir",
     help="site-packages directory.",
 )
+ARG_SIMPLY_LOGGING = Argument(
+    key="--simply-logging",
+    last_injection_value=False,
+    default=None,
+    action="store_true",
+    help="Simply logging.",
+)
 
 
 DAEMON_USAGE: Final[str] = f"recc {Command.daemon.name} [options]"
@@ -54,6 +62,7 @@ DAEMON_ARGS = (
     ARG_DAEMON_ADDRESS,
     ARG_DAEMON_FILE,
     ARG_DAEMON_PACKAGES_DIR,
+    ARG_SIMPLY_LOGGING,
 )
 
 
