@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import logging
 from logging import config as logging_config
 from typing import Union
@@ -227,7 +228,7 @@ def set_simple_logging_config() -> None:
         fmt=DEFAULT_SIMPLE_LOGGING_FORMAT,
         style=DEFAULT_SIMPLE_LOGGING_STYLE,
     )
-    stream_handler = logging.StreamHandler()
+    stream_handler = logging.StreamHandler(sys.stdout)
     stream_handler.setFormatter(simple_formatter)
     root_logger = logging.getLogger()
     root_logger.addHandler(stream_handler)
