@@ -129,8 +129,6 @@ import {
   DEFAULT_VIDEO_TRANSCEIVER_INIT,
   DEFAULT_AUDIO_TRANSCEIVER_INIT,
   DEFAULT_DATA_CHANNEL_INIT,
-  VMS_SERVER_STATUS_UNKNOWN,
-  VMS_SERVER_STATUS_NORMAL,
   createEmptyVmsDeviceA,
 } from '@/packet/vms';
 
@@ -215,6 +213,8 @@ export default class MediaPlayer extends VueBase {
 
   statusCode = STATUS_LOADING;
   signalLevel = 0;
+  connectionState = '';
+  channelState = '';
 
   rtcConfig = DEFAULT_RTC_CONFIGURATION;
   videoTransceiverInit = DEFAULT_VIDEO_TRANSCEIVER_INIT;
@@ -222,7 +222,9 @@ export default class MediaPlayer extends VueBase {
   dataChannelInit = DEFAULT_DATA_CHANNEL_INIT;
 
   pc?: RTCPeerConnection = undefined;
-  metaChannel?: RTCDataChannel = undefined;
+  channel?: RTCDataChannel = undefined;
+
+  channel_message_working = false;
 
   mounted() {
     this.paused = this.rtcVideo.paused;
@@ -243,11 +245,11 @@ export default class MediaPlayer extends VueBase {
   }
 
   beforeDestroy() {
-    if (this.metaChannel) {
-      this.metaChannel.close();
-      this.metaChannel = undefined;
+    if (this.channel) {
+      this.channel.close();
+      this.channel = undefined;
     } else {
-      console.assert(typeof this.metaChannel === 'undefined');
+      console.assert(typeof this.channel === 'undefined');
     }
 
     if (this.pc) {
@@ -260,20 +262,17 @@ export default class MediaPlayer extends VueBase {
 
   async doNegotiate() {
     try {
-      if (this.metaChannel) {
-        this.metaChannel.close();
+      if (this.channel) {
+        this.channel.close();
       }
       if (this.pc) {
         this.pc.close();
       }
-      // const {pc, metaChannel} = await this.createPeerAndMetaChannel();
-      const {pc, metaChannel} = await this.createPeerAndMetaChannel();
-      this.pc = pc;
-      this.metaChannel = metaChannel;
+      await this.createPeerAndMetaChannel();
       this.statusCode = STATUS_ONLINE;
     } catch (error) {
       this.pc = undefined;
-      this.metaChannel = undefined;
+      this.channel = undefined;
       this.statusCode = STATUS_NEGOTIATION_FAILED;
       this.toastError(error);
     }
@@ -308,38 +307,39 @@ export default class MediaPlayer extends VueBase {
       iceServers: iceServers,
     } as RTCConfiguration;
 
-    const pc = new RTCPeerConnection(rtcConfig);
-    pc.ontrack = this.onTrack;
-    pc.addTransceiver(TRANSCEIVER_KIND_VIDEO, this.videoTransceiverInit);
+    this.pc = new RTCPeerConnection(rtcConfig);
+    this.pc.ontrack = this.onTrack;
+    this.pc.addTransceiver(TRANSCEIVER_KIND_VIDEO, this.videoTransceiverInit);
     // pc.addTransceiver(TRANSCEIVER_KIND_AUDIO, this.audioTransceiverInit);
 
-    const metaChannel = pc.createDataChannel(DATA_CHANNEL_LABEL, this.dataChannelInit);
-    metaChannel.onopen = this.onMetaOpen;
-    metaChannel.onclose = this.onMetaClose;
-    metaChannel.onmessage = this.onMetaMessage;
-    metaChannel.onerror = this.onMetaError;
+    this.channel = this.pc.createDataChannel(DATA_CHANNEL_LABEL, this.dataChannelInit);
+    this.channel.onopen = this.onChannelOpen;
+    this.channel.onclose = this.onChannelClose;
+    this.channel.onmessage = this.onChannelMessage;
+    this.channel.onerror = this.onChannelError;
 
-    const offer = await pc.createOffer();
-    await pc.setLocalDescription(offer);
+    const offer = await this.pc.createOffer();
+    await this.pc.setLocalDescription(offer);
 
     // ----------------------------------------
     // [IMPORTANT] Do not change the call order
-    await this.waitToCompleteIceGathering(pc);
-    pc.onicegatheringstatechange = this.onIceGatheringStateChange;
+    await this.waitToCompleteIceGathering(this.pc);
+    this.pc.onicegatheringstatechange = this.onIceGatheringStateChange;
+    this.pc.onconnectionstatechange = this.onConnectionStateChange;
     // ----------------------------------------
 
     this.statusCode = STATUS_SDP_EXCHANGE;
 
     const body = {
-      type: pc.localDescription?.type || '',
-      sdp: pc.localDescription?.sdp || '',
+      type: this.pc.localDescription?.type || '',
+      sdp: this.pc.localDescription?.sdp || '',
     } as RtcOfferQ;
     const answer = await this.$api2.postVmsDeviceRtcJsep(group, project, device, body);
     const answerInit = {
       type: answer.type,
       sdp: answer.sdp,
     } as RTCSessionDescriptionInit;
-    await pc.setRemoteDescription(answerInit);
+    await this.pc.setRemoteDescription(answerInit);
 
     // interface RTCPeerConnectionEventMap {
     // "connectionstatechange": Event;
@@ -351,8 +351,6 @@ export default class MediaPlayer extends VueBase {
     // "negotiationneeded": Event;
     // "signalingstatechange": Event;
     // "statsended": RTCStatsEvent;
-
-    return {pc, metaChannel};
   }
 
   onTrack(event: RTCTrackEvent) {
@@ -364,22 +362,31 @@ export default class MediaPlayer extends VueBase {
   }
 
   onIceGatheringStateChange(event: Event) {
-    const connection = event.target as RTCPeerConnection;
-    gatheringStateCode(connection.iceGatheringState);
+    const peer = event.target as RTCPeerConnection;
+    gatheringStateCode(peer.iceGatheringState);
   }
 
-  onMetaOpen() {
-    // if (this.metaChannel) {
-    //   this.metaChannel.send('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    // }
+  onConnectionStateChange(event: Event) {
+    const peer = event.target as RTCPeerConnection;
+    this.connectionState = peer.connectionState;
   }
 
-  onMetaClose() {
-    // EMPTY.
+  onChannelOpen() {
+    console.debug(`Channel opened.`);
+    if (typeof this.channel === 'undefined') {
+      return;
+    }
   }
 
-  onMetaMessage(event: MessageEvent) {
-    console.debug(`Meta message: ${event.data}`);
+  onChannelClose() {
+    console.debug(`Channel closed.`);
+  }
+
+  onChannelMessage(event: MessageEvent) {
+    if (this.channel_message_working) {
+      return;  // Now working ...
+    }
+
     const canvasWidth = this.canvasMeta.width;
     const canvasHeight = this.canvasMeta.height;
     const context = this.canvasMeta.getContext('2d');
@@ -387,36 +394,53 @@ export default class MediaPlayer extends VueBase {
       return;
     }
 
-    try {
-      const obj = JSON.parse(event.data);
-      const x1 = canvasWidth * obj.x1;
-      const y1 = canvasHeight * obj.y1;
-      const x2 = canvasWidth * obj.x2;
-      const y2 = canvasHeight * obj.y2;
-      const w = x2 - x1;
-      const h = y2 - y1;
-      const score = obj.score;
-      const success = obj.success;
-
-      context.clearRect(0, 0, canvasWidth, canvasHeight);
-      if (success) {
-        context.strokeStyle = 'green';
-      } else {
-        context.strokeStyle = 'orange';
+    this.channel_message_working = true;
+    (async () => {
+      try {
+        const content = JSON.parse(event.data);
+        context.clearRect(0, 0, canvasWidth, canvasHeight);
+        await this.onRenderMetaData(context, canvasWidth, canvasHeight, content);
+      } catch (error) {
+        context.clearRect(0, 0, canvasWidth, canvasHeight);
+        this.predict([]);
+      } finally {
+        this.channel_message_working = false;
+        if (this.channel) {
+          this.channel.send(JSON.stringify({code: 0}))
+        }
       }
-
-      context.lineWidth = 3;
-      context.strokeRect(x1, y1, w, h);
-      context.fillText(`${score}`, x1, y1);
-
-      this.predict([obj]);
-    } catch (error) {
-      context.clearRect(0, 0, canvasWidth, canvasHeight);
-      this.predict([]);
-    }
+    })();
   }
 
-  onMetaError(event: RTCErrorEvent) {
+  async onRenderMetaData(
+      context: CanvasRenderingContext2D,
+      canvasWidth: number,
+      canvasHeight: number,
+      content: any,
+  ) {
+    //   const x1 = canvasWidth * obj.x1;
+    //   const y1 = canvasHeight * obj.y1;
+    //   const x2 = canvasWidth * obj.x2;
+    //   const y2 = canvasHeight * obj.y2;
+    //   const w = x2 - x1;
+    //   const h = y2 - y1;
+    //   const score = obj.score;
+    //   const success = obj.success;
+    //
+    //   if (success) {
+    //     context.strokeStyle = 'green';
+    //   } else {
+    //     context.strokeStyle = 'orange';
+    //   }
+    //
+    //   context.lineWidth = 3;
+    //   context.strokeRect(x1, y1, w, h);
+    //   context.fillText(`${score}`, x1, y1);
+    //
+    //   this.predict([obj]);
+  }
+
+  onChannelError(event: RTCErrorEvent) {
     console.error(`Data channel error: ${event.error.errorDetail}`);
   }
 
@@ -571,7 +595,11 @@ export default class MediaPlayer extends VueBase {
       case STATUS_SDP_EXCHANGE:
         return this.$t('status.sdp_exchange').toString();
       case STATUS_ONLINE:
-        return this.value.name;
+        if (this.connectionState) {
+          return `${this.value.name} (${this.connectionState})`;
+        } else {
+          return this.value.name;
+        }
       case STATUS_NEGOTIATION_FAILED:
         return this.$t('status.negotiation_failed').toString();
       case STATUS_ICE_UNKNOWN:
