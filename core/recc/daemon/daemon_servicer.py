@@ -2,7 +2,6 @@
 
 import pickle
 import grpc
-from logging import basicConfig
 from asyncio import sleep
 from asyncio import run as asyncio_run
 from typing import Optional, Any
@@ -20,6 +19,7 @@ from recc.proto.daemon.daemon_api_pb2_grpc import (
 from recc.daemon.daemon_client import heartbeat
 from recc.init.default import (
     init_logger,
+    init_simple_logger,
     init_json_driver,
     init_xml_driver,
     init_yaml_driver,
@@ -193,7 +193,7 @@ async def run_daemon_server(config: DaemonConfig, wait_connect=True) -> None:
 def run_daemon_until_complete(config: DaemonConfig) -> int:
     try:
         if config.simply_logging:
-            basicConfig()
+            init_simple_logger(config.log_level)
         else:
             init_logger(config.log_config, config.log_level)
         init_json_driver(config.json_driver)

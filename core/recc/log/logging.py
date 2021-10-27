@@ -46,6 +46,9 @@ SEVERITY_NAME_DEBUG = "debug"
 SEVERITY_NAME_NOTSET = "notset"
 SEVERITY_NAME_OFF = "off"
 
+DEFAULT_SIMPLE_LOGGING_FORMAT = "{levelname[0]} [{name}] {message}"
+DEFAULT_SIMPLE_LOGGING_STYLE = "{"
+
 
 def convert_level_number(level: Union[str, int]) -> int:
     if isinstance(level, str):
@@ -217,3 +220,15 @@ _DEFAULT_LOGGING_CONFIG = {
 
 def set_default_logging_config() -> None:
     logging_config.dictConfig(_DEFAULT_LOGGING_CONFIG)
+
+
+def set_simple_logging_config() -> None:
+    simple_formatter = logging.Formatter(
+        fmt=DEFAULT_SIMPLE_LOGGING_FORMAT,
+        style=DEFAULT_SIMPLE_LOGGING_STYLE,
+    )
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(simple_formatter)
+    root_logger = logging.getLogger()
+    root_logger.addHandler(stream_handler)
+    root_logger.setLevel(logging.DEBUG)
