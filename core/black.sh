@@ -7,7 +7,8 @@ RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
     --check \
     --diff \
     --color \
-    --exclude '.*_pb2(_grpc)?\.py(i)?$' \
+    --exclude '(.*_pb2(_grpc)?\.py(i)?$|/\.git|/\.venv|/ckps|/configs)' \
     recc/ \
     storage/plugin/ \
+    storage/daemon/ \
     test/

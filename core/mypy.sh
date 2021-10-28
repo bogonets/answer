@@ -7,4 +7,5 @@ RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
     --config-file="${CORE_DIR}/mypy.ini" \
     recc/ \
     storage/plugin/ \
+    storage/daemon/ \
     test/
