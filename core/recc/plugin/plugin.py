@@ -11,12 +11,19 @@ from recc.typing.annotation import eval_annotations
 COMPILE_MODE_EXEC = "exec"
 COMPILE_FLAGS = get_annotations_compiler_flag()
 
+# Uses: plugin
 NAME_ON_CREATE = "on_create"
 NAME_ON_DESTROY = "on_destroy"
-NAME_ON_ROUTES = "on_routes"
+
+# Uses: plugin, daemon
 NAME_ON_OPEN = "on_open"
 NAME_ON_CLOSE = "on_close"
 
+# Uses: plugin
+NAME_ON_ROUTES = "on_routes"
+
+# Uses: daemon
+NAME_ON_INIT = "on_init"
 NAME_ON_PACKET = "on_packet"
 NAME_ON_PICKLING = "on_pickling"
 
@@ -131,6 +138,10 @@ class Plugin:
         return NAME_ON_CLOSE in self._global_variables
 
     @property
+    def exists_init_func(self) -> bool:
+        return NAME_ON_INIT in self._global_variables
+
+    @property
     def exists_packet_func(self) -> bool:
         return NAME_ON_PACKET in self._global_variables
 
@@ -156,6 +167,9 @@ class Plugin:
 
     def get_on_close_func(self) -> Any:
         return self._global_variables.get(NAME_ON_CLOSE, None)
+
+    def get_on_init_func(self) -> Any:
+        return self._global_variables.get(NAME_ON_INIT, None)
 
     def get_on_packet_func(self) -> Any:
         return self._global_variables.get(NAME_ON_PACKET, None)
@@ -224,6 +238,14 @@ class Plugin:
         if not iscoroutinefunction(on_close):
             raise RuntimeError(f"'{NAME_ON_CLOSE}' must be a coroutine function")
         await on_close()
+
+    async def call_init(self, *args, **kwargs) -> None:
+        on_init = self._global_variables.get(NAME_ON_INIT)
+        assert on_init is not None
+        if iscoroutinefunction(on_init):
+            await on_init(*args, **kwargs)
+        else:
+            on_init(*args, **kwargs)
 
     @staticmethod
     def object_to_packet_answer(

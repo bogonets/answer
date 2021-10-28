@@ -47,6 +47,7 @@ class GlobalConfig(Namespace):
 
     log_config: str
     log_level: str
+    log_simply: bool
 
     loop_driver: str
     json_driver: str
@@ -117,6 +118,13 @@ ARG_LOG_LEVEL = Argument(
     default=None,
     choices=LOG_LEVELS,
     help="Root logger severity. This value is set after configuring the log.",
+)
+ARG_LOG_SIMPLY = Argument(
+    key="--log-simply",
+    last_injection_value=False,
+    default=None,
+    action="store_true",
+    help="Simply logging.",
 )
 
 ARG_LOOP_DRIVER = Argument(
@@ -189,6 +197,7 @@ GLOBAL_ARGS = (
     ARG_GROUP,
     ARG_LOG_CONFIG,
     ARG_LOG_LEVEL,
+    ARG_LOG_SIMPLY,
     ARG_LOOP_DRIVER,
     ARG_JSON_DRIVER,
     ARG_XML_DRIVER,

@@ -145,7 +145,7 @@ async def run_task_server(config: TaskConfig, wait_connect=True) -> None:
 
 def run_task_until_complete(config: TaskConfig) -> int:
     try:
-        init_logger(config.log_config, config.log_level)
+        init_logger(config.log_config, config.log_level, config.log_simply)
         init_json_driver(config.json_driver)
         init_xml_driver(config.xml_driver)
         init_yaml_driver(config.yaml_driver)

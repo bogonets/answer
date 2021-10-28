@@ -9,11 +9,11 @@ from recc.log.logging import recc_daemon_logger as logger
 from recc.subprocess.async_subprocess import AsyncSubprocess
 from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
 from recc.venv.async_virtual_environment import AsyncVirtualEnvironment
+from recc.argparse.config.global_config import ARG_LOG_SIMPLY
 from recc.argparse.config.daemon_config import (
     ARG_DAEMON_ADDRESS,
     ARG_DAEMON_FILE,
     ARG_DAEMON_PACKAGES_DIR,
-    ARG_SIMPLY_LOGGING,
 )
 
 DAEMON_SCRIPT_EXTENSION = ".py"
@@ -132,6 +132,7 @@ class DaemonRunner:
         subcommands = [
             "-m",
             "recc",
+            ARG_LOG_SIMPLY.long_key,
             "daemon",
             ARG_DAEMON_ADDRESS.long_key,
             self.address,
@@ -139,7 +140,6 @@ class DaemonRunner:
             self.script_path,
             ARG_DAEMON_PACKAGES_DIR.long_key,
             self.venv.site_packages_dir,
-            ARG_SIMPLY_LOGGING.long_key,
         ]
         self.process = await python_for_daemon.start_python(
             *subcommands,

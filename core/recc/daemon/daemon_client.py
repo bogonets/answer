@@ -6,7 +6,7 @@ from typing import Optional, Any, Mapping, Text, Tuple
 from grpc.aio._channel import Channel  # noqa
 from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_register
 from recc.proto.daemon.daemon_api_pb2_grpc import DaemonApiStub
-from recc.proto.daemon.daemon_api_pb2 import Pit, Pat, PacketQ, PacketA
+from recc.proto.daemon.daemon_api_pb2 import Pit, Pat, InitQ, InitA, PacketQ, PacketA
 from recc.variables.rpc import (
     DEFAULT_GRPC_OPTIONS,
     DEFAULT_PICKLE_PROTOCOL_VERSION,
@@ -85,6 +85,15 @@ class DaemonClient:
         response = await self._stub.Heartbeat(Pit(delay=delay), **self._options)
         assert isinstance(response, Pat)
         return response.ok
+
+    async def init(self, *args, **kwargs) -> int:
+        assert self._stub is not None
+        updated_args = [str(a) for a in args]
+        updated_kwargs = {str(k): str(v) for k, v in kwargs.items()}
+        request = InitQ(args=updated_args, kwargs=updated_kwargs)
+        response = await self._stub.Init(request, **self._options)
+        assert isinstance(response, InitA)
+        return response.code
 
     async def packet(
         self,

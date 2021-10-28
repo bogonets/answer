@@ -22,12 +22,22 @@ from recc.driver.xml import install_xmltodict_driver
 from recc.driver.yaml import install_pyyaml_driver
 
 
-def init_logger(config_path: str, log_level: Optional[str] = None) -> None:
-    log_configurable = config_path and is_readable_file(config_path)
-    if log_configurable:
-        set_basic_config(config_path)
+def init_logger(
+    config_path: str,
+    log_level: Optional[str] = None,
+    simply=False,
+) -> None:
+    log_configurable: bool
+    if simply:
+        log_configurable = False
+        set_simple_logging_config()
     else:
-        set_default_logging_config()
+        log_configurable = bool(config_path and is_readable_file(config_path))
+        if log_configurable:
+            set_basic_config(config_path)
+        else:
+            set_default_logging_config()
+
     if log_level:
         set_root_level(log_level)
 

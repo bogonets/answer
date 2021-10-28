@@ -34,6 +34,9 @@ from recc.variables.session import (
     SESSION_ACCESS_TOKEN_DURATION,
     SESSION_REFRESH_TOKEN_DURATION,
 )
+from recc.variables.storage import (
+    STORAGE_SERVICE_TYPE_MINIO,
+)
 
 
 class CoreConfig(GlobalConfig):
@@ -66,6 +69,13 @@ class CoreConfig(GlobalConfig):
     manage_port_max: int
 
     storage_root: str
+    storage_type: str
+    storage_host: str
+    storage_port: int
+    storage_user: str
+    storage_pw: str
+    storage_region: str
+
     signature: str
 
     public_signup: bool
@@ -250,6 +260,50 @@ ARG_STORAGE_ROOT = Argument(
     metavar="dir",
     help="Storage directory.",
 )
+ARG_STORAGE_TYPE = Argument(
+    key="--storage-type",
+    last_injection_value=STORAGE_SERVICE_TYPE_MINIO,
+    default=None,
+    choices=(STORAGE_SERVICE_TYPE_MINIO,),
+    help="Type of storage service.",
+)
+ARG_STORAGE_HOST = Argument(
+    key="--storage-host",
+    last_injection_value="localhost",
+    default=None,
+    metavar="host",
+    help="Storage service host address.",
+)
+ARG_STORAGE_PORT = Argument(
+    key="--storage-port",
+    last_injection_value=9000,
+    default=None,
+    type=int,
+    metavar="port",
+    help="Storage service port number.",
+)
+ARG_STORAGE_USER = Argument(
+    key="--storage-user",
+    last_injection_value="",
+    default=None,
+    metavar="id",
+    help="Storage service user name. (or access key)",
+)
+ARG_STORAGE_PW = Argument(
+    key="--storage-pw",
+    last_injection_value="",
+    default=None,
+    metavar="pw",
+    help="Storage service user's password. (or secret key)",
+)
+ARG_STORAGE_REGION = Argument(
+    key="--storage-region",
+    last_injection_value="",
+    default=None,
+    metavar="region",
+    help="Storage service region.",
+)
+
 ARG_SIGNATURE = Argument(
     key="--signature",
     last_injection_value="",
@@ -309,6 +363,12 @@ CORE_ARGS = (
     ARG_MANAGE_PORT_MIN,
     ARG_MANAGE_PORT_MAX,
     ARG_STORAGE_ROOT,
+    ARG_STORAGE_TYPE,
+    ARG_STORAGE_HOST,
+    ARG_STORAGE_PORT,
+    ARG_STORAGE_USER,
+    ARG_STORAGE_PW,
+    ARG_STORAGE_REGION,
     ARG_SIGNATURE,
     ARG_PUBLIC_SIGNUP,
     ARG_ACCESS_TOKEN_DURATION,

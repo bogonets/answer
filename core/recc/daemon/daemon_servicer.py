@@ -11,7 +11,7 @@ from recc.argparse.config.daemon_config import DaemonConfig
 from recc.plugin.plugin import Plugin, NAME_ON_PACKET, NAME_ON_PICKLING
 from recc.log.logging import recc_daemon_logger as logger
 from recc.network.uds import is_uds_family
-from recc.proto.daemon.daemon_api_pb2 import Pit, Pat, PacketQ, PacketA
+from recc.proto.daemon.daemon_api_pb2 import Pit, Pat, InitQ, InitA, PacketQ, PacketA
 from recc.proto.daemon.daemon_api_pb2_grpc import (
     DaemonApiServicer,
     add_DaemonApiServicer_to_server,
@@ -19,7 +19,6 @@ from recc.proto.daemon.daemon_api_pb2_grpc import (
 from recc.daemon.daemon_client import heartbeat
 from recc.init.default import (
     init_logger,
-    init_simple_logger,
     init_json_driver,
     init_xml_driver,
     init_yaml_driver,
@@ -32,12 +31,31 @@ from recc.variables.rpc import (
     DEFAULT_PICKLE_ENCODING,
 )
 
+INIT_CODE_SUCCESS = 0
+INIT_CODE_NOT_FOUND_INIT_FUNCTION = 1
+
 
 class DaemonServicer(DaemonApiServicer):
     def __init__(self, plugin: Plugin):
         self._plugin = plugin
         self._pickling_protocol_version = DEFAULT_PICKLE_PROTOCOL_VERSION
         self._unpickling_encoding = DEFAULT_PICKLE_ENCODING
+
+        self.database_type: Optional[str] = None
+        self.database_host: Optional[str] = None
+        self.database_port: Optional[int] = None
+        self.database_user: Optional[str] = None
+        self.database_pw: Optional[str] = None
+        self.database_name: Optional[str] = None
+        self.database_timeout: Optional[float] = None
+
+        self.storage_type: Optional[str] = None
+        self.storage_host: Optional[str] = None
+        self.storage_port: Optional[int] = None
+        self.storage_user: Optional[str] = None
+        self.storage_pw: Optional[str] = None
+        self.storage_region: Optional[str] = None
+        self.storage_timeout: Optional[float] = None
 
     @property
     def plugin(self) -> Plugin:
@@ -65,6 +83,15 @@ class DaemonServicer(DaemonApiServicer):
         logger.debug(f"Heartbeat(delay={request.delay})")
         await sleep(delay=request.delay)
         return Pat(ok=True)
+
+    async def Init(self, request: InitQ, context: ServicerContext) -> InitA:
+        logger.debug(f"Init(args={request.args},kwargs={request.kwargs})")
+        if not self._plugin.exists_init_func:
+            return InitA(code=INIT_CODE_NOT_FOUND_INIT_FUNCTION)
+        args = [str(a) for a in request.args]
+        kwargs = {str(k): str(v) for k, v in request.kwargs.items()}
+        await self._plugin.call_init(*args, **kwargs)
+        return InitA(code=INIT_CODE_SUCCESS)
 
     async def Packet(self, request: PacketQ, context: ServicerContext) -> PacketA:
         logger.debug(f"Packet(method={request.method})")
@@ -192,10 +219,7 @@ async def run_daemon_server(config: DaemonConfig, wait_connect=True) -> None:
 
 def run_daemon_until_complete(config: DaemonConfig) -> int:
     try:
-        if config.simply_logging:
-            init_simple_logger(config.log_level)
-        else:
-            init_logger(config.log_config, config.log_level)
+        init_logger(config.log_config, config.log_level, config.log_simply)
         init_json_driver(config.json_driver)
         init_xml_driver(config.xml_driver)
         init_yaml_driver(config.yaml_driver)

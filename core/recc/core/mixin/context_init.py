@@ -40,7 +40,11 @@ SIGNATURE_SIZE = 32
 
 class ContextInit(ContextBase):
     def _init_logger(self) -> None:
-        init_logger(self._config.log_config, self._config.log_level)
+        init_logger(
+            self._config.log_config,
+            self._config.log_level,
+            self._config.log_simply,
+        )
 
     def _init_json_driver(self) -> None:
         init_json_driver(self._config.json_driver)

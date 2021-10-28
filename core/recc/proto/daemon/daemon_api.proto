@@ -4,6 +4,7 @@ package recc.proto.daemon;
 
 service DaemonApi {
     rpc Heartbeat (Pit) returns (Pat) {}
+    rpc Init (InitQ) returns (InitA) {}
     rpc Packet (PacketQ) returns (PacketA) {}
     rpc Pickling (PacketQ) returns (PacketA) {}
 }
@@ -14,6 +15,15 @@ message Pit {
 
 message Pat {
     bool ok = 1;
+}
+
+message InitQ {
+    repeated string args = 1;
+    map<string, string> kwargs = 2;
+}
+
+message InitA {
+    int32 code = 1;
 }
 
 message PacketQ {
