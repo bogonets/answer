@@ -75,6 +75,7 @@ class CoreConfig(GlobalConfig):
     storage_user: str
     storage_pw: str
     storage_region: str
+    storage_secure: bool
 
     signature: str
 
@@ -284,17 +285,24 @@ ARG_STORAGE_PORT = Argument(
 )
 ARG_STORAGE_USER = Argument(
     key="--storage-user",
-    last_injection_value="",
+    last_injection_value="recc",
     default=None,
     metavar="id",
     help="Storage service user name. (or access key)",
 )
 ARG_STORAGE_PW = Argument(
     key="--storage-pw",
-    last_injection_value="",
+    last_injection_value="recc1234",
     default=None,
     metavar="pw",
     help="Storage service user's password. (or secret key)",
+)
+ARG_STORAGE_SECURE = Argument(
+    key="--storage-secure",
+    last_injection_value=False,
+    default=None,
+    action="store_true",
+    help="Storage service secure flag.",
 )
 ARG_STORAGE_REGION = Argument(
     key="--storage-region",
@@ -369,6 +377,7 @@ CORE_ARGS = (
     ARG_STORAGE_USER,
     ARG_STORAGE_PW,
     ARG_STORAGE_REGION,
+    ARG_STORAGE_SECURE,
     ARG_SIGNATURE,
     ARG_PUBLIC_SIGNUP,
     ARG_ACCESS_TOKEN_DURATION,

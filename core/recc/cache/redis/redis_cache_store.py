@@ -2,6 +2,7 @@
 
 from typing import Optional, Dict, Set, List, Any, Union, Callable, Awaitable
 from asyncio import Task, create_task, TimeoutError
+from overrides import overrides
 from aioredis import Redis, ConnectionPool
 from aioredis.client import PubSub
 from inspect import iscoroutinefunction, isfunction
@@ -45,9 +46,11 @@ class RedisCacheStore(CacheStoreInterface):
         except ValueError:
             return default_value
 
+    @overrides
     def is_open(self) -> bool:
         return self._redis is not None
 
+    @overrides
     async def open(self) -> None:
         pool = ConnectionPool.from_url(
             f"redis://{self._cs_host}:{self._cs_port}",
@@ -70,6 +73,7 @@ class RedisCacheStore(CacheStoreInterface):
             self._subscribes.clear()
             self._subscribes_exit.clear()
 
+    @overrides
     async def close(self) -> None:
         assert self._redis
         await self.close_subscribes()
@@ -82,17 +86,21 @@ class RedisCacheStore(CacheStoreInterface):
         assert self._redis is not None
         return self._redis
 
+    @overrides
     async def set(self, key: str, val: bytes) -> None:
         await self.redis.execute_command("SET", key, val)
 
+    @overrides
     async def get(self, key: str) -> bytes:
         result = await self.redis.execute_command("GET", key)
         assert isinstance(result, bytes)
         return result
 
+    @overrides
     async def delete(self, key: str) -> None:
         await self.redis.execute_command("DEL", key)
 
+    @overrides
     async def exists(self, key: str) -> bool:
         result = await self.redis.execute_command("EXISTS", key)
         assert isinstance(result, int)
