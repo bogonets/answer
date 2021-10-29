@@ -10,6 +10,8 @@ en:
     live: "Live"
     devices: "Devices"
     layouts: "Layouts"
+    evnets_calendar: "Events Calendar"
+    evnets_filter: "Events Filter"
   members: "Members"
   settings: "Settings"
 
@@ -24,6 +26,8 @@ ko:
     live: "실시간"
     devices: "장치 목록"
     layouts: "레이아웃"
+    evnets_calendar: "이벤트 달력"
+    evnets_filter: "이벤트 필터"
   members: "회원 관리"
   settings: "프로젝트 설정"
 </i18n>
@@ -141,6 +145,24 @@ ko:
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('vms.layouts') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item v-show="hasManagerRead" link @click.stop="vmsEventsCalendar">
+            <v-list-item-icon>
+              <v-icon>mdi-calendar</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('vms.evnets_calendar') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item v-show="hasManagerRead" link @click.stop="vmsEventsFilter">
+            <v-list-item-icon>
+              <v-icon>mdi-filter</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('vms.evnets_filter') }}
             </v-list-item-title>
           </v-list-item>
         </div>
@@ -277,11 +299,16 @@ export default class NaviMain extends VueBase {
       this.index = 8;
     } else if (name === mainNames.mainVmsLayoutsNew) {
       this.index = 8;
+    } else if (name === mainNames.mainVmsEventsCalendar) {
+      this.index = 9;
+    } else if (name === mainNames.mainVmsEventsFilter) {
+      this.index = 10;
 
     } else if (name === mainNames.mainMembers) {
-      this.index = 9;
+      this.index = 11;
     } else if (name === mainNames.mainSettings) {
-      this.index = 10;
+      this.index = 12;
+
     } else {
       this.index = -1;
     }
@@ -378,6 +405,20 @@ export default class NaviMain extends VueBase {
   vmsLayouts() {
     if (!this.noDefault) {
       this.moveToMainVmsLayouts();
+    }
+  }
+
+  @Emit('click:vms-events-calendar')
+  vmsEventsCalendar() {
+    if (!this.noDefault) {
+      this.moveToMainVmsEventsCalendar();
+    }
+  }
+
+  @Emit('click:vms-events-filter')
+  vmsEventsFilter() {
+    if (!this.noDefault) {
+      this.moveToMainVmsEventsFilter();
     }
   }
 

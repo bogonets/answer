@@ -248,7 +248,7 @@ export default class MainVmsLayoutsEdit extends VueBase {
       this.devices = await this.$api2.getVmsDevices(group, project);
       const vmsLayout = await this.$api2.getVmsLayout(group, project, layout);
 
-      const findDevice = this.devices.find(i => i.device_uid == vmsLayout.device_uid)
+      const findDevice = this.devices.find(i => i.device_uid == vmsLayout.device_uid);
       if (typeof findDevice === 'undefined') {
         this.device = {} as VmsDeviceA;
       } else {

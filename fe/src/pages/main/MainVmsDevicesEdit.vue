@@ -26,16 +26,6 @@ ko:
     <v-divider></v-divider>
 
     <v-row>
-<!--      <v-col-->
-<!--          class="my-4"-->
-<!--          cols="12"-->
-<!--          sm="12"-->
-<!--          md="6"-->
-<!--          lg="7"-->
-<!--          xl="8"-->
-<!--      >-->
-<!--      </v-col>-->
-
       <v-col>
         <v-tabs v-model="tabIndex">
           <v-tab>{{ $t('tab.info') }}</v-tab>
@@ -78,8 +68,8 @@ ko:
           </v-tab-item>
 
           <v-tab-item>
-            <form-vms-event-configs>
-            </form-vms-event-configs>
+            <form-vms-event-configs
+            ></form-vms-event-configs>
           </v-tab-item>
         </v-tabs-items>
       </v-col>

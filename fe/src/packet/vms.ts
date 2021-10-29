@@ -60,10 +60,16 @@ export const DEFAULT_AUDIO_TRANSCEIVER_INIT = {
 export const DEFAULT_DATA_CHANNEL_INIT = {
 } as RTCDataChannelInit;
 
-export const EVENT_TYPE_NAME_COLOR = 'color';
-export const EVENT_TYPE_NAME_DETECTION = 'detection';
-export const EVENT_TYPE_NAME_MATCHING = 'matching';
-export const EVENT_TYPE_NAME_OCR = 'ocr';
+export const EVENT_CATEGORY_NAME_COLOR = 'color';
+export const EVENT_CATEGORY_NAME_DETECTION = 'detection';
+export const EVENT_CATEGORY_NAME_MATCHING = 'matching';
+export const EVENT_CATEGORY_NAME_OCR = 'ocr';
+export const EVENT_CATEGORIES = [
+    EVENT_CATEGORY_NAME_COLOR,
+    EVENT_CATEGORY_NAME_DETECTION,
+    EVENT_CATEGORY_NAME_MATCHING,
+    EVENT_CATEGORY_NAME_OCR,
+];
 
 export interface VmsDeviceA {
     device_uid: number;
@@ -167,7 +173,7 @@ export interface VmsNewsEventQ {
 
 export interface VmsEventConfigA {
     event_config_uid: number;
-    order: number;
+    sequence: number;
     device_uid: number;
     category: string;
     name: string;
@@ -178,7 +184,7 @@ export interface VmsEventConfigA {
 }
 
 export interface VmsCreateEventConfigQ {
-    order: number;
+    sequence: number;
     device_uid: number;
     category: string;
     name: string;
@@ -187,7 +193,7 @@ export interface VmsCreateEventConfigQ {
 }
 
 export interface VmsUpdateEventConfigQ {
-    order?: number;
+    sequence?: number;
     device_uid?: number;
     category?: string;
     name?: string;
@@ -328,7 +334,7 @@ export function createEmptyVmsDeviceA() {
 export function createEmptyVmsEventConfigA() {
     return {
         event_config_uid: 0,
-        order: 0,
+        sequence: 0,
         device_uid: 0,
         category: '',
         name: '',

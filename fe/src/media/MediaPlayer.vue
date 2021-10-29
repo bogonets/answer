@@ -183,6 +183,9 @@ export default class MediaPlayer extends VueBase {
   readonly hoverController!: boolean;
 
   @Prop({type: Boolean, default: false})
+  readonly useColorPicker!: boolean;
+
+  @Prop({type: Boolean, default: false})
   readonly loading!: boolean;
 
   @Prop({type: String})
@@ -193,6 +196,12 @@ export default class MediaPlayer extends VueBase {
 
   @Prop({type: Number})
   readonly device!: number;
+
+  @Prop({type: Number})
+  readonly width!: number;
+
+  @Prop({type: Number})
+  readonly height!: number;
 
   @Prop({type: Object, default: createEmptyVmsDeviceA})
   readonly value!: VmsDeviceA;

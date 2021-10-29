@@ -12,6 +12,8 @@ import MainVmsDevicesDiscovery from '@/pages/main/MainVmsDevicesDiscovery.vue';
 import MainVmsDevicesDiscoveryEpr from '@/pages/main/MainVmsDevicesDiscoveryEpr.vue';
 import MainVmsDevicesEdit from '@/pages/main/MainVmsDevicesEdit.vue';
 import MainVmsDevicesNew from '@/pages/main/MainVmsDevicesNew.vue';
+import MainVmsEventsCalendar from '@/pages/main/MainVmsEventsCalendar.vue';
+import MainVmsEventsFilter from '@/pages/main/MainVmsEventsFilter.vue';
 import MainVmsLayouts from '@/pages/main/MainVmsLayouts.vue';
 import MainVmsLayoutsEdit from '@/pages/main/MainVmsLayoutsEdit.vue';
 import MainVmsLayoutsNew from '@/pages/main/MainVmsLayoutsNew.vue';
@@ -90,6 +92,16 @@ export const mainChildren = [
         path: ':group/:project/vms/devices/new',
         component: MainVmsDevicesNew,
         name: mainNames.mainVmsDevicesNew,
+    },
+    {
+        path: ':group/:project/vms/events/calendar',
+        component: MainVmsEventsCalendar,
+        name: mainNames.mainVmsEventsCalendar,
+    },
+    {
+        path: ':group/:project/vms/events/filter',
+        component: MainVmsEventsFilter,
+        name: mainNames.mainVmsEventsFilter,
     },
     {
         path: ':group/:project/vms/layouts',

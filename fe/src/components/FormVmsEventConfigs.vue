@@ -1,5 +1,9 @@
 <i18n lang="yaml">
 en:
+  titles:
+    new: "New Event"
+  subtitles:
+    new: "Set up and add a new event."
   labels:
     add: "Add Event"
     delete: "Delete a Event"
@@ -9,16 +13,19 @@ en:
     name: "Name"
     actions: "Actions"
   msg:
-    loading: ""
-    search: ""
-    unknown_event_type: ""
-    empty: ""
-    delete_confirm: "이 레이아웃을 정말 제거합니까?"
+    loading: "Loading... Please wait"
+    search: "You can filter by name."
+    empty: "Empty Events"
+    delete_confirm: "Are you really removing this event?"
   cancel: "Cancel"
   submit: "Submit"
   delete: "Delete"
 
 ko:
+  titles:
+    new: "새로운 이벤트"
+  subtitles:
+    new: "새 이벤트를 설정하고 추가합니다."
   labels:
     add: "이벤트 추가"
     delete: "이벤트 제거"
@@ -28,11 +35,10 @@ ko:
     name: "이름"
     actions: "관리"
   msg:
-    loading: ""
-    search: ""
-    unknown_event_type: ""
-    empty: ""
-    delete_confirm: "이 레이아웃을 정말 제거합니까?"
+    loading: "불러오는중 입니다... 잠시만 기다려 주세요."
+    search: "이름을 필터링할 수 있습니다."
+    empty: "이벤트가 존재하지 않습니다."
+    delete_confirm: "이 이벤트를 정말 제거합니까?"
   cancel: "취소"
   submit: "제출"
   delete: "제거"
@@ -88,19 +94,22 @@ ko:
     </v-data-table>
 
     <!-- Add dialog. -->
-    <v-dialog v-model="showNewDialog" max-width="320">
+    <v-dialog v-model="showNewDialog" :max-width="dialogWidth">
       <card-vms-event-configs
+          disable-device
+          :title="$t('titles.new')"
+          :subtitle="$t('subtitles.new')"
       ></card-vms-event-configs>
     </v-dialog>
 
     <!-- Edit dialog. -->
-    <v-dialog v-model="showEditDialog" max-width="320">
+    <v-dialog v-model="showEditDialog" :max-width="dialogWidth">
       <card-vms-event-configs
       ></card-vms-event-configs>
     </v-dialog>
 
     <!-- Delete dialog. -->
-    <v-dialog v-model="showDeleteDialog" max-width="320">
+    <v-dialog v-model="showDeleteDialog" :max-width="dialogWidth">
       <v-card>
         <v-card-title class="text-h5 error--text">
           {{ $t('labels.delete') }}
@@ -186,23 +195,16 @@ export default class FormVmsEventConfigs extends VueBase {
   showDeleteDialog = false;
   loadingDelete = false;
 
+  get dialogWidth() {
+    return "80%";
+  }
+
   onClickAdd() {
     this.showNewDialog = true;
   }
 
   onClickEventEdit(item: VmsEventConfigA) {
     this.showEditDialog = true;
-    // if (item.type == EVENT_TYPE_NAME_COLOR) {
-    //   this.showColorDialog = true;
-    // } else if (item.type == EVENT_TYPE_NAME_DETECTION) {
-    //   this.showDetectionDialog = true;
-    // } else if (item.type == EVENT_TYPE_NAME_MATCHING) {
-    //   this.showMatchingDialog = true;
-    // } else if (item.type == EVENT_TYPE_NAME_OCR) {
-    //   this.showOcrDialog = true;
-    // } else {
-    //   this.toastError(this.$t('msg.unknown_event_type').toString());
-    // }
   }
 
   onClickEventConfigCancel() {
