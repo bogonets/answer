@@ -60,6 +60,11 @@ export const DEFAULT_AUDIO_TRANSCEIVER_INIT = {
 export const DEFAULT_DATA_CHANNEL_INIT = {
 } as RTCDataChannelInit;
 
+export const EVENT_TYPE_NAME_COLOR = 'color';
+export const EVENT_TYPE_NAME_DETECTION = 'detection';
+export const EVENT_TYPE_NAME_MATCHING = 'matching';
+export const EVENT_TYPE_NAME_OCR = 'ocr';
+
 export interface VmsDeviceA {
     device_uid: number;
     group_slug: string;
@@ -158,6 +163,16 @@ export interface VmsEventA {
 export interface VmsNewsEventQ {
     time: string;
     max: number;
+}
+
+export interface VmsEventConfigA {
+    event_uid: number;
+    order: number;
+    device_uid: number;
+    type: string;
+    name: string;
+    enable: boolean;
+    extra?: any;
 }
 
 export interface VmsDiscoveryQ {
@@ -273,4 +288,15 @@ export function createEmptyVmsDeviceA() {
         created_at: '',
         updated_at: '',
     } as VmsDeviceA;
+}
+
+export function createEmptyVmsEventConfigA() {
+    return {
+        event_uid: 0,
+        order: 0,
+        device_uid: 0,
+        type: '',
+        name: '',
+        enable: false,
+    } as VmsEventConfigA;
 }

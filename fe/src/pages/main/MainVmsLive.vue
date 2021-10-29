@@ -9,12 +9,13 @@ ko:
 </i18n>
 
 <template>
-  <div class="d-flex flex-column fill-height">
-    <div class="d-flex flex-wrap main">
+  <view-port class="d-flex flex-column fill-height">
+    <div class="d-flex flex-wrap screen-group">
       <media-player
           v-for="n in maxCards"
           :key="`${n}-${loading}`"
           :style="cardStyle(n)"
+          hide-controller
           :group="$route.params.group"
           :project="$route.params.project"
           :device="getDeviceUid(n)"
@@ -94,12 +95,13 @@ ko:
         </v-list-item>
       </v-list>
     </v-menu>
-  </div>
+  </view-port>
 </template>
 
 <script lang="ts">
 import {Component, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import ViewPort from '@/components/ViewPort.vue';
 import MediaPlayer from '@/media/MediaPlayer.vue';
 import {VVirtualScroll} from 'vuetify/lib/components/VVirtualScroll';
 import type {VmsDeviceA, VmsLayoutA, VmsEventA} from '@/packet/vms';
@@ -108,6 +110,7 @@ import moment from 'moment-timezone';
 @Component({
   components: {
     MediaPlayer,
+    ViewPort,
   }
 })
 export default class MainVmsLive extends VueBase {
@@ -280,6 +283,10 @@ export default class MainVmsLive extends VueBase {
   onClickCloseFooter() {
     this.showFooter = false;
   }
+
+  onResize() {
+    const size = { x: window.innerWidth, y: window.innerHeight };
+  }
 }
 </script>
 
@@ -288,7 +295,7 @@ export default class MainVmsLive extends VueBase {
   height: 100%;
 }
 
-.main {
+.screen-group {
   flex: auto;
 }
 

@@ -35,6 +35,7 @@ ko:
         tile
         class="media-player"
         @contextmenu="contextmenu"
+        :style="mediaPlayerStyle"
     >
       <v-system-bar
           class="status-bar"
@@ -62,42 +63,46 @@ ko:
         </div>
       </v-system-bar>
 
-      <canvas
-          v-show="!hideCanvasUser"
-          class="canvas-user"
-          ref="canvas-user"
-          :width="canvasWidth"
-          :height="canvasHeight"
-      ></canvas>
-      <canvas
-          v-show="!hideCanvasMeta"
-          class="canvas-meta"
-          ref="canvas-meta"
-          :width="canvasWidth"
-          :height="canvasHeight"
-      ></canvas>
+      <div class="media-content">
+        <canvas
+            v-show="!hideCanvasUser"
+            class="canvas-user"
+            ref="canvas-user"
+            :width="videoWidth"
+            :height="videoHeight"
+        ></canvas>
+        <canvas
+            v-show="!hideCanvasMeta"
+            class="canvas-meta"
+            ref="canvas-meta"
+            :width="videoWidth"
+            :height="videoHeight"
+        ></canvas>
 
-      <video
-          v-show="online"
-          class="video-player"
-          ref="rtc-video"
-          autoplay
-          muted
-          playsinline
-          preload="auto"
-          @pause="onPause"
-          @play="onPlay"
-      ></video>
-      <v-img
-          v-if="!online"
-          class="brand-logo"
-          src="@/assets/logo/answer-logo-notext.svg"
-          min-width="80px"
-          max-width="200px"
-          min-height="80px"
-          max-height="200px"
-          contain
-      ></v-img>
+        <video
+            v-show="online"
+            class="video-player"
+            ref="rtc-video"
+            autoplay
+            muted
+            playsinline
+            preload="auto"
+            @pause="onPause"
+            @play="onPlay"
+            @resize="onResize"
+        ></video>
+
+        <v-img
+            v-if="!online"
+            class="brand-logo"
+            src="@/assets/logo/answer-logo-notext.svg"
+            min-width="80px"
+            max-width="200px"
+            min-height="80px"
+            max-height="200px"
+            contain
+        ></v-img>
+      </div>
 
       <div
           v-if="online && !hideController"
@@ -112,7 +117,6 @@ ko:
           <v-icon>mdi-dots-horizontal</v-icon>
         </v-btn>
       </div>
-
     </v-card>
   </v-hover>
 </template>
@@ -132,8 +136,7 @@ import {
   createEmptyVmsDeviceA,
 } from '@/packet/vms';
 
-const DEFAULT_CANVAS_WIDTH = 1024;
-const DEFAULT_CANVAS_HEIGHT = 1024;
+const OFFLINE_MEDIA_PLAYER_HEIGHT = "400px";
 
 const STATUS_LOADING = 0;
 const STATUS_ICE_NEW = 1;
@@ -179,12 +182,6 @@ export default class MediaPlayer extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly hoverController!: boolean;
 
-  @Prop({type: Number, default: DEFAULT_CANVAS_WIDTH})
-  readonly canvasWidth!: number;
-
-  @Prop({type: Number, default: DEFAULT_CANVAS_HEIGHT})
-  readonly canvasHeight!: number;
-
   @Prop({type: Boolean, default: false})
   readonly loading!: boolean;
 
@@ -210,6 +207,8 @@ export default class MediaPlayer extends VueBase {
   rtcVideo!: HTMLVideoElement;
 
   paused = true;
+  videoWidth = 0;
+  videoHeight = 0;
 
   statusCode = STATUS_LOADING;
   signalLevel = 0;
@@ -464,6 +463,16 @@ export default class MediaPlayer extends VueBase {
     });
   }
 
+  get mediaPlayerStyle() {
+    if (this.online) {
+      return {};
+    } else {
+      return {
+        height: OFFLINE_MEDIA_PLAYER_HEIGHT,
+      };
+    }
+  }
+
   requestFullScreen() {
     this.rtcVideo.requestFullscreen();
   }
@@ -645,6 +654,15 @@ export default class MediaPlayer extends VueBase {
 
   onPlay() {
     this.paused = false;
+    this.videoWidth = this.rtcVideo.videoWidth;
+    this.videoHeight = this.rtcVideo.videoHeight;
+    console.debug(`onPlay() -> w=${this.videoWidth}, h=${this.videoHeight}`);
+  }
+
+  onResize() {
+    this.videoWidth = this.rtcVideo.videoWidth;
+    this.videoHeight = this.rtcVideo.videoHeight;
+    console.debug(`onResize() -> w=${this.videoWidth}, h=${this.videoHeight}`);
   }
 
   onClickPlay() {
@@ -687,7 +705,7 @@ export default class MediaPlayer extends VueBase {
   justify-content: center;
 
   padding: 0;
-  height: 100%;
+  border: 0;
 
   background: gray;
 
@@ -707,42 +725,53 @@ export default class MediaPlayer extends VueBase {
     z-index: 50;
   }
 
-  .canvas-user {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+  .media-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 
-    z-index: 40;
-  }
+    object-fit: contain;
 
-  .canvas-meta {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+    padding: 0;
+    border: 0;
 
-    z-index: 30;
-  }
+    .canvas-user {
+      position: absolute;
+      width: 100%;
+      height: 100%;
 
-  .brand-logo {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+      z-index: 40;
+    }
 
-    z-index: 20;
-  }
+    .canvas-meta {
+      position: absolute;
+      width: 100%;
+      height: 100%;
 
-  .rtc-player {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+      z-index: 30;
+    }
 
-    z-index: 10;
-  }
+    .brand-logo {
+      position: absolute;
+      width: 100%;
+      height: 100%;
 
-  .video-player {
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
+      z-index: 20;
+    }
+
+    .rtc-player {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+
+      z-index: 10;
+    }
+
+    .video-player {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 </style>

@@ -14,7 +14,7 @@ class MinioTestCase(AsyncTestCase):
         self.pw = self.config.storage_pw
         self.region = self.config.storage_region
         self.secure = self.config.storage_secure
-        self.bucket = "recc-test"
+        self.bucket = "recc.test"
 
         self.minio = MinioStorageService(
             ss_host=self.host,

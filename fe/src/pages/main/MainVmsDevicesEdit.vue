@@ -5,6 +5,7 @@ en:
   edit: "Edit"
   tab:
     info: "Information"
+    live: "Live"
     record: "Record"
     event: "Event"
 
@@ -14,6 +15,7 @@ ko:
   edit: "Edit"
   tab:
     info: "정보"
+    live: "실시간"
     record: "녹화"
     event: "이벤트"
 </i18n>
@@ -24,61 +26,64 @@ ko:
     <v-divider></v-divider>
 
     <v-row>
-      <v-col
-          class="my-4"
-          cols="12"
-          offset-sm="1"
-          sm="10"
-          offset-md="2"
-          md="8"
-          offset-lg="3"
-          lg="6"
-          offset-xl="4"
-          xl="4"
-      >
-        <v-responsive :aspect-ratio="1">
-          <media-player
-              hover-system-bar
-              :value="original"
-              :group="$route.params.group"
-              :project="$route.params.project"
-              :device="Number.parseInt($route.params.device)"
-          ></media-player>
-        </v-responsive>
+<!--      <v-col-->
+<!--          class="my-4"-->
+<!--          cols="12"-->
+<!--          sm="12"-->
+<!--          md="6"-->
+<!--          lg="7"-->
+<!--          xl="8"-->
+<!--      >-->
+<!--      </v-col>-->
+
+      <v-col>
+        <v-tabs v-model="tabIndex">
+          <v-tab>{{ $t('tab.info') }}</v-tab>
+          <v-tab>{{ $t('tab.live') }}</v-tab>
+          <v-tab v-show="false">{{ $t('tab.record') }}</v-tab>
+          <v-tab>{{ $t('tab.event') }}</v-tab>
+        </v-tabs>
+        <v-divider></v-divider>
+
+        <v-tabs-items v-model="tabIndex">
+          <v-tab-item>
+            <form-vms-device
+                hide-cancel-button
+                :disabled="loading"
+                :disable-submit-button="!modified"
+                :loading-submit="loadingSubmit"
+                :show-delete-dialog="showDeleteDialog"
+                :loading-delete="loadingDelete"
+                :value="current"
+                @input="onUpdateCurrent"
+                @ok="onClickOk"
+                @delete:show="onClickDelete"
+                @delete:cancel="onClickDeleteCancel"
+                @delete:ok="onClickDeleteOk"
+            ></form-vms-device>
+          </v-tab-item>
+
+          <v-tab-item>
+            <media-player
+                hover-system-bar
+                hide-controller
+                :value="original"
+                :group="$route.params.group"
+                :project="$route.params.project"
+                :device="Number.parseInt($route.params.device)"
+            ></media-player>
+          </v-tab-item>
+
+          <v-tab-item>
+          </v-tab-item>
+
+          <v-tab-item>
+            <form-vms-event-configs>
+            </form-vms-event-configs>
+          </v-tab-item>
+        </v-tabs-items>
       </v-col>
     </v-row>
-
-    <v-tabs v-model="tabIndex">
-      <v-tab>{{ $t('tab.info') }}</v-tab>
-      <v-tab v-show="false">{{ $t('tab.record') }}</v-tab>
-      <v-tab>{{ $t('tab.event') }}</v-tab>
-    </v-tabs>
-    <v-divider></v-divider>
-
-    <v-tabs-items v-model="tabIndex">
-      <v-tab-item>
-        <form-vms-device
-            hide-cancel-button
-            :disabled="loading"
-            :disable-submit-button="!modified"
-            :loading-submit="loadingSubmit"
-            :show-delete-dialog="showDeleteDialog"
-            :loading-delete="loadingDelete"
-            :value="current"
-            @input="onUpdateCurrent"
-            @ok="onClickOk"
-            @delete:show="onClickDelete"
-            @delete:cancel="onClickDeleteCancel"
-            @delete:ok="onClickDeleteOk"
-        ></form-vms-device>
-      </v-tab-item>
-      <v-tab-item>
-        2
-      </v-tab-item>
-      <v-tab-item>
-        3
-      </v-tab-item>
-    </v-tabs-items>
 
   </v-container>
 </template>
@@ -89,6 +94,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import MediaPlayer from '@/media/MediaPlayer.vue';
 import FormVmsDevice from '@/components/FormVmsDevice.vue';
+import FormVmsEventConfigs from '@/components/FormVmsEventConfigs.vue';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import type {VmsDeviceA, VmsUpdateDeviceQ} from '@/packet/vms';
 import * as _ from 'lodash';
@@ -98,6 +104,7 @@ import * as _ from 'lodash';
     ToolbarBreadcrumbs,
     MediaPlayer,
     FormVmsDevice,
+    FormVmsEventConfigs,
   }
 })
 export default class MainVmsDevicesEdit extends VueBase {

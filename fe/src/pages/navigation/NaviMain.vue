@@ -6,7 +6,10 @@ en:
   tables: "Tables"
   tasks: "Tasks"
   vp: "Visual Programming"
-  vms: "VMS"
+  vms:
+    live: "Live"
+    devices: "Devices"
+    layouts: "Layouts"
   members: "Members"
   settings: "Settings"
 
@@ -17,7 +20,10 @@ ko:
   tables: "테이블"
   tasks: "태스크"
   vp: "시각 프로그래밍"
-  vms: "VMS"
+  vms:
+    live: "실시간"
+    devices: "장치 목록"
+    layouts: "레이아웃"
   members: "회원 관리"
   settings: "프로젝트 설정"
 </i18n>
@@ -108,15 +114,36 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-divider v-show="isVms"></v-divider>
-        <v-list-item v-show="isVms" link @click.stop="vms">
-          <v-list-item-icon>
-            <v-icon>mdi-cctv</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('vms') }}
-          </v-list-item-title>
-        </v-list-item>
+        <div v-show="isVms">
+          <v-divider></v-divider>
+
+          <v-list-item v-show="hasManagerRead" link @click.stop="vmsLive">
+            <v-list-item-icon>
+              <v-icon>mdi-broadcast</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('vms.live') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item v-show="hasManagerRead" link @click.stop="vmsDevices">
+            <v-list-item-icon>
+              <v-icon>mdi-cctv</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('vms.devices') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item v-show="hasManagerRead" link @click.stop="vmsLayouts">
+            <v-list-item-icon>
+              <v-icon>mdi-view-dashboard</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('vms.layouts') }}
+            </v-list-item-title>
+          </v-list-item>
+        </div>
 
         <v-divider></v-divider>
 
@@ -192,6 +219,10 @@ export default class NaviMain extends VueBase {
     return this.features.findIndex(i => i == FEATURE_VMS) != -1;
   }
 
+  get hasManagerRead() {
+    return this.permission?.r_manager || false;
+  }
+
   created() {
     (async () => {
       await this.requestSetup();
@@ -229,20 +260,28 @@ export default class NaviMain extends VueBase {
       this.index = 4;
     } else if (name === mainNames.mainVisualProgramming) {
       this.index = 5;
-    } else if (name === mainNames.mainVmsDevices) {
-      this.index = 6;
-    } else if (name === mainNames.mainVmsDevicesDiscovery) {
-      this.index = 6;
-    } else if (name === mainNames.mainVmsDevicesEdit) {
-      this.index = 6;
-    } else if (name === mainNames.mainVmsDevicesNew) {
-      this.index = 6;
+
     } else if (name === mainNames.mainVmsLive) {
       this.index = 6;
-    } else if (name === mainNames.mainMembers) {
+    } else if (name === mainNames.mainVmsDevices) {
       this.index = 7;
-    } else if (name === mainNames.mainSettings) {
+    } else if (name === mainNames.mainVmsDevicesDiscovery) {
+      this.index = 7;
+    } else if (name === mainNames.mainVmsDevicesEdit) {
+      this.index = 7;
+    } else if (name === mainNames.mainVmsDevicesNew) {
+      this.index = 7;
+    } else if (name === mainNames.mainVmsLayouts) {
       this.index = 8;
+    } else if (name === mainNames.mainVmsLayoutsEdit) {
+      this.index = 8;
+    } else if (name === mainNames.mainVmsLayoutsNew) {
+      this.index = 8;
+
+    } else if (name === mainNames.mainMembers) {
+      this.index = 9;
+    } else if (name === mainNames.mainSettings) {
+      this.index = 10;
     } else {
       this.index = -1;
     }
@@ -321,10 +360,24 @@ export default class NaviMain extends VueBase {
     }
   }
 
-  @Emit('click:vms')
-  vms() {
+  @Emit('click:vms-live')
+  vmsLive() {
     if (!this.noDefault) {
       this.moveToMainVmsLive();
+    }
+  }
+
+  @Emit('click:vms-devices')
+  vmsDevices() {
+    if (!this.noDefault) {
+      this.moveToMainVmsDevices();
+    }
+  }
+
+  @Emit('click:vms-layouts')
+  vmsLayouts() {
+    if (!this.noDefault) {
+      this.moveToMainVmsLayouts();
     }
   }
 
