@@ -187,12 +187,27 @@ export interface VmsCreateEventConfigQ {
 }
 
 export interface VmsUpdateEventConfigQ {
-    order: number;
-    device_uid: number;
-    category: string;
-    name: string;
-    enable: boolean;
+    order?: number;
+    device_uid?: number;
+    category?: string;
+    name?: string;
+    enable?: boolean;
     extra?: any;
+}
+
+export interface VmsEventTagA {
+    event_tag_uid: number;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface VmsCreateEventTagQ {
+    description: string;
+}
+
+export interface VmsUpdateEventTagQ {
+    description?: string;
 }
 
 export interface VmsDiscoveryQ {

@@ -80,19 +80,19 @@ export default class CardInfoNew extends VueBase {
   readonly value!: VmsEventConfigA;
 
   get isColor() {
-    return this.value.type === EVENT_TYPE_NAME_COLOR;
+    return this.value.category === EVENT_TYPE_NAME_COLOR;
   }
 
   get isDetection() {
-    return this.value.type === EVENT_TYPE_NAME_DETECTION;
+    return this.value.category === EVENT_TYPE_NAME_DETECTION;
   }
 
   get isMatching() {
-    return this.value.type === EVENT_TYPE_NAME_MATCHING;
+    return this.value.category === EVENT_TYPE_NAME_MATCHING;
   }
 
   get isOcr() {
-    return this.value.type === EVENT_TYPE_NAME_OCR;
+    return this.value.category === EVENT_TYPE_NAME_OCR;
   }
 
   inputExtra(event) {

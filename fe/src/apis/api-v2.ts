@@ -27,6 +27,9 @@ import type {
     VmsEventConfigA,
     VmsCreateEventConfigQ,
     VmsUpdateEventConfigQ,
+    VmsEventTagA,
+    VmsCreateEventTagQ,
+    VmsUpdateEventTagQ,
     VmsEventA,
     VmsNewsEventQ,
     VmsDiscoveryQ,
@@ -1059,22 +1062,22 @@ export default class ApiV2 {
         return this.post<Array<VmsEventA>>(url, body);
     }
 
-    getEventsConfigs(group: string, project: string) {
+    getVmsEventsConfigs(group: string, project: string) {
         const url = `/plugins/vms/${group}/${project}/events/configs`;
         return this.get<Array<VmsEventConfigA>>(url);
     }
 
-    postEventsConfigs(group: string, project: string, body: VmsCreateEventConfigQ) {
+    postVmsEventsConfigs(group: string, project: string, body: VmsCreateEventConfigQ) {
         const url = `/plugins/vms/${group}/${project}/events/configs`;
         return this.post(url, body);
     }
 
-    getEventsConfigsPconfig(group: string, project: string, config: string) {
+    getVmsEventsConfigsPconfig(group: string, project: string, config: string) {
         const url = `/plugins/vms/${group}/${project}/events/configs/${config}`;
-        return this.get<VmsEventA>(url);
+        return this.get<VmsEventConfigA>(url);
     }
 
-    patchEventsConfigsPconfig(
+    patchVmsEventsConfigsPconfig(
         group: string,
         project: string,
         config: string,
@@ -1084,8 +1087,38 @@ export default class ApiV2 {
         return this.patch(url, body);
     }
 
-    deleteEventsConfigsPconfig(group: string, project: string, config: string) {
+    deleteVmsEventsConfigsPconfig(group: string, project: string, config: string) {
         const url = `/plugins/vms/${group}/${project}/events/configs/${config}`;
+        return this.delete(url);
+    }
+
+    getVmsEventsTags(group: string, project: string) {
+        const url = `/plugins/vms/${group}/${project}/events/tags`;
+        return this.get<Array<VmsEventTagA>>(url);
+    }
+
+    postVmsEventsTags(group: string, project: string, body: VmsCreateEventTagQ) {
+        const url = `/plugins/vms/${group}/${project}/events/tags`;
+        return this.post(url, body);
+    }
+
+    getVmsEventsTagsPtag(group: string, project: string, tag: string) {
+        const url = `/plugins/vms/${group}/${project}/events/tags/${tag}`;
+        return this.get<VmsEventTagA>(url);
+    }
+
+    patchVmsEventsTagsPtag(
+        group: string,
+        project: string,
+        tag: string,
+        body: VmsUpdateEventTagQ,
+    ) {
+        const url = `/plugins/vms/${group}/${project}/events/tags/${tag}`;
+        return this.patch(url, body);
+    }
+
+    deleteVmsEventsTagsPtag(group: string, project: string, tag: string) {
+        const url = `/plugins/vms/${group}/${project}/events/tags/${tag}`;
         return this.delete(url);
     }
 
