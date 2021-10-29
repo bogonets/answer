@@ -24,6 +24,9 @@ import type {
     VmsLayoutA,
     VmsCreateLayoutQ,
     VmsUpdateLayoutQ,
+    VmsEventConfigA,
+    VmsCreateEventConfigQ,
+    VmsUpdateEventConfigQ,
     VmsEventA,
     VmsNewsEventQ,
     VmsDiscoveryQ,
@@ -1054,6 +1057,36 @@ export default class ApiV2 {
     postVmsEventsNews(group: string, project: string, body: VmsNewsEventQ) {
         const url = `/plugins/vms/${group}/${project}/events/news`;
         return this.post<Array<VmsEventA>>(url, body);
+    }
+
+    getEventsConfigs(group: string, project: string) {
+        const url = `/plugins/vms/${group}/${project}/events/configs`;
+        return this.get<Array<VmsEventConfigA>>(url);
+    }
+
+    postEventsConfigs(group: string, project: string, body: VmsCreateEventConfigQ) {
+        const url = `/plugins/vms/${group}/${project}/events/configs`;
+        return this.post(url, body);
+    }
+
+    getEventsConfigsPconfig(group: string, project: string, config: string) {
+        const url = `/plugins/vms/${group}/${project}/events/configs/${config}`;
+        return this.get<VmsEventA>(url);
+    }
+
+    patchEventsConfigsPconfig(
+        group: string,
+        project: string,
+        config: string,
+        body: VmsUpdateEventConfigQ,
+    ) {
+        const url = `/plugins/vms/${group}/${project}/events/configs/${config}`;
+        return this.patch(url, body);
+    }
+
+    deleteEventsConfigsPconfig(group: string, project: string, config: string) {
+        const url = `/plugins/vms/${group}/${project}/events/configs/${config}`;
+        return this.delete(url);
     }
 
     // ---------------------

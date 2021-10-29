@@ -166,10 +166,30 @@ export interface VmsNewsEventQ {
 }
 
 export interface VmsEventConfigA {
-    event_uid: number;
+    event_config_uid: number;
     order: number;
     device_uid: number;
-    type: string;
+    category: string;
+    name: string;
+    enable: boolean;
+    extra?: any;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface VmsCreateEventConfigQ {
+    order: number;
+    device_uid: number;
+    category: string;
+    name: string;
+    enable: boolean;
+    extra?: any;
+}
+
+export interface VmsUpdateEventConfigQ {
+    order: number;
+    device_uid: number;
+    category: string;
     name: string;
     enable: boolean;
     extra?: any;
@@ -292,11 +312,14 @@ export function createEmptyVmsDeviceA() {
 
 export function createEmptyVmsEventConfigA() {
     return {
-        event_uid: 0,
+        event_config_uid: 0,
         order: 0,
         device_uid: 0,
-        type: '',
+        category: '',
         name: '',
         enable: false,
+        extra: undefined,
+        created_at: '',
+        updated_at: '',
     } as VmsEventConfigA;
 }
