@@ -30,6 +30,9 @@ class ContextInfo(ContextBase):
     async def get_infos(self) -> List[Info]:
         return await self.database.select_infos()
 
+    async def get_infos_like(self, like: str) -> List[Info]:
+        return await self.database.select_infos_like(like)
+
     async def get_info(self, key: str) -> Info:
         return await self.database.select_info_by_key(key)
 

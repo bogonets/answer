@@ -15,6 +15,7 @@ from recc.database.postgresql.query.info import (
     UPSERT_INFO,
     DELETE_INFO_BY_KEY,
     SELECT_INFO_BY_KEY,
+    SELECT_INFO_BY_KEY_LIKE,
     SELECT_INFO_ALL,
     SELECT_INFO_DB_VERSION,
 )
@@ -83,6 +84,19 @@ class PgInfo(DbInfo, PgBase):
         return result
 
     @overrides
+    async def select_infos_like(self, like: str) -> List[Info]:
+        result: List[Info] = list()
+        async with self.conn() as conn:
+            async with conn.transaction():
+                query = SELECT_INFO_BY_KEY_LIKE
+                async for row in conn.cursor(query, like):
+                    result.append(Info(**dict(row)))
+        params_msg = f"like={like}"
+        result_msg = f"{len(result)} infos"
+        logger.info(f"select_infos_like({params_msg}) -> {result_msg}")
+        return result
+
+    @overrides
     async def select_infos(self) -> List[Info]:
         result: List[Info] = list()
         async with self.conn() as conn:
@@ -97,8 +111,8 @@ class PgInfo(DbInfo, PgBase):
     @overrides
     async def select_database_version(self) -> str:
         query = SELECT_INFO_DB_VERSION
-        row = await self.fetch_row(query)
-        assert row and len(row) == 1
-        result = str(row.get("version", ""))
-        logger.info(f"select_database_version() -> '{result}'")
-        return result
+        version = await self.fetch_val(query)
+        # assert row and len(row) == 1
+        # result = str(row.get("version", ""))
+        logger.info(f"select_database_version() -> '{version}'")
+        return version

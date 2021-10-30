@@ -98,16 +98,23 @@ WHERE key LIKE $1;
 ##########
 
 SELECT_INFO_BY_KEY = f"""
-SELECT value, created_at, updated_at
+SELECT *
+FROM {TABLE_INFO}
+WHERE key=$1;
+"""
+
+SELECT_INFO_BY_KEY_LIKE = f"""
+SELECT *
 FROM {TABLE_INFO}
 WHERE key LIKE $1;
 """
 
 SELECT_INFO_ALL = f"""
-SELECT key, value, created_at, updated_at
+SELECT *
 FROM {TABLE_INFO};
 """
 
 SELECT_INFO_DB_VERSION = f"""
-SELECT version FROM {VIEW_INFO_DB_VERSION};
+SELECT version
+FROM {VIEW_INFO_DB_VERSION};
 """

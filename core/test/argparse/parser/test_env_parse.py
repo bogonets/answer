@@ -2,7 +2,7 @@
 
 from unittest import TestCase, main
 from recc.argparse.parser.env_parse import (
-    get_namespace_by_envs,
+    get_filtered_namespace,
     get_namespace_by_os_envs,
 )
 from recc.system.environ import exchange_env, get_env
@@ -55,7 +55,7 @@ class EnvParseTestCase(TestCase):
             RECC_VERBOSE: 3,
             RECC_DEVELOPER: True,
         }
-        config = get_namespace_by_envs(test_dict, "RECC_")
+        config = get_filtered_namespace(test_dict, "RECC_")
         self.assertEqual(test_dict[RECC_HTTP_BIND], config.http_bind)
         self.assertEqual(test_dict[RECC_HTTP_PORT], config.http_port)
         self.assertEqual(test_dict[RECC_VERBOSE], config.verbose)

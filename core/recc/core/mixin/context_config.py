@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, Any, Set, get_type_hints
+from typing import Optional, List, Any, Set, Dict, get_type_hints
 from recc.core.mixin.context_base import ContextBase
 from recc.event.watcher_container import WatcherContainer
 from recc.packet.config import ConfigA
 from recc.argparse.config.core_config import CoreConfig
 from recc.log.logging import recc_core_logger as logger
 from recc.log.logging import set_root_level
+from recc.argparse.parser.env_parse import get_filtered_namespace
+from recc.variables.database import CONFIG_PREFIX_RECC_ARGPARSE_CONFIG
 
 IGNORE_CONFIG_KEYS = {
     "command",
@@ -38,15 +40,31 @@ class ContextConfig(ContextBase):
         logger.info(f"Change the severity of the root logger: {old} -> {new}")
         set_root_level(new)
 
-    def _set_config_value(self, key: str, val: Any) -> None:
+    async def _set_config_value(self, key: str, val: Any) -> None:
         if key in self._config_watcher:
             old_value = getattr(self.config, key, None)
+
+            # Call the watcher.
             self._config_watcher.call_synced_watcher(key, val, old_value)
+
+        # Save to database.
+        info_key = CONFIG_PREFIX_RECC_ARGPARSE_CONFIG + key
+        info_value = str(val)
+        await self.database.upsert_info(info_key, info_value)
+
+        # Updates the configuration in memory.
         setattr(self.config, key, val)
 
     async def setup_context_config(self) -> None:
         self._config_watcher = WatcherContainer()
         self._config_watcher["log_level"] = self._on_watch_log_level
+
+    async def restore_configs(self, configs: Dict[str, str]) -> None:
+        prefix = CONFIG_PREFIX_RECC_ARGPARSE_CONFIG
+        filtered_configs = get_filtered_namespace(configs, prefix)
+        assert self._config is not None
+        for key, val in vars(filtered_configs).items():
+            setattr(self._config, key, val)
 
     @staticmethod
     def get_release_config_keys() -> Set[str]:
@@ -71,7 +89,12 @@ class ContextConfig(ContextBase):
         else:
             return self.get_release_config_keys()
 
-    def set_config(self, key: str, val: Any, dev_mode: Optional[bool] = None) -> None:
+    async def set_config(
+        self,
+        key: str,
+        val: Any,
+        dev_mode: Optional[bool] = None,
+    ) -> None:
         keys = self.get_config_keys(dev_mode)
         if key not in keys:
             raise KeyError(f"Not exists config key: {key}")
@@ -87,9 +110,9 @@ class ContextConfig(ContextBase):
                     raise ValueError(f"Unknown boolean value: {val}")
             else:
                 update_value = CORE_CONFIG_TYPE_HINTS[key](val)
-            self._set_config_value(key, update_value)
+            await self._set_config_value(key, update_value)
         else:
-            self._set_config_value(key, val)
+            await self._set_config_value(key, val)
 
     def get_configs(self, dev_mode: Optional[bool] = None) -> List[ConfigA]:
         result = list()

@@ -47,6 +47,10 @@ class DbInfo(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def select_infos_like(self, like: str) -> List[Info]:
+        raise NotImplementedError
+
+    @abstractmethod
     async def select_infos(self) -> List[Info]:
         raise NotImplementedError
 
