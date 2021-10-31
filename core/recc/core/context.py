@@ -155,10 +155,10 @@ class Context(
             logger.debug(f"Allocated ports: {list(self.ports.alloc_ports)}")
 
         await self._daemons.open(self._storage.daemon, self.database, self._loop)
-        logger.info(f"Daemon-manager open complete: {len(self._daemons)}")
+        logger.info("Daemon-manager open complete.")
 
         await self._daemons.init(await self.get_infos_as_dict())
-        logger.info(f"Daemon-manager init complete: {len(self._daemons)}")
+        logger.info("Daemon-manager init complete.")
 
     async def _before_close(self) -> None:
         await self._daemons.close()
