@@ -2,10 +2,12 @@
 
 from pathlib import Path
 from typing import Dict, Optional
-from asyncio import AbstractEventLoop
+from asyncio import TimeoutError as AsyncioTimeoutError
+from asyncio import AbstractEventLoop, wait_for
 from recc.log.logging import recc_daemon_logger as logger
 from recc.database.interfaces.db_interface import DbInterface
 from recc.daemon.daemon_runner import DaemonRunner
+from recc.daemon.daemon_client import DaemonClient
 
 
 class DaemonManager(Dict[str, DaemonRunner]):
@@ -119,3 +121,50 @@ class DaemonManager(Dict[str, DaemonRunner]):
             if runner.is_opened():
                 await runner.close()
                 logger.info(f"Closed daemon: {key}")
+
+    async def init(
+        self,
+        configs: Dict[str, str],
+        connection_timeout: Optional[float] = None,
+        query_timeout: Optional[float] = None,
+    ) -> None:
+        real_connection_timeout = connection_timeout if connection_timeout else 4.0
+        real_query_timeout = query_timeout if query_timeout else 8.0
+
+        runner_count = self.__len__()
+        for index, runner in enumerate(self.values()):
+            address = runner.address_for_client
+            client: Optional[DaemonClient] = DaemonClient(
+                address, timeout=real_query_timeout
+            )
+
+            logger.debug(
+                f"[{index}/{runner_count}] "
+                f"Connecting to daemon server ... {address} "
+                f"(timeout: {real_connection_timeout}s)"
+            )
+
+            try:
+                assert client is not None
+                await wait_for(client.open(), timeout=real_connection_timeout)
+            except AsyncioTimeoutError:
+                logger.error("Daemon server connection timed out.")
+                client = None
+            except BaseException as e:  # noqa
+                logger.error(
+                    f"Failed to connect to daemon server for unknown reason. {e}"
+                )
+                client = None
+            else:
+                logger.info("You have successfully connected to the daemon server.")
+
+            if not client:
+                continue
+
+            try:
+                await client.init(**configs)
+                logger.info("The daemon's Init API call was successful.")
+            except BaseException as e:  # noqa
+                logger.error(f"The daemon's Init API call failed. {e}")
+            finally:
+                await client.close()

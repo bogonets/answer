@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List
+from typing import List, Dict
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.info import Info
 from recc.rule.database_info import (
@@ -29,6 +29,15 @@ class ContextInfo(ContextBase):
 
     async def get_infos(self) -> List[Info]:
         return await self.database.select_infos()
+
+    async def get_infos_as_dict(self) -> Dict[str, str]:
+        infos = await self.get_infos()
+        result = dict()
+        for info in infos:
+            if not info.key:
+                continue
+            result[info.key] = info.value if info.value else str()
+        return result
 
     async def get_infos_like(self, like: str) -> List[Info]:
         return await self.database.select_infos_like(like)

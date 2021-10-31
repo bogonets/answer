@@ -6,6 +6,7 @@ from hashlib import sha256
 from asyncio import AbstractEventLoop, get_event_loop, run_coroutine_threadsafe
 
 from recc.log.logging import recc_daemon_logger as logger
+from recc.network.uds import is_uds_family
 from recc.subprocess.async_subprocess import AsyncSubprocess
 from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
 from recc.venv.async_virtual_environment import AsyncVirtualEnvironment
@@ -56,6 +57,22 @@ class DaemonRunner:
         self.process: Optional[AsyncSubprocess] = None
         self.process_join_timeout = DEFAULT_PROCESS_JOIN_TIMEOUT
         self.output_encoding = "utf-8"
+
+    @property
+    def address_for_client(self) -> str:
+        if is_uds_family(self.address):
+            return self.address
+
+        # TODO: gRPC address pattern parsing ...
+
+        address_and_port = self.address.split(":")[0]
+        if address_and_port[0] == "0.0.0.0":
+            if len(address_and_port) == 2:
+                return f"localhost:{address_and_port[1]}"
+            else:
+                return "localhost"
+        else:
+            return self.address
 
     @staticmethod
     def is_daemon_plugin_directory(directory: Path) -> bool:
