@@ -4,6 +4,11 @@ export interface UserExtraA {
     dark?: boolean;
     lang?: string;
     timezone?: string;
+
+    // VMS Plugin
+    vmsBeep?: boolean;
+    vmsBeepInterval?: number;
+    vmsBeepDuration?: number;
 }
 
 export interface UserA {

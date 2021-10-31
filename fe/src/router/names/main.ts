@@ -20,6 +20,7 @@ export const mainNames = {
     mainVmsLayoutsEdit: 'mainVmsLayoutsEdit',
     mainVmsLayoutsNew: 'mainVmsLayoutsNew',
     mainVmsLive: 'mainVmsLive',
+    mainVmsUserConfigs: 'mainVmsUserConfigs',
 
     ...mainAirjoyNames,
 };

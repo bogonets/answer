@@ -12,6 +12,7 @@ en:
     layouts: "Layouts"
     evnets_calendar: "Events Calendar"
     evnets_filter: "Events Filter"
+    user_configs: "User Configs"
   members: "Members"
   settings: "Settings"
 
@@ -28,6 +29,7 @@ ko:
     layouts: "레이아웃"
     evnets_calendar: "이벤트 달력"
     evnets_filter: "이벤트 필터"
+    user_configs: "개인 설정"
   members: "회원 관리"
   settings: "프로젝트 설정"
 </i18n>
@@ -163,6 +165,15 @@ ko:
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('vms.evnets_filter') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item v-show="hasManagerRead" link @click.stop="vmsUserConfigs">
+            <v-list-item-icon>
+              <v-icon>mdi-camera-account</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('vms.user_configs') }}
             </v-list-item-title>
           </v-list-item>
         </div>
@@ -419,6 +430,13 @@ export default class NaviMain extends VueBase {
   vmsEventsFilter() {
     if (!this.noDefault) {
       this.moveToMainVmsEventsFilter();
+    }
+  }
+
+  @Emit('click:vms-user-configs')
+  vmsUserConfigs() {
+    if (!this.noDefault) {
+      this.moveToMainVmsUserConfigs();
     }
   }
 

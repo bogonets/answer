@@ -18,6 +18,7 @@ import MainVmsLayouts from '@/pages/main/MainVmsLayouts.vue';
 import MainVmsLayoutsEdit from '@/pages/main/MainVmsLayoutsEdit.vue';
 import MainVmsLayoutsNew from '@/pages/main/MainVmsLayoutsNew.vue';
 import MainVmsLive from '@/pages/main/MainVmsLive.vue';
+import MainVmsUserConfigs from '@/pages/main/MainVmsUserConfigs.vue';
 
 // External
 import mainAirjoyChildren from '@/router/children/external/airjoy/main';
@@ -62,11 +63,6 @@ export const mainChildren = [
         path: ':group/:project/vp',
         component: MainVisualProgramming,
         name: mainNames.mainVisualProgramming,
-    },
-    {
-        path: ':group/:project/vms/live',
-        component: MainVmsLive,
-        name: mainNames.mainVmsLive,
     },
     {
         path: ':group/:project/vms/devices',
@@ -117,6 +113,16 @@ export const mainChildren = [
         path: ':group/:project/vms/layouts/new',
         component: MainVmsLayoutsNew,
         name: mainNames.mainVmsLayoutsNew,
+    },
+    {
+        path: ':group/:project/vms/live',
+        component: MainVmsLive,
+        name: mainNames.mainVmsLive,
+    },
+    {
+        path: ':group/:project/vms/user/configs',
+        component: MainVmsUserConfigs,
+        name: mainNames.mainVmsUserConfigs,
     },
 
     ...mainAirjoyChildren,
