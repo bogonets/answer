@@ -18,6 +18,10 @@ en:
   msg:
     select_category: "Please select an event category."
     unknown_category: "Unknown event category."
+    enable_debugging: "Enable Device Debugging Mode"
+    disable_debugging: "Disable Device Debugging Mode"
+    failed_start_debugging: "Failed to switch device debugging mode."
+    failed_stop_debugging: "Failed to stop device debugging mode."
   step:
     basic: "Basic"
     event: "Event"
@@ -46,6 +50,10 @@ ko:
   msg:
     select_category: "이벤트 종류를 선택해 주세요."
     unknown_category: "알 수 없는 이벤트 종류 입니다."
+    enable_debugging: "장치 디버깅 모드를 활성화 했습니다."
+    disable_debugging: "장치 디버깅 모드를 비활성화 했습니다."
+    failed_start_debugging: "장치 디버깅 모드 전환에 실패하였습니다."
+    failed_stop_debugging: "장치 디버깅 모드 중단에 실패하였습니다."
   step:
     basic: "기본 정보"
     event: "이벤트 설정"
@@ -362,6 +370,12 @@ export default class CardInfoNew extends VueBase {
 
   valid = false;
   loading = false;
+  init = false;
+
+  // You cannot directly reference `$route` in the `beforeDestroy` event.
+  debuggingGroup = '';
+  debuggingProject = '';
+  debuggingDevice = '';
 
   device = {} as VmsDeviceA;
   devices = [] as Array<VmsDeviceA>;
@@ -374,20 +388,21 @@ export default class CardInfoNew extends VueBase {
 
   requestSetup() {
     this.loading = true;
+    this.init = false;
     (async () => {
       await this.setup();
     })();
   }
 
   async setup() {
-    try {
-      const group = this.$route.params.group;
-      const project = this.$route.params.project;
-      const device = this.$route.params.device;
-      const device_uid = Number.parseInt(device);
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
 
+    try {
       this.devices = await this.$api2.getVmsDevices(group, project);
 
+      const device_uid = Number.parseInt(device);
       const findDevice = this.devices.find(i => i.device_uid == device_uid);
       if (typeof findDevice === 'undefined') {
         this.device = {} as VmsDeviceA;
@@ -398,11 +413,40 @@ export default class CardInfoNew extends VueBase {
       // this.original = _.cloneDeep(vmsLayout);
       // this.current = _.cloneDeep(vmsLayout);
       // this.modified = false;
+
+      this.init = true;
     } catch (error) {
       this.toastRequestFailure(error);
+      this.init = false;
+    }
+
+    try {
+      if (this.init) {
+        await this.$api2.postVmsDeviceProcessDebugStart(group, project, device);
+        this.debuggingGroup = this.$route.params.group;
+        this.debuggingProject = this.$route.params.project;
+        this.debuggingDevice = this.$route.params.device;
+
+        this.toastInfo(this.$t('msg.enable_debugging'));
+      }
+    } catch (error) {
+      this.toastWarning(this.$t('msg.failed_start_debugging'));
     } finally {
       this.loading = false;
     }
+  }
+
+  beforeDestroy() {
+    const group = this.debuggingGroup;
+    const project = this.debuggingProject;
+    const device = this.debuggingDevice;
+    this.$api2.postVmsDeviceProcessDebugStop(group, project, device)
+        .then(() => {
+          this.toastSuccess(this.$t('msg.disable_debugging'));
+        })
+        .catch(() => {
+          this.toastWarning(this.$t('msg.failed_stop_debugging'));
+        });
   }
 
   get existsCategory() {

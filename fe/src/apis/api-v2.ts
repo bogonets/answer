@@ -1019,6 +1019,16 @@ export default class ApiV2 {
         return this.post<RtcAnswerA>(url, body);
     }
 
+    postVmsDeviceProcessDebugStart(group: string, project: string, device: string) {
+        const url = `/plugins/vms/${group}/${project}/devices/${device}/process/debug/start`;
+        return this.post(url);
+    }
+
+    postVmsDeviceProcessDebugStop(group: string, project: string, device: string) {
+        const url = `/plugins/vms/${group}/${project}/devices/${device}/process/debug/stop`;
+        return this.post(url);
+    }
+
     // -------------------
     // Plugins/VMS/Layouts
     // -------------------

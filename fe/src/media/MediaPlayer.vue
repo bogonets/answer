@@ -390,8 +390,15 @@ export default class MediaPlayer extends VueBase {
     console.debug(`Channel closed.`);
   }
 
+  sendChannelResponse(code = 0) {
+    if (this.channel) {
+      this.channel.send(JSON.stringify({code}))
+    }
+  }
+
   onChannelMessage(event: MessageEvent) {
     if (this.channel_message_working) {
+      this.sendChannelResponse();
       return;  // Now working ...
     }
 
@@ -399,6 +406,7 @@ export default class MediaPlayer extends VueBase {
     const canvasHeight = this.canvasMeta.height;
     const context = this.canvasMeta.getContext('2d');
     if (!context) {
+      this.sendChannelResponse();
       return;
     }
 
@@ -413,9 +421,7 @@ export default class MediaPlayer extends VueBase {
         this.predict([]);
       } finally {
         this.channel_message_working = false;
-        if (this.channel) {
-          this.channel.send(JSON.stringify({code: 0}))
-        }
+        this.sendChannelResponse();
       }
     })();
   }
