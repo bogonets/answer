@@ -154,11 +154,6 @@ class Context(
         if self.config.developer:
             logger.debug(f"Allocated ports: {list(self.ports.alloc_ports)}")
 
-        # self._daemons.create(self._storage.daemon, daemons, self._loop)
-        # await self._daemons.install_requirements()
-        # for daemon in daemons:
-        #     install_
-
         await self._daemons.open(self._storage.daemon, self.database, self._loop)
         logger.info(f"Daemon-manager initialization complete: {len(self._daemons)}")
 

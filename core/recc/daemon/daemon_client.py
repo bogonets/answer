@@ -5,6 +5,7 @@ import pickle
 from typing import Optional, Any, Mapping, Text, Tuple
 from grpc.aio._channel import Channel  # noqa
 from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_register
+from recc.network.uds import is_uds_family
 from recc.proto.daemon.daemon_api_pb2_grpc import DaemonApiStub
 from recc.proto.daemon.daemon_api_pb2 import Pit, Pat, InitQ, InitA, PacketQ, PacketA
 from recc.variables.rpc import (
@@ -13,6 +14,11 @@ from recc.variables.rpc import (
     DEFAULT_PICKLE_ENCODING,
     DEFAULT_HEARTBEAT_TIMEOUT,
 )
+
+_WELL_KNOWN_LOOPBACK_ADDRESSES = [
+    "127.0.0.1",
+    "localhost",
+]
 
 
 async def heartbeat(
@@ -59,6 +65,33 @@ class DaemonClient:
 
     def is_open(self) -> bool:
         return self._channel is not None
+
+    def is_localhost(self) -> bool:
+        if is_uds_family(self._address):
+            return True
+
+        # elif self._address.startswith("ipv4:"):
+        #     pass
+        # elif self._address.startswith("ipv6:"):
+        #     pass
+        # elif self._address.startswith("dns:"):
+        #     # TODO: Remove `//authority/` part.
+        #     pass
+        # else:
+        #     # If unknown, use `dns` scheme.
+        #     pass
+
+        # TODO: Find IPv4 loopback address (127.0.0.0/8)
+        # TODO: Find IPv6 loopback address (::1, [::1])
+        # TODO: Find `localhost` in /etc/hosts
+        # TODO: Find `localhost` in C:\Windows\System32\drivers\etc\hosts
+        # TODO: Find network address
+        # TODO: E.T.C ...
+
+        return self._address.split(":")[0] in _WELL_KNOWN_LOOPBACK_ADDRESSES
+
+    def is_possible_shared_memory(self) -> bool:
+        return self.is_localhost()
 
     async def open(self) -> None:
         self._channel = grpc.aio.insecure_channel(
