@@ -314,11 +314,13 @@ export default class NaviMain extends VueBase {
       this.index = 9;
     } else if (name === mainNames.mainVmsEventsFilter) {
       this.index = 10;
+    } else if (name === mainNames.mainVmsUserConfigs) {
+      this.index = 11;
 
     } else if (name === mainNames.mainMembers) {
-      this.index = 11;
-    } else if (name === mainNames.mainSettings) {
       this.index = 12;
+    } else if (name === mainNames.mainSettings) {
+      this.index = 13;
 
     } else {
       this.index = -1;

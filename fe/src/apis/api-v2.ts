@@ -1072,6 +1072,11 @@ export default class ApiV2 {
         return this.post<Array<VmsEventA>>(url, body);
     }
 
+    getVmsEventsDates(group: string, project: string) {
+        const url = `/plugins/vms/${group}/${project}/events/dates`;
+        return this.get<Array<string>>(url);
+    }
+
     getVmsEventsConfigs(group: string, project: string) {
         const url = `/plugins/vms/${group}/${project}/events/configs`;
         return this.get<Array<VmsEventConfigA>>(url);

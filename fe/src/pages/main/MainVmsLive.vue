@@ -20,7 +20,6 @@ ko:
           :project="$route.params.project"
           :device="getDeviceUid(n)"
           :loading="loading"
-          @predict="onPredict(n, $event)"
           @contextmenu="onShowContextMenu(n, $event)"
       ></media-player>
     </div>
@@ -233,34 +232,34 @@ export default class MainVmsLive extends VueBase {
     return Math.ceil(extra["score"] * 100);
   }
 
-  onPredict(cardNumber: number, event: Array<object>) {
-    const layoutIndex = cardNumber - 1;
-    const device = this.layoutToDevice[layoutIndex] as VmsDeviceA;
-    if (typeof device === 'undefined') {
-      return;
-    }
-    const deviceUid = device.device_uid;
-    console.debug(event);
-
-    for (const item of event) {
-      if (this.events.length >= this.eventTotalSize) {
-        this.events.splice(0, (this.events.length - this.eventTotalSize) + 1);
-      }
-      const data = {
-        time: moment().format(),
-        event: 1,
-        device_uid: deviceUid,
-        file: '',
-        extra: item,
-        tag_uid: undefined,
-      } as VmsEventA;
-      this.events.push(data);
-    }
-
-    this.$nextTick(() => {
-      this.eventScroll.$el.scrollTop = this.eventScroll.$el.scrollHeight;
-    });
-  }
+  // onPredict(cardNumber: number, event: Array<object>) {
+  //   const layoutIndex = cardNumber - 1;
+  //   const device = this.layoutToDevice[layoutIndex] as VmsDeviceA;
+  //   if (typeof device === 'undefined') {
+  //     return;
+  //   }
+  //   const deviceUid = device.device_uid;
+  //   console.debug(event);
+  //
+  //   for (const item of event) {
+  //     if (this.events.length >= this.eventTotalSize) {
+  //       this.events.splice(0, (this.events.length - this.eventTotalSize) + 1);
+  //     }
+  //     const data = {
+  //       time: moment().format(),
+  //       event: 1,
+  //       device_uid: deviceUid,
+  //       file: '',
+  //       extra: item,
+  //       tag_uid: undefined,
+  //     } as VmsEventA;
+  //     this.events.push(data);
+  //   }
+  //
+  //   this.$nextTick(() => {
+  //     this.eventScroll.$el.scrollTop = this.eventScroll.$el.scrollHeight;
+  //   });
+  // }
 
   onShowContextMenu(cardNumber: number, event) {
     event.preventDefault();

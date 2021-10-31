@@ -6,6 +6,8 @@ en:
   first_event_day: "First Event Day"
   today: "Today"
   month: "{0} Month"
+  event: "Event"
+  empty: "There are no registered events."
 
 ko:
   groups: "Groups"
@@ -14,6 +16,8 @@ ko:
   first_event_day: "처음"
   today: "오늘"
   month: "{0} 월"
+  event: "이벤트"
+  empty: "등록된 이벤트가 없습니다."
 </i18n>
 
 <template>
@@ -79,7 +83,7 @@ ko:
         type="month"
         color="primary"
         :weekdays="[0, 1, 2, 3, 4, 5, 6]"
-        :events="events"
+        :events="calendarEvents"
         event-overlap-mode="stack"
         event-overlap-threshold="30"
         :event-color="eventColor"
@@ -96,9 +100,6 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import {VCalendar} from 'vuetify/lib/components/VCalendar';
 import {todayString} from '@/chrono/date';
-
-// import type {VmsDeviceA, VmsLayoutA, VmsEventA} from '@/packet/vms';
-// import moment from 'moment-timezone';
 
 @Component({
   components: {
@@ -135,40 +136,91 @@ export default class MainVmsEventsCalendar extends VueBase {
   @Ref()
   readonly calendar!: VCalendar;
 
+  loading = false;
   focusDay = todayString();
-  events = [] as Array<any>;
+
+  events = [] as Array<string>;
+  calendarEvents = [] as Array<any>;
+
+  created() {
+    this.updateDates();
+  }
+
+  updateDates() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    this.loading = true;
+    this.$api2.getVmsEventsDates(group, project)
+        .then(items => {
+          this.loading = false;
+          this.events = items;
+          const focus = this.focusDay.split("-");
+          const focusYear = Number.parseInt(focus[0]);
+          const focusMonth = Number.parseInt(focus[1]) - 1;
+          const begin = new Date(focusYear, focusMonth, 1);
+          const end = new Date(focusYear, focusMonth + 1, 0);
+          this.updateCalendarEvents(begin, end);
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
 
   get focusMonth() {
     return this.focusDay.split("-")[1];
   }
 
-  eventColor(event) {
-    return event.color;
+  eventColor(event: any) {
+    if (typeof event.color === 'undefined') {
+      return '';
+    } else {
+      return event.color;
+    }
   }
 
   onChangeEvents({ start, end }) {
-    // const events = [];
-    // const min = new Date(`${start.date}T00:00:00`);
-    // const max = new Date(`${end.date}T23:59:59`);
-    // const days = (max.getTime() - min.getTime()) / 86400000;
-
-    const events = [
-      {
-        name: 'AAA',
-        start: this.focusDay,
-        end: this.focusDay,
-        color: 'blue',
-        timed: false,
-      }
-    ];
-    this.events = events;
+    const min = new Date(`${start.date}T00:00:00`);
+    const max = new Date(`${end.date}T23:59:59`);
+    this.updateCalendarEvents(min, max);
   }
 
-  onClickEvent({ nativeEvent, event }) {
-    console.debug(`onClickEvent: ${nativeEvent}, ${event}`)
+  updateCalendarEvents(begin: Date, end: Date) {
+    const result = [] as Array<any>;
+    const min = begin.getMilliseconds();
+    const max = end.getMilliseconds();
+    for (const event of this.events) {
+      const eventBegin = new Date(`${event}T00:00:00`);
+      const eventEnd = new Date(`${event}T23:59:59`);
+      const beginMilli = eventBegin.getMilliseconds();
+      if (min <= beginMilli && beginMilli <= max) {
+        result.push({
+          name: this.$t('event'),
+          start: eventBegin,
+          end: eventEnd,
+          color: 'blue',
+          timed: false,
+        });
+      }
+    }
+    this.calendarEvents = result;
+  }
+
+  onClickEvent({ event }) {
+    console.assert(typeof event.start !== 'undefined');
+    const begin = event.start as Date;
+    const date = begin.toDateString();
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    this.moveToMainVmsEventsFilter(group, project, date);
   }
 
   onClickFirst() {
+    if (this.events.length === 0) {
+      this.toastWarning(this.$t('empty'));
+      return;
+    }
+    this.focusDay = this.events[0];
   }
 
   onClickToday() {

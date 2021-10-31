@@ -159,11 +159,10 @@ export interface VmsUpdateLayoutQ {
 
 export interface VmsEventA {
     time: string;
-    event: number;
     device_uid: number;
-    file?: string;
+    event_config_uid: number;
     extra?: any;
-    tag_uid?: number;
+    event_tag_uid?: number;
 }
 
 export interface VmsNewsEventQ {
