@@ -13,6 +13,7 @@ from recc.variables.storage import (
     CORE_TEMPLATE_NAME,
     CORE_PLUGIN_NAME,
     CORE_DAEMON_NAME,
+    CORE_CACHE_NAME,
     CORE_NAMES,
 )
 
@@ -55,6 +56,7 @@ class CoreStorage(
 
         self.plugin = Path(os.path.join(selected_root_dir, CORE_PLUGIN_NAME))
         self.daemon = Path(os.path.join(selected_root_dir, CORE_DAEMON_NAME))
+        self.cache = Path(os.path.join(selected_root_dir, CORE_CACHE_NAME))
 
     def get_socket_url(self, group_name: str, project_name: str, task_name: str) -> str:
         prefix = self.get_project_dir(group_name, project_name)

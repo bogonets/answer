@@ -31,7 +31,9 @@ import type {
     VmsCreateEventTagQ,
     VmsUpdateEventTagQ,
     VmsEventA,
+    VmsFilterEventQ,
     VmsNewsEventQ,
+    VmsEventImageA,
     VmsDiscoveryQ,
     VmsDiscoveredHeartbeatQ,
     VmsDiscoveredHeartbeatA,
@@ -1067,6 +1069,21 @@ export default class ApiV2 {
     // Plugins/VMS/Event
     // -----------------
 
+    getVmsEventsSnapshotsPevent(group: string, project: string, event: string) {
+        const url = `/plugins/vms/${group}/${project}/events/snapshots/${event}`;
+        return this.get<VmsEventImageA>(url);
+    }
+
+    getVmsEventsThumbnailsPevent(group: string, project: string, event: string) {
+        const url = `/plugins/vms/${group}/${project}/events/thumbnails/${event}`;
+        return this.get<VmsEventImageA>(url);
+    }
+
+    postVmsEventsFilter(group: string, project: string, body: VmsFilterEventQ) {
+        const url = `/plugins/vms/${group}/${project}/events/filter`;
+        return this.post<Array<VmsEventA>>(url, body);
+    }
+
     postVmsEventsNews(group: string, project: string, body: VmsNewsEventQ) {
         const url = `/plugins/vms/${group}/${project}/events/news`;
         return this.post<Array<VmsEventA>>(url, body);
@@ -1075,6 +1092,11 @@ export default class ApiV2 {
     getVmsEventsDates(group: string, project: string) {
         const url = `/plugins/vms/${group}/${project}/events/dates`;
         return this.get<Array<string>>(url);
+    }
+
+    getVmsEventsDevices(group: string, project: string) {
+        const url = `/plugins/vms/${group}/${project}/events/devices`;
+        return this.get<Array<number>>(url);
     }
 
     getVmsEventsConfigs(group: string, project: string) {

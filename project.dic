@@ -140,6 +140,7 @@ pconfig
 pcontainer
 pdaemon
 pdevice
+pevent
 pgroup
 pkey
 playout
@@ -148,6 +149,7 @@ pname
 pperm
 pplugin
 pproject
+psnapshot
 ptag
 ptail
 ptask

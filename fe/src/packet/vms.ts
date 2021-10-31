@@ -60,6 +60,11 @@ export const DEFAULT_AUDIO_TRANSCEIVER_INIT = {
 export const DEFAULT_DATA_CHANNEL_INIT = {
 } as RTCDataChannelInit;
 
+export const EVENT_CATEGORY_ID_COLOR = 1;
+export const EVENT_CATEGORY_ID_DETECTION = 2;
+export const EVENT_CATEGORY_ID_MATCHING = 3;
+export const EVENT_CATEGORY_ID_OCR = 4;
+
 export const EVENT_CATEGORY_NAME_COLOR = 'color';
 export const EVENT_CATEGORY_NAME_DETECTION = 'detection';
 export const EVENT_CATEGORY_NAME_MATCHING = 'matching';
@@ -157,19 +162,6 @@ export interface VmsUpdateLayoutQ {
     device_uid?: number;
 }
 
-export interface VmsEventA {
-    time: string;
-    device_uid: number;
-    event_config_uid: number;
-    extra?: any;
-    event_tag_uid?: number;
-}
-
-export interface VmsNewsEventQ {
-    time: string;
-    max: number;
-}
-
 export interface VmsEventConfigA {
     event_config_uid: number;
     sequence: number;
@@ -201,18 +193,47 @@ export interface VmsUpdateEventConfigQ {
 }
 
 export interface VmsEventTagA {
-    event_tag_uid: number;
+    event_uid: number;
     description: string;
     created_at: string;
     updated_at: string;
 }
 
 export interface VmsCreateEventTagQ {
+    event_uid: number;
     description: string;
 }
 
 export interface VmsUpdateEventTagQ {
     description?: string;
+}
+
+export interface VmsEventA {
+    event_uid: number;
+    time: string;
+    device_uid: number;
+    category_id: number;
+    event_config_uid: number;
+    extra?: any;
+
+    description?: null | string;
+}
+
+export interface VmsFilterEventQ {
+    date: string;
+    device_uid?: number;
+    category?: string;
+}
+
+export interface VmsNewsEventQ {
+    time: string;
+    max: number;
+}
+
+export interface VmsEventImageA {
+    content_type: string;
+    encoding: string;
+    content: string;
 }
 
 export interface VmsDiscoveryQ {

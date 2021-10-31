@@ -99,7 +99,7 @@ import {Component, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import {VCalendar} from 'vuetify/lib/components/VCalendar';
-import {todayString} from '@/chrono/date';
+import {todayString, dateToString} from '@/chrono/date';
 
 @Component({
   components: {
@@ -209,7 +209,7 @@ export default class MainVmsEventsCalendar extends VueBase {
   onClickEvent({ event }) {
     console.assert(typeof event.start !== 'undefined');
     const begin = event.start as Date;
-    const date = begin.toDateString();
+    const date = dateToString(begin);
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     this.moveToMainVmsEventsFilter(group, project, date);
