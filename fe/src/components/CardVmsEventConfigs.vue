@@ -287,7 +287,11 @@ import FormVmsEventConfigsOcr from '@/components/FormVmsEventConfigsOcr.vue';
 import {VForm} from 'vuetify/lib/components/VForm';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import requiredField from '@/rules/required';
-import type {VmsDeviceA, VmsEventConfigA} from '@/packet/vms';
+import type {
+  VmsDeviceA,
+  VmsEventConfigA,
+  VmsCreateEventConfigQ,
+} from '@/packet/vms';
 import {
   createEmptyVmsEventConfigA,
   EVENT_CATEGORY_NAME_COLOR,
@@ -529,6 +533,14 @@ export default class CardInfoNew extends VueBase {
 
   @Emit()
   ok() {
+    return {
+      sequence: 0,
+      device_uid: Number.parseInt(this.debuggingDevice),
+      category: this.value.category,
+      name: this.value.name,
+      enable: this.value.enable,
+      extra: this.value.extra,
+    } as VmsCreateEventConfigQ;
   }
 }
 </script>

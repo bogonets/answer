@@ -99,6 +99,8 @@ ko:
           disable-device
           :title="$t('titles.new')"
           :subtitle="$t('subtitles.new')"
+          @cancel="onClickNewCancel"
+          @ok="onClickNewSubmit"
       ></card-vms-event-configs>
     </v-dialog>
 
@@ -135,7 +137,7 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import type {VmsEventConfigA} from '@/packet/vms';
+import type {VmsCreateEventConfigQ, VmsEventConfigA} from '@/packet/vms';
 import CardVmsEventConfigs from '@/components/CardVmsEventConfigs.vue';
 
 const ITEMS_PER_PAGE = 15;
@@ -189,6 +191,7 @@ export default class FormVmsEventConfigs extends VueBase {
   current = {} as VmsEventConfigA;
 
   showNewDialog = false;
+  loadingNew = false;
 
   showEditDialog = false;
 
@@ -201,6 +204,28 @@ export default class FormVmsEventConfigs extends VueBase {
 
   onClickAdd() {
     this.showNewDialog = true;
+  }
+
+  onClickNewCancel() {
+    this.showNewDialog = false;
+  }
+
+  onClickNewSubmit(body: VmsCreateEventConfigQ) {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    this.loadingNew = true;
+    console.debug(`onClickNewSubmit`);
+    console.dir(body);
+    this.$api2.postVmsEventsConfigs(group, project, body)
+        .then(() => {
+          this.loadingNew = false;
+          this.showNewDialog = false;
+          this.toastRequestSuccess();
+        })
+        .catch(error => {
+          this.loadingNew = false;
+          this.toastRequestFailure(error);
+        });
   }
 
   onClickEventEdit(item: VmsEventConfigA) {

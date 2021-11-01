@@ -63,7 +63,12 @@ ko:
         </div>
       </v-system-bar>
 
-      <div class="media-content">
+      <div
+          class="media-content"
+          @mousedown="onMouseDownMediaContent"
+          @mousemove="onMouseMoveMediaContent"
+          @mouseup="onMouseUpMediaContent"
+      >
         <canvas
             v-show="!hideCanvasUser"
             class="canvas-user"
@@ -91,6 +96,12 @@ ko:
             @play="onPlay"
             @resize="onResize"
         ></video>
+        <canvas
+            class="canvas-snap"
+            ref="canvas-snap"
+            :width="videoWidth"
+            :height="videoHeight"
+        ></canvas>
 
         <v-img
             v-if="!online"
@@ -197,6 +208,12 @@ export default class MediaPlayer extends VueBase {
   readonly useColorPicker!: boolean;
 
   @Prop({type: Boolean, default: false})
+  readonly useAnnotationTools!: boolean;
+
+  @Prop({type: Boolean, default: false})
+  readonly useRoiAbsolutePosition!: boolean;
+
+  @Prop({type: Boolean, default: false})
   readonly loading!: boolean;
 
   @Prop({type: String})
@@ -223,8 +240,17 @@ export default class MediaPlayer extends VueBase {
   @Ref('canvas-meta')
   canvasMeta!: HTMLCanvasElement;
 
+  @Ref('canvas-snap')
+  canvasSnap!: HTMLCanvasElement;
+
   @Ref('rtc-video')
   rtcVideo!: HTMLVideoElement;
+
+  roiLeft = 0;
+  roiRight = 0;
+  roiTop = 0;
+  roiBottom = 0;
+  roiButtonPressed = false;
 
   paused = true;
   videoWidth = 0;
@@ -457,8 +483,14 @@ export default class MediaPlayer extends VueBase {
       canvasHeight: number,
       content: VmsChannelMeta,
   ) {
-    console.debug(`onRenderMetaData(w=${canvasWidth},h=${canvasHeight})`);
-    console.dir(content);
+    // console.debug(`onRenderMetaData(w=${canvasWidth},h=${canvasHeight})`);
+    // console.dir(content);
+
+    if (content.message) {
+      context.font = '62px serif';
+      context.fillText(content.message, 10, 62, canvasWidth);
+    }
+
     switch (content.code) {
       case VMS_CHANNEL_META_CODE_SUCCESS:
         // TODO: Do rendering !!
@@ -751,6 +783,108 @@ export default class MediaPlayer extends VueBase {
   onWatchServerStatus(newVal, oldVal) {
   }
 
+  @Watch('useColorPicker')
+  onWatchUseColorPicker(newVal, oldVal) {
+    if (newVal) {
+    } else {
+    }
+  }
+
+  @Watch('useAnnotationTools')
+  onWatchUseAnnotationTools(newVal, oldVal) {
+    if (newVal) {
+    } else {
+    }
+  }
+
+  onMouseDownMediaContent(event: MouseEvent) {
+    if (this.useColorPicker) {
+      const clientRect = this.canvasSnap.getBoundingClientRect();
+      const x = Math.round(event.clientX - clientRect.left);
+      const y = Math.round(event.clientY - clientRect.top);
+      const ratioX = x / clientRect.width;
+      const ratioY = y / clientRect.height;
+      const imageX = Math.round(ratioX * this.canvasSnap.width);
+      const imageY = Math.round(ratioY * this.canvasSnap.height);
+      this.pipette(this.getVideoPixelRgb(imageX, imageY));
+    }
+
+    if (this.useAnnotationTools) {
+      const clientRect = this.canvasUser.getBoundingClientRect();
+      const x = Math.round(event.clientX - clientRect.left);
+      const y = Math.round(event.clientY - clientRect.top);
+      const ratioX = x / clientRect.width;
+      const ratioY = y / clientRect.height;
+      const imageX = Math.round(ratioX * this.canvasUser.width);
+      const imageY = Math.round(ratioY * this.canvasUser.height);
+      this.roiLeft = imageX;
+      this.roiTop = imageY;
+      this.roiButtonPressed = true;
+    }
+  }
+
+  onMouseMoveMediaContent(event) {
+    if (this.useAnnotationTools && this.roiButtonPressed) {
+      const clientRect = this.canvasUser.getBoundingClientRect();
+      const x = Math.round(event.clientX - clientRect.left);
+      const y = Math.round(event.clientY - clientRect.top);
+      const ratioX = x / clientRect.width;
+      const ratioY = y / clientRect.height;
+      const imageX = Math.round(ratioX * this.canvasUser.width);
+      const imageY = Math.round(ratioY * this.canvasUser.height);
+
+      const context = this.canvasUser.getContext('2d');
+      const width = this.canvasUser.width;
+      const height = this.canvasUser.height;
+      if (!context) {
+        throw new Error('Not exists 2d context from user-canvas.');
+      }
+      const roiWidth = imageX - this.roiLeft;
+      const roiHeight = imageY - this.roiTop;
+      context.lineWidth = 5;
+      context.strokeStyle = 'red';
+      context.clearRect(0, 0, width, height);
+      context.strokeRect(this.roiLeft, this.roiTop, roiWidth, roiHeight);
+    }
+  }
+
+  onMouseUpMediaContent(event) {
+    if (this.useAnnotationTools && this.roiButtonPressed) {
+      const clientRect = this.canvasUser.getBoundingClientRect();
+      const x = Math.round(event.clientX - clientRect.left);
+      const y = Math.round(event.clientY - clientRect.top);
+      const ratioX = x / clientRect.width;
+      const ratioY = y / clientRect.height;
+      const imageX = Math.round(ratioX * this.canvasUser.width);
+      const imageY = Math.round(ratioY * this.canvasUser.height);
+
+      const context = this.canvasUser.getContext('2d');
+      const width = this.canvasUser.width;
+      const height = this.canvasUser.height;
+      if (!context) {
+        throw new Error('Not exists 2d context from user-canvas.');
+      }
+      const roiWidth = imageX - this.roiLeft;
+      const roiHeight = imageY - this.roiTop;
+      context.lineWidth = 5;
+      context.clearRect(0, 0, width, height);
+      context.strokeRect(this.roiLeft, this.roiTop, roiWidth, roiHeight);
+      this.roiRight = imageX;
+      this.roiBottom = imageY;
+      this.roiButtonPressed = false;
+      if (this.useRoiAbsolutePosition) {
+        this.roi(this.roiLeft, this.roiRight, this.roiTop, this.roiBottom);
+      } else {
+        this.roi(
+            this.roiLeft / width,
+            this.roiRight / width,
+            this.roiTop / height,
+            this.roiBottom / height,
+        );
+      }
+    }
+  }
+
   @Emit()
   predict(obj: Array<object>) {
     return obj;
@@ -759,6 +893,69 @@ export default class MediaPlayer extends VueBase {
   @Emit()
   contextmenu(event) {
     return event;
+  }
+
+  @Emit('pipette')
+  pipette(color) {
+    return color;
+  }
+
+  snapshotVideoToUserCanvas(clear = true) {
+    const context = this.canvasSnap.getContext('2d');
+    const width = this.canvasSnap.width;
+    const height = this.canvasSnap.height;
+    if (!context) {
+      throw new Error('Not exists 2d context from snap-canvas');
+    }
+    context.drawImage(this.rtcVideo, 0, 0, width, height);
+    const image = context.getImageData(0, 0, width, height);
+    if (clear) {
+      context.clearRect(0, 0, width, height);
+    }
+    return image;
+  }
+
+  getVideoPixelRgb(x: number, y: number) {
+    const context = this.canvasSnap.getContext('2d');
+    const width = this.canvasSnap.width;
+    if (!context) {
+      throw new Error('Not exists 2d context from user\'s canvas.');
+    }
+
+    const image = this.snapshotVideoToUserCanvas(true);
+    const pixels = image.data;
+
+    const i = (x + (y * width)) * 4;
+    const r = pixels[i];
+    const g = pixels[i + 1];
+    const b = pixels[i + 2];
+    return {r, g, b};
+  }
+
+  @Emit('roi')
+  roi(left, right, top, bottom) {
+    return {
+      x1: left,
+      y1: top,
+      x2: right,
+      y2: bottom,
+    };
+  }
+
+  clearAnnotations() {
+    this.roiLeft = 0;
+    this.roiRight = 0;
+    this.roiTop = 0;
+    this.roiBottom = 0;
+    this.roiButtonPressed = false;
+
+    const context = this.canvasUser.getContext('2d');
+    const width = this.canvasUser.width;
+    const height = this.canvasUser.height;
+    if (!context) {
+      throw new Error('Not exists 2d context from user-canvas.');
+    }
+    context.clearRect(0, 0, width, height);
   }
 }
 </script>
@@ -824,6 +1021,14 @@ export default class MediaPlayer extends VueBase {
       height: 100%;
 
       z-index: 20;
+    }
+
+    .canvas-snap {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+
+      z-index: 15;
     }
 
     .rtc-player {
