@@ -300,7 +300,6 @@ import {
   EVENT_CATEGORY_NAME_OCR,
   EVENT_CATEGORIES,
 } from '@/packet/vms';
-import * as _ from 'lodash';
 
 @Component({
   components: {
@@ -310,7 +309,7 @@ import * as _ from 'lodash';
     FormVmsEventConfigsOcr,
   },
 })
-export default class CardVmsEventConfigs extends VueBase {
+export default class CardVmsEventConfigsNew extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly ruleDevice = [requiredField];
   readonly ruleCategory = [requiredField];

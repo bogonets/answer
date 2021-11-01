@@ -122,14 +122,14 @@ ko:
     <!-- New dialog. -->
     <v-dialog v-model="showNewDialog" :max-width="dialogWidth">
       <!-- To release MediaPlayer memory and release debugging mode, `v-if` must be used. -->
-      <card-vms-event-configs
+      <card-vms-event-configs-new
           v-if="showNewDialog"
           disable-device
           :title="$t('titles.new')"
           :subtitle="$t('subtitles.new')"
           @cancel="onClickNewCancel"
           @ok="onClickNewSubmit"
-      ></card-vms-event-configs>
+      ></card-vms-event-configs-new>
     </v-dialog>
 
     <!-- Edit dialog. -->
@@ -165,7 +165,7 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import CardVmsEventConfigs from '@/components/CardVmsEventConfigs.vue';
+import CardVmsEventConfigsNew from '@/components/CardVmsEventConfigsNew.vue';
 import type {
   VmsEventConfigA,
   VmsCreateEventConfigQ,
@@ -183,7 +183,7 @@ const ITEMS_PER_PAGE = 15;
 
 @Component({
   components: {
-    CardVmsEventConfigs,
+    CardVmsEventConfigsNew,
   },
 })
 export default class FormVmsEventConfigs extends VueBase {
