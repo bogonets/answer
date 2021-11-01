@@ -60,7 +60,6 @@ ko:
         <media-player
             ref="media-player"
             hover-system-bar
-            :value="device"
             :group="$route.params.group"
             :project="$route.params.project"
             :device="Number.parseInt($route.params.device)"
@@ -111,7 +110,7 @@ import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import type {VmsDeviceA, VmsEventConfigColorQ} from '@/packet/vms';
 
 function createEmptyObject() {
-  return {};
+  return {} as VmsEventConfigColorQ;
 }
 
 function componentToHex(c: number) {
@@ -143,17 +142,15 @@ export default class FormVmsEventConfigsColor extends VueBase {
   readonly maxSensitive = 100;
 
   @Prop({type: Object, default: createEmptyObject})
-  readonly value!: any;
+  readonly value!: VmsEventConfigColorQ;
 
   @Ref('media-player')
   readonly mediaPlayer!: MediaPlayer;
 
   loading = false;
-  device = {} as VmsDeviceA;
 
   color = '#FF0000';
   threshold = 50;
-
   x1 = 0;
   y1 = 0;
   x2 = 0;
@@ -166,16 +163,12 @@ export default class FormVmsEventConfigsColor extends VueBase {
     this.requestEventColor();
   }
 
-  requestEventColor() {
-    const group = this.$route.params.group;
-    const project = this.$route.params.project;
-    const device = this.$route.params.device;
-
+  getExtra() {
     const red = Number.parseInt(this.color.substr(1, 2), 16);
     const green = Number.parseInt(this.color.substr(3, 2), 16);
     const blue = Number.parseInt(this.color.substr(5, 2), 16);
 
-    const body = {
+    return {
       red: red,
       green: green,
       blue: blue,
@@ -185,7 +178,13 @@ export default class FormVmsEventConfigsColor extends VueBase {
       x2: this.x2,
       y2: this.y2,
     } as VmsEventConfigColorQ;
+  }
 
+  requestEventColor() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    const body = this.getExtra();
     this.loading = true;
     this.$api2.postVmsDeviceProcessDebugEventColor(group, project ,device, body)
         .then(() => {
@@ -199,16 +198,29 @@ export default class FormVmsEventConfigsColor extends VueBase {
 
   @Emit()
   input() {
+    const red = Number.parseInt(this.color.substr(1, 2), 16);
+    const green = Number.parseInt(this.color.substr(3, 2), 16);
+    const blue = Number.parseInt(this.color.substr(5, 2), 16);
+    this.value.red = red;
+    this.value.green = green;
+    this.value.blue = blue;
+    this.value.threshold = this.threshold / this.maxSensitive;
+    this.value.x1 = this.x1;
+    this.value.y1 = this.y1;
+    this.value.x2 = this.x2;
+    this.value.y2 = this.y2;
     return this.value;
   }
 
   onInputColor(event: string) {
     this.color = event;
     this.requestEventColor();
+    this.input();
   }
 
   onChangeSensitive(value: number) {
     this.requestEventColor();
+    this.input();
   }
 
   get pipetteButtonColor() {
@@ -230,6 +242,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
     this.y2 = 0;
     this.mediaPlayer.clearAnnotations();
     this.requestEventColor();
+    this.input();
   }
 
   get selectionButtonColor() {
@@ -248,6 +261,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
     this.color = rgbToHex(color.r, color.g, color.b);
     this.pipetteMode = false;
     this.requestEventColor();
+    this.input();
   }
 
   onRoi(roi) {
@@ -258,6 +272,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
     this.annotationMode = false;
     // console.debug(`onRoi -> x1=${roi.x1},y1=${roi.y1},x2=${roi.x2},y2=${roi.y2}`);
     this.requestEventColor();
+    this.input();
   }
 }
 </script>

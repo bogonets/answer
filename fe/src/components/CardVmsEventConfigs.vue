@@ -310,7 +310,7 @@ import * as _ from 'lodash';
     FormVmsEventConfigsOcr,
   },
 })
-export default class CardInfoNew extends VueBase {
+export default class CardVmsEventConfigs extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly ruleDevice = [requiredField];
   readonly ruleCategory = [requiredField];

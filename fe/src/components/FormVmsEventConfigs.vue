@@ -9,9 +9,16 @@ en:
     delete: "Delete a Event"
   headers:
     enable: "Enable"
-    type: "Type"
+    category: "Category"
     name: "Name"
+    updated_at: "Updated at"
     actions: "Actions"
+  category:
+    color: "Color"
+    detection: "Detection"
+    matching: "Matching"
+    ocr: "OCR"
+    unknown: "Unknown"
   msg:
     loading: "Loading... Please wait"
     search: "You can filter by name."
@@ -31,9 +38,16 @@ ko:
     delete: "이벤트 제거"
   headers:
     enable: "활성화"
-    type: "종류"
+    category: "종류"
     name: "이름"
+    updated_at: "수정일"
     actions: "관리"
+  category:
+    color: "색상 비교"
+    detection: "객체 탐지"
+    matching: "영상 비교"
+    ocr: "문자 인식"
+    unknown: "알 수 없음"
   msg:
     loading: "불러오는중 입니다... 잠시만 기다려 주세요."
     search: "이름을 필터링할 수 있습니다."
@@ -74,16 +88,28 @@ ko:
       </template>
 
       <template v-slot:item.enable="{ item }">
-        <v-icon v-show="item.enable" small disabled>
-          mdi-check
-        </v-icon>
+        <v-simple-checkbox
+            :value="item.enable"
+            @input="onInputEnable(item, $event)"
+        ></v-simple-checkbox>
+      </template>
+
+      <template v-slot:item.category="{ item }">
+        <v-chip>
+          <v-icon left>{{ categoryIcon(item) }}</v-icon>
+          {{ categoryText(item) }}
+        </v-chip>
+      </template>
+
+      <template v-slot:item.updated_at="{ item }">
+        {{ datetimeToDate(item.updated_at) }}
       </template>
 
       <template v-slot:item.actions="{ item }">
         <v-icon small class="mr-2" @click="onClickEventEdit(item)">
           mdi-pencil
         </v-icon>
-        <v-icon small class="mr-2" @click="onClickEventDelete(item)">
+        <v-icon small class="mr-2" color="error" @click="onClickEventDelete(item)">
           mdi-delete
         </v-icon>
       </template>
@@ -111,7 +137,7 @@ ko:
     </v-dialog>
 
     <!-- Delete dialog. -->
-    <v-dialog v-model="showDeleteDialog" :max-width="dialogWidth">
+    <v-dialog v-model="showDeleteDialog" max-width="360px">
       <v-card>
         <v-card-title class="text-h5 error--text">
           {{ $t('labels.delete') }}
@@ -137,8 +163,19 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import type {VmsCreateEventConfigQ, VmsEventConfigA} from '@/packet/vms';
 import CardVmsEventConfigs from '@/components/CardVmsEventConfigs.vue';
+import type {
+  VmsEventConfigA,
+  VmsCreateEventConfigQ,
+  VmsUpdateEventConfigQ,
+} from '@/packet/vms';
+import {
+  EVENT_CATEGORY_NAME_COLOR,
+  EVENT_CATEGORY_NAME_DETECTION,
+  EVENT_CATEGORY_NAME_MATCHING,
+  EVENT_CATEGORY_NAME_OCR,
+} from '@/packet/vms';
+import {iso8601ToLocalDate} from '@/chrono/iso8601';
 
 const ITEMS_PER_PAGE = 15;
 
@@ -156,15 +193,15 @@ export default class FormVmsEventConfigs extends VueBase {
       align: 'center',
       filterable: false,
       sortable: false,
-      width: '1px',
+      width: '80px',
       value: 'enable',
     },
     {
-      text: this.$t('headers.type').toString(),
+      text: this.$t('headers.category').toString(),
       align: 'center',
       filterable: true,
       sortable: true,
-      value: 'type',
+      value: 'category',
     },
     {
       text: this.$t('headers.name').toString(),
@@ -174,12 +211,42 @@ export default class FormVmsEventConfigs extends VueBase {
       value: 'name',
     },
     {
+      text: this.$t('headers.updated_at').toString(),
+      align: 'center',
+      filterable: false,
+      sortable: true,
+      value: 'updated_at',
+    },
+    {
       text: this.$t('headers.actions').toString(),
       align: 'center',
       filterable: false,
       sortable: false,
-      width: '1px',
+      width: '80px',
       value: 'actions',
+    },
+  ];
+
+  readonly categories = [
+    {
+      icon: 'mdi-palette',
+      text: this.$t('category.color'),
+      value: EVENT_CATEGORY_NAME_COLOR,
+    },
+    {
+      icon: 'mdi-image-search',
+      text: this.$t('category.detection'),
+      value: EVENT_CATEGORY_NAME_DETECTION,
+    },
+    {
+      icon: 'mdi-compare',
+      text: this.$t('category.matching'),
+      value: EVENT_CATEGORY_NAME_MATCHING,
+    },
+    {
+      icon: 'mdi-ocr',
+      text: this.$t('category.ocr'),
+      value: EVENT_CATEGORY_NAME_OCR,
     },
   ];
 
@@ -196,10 +263,50 @@ export default class FormVmsEventConfigs extends VueBase {
   showEditDialog = false;
 
   showDeleteDialog = false;
+  deleteCandidate?: VmsEventConfigA;
   loadingDelete = false;
+
+  created() {
+    this.requestItems();
+  }
+
+  requestItems() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    this.loading = true;
+    this.$api2.getVmsEventsConfigs(group, project)
+        .then(items => {
+          this.loading = false;
+          this.items = items;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
 
   get dialogWidth() {
     return "80%";
+  }
+
+  datetimeToDate(text) {
+    return iso8601ToLocalDate(text);
+  }
+
+  categoryIcon(item: VmsEventConfigA) {
+    const findCategory = this.categories.find(i => i.value == item.category);
+    if (typeof findCategory === 'undefined') {
+      return '';
+    }
+    return findCategory.icon;
+  }
+
+  categoryText(item: VmsEventConfigA) {
+    const findCategory = this.categories.find(i => i.value == item.category);
+    if (typeof findCategory === 'undefined') {
+      return this.$t('category.unknown').toString();
+    }
+    return findCategory.text;
   }
 
   onClickAdd() {
@@ -214,16 +321,35 @@ export default class FormVmsEventConfigs extends VueBase {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     this.loadingNew = true;
-    console.debug(`onClickNewSubmit`);
-    console.dir(body);
     this.$api2.postVmsEventsConfigs(group, project, body)
         .then(() => {
           this.loadingNew = false;
           this.showNewDialog = false;
           this.toastRequestSuccess();
+          this.requestItems();
         })
         .catch(error => {
           this.loadingNew = false;
+          this.toastRequestFailure(error);
+        });
+  }
+
+  onInputEnable(item: VmsEventConfigA, event) {
+    // console.debug(`onInputEnable -> ${event}`)
+    // console.dir(item);
+    // console.dir(event);
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const config = item.event_config_uid.toString();
+    const body = {
+      enable: !!event,
+    } as VmsUpdateEventConfigQ;
+    this.$api2.patchVmsEventsConfigsPconfig(group, project, config, body)
+        .then(() => {
+          item.enable = !!event;
+          this.toastRequestSuccess();
+        })
+        .catch(error => {
           this.toastRequestFailure(error);
         });
   }
@@ -241,6 +367,7 @@ export default class FormVmsEventConfigs extends VueBase {
 
   onClickEventDelete(item: VmsEventConfigA) {
     this.showDeleteDialog = true;
+    this.deleteCandidate = item;
   }
 
   onClickDeleteCancel() {
@@ -248,21 +375,25 @@ export default class FormVmsEventConfigs extends VueBase {
   }
 
   onClickDeleteOk() {
-    // const group = this.$route.params.group;
-    // const project = this.$route.params.project;
-    // const layout = this.$route.params.layout;
-    // this.loadingDelete = true;
-    // this.$api2.deleteVmsLayout(group, project, layout)
-    //     .then(() => {
-    //       this.loadingDelete = false;
-    //       this.showDeleteDialog = false;
-    //       this.toastRequestSuccess();
-    //       this.moveToMainVmsLayouts();
-    //     })
-    //     .catch(error => {
-    //       this.loadingDelete = false;
-    //       this.toastRequestFailure(error);
-    //     });
+    if (typeof this.deleteCandidate === 'undefined') {
+      throw new Error('There are no deletion candidates.');
+    }
+
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const config = this.deleteCandidate.event_config_uid.toString();
+    this.loadingDelete = true;
+    this.$api2.deleteVmsEventsConfigsPconfig(group, project, config)
+        .then(() => {
+          this.loadingDelete = false;
+          this.showDeleteDialog = false;
+          this.toastRequestSuccess();
+          this.requestItems();
+        })
+        .catch(error => {
+          this.loadingDelete = false;
+          this.toastRequestFailure(error);
+        });
   }
 }
 </script>
