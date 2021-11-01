@@ -24,61 +24,61 @@ ko:
       ></media-player>
     </div>
 
-    <v-footer :height="footerHeight" padless>
-      <v-sheet width="100%">
-        <v-system-bar :height="footerSystemBarHeight">
-          <v-icon>mdi-application</v-icon>
-          <v-spacer></v-spacer>
-          <v-btn icon small max-width="22px" max-height="22px" @click="onClickCloseFooter">
-            <v-icon small class="ma-0">mdi-close</v-icon>
-          </v-btn>
-        </v-system-bar>
+<!--    <v-footer :height="footerHeight" padless>-->
+<!--      <v-sheet width="100%">-->
+<!--        <v-system-bar :height="footerSystemBarHeight">-->
+<!--          <v-icon>mdi-application</v-icon>-->
+<!--          <v-spacer></v-spacer>-->
+<!--          <v-btn icon small max-width="22px" max-height="22px" @click="onClickCloseFooter">-->
+<!--            <v-icon small class="ma-0">mdi-close</v-icon>-->
+<!--          </v-btn>-->
+<!--        </v-system-bar>-->
 
-        <v-virtual-scroll
-            ref="event-scroll"
-            :bench="benched"
-            :items="events"
-            :height="footerContentHeight"
-            :item-height="footerContentItemHeight"
-        >
-          <template v-slot:default="{ item }">
-            <v-list-item dense :key="item">
-              <v-list-item-action>
-                <v-icon>mdi-cube-scan</v-icon>
-              </v-list-item-action>
+<!--        <v-virtual-scroll-->
+<!--            ref="event-scroll"-->
+<!--            :bench="benched"-->
+<!--            :items="events"-->
+<!--            :height="footerContentHeight"-->
+<!--            :item-height="footerContentItemHeight"-->
+<!--        >-->
+<!--          <template v-slot:default="{ item }">-->
+<!--            <v-list-item dense :key="item">-->
+<!--              <v-list-item-action>-->
+<!--                <v-icon>mdi-cube-scan</v-icon>-->
+<!--              </v-list-item-action>-->
 
-              <v-list-item-content>
-                <div>
-                  <span>
-                    {{ item.time }}
-                  </span>
-                  <span>
-                    {{ getDeviceName(item.device_uid) }}
-                  </span>
-                  <v-chip small color="blue">
-                    <v-icon left>mdi-identifier</v-icon>
-                    {{ item.device_uid }}
-                  </v-chip>
-                  <v-chip class="ml-2" small>
-                    <v-icon left>mdi-label-percent</v-icon>
-                    {{ getScorePercentage(item.extra) }}
-                  </v-chip>
-                </div>
-              </v-list-item-content>
+<!--              <v-list-item-content>-->
+<!--                <div>-->
+<!--                  <span>-->
+<!--                    {{ item.time }}-->
+<!--                  </span>-->
+<!--                  <span>-->
+<!--                    {{ getDeviceName(item.device_uid) }}-->
+<!--                  </span>-->
+<!--                  <v-chip small color="blue">-->
+<!--                    <v-icon left>mdi-identifier</v-icon>-->
+<!--                    {{ item.device_uid }}-->
+<!--                  </v-chip>-->
+<!--                  <v-chip class="ml-2" small>-->
+<!--                    <v-icon left>mdi-label-percent</v-icon>-->
+<!--                    {{ getScorePercentage(item.extra) }}-->
+<!--                  </v-chip>-->
+<!--                </div>-->
+<!--              </v-list-item-content>-->
 
-              <v-list-item-action>
-                <v-icon small>
-                  mdi-open-in-new
-                </v-icon>
-              </v-list-item-action>
-            </v-list-item>
+<!--              <v-list-item-action>-->
+<!--                <v-icon small>-->
+<!--                  mdi-open-in-new-->
+<!--                </v-icon>-->
+<!--              </v-list-item-action>-->
+<!--            </v-list-item>-->
 
-            <v-divider></v-divider>
-          </template>
-        </v-virtual-scroll>
+<!--            <v-divider></v-divider>-->
+<!--          </template>-->
+<!--        </v-virtual-scroll>-->
 
-      </v-sheet>
-    </v-footer>
+<!--      </v-sheet>-->
+<!--    </v-footer>-->
 
     <v-menu
         v-model="showContextMenu"

@@ -124,7 +124,12 @@ ko:
 <script lang="ts">
 import {Component, Prop, Ref, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import type {VmsDeviceA, RtcOfferQ} from '@/packet/vms';
+import type {
+  VmsDeviceA,
+  RtcOfferQ,
+  VmsChannelMeta,
+  VmsChannelMetaConsume,
+} from '@/packet/vms';
 import {
   TRANSCEIVER_KIND_VIDEO,
   TRANSCEIVER_KIND_AUDIO,
@@ -134,6 +139,12 @@ import {
   DEFAULT_AUDIO_TRANSCEIVER_INIT,
   DEFAULT_DATA_CHANNEL_INIT,
   createEmptyVmsDeviceA,
+  VMS_CHANNEL_META_CODE_SUCCESS,
+  VMS_CHANNEL_META_CODE_OPENED,
+  VMS_CHANNEL_META_CODE_BAD_ARGUMENT,
+  VMS_CHANNEL_META_CODE_NOT_READY_ROI,
+  VMS_CHANNEL_META_CONSUME_CODE_SUCCESS,
+  VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN_ERRORS,
 } from '@/packet/vms';
 
 const OFFLINE_MEDIA_PLAYER_HEIGHT = "400px";
@@ -390,15 +401,29 @@ export default class MediaPlayer extends VueBase {
     console.debug(`Channel closed.`);
   }
 
-  sendChannelResponse(code = 0) {
+  sendChannelResponse(body: VmsChannelMetaConsume) {
     if (this.channel) {
-      this.channel.send(JSON.stringify({code}))
+      this.channel.send(JSON.stringify(body))
     }
+  }
+
+  sendChannelResponseSuccessful() {
+    const body = {
+      code: VMS_CHANNEL_META_CONSUME_CODE_SUCCESS,
+    } as VmsChannelMetaConsume;
+    this.sendChannelResponse(body);
+  }
+
+  sendChannelResponseError() {
+    const body = {
+      code: VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN_ERRORS,
+    } as VmsChannelMetaConsume;
+    this.sendChannelResponse(body);
   }
 
   onChannelMessage(event: MessageEvent) {
     if (this.channel_message_working) {
-      this.sendChannelResponse();
+      this.sendChannelResponseSuccessful();
       return;  // Now working ...
     }
 
@@ -406,22 +431,22 @@ export default class MediaPlayer extends VueBase {
     const canvasHeight = this.canvasMeta.height;
     const context = this.canvasMeta.getContext('2d');
     if (!context) {
-      this.sendChannelResponse();
+      this.sendChannelResponseSuccessful();
       return;
     }
 
     this.channel_message_working = true;
     (async () => {
       try {
-        const content = JSON.parse(event.data);
+        const content = JSON.parse(event.data) as VmsChannelMeta;
         context.clearRect(0, 0, canvasWidth, canvasHeight);
         await this.onRenderMetaData(context, canvasWidth, canvasHeight, content);
       } catch (error) {
         context.clearRect(0, 0, canvasWidth, canvasHeight);
         this.predict([]);
+        this.sendChannelResponseError();
       } finally {
         this.channel_message_working = false;
-        this.sendChannelResponse();
       }
     })();
   }
@@ -430,8 +455,34 @@ export default class MediaPlayer extends VueBase {
       context: CanvasRenderingContext2D,
       canvasWidth: number,
       canvasHeight: number,
-      content: any,
+      content: VmsChannelMeta,
   ) {
+    console.debug(`onRenderMetaData(w=${canvasWidth},h=${canvasHeight})`);
+    console.dir(content);
+    switch (content.code) {
+      case VMS_CHANNEL_META_CODE_SUCCESS:
+        // TODO: Do rendering !!
+        this.sendChannelResponseSuccessful();
+        return;
+
+      case VMS_CHANNEL_META_CODE_OPENED:
+        console.log('A channel between server and client has been opened.');
+        this.sendChannelResponseSuccessful();
+        return;
+
+      case VMS_CHANNEL_META_CODE_NOT_READY_ROI:
+        console.warn('ROI setup is required.');
+        this.sendChannelResponseSuccessful();
+        return;
+
+      case VMS_CHANNEL_META_CODE_BAD_ARGUMENT:
+        this.sendChannelResponseSuccessful();
+        return;
+
+      default:
+        return;
+    }
+
     //   const x1 = canvasWidth * obj.x1;
     //   const y1 = canvasHeight * obj.y1;
     //   const x2 = canvasWidth * obj.x2;

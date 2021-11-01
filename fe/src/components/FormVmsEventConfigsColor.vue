@@ -41,7 +41,7 @@ ko:
             class="mt-2"
             persistent-hint
             thumb-label
-            v-model="sensitive"
+            v-model="threshold"
             :min="minSensitive"
             :max="maxSensitive"
             :label="$t('labels.sensitive')"
@@ -87,12 +87,21 @@ import {Component, Emit, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import MediaPlayer from '@/media/MediaPlayer.vue';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
-import type {VmsDeviceA} from '@/packet/vms';
+import type {VmsDeviceA, VmsEventConfigColorQ} from '@/packet/vms';
 import * as _ from 'lodash';
 
 function createEmptyObject() {
   return {};
 }
+
+// function hexToRgb(hex: string) {
+//   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+//   return result ? {
+//     r: parseInt(result[1], 16),
+//     g: parseInt(result[2], 16),
+//     b: parseInt(result[3], 16),
+//   } : undefined;
+// }
 
 @Component({
   components: {
@@ -111,7 +120,46 @@ export default class FormVmsEventConfigsColor extends VueBase {
   device = {} as VmsDeviceA;
 
   color = '#FF0000';
-  sensitive = 50;
+  threshold = 50;
+
+  x1 = 0;
+  y1 = 0;
+  x2 = 0;
+  y2 = 0;
+
+  created() {
+    this.requestColor();
+  }
+
+  requestColor() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+
+    const red = Number.parseInt(this.color.substr(1, 2), 16);
+    const green = Number.parseInt(this.color.substr(3, 2), 16);
+    const blue = Number.parseInt(this.color.substr(5, 2), 16);
+
+    const body = {
+      red: red,
+      green: green,
+      blue: blue,
+      threshold: this.threshold,
+      x1: this.x1,
+      y1: this.y1,
+      x2: this.x2,
+      y2: this.y2,
+    } as VmsEventConfigColorQ;
+    this.loading = true;
+    this.$api2.postVmsDeviceProcessDebugEventColor(group, project ,device, body)
+        .then(() => {
+          this.loading = false;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        })
+  }
 
   @Emit()
   input() {

@@ -45,6 +45,11 @@ import type {
     IceServerA,
     RtcOfferQ,
     RtcAnswerA,
+    VmsEventConfigColorQ,
+    VmsEventConfigDetectionQ,
+    VmsEventConfigMatchingQ,
+    VmsEventConfigOcrFilterQ,
+    VmsEventConfigOcrQ,
 } from '@/packet/vms';
 import type {ConfigA, UpdateConfigValueQ} from '@/packet/config';
 import type {ContainerA, ControlContainersQ} from '@/packet/container';
@@ -1021,14 +1026,52 @@ export default class ApiV2 {
         return this.post<RtcAnswerA>(url, body);
     }
 
+    // -----------------------------
+    // Plugins/VMS/Devices/Debugging
+    // -----------------------------
+
     postVmsDeviceProcessDebugStart(group: string, project: string, device: string) {
-        const url = `/plugins/vms/${group}/${project}/devices/${device}/process/debug/start`;
+        const device_prefix = `/plugins/vms/${group}/${project}/devices/${device}`;
+        const url = `${device_prefix}/process/debug/start`;
         return this.post(url);
     }
 
     postVmsDeviceProcessDebugStop(group: string, project: string, device: string) {
-        const url = `/plugins/vms/${group}/${project}/devices/${device}/process/debug/stop`;
+        const device_prefix = `/plugins/vms/${group}/${project}/devices/${device}`;
+        const url = `${device_prefix}/process/debug/stop`;
         return this.post(url);
+    }
+
+    postVmsDeviceProcessDebugEventColor(
+        group: string, project: string, device: string, body: VmsEventConfigColorQ
+    ) {
+        const device_prefix = `/plugins/vms/${group}/${project}/devices/${device}`;
+        const url = `${device_prefix}/process/debug/event/color`;
+        return this.post(url, body);
+    }
+
+    postVmsDeviceProcessDebugEventDetection(
+        group: string, project: string, device: string, body: VmsEventConfigDetectionQ
+    ) {
+        const device_prefix = `/plugins/vms/${group}/${project}/devices/${device}`;
+        const url = `${device_prefix}/process/debug/event/detection`;
+        return this.post(url, body);
+    }
+
+    postVmsDeviceProcessDebugEventMatching(
+        group: string, project: string, device: string, body: VmsEventConfigMatchingQ
+    ) {
+        const device_prefix = `/plugins/vms/${group}/${project}/devices/${device}`;
+        const url = `${device_prefix}/process/debug/event/matching`;
+        return this.post(url, body);
+    }
+
+    postVmsDeviceProcessDebugEventOcr(
+        group: string, project: string, device: string, body: VmsEventConfigOcrQ
+    ) {
+        const device_prefix = `/plugins/vms/${group}/${project}/devices/${device}`;
+        const url = `${device_prefix}/process/debug/event/ocr`;
+        return this.post(url, body);
     }
 
     // -------------------

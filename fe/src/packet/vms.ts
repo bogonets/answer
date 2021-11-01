@@ -312,6 +312,58 @@ export interface RtcAnswerA {
     sdp: string;
 }
 
+export interface VmsEventConfigColorQ {
+    red: number;
+    green: number;
+    blue: number;
+    threshold: number;
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+}
+
+export interface VmsEventConfigDetectionQ {
+    model: string;
+    checkpoint: string;
+    label: string;
+    threshold: number;
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+}
+
+export interface VmsEventConfigMatchingQ {
+    train_image_uuid: string;
+    train_x1: number;
+    train_y1: number;
+    train_x2: number;
+    train_y2: number;
+    threshold: number;
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+}
+
+export interface VmsEventConfigOcrFilterQ {
+    logical: string;
+    operator: string;
+    value: number;
+}
+
+export interface VmsEventConfigOcrQ {
+    model: string;
+    checkpoint: string;
+    threshold: number;
+    filters: Array<VmsEventConfigOcrFilterQ>
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+}
+
 // export interface VmsDeviceDiscoveryA {
 //     expired: string;
 // }
@@ -327,6 +379,23 @@ export interface RtcAnswerA {
 //     profile: string;
 //     url: string;
 // }
+
+export const VMS_CHANNEL_META_CODE_SUCCESS = 0;
+export const VMS_CHANNEL_META_CODE_OPENED = 1;
+export const VMS_CHANNEL_META_CODE_BAD_ARGUMENT = 10;
+export const VMS_CHANNEL_META_CODE_NOT_READY_ROI = 11;
+
+export interface VmsChannelMeta {
+    code: number;
+    message: string;
+}
+
+export const VMS_CHANNEL_META_CONSUME_CODE_SUCCESS = 0;
+export const VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN_ERRORS = 1;
+
+export interface VmsChannelMetaConsume {
+    code: number;
+}
 
 export function createEmptyVmsDeviceA() {
     return {
