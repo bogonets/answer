@@ -54,7 +54,9 @@ ko:
           </v-tab-item>
 
           <v-tab-item>
+            <!-- To release MediaPlayer memory, `v-if` must be used. -->
             <media-player
+                v-if="tabIndex === 1"
                 hover-system-bar
                 hide-controller
                 :value="original"
@@ -65,6 +67,7 @@ ko:
           </v-tab-item>
 
           <v-tab-item>
+            <!-- TODO: Record Tab -->
           </v-tab-item>
 
           <v-tab-item>

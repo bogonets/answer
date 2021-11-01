@@ -119,9 +119,11 @@ ko:
       </template>
     </v-data-table>
 
-    <!-- Add dialog. -->
+    <!-- New dialog. -->
     <v-dialog v-model="showNewDialog" :max-width="dialogWidth">
+      <!-- To release MediaPlayer memory and release debugging mode, `v-if` must be used. -->
       <card-vms-event-configs
+          v-if="showNewDialog"
           disable-device
           :title="$t('titles.new')"
           :subtitle="$t('subtitles.new')"
