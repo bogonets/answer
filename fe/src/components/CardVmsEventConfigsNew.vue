@@ -75,15 +75,11 @@ ko:
         <v-stepper-step :complete="step > 1" step="1">
           {{ $t('step.basic') }}
         </v-stepper-step>
-
         <v-divider></v-divider>
-
         <v-stepper-step :complete="step > 2" step="2">
           {{ $t('step.event') }}
         </v-stepper-step>
-
         <v-divider></v-divider>
-
         <v-stepper-step step="3">
           {{ $t('step.confirm') }}
         </v-stepper-step>
@@ -100,8 +96,7 @@ ko:
                 :hide-details="loading || disableDevice"
                 :disabled="loading || disableDevice"
                 :rules="ruleDevice"
-                :value="device"
-                @input="inputDevice"
+                v-model="device"
                 :items="devices"
                 :hint="$t('hints.device_uid')"
                 item-text="name"
@@ -132,8 +127,7 @@ ko:
                 :persistent-hint="!(loading || disableCategory)"
                 :disabled="loading || disableCategory"
                 :rules="ruleCategory"
-                :value="value.category"
-                @input="inputCategory"
+                v-model="category"
                 :items="categories"
                 item-text="text"
                 item-value="value"
@@ -160,7 +154,10 @@ ko:
             <v-btn class="mr-4" color="second" @click="cancel">
               {{ $t('cancel') }}
             </v-btn>
-            <v-btn color="primary" @click="onClickNext">
+            <v-btn class="mr-4" disabled>
+              {{ $t('back') }}
+            </v-btn>
+            <v-btn color="primary" :disabled="!category" @click="onClickNext">
               {{ $t('next') }}
             </v-btn>
           </v-row>
@@ -170,26 +167,23 @@ ko:
           <v-sheet v-if="existsCategory" class="pa-2" outlined rounded>
             <form-vms-event-configs-color
                 v-if="isColor"
-                :value="value.extra"
-                @input="inputExtra"
+                v-model="extra"
+                :valid.sync="extraValid"
             ></form-vms-event-configs-color>
             <form-vms-event-configs-detection
                 v-else-if="isDetection"
-                :value="value.extra"
-                @input="inputExtra"
+                v-model="extra"
             ></form-vms-event-configs-detection>
             <form-vms-event-configs-matching
                 v-else-if="isMatching"
-                :value="value.extra"
-                @input="inputExtra"
+                v-model="extra"
             ></form-vms-event-configs-matching>
             <form-vms-event-configs-ocr
                 v-else-if="isOcr"
-                :value="value.extra"
-                @input="inputExtra"
+                v-model="extra"
             ></form-vms-event-configs-ocr>
           </v-sheet>
-          <div v-else-if="!value.category">
+          <div v-else-if="!category">
             <v-alert dense outlined type="warning">
               {{ $t('msg.select_category') }}
             </v-alert>
@@ -202,10 +196,13 @@ ko:
 
           <v-row class="mt-4 mb-2" no-gutters>
             <v-spacer></v-spacer>
+            <v-btn class="mr-4" color="second" @click="cancel">
+              {{ $t('cancel') }}
+            </v-btn>
             <v-btn class="mr-4" color="second" @click="onClickBack">
               {{ $t('back') }}
             </v-btn>
-            <v-btn color="primary" @click="onClickNext">
+            <v-btn color="primary" :disabled="!extraValid" @click="onClickNext">
               {{ $t('next') }}
             </v-btn>
           </v-row>
@@ -220,8 +217,7 @@ ko:
               autocomplete="off"
               :disabled="loading"
               :rules="ruleName"
-              :value="value.name"
-              @input="inputName"
+              v-model="name"
               :hint="$t('hints.name')"
           ></v-text-field>
 
@@ -232,47 +228,25 @@ ko:
             </div>
             <v-spacer></v-spacer>
             <div>
-              <v-switch
-                  inset
-                  :value="value.enable"
-                  @change="onChangeEnable"
-              ></v-switch>
+              <v-switch inset v-model="enable"></v-switch>
             </div>
           </v-row>
 
           <v-row class="mt-4 mb-2" no-gutters>
             <v-spacer></v-spacer>
+            <v-btn class="mr-4" color="second" @click="cancel">
+              {{ $t('cancel') }}
+            </v-btn>
             <v-btn class="mr-4" color="second" @click="onClickBack">
               {{ $t('back') }}
             </v-btn>
-            <v-btn color="primary" @click="ok">
+            <v-btn color="primary" :disabled="!name" @click="ok">
               {{ $t('submit') }}
             </v-btn>
           </v-row>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
-
-<!--    <v-row v-if="!hideButtons" class="mt-4 mb-2" no-gutters>-->
-<!--      <v-spacer></v-spacer>-->
-<!--      <v-btn-->
-<!--          v-if="!hideCancelButton"-->
-<!--          class="mr-4"-->
-<!--          color="second"-->
-<!--          @click="cancel"-->
-<!--      >-->
-<!--        {{ $t('cancel') }}-->
-<!--      </v-btn>-->
-<!--      <v-btn-->
-<!--          v-if="!hideSubmitButton"-->
-<!--          color="primary"-->
-<!--          :loading="loading"-->
-<!--          :disabled="disableSubmit"-->
-<!--          @click="onSubmit"-->
-<!--      >-->
-<!--        {{ $t('submit') }}-->
-<!--      </v-btn>-->
-<!--    </v-row>-->
 
   </v-card>
 </template>
@@ -289,11 +263,13 @@ import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import requiredField from '@/rules/required';
 import type {
   VmsDeviceA,
-  VmsEventConfigA,
   VmsCreateEventConfigQ,
+  VmsEventConfigColorQ,
+  VmsEventConfigDetectionQ,
+  VmsEventConfigMatchingQ,
+  VmsEventConfigOcrQ,
 } from '@/packet/vms';
 import {
-  createEmptyVmsEventConfigA,
   EVENT_CATEGORY_NAME_COLOR,
   EVENT_CATEGORY_NAME_DETECTION,
   EVENT_CATEGORY_NAME_MATCHING,
@@ -350,9 +326,6 @@ export default class CardVmsEventConfigsNew extends VueBase {
   @Prop({type: Boolean})
   readonly disableCategory!: boolean;
 
-  @Prop({type: Object, default: createEmptyVmsEventConfigA})
-  readonly value!: VmsEventConfigA;
-
   @Prop({type: Boolean})
   readonly disableSubmit!: boolean;
 
@@ -376,14 +349,27 @@ export default class CardVmsEventConfigsNew extends VueBase {
   init = false;
 
   // You cannot directly reference `$route` in the `beforeDestroy` event.
-  debuggingGroup = '';
-  debuggingProject = '';
-  debuggingDevice = '';
+  currentGroup = '';
+  currentProject = '';
+  currentDevice = '';
 
   device = {} as VmsDeviceA;
   devices = [] as Array<VmsDeviceA>;
 
   step = 1;
+
+  sequence = 0;
+  device_uid = 0;
+  category = '';
+  name = '';
+  enable = false;
+  extra = {};
+  extraValid = false;
+
+  // VmsEventConfigColorQ
+  // VmsEventConfigDetectionQ
+  // VmsEventConfigMatchingQ
+  // VmsEventConfigOcrQ;
 
   created() {
     this.requestSetup();
@@ -413,10 +399,6 @@ export default class CardVmsEventConfigsNew extends VueBase {
         this.device = findDevice;
       }
 
-      // this.original = _.cloneDeep(vmsLayout);
-      // this.current = _.cloneDeep(vmsLayout);
-      // this.modified = false;
-
       this.init = true;
     } catch (error) {
       this.toastRequestFailure(error);
@@ -426,9 +408,9 @@ export default class CardVmsEventConfigsNew extends VueBase {
     try {
       if (this.init) {
         await this.$api2.postVmsDeviceProcessDebugStart(group, project, device);
-        this.debuggingGroup = this.$route.params.group;
-        this.debuggingProject = this.$route.params.project;
-        this.debuggingDevice = this.$route.params.device;
+        this.currentGroup = this.$route.params.group;
+        this.currentProject = this.$route.params.project;
+        this.currentDevice = this.$route.params.device;
 
         this.toastInfo(this.$t('msg.enable_debugging'));
       }
@@ -440,9 +422,9 @@ export default class CardVmsEventConfigsNew extends VueBase {
   }
 
   beforeDestroy() {
-    const group = this.debuggingGroup;
-    const project = this.debuggingProject;
-    const device = this.debuggingDevice;
+    const group = this.currentGroup;
+    const project = this.currentProject;
+    const device = this.currentDevice;
     this.$api2.postVmsDeviceProcessDebugStop(group, project, device)
         .then(() => {
           this.toastSuccess(this.$t('msg.disable_debugging'));
@@ -453,49 +435,23 @@ export default class CardVmsEventConfigsNew extends VueBase {
   }
 
   get existsCategory() {
-    return EVENT_CATEGORIES.includes(this.value.category);
+    return EVENT_CATEGORIES.includes(this.category);
   }
 
   get isColor() {
-    return this.value.category === EVENT_CATEGORY_NAME_COLOR;
+    return this.category === EVENT_CATEGORY_NAME_COLOR;
   }
 
   get isDetection() {
-    return this.value.category === EVENT_CATEGORY_NAME_DETECTION;
+    return this.category === EVENT_CATEGORY_NAME_DETECTION;
   }
 
   get isMatching() {
-    return this.value.category === EVENT_CATEGORY_NAME_MATCHING;
+    return this.category === EVENT_CATEGORY_NAME_MATCHING;
   }
 
   get isOcr() {
-    return this.value.category === EVENT_CATEGORY_NAME_OCR;
-  }
-
-  inputDevice(value: VmsDeviceA) {
-    this.device = value;
-    this.value.device_uid = value.device_uid;
-    this.input();
-  }
-
-  inputCategory(event: string) {
-    this.value.category = event;
-    this.input();
-  }
-
-  inputName(event: string) {
-    this.value.name = event;
-    this.input();
-  }
-
-  inputExtra(event) {
-    this.value.extra = event;
-    this.input();
-  }
-
-  onChangeEnable(event: null | boolean) {
-    this.value.enable = !!event;
-    this.input();
+    return this.category === EVENT_CATEGORY_NAME_OCR;
   }
 
   onClickBack() {
@@ -504,11 +460,6 @@ export default class CardVmsEventConfigsNew extends VueBase {
 
   onClickNext() {
     this.step += 1;
-  }
-
-  @Emit()
-  input() {
-    return this.value;
   }
 
   formValidate() {
@@ -533,12 +484,12 @@ export default class CardVmsEventConfigsNew extends VueBase {
   @Emit()
   ok() {
     return {
-      sequence: 0,
-      device_uid: Number.parseInt(this.debuggingDevice),
-      category: this.value.category,
-      name: this.value.name,
-      enable: this.value.enable,
-      extra: this.value.extra,
+      sequence: this.sequence,
+      device_uid: this.device.device_uid,
+      category: this.category,
+      name: this.name,
+      enable: this.enable,
+      extra: this.extra,
     } as VmsCreateEventConfigQ;
   }
 }

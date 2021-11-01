@@ -107,7 +107,7 @@ import {Component, Ref, Emit, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import MediaPlayer from '@/media/MediaPlayer.vue';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
-import type {VmsDeviceA, VmsEventConfigColorQ} from '@/packet/vms';
+import type {VmsEventConfigColorQ} from '@/packet/vms';
 
 function createEmptyObject() {
   return {} as VmsEventConfigColorQ;
@@ -144,6 +144,9 @@ export default class FormVmsEventConfigsColor extends VueBase {
   @Prop({type: Object, default: createEmptyObject})
   readonly value!: VmsEventConfigColorQ;
 
+  @Prop({type: Boolean, default: false})
+  readonly valid!: boolean;
+
   @Ref('media-player')
   readonly mediaPlayer!: MediaPlayer;
 
@@ -160,6 +163,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
   annotationMode = false;
 
   created() {
+    // TODO: read `value`, and watching ...
     this.requestEventColor();
   }
 
@@ -209,7 +213,13 @@ export default class FormVmsEventConfigsColor extends VueBase {
     this.value.y1 = this.y1;
     this.value.x2 = this.x2;
     this.value.y2 = this.y2;
+    this.updateValid();
     return this.value;
+  }
+
+  @Emit('update:valid')
+  updateValid() {
+    return !!(this.x1 && this.y1 && this.x2 && this.y2);
   }
 
   onInputColor(event: string) {

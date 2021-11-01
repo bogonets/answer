@@ -106,7 +106,7 @@ ko:
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="onClickEventEdit(item)">
+        <v-icon v-show="false" small class="mr-2" @click="onClickEventEdit(item)">
           mdi-pencil
         </v-icon>
         <v-icon small class="mr-2" color="error" @click="onClickEventDelete(item)">
@@ -134,8 +134,6 @@ ko:
 
     <!-- Edit dialog. -->
     <v-dialog v-model="showEditDialog" :max-width="dialogWidth">
-      <card-vms-event-configs
-      ></card-vms-event-configs>
     </v-dialog>
 
     <!-- Delete dialog. -->
