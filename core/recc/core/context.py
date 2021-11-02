@@ -129,14 +129,14 @@ class Context(
         logger.info("The context has been opened")
 
     async def _after_open(self) -> None:
+        await self.setup_context_config()
+        logger.info("Setup context configurations")
+
         config_infos_prefix = CONFIG_PREFIX_RECC_ARGPARSE_CONFIG + "%"
         config_infos = await self.get_infos_like(config_infos_prefix)
         database_configs = {c.key: c.value for c in config_infos if c.key and c.value}
         await self.restore_configs(database_configs)
         logger.info("Restores the configuration from the database.")
-
-        await self.setup_context_config()
-        logger.info("Setup context configurations")
 
         if self.container.is_open() and self.is_guest_mode():
             await self.connect_global_network()

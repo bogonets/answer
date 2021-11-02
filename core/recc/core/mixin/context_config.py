@@ -64,6 +64,13 @@ class ContextConfig(ContextBase):
         filtered_configs = get_filtered_namespace(configs, prefix)
         assert self._config is not None
         for key, val in vars(filtered_configs).items():
+
+            if key in self._config_watcher:
+                old_value = getattr(self.config, key, None)
+
+                # Call the watcher.
+                self._config_watcher.call_synced_watcher(key, val, old_value)
+
             setattr(self._config, key, val)
 
     @staticmethod
