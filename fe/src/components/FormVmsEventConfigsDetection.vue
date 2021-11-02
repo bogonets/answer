@@ -47,6 +47,7 @@ ko:
             dense
             outlined
             persistent-hint
+            disabled
             :value="model"
             @input="inputModel"
             :items="models"
@@ -58,6 +59,7 @@ ko:
             dense
             outlined
             persistent-hint
+            disabled
             :value="checkpoint"
             @input="inputCheckpoint"
             :items="checkpoints"
@@ -71,6 +73,7 @@ ko:
             multiple
             small-chips
             persistent-hint
+            disabled
             :value="label"
             @input="inputLabel"
             :items="labels"
@@ -163,13 +166,21 @@ export default class FormVmsEventConfigsDetection extends VueBase {
   loading = false;
   device = {} as VmsDeviceA;
 
-  model = '';
-  models = [] as Array<string>;
+  // model = '';
+  // models = [] as Array<string>;
+  models = ['seven-segment'];
+  model = this.models[0];
 
-  checkpoint = '';
-  checkpoints = [] as Array<string>;
+  // checkpoint = '';
+  // checkpoints = [] as Array<string>;
+  checkpoints = ['seven_segment_20211028_adam.pth'];
+  checkpoint = this.checkpoints[0];
 
-  labels = [] as Array<string>;
+  // label = ''
+  // labels = [] as Array<string>;
+  labels = ['screen'];
+  label = [this.labels[0]];
+
   searchLabel = '';
 
   threshold = 50;

@@ -382,12 +382,14 @@ export interface VmsEventConfigOcrQ {
 
 export const VMS_CHANNEL_META_CODE_SUCCESS = 0;
 export const VMS_CHANNEL_META_CODE_OPENED = 1;
+export const VMS_CHANNEL_META_CODE_FILTERED = 2;
 export const VMS_CHANNEL_META_CODE_BAD_ARGUMENT = 10;
 export const VMS_CHANNEL_META_CODE_NOT_READY_ROI = 11;
 
 export interface VmsChannelMeta {
     code: number;
     message: string;
+    content?: any;
 }
 
 export const VMS_CHANNEL_META_CONSUME_CODE_SUCCESS = 0;

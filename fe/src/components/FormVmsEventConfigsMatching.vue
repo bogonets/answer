@@ -108,7 +108,6 @@ import MediaPlayer from '@/media/MediaPlayer.vue';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {CAPTION_CLASS} from "@/styles/caption";
 import type {VmsDeviceA} from '@/packet/vms';
-import * as _ from 'lodash';
 
 function createEmptyObject() {
   return {};

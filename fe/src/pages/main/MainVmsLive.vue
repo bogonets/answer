@@ -24,61 +24,61 @@ ko:
       ></media-player>
     </div>
 
-<!--    <v-footer :height="footerHeight" padless>-->
-<!--      <v-sheet width="100%">-->
-<!--        <v-system-bar :height="footerSystemBarHeight">-->
-<!--          <v-icon>mdi-application</v-icon>-->
-<!--          <v-spacer></v-spacer>-->
-<!--          <v-btn icon small max-width="22px" max-height="22px" @click="onClickCloseFooter">-->
-<!--            <v-icon small class="ma-0">mdi-close</v-icon>-->
-<!--          </v-btn>-->
-<!--        </v-system-bar>-->
+    <v-footer :height="footerHeight" padless>
+      <v-sheet width="100%">
+        <v-system-bar :height="footerSystemBarHeight">
+          <v-icon>mdi-application</v-icon>
+          <v-spacer></v-spacer>
+          <v-btn icon small max-width="22px" max-height="22px" @click="onClickCloseFooter">
+            <v-icon small class="ma-0">mdi-close</v-icon>
+          </v-btn>
+        </v-system-bar>
 
-<!--        <v-virtual-scroll-->
-<!--            ref="event-scroll"-->
-<!--            :bench="benched"-->
-<!--            :items="events"-->
-<!--            :height="footerContentHeight"-->
-<!--            :item-height="footerContentItemHeight"-->
-<!--        >-->
-<!--          <template v-slot:default="{ item }">-->
-<!--            <v-list-item dense :key="item">-->
-<!--              <v-list-item-action>-->
-<!--                <v-icon>mdi-cube-scan</v-icon>-->
-<!--              </v-list-item-action>-->
+        <v-virtual-scroll
+            ref="event-scroll"
+            :bench="benched"
+            :items="events"
+            :height="footerContentHeight"
+            :item-height="footerContentItemHeight"
+        >
+          <template v-slot:default="{ item }">
+            <v-list-item dense :key="item">
+              <v-list-item-action>
+                <v-icon>mdi-cube-scan</v-icon>
+              </v-list-item-action>
 
-<!--              <v-list-item-content>-->
-<!--                <div>-->
-<!--                  <span>-->
-<!--                    {{ item.time }}-->
-<!--                  </span>-->
-<!--                  <span>-->
-<!--                    {{ getDeviceName(item.device_uid) }}-->
-<!--                  </span>-->
-<!--                  <v-chip small color="blue">-->
-<!--                    <v-icon left>mdi-identifier</v-icon>-->
-<!--                    {{ item.device_uid }}-->
-<!--                  </v-chip>-->
-<!--                  <v-chip class="ml-2" small>-->
-<!--                    <v-icon left>mdi-label-percent</v-icon>-->
-<!--                    {{ getScorePercentage(item.extra) }}-->
-<!--                  </v-chip>-->
-<!--                </div>-->
-<!--              </v-list-item-content>-->
+              <v-list-item-content>
+                <div>
+                  <span>
+                    {{ item.time }}
+                  </span>
+                  <span>
+                    {{ getDeviceName(item.device_uid) }}
+                  </span>
+                  <v-chip small color="blue">
+                    <v-icon left>mdi-identifier</v-icon>
+                    {{ item.device_uid }}
+                  </v-chip>
+                  <v-chip class="ml-2" small>
+                    <v-icon left>mdi-label-percent</v-icon>
+                    {{ getScorePercentage(item.extra) }}
+                  </v-chip>
+                </div>
+              </v-list-item-content>
 
-<!--              <v-list-item-action>-->
-<!--                <v-icon small>-->
-<!--                  mdi-open-in-new-->
-<!--                </v-icon>-->
-<!--              </v-list-item-action>-->
-<!--            </v-list-item>-->
+              <v-list-item-action>
+                <v-icon small>
+                  mdi-open-in-new
+                </v-icon>
+              </v-list-item-action>
+            </v-list-item>
 
-<!--            <v-divider></v-divider>-->
-<!--          </template>-->
-<!--        </v-virtual-scroll>-->
+            <v-divider></v-divider>
+          </template>
+        </v-virtual-scroll>
 
-<!--      </v-sheet>-->
-<!--    </v-footer>-->
+      </v-sheet>
+    </v-footer>
 
     <v-menu
         v-model="showContextMenu"
@@ -104,7 +104,6 @@ import ViewPort from '@/components/ViewPort.vue';
 import MediaPlayer from '@/media/MediaPlayer.vue';
 import {VVirtualScroll} from 'vuetify/lib/components/VVirtualScroll';
 import type {VmsDeviceA, VmsLayoutA, VmsEventA} from '@/packet/vms';
-import moment from 'moment-timezone';
 
 @Component({
   components: {
@@ -120,6 +119,7 @@ export default class MainVmsLive extends VueBase {
   readonly benched = 1;
   readonly eventChunkSize = 10;
   readonly eventTotalSize = 100;
+  readonly updateIntervalMilliseconds = 1000;
 
   @Ref('event-scroll')
   eventScroll!: VVirtualScroll;
@@ -141,6 +141,8 @@ export default class MainVmsLive extends VueBase {
   latestTime = Date.now();
   events = [] as Array<VmsEventA>;
 
+  intervalHandle = -1;
+
   created() {
     this.requestSetup();
 
@@ -159,6 +161,16 @@ export default class MainVmsLive extends VueBase {
     // this.$nextTick(() => {
     //   this.eventScroll.$el.scrollTop = this.eventScroll.$el.scrollHeight;
     // });
+  }
+
+  mounted() {
+    this.intervalHandle = window.setInterval(() => {
+      this.requestEvents();
+    }, this.updateIntervalMilliseconds);
+  }
+
+  beforeDestroy() {
+    window.clearInterval(this.intervalHandle);
   }
 
   requestSetup() {
@@ -195,6 +207,9 @@ export default class MainVmsLive extends VueBase {
     } finally {
       this.loading = false;
     }
+  }
+
+  requestEvents() {
   }
 
   cardStyle(cardNumber: number) {
