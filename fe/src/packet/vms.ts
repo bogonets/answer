@@ -379,7 +379,7 @@ export interface VmsEventConfigColorQ {
 export interface VmsEventConfigDetectionQ {
     model: string;
     checkpoint: string;
-    label: string;
+    label: Array<string>;
     threshold: number;
     x1: number;
     y1: number;

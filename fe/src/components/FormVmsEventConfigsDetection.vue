@@ -103,6 +103,7 @@ ko:
             :max="maxThreshold"
             :label="$t('labels.threshold')"
             :hint="$t('hints.threshold')"
+            @change="onChangeThreshold"
         ></v-slider>
       </v-col>
 
@@ -114,18 +115,27 @@ ko:
           xl="9"
       >
         <media-player
+            ref="media-player"
             hover-system-bar
+            hide-controller
             :value="device"
             :group="$route.params.group"
             :project="$route.params.project"
             :device="Number.parseInt($route.params.device)"
+            :use-annotation-tools="annotationMode"
+            @roi="onRoi"
         ></media-player>
         <div class="mt-2 d-flex justify-end">
-          <v-btn small rounded class="mr-2">
+          <v-btn small rounded class="mr-2" @click="onClickClear">
             <v-icon left>mdi-close</v-icon>
             {{ $t('tools.clear') }}
           </v-btn>
-          <v-btn small rounded>
+          <v-btn
+              small
+              rounded
+              :color="selectionButtonColor"
+              @click="onClickSelection"
+          >
             <v-icon left>mdi-selection-drag</v-icon>
             {{ $t('tools.selection') }}
           </v-btn>
@@ -136,13 +146,12 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Emit, Prop} from 'vue-property-decorator';
+import {Component, Emit, Prop, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import MediaPlayer from '@/media/MediaPlayer.vue';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {CAPTION_CLASS} from "@/styles/caption";
-import type {VmsDeviceA} from '@/packet/vms';
-import * as _ from 'lodash';
+import type {VmsDeviceA, VmsEventConfigDetectionQ} from '@/packet/vms';
 
 function createEmptyObject() {
   return {};
@@ -157,14 +166,22 @@ export default class FormVmsEventConfigsDetection extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly captionClass = CAPTION_CLASS;
 
-  readonly minThreshold = 0;
-  readonly maxThreshold = 100;
+  @Prop({type: Number, default: 0})
+  readonly minThreshold!: number;
+
+  @Prop({type: Number, default: 100})
+  readonly maxThreshold!: number;
 
   @Prop({type: Object, default: createEmptyObject})
   readonly value!: any;
 
+  @Ref('media-player')
+  readonly mediaPlayer!: MediaPlayer;
+
   loading = false;
   device = {} as VmsDeviceA;
+
+  searchLabel = '';
 
   // model = '';
   // models = [] as Array<string>;
@@ -181,9 +198,54 @@ export default class FormVmsEventConfigsDetection extends VueBase {
   labels = ['screen'];
   label = [this.labels[0]];
 
-  searchLabel = '';
-
   threshold = 50;
+  x1 = 0;
+  y1 = 0;
+  x2 = 0;
+  y2 = 0;
+
+  annotationMode = false;
+
+  get thresholdPercentage() {
+    const min = this.minThreshold;
+    const max = this.maxThreshold;
+    const threshold = this.threshold;
+    console.assert(min >= 0);
+    console.assert(max > min);
+    console.assert(min <= threshold && threshold <= max);
+    const x = Math.abs(threshold - min);
+    const width = Math.abs(max - min);
+    return x / width;
+  }
+
+  getExtra() {
+    return {
+      model: this.model,
+      checkpoint: this.checkpoint,
+      label: this.label,
+      threshold: this.thresholdPercentage,
+      x1: this.x1,
+      y1: this.y1,
+      x2: this.x2,
+      y2: this.y2,
+    } as VmsEventConfigDetectionQ;
+  }
+
+  requestEventDetection() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    const body = this.getExtra();
+    this.loading = true;
+    this.$api2.postVmsDeviceProcessDebugEventDetection(group, project ,device, body)
+        .then(() => {
+          this.loading = false;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.toastRequestFailure(error);
+        })
+  }
 
   create() {
     this.requestModels();
@@ -192,18 +254,81 @@ export default class FormVmsEventConfigsDetection extends VueBase {
   requestModels() {
   }
 
-  inputModel(event) {
+  inputModel(event: string) {
+    this.model = event;
+    this.requestEventDetection();
+    this.input();
   }
 
-  inputCheckpoint(event) {
+  inputCheckpoint(event: string) {
+    this.checkpoint = event;
+    this.requestEventDetection();
+    this.input();
   }
 
-  inputLabel(event) {
+  inputLabel(event: Array<string>) {
+    this.label = event;
+    this.requestEventDetection();
+    this.input();
   }
 
   @Emit()
   input() {
+    this.value.model = this.model;
+    this.value.checkpoint = this.checkpoint;
+    this.value.label = this.label;
+    this.value.threshold = this.thresholdPercentage;
+    this.value.x1 = this.x1;
+    this.value.y1 = this.y1;
+    this.value.x2 = this.x2;
+    this.value.y2 = this.y2;
+    this.updateValid();
     return this.value;
+  }
+
+  @Emit('update:valid')
+  updateValid() {
+    const valid1 = !!(this.model && this.checkpoint && this.label);
+    const valid2 = !!(this.x1 && this.y1 && this.x2 && this.y2);
+    return valid1 && valid2;
+  }
+
+  onChangeThreshold(value: number) {
+    this.requestEventDetection();
+    this.input();
+  }
+
+  onClickClear() {
+    this.x1 = 0;
+    this.y1 = 0;
+    this.x2 = 0;
+    this.y2 = 0;
+    this.mediaPlayer.clearAnnotations();
+    this.requestEventDetection();
+    this.input();
+  }
+
+  get selectionButtonColor() {
+    if (this.annotationMode) {
+      return 'primary';
+    } else {
+      return '';
+    }
+  }
+
+  onClickSelection() {
+    this.annotationMode = !this.annotationMode;
+  }
+
+  onRoi(roi) {
+    this.x1 = roi.x1;
+    this.y1 = roi.y1;
+    this.x2 = roi.x2;
+    this.y2 = roi.y2;
+    this.annotationMode = false;
+    // console.debug(`onRoi -> x1=${roi.x1},y1=${roi.y1},x2=${roi.x2},y2=${roi.y2}`);
+    this.requestEventDetection();
+    this.input();
   }
 }
 </script>
