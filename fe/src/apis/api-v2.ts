@@ -18,6 +18,9 @@ import type {
     UpdateAirjoyServiceQ,
 } from '@/packet/airjoy';
 import type {
+    VmsImageA,
+    VmsUploadImageQ,
+    VmsUploadImageA,
     VmsDeviceA,
     VmsCreateDeviceQ,
     VmsUpdateDeviceQ,
@@ -1064,6 +1067,39 @@ export default class ApiV2 {
         const device_prefix = `/plugins/vms/${group}/${project}/devices/${device}`;
         const url = `${device_prefix}/process/debug/event/matching`;
         return this.post(url, body);
+    }
+
+    getVmsDeviceProcessDebugEventMatchingTrainSnapshots(
+        group: string, project: string, device: string
+    ) {
+        const device_prefix = `/plugins/vms/${group}/${project}/devices/${device}`;
+        const url = `${device_prefix}/process/debug/event/matching/train/snapshots`;
+        return this.get<Array<string>>(url);
+    }
+
+    postVmsDeviceProcessDebugEventMatchingTrainSnapshots(
+        group: string, project: string, device: string, body: VmsUploadImageQ
+    ) {
+        const device_prefix = `/plugins/vms/${group}/${project}/devices/${device}`;
+        const url = `${device_prefix}/process/debug/event/matching/train/snapshots`;
+        return this.post<VmsUploadImageA>(url, body);
+    }
+
+    getVmsDeviceProcessDebugEventMatchingTrainSnapshotsPsnapshot(
+        group: string, project: string, device: string, snapshot: string
+    ) {
+        const device_prefix = `/plugins/vms/${group}/${project}/devices/${device}`;
+        const suffix_url = `/process/debug/event/matching/train/snapshots/${snapshot}`;
+        return this.get<VmsImageA>(device_prefix + suffix_url);
+    }
+
+    deleteVmsDeviceProcessDebugEventMatchingTrainSnapshotsPsnapshot(
+        group: string, project: string, device: string, snapshot: string
+    ) {
+        const device_prefix = `/plugins/vms/${group}/${project}/devices/${device}`;
+        const suffix_url = `/process/debug/event/matching/train/snapshots/${snapshot}`;
+        const url = device_prefix + suffix_url;
+        return this.delete(url);
     }
 
     postVmsDeviceProcessDebugEventOcr(

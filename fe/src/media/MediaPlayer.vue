@@ -136,6 +136,7 @@ ko:
 import {Component, Prop, Ref, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {
+  VmsImageA,
   VmsDeviceA,
   RtcOfferQ,
   VmsChannelMeta,
@@ -235,16 +236,16 @@ export default class MediaPlayer extends VueBase {
   readonly value!: VmsDeviceA;
 
   @Ref('canvas-user')
-  canvasUser!: HTMLCanvasElement;
+  readonly canvasUser!: HTMLCanvasElement;
 
   @Ref('canvas-meta')
-  canvasMeta!: HTMLCanvasElement;
+  readonly canvasMeta!: HTMLCanvasElement;
 
   @Ref('canvas-snap')
-  canvasSnap!: HTMLCanvasElement;
+  readonly canvasSnap!: HTMLCanvasElement;
 
   @Ref('rtc-video')
-  rtcVideo!: HTMLVideoElement;
+  readonly rtcVideo!: HTMLVideoElement;
 
   roiLeft = 0;
   roiRight = 0;
@@ -763,6 +764,21 @@ export default class MediaPlayer extends VueBase {
     console.debug(`onResize() -> w=${this.videoWidth}, h=${this.videoHeight}`);
   }
 
+  @Watch('videoWidth')
+  onWatchVideoWidth(newVal, oldVal) {
+    this.resizeVideo();
+  }
+
+  @Watch('videoHeight')
+  onWatchVideoHeight(newVal, oldVal) {
+    this.resizeVideo();
+  }
+
+  @Emit('video:resize')
+  resizeVideo() {
+    return {width: this.videoWidth, height: this.videoHeight};
+  }
+
   onClickPlay() {
     if (this.paused) {
       this.rtcVideo.play();
@@ -900,7 +916,7 @@ export default class MediaPlayer extends VueBase {
     return color;
   }
 
-  snapshotVideoToUserCanvas(clear = true) {
+  snapshotVideoAsImageData(clear = true) {
     const context = this.canvasSnap.getContext('2d');
     const width = this.canvasSnap.width;
     const height = this.canvasSnap.height;
@@ -915,6 +931,21 @@ export default class MediaPlayer extends VueBase {
     return image;
   }
 
+  snapshotVideoAsDataUrl(contentType = 'image/png', clear = true) {
+    const context = this.canvasSnap.getContext('2d');
+    const width = this.canvasSnap.width;
+    const height = this.canvasSnap.height;
+    if (!context) {
+      throw new Error('Not exists 2d context from snap-canvas');
+    }
+    context.drawImage(this.rtcVideo, 0, 0, width, height);
+    const result = this.canvasSnap.toDataURL(contentType);
+    if (clear) {
+      context.clearRect(0, 0, width, height);
+    }
+    return result;
+  }
+
   getVideoPixelRgb(x: number, y: number) {
     const context = this.canvasSnap.getContext('2d');
     const width = this.canvasSnap.width;
@@ -922,7 +953,7 @@ export default class MediaPlayer extends VueBase {
       throw new Error('Not exists 2d context from user\'s canvas.');
     }
 
-    const image = this.snapshotVideoToUserCanvas(true);
+    const image = this.snapshotVideoAsImageData(true);
     const pixels = image.data;
 
     const i = (x + (y * width)) * 4;

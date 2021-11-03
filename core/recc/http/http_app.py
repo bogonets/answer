@@ -25,6 +25,7 @@ from recc.http import http_urls as u
 from recc.log.logging import recc_http_logger as logger
 from recc.util.version import version_text
 from recc.util.python_version import PY_36
+from recc.variables.http import DEFAULT_CLIENT_MAX_SIZE
 
 
 class HttpApp:
@@ -59,7 +60,10 @@ class HttpApp:
         self._routes += self._get_common_routes()
         self._routes += self._get_common_api_routes()
 
-        self._app = web.Application(middlewares=[self._global_middleware])
+        self._app = web.Application(
+            middlewares=[self._global_middleware],
+            client_max_size=DEFAULT_CLIENT_MAX_SIZE,
+        )
         self._app._set_loop(self._context.loop)  # noqa
         self._app.router.add_routes(self._routes)
         self._app.on_startup.append(self.on_startup)

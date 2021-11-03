@@ -1,10 +1,10 @@
 <i18n lang="yaml">
 en:
   labels:
-    sensitive: "Sensitive"
+    threshold: "Threshold"
   hints:
-    sensitive: >
-      The higher the sensitivity value, the more accurately the colors should match.
+    threshold: >
+      The higher the threshold value, the more accurately the colors should match.
   tools:
     pipette: "Pipette"
     clear: "Clear selection"
@@ -12,9 +12,9 @@ en:
 
 ko:
   labels:
-    sensitive: "민감도"
+    threshold: "임계점"
   hints:
-    sensitive: "민감도 값이 클 수록, 색상과 정확히 일치해야 합니다."
+    threshold: "임계점 값이 클 수록, 색상과 정확히 일치해야 합니다."
   tools:
     pipette: "스포이드"
     clear: "영역 해제"
@@ -43,11 +43,11 @@ ko:
             persistent-hint
             thumb-label
             v-model="threshold"
-            :min="minSensitive"
-            :max="maxSensitive"
-            :label="$t('labels.sensitive')"
-            :hint="$t('hints.sensitive')"
-            @change="onChangeSensitive"
+            :min="minThreshold"
+            :max="maxThreshold"
+            :label="$t('labels.threshold')"
+            :hint="$t('hints.threshold')"
+            @change="onChangeThreshold"
         ></v-slider>
       </v-col>
       <v-col
@@ -60,6 +60,7 @@ ko:
         <media-player
             ref="media-player"
             hover-system-bar
+            hide-controller
             :group="$route.params.group"
             :project="$route.params.project"
             :device="Number.parseInt($route.params.device)"
@@ -69,10 +70,6 @@ ko:
             @roi="onRoi"
         ></media-player>
         <div class="mt-2 d-flex justify-end">
-<!--          <v-btn small rounded class="mr-2" @click="onClickSnapshot">-->
-<!--            <v-icon left>mdi-camera-iris</v-icon>-->
-<!--            {{ $t('tools.snapshot') }}-->
-<!--          </v-btn>-->
           <v-btn
               small
               rounded
@@ -138,8 +135,12 @@ function hexToRgb(hex: string) {
 })
 export default class FormVmsEventConfigsColor extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
-  readonly minSensitive = 0;
-  readonly maxSensitive = 100;
+
+  @Prop({type: Number, default: 0})
+  readonly minThreshold!: number;
+
+  @Prop({type: Number, default: 100})
+  readonly maxThreshold!: number;
 
   @Prop({type: Object, default: createEmptyObject})
   readonly value!: VmsEventConfigColorQ;
@@ -167,6 +168,18 @@ export default class FormVmsEventConfigsColor extends VueBase {
     this.requestEventColor();
   }
 
+  get thresholdPercentage() {
+    const min = this.minThreshold;
+    const max = this.maxThreshold;
+    const threshold = this.threshold;
+    console.assert(min >= 0);
+    console.assert(max > min);
+    console.assert(min <= threshold && threshold <= max);
+    const x = Math.abs(threshold - min);
+    const width = Math.abs(max - min);
+    return x / width;
+  }
+
   getExtra() {
     const red = Number.parseInt(this.color.substr(1, 2), 16);
     const green = Number.parseInt(this.color.substr(3, 2), 16);
@@ -176,7 +189,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
       red: red,
       green: green,
       blue: blue,
-      threshold: this.threshold / this.maxSensitive,
+      threshold: this.thresholdPercentage,
       x1: this.x1,
       y1: this.y1,
       x2: this.x2,
@@ -208,7 +221,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
     this.value.red = red;
     this.value.green = green;
     this.value.blue = blue;
-    this.value.threshold = this.threshold / this.maxSensitive;
+    this.value.threshold = this.thresholdPercentage;
     this.value.x1 = this.x1;
     this.value.y1 = this.y1;
     this.value.x2 = this.x2;
@@ -219,7 +232,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
 
   @Emit('update:valid')
   updateValid() {
-    return !!(this.x1 && this.y1 && this.x2 && this.y2);
+    return !!(this.color && this.x1 && this.y1 && this.x2 && this.y2);
   }
 
   onInputColor(event: string) {
@@ -228,7 +241,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
     this.input();
   }
 
-  onChangeSensitive(value: number) {
+  onChangeThreshold(value: number) {
     this.requestEventColor();
     this.input();
   }

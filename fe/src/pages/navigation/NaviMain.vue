@@ -57,16 +57,15 @@ ko:
         </v-btn>
       </v-list-item>
 
-      <v-divider></v-divider>
-
       <v-list-item-group
           mandatory
           color="primary"
           :value="index"
           @change="input"
       >
-
         <div v-show="false">
+          <v-divider></v-divider>
+
           <v-list-item link @click.stop="dashboard">
             <v-list-item-icon>
               <v-icon>mdi-gauge</v-icon>
