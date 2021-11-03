@@ -56,6 +56,7 @@ ko:
             <v-img
                 class="train-image"
                 ref="train-image"
+                height="300px"
                 :src="snapshotDataUrl"
             ></v-img>
           </v-responsive>
@@ -122,6 +123,7 @@ ko:
               ref="media-player"
               hover-system-bar
               hide-controller
+              height="300px"
               :value="device"
               :group="$route.params.group"
               :project="$route.params.project"
@@ -625,29 +627,46 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     this.videoWidth = width;
     this.videoHeight = height;
 
-    const rect = this.mediaPlayerPlaceholder.getBoundingClientRect();
-    this.trainContent.style.width = `${rect.width}px`;
-    this.trainContent.style.height = `${rect.height}px`;
-    this.trainContent.style.maxWidth = `${rect.width}px`;
-    this.trainContent.style.maxHeight = `${rect.height}px`;
-    this.trainContent.style.minWidth = `${rect.width}px`;
-    this.trainContent.style.minHeight = `${rect.height}px`;
-
-    this.canvasTrain.style.width = `${rect.width}px`;
-    this.canvasTrain.style.height = `${rect.height}px`;
-    this.canvasTrain.style.maxWidth = `${rect.width}px`;
-    this.canvasTrain.style.maxHeight = `${rect.height}px`;
-
-    const imgElement = this.trainImage.$el;
-    imgElement.style.width = `${rect.width}px`;
-    imgElement.style.height = `${rect.height}px`;
-    imgElement.style.maxWidth = `${rect.width}px`;
-    imgElement.style.maxHeight = `${rect.height}px`;
+    // const rect = this.mediaPlayerPlaceholder.getBoundingClientRect();
+    // this.trainContent.style.width = `${rect.width}px`;
+    // this.trainContent.style.height = `${rect.height}px`;
+    // this.trainContent.style.maxWidth = `${rect.width}px`;
+    // this.trainContent.style.maxHeight = `${rect.height}px`;
+    // this.trainContent.style.minWidth = `${rect.width}px`;
+    // this.trainContent.style.minHeight = `${rect.height}px`;
+    //
+    // this.canvasTrain.style.width = `${rect.width}px`;
+    // this.canvasTrain.style.height = `${rect.height}px`;
+    // this.canvasTrain.style.maxWidth = `${rect.width}px`;
+    // this.canvasTrain.style.maxHeight = `${rect.height}px`;
+    //
+    // const imgElement = this.trainImage.$el;
+    // imgElement.style.width = `${rect.width}px`;
+    // imgElement.style.height = `${rect.height}px`;
+    // imgElement.style.maxWidth = `${rect.width}px`;
+    // imgElement.style.maxHeight = `${rect.height}px`;
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@mixin common-media {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  object-fit: contain;
+  object-position: center;
+
+  max-width: 100%;
+  max-height: 100%;
+
+  padding: 0;
+  margin: 0;
+}
+
 .train-content {
   background: gray;
 
@@ -655,13 +674,13 @@ export default class FormVmsEventConfigsMatching extends VueBase {
   border: 0;
 
   .train-canvas {
-    position: absolute;
-    z-index: 40;
+    @include common-media;
+    z-index: 20;
   }
 
   .train-image {
-    position: absolute;
-    z-index: 30;
+    @include common-media;
+    z-index: 10;
   }
 }
 </style>

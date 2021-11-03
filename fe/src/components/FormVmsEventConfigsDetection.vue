@@ -118,6 +118,7 @@ ko:
             ref="media-player"
             hover-system-bar
             hide-controller
+            height="300px"
             :value="device"
             :group="$route.params.group"
             :project="$route.params.project"

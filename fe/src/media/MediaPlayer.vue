@@ -35,7 +35,10 @@ ko:
         tile
         class="media-player"
         @contextmenu="contextmenu"
-        :style="mediaPlayerStyle"
+        :width="width"
+        :height="height"
+        :min-width="minWidth"
+        :min-height="minHeight"
     >
       <v-system-bar
           class="status-bar"
@@ -226,10 +229,16 @@ export default class MediaPlayer extends VueBase {
   @Prop({type: Number})
   readonly device!: number;
 
-  @Prop({type: Number})
+  @Prop({type: String})
+  readonly minWidth!: number;
+
+  @Prop({type: String})
+  readonly minHeight!: number;
+
+  @Prop({type: String})
   readonly width!: number;
 
-  @Prop({type: Number})
+  @Prop({type: String})
   readonly height!: number;
 
   @Prop({type: Object, default: createEmptyVmsDeviceA})
@@ -560,16 +569,6 @@ export default class MediaPlayer extends VueBase {
 
       pc.addEventListener('icegatheringstatechange', stateChangeCallback);
     });
-  }
-
-  get mediaPlayerStyle() {
-    if (this.online) {
-      return {};
-    } else {
-      return {
-        height: OFFLINE_MEDIA_PLAYER_HEIGHT,
-      };
-    }
   }
 
   requestFullScreen() {
@@ -992,21 +991,76 @@ export default class MediaPlayer extends VueBase {
 </script>
 
 <style lang="scss" scoped>
-.media-player {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+@mixin common-media {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  object-fit: contain;
+  object-position: center;
+
+  max-width: 100%;
+  max-height: 100%;
 
   padding: 0;
-  border: 0;
+  margin: 0;
+}
+
+.media-player {
+  display: flex;
+
+  padding: 0;
+  margin: 0;
 
   background: gray;
+
+  min-width: 100px;
+  min-height: 100px;
+
+  .status-bar {
+    z-index: 50;
+  }
+
+  .media-content {
+    flex: 1;
+
+    padding: 0;
+    margin: 0;
+
+    .canvas-user {
+      @include common-media;
+      z-index: 40;
+    }
+
+    .canvas-meta {
+      @include common-media;
+      z-index: 30;
+    }
+
+    .brand-logo {
+      @include common-media;
+      z-index: 20;
+    }
+
+    .canvas-snap {
+      @include common-media;
+      z-index: 10;
+    }
+
+    .video-player {
+      @include common-media;
+    }
+  }
 
   .controller {
     display: flex;
     flex-direction: row;
     align-items: center;
+
+    padding: 0;
+    margin: 0;
 
     position: absolute;
     width: 100%;
@@ -1015,65 +1069,5 @@ export default class MediaPlayer extends VueBase {
     z-index: 60;
   }
 
-  .status-bar {
-    z-index: 50;
-  }
-
-  .media-content {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-
-    object-fit: contain;
-
-    padding: 0;
-    border: 0;
-
-    .canvas-user {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-
-      z-index: 40;
-    }
-
-    .canvas-meta {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-
-      z-index: 30;
-    }
-
-    .brand-logo {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-
-      z-index: 20;
-    }
-
-    .canvas-snap {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-
-      z-index: 15;
-    }
-
-    .rtc-player {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-
-      z-index: 10;
-    }
-
-    .video-player {
-      width: 100%;
-      height: 100%;
-    }
-  }
 }
 </style>

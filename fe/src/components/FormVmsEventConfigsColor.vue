@@ -61,6 +61,7 @@ ko:
             ref="media-player"
             hover-system-bar
             hide-controller
+            height="300px"
             :group="$route.params.group"
             :project="$route.params.project"
             :device="Number.parseInt($route.params.device)"
