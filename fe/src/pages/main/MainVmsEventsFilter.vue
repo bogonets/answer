@@ -228,6 +228,9 @@ ko:
           </div>
 
           <div class="event-description">
+            <span>
+              {{ `${item.extra}` }}
+            </span>
             <v-btn
                 v-if="!existsDescription(item)"
                 color="secondary"
@@ -255,7 +258,7 @@ ko:
                 v-ripple
                 :group="$route.params.group"
                 :project="$route.params.project"
-                :event-uid="item.event_uid"
+                :file="item.file"
                 :width="imageWidth"
                 :height="imageHeight"
             ></vms-snapshot>
@@ -314,12 +317,11 @@ ko:
 
         <div class="d-flex flex-column align-center justify-center mt-4">
           <vms-snapshot
-              v-if="snapshotEventUid"
+              v-if="!!snapshotEventUid"
+              :key="snapshotEventUid"
               :group="$route.params.group"
               :project="$route.params.project"
-              :event-uid="snapshotEventUid"
-              :height="480"
-              :width="480"
+              :file="snapshotEventUid"
           ></vms-snapshot>
         </div>
 
@@ -483,7 +485,7 @@ export default class MainVmsEventsFilter extends VueBase {
   submitTagLoading = false;
 
   showSnapshotDialog = false;
-  snapshotEventUid = 0;
+  snapshotEventUid = '';
 
   created() {
     if (typeof this.$route.params.date !== 'undefined') {
@@ -598,6 +600,7 @@ export default class MainVmsEventsFilter extends VueBase {
           this.search = false;
           this.events = items;
           console.dir(this.events);
+
         })
         .catch(error => {
           this.search = false;
@@ -606,15 +609,13 @@ export default class MainVmsEventsFilter extends VueBase {
   }
 
   onClickThumbnail(item: VmsEventA) {
+    this.snapshotEventUid = item.file;
     this.showSnapshotDialog = true;
-    this.$nextTick(() => {
-      this.snapshotEventUid = item.event_uid;
-    });
   }
 
   onClickSnapshotClose() {
     this.showSnapshotDialog = false;
-    this.snapshotEventUid = 0;
+    this.snapshotEventUid = '';
   }
 
   onClickTag(item: VmsEventA) {

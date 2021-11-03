@@ -5,6 +5,8 @@ en:
     setting: "Setting"
   labels:
     snapshot: "Snapshot"
+  msg:
+    new_events: "{0} events have been added."
   unknown_device: "[Unknown Device]"
   no_name_device: "[No name Device]"
   close: "Close"
@@ -15,6 +17,8 @@ ko:
     setting: "설정"
   labels:
     snapshot: "스냅샷"
+  msg:
+    new_events: "{0}개의 이벤트가 추가되었습니다."
   unknown_device: "[알 수 없는 장치]"
   no_name_device: "[이름 없는 장치]"
   close: "닫기"
@@ -64,7 +68,7 @@ ko:
                     v-ripple
                     :group="$route.params.group"
                     :project="$route.params.project"
-                    :event-uid="item.event_uid"
+                    :file="item.file"
                     :width="imageWidth"
                     :height="imageHeight"
                 ></vms-snapshot>
@@ -133,9 +137,10 @@ ko:
         <div class="d-flex flex-column align-center justify-center mt-4">
           <vms-snapshot
               v-if="snapshotEventUid"
+              :key="snapshotEventUid"
               :group="$route.params.group"
               :project="$route.params.project"
-              :event-uid="snapshotEventUid"
+              :file="snapshotEventUid"
               :height="480"
               :width="480"
           ></vms-snapshot>
@@ -221,13 +226,14 @@ export default class MainVmsLive extends VueBase {
 
   latestTime = Date.now();
   events = [] as Array<VmsEventA>;
-  lastEventTime = '';
+  lastEventTime = moment().tz(moment.tz.guess()).format();
 
   showSnapshotDialog = false;
-  snapshotEventUid = 0;
+  snapshotEventUid = '';
 
   intervalHandle = -1;
 
+  vmsPopup = false;
   vmsBeep = false;
   vmsBeepInterval = 2;
   vmsBeepDuration = 10;
@@ -237,6 +243,7 @@ export default class MainVmsLive extends VueBase {
   beepIntervalHandle = -1;
 
   created() {
+    this.vmsPopup = this.$localStore.userExtra.vmsPopup || false;
     this.vmsBeep = this.$localStore.userExtra.vmsBeep || false;
     this.vmsBeepInterval = this.$localStore.userExtra.vmsBeepInterval || 2;
     this.vmsBeepDuration = this.$localStore.userExtra.vmsBeepDuration || 10;
@@ -365,6 +372,9 @@ export default class MainVmsLive extends VueBase {
               this.events.splice(this.eventTotalSize);
             }
             this.doBeep();
+            if (this.vmsPopup) {
+              this.toastInfo(this.$t('msg.new_events', [items.length]));
+            }
           }
         })
         .catch(error => {
@@ -468,13 +478,13 @@ export default class MainVmsLive extends VueBase {
   onClickThumbnail(item: VmsEventA) {
     this.showSnapshotDialog = true;
     this.$nextTick(() => {
-      this.snapshotEventUid = item.event_uid;
+      this.snapshotEventUid = item.file;
     });
   }
 
   onClickSnapshotClose() {
     this.showSnapshotDialog = false;
-    this.snapshotEventUid = 0;
+    this.snapshotEventUid = '';
   }
 
   onResize() {

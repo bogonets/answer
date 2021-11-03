@@ -29,6 +29,7 @@ RECC_REQUIREMENTS_MAIN = (
     "overrides>=6.1.0",
     "xmltodict>=0.12.0",
     "minio>=7.1.1",
+    "shapely>=1.8.0",
 )
 
 _SCRIPT_PATH = os.path.abspath(__file__)

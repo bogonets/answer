@@ -1,11 +1,13 @@
 <i18n lang="yaml">
 en:
   labels:
+    distance: "Distance"
     threshold: "Threshold"
     train_image: "Train Image"
     query_image: "Query Image"
     snapshots: "Snapshots"
   hints:
+    distance: "Hamming distance"
     threshold: >
       The higher the threshold value, the more exact the similarity must be.
     snapshots: "You can select an existing snapshot."
@@ -17,11 +19,13 @@ en:
 
 ko:
   labels:
+    distance: "거리 임계점"
     threshold: "임계점"
     train_image: "기준 이미지"
     query_image: "비교 대상"
     snapshots: "스냅샷"
   hints:
+    distance: "해밍 거리 (Hamming distance) 임계점"
     threshold: "임계점 값이 클 수록, 유사도가 정확히 일치해야 합니다."
     snapshots: "기존에 사용한 스냅샷을 선택할 수 있습니다."
   tools:
@@ -42,8 +46,14 @@ ko:
           xl="6"
       >
         <p :class="subtitleClass">{{ $t('labels.train_image') }}</p>
-        <div ref="train-content" class="train-content">
-          <v-responsive :aspect-ratio="videoWidth/videoHeight">
+        <v-card
+            outlined
+            tile
+            ref="train-content"
+            class="train-content"
+            height="300px"
+        >
+          <div class="media-content">
             <canvas
                 class="train-canvas"
                 ref="train-canvas"
@@ -53,14 +63,21 @@ ko:
                 @mousemove="onMouseMoveTrainCanvas"
                 @mouseup="onMouseUpTrainCanvas"
             ></canvas>
+            <canvas
+                v-show="false"
+                class="train-snap"
+                ref="train-snap"
+                :width="videoWidth"
+                :height="videoHeight"
+            ></canvas>
             <v-img
                 class="train-image"
                 ref="train-image"
-                height="300px"
                 :src="snapshotDataUrl"
             ></v-img>
-          </v-responsive>
-        </div>
+          </div>
+        </v-card>
+
         <div class="mt-2 d-flex justify-start">
           <v-btn small rounded class="mr-2" @click="onClickTrainClear">
             <v-icon left>mdi-close</v-icon>
@@ -94,6 +111,18 @@ ko:
             :items="snapshotNames"
             :hint="$t('hints.snapshots')"
         ></v-select>
+
+        <v-slider
+            class="mt-2"
+            persistent-hint
+            thumb-label
+            v-model="distance"
+            :min="minDistance"
+            :max="maxDistance"
+            :label="$t('labels.distance')"
+            :hint="$t('hints.distance')"
+            @change="onChangeDistance"
+        ></v-slider>
 
         <v-slider
             class="mt-2"
@@ -181,6 +210,12 @@ export default class FormVmsEventConfigsMatching extends VueBase {
   readonly captionClass = CAPTION_CLASS;
 
   @Prop({type: Number, default: 0})
+  readonly minDistance!: number;
+
+  @Prop({type: Number, default: 100})
+  readonly maxDistance!: number;
+
+  @Prop({type: Number, default: 0})
   readonly minThreshold!: number;
 
   @Prop({type: Number, default: 100})
@@ -197,6 +232,9 @@ export default class FormVmsEventConfigsMatching extends VueBase {
 
   @Ref('train-canvas')
   readonly canvasTrain!: HTMLCanvasElement;
+
+  @Ref('train-snap')
+  readonly canvasSnap!: HTMLCanvasElement;
 
   @Ref('media-player')
   readonly mediaPlayer!: MediaPlayer;
@@ -229,6 +267,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
   trainRoiButtonPressed = false;
   enableTrainAnnotation = false;
 
+  distance = 50;
   threshold = 50;
 
   trainX1 = 0;
@@ -284,6 +323,18 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     }
   }
 
+  get distancePercentage() {
+    const min = this.minDistance;
+    const max = this.maxDistance;
+    const distance = this.distance;
+    console.assert(min >= 0);
+    console.assert(max > min);
+    console.assert(min <= distance && distance <= max);
+    const x = Math.abs(distance - min);
+    const width = Math.abs(max - min);
+    return x / width;
+  }
+
   get thresholdPercentage() {
     const min = this.minThreshold;
     const max = this.maxThreshold;
@@ -303,6 +354,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
       train_y1: this.trainY1,
       train_x2: this.trainX2,
       train_y2: this.trainY2,
+      distance: this.distancePercentage,
       threshold: this.thresholdPercentage,
       x1: this.x1,
       y1: this.y1,
@@ -334,6 +386,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     this.value.train_y1 = this.trainY1;
     this.value.train_x2 = this.trainX2;
     this.value.train_y2 = this.trainY2;
+    this.value.distance = this.distancePercentage;
     this.value.threshold = this.thresholdPercentage;
     this.value.x1 = this.x1;
     this.value.y1 = this.y1;
@@ -364,6 +417,13 @@ export default class FormVmsEventConfigsMatching extends VueBase {
           this.snapshotDataUrl = `data:${item.content_type};${item.encoding},${item.content}`;
           this.snapshotName = value;
           this.updateVideoSize();
+
+          // const context = this.canvasSnap.getContext('2d');
+          // if (context) {
+          //   const img = new Image();
+          //   img.src = this.snapshotDataUrl;
+          //   context.drawImage(img,0,0);
+          // }
 
           this.requestEventMatching();
           this.input();
@@ -398,6 +458,11 @@ export default class FormVmsEventConfigsMatching extends VueBase {
             this.toastRequestFailure(error);
           });
     }
+  }
+
+  onChangeDistance(value: number) {
+    this.requestEventMatching();
+    this.input();
   }
 
   onChangeThreshold(value: number) {
@@ -668,19 +733,36 @@ export default class FormVmsEventConfigsMatching extends VueBase {
 }
 
 .train-content {
-  background: gray;
+  display: flex;
 
   padding: 0;
-  border: 0;
+  margin: 0;
 
-  .train-canvas {
-    @include common-media;
-    z-index: 20;
-  }
+  background: gray;
 
-  .train-image {
-    @include common-media;
-    z-index: 10;
+  min-width: 100px;
+  min-height: 100px;
+
+  .media-content {
+    flex: 1;
+
+    padding: 0;
+    border: 0;
+
+    .train-canvas {
+      @include common-media;
+      z-index: 30;
+    }
+
+    .train-snap {
+      @include common-media;
+      z-index: 20;
+    }
+
+    .train-image {
+      @include common-media;
+      z-index: 10;
+    }
   }
 }
 </style>

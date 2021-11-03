@@ -498,6 +498,7 @@ export default class MediaPlayer extends VueBase {
 
     if (content.message) {
       context.font = '62px serif';
+      context.fillStyle = 'red';
       context.fillText(content.message, 10, 62, canvasWidth);
     }
 

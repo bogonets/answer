@@ -267,6 +267,7 @@ export interface VmsEventA {
     device_uid: number;
     category_id: number;
     event_config_uid: number;
+    file: string;
     extra?: any;
 
     description?: null | string;
@@ -397,6 +398,7 @@ export interface VmsEventConfigMatchingQ {
     train_y1: number;
     train_x2: number;
     train_y2: number;
+    distance: number;
     threshold: number;
     x1: number;
     y1: number;
@@ -447,6 +449,12 @@ export interface VmsChannelMeta {
     code: number;
     message: string;
     content?: any;
+
+    x1?: number;
+    y1?: number;
+    x2?: number;
+    y2?: number;
+    score?: number;
 }
 
 export const VMS_CHANNEL_META_CONSUME_CODE_SUCCESS = 0;

@@ -46,8 +46,8 @@ export default class LeftTitle extends Vue {
   @Prop({type: String})
   readonly project!: string;
 
-  @Prop({type: Number})
-  readonly eventUid!: number;
+  @Prop({type: String})
+  readonly file!: string;
 
   @Prop({type: Number})
   readonly height!: number;
@@ -105,13 +105,13 @@ export default class LeftTitle extends Vue {
       this.loading = true;
       const group = this.group;
       const project = this.project;
-      const eventUid = this.eventUid.toString()
+      const file = this.file;
 
       let promise;
       if (this.thumbnail) {
-        promise = this.$api2.getVmsEventsThumbnailsPevent(group, project, eventUid)
+        promise = this.$api2.getVmsEventsThumbnailsPevent(group, project, file)
       } else {
-        promise = this.$api2.getVmsEventsSnapshotsPevent(group, project, eventUid)
+        promise = this.$api2.getVmsEventsSnapshotsPevent(group, project, file)
       }
 
       const imageTypeMsg = this.thumbnail ? 'thumbnail' : 'snapshot';
@@ -122,9 +122,9 @@ export default class LeftTitle extends Vue {
             this.snapshotEncoding = item.encoding;
             this.snapshotContent = item.content;
             if (this.existsSnapshot) {
-              console.debug(`Event ${eventUid} ${imageTypeMsg} load successful!`);
+              console.debug(`Event ${file} ${imageTypeMsg} load successful!`);
             } else {
-              console.warn(`Event ${eventUid} ${imageTypeMsg} loaded. but content is none.`);
+              console.warn(`Event ${file} ${imageTypeMsg} loaded. but content is none.`);
             }
           })
           .catch(error => {

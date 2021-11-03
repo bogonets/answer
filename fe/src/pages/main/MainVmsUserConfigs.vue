@@ -3,12 +3,15 @@ en:
   groups: "Groups"
   settings: "VMS Settings"
   headers:
+    visual: "Visual Settings"
     sound: "Sound Settings"
   labels:
+    popup: "Enable Popup"
     beep: "Enable Beep"
     beep_interval: "Beep interval"
     beep_duration: "Beep duration"
   hints:
+    popup: "When an event occurs, a popup is output."
     beep: "When an event occurs, an alarm sound is played."
     beep_interval: "A cycle of repeated beeps. It is in seconds."
     beep_duration: "Total time for the beep to repeat. It is in seconds."
@@ -19,12 +22,15 @@ ko:
   groups: "Groups"
   settings: "VMS Settings"
   headers:
+    visual: "시각 설정"
     sound: "소리 설정"
   labels:
+    popup: "팝업 활성화"
     beep: "비프음 활성화"
     beep_interval: "비프음 간격"
     beep_duration: "비프음 재생 시간"
   hints:
+    popup: "이벤트가 발생하면 팝업이 출력됩니다."
     beep: "이벤트가 발생되면 알람음이 재생됩니다."
     beep_interval: "비프음이 반복되는 주기. 초 단위 입니다."
     beep_duration: "비프음이 반복되는 총 시간. 초 단위 입니다."
@@ -36,6 +42,28 @@ ko:
   <v-container>
     <toolbar-breadcrumbs :items="breadcrumbs"></toolbar-breadcrumbs>
     <v-divider></v-divider>
+
+    <v-divider></v-divider>
+    <v-subheader>{{ $t('headers.visual') }}</v-subheader>
+
+    <left-title
+        x-small
+        no-gutter
+        :left-ratio="8"
+        :right-ratio="4"
+        :header="$t('labels.popup')"
+        :subheader="$t('hints.popup')"
+    >
+      <div class="d-flex flex-row justify-end">
+        <v-switch
+            inset
+            hide-details
+            :disabled="loading"
+            v-model="vmsPopup"
+            @change="onChangePopup"
+        ></v-switch>
+      </div>
+    </left-title>
 
     <v-divider></v-divider>
     <v-subheader>{{ $t('headers.sound') }}</v-subheader>
@@ -149,21 +177,27 @@ export default class MainVmsUserConfigs extends VueBase {
   ];
 
   readonly durations = [
-    '0',
+    '2',
+    '4',
+    '6',
+    '8',
     '10',
   ];
 
   loading = false;
 
+  vmsPopup = false;
   vmsBeep = false;
   vmsBeepInterval = '';
   vmsBeepDuration = '';
 
   created() {
+    const vmsPopup = this.$localStore.userExtra.vmsPopup;
     const vmsBeep = this.$localStore.userExtra.vmsBeep;
     const vmsBeepInterval = this.$localStore.userExtra.vmsBeepInterval;
     const vmsBeepDuration = this.$localStore.userExtra.vmsBeepDuration;
 
+    this.vmsPopup = !!vmsPopup;
     this.vmsBeep = !!vmsBeep;
 
     if (typeof vmsBeepInterval === 'undefined') {
@@ -177,6 +211,13 @@ export default class MainVmsUserConfigs extends VueBase {
     } else {
       this.vmsBeepDuration = vmsBeepDuration.toString();
     }
+  }
+
+  onChangePopup(value: null | boolean) {
+    const extra = this.$localStore.userExtra;
+    extra.vmsPopup = !!value;
+    this.$localStore.userExtra = extra;
+    this.saveUserExtra();
   }
 
   onChangeBeep(value: null | boolean) {
