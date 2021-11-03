@@ -283,6 +283,10 @@ export interface VmsNewsEventQ {
     max: number;
 }
 
+export interface VmsLatestEventQ {
+    max: number;
+}
+
 export interface VmsEventImageA {
     content_type: string;
     encoding: string;

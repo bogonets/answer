@@ -19,3 +19,11 @@ export function iso8601ToLocalDate(text?: string) {
         return '';
     }
 }
+
+export function iso8601ToLocalDateTime(text?: string) {
+    if (text) {
+        return moment(text).tz(moment.tz.guess()).format('YYYY-MM-DD hh:mm:ss');
+    } else {
+        return '';
+    }
+}

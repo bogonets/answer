@@ -89,6 +89,7 @@ import {createEmptySigninA, createEmptyUserA} from '@/packet/user';
 import {PreferenceA, createEmptyPreference} from '@/packet/preference';
 import {encryptSha256} from '@/crypto/sha';
 import moment from 'moment-timezone';
+import {VmsLatestEventQ} from "@/packet/vms";
 
 const DEFAULT_TIMEOUT = 30 * 1000;
 const STATUS_CODE_ACCESS_TOKEN_ERROR = 461
@@ -1165,6 +1166,11 @@ export default class ApiV2 {
 
     postVmsEventsNews(group: string, project: string, body: VmsNewsEventQ) {
         const url = `/plugins/vms/${group}/${project}/events/news`;
+        return this.post<Array<VmsEventA>>(url, body);
+    }
+
+    postVmsEventsLatest(group: string, project: string, body: VmsLatestEventQ) {
+        const url = `/plugins/vms/${group}/${project}/events/latest`;
         return this.post<Array<VmsEventA>>(url, body);
     }
 

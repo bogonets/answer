@@ -193,11 +193,13 @@ ko:
     </v-row>
 
     <v-divider class="mt-4"></v-divider>
+    <div ref="events-scroll-placeholder"></div>
 
     <v-virtual-scroll
+        v-resize="onResize"
         :bench="benched"
         :items="events"
-        height="300"
+        :height="eventsHeight"
         :item-height="itemHeight"
     >
       <template v-slot:default="{ item }">
@@ -336,7 +338,7 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop} from 'vue-property-decorator';
+import {Component, Prop, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import VmsSnapshot from '@/components/VmsSnapshot.vue';
@@ -363,6 +365,7 @@ import {todayString} from '@/chrono/date';
 import {iso8601ToLocal, splitDateAndTime} from '@/chrono/iso8601';
 
 const ANY_DEVICE_UID = -1;
+const CONTAINER_BOTTOM_MARGIN = 12;
 
 interface Snapshot {
   contentType: string;
@@ -445,6 +448,11 @@ export default class MainVmsEventsFilter extends VueBase {
 
   @Prop({type: Number, default: 480})
   readonly widthDialog!: number;
+
+  @Ref('events-scroll-placeholder')
+  readonly eventsScrollPlaceholder!: HTMLDivElement;
+
+  eventsHeight = 100;
 
   loading = false;
 
@@ -694,6 +702,12 @@ export default class MainVmsEventsFilter extends VueBase {
       this.requestCreateTag(this.currentEvent.event_uid);
     }
   }
+
+  onResize() {
+    const size = { x: window.innerWidth, y: window.innerHeight };
+    const rect = this.eventsScrollPlaceholder.getBoundingClientRect();
+    this.eventsHeight = Math.abs(size.y - rect.y - (CONTAINER_BOTTOM_MARGIN * 2));
+  }
 }
 </script>
 
@@ -746,5 +760,4 @@ $hover-transparent: 0.2;
     background: rgba(map-get($shades, 'white'), $hover-transparent);
   }
 }
-
 </style>
