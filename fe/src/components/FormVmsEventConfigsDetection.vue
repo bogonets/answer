@@ -288,8 +288,8 @@ export default class FormVmsEventConfigsDetection extends VueBase {
 
   @Emit('update:valid')
   updateValid() {
-    const valid1 = !!(this.model && this.checkpoint && this.label);
-    const valid2 = !!(this.x1 && this.y1 && this.x2 && this.y2);
+    const valid1 = !!this.model && !!this.checkpoint && !!this.label;
+    const valid2 = !!this.x1 && !!this.y1 && !!this.x2 && !!this.y2;
     return valid1 && valid2;
   }
 

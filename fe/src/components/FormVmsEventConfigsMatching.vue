@@ -43,20 +43,22 @@ ko:
       >
         <p :class="subtitleClass">{{ $t('labels.train_image') }}</p>
         <div ref="train-content" class="train-content">
-          <canvas
-              class="train-canvas"
-              ref="train-canvas"
-              :width="videoWidth"
-              :height="videoHeight"
-              @mousedown="onMouseDownTrainCanvas"
-              @mousemove="onMouseMoveTrainCanvas"
-              @mouseup="onMouseUpTrainCanvas"
-          ></canvas>
-          <v-img
-              class="train-image"
-              ref="train-image"
-              :src="snapshotDataUrl"
-          ></v-img>
+          <v-responsive :aspect-ratio="videoWidth/videoHeight">
+            <canvas
+                class="train-canvas"
+                ref="train-canvas"
+                :width="videoWidth"
+                :height="videoHeight"
+                @mousedown="onMouseDownTrainCanvas"
+                @mousemove="onMouseMoveTrainCanvas"
+                @mouseup="onMouseUpTrainCanvas"
+            ></canvas>
+            <v-img
+                class="train-image"
+                ref="train-image"
+                :src="snapshotDataUrl"
+            ></v-img>
+          </v-responsive>
         </div>
         <div class="mt-2 d-flex justify-start">
           <v-btn small rounded class="mr-2" @click="onClickTrainClear">
@@ -341,11 +343,9 @@ export default class FormVmsEventConfigsMatching extends VueBase {
 
   @Emit('update:valid')
   updateValid() {
-    const validTrains = !!(
-        this.snapshotName && this.trainX1 && this.trainY1 && this.trainX2 && this.trainY2
-    );
-    const validQueries = !!(this.x1 && this.y1 && this.x2 && this.y2);
-    return validTrains && validQueries;
+    const valid1 = !!this.trainX1 && !!this.trainY1 && !!this.trainX2 && !!this.trainY2;
+    const valid2 = !!this.x1 && !!this.y1 && !!this.x2 && !!this.y2;
+    return !!this.snapshotName && valid1 && valid2;
   }
 
   onInputSnapshot(value: string) {
@@ -388,6 +388,9 @@ export default class FormVmsEventConfigsMatching extends VueBase {
             }
             this.snapshotName = '';
             this.snapshotDataUrl = '';
+
+            this.requestEventMatching();
+            this.input();
           })
           .catch(error => {
             this.toastRequestFailure(error);
@@ -488,6 +491,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     }
 
     context.lineWidth = 5;
+    context.strokeStyle = 'red';
     context.clearRect(0, 0, width, height);
     if (this.useRoiAbsolutePosition) {
       context.strokeRect(

@@ -232,7 +232,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
 
   @Emit('update:valid')
   updateValid() {
-    return !!(this.color && this.x1 && this.y1 && this.x2 && this.y2);
+    return !!this.color && !!this.x1 && !!this.y1 && !!this.x2 && !!this.y2;
   }
 
   onInputColor(event: string) {

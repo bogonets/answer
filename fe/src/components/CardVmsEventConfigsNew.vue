@@ -173,14 +173,17 @@ ko:
             <form-vms-event-configs-detection
                 v-else-if="isDetection"
                 v-model="extra"
+                :valid.sync="extraValid"
             ></form-vms-event-configs-detection>
             <form-vms-event-configs-matching
                 v-else-if="isMatching"
                 v-model="extra"
+                :valid.sync="extraValid"
             ></form-vms-event-configs-matching>
             <form-vms-event-configs-ocr
                 v-else-if="isOcr"
                 v-model="extra"
+                :valid.sync="extraValid"
             ></form-vms-event-configs-ocr>
           </v-sheet>
           <div v-else-if="!category">
@@ -456,6 +459,7 @@ export default class CardVmsEventConfigsNew extends VueBase {
 
   onClickBack() {
     this.step -= 1;
+    this.extraValid = false;
   }
 
   onClickNext() {
