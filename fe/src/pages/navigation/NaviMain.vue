@@ -66,59 +66,61 @@ ko:
           @change="input"
       >
 
-        <v-list-item link @click.stop="dashboard">
-          <v-list-item-icon>
-            <v-icon>mdi-gauge</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('dashboard') }}
-          </v-list-item-title>
-        </v-list-item>
+        <div v-show="false">
+          <v-list-item link @click.stop="dashboard">
+            <v-list-item-icon>
+              <v-icon>mdi-gauge</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('dashboard') }}
+            </v-list-item-title>
+          </v-list-item>
 
-        <v-list-item link @click.stop="layouts">
-          <v-list-item-icon>
-            <v-icon>mdi-view-dashboard</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('layouts') }}
-          </v-list-item-title>
-        </v-list-item>
+          <v-list-item link @click.stop="layouts">
+            <v-list-item-icon>
+              <v-icon>mdi-view-dashboard</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('layouts') }}
+            </v-list-item-title>
+          </v-list-item>
 
-        <v-list-item link @click.stop="files">
-          <v-list-item-icon>
-            <v-icon>mdi-folder</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('files') }}
-          </v-list-item-title>
-        </v-list-item>
+          <v-list-item link @click.stop="files">
+            <v-list-item-icon>
+              <v-icon>mdi-folder</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('files') }}
+            </v-list-item-title>
+          </v-list-item>
 
-        <v-list-item link @click.stop="tables">
-          <v-list-item-icon>
-            <v-icon>mdi-table-multiple</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('tables') }}
-          </v-list-item-title>
-        </v-list-item>
+          <v-list-item link @click.stop="tables">
+            <v-list-item-icon>
+              <v-icon>mdi-table-multiple</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('tables') }}
+            </v-list-item-title>
+          </v-list-item>
 
-        <v-list-item link @click.stop="tasks">
-          <v-list-item-icon>
-            <v-icon>mdi-format-list-checks</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('tasks') }}
-          </v-list-item-title>
-        </v-list-item>
+          <v-list-item link @click.stop="tasks">
+            <v-list-item-icon>
+              <v-icon>mdi-format-list-checks</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('tasks') }}
+            </v-list-item-title>
+          </v-list-item>
 
-        <v-list-item link @click.stop="visualProgramming">
-          <v-list-item-icon>
-            <v-icon>mdi-lambda</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('vp') }}
-          </v-list-item-title>
-        </v-list-item>
+          <v-list-item link @click.stop="visualProgramming">
+            <v-list-item-icon>
+              <v-icon>mdi-lambda</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('vp') }}
+            </v-list-item-title>
+          </v-list-item>
+        </div>
 
         <div v-show="isVms">
           <v-divider></v-divider>
