@@ -70,11 +70,11 @@ ko:
                 :width="videoWidth"
                 :height="videoHeight"
             ></canvas>
-            <v-img
+            <img
                 class="train-image"
                 ref="train-image"
                 :src="snapshotDataUrl"
-            ></v-img>
+            />
           </div>
         </v-card>
 
@@ -704,7 +704,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     // this.canvasTrain.style.height = `${rect.height}px`;
     // this.canvasTrain.style.maxWidth = `${rect.width}px`;
     // this.canvasTrain.style.maxHeight = `${rect.height}px`;
-    //
+
     // const imgElement = this.trainImage.$el;
     // imgElement.style.width = `${rect.width}px`;
     // imgElement.style.height = `${rect.height}px`;

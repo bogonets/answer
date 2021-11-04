@@ -371,10 +371,10 @@ export default class MainVmsLive extends VueBase {
             if (this.events.length > this.eventTotalSize) {
               this.events.splice(this.eventTotalSize);
             }
-            this.doBeep();
             if (this.vmsPopup) {
               this.toastInfo(this.$t('msg.new_events', [items.length]));
             }
+            this.doBeep();
           }
         })
         .catch(error => {
