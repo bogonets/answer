@@ -21,6 +21,20 @@ Available commands:
   stop          Service stop
   restart       Service restart
   log           Service journal
+
+Examples:
+  journalctl -b
+    Show current Boot
+  journalctl -S today
+    Show entries not older than the specified date (Since)
+  journalctl -U yesterday
+    Show entries not newer than the specified date (Until)
+  journalctl -S '2021-01-01 00:00:00' -U '2021-12-31 23:59:59'
+    Show entries from [S] to [U].
+  journalctl --vacuum-size=100M
+    Reduce disk usage below specified size
+  journalctl --vacuum-time=2weeks
+    Remove journal files older than specified time
 "
 
 COMMAND=$1
@@ -38,6 +52,7 @@ help|--help|-h)
     ;;
 reload)
     systemctl $SERVICE_OPT daemon-reload
+    ;;
 up)
     systemctl $SERVICE_OPT daemon-reload
     systemctl $SERVICE_OPT enable $SERVICE_NAME
@@ -78,4 +93,3 @@ log)
     exit 1
     ;;
 esac
-

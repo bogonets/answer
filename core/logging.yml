@@ -69,4 +69,4 @@ loggers:
 
 root:
   level: DEBUG
-  handlers: [console_color, file_default]
+  handlers: [console_color]
