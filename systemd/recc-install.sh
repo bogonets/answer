@@ -386,6 +386,7 @@ function install_user_and_group
     else
         exists_program_or_exit groupadd
         exists_program_or_exit gpasswd
+        exists_program_or_exit usermod
         print_verbose "Create '$RECC_GROUP' group"
         groupadd "$RECC_GROUP"
         gpasswd -a "$RECC_USER" "$RECC_GROUP"
@@ -557,11 +558,3 @@ if [[ $CLEANUP_FLAG -eq 1 ]]; then
     print_message "Cleanup cache ..."
     cleanup_cache
 fi
-
-
-# RECC_PYTHON_EXECUTABLE_PATH=$RECC_PYTHON_DIR/bin/python3
-# if [[ ! -x "$RECC_PYTHON_EXECUTABLE_PATH" ]]; then
-#     # apt install python3.8-venv
-#     # python3 -m venv --copies --prompt recc "$RECC_PYTHON_DIR"
-# fi
-
