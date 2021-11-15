@@ -690,10 +690,11 @@ import {
   createEmptyAirjoyDeviceA,
   calcHumidityText as _calcHumidityText,
   calcTemperature as _calcTemperature,
-  calcFilterLifeMinutes,
+  calcFilterLifeMinutes, OFFLINE_CONVERSION_TIMEOUT_SECONDS,
 } from '@/packet/airjoy';
 import AirjoyFanSpeedGroup from '@/pages/external/airjoy/components/AirjoyFanSpeedGroup.vue';
 import AirjoyTimerGroup from '@/pages/external/airjoy/components/AirjoyTimerGroup.vue';
+import {createMoment, momentDurationSeconds} from "@/chrono/date";
 
 export interface Control {
   mode?: number;
@@ -1070,9 +1071,19 @@ export default class MainAirjoyDetails extends VueBase {
     }
   }
 
+  isOnline() {
+    if (this.item.online) {
+      return true;
+    }
+
+    const now = createMoment();
+    const time = createMoment(this.item.time);
+    const durationSeconds = momentDurationSeconds(now, time);
+    return durationSeconds <= OFFLINE_CONVERSION_TIMEOUT_SECONDS;
+  }
 
   get onlineColor() {
-    if (this.item.online) {
+    if (this.isOnline()) {
       return 'green';
     } else {
       return 'red';
@@ -1080,7 +1091,7 @@ export default class MainAirjoyDetails extends VueBase {
   }
 
   get onlineIcon() {
-    if (this.item.online) {
+    if (this.isOnline()) {
       return 'mdi-lan-connect';
     } else {
       return 'mdi-lan-disconnect';
@@ -1088,7 +1099,7 @@ export default class MainAirjoyDetails extends VueBase {
   }
 
   get onlineDescription() {
-    if (this.item.online) {
+    if (this.isOnline()) {
       return this.$t('online');
     } else {
       return this.$t('offline');

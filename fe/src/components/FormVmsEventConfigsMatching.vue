@@ -492,7 +492,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
           this.uploading = false;
           this.snapshotDataUrl = '';
           this.toastRequestFailure(error);
-        })
+        });
   }
 
   onClickClear() {
