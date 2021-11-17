@@ -2,9 +2,12 @@
 en:
   labels:
     threshold: "Threshold"
+    operator: "Operator"
   hints:
     threshold: >
       The higher the threshold value, the more accurately the colors should match.
+    operator: >
+      An event is raised when the result of the comparison operation becomes 'True'.
   tools:
     pipette: "Pipette"
     clear: "Clear selection"
@@ -13,8 +16,10 @@ en:
 ko:
   labels:
     threshold: "임계점"
+    operator: "비교 연산자"
   hints:
     threshold: "임계점 값이 클 수록, 색상과 정확히 일치해야 합니다."
+    operator: "비교 연산 결과가 '참'이 되면 이벤트가 발생됩니다."
   tools:
     pipette: "스포이드"
     clear: "영역 해제"
@@ -49,6 +54,16 @@ ko:
             :hint="$t('hints.threshold')"
             @change="onChangeThreshold"
         ></v-slider>
+        <v-select
+            class="mt-2"
+            dense
+            persistent-hint
+            v-model="operator"
+            :items="operators"
+            :hint="$t('hints.operator')"
+            @change="onChangeOperator"
+        >
+        </v-select>
       </v-col>
       <v-col
           cols="12"
@@ -136,6 +151,14 @@ function hexToRgb(hex: string) {
 })
 export default class FormVmsEventConfigsColor extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
+  readonly operators = [
+    '=',
+    '!=',
+    '>',
+    '<',
+    '>=',
+    '<=',
+  ];
 
   @Prop({type: Number, default: 0})
   readonly minThreshold!: number;
@@ -156,6 +179,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
 
   color = '#FF0000';
   threshold = 50;
+  operator = '>=';
   x1 = 0;
   y1 = 0;
   x2 = 0;
@@ -191,6 +215,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
       green: green,
       blue: blue,
       threshold: this.thresholdPercentage,
+      operator: this.operator,
       x1: this.x1,
       y1: this.y1,
       x2: this.x2,
@@ -223,6 +248,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
     this.value.green = green;
     this.value.blue = blue;
     this.value.threshold = this.thresholdPercentage;
+    this.value.operator = this.operator;
     this.value.x1 = this.x1;
     this.value.y1 = this.y1;
     this.value.x2 = this.x2;
@@ -243,6 +269,11 @@ export default class FormVmsEventConfigsColor extends VueBase {
   }
 
   onChangeThreshold(value: number) {
+    this.requestEventColor();
+    this.input();
+  }
+
+  onChangeOperator(value: string) {
     this.requestEventColor();
     this.input();
   }

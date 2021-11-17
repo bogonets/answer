@@ -375,6 +375,7 @@ export interface VmsEventConfigColorQ {
     green: number;
     blue: number;
     threshold: number;
+    operator: string;
     x1: number;
     y1: number;
     x2: number;
@@ -400,6 +401,7 @@ export interface VmsEventConfigMatchingQ {
     train_y2: number;
     distance: number;
     threshold: number;
+    operator: string;
     x1: number;
     y1: number;
     x2: number;

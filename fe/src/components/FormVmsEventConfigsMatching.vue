@@ -3,13 +3,17 @@ en:
   labels:
     distance: "Distance"
     threshold: "Threshold"
+    operator: "Operator"
     train_image: "Train Image"
     query_image: "Query Image"
     snapshots: "Snapshots"
   hints:
-    distance: "Hamming distance"
+    distance: >
+      Hamming distance. The higher the value, the more feature points.
     threshold: >
       The higher the threshold value, the more exact the similarity must be.
+    operator: >
+      An event is raised when the result of the comparison operation becomes 'True'.
     snapshots: "You can select an existing snapshot."
   tools:
     snapshot: "Snapshot"
@@ -21,12 +25,14 @@ ko:
   labels:
     distance: "거리 임계점"
     threshold: "임계점"
+    operator: "비교 연산자"
     train_image: "기준 이미지"
     query_image: "비교 대상"
     snapshots: "스냅샷"
   hints:
-    distance: "해밍 거리 (Hamming distance) 임계점"
+    distance: "해밍 거리 (Hamming distance) 임계점. 값이 클 수록, 특징점이 많아집니다."
     threshold: "임계점 값이 클 수록, 유사도가 정확히 일치해야 합니다."
+    operator: "비교 연산 결과가 '참'이 되면 이벤트가 발생됩니다."
     snapshots: "기존에 사용한 스냅샷을 선택할 수 있습니다."
   tools:
     snapshot: "캡쳐"
@@ -135,6 +141,16 @@ ko:
             :hint="$t('hints.threshold')"
             @change="onChangeThreshold"
         ></v-slider>
+
+        <v-select
+            class="mt-2"
+            dense
+            persistent-hint
+            v-model="operator"
+            :items="operators"
+            :hint="$t('hints.operator')"
+            @change="onChangeOperator"
+        ></v-select>
       </v-col>
 
       <v-col
@@ -209,6 +225,15 @@ export default class FormVmsEventConfigsMatching extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly captionClass = CAPTION_CLASS;
 
+  readonly operators = [
+    '=',
+    '!=',
+    '>',
+    '<',
+    '>=',
+    '<=',
+  ];
+
   @Prop({type: Number, default: 0})
   readonly minDistance!: number;
 
@@ -269,6 +294,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
 
   distance = 50;
   threshold = 50;
+  operator = '>=';
 
   trainX1 = 0;
   trainY1 = 0;
@@ -356,6 +382,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
       train_y2: this.trainY2,
       distance: this.distancePercentage,
       threshold: this.thresholdPercentage,
+      operator: this.operator,
       x1: this.x1,
       y1: this.y1,
       x2: this.x2,
@@ -388,6 +415,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     this.value.train_y2 = this.trainY2;
     this.value.distance = this.distancePercentage;
     this.value.threshold = this.thresholdPercentage;
+    this.value.operator = this.operator;
     this.value.x1 = this.x1;
     this.value.y1 = this.y1;
     this.value.x2 = this.x2;
@@ -466,6 +494,11 @@ export default class FormVmsEventConfigsMatching extends VueBase {
   }
 
   onChangeThreshold(value: number) {
+    this.requestEventMatching();
+    this.input();
+  }
+
+  onChangeOperator(value: string) {
     this.requestEventMatching();
     this.input();
   }
