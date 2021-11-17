@@ -318,7 +318,6 @@ export default class MainAirjoyChart extends VueBase {
     },
     scales: {
       y: {
-        min: 0,
         max: yMaxDefault(),
       }
     },
