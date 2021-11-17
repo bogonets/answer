@@ -28,20 +28,15 @@ ko:
 
 <script lang="ts">
 import VueI18n from '@/translations/VueI18n';
-import { Component, Prop, Emit } from 'vue-property-decorator';
-import { mdiTranslate } from "@mdi/js";
+import {Component, Prop, Emit} from 'vue-property-decorator';
 
 export const LANG_KO = 'ko';
 export const LANG_EN = 'en';
 export const LANGUAGES = [LANG_KO, LANG_EN];
 
 @Component
-export default class MenuTranslate extends VueI18n {
-
+export default class ListLanguages extends VueI18n {
   readonly languages = LANGUAGES;
-  readonly icons = {
-    translate: mdiTranslate,
-  };
 
   @Prop({type: Boolean, default: false})
   readonly dense!: boolean;
