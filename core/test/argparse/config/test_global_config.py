@@ -26,6 +26,30 @@ class GlobalConfigTestCase(TestCase):
         self.assertIsNone(config.loop_driver)
         self.assertIsNone(config.json_driver)
 
+        self.assertIsNone(config.database_host)
+        self.assertIsNone(config.database_port)
+        self.assertIsNone(config.database_user)
+        self.assertIsNone(config.database_pw)
+        self.assertIsNone(config.database_type)
+        self.assertIsNone(config.database_name)
+
+        self.assertIsNone(config.cache_host)
+        self.assertIsNone(config.cache_port)
+        self.assertIsNone(config.cache_pw)
+        self.assertIsNone(config.cache_type)
+
+        self.assertIsNone(config.container_host)
+        self.assertIsNone(config.container_port)
+        self.assertIsNone(config.container_type)
+
+        self.assertIsNone(config.storage_type)
+        self.assertIsNone(config.storage_host)
+        self.assertIsNone(config.storage_port)
+        self.assertIsNone(config.storage_user)
+        self.assertIsNone(config.storage_pw)
+        self.assertIsNone(config.storage_region)
+        self.assertIsNone(config.storage_secure)
+
         self.assertIsNone(config.suppress_print)
         self.assertIsNone(config.verbose)
         self.assertIsNone(config.teardown)
