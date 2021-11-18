@@ -25,6 +25,7 @@ from recc.container.struct.network_info import NetworkInfo
 from recc.container.struct.image_info import ImageInfo
 from recc.container.docker.task_init import (
     RECC_MODULE_TAR_BYTES_SHA256,
+    RECC_REQUIREMENTS_MAIN_SHA256,
     get_compressed_task_dockerfile_tar,
 )
 from recc.variables.container import (
@@ -38,7 +39,8 @@ from recc.variables.container import (
 )
 from recc.variables.labels import (
     RECC_IMAGE_VERSION_KEY,
-    RECC_IMAGE_SHA256_KEY,
+    RECC_IMAGE_MODULE_SHA256_KEY,
+    RECC_IMAGE_REQUIREMENTS_SHA256_KEY,
 )
 
 from recc.util.version import version_text
@@ -161,9 +163,15 @@ class DockerContainerManager(
             return True
 
         labels = found_image.labels
-        if version_text != labels.get(RECC_IMAGE_VERSION_KEY):
+        image_version = labels.get(RECC_IMAGE_VERSION_KEY)
+        image_module_sha256 = labels.get(RECC_IMAGE_MODULE_SHA256_KEY)
+        image_requirements_sha256 = labels.get(RECC_IMAGE_REQUIREMENTS_SHA256_KEY)
+
+        if version_text != image_version:
             return False
-        if RECC_MODULE_TAR_BYTES_SHA256 != labels.get(RECC_IMAGE_SHA256_KEY):
+        if RECC_MODULE_TAR_BYTES_SHA256 != image_module_sha256:
+            return False
+        if RECC_REQUIREMENTS_MAIN_SHA256 != image_requirements_sha256:
             return False
         return True
 

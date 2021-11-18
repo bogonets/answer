@@ -19,7 +19,8 @@ from recc.variables.container import (
 from recc.variables.labels import (
     RECC_CATEGORY_IMAGE,
     RECC_IMAGE_VERSION_KEY,
-    RECC_IMAGE_SHA256_KEY,
+    RECC_IMAGE_MODULE_SHA256_KEY,
+    RECC_IMAGE_REQUIREMENTS_SHA256_KEY,
 )
 from recc.package.requirement_utils import RECC_REQUIREMENTS_MAIN_ARG
 from recc.util.version import version_text
@@ -32,6 +33,9 @@ RECC_MODULE_TAR_BYTES = compress_tar(
     RECC_MODULE_DIR, archive_name=RECC_MODULE_NAME, recursive=True
 )
 RECC_MODULE_TAR_BYTES_SHA256 = sha256(RECC_MODULE_TAR_BYTES).hexdigest()
+RECC_REQUIREMENTS_MAIN_SHA256 = sha256(
+    bytes(RECC_REQUIREMENTS_MAIN_ARG, encoding="utf-8")
+).hexdigest()
 
 TASK_INIT_DOCKERFILE_TEMPLATE = f"""
 FROM {{base_image}}
@@ -39,7 +43,8 @@ MAINTAINER recc
 
 LABEL {RECC_CATEGORY_IMAGE}
 LABEL {RECC_IMAGE_VERSION_KEY}={{recc_version}}
-LABEL {RECC_IMAGE_SHA256_KEY}={RECC_MODULE_TAR_BYTES_SHA256}
+LABEL {RECC_IMAGE_MODULE_SHA256_KEY}={RECC_MODULE_TAR_BYTES_SHA256}
+LABEL {RECC_IMAGE_REQUIREMENTS_SHA256_KEY}={RECC_REQUIREMENTS_MAIN_SHA256}
 
 RUN groupadd {{group_name}} && \
     useradd -d "{TASK_GUEST_WORKSPACE_DIR}" -m \

@@ -97,6 +97,7 @@ class GlobalConfig(Namespace):
     container_port: int
     container_type: str
     container_id: str
+    container_image_validate: bool
 
     storage_type: str
     storage_host: str
@@ -312,6 +313,13 @@ ARG_CONTAINER_ID = Argument(
     metavar="id",
     help="The container ID when running inside the container.",
 )
+ARG_CONTAINER_IMAGE_VALIDATE = Argument(
+    key="--container-image-validate",
+    last_injection_value=False,
+    default=None,
+    action="store_true",
+    help="Validate the container image.",
+)
 
 ARG_STORAGE_TYPE = Argument(
     key="--storage-type",
@@ -423,6 +431,7 @@ GLOBAL_ARGS = (
     ARG_CONTAINER_PORT,
     ARG_CONTAINER_TYPE,
     ARG_CONTAINER_ID,
+    ARG_CONTAINER_IMAGE_VALIDATE,
     ARG_STORAGE_TYPE,
     ARG_STORAGE_HOST,
     ARG_STORAGE_PORT,

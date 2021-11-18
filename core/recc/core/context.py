@@ -117,7 +117,8 @@ class Context(
         logger.info("Opened container-manager")
 
         assert self._container.is_open()
-        if not await self._container.exist_default_task_images(False):
+        image_validate = self._config.container_image_validate
+        if not await self._container.exist_default_task_images(image_validate):
             logger.info("Create default-task-image ...")
             try:
                 await self._container.create_default_task_images()
