@@ -9,6 +9,7 @@ en:
   containers: "Containers"
   templates: "Templates"
   configs: "Configs"
+  daemons: "Daemons"
   external:
     airjoy:
       devices: "AIRJOY Devices"
@@ -23,6 +24,7 @@ ko:
   containers: "컨테이너"
   templates: "템플릿"
   configs: "구성"
+  daemons: "데몬"
   external:
     airjoy:
       devices: "AIRJOY 장치 관리"
@@ -132,6 +134,15 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
+        <v-list-item link @click.stop="daemons">
+          <v-list-item-icon>
+            <v-icon>mdi-ghost</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('daemons') }}
+          </v-list-item-title>
+        </v-list-item>
+
         <v-divider v-show="false"></v-divider>
         <v-list-item v-show="false" link @click.stop="externalAirjoyDevices">
           <v-list-item-icon>
@@ -151,6 +162,7 @@ ko:
 import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import adminNames from '@/router/names/admin';
+import devNames from "@/router/names/dev";
 
 @Component
 export default class NaviAdmin extends VueBase {
@@ -200,8 +212,14 @@ export default class NaviAdmin extends VueBase {
       this.index = 6;
     } else if (name === adminNames.adminConfigs) {
       this.index = 7;
-    } else if (name === adminNames.adminAirjoyDevices) {
+    } else if (name === adminNames.adminDaemons) {
       this.index = 8;
+    } else if (name === adminNames.adminDaemonsEdit) {
+      this.index = 8;
+    } else if (name === adminNames.adminDaemonsNew) {
+      this.index = 8;
+    } else if (name === adminNames.adminAirjoyDevices) {
+      this.index = 9;
     } else {
       this.index = -1;
     }
@@ -266,6 +284,13 @@ export default class NaviAdmin extends VueBase {
   configs() {
     if (!this.noDefault) {
       this.moveToAdminConfigs();
+    }
+  }
+
+  @Emit('click:daemons')
+  daemons() {
+    if (!this.noDefault) {
+      this.moveToAdminDaemons();
     }
   }
 

@@ -749,6 +749,42 @@ export default class ApiV2 {
         return this.patch('/admin/containers', body);
     }
 
+    // ------------
+    // Admin/Daemon
+    // ------------
+
+    getAdminDaemonPlugins() {
+        return this.get<Array<string>>('/admin/daemon/plugins');
+    }
+
+    getAdminDaemons() {
+        return this.get<Array<DaemonA>>('/admin/daemons');
+    }
+
+    postAdminDaemons(body: CreateDaemonQ) {
+        return this.post('/admin/daemons', body);
+    }
+
+    getAdminDaemonsPdaemon(daemon: string) {
+        return this.get<DaemonA>(`/admin/daemons/${daemon}`);
+    }
+
+    patchAdminDaemonsPdaemon(daemon: string, body: UpdateDaemonQ) {
+        return this.patch(`/admin/daemons/${daemon}`, body);
+    }
+
+    deleteAdminDaemonsPdaemon(daemon: string) {
+        return this.delete(`/admin/daemons/${daemon}`);
+    }
+
+    postAdminDaemonsPdaemonStart(daemon: string) {
+        return this.post(`/admin/daemons/${daemon}/start`);
+    }
+
+    postAdminDaemonsPdaemonStop(daemon: string) {
+        return this.post(`/admin/daemons/${daemon}/stop`);
+    }
+
     // -----------
     // Dev/Configs
     // -----------
@@ -811,42 +847,6 @@ export default class ApiV2 {
 
     getDevEnvironments() {
         return this.get<Array<EnvironmentA>>('/dev/environments');
-    }
-
-    // ----------
-    // Dev/Daemon
-    // ----------
-
-    getDevDaemonPlugins() {
-        return this.get<Array<string>>('/dev/daemon/plugins');
-    }
-
-    getDevDaemons() {
-        return this.get<Array<DaemonA>>('/dev/daemons');
-    }
-
-    postDevDaemons(body: CreateDaemonQ) {
-        return this.post('/dev/daemons', body);
-    }
-
-    getDevDaemonsPdaemon(daemon: string) {
-        return this.get<DaemonA>(`/dev/daemons/${daemon}`);
-    }
-
-    patchDevDaemonsPdaemon(daemon: string, body: UpdateDaemonQ) {
-        return this.patch(`/dev/daemons/${daemon}`, body);
-    }
-
-    deleteDevDaemonsPdaemon(daemon: string) {
-        return this.delete(`/dev/daemons/${daemon}`);
-    }
-
-    postDevDaemonsPdaemonStart(daemon: string) {
-        return this.post(`/dev/daemons/${daemon}/start`);
-    }
-
-    postDevDaemonsPdaemonStop(daemon: string) {
-        return this.post(`/dev/daemons/${daemon}/stop`);
     }
 
     // --------------

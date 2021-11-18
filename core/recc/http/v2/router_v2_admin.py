@@ -12,6 +12,7 @@ from recc.http import http_urls as u
 from recc.http.http_decorator import parameter_matcher
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.container import ContainerOperator, ContainerA, ControlContainersQ
+from recc.packet.daemon import DaemonA, CreateDaemonQ, UpdateDaemonQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.permission import PermissionA, CreatePermissionQ, UpdatePermissionQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
@@ -19,6 +20,7 @@ from recc.packet.plugin import PluginNameA
 from recc.packet.system import SystemOverviewA
 from recc.packet.template import TemplateA
 from recc.packet.user import UserA, UpdateUserQ, SignupQ
+from recc.packet.cvt.daemon import daemon_to_answer
 from recc.packet.cvt.project import project_to_answer
 from recc.packet.cvt.permission import permission_to_answer
 from recc.packet.cvt.container import container_to_answer
@@ -97,6 +99,16 @@ class RouterV2Admin:
             web.get(u.containers, self.get_containers),
             web.patch(u.containers, self.patch_containers),
             web.get(u.containers_pcontainer, self.get_containers_pcontainer),
+
+            # daemon
+            web.get(u.daemon_plugins, self.get_daemon_plugins),
+            web.get(u.daemons, self.get_daemons),
+            web.post(u.daemons, self.post_daemons),
+            web.get(u.daemons_pdaemon, self.get_daemons_pdaemon),
+            web.patch(u.daemons_pdaemon, self.patch_daemons_pdaemon),
+            web.delete(u.daemons_pdaemon, self.delete_daemons_pdaemon),
+            web.post(u.daemons_pdaemon_start, self.post_daemons_pdaemon_start),
+            web.post(u.daemons_pdaemon_stop, self.post_daemons_pdaemon_stop),
         ]
         # fmt: on
 
@@ -466,3 +478,74 @@ class RouterV2Admin:
     @parameter_matcher()
     async def get_containers_pcontainer(self, container: str) -> ContainerA:
         return container_to_answer(await self.context.get_container(container))
+
+    # ------
+    # Daemon
+    # ------
+
+    @parameter_matcher()
+    async def get_daemon_plugins(self) -> List[str]:
+        return self.context.get_daemon_plugins()
+
+    @parameter_matcher()
+    async def get_daemons(self) -> List[DaemonA]:
+        result = list()
+        daemons = await self.context.get_daemons()
+        for daemon in daemons:
+            if not daemon.slug:
+                raise RuntimeError("The `slug` of the daemon must exist.")
+            answer = daemon_to_answer(daemon)
+            answer.status = self.context.status(daemon.slug)
+            answer.exit_code = None
+            result.append(answer)
+        return result
+
+    @parameter_matcher()
+    async def post_daemons(self, body: CreateDaemonQ) -> None:
+        await self.context.create_daemon(
+            plugin=body.plugin,
+            slug=body.slug,
+            name=body.name,
+            address=body.address,
+            requirements_sha256=None,
+            description=body.description,
+            extra=body.extra,
+            enable=body.enable,
+        )
+
+    @parameter_matcher()
+    async def get_daemons_pdaemon(self, daemon: str) -> DaemonA:
+        db_daemon = await self.context.get_daemon_by_slug(daemon)
+        if not db_daemon.slug:
+            raise RuntimeError("The `slug` of the daemon must exist.")
+        answer = daemon_to_answer(db_daemon)
+        answer.status = self.context.status(db_daemon.slug)
+        answer.exit_code = None
+        return answer
+
+    @parameter_matcher()
+    async def patch_daemons_pdaemon(self, daemon: str, body: UpdateDaemonQ) -> None:
+        uid = await self.context.get_daemon_uid_by_slug(daemon)
+        await self.context.update_daemon(
+            uid=uid,
+            plugin=None,
+            slug=body.slug,
+            name=body.name,
+            address=body.address,
+            requirements_sha256=None,
+            description=body.description,
+            extra=body.extra,
+            enable=body.enable,
+        )
+
+    @parameter_matcher()
+    async def delete_daemons_pdaemon(self, daemon: str) -> None:
+        await self.context.delete_daemon_by_slug(daemon)
+
+    @parameter_matcher()
+    async def post_daemons_pdaemon_start(self, daemon: str) -> None:
+        await self.context.start_daemon(daemon)
+
+    @parameter_matcher()
+    async def post_daemons_pdaemon_stop(self, daemon: str) -> None:
+        await self.context.stop_daemon(daemon)

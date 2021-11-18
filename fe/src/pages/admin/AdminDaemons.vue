@@ -152,12 +152,12 @@ import {getStatusColor} from '@/packet/daemon';
     ToolbarBreadcrumbs,
   }
 })
-export default class DevDaemons extends VueBase {
+export default class AdminDaemons extends VueBase {
   private readonly navigationItems = [
     {
-      text: 'Dev',
+      text: 'Admin',
       disabled: false,
-      href: () => this.moveToDev(),
+      href: () => this.moveToAdmin(),
     },
     {
       text: 'Daemons',
@@ -231,7 +231,7 @@ export default class DevDaemons extends VueBase {
 
   updateItems() {
     this.loading = true;
-    this.$api2.getDevDaemons()
+    this.$api2.getAdminDaemons()
         .then(items => {
           this.loading = false;
           this.items = items;
@@ -258,7 +258,7 @@ export default class DevDaemons extends VueBase {
   }
 
   onClickAdd() {
-    this.moveToDevDaemonsNew();
+    this.moveToAdminDaemonsNew();
   }
 
   onClickStart() {
@@ -276,7 +276,7 @@ export default class DevDaemons extends VueBase {
   async startSelected() {
     try {
       for (const item of this.selected) {
-        await this.$api2.postDevDaemonsPdaemonStart(item.slug);
+        await this.$api2.postAdminDaemonsPdaemonStart(item.slug);
       }
       this.toastRequestSuccess();
       this.updateItems();
@@ -288,7 +288,7 @@ export default class DevDaemons extends VueBase {
   async stopSelected() {
     try {
       for (const item of this.selected) {
-        await this.$api2.postDevDaemonsPdaemonStop(item.slug);
+        await this.$api2.postAdminDaemonsPdaemonStop(item.slug);
       }
       this.toastRequestSuccess();
       this.updateItems();
@@ -302,7 +302,7 @@ export default class DevDaemons extends VueBase {
   }
 
   onClickDevice(item: DaemonA) {
-    this.moveToDevDaemonsEdit(item.slug);
+    this.moveToAdminDaemonsEdit(item.slug);
   }
 }
 </script>

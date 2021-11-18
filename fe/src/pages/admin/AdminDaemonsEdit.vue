@@ -207,17 +207,17 @@ import {getStatusColor, isStatusRunning} from "@/packet/daemon";
     FormDaemon,
   }
 })
-export default class DevDaemonsEdit extends VueBase {
+export default class AdminDaemonsEdit extends VueBase {
   readonly navigationItems = [
     {
-      text: 'Dev',
+      text: 'Admin',
       disabled: false,
-      href: () => this.moveToDev(),
+      href: () => this.moveToAdmin(),
     },
     {
       text: 'Daemons',
       disabled: false,
-      href: () => this.moveToDevDaemons(),
+      href: () => this.moveToAdminDaemons(),
     },
     {
       text: 'Edit',
@@ -253,10 +253,10 @@ export default class DevDaemonsEdit extends VueBase {
 
   async requestSetup() {
     try {
-      this.plugins = await this.$api2.getDevDaemonPlugins();
+      this.plugins = await this.$api2.getAdminDaemonPlugins();
 
       const daemon = this.$route.params.daemon;
-      const item = await this.$api2.getDevDaemonsPdaemon(daemon);
+      const item = await this.$api2.getAdminDaemonsPdaemon(daemon);
       this.original = _.cloneDeep(item);
       this.current = _.cloneDeep(item);
       this.modified = false;
@@ -294,7 +294,7 @@ export default class DevDaemonsEdit extends VueBase {
 
     const daemon = this.$route.params.daemon;
     this.loadingSubmit = true;
-    this.$api2.patchDevDaemonsPdaemon(daemon, body)
+    this.$api2.patchAdminDaemonsPdaemon(daemon, body)
         .then(() => {
           this.loadingSubmit = false;
           this.toastRequestSuccess();
@@ -307,7 +307,7 @@ export default class DevDaemonsEdit extends VueBase {
 
   onClickStart() {
     const daemon = this.$route.params.daemon;
-    this.$api2.postDevDaemonsPdaemonStart(daemon)
+    this.$api2.postAdminDaemonsPdaemonStart(daemon)
         .then(() => {
           this.toastRequestSuccess();
           this.setup();
@@ -319,7 +319,7 @@ export default class DevDaemonsEdit extends VueBase {
 
   onClickStop() {
     const daemon = this.$route.params.daemon;
-    this.$api2.postDevDaemonsPdaemonStop(daemon)
+    this.$api2.postAdminDaemonsPdaemonStop(daemon)
         .then(() => {
           this.toastRequestSuccess();
           this.setup();
@@ -344,12 +344,12 @@ export default class DevDaemonsEdit extends VueBase {
   onClickDeleteOk() {
     const daemon = this.$route.params.daemon;
     this.loadingDelete = true;
-    this.$api2.deleteDevDaemonsPdaemon(daemon)
+    this.$api2.deleteAdminDaemonsPdaemon(daemon)
         .then(() => {
           this.loadingDelete = false;
           this.showDeleteDialog = false
           this.toastRequestSuccess();
-          this.moveToDevDaemons();
+          this.moveToAdminDaemons();
         })
         .catch(error => {
           this.loadingDelete = false;

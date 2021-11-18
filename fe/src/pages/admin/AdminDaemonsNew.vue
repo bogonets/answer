@@ -44,17 +44,17 @@ import type {DaemonA, CreateDaemonQ} from '@/packet/daemon';
     FormDaemon,
   }
 })
-export default class DevDaemonsNew extends VueBase {
+export default class AdminDaemonsNew extends VueBase {
   readonly navigationItems = [
     {
-      text: 'Dev',
+      text: 'Admin',
       disabled: false,
-      href: () => this.moveToDev(),
+      href: () => this.moveToAdmin(),
     },
     {
       text: 'Daemons',
       disabled: false,
-      href: () => this.moveToDevDaemons(),
+      href: () => this.moveToAdminDaemons(),
     },
     {
       text: 'New',
@@ -72,7 +72,7 @@ export default class DevDaemonsNew extends VueBase {
 
   updatePlugins() {
     this.loadingPlugins = true;
-    this.$api2.getDevDaemonPlugins()
+    this.$api2.getAdminDaemonPlugins()
         .then(items => {
           this.loadingPlugins = false;
           this.plugins = items;
@@ -95,7 +95,7 @@ export default class DevDaemonsNew extends VueBase {
     } as CreateDaemonQ;
 
     this.loadingSubmit = true;
-    this.$api2.postDevDaemons(body)
+    this.$api2.postAdminDaemons(body)
         .then(() => {
           this.loadingSubmit = false;
           this.toastRequestSuccess();

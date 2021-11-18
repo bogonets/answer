@@ -1,6 +1,9 @@
 import adminNames from '@/router/names/admin';
 import AdminConfigs from '@/pages/admin/AdminConfigs.vue';
 import AdminContainers from '@/pages/admin/AdminContainers.vue';
+import AdminDaemons from '@/pages/admin/AdminDaemons.vue';
+import AdminDaemonsEdit from '@/pages/admin/AdminDaemonsEdit.vue';
+import AdminDaemonsNew from '@/pages/admin/AdminDaemonsNew.vue';
 import AdminGroups from '@/pages/admin/AdminGroups.vue';
 import AdminGroupsEdit from '@/pages/admin/AdminGroupsEdit.vue';
 import AdminGroupsNew from '@/pages/admin/AdminGroupsNew.vue';
@@ -99,6 +102,21 @@ export const adminChildren = [
         path: 'users/new',
         component: AdminUsersNew,
         name: adminNames.adminUsersNew,
+    },
+    {
+        path: 'daemons',
+        component: AdminDaemons,
+        name: adminNames.adminDaemons,
+    },
+    {
+        path: 'daemons/edit/:daemon',
+        component: AdminDaemonsEdit,
+        name: adminNames.adminDaemonsEdit,
+    },
+    {
+        path: 'daemons/new',
+        component: AdminDaemonsNew,
+        name: adminNames.adminDaemonsNew,
     },
 
     ...adminAirjoyChildren,

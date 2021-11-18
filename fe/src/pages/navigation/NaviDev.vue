@@ -6,7 +6,6 @@ en:
   infos: "Preferences"
   plugins: "Plugins"
   configs: "Configs"
-  daemons: "Daemons"
 
 ko:
   title: "개발 도구"
@@ -15,7 +14,6 @@ ko:
   infos: "기본 설정"
   plugins: "플러그인"
   configs: "구성"
-  daemons: "데몬"
 </i18n>
 
 <template>
@@ -95,15 +93,6 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item link @click.stop="daemons">
-          <v-list-item-icon>
-            <v-icon>mdi-ghost</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('daemons') }}
-          </v-list-item-title>
-        </v-list-item>
-
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
@@ -140,12 +129,6 @@ export default class NaviDev extends VueBase {
       this.index = 3;
     } else if (name === devNames.devConfigs) {
       this.index = 4;
-    } else if (name === devNames.devDaemons) {
-      this.index = 5;
-    } else if (name === devNames.devDaemonsEdit) {
-      this.index = 5;
-    } else if (name === devNames.devDaemonsNew) {
-      this.index = 5;
     } else {
       this.index = -1;
     }
@@ -189,13 +172,6 @@ export default class NaviDev extends VueBase {
   configs() {
     if (!this.noDefault) {
       this.moveToDevConfigs();
-    }
-  }
-
-  @Emit('click:daemons')
-  daemons() {
-    if (!this.noDefault) {
-      this.moveToDevDaemons();
     }
   }
 }
