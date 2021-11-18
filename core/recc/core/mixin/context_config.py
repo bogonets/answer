@@ -40,6 +40,10 @@ class ContextConfig(ContextBase):
         logger.info(f"Change the severity of the root logger: {old} -> {new}")
         set_root_level(new)
 
+    def setup_context_config(self) -> None:
+        self._config_watcher = WatcherContainer()
+        self._config_watcher["log_level"] = self._on_watch_log_level
+
     async def _set_config_value(self, key: str, val: Any) -> None:
         if key in self._config_watcher:
             old_value = getattr(self.config, key, None)
@@ -54,10 +58,6 @@ class ContextConfig(ContextBase):
 
         # Updates the configuration in memory.
         setattr(self.config, key, val)
-
-    async def setup_context_config(self) -> None:
-        self._config_watcher = WatcherContainer()
-        self._config_watcher["log_level"] = self._on_watch_log_level
 
     async def restore_configs(self, configs: Dict[str, str]) -> None:
         prefix = CONFIG_PREFIX_RECC_ARGPARSE_CONFIG

@@ -94,6 +94,9 @@ class Context(
     async def open(self) -> None:
         await self._test_recc_subprocess()
 
+        self.setup_context_config()
+        logger.info("Setup context configurations")
+
         await self._database.open()
         logger.info("Opened database")
 
@@ -102,6 +105,13 @@ class Context(
 
         await self._database.update_cache()
         logger.info("Updated database cache")
+
+        assert self._database.is_open()
+        config_infos_prefix = CONFIG_PREFIX_RECC_ARGPARSE_CONFIG + "%"
+        config_infos = await self.get_infos_like(config_infos_prefix)
+        database_configs = {c.key: c.value for c in config_infos if c.key and c.value}
+        await self.restore_configs(database_configs)
+        logger.info("Restores the configuration from the database")
 
         await self._container.open()
         logger.info("Opened container-manager")
@@ -116,11 +126,21 @@ class Context(
             else:
                 logger.info("Default-task-image successfully created.")
 
+        if self.is_guest_mode():
+            await self.connect_global_network()
+            logger.info("Connect global network.")
+
         await self._cache.open()
         logger.info("Opened cache-store")
 
         await self._tasks.open()
         logger.info("Opened task-manager")
+
+        await self._daemons.open(self._storage.daemon, self.database, self._loop)
+        logger.info("Opened daemon-manager")
+
+        await self._daemons.init(await self.get_infos_as_dict())
+        logger.info("Init daemon-manager")
 
         await self._plugins.open()
         logger.info("Opened plugin-manager")
@@ -129,19 +149,6 @@ class Context(
         logger.info("The context has been opened")
 
     async def _after_open(self) -> None:
-        await self.setup_context_config()
-        logger.info("Setup context configurations")
-
-        config_infos_prefix = CONFIG_PREFIX_RECC_ARGPARSE_CONFIG + "%"
-        config_infos = await self.get_infos_like(config_infos_prefix)
-        database_configs = {c.key: c.value for c in config_infos if c.key and c.value}
-        await self.restore_configs(database_configs)
-        logger.info("Restores the configuration from the database.")
-
-        if self.container.is_open() and self.is_guest_mode():
-            await self.connect_global_network()
-            logger.info("Connect global network.")
-
         assert len(self.ports.alloc_ports) == 0
         await self.update_ports_from_database()
         database_ports = len(self.ports.alloc_ports)
@@ -153,12 +160,6 @@ class Context(
 
         if self.config.developer:
             logger.debug(f"Allocated ports: {list(self.ports.alloc_ports)}")
-
-        await self._daemons.open(self._storage.daemon, self.database, self._loop)
-        logger.info("Daemon-manager open complete.")
-
-        await self._daemons.init(await self.get_infos_as_dict())
-        logger.info("Daemon-manager init complete.")
 
     async def _before_close(self) -> None:
         await self._daemons.close()
