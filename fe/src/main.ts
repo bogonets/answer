@@ -58,52 +58,8 @@ import {REST_API} from '@/apis/api';
 const restApi = REST_API();
 Vue.prototype.$api = restApi;
 
-function moveTo(name: string) {
-  if (router.currentRoute.name === name) {
-    return;
-  }
-
-  const rawLocation = {
-    name: name,
-  } as RawLocation;
-
-  router.push(rawLocation).catch((reason: any) => {
-    if (reason.name !== 'NavigationDuplicated') {
-      throw reason;
-    }
-  });
-}
-
 import VueApiV2 from '@/apis';
-import {ApiV2Options} from '@/apis/api-v2';
-const apiV2Options = {
-  accessTokenErrorCallback: () => {
-    const localStore = Vue.prototype.$localStore as LocalStore;
-    localStore.clearSession();
-    sessionStore.commit('user/logout');
-    moveTo(rootNames.signin);
-  },
-  refreshTokenErrorCallback: () => {
-    const localStore = Vue.prototype.$localStore as LocalStore;
-    localStore.clearSession();
-    sessionStore.commit('user/logout');
-    moveTo(rootNames.signin);
-  },
-  uninitializedServiceCallback: () => {
-    const localStore = Vue.prototype.$localStore as LocalStore;
-    localStore.clearSession();
-    sessionStore.commit('user/logout');
-    moveTo(rootNames.init);
-  },
-  renewalAccessTokenCallback: (access: string) => {
-    const localStore = Vue.prototype.$localStore as LocalStore;
-    localStore.access = access;
-    sessionStore.commit('user/renewalAccessToken', {
-      accessToken: access,
-    });
-  },
-} as ApiV2Options;
-Vue.use(VueApiV2, apiV2Options);
+Vue.use(VueApiV2);
 
 import { ANSWER_UTIL } from './services/answer_util';
 const answerUtil = ANSWER_UTIL();

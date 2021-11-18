@@ -1,10 +1,22 @@
-import AxiosLib from 'axios';
+import Vue from 'vue';
+
+import {Store} from 'vuex';
+import {LocalStore} from '@/store/LocalStore';
+
+import router from '@/router';
+import rootNames from '@/router/names/root';
+import {RawLocation} from 'vue-router';
+
+import {encryptSha256} from '@/crypto/sha';
+
+import AxiosLib, {AxiosError} from 'axios';
 import type {
     AxiosInstance,
     AxiosResponse,
     AxiosRequestConfig,
     AxiosBasicCredentials,
 } from 'axios';
+
 import type {
     AirjoySensorA,
     AirjoyDeviceA,
@@ -36,6 +48,7 @@ import type {
     VmsEventA,
     VmsFilterEventQ,
     VmsNewsEventQ,
+    VmsLatestEventQ,
     VmsEventImageA,
     VmsDiscoveryQ,
     VmsDiscoveredHeartbeatQ,
@@ -51,30 +64,30 @@ import type {
     VmsEventConfigColorQ,
     VmsEventConfigDetectionQ,
     VmsEventConfigMatchingQ,
-    VmsEventConfigOcrFilterQ,
     VmsEventConfigOcrQ,
 } from '@/packet/vms';
+
 import type {ConfigA, UpdateConfigValueQ} from '@/packet/config';
 import type {ContainerA, ControlContainersQ} from '@/packet/container';
 import type {GroupA, CreateGroupQ, UpdateGroupQ} from '@/packet/group';
 import type {InfoA, CreateInfoQ, UpdateInfoQ} from '@/packet/info';
+import type {PluginA, PluginNameA} from '@/packet/plugin';
+import type {TemplateA} from '@/packet/template';
+import type {DaemonA, CreateDaemonQ, UpdateDaemonQ} from '@/packet/daemon';
+import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
+import type {SystemOverviewA, VersionsA} from '@/packet/system';
 import type {
     RawPermission,
     PermissionA,
     CreatePermissionQ,
     UpdatePermissionQ,
 } from '@/packet/permission';
-import type {PluginA, PluginNameA} from '@/packet/plugin';
-import type {DaemonA, CreateDaemonQ, UpdateDaemonQ} from '@/packet/daemon';
-import type {TemplateA} from '@/packet/template';
 import type {
     ProjectA,
     CreateProjectQ,
     UpdateProjectQ,
     ProjectOverviewA,
 } from '@/packet/project';
-import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
-import type {SystemOverviewA, VersionsA} from '@/packet/system';
 import type {
     UserA,
     UpdateUserQ,
@@ -84,54 +97,22 @@ import type {
     UserExtraA,
     RefreshTokenA,
 } from '@/packet/user';
+import {
+    createEmptySigninA,
+    createEmptyUserA
+} from '@/packet/user';
 import type {EnvironmentA} from '@/packet/environment';
-import {createEmptySigninA, createEmptyUserA} from '@/packet/user';
-import {PreferenceA, createEmptyPreference} from '@/packet/preference';
-import {encryptSha256} from '@/crypto/sha';
-import moment from 'moment-timezone';
-import {VmsLatestEventQ} from "@/packet/vms";
+import type {PreferenceA} from '@/packet/preference';
+import {createEmptyPreference} from '@/packet/preference';
 
-const DEFAULT_TIMEOUT = 30 * 1000;
+const DEFAULT_TIMEOUT_MILLISECONDS = 30 * 1000;
 const STATUS_CODE_ACCESS_TOKEN_ERROR = 461
 const STATUS_CODE_REFRESH_TOKEN_ERROR = 462
 const STATUS_CODE_UNINITIALIZED_SERVICE = 561
+const VALIDATE_STATUS = [200];
+const HEADER_AUTHORIZATION = 'Authorization';
 
-const LEEWAY_MILLISECONDS = DEFAULT_TIMEOUT;
-
-const VALIDATE_STATUS = [
-    200,
-    STATUS_CODE_ACCESS_TOKEN_ERROR,
-    STATUS_CODE_REFRESH_TOKEN_ERROR,
-    STATUS_CODE_UNINITIALIZED_SERVICE,
-];
-
-const HEADER_KEY_AUTHORIZATION = 'Authorization';
-
-export class UninitializedServiceError extends Error {
-    constructor() {
-        super('Uninitialized service');
-    }
-}
-
-export class TokenError extends Error {
-    constructor(message?: string) {
-        super(message);
-    }
-}
-
-export class AccessTokenError extends TokenError {
-    constructor(message = 'Access Token Error') {
-        super(message);
-    }
-}
-
-export class RefreshTokenError extends TokenError {
-    constructor(message = 'Refresh Token Error') {
-        super(message);
-    }
-}
-
-export function originToBaseUrl(origin: string): string {
+function originToBaseUrl(origin: string): string {
     if (origin[origin.length-1] == '/') {
         return origin + 'api/v2';
     } else {
@@ -139,39 +120,60 @@ export function originToBaseUrl(origin: string): string {
     }
 }
 
+function moveTo(name: string) {
+    if (router.currentRoute.name === name) {
+        return;
+    }
+
+    const rawLocation = {
+        name: name,
+    } as RawLocation;
+
+    router.push(rawLocation).catch((reason: any) => {
+        if (reason.name !== 'NavigationDuplicated') {
+            throw reason;
+        }
+    });
+}
+
+function clearSession() {
+    const localStore = Vue.prototype.$localStore as LocalStore;
+    localStore.clearSession();
+
+    const sessionStore = Vue.prototype.$store as Store<any>;
+    sessionStore.commit('user/logout');
+}
+
+function renewalAccessToken(access: string) {
+    const localStore = Vue.prototype.$localStore as LocalStore;
+    localStore.access = access;
+
+    const sessionStore = Vue.prototype.$store as Store<any>;
+    sessionStore.commit('user/renewalAccessToken', {
+        accessToken: access,
+    });
+}
+
 export interface ApiV2Options {
     origin?: string;
     timeout?: number;
-
-    accessTokenErrorCallback?: () => void;
-    refreshTokenErrorCallback?: () => void;
-    uninitializedServiceCallback?: () => void;
-    renewalAccessTokenCallback?: (access: string) => void;
 }
 
 export default class ApiV2 {
 
-    readonly accessTokenErrorCallback?: () => void;
-    readonly refreshTokenErrorCallback?: () => void;
-    readonly uninitializedServiceCallback?: () => void;
-    readonly renewalAccessTokenCallback?: (access: string) => void;
-
     originAddress: string;
-    api: AxiosInstance;
     session: SigninA;
+    api: AxiosInstance;
 
-    refreshTimeoutId?: number = undefined;
+    refreshing = false;
+    refreshSubscribers = [] as Array<(string) => any>;
 
     constructor(options?: ApiV2Options) {
-        this.accessTokenErrorCallback = options?.accessTokenErrorCallback;
-        this.refreshTokenErrorCallback = options?.refreshTokenErrorCallback;
-        this.uninitializedServiceCallback = options?.uninitializedServiceCallback;
-        this.renewalAccessTokenCallback = options?.renewalAccessTokenCallback;
-
         const origin = options?.origin || document.location.origin;
-        const timeout = options?.timeout || DEFAULT_TIMEOUT;
+        const timeout = options?.timeout || DEFAULT_TIMEOUT_MILLISECONDS;
 
         this.originAddress = origin;
+        this.session = createEmptySigninA();
         this.api = AxiosLib.create({
             baseURL: originToBaseUrl(origin),
             timeout: timeout,
@@ -182,18 +184,21 @@ export default class ApiV2 {
                 return VALIDATE_STATUS.includes(status);
             }
         });
-        this.session = createEmptySigninA();
+        this.api.interceptors.response.use(
+            (response) => {
+                return response;
+            },
+            (error) => {
+                return this.onResponseRejected(error);
+            },
+        );
     }
 
-    get baseURL(): string {
-        if (this.api.defaults.baseURL) {
-            return this.api.defaults.baseURL;
-        } else {
-            return '';
-        }
+    get baseURL() {
+        return this.api.defaults.baseURL;
     }
 
-    get origin(): string {
+    get origin() {
         return this.originAddress;
     }
 
@@ -202,90 +207,121 @@ export default class ApiV2 {
         this.api.defaults.baseURL = originToBaseUrl(origin);
     }
 
-    refreshToken(refresh: string) {
-        console.debug('Refreshing access token ...');
-        this.refreshTimeoutId = undefined;
+    async onResponseRejected(error: AxiosError) {
+        if (!error.response) {
+            return Promise.reject(new Error('Undefined response object'));
+        }
 
-        const config = {
-            headers: {
-                'Authorization': `Bearer ${refresh}`,
-            },
-        } as AxiosRequestConfig;
+        const status = error.response.status;
+        if (status === STATUS_CODE_REFRESH_TOKEN_ERROR) {
+            clearSession();
+            moveTo(rootNames.signin);
+            return Promise.reject(new Error('Expired refresh token'));
+        }
 
-        return this.api.post('/public/token/refresh', undefined, config)
-            .then((response: AxiosResponse) => {
-                const result = response.data as RefreshTokenA;
-                if (this.renewalAccessTokenCallback) {
-                    this.renewalAccessTokenCallback(result.access);
+        if (status === STATUS_CODE_UNINITIALIZED_SERVICE) {
+            clearSession();
+            moveTo(rootNames.init);
+            return Promise.reject('Uninitialized service');
+        }
+
+        if (status === STATUS_CODE_ACCESS_TOKEN_ERROR) {
+            const originalConfig = error.config;
+
+            if (this.refreshing) {
+                return new Promise(resolve => {
+                    this.refreshSubscribers.push(access => {
+                        originalConfig.headers.Authorization = `Bearer ${access}`;
+                        resolve(this.api(originalConfig));
+                    });
+                });
+            } else {
+                this.refreshing = true;
+
+                try {
+                    const refreshTokenConfig = {
+                        headers: {'Authorization': `Bearer ${this.session.refresh}`},
+                    } as AxiosRequestConfig;
+
+                    console.debug('Refreshing access token ...');
+                    const refreshTokenResult = await this.api.post<RefreshTokenA>(
+                        '/public/token/refresh', undefined, refreshTokenConfig
+                    );
+                    const access = refreshTokenResult.data.access;
+
+                    originalConfig.headers[HEADER_AUTHORIZATION] = `Bearer ${access}`;
+                    renewalAccessToken(access);
+                    this.setDefaultAccessToken(access);
+                    console.info('Access token renewal successful');
+
+                    this.refreshing = false;
+                    const subscribers = this.refreshSubscribers;
+                    this.refreshSubscribers = [];
+
+                    subscribers.map(cb => cb(access));
+
+                    // Retry the failed request.
+                    return this.api(originalConfig);
+                } catch (error) {
+                    this.refreshing = false;
+                    console.error(`Refresh token error: ${error}`);
+                    return Promise.reject(error);
                 }
-                this.setDefaultAccessToken(result.access, refresh);
-                console.info('Access token renewal successful');
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-
-    private cancelTokenRenewal() {
-        if (typeof this.refreshTimeoutId === 'undefined') {
-            return;
-        }
-
-        window.clearTimeout(this.refreshTimeoutId);
-        this.refreshTimeoutId = undefined;
-        console.debug(`Token renewal canceled`);
-    }
-
-    private reservationTokenRenewal(access: string, refresh: string) {
-        const encodedPayload = access.split('.')[1];
-        const payloadJsonText = atob(encodedPayload)
-        const parsed = JSON.parse(payloadJsonText.toString());
-        const hasExp = parsed.hasOwnProperty("exp");
-        const hasIat = parsed.hasOwnProperty("iat");
-
-        if (!hasExp || !hasIat) {
-            if (!hasExp) {
-                console.error('Missing `exp` in JWT payload');
             }
-            if (!hasIat) {
-                console.error('Missing `iat` in JWT payload');
-            }
-            return;
         }
 
-        // const nowUtc = moment();
-        // const expUtc = moment(parsed.exp * 1000);
-        // const iatUtc = moment(parsed.iat * 1000);
-        // console.debug('Access token expiration: ' + expUtc.toISOString());
-
-        const expMilliseconds = (parsed.exp * 1000 - LEEWAY_MILLISECONDS);
-        const timeout = expMilliseconds - Date.now();
-        if (typeof this.refreshTimeoutId !== 'undefined') {
-            window.clearTimeout(this.refreshTimeoutId);
-            this.refreshTimeoutId = undefined;
-        }
-
-        if (timeout >= 0) {
-            this.refreshTimeoutId = window.setTimeout(() => {
-                this.refreshToken(refresh).finally();
-            }, timeout);
-        } else {
-            this.refreshToken(refresh).finally();
-        }
-
-        const renewalTime = moment(Date.now() + timeout).toISOString();
-        console.debug(`Token renewal timeout: ${timeout}ms (${renewalTime})`);
+        return Promise.reject(error);
     }
+
+    // private reservationTokenRenewal(access: string, refresh: string) {
+    //     const encodedPayload = access.split('.')[1];
+    //     const payloadJsonText = atob(encodedPayload)
+    //     const parsed = JSON.parse(payloadJsonText.toString());
+    //     const hasExp = parsed.hasOwnProperty("exp");
+    //     const hasIat = parsed.hasOwnProperty("iat");
+    //
+    //     if (!hasExp || !hasIat) {
+    //         if (!hasExp) {
+    //             console.error('Missing `exp` in JWT payload');
+    //         }
+    //         if (!hasIat) {
+    //             console.error('Missing `iat` in JWT payload');
+    //         }
+    //         return;
+    //     }
+    //
+    //     // const nowUtc = moment();
+    //     // const expUtc = moment(parsed.exp * 1000);
+    //     // const iatUtc = moment(parsed.iat * 1000);
+    //     // console.debug('Access token expiration: ' + expUtc.toISOString());
+    //
+    //     const expMilliseconds = (parsed.exp * 1000 - LEEWAY_MILLISECONDS);
+    //     const timeout = expMilliseconds - Date.now();
+    //     if (typeof this.refreshTimeoutId !== 'undefined') {
+    //         window.clearTimeout(this.refreshTimeoutId);
+    //         this.refreshTimeoutId = undefined;
+    //     }
+    //
+    //     if (timeout >= 0) {
+    //         this.refreshTimeoutId = window.setTimeout(() => {
+    //             this.refreshToken(refresh).finally();
+    //         }, timeout);
+    //     } else {
+    //         this.refreshToken(refresh).finally();
+    //     }
+    //
+    //     const renewalTime = moment(Date.now() + timeout).toISOString();
+    //     console.debug(`Token renewal timeout: ${timeout}ms (${renewalTime})`);
+    // }
 
     clearDefaultSession() {
         this.session.access = '';
         this.session.refresh = '';
         this.session.user = createEmptyUserA();
         this.session.preference = createEmptyPreference();
-        if (this.api.defaults.headers.hasOwnProperty(HEADER_KEY_AUTHORIZATION)) {
-            delete this.api.defaults.headers[HEADER_KEY_AUTHORIZATION];
+        if (this.api.defaults.headers.hasOwnProperty(HEADER_AUTHORIZATION)) {
+            delete this.api.defaults.headers[HEADER_AUTHORIZATION];
         }
-        this.cancelTokenRenewal();
     }
 
     setDefaultSession(
@@ -298,63 +334,34 @@ export default class ApiV2 {
         this.session.refresh = refresh;
         this.session.user = user;
         this.session.preference = preference;
-        this.api.defaults.headers[HEADER_KEY_AUTHORIZATION] = `Bearer ${access}`;
-        this.reservationTokenRenewal(access, refresh);
+        this.api.defaults.headers[HEADER_AUTHORIZATION] = `Bearer ${access}`;
     }
 
-    setDefaultAccessToken(access: string, refresh: string) {
+    setDefaultAccessToken(access: string) {
         this.session.access = access;
-        this.api.defaults.headers[HEADER_KEY_AUTHORIZATION] = `Bearer ${access}`;
-        this.reservationTokenRenewal(access, refresh);
-    }
-
-    private commonErrorHandling<T>(res: AxiosResponse<T>) {
-        if (res.status === STATUS_CODE_ACCESS_TOKEN_ERROR) {
-            if (this.accessTokenErrorCallback) {
-                this.accessTokenErrorCallback();
-            }
-            this.clearDefaultSession();
-            throw new AccessTokenError();
-        } else if (res.status === STATUS_CODE_REFRESH_TOKEN_ERROR) {
-            if (this.refreshTokenErrorCallback) {
-                this.refreshTokenErrorCallback();
-            }
-            this.clearDefaultSession();
-            throw new RefreshTokenError();
-        } else if (res.status === STATUS_CODE_UNINITIALIZED_SERVICE) {
-            if (this.uninitializedServiceCallback) {
-                this.uninitializedServiceCallback();
-            }
-            throw new UninitializedServiceError();
-        }
-        console.assert(res.status === 200);
+        this.api.defaults.headers[HEADER_AUTHORIZATION] = `Bearer ${access}`;
     }
 
     get<T = any>(url: string, config?: AxiosRequestConfig) {
         return this.api.get<T>(url, config).then(res => {
-            this.commonErrorHandling(res);
             return res.data;
         });
     }
 
     post<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
         return this.api.post<T>(url, data, config).then(res => {
-            this.commonErrorHandling(res);
             return res.data;
         });
     }
 
     patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
         return this.api.patch<T>(url, data, config).then(res => {
-            this.commonErrorHandling(res);
             return res.data;
         });
     }
 
     delete(url: string, config?: AxiosRequestConfig) {
-        return this.api.delete(url, config).then(res => {
-            this.commonErrorHandling(res);
-        });
+        return this.api.delete(url, config);
     }
 
     encryptPassword(password: string): string {
@@ -400,12 +407,6 @@ export default class ApiV2 {
                 const result = response.data as SigninA;
                 const access = result.access;
                 const refresh = result.refresh;
-                if (!access) {
-                    throw new AccessTokenError('Empty access token error');
-                }
-                if (!refresh) {
-                    throw new RefreshTokenError('Empty refresh token error');
-                }
                 if (updateDefaultAuth) {
                     const user = result.user || createEmptyUserA();
                     const preference = result.preference || createEmptyPreference();

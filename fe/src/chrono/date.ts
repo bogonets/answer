@@ -1,10 +1,10 @@
-import moment from 'moment-timezone';
+import moment, {Moment, MomentInput} from 'moment-timezone';
 
-export function createMoment(inp?: moment.MomentInput) {
+export function createMoment(inp?: MomentInput) {
     return moment(inp).tz(moment.tz.guess());
 }
 
-export function momentDurationSeconds(x: moment.Moment, y: moment.Moment) {
+export function momentDurationSeconds(x: Moment, y: Moment) {
     return x.diff(y, 'seconds');
 }
 

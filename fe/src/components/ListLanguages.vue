@@ -8,13 +8,13 @@ ko:
 
 <template>
   <v-list :dense="dense">
-    <v-subheader v-if="hasHeader">{{ header }}</v-subheader>
-    <v-divider v-if="hasHeader"></v-divider>
+    <v-subheader v-if="!!header">{{ header }}</v-subheader>
+    <v-divider v-if="!!header"></v-divider>
 
     <v-list-item-group
         mandatory
         color="primary"
-        :value="currentLangIndex"
+        :value="index"
         @change="changeLang"
     >
       <v-list-item v-for="lang in languages" :key="lang">
@@ -56,13 +56,13 @@ export default class ListLanguages extends VueI18n {
   @Prop({type: Boolean, default: false})
   readonly initUserExtra!: boolean;
 
-  currentLangIndex = 0;
+  index = 0;
 
   created() {
-    this.currentLangIndex = LANGUAGES.indexOf(this.getInitLang());
+    this.index = LANGUAGES.indexOf(this.getInitLang());
   }
 
-  private getInitLang(): string {
+  getInitLang() {
     if (!!this.initLang) {
       return this.initLang;
     } else if (this.initVuetify) {
@@ -83,13 +83,9 @@ export default class ListLanguages extends VueI18n {
     }
   }
 
-  get hasHeader(): boolean {
-    return !!this.header;
-  }
-
   @Emit()
-  changeLang(index: number): string {
-    this.currentLangIndex = index;
+  changeLang(index: number) {
+    this.index = index;
     return LANGUAGES[index];
   }
 }
