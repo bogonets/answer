@@ -76,6 +76,12 @@ export const EVENT_CATEGORIES = [
     EVENT_CATEGORY_NAME_OCR,
 ];
 
+export const USER_CONFIG_REFRESH_INTERVAL = 1;
+export const USER_CONFIG_POPUP = false;
+export const USER_CONFIG_BEEP = false;
+export const USER_CONFIG_BEEP_INTERVAL = 2;
+export const USER_CONFIG_BEEP_DURATION = 10;
+
 export interface VmsImageA {
     content_type: string;
     encoding: string;

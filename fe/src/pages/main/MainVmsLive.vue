@@ -178,7 +178,12 @@ import {
   EVENT_CATEGORY_ID_COLOR,
   EVENT_CATEGORY_ID_DETECTION,
   EVENT_CATEGORY_ID_MATCHING,
-  EVENT_CATEGORY_ID_OCR
+  EVENT_CATEGORY_ID_OCR,
+  USER_CONFIG_REFRESH_INTERVAL,
+  USER_CONFIG_POPUP,
+  USER_CONFIG_BEEP,
+  USER_CONFIG_BEEP_INTERVAL,
+  USER_CONFIG_BEEP_DURATION,
 } from '@/packet/vms';
 import {iso8601ToLocalDateTime} from '@/chrono/iso8601';
 import moment from 'moment-timezone';
@@ -196,7 +201,6 @@ export default class MainVmsLive extends VueBase {
   readonly benched = 1;
   readonly itemHeight = 64 + 4 + 4; // content height + margin top + margin bottom;
   readonly eventTotalSize = 30;
-  readonly updateIntervalMilliseconds = 1000;
 
   readonly imageWidth = 64;
   readonly imageHeight = 64;
@@ -233,20 +237,23 @@ export default class MainVmsLive extends VueBase {
 
   intervalHandle = -1;
 
-  vmsPopup = false;
-  vmsBeep = false;
-  vmsBeepInterval = 2;
-  vmsBeepDuration = 10;
+  vmsRefreshInterval = USER_CONFIG_REFRESH_INTERVAL;
+  vmsPopup = USER_CONFIG_POPUP;
+  vmsBeep = USER_CONFIG_BEEP;
+  vmsBeepInterval = USER_CONFIG_BEEP_INTERVAL;
+  vmsBeepDuration = USER_CONFIG_BEEP_DURATION;
 
   beepPlaying = false;
   beepCounter = 0;
   beepIntervalHandle = -1;
 
   created() {
-    this.vmsPopup = this.$localStore.userExtra.vmsPopup || false;
-    this.vmsBeep = this.$localStore.userExtra.vmsBeep || false;
-    this.vmsBeepInterval = this.$localStore.userExtra.vmsBeepInterval || 2;
-    this.vmsBeepDuration = this.$localStore.userExtra.vmsBeepDuration || 10;
+    const extra = this.$localStore.userExtra;
+    this.vmsRefreshInterval = extra.vmsRefreshInterval || USER_CONFIG_REFRESH_INTERVAL;
+    this.vmsPopup = extra.vmsPopup || USER_CONFIG_POPUP;
+    this.vmsBeep = extra.vmsBeep || USER_CONFIG_BEEP;
+    this.vmsBeepInterval = extra.vmsBeepInterval || USER_CONFIG_BEEP_INTERVAL;
+    this.vmsBeepDuration = extra.vmsBeepDuration || USER_CONFIG_BEEP_DURATION;
     this.requestSetup();
   }
 
@@ -348,7 +355,7 @@ export default class MainVmsLive extends VueBase {
 
       this.intervalHandle = window.setInterval(() => {
         this.requestEvents();
-      }, this.updateIntervalMilliseconds);
+      }, this.vmsRefreshInterval * 1000);
     } catch (error) {
       this.toastRequestFailure(error);
     } finally {

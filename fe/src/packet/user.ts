@@ -6,6 +6,7 @@ export interface UserExtraA {
     timezone?: string;
 
     // VMS Plugin
+    vmsRefreshInterval?: number;
     vmsPopup?: boolean;
     vmsBeep?: boolean;
     vmsBeepInterval?: number;
