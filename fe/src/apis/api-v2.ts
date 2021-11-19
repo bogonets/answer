@@ -229,10 +229,14 @@ export default class ApiV2 {
             const originalConfig = error.config;
 
             if (this.refreshing) {
-                return new Promise(resolve => {
-                    this.refreshSubscribers.push(access => {
-                        originalConfig.headers.Authorization = `Bearer ${access}`;
-                        resolve(this.api(originalConfig));
+                return new Promise((resolve, reject) => {
+                    this.refreshSubscribers.push((access?: string) => {
+                        if (access) {
+                            originalConfig.headers.Authorization = `Bearer ${access}`;
+                            resolve(this.api(originalConfig));
+                        } else {
+                            reject(new Error('Refresh token error'));
+                        }
                     });
                 });
             } else {
@@ -257,14 +261,20 @@ export default class ApiV2 {
                     this.refreshing = false;
                     const subscribers = this.refreshSubscribers;
                     this.refreshSubscribers = [];
-
                     subscribers.map(cb => cb(access));
 
                     // Retry the failed request.
                     return this.api(originalConfig);
                 } catch (error) {
-                    this.refreshing = false;
                     console.error(`Refresh token error: ${error}`);
+
+                    this.refreshing = false;
+                    const subscribers = this.refreshSubscribers;
+                    this.refreshSubscribers = [];
+                    subscribers.map(cb => cb(undefined));
+
+                    clearSession();
+                    moveTo(rootNames.signin);
                     return Promise.reject(error);
                 }
             }
