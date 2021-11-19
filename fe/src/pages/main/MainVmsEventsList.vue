@@ -381,7 +381,7 @@ interface Snapshot {
     VmsSnapshot,
   }
 })
-export default class MainVmsEventsFilter extends VueBase {
+export default class MainVmsEventsList extends VueBase {
   readonly anyDeviceUid = ANY_DEVICE_UID;
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly captionClass = CAPTION_CLASS;

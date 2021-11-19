@@ -212,7 +212,7 @@ export default class MainVmsEventsCalendar extends VueBase {
     const date = dateToString(begin);
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    this.moveToMainVmsEventsFilter(group, project, date);
+    this.moveToMainVmsEventsList(group, project, date);
   }
 
   onClickFirst() {

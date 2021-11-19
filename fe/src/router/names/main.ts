@@ -15,7 +15,7 @@ export const mainNames = {
     mainVmsDevicesEdit: 'mainVmsDevicesEdit',
     mainVmsDevicesNew: 'mainVmsDevicesNew',
     mainVmsEventsCalendar: 'mainVmsEventsCalendar',
-    mainVmsEventsFilter: 'mainVmsEventsFilter',
+    mainVmsEventsList: 'mainVmsEventsList',
     mainVmsLayouts: 'mainVmsLayouts',
     mainVmsLayoutsEdit: 'mainVmsLayoutsEdit',
     mainVmsLayoutsNew: 'mainVmsLayoutsNew',

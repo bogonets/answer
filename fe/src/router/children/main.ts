@@ -13,7 +13,7 @@ import MainVmsDevicesDiscoveryEpr from '@/pages/main/MainVmsDevicesDiscoveryEpr.
 import MainVmsDevicesEdit from '@/pages/main/MainVmsDevicesEdit.vue';
 import MainVmsDevicesNew from '@/pages/main/MainVmsDevicesNew.vue';
 import MainVmsEventsCalendar from '@/pages/main/MainVmsEventsCalendar.vue';
-import MainVmsEventsFilter from '@/pages/main/MainVmsEventsFilter.vue';
+import MainVmsEventsList from '@/pages/main/MainVmsEventsList.vue';
 import MainVmsLayouts from '@/pages/main/MainVmsLayouts.vue';
 import MainVmsLayoutsEdit from '@/pages/main/MainVmsLayoutsEdit.vue';
 import MainVmsLayoutsNew from '@/pages/main/MainVmsLayoutsNew.vue';
@@ -95,9 +95,9 @@ export const mainChildren = [
         name: mainNames.mainVmsEventsCalendar,
     },
     {
-        path: ':group/:project/vms/events/filter',
-        component: MainVmsEventsFilter,
-        name: mainNames.mainVmsEventsFilter,
+        path: ':group/:project/vms/events/list',
+        component: MainVmsEventsList,
+        name: mainNames.mainVmsEventsList,
     },
     {
         path: ':group/:project/vms/layouts',

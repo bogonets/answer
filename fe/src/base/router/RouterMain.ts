@@ -91,13 +91,13 @@ export default class RouterMain extends mixins(RouterMainAirjoy) {
         this._moveToMainSubpage(mainNames.mainVmsEventsCalendar, group, project);
     }
 
-    moveToMainVmsEventsFilter(group?: string, project?: string, date?: string) {
+    moveToMainVmsEventsList(group?: string, project?: string, date?: string) {
         const params = {
             group: group || this.$route.params.group,
             project: project || this.$route.params.project,
             date: date || this.$route.params.date,
         };
-        this.moveTo(mainNames.mainVmsEventsFilter, params);
+        this.moveTo(mainNames.mainVmsEventsList, params);
     }
 
     moveToMainVmsLayouts(group?: string, project?: string) {

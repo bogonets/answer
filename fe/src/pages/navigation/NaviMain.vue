@@ -10,8 +10,8 @@ en:
     live: "Live"
     devices: "Devices"
     layouts: "Layouts"
-    evnets_calendar: "Events Calendar"
-    evnets_filter: "Events Filter"
+    events_calendar: "Events Calendar"
+    events_list: "Events List"
     user_configs: "User Configs"
   members: "Members"
   settings: "Settings"
@@ -27,8 +27,8 @@ ko:
     live: "실시간"
     devices: "장치 목록"
     layouts: "레이아웃"
-    evnets_calendar: "이벤트 달력"
-    evnets_filter: "이벤트 필터"
+    events_calendar: "이벤트 달력"
+    events_list: "이벤트 목록"
     user_configs: "개인 설정"
   members: "회원 관리"
   settings: "프로젝트 설정"
@@ -156,16 +156,16 @@ ko:
               <v-icon>mdi-calendar</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
-              {{ $t('vms.evnets_calendar') }}
+              {{ $t('vms.events_calendar') }}
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasManagerRead" link @click.stop="vmsEventsFilter">
+          <v-list-item v-show="hasManagerRead" link @click.stop="vmsEventsList">
             <v-list-item-icon>
-              <v-icon>mdi-filter</v-icon>
+              <v-icon>mdi-view-list</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
-              {{ $t('vms.evnets_filter') }}
+              {{ $t('vms.events_list') }}
             </v-list-item-title>
           </v-list-item>
 
@@ -313,7 +313,7 @@ export default class NaviMain extends VueBase {
       this.index = 8;
     } else if (name === mainNames.mainVmsEventsCalendar) {
       this.index = 9;
-    } else if (name === mainNames.mainVmsEventsFilter) {
+    } else if (name === mainNames.mainVmsEventsList) {
       this.index = 10;
     } else if (name === mainNames.mainVmsUserConfigs) {
       this.index = 11;
@@ -429,10 +429,10 @@ export default class NaviMain extends VueBase {
     }
   }
 
-  @Emit('click:vms-events-filter')
-  vmsEventsFilter() {
+  @Emit('click:vms-events-list')
+  vmsEventsList() {
     if (!this.noDefault) {
-      this.moveToMainVmsEventsFilter();
+      this.moveToMainVmsEventsList();
     }
   }
 
