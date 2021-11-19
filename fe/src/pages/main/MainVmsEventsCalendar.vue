@@ -5,7 +5,7 @@ en:
   calendar: "Calendar"
   first_event_day: "First Event Day"
   today: "Today"
-  month: "{0} Month"
+  month: "{1}Month {0}Year"
   event: "Event"
   empty: "There are no registered events."
 
@@ -15,7 +15,7 @@ ko:
   calendar: "Calendar"
   first_event_day: "처음"
   today: "오늘"
-  month: "{0} 월"
+  month: "{0}년 {1}월"
   event: "이벤트"
   empty: "등록된 이벤트가 없습니다."
 </i18n>
@@ -59,7 +59,7 @@ ko:
       </v-btn>
 
       <span class="text--primary text-h5 font-weight-bold">
-        {{ $t('month', [focusMonth]) }}
+        {{ $t('month', [focusYear, focusMonth]) }}
       </span>
 
       <v-btn
@@ -165,6 +165,10 @@ export default class MainVmsEventsCalendar extends VueBase {
           this.loading = false;
           this.toastRequestFailure(error);
         });
+  }
+
+  get focusYear() {
+    return this.focusDay.split("-")[0];
   }
 
   get focusMonth() {

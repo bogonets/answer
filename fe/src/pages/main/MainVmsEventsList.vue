@@ -1,7 +1,7 @@
 <i18n lang="yaml">
 en:
   events: "Events"
-  filter: "Filter"
+  list: "List"
   labels:
     device_uid: "Device UID"
     category: "Event Category"
@@ -33,7 +33,7 @@ en:
 
 ko:
   events: "Events"
-  filter: "Filter"
+  list: "List"
   labels:
     device_uid: "장치 UID"
     category: "이벤트 종류"
@@ -413,7 +413,7 @@ export default class MainVmsEventsList extends VueBase {
       disabled: true,
     },
     {
-      text: this.$t('filter'),
+      text: this.$t('list'),
       disabled: true,
     },
   ];
