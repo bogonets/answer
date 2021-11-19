@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, Any, get_origin
+from typing import Optional, Union, List, Any, get_origin, get_args
 from inspect import signature, isclass, iscoroutinefunction
 from functools import wraps
 from http import HTTPStatus
@@ -73,6 +73,12 @@ def _is_serializable_class(obj: type) -> bool:
     return False
 
 
+def is_subclass_safe(obj, cls) -> bool:
+    if not isinstance(obj, type):
+        return False
+    return issubclass(obj, cls)
+
+
 async def _parameter_matcher_main(
     func,
     obj: Any,
@@ -111,6 +117,7 @@ async def _parameter_matcher_main(
     for key in argument_keys:
         param = sig.parameters[key]
         type_origin = get_origin(param.annotation)
+        type_args = get_args(param.annotation)
         if type_origin is None:
             if isinstance(param.annotation, type):
                 type_origin = param.annotation
@@ -137,10 +144,19 @@ async def _parameter_matcher_main(
                 raise NotImplementedError(msg)
 
         assert type_origin is not None
-        assert isinstance(type_origin, type)
+        assert isinstance(type_origin, type) or type_origin is Union
+
+        optional_parameter: Optional[type]
+        if type_origin is Union and len(type_args) == 2 and type(None) in type_args:
+            if type_args.index(type(None)) == 0:
+                optional_parameter = type_args[1]
+            else:
+                optional_parameter = type_args[0]
+        else:
+            optional_parameter = None
 
         # BasicAuth
-        if issubclass(type_origin, BasicAuth):
+        if is_subclass_safe(type_origin, BasicAuth):
             if AUTHORIZATION not in request.headers:
                 raise HTTPBadRequest(reason=f"Not exists {AUTHORIZATION} header")
             try:
@@ -152,7 +168,7 @@ async def _parameter_matcher_main(
             continue
 
         # BearerAuth
-        if issubclass(type_origin, BearerAuth):
+        if is_subclass_safe(type_origin, BearerAuth):
             if AUTHORIZATION not in request.headers:
                 raise HTTPBadRequest(reason=f"Not exists {AUTHORIZATION} header")
             try:
@@ -164,12 +180,12 @@ async def _parameter_matcher_main(
             continue
 
         # Request
-        if issubclass(type_origin, Request):
+        if is_subclass_safe(type_origin, Request):
             update_arguments.append(request)
             continue
 
         # HttpRequest
-        if issubclass(type_origin, HttpRequest):
+        if is_subclass_safe(type_origin, HttpRequest):
             update_arguments.append(
                 HttpRequest(
                     method=request.method,
@@ -181,21 +197,25 @@ async def _parameter_matcher_main(
             continue
 
         # Session
-        if issubclass(type_origin, Session):
+        if is_subclass_safe(type_origin, Session):
             if c.session not in request:
                 raise HTTPUnauthorized(reason=f"Not exists {c.session}")
             update_arguments.append(request[c.session])
             continue
 
         # SessionEx
-        if issubclass(type_origin, SessionEx):
+        if is_subclass_safe(type_origin, SessionEx):
             if c.session not in request:
                 raise HTTPUnauthorized(reason=f"Not exists {c.session}")
             update_arguments.append(request[c.session])
             continue
 
         # Path
-        if match_count >= 1 and key in request.match_info:
+        if (
+            is_subclass_safe(type_origin, str)
+            and match_count >= 1
+            and key in request.match_info
+        ):
             path_value = request.match_info[key]
             if key == p.group:
                 group_name = path_value
@@ -203,6 +223,19 @@ async def _parameter_matcher_main(
                 project_name = path_value
             update_arguments.append(path_value)
             match_count -= 1
+            continue
+
+        # Query
+        if optional_parameter is not None:
+            if key in request.rel_url.query:
+                query_value = request.rel_url.query[key]
+                try:
+                    update_arguments.append(optional_parameter(query_value))
+                except TypeError:
+                    logger.debug(f"Type casting error for query parameter: {key}")
+                    update_arguments.append(None)
+            else:
+                update_arguments.append(None)
             continue
 
         # Body
@@ -219,7 +252,7 @@ async def _parameter_matcher_main(
             if assign_body:
                 assert body is not None
                 if very_verbose_debugging:
-                    logger.debug(f"BODY: {str(body)}")
+                    logger.debug(f"Request BODY: {str(body)}")
                 update_arguments.append(body)
                 continue
 
@@ -276,6 +309,7 @@ async def parameter_matcher_main(
     func,
     obj: Any,
     request: Request,
+    *,
     group_policies: Optional[List[Policy]] = None,
     project_policies: Optional[List[Policy]] = None,
     has_features: Optional[List[str]] = None,
@@ -346,10 +380,10 @@ def parameter_matcher(
                 func,
                 obj,
                 request,
-                group_policies,
-                project_policies,
-                has_features,
-                has_admin,
+                group_policies=group_policies,
+                project_policies=project_policies,
+                has_features=has_features,
+                has_admin=has_admin,
             )
 
         return __wrap

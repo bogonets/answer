@@ -5,6 +5,7 @@ from aiohttp.web_exceptions import HTTPBadRequest, HTTPForbidden
 from recc.access_control.policy import Policy, test_policies
 from recc.core.context import Context
 from recc.session.session_ex import SessionEx
+from recc.string.convert import object_to_strings
 from recc.variables.plugin import (
     ANNOTATION_NAME_GROUP_PERMISSIONS,
     ANNOTATION_NAME_PROJECT_PERMISSIONS,
@@ -28,24 +29,6 @@ def _object_to_policies(obj: Any) -> List[Policy]:
         return result
     else:
         raise RuntimeError(f"Unsupported Policy type: {type(obj).__name__}")
-
-
-def _object_to_strings(obj: Any) -> List[str]:
-    if isinstance(obj, str):
-        return [obj]
-    elif isinstance(obj, set) or isinstance(obj, list):
-        result = list()
-        for oo in obj:
-            for o in _object_to_strings(oo):
-                result.append(o)
-        return result
-    elif isinstance(obj, dict):
-        result = list()
-        for key, value in obj.items():
-            result.append(f"{key}={value}")
-        return result
-    else:
-        return [str(obj)]
 
 
 class AccessControlList:
@@ -88,7 +71,7 @@ class AccessControlList:
                 self.features.append(feature)
         annotation_feature = getattr(func, ANNOTATION_NAME_FEATURE_PERMISSIONS, None)
         if annotation_feature:
-            for feature in _object_to_strings(annotation_feature):
+            for feature in object_to_strings(annotation_feature):
                 self.features.append(feature)
 
         annotation_admin = getattr(func, ANNOTATION_NAME_ADMIN_PERMISSION, False)
