@@ -372,6 +372,7 @@ export interface RtcOfferQ {
 }
 
 export interface RtcAnswerA {
+    peer_id: number;
     type: string;
     sdp: string;
 }

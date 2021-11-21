@@ -1041,6 +1041,17 @@ export default class ApiV2 {
         return this.post<RtcAnswerA>(url, body);
     }
 
+    deleteVmsDeviceRtcJsep(
+        group: string,
+        project: string,
+        device: string,
+        peer: string,
+    ) {
+        const device_prefix = `/plugins/vms/${group}/${project}/devices/${device}`;
+        const url = `${device_prefix}/rtc/jsep/${peer}`;
+        return this.delete(url);
+    }
+
     // -----------------------------
     // Plugins/VMS/Devices/Debugging
     // -----------------------------

@@ -39,6 +39,8 @@ ko:
         :height="height"
         :min-width="minWidth"
         :min-height="minHeight"
+        :max-width="maxWidth"
+        :max-height="maxHeight"
     >
       <v-system-bar
           class="status-bar"
@@ -100,22 +102,19 @@ ko:
             @resize="onResize"
         ></video>
         <canvas
+            v-show="online"
             class="canvas-snap"
             ref="canvas-snap"
             :width="videoWidth"
             :height="videoHeight"
         ></canvas>
 
-        <v-img
-            v-if="!online"
+        <img
+            v-show="!online"
             class="brand-logo"
             src="@/assets/logo/answer-logo-notext.svg"
-            min-width="80px"
-            max-width="200px"
-            min-height="80px"
-            max-height="200px"
-            contain
-        ></v-img>
+            alt="ANSWER"
+        />
       </div>
 
       <div
@@ -139,7 +138,6 @@ ko:
 import {Component, Prop, Ref, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {
-  VmsImageA,
   VmsDeviceA,
   RtcOfferQ,
   VmsChannelMeta,
@@ -230,16 +228,22 @@ export default class MediaPlayer extends VueBase {
   readonly device!: number;
 
   @Prop({type: String})
-  readonly minWidth!: number;
+  readonly width!: string;
 
   @Prop({type: String})
-  readonly minHeight!: number;
+  readonly height!: string;
 
   @Prop({type: String})
-  readonly width!: number;
+  readonly minWidth!: string;
 
   @Prop({type: String})
-  readonly height!: number;
+  readonly minHeight!: string;
+
+  @Prop({type: String})
+  readonly maxWidth!: string;
+
+  @Prop({type: String})
+  readonly maxHeight!: string;
 
   @Prop({type: Object, default: createEmptyVmsDeviceA})
   readonly value!: VmsDeviceA;
@@ -276,6 +280,7 @@ export default class MediaPlayer extends VueBase {
   audioTransceiverInit = DEFAULT_AUDIO_TRANSCEIVER_INIT;
   dataChannelInit = DEFAULT_DATA_CHANNEL_INIT;
 
+  peer_id?: number = undefined;
   pc?: RTCPeerConnection = undefined;
   channel?: RTCDataChannel = undefined;
 
@@ -300,18 +305,27 @@ export default class MediaPlayer extends VueBase {
   }
 
   beforeDestroy() {
+    if (typeof this.peer_id !== 'undefined') {
+      const group = this.group;
+      const project = this.project;
+      const device = this.device.toString();
+      const peer = this.peer_id.toString();
+      this.$api2.deleteVmsDeviceRtcJsep(group, project, device, peer)
+          .then(() => {
+            // EMPTY.
+          })
+          .catch(error => {
+            this.toastRequestFailure(error);
+          });
+    }
+
     if (this.channel) {
       this.channel.close();
       this.channel = undefined;
-    } else {
-      console.assert(typeof this.channel === 'undefined');
     }
-
     if (this.pc) {
       this.pc.close();
       this.pc = undefined;
-    } else {
-      console.assert(typeof this.pc === 'undefined');
     }
   }
 
@@ -390,6 +404,7 @@ export default class MediaPlayer extends VueBase {
       sdp: this.pc.localDescription?.sdp || '',
     } as RtcOfferQ;
     const answer = await this.$api2.postVmsDeviceRtcJsep(group, project, device, body);
+    this.peer_id = answer.peer_id;
     const answerInit = {
       type: answer.type,
       sdp: answer.sdp,
@@ -1042,7 +1057,12 @@ export default class MediaPlayer extends VueBase {
 
     .brand-logo {
       @include common-media;
-      z-index: 20;
+
+      min-width: 16px;
+      min-height: 16px;
+
+      max-width: 256px;
+      max-height: 256px;
     }
 
     .canvas-snap {
