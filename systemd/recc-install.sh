@@ -133,10 +133,10 @@ function get_build_thread_count
 
 function get_datetime
 {
-    local prefix_name=$1
-    local suffix_name=$2
+    local prefix=$1
+    local suffix=$2
     local datetime=$(date '+%Y%m%d_%H%M%S')
-    echo "$prefix_name$datetime$suffix_name"
+    echo "$prefix$datetime$suffix"
 }
 
 function get_file_checksum
@@ -388,7 +388,7 @@ function install_user_and_group
     else
         exists_program_or_exit useradd
         print_verbose "Create '$RECC_USER' user"
-        useradd -l -M -U -d "$RECC_HOME_DIR" -s /bin/bash "$RECC_USER"
+        useradd -l -M -N -d "$RECC_HOME_DIR" -s /bin/bash "$RECC_USER"
     fi
 
     local exists_group=$(cat /etc/group | awk -F: '{print $1}' | grep recc)
