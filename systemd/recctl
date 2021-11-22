@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 SERVICE_NAME=recc.service
+NAMESPACE=recc
 SERVICE_OPT=
 
 USAGE_MESSAGE="
@@ -85,7 +86,7 @@ restart)
     systemctl $SERVICE_OPT restart $SERVICE_NAME "$@"
     ;;
 log)
-    journalctl $SERVICE_OPT -u $SERVICE_NAME "$@"
+    journalctl $SERVICE_OPT --namespace=$NAMESPACE -u $SERVICE_NAME "$@"
     ;;
 *)
     echo "Unrecognized argument: $1"
