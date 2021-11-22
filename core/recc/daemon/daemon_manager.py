@@ -128,25 +128,23 @@ class DaemonManager(Dict[str, DaemonRunner]):
         connection_timeout: Optional[float] = None,
         query_timeout: Optional[float] = None,
     ) -> None:
-        real_connection_timeout = connection_timeout if connection_timeout else 4.0
-        real_query_timeout = query_timeout if query_timeout else 8.0
+        wait_timeout = connection_timeout if connection_timeout else 120.0
+        client_timeout = query_timeout if query_timeout else 120.0
 
         runner_count = self.__len__()
         for index, runner in enumerate(self.values()):
             address = runner.address_for_client
-            client: Optional[DaemonClient] = DaemonClient(
-                address, timeout=real_query_timeout
-            )
+            client: Optional[DaemonClient] = DaemonClient(address, client_timeout)
 
             logger.debug(
                 f"[{index}/{runner_count}] "
                 f"Connecting to daemon server ... {address} "
-                f"(timeout: {real_connection_timeout}s)"
+                f"(Wait timeout: {wait_timeout}s)"
             )
 
             try:
                 assert client is not None
-                await wait_for(client.open(), timeout=real_connection_timeout)
+                await wait_for(client.open(), timeout=wait_timeout)
             except AsyncioTimeoutError:
                 logger.error("Daemon server connection timed out.")
                 client = None
