@@ -5,6 +5,17 @@ if [[ $(id -u) -ne 0 ]]; then
     exit 1
 fi
 
+USAGE="
+Usage: $0 [options]
+
+Available options are:
+  -h, --help       Print this message.
+  -u, --uninstall  Remove all installed files.
+  -c, --cleanup    Remove all cache files after installation is complete.
+  -v, --verbose    Be more verbose/talkative during the operation.
+  --               Stop handling options.
+"
+
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)
 SOURCE_ROOT_DIR=$(cd "$SCRIPT_DIR/.."; pwd)
 SOURCE_CORE_DIR=$(cd "$SOURCE_ROOT_DIR/core"; pwd)
@@ -479,14 +490,7 @@ function install_recc
 
 function print_usage
 {
-    print_message "Usage: $0 [options]"
-    print_message " "
-    print_message "Available options are:"
-    print_message "  -h, --help       Print this message."
-    print_message "  -u, --uninstall  Remove all installed files."
-    print_message "  -c, --cleanup    Remove all cache files after installation is complete."
-    print_message "  -v, --verbose    Be more verbose/talkative during the operation."
-    print_message "  --               Stop handling options."
+    echo "$USAGE"
 }
 
 while [[ ! -z $1 ]]; do
