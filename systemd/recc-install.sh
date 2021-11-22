@@ -523,7 +523,7 @@ while [[ ! -z $1 ]]; do
 done
 
 if [[ $UNINSTALL_FLAG -eq 1 ]]; then
-    read -p "\033[31mRemove all installed files? (y/n)\033[0m" USER_ANSWER
+    read -p "Remove all installed files? (y/n)" USER_ANSWER
     case "$USER_ANSWER" in
     y|Y)
       rm -rf "$RECC_ROOT_DIR"
