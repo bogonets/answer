@@ -61,6 +61,8 @@ ko:
         :value="selected"
         @input="onInputSelected"
         show-select
+        sort-desc
+        sort-by="name"
         item-key="device_uid"
         :items-per-page="itemsPerPage"
         :headers="headers"
