@@ -1,0 +1,15 @@
+Package: recc
+Version: 2.0.0-dev8
+Maintainer: zer0 <osom8979@gmail.com>
+Description: The Answer, No-Code Development Platform.
+Homepage: https://answerdoc.bogonets.com
+Architecture: amd64
+Section: free
+Priority: optional
+Depends: git, make, pkg-config, build-essential, llvm, gdb,
+    lcov, wget, curl, lzma, lzma-dev, uuid-dev, xz-utils, tk-dev,
+    zlib1g-dev, libbz2-dev, liblzma-dev,
+    libssl-dev, libreadline-dev, libncursesw5-dev,
+    libxml2-dev, libxmlsec1-dev, libffi-dev,
+    libsqlite3-dev, libgdbm-dev, libgdbm-compat-dev
+

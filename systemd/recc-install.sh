@@ -542,7 +542,7 @@ check_dir_or_create "$RECC_PYTHON_DIR"
 
 print_message "Install debian dependencies ..."
 test_and_install_debian_dependencies \
-    make pkg-config build-essential llvm gdb \
+    git make pkg-config build-essential llvm gdb \
     lcov wget curl lzma lzma-dev uuid-dev xz-utils tk-dev \
     zlib1g-dev libbz2-dev liblzma-dev \
     libssl-dev libreadline-dev libncursesw5-dev \
