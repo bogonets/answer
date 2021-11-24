@@ -10,7 +10,7 @@ from aiohttp.web_exceptions import (
 )
 from recc.core.context import Context
 from recc.http import http_urls as u
-from recc.http.http_decorator import parameter_matcher
+from recc.http.http_parameter import parameter_matcher
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.environment import EnvironmentA
 from recc.packet.info import InfoA, CreateInfoQ, UpdateInfoQ

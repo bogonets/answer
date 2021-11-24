@@ -6,7 +6,7 @@ from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_exceptions import HTTPBadRequest, HTTPNotFound
 from recc.core.context import Context
 from recc.session.session_ex import SessionEx
-from recc.http.http_decorator import parameter_matcher
+from recc.http.http_parameter import parameter_matcher
 from recc.access_control.policy import Policy
 from recc.http import http_urls as u
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ

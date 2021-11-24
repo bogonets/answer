@@ -11,7 +11,7 @@ from aiohttp.web_exceptions import (
 from recc.core.context import Context
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.header.bearer_auth import BearerAuth
-from recc.http.http_decorator import parameter_matcher
+from recc.http.http_parameter import parameter_matcher
 from recc.util.version import version_text
 from recc.packet.user import UserA, SigninA, SignupQ, RefreshTokenA
 from recc.packet.preference import PreferenceA

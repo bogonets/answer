@@ -15,7 +15,7 @@ from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 from aiohttp.web_exceptions import HTTPNotFound
 from recc.core.context import Context
-from recc.http.http_decorator import parameter_matcher, parameter_matcher_main
+from recc.http.http_parameter import parameter_matcher, parameter_matcher_main
 from recc.http import http_urls as u
 
 
