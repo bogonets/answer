@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+from unittest import main, TestCase
 from recc.http.http_client import normalize_url_path
 
 
-class HttpClientTestCase(unittest.TestCase):
+class HttpClientTestCase(TestCase):
     def test_normalize_url_path(self):
         self.assertEqual("/", normalize_url_path(""))
         self.assertEqual("/", normalize_url_path("/"))
@@ -15,4 +15,4 @@ class HttpClientTestCase(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()
