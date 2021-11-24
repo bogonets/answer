@@ -67,6 +67,7 @@ lamdas
 layname
 levelname
 libav
+llong
 loopback
 mems
 metatags
@@ -117,6 +118,8 @@ testdb
 tzdata
 uids
 uint
+ulong
+ullong
 unicast
 unprocessable
 username
