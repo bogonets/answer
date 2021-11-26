@@ -22,14 +22,7 @@ class PostgresqlTestCase(AsyncTestCase):
         self.pw = self.config.database_pw
         self.name = "recc.test"
 
-        self.db = PgDb(
-            db_host=self.host,
-            db_port=self.port,
-            db_user=self.user,
-            db_pw=self.pw,
-            db_name=self.name,
-        )
-
+        self.db = PgDb(self.host, self.port, self.user, self.pw, self.name)
         await self.db.open()
         self.assertTrue(self.db.is_open())
         await self.db.drop_tables()

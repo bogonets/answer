@@ -49,20 +49,20 @@ class PgDb(
 
     def __init__(
         self,
-        db_host: Optional[str] = None,
-        db_port: Optional[int] = None,
-        db_user: Optional[str] = None,
-        db_pw: Optional[str] = None,
-        db_name: Optional[str] = None,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
+        user: Optional[str] = None,
+        pw: Optional[str] = None,
+        name: Optional[str] = None,
         **kwargs,
     ):
         self._pool = None
 
-        self._db_host = db_host
-        self._db_port = db_port
-        self._db_user = db_user
-        self._db_pw = db_pw
-        self._db_name = db_name
+        self._host = host
+        self._port = port
+        self._user = user
+        self._pw = pw
+        self._name = name
 
         self._timeout = float(kwargs.get(EX_KEY_TIMEOUT, DEFAULT_TIMEOUT_SECONDS))
 

@@ -2,8 +2,8 @@
 
 from typing import Optional, Any, Type, Iterable
 from asyncpg import Record
-from asyncpg.connection import Connection
-from asyncpg.pool import Pool, PoolAcquireContext
+from asyncpg.pool import Pool
+from recc.database.postgresql.pg_connection import PgConnection
 
 
 class PgBase:
@@ -13,11 +13,11 @@ class PgBase:
 
     _pool: Optional[Pool]
 
-    _db_host: Optional[str]
-    _db_port: Optional[int]
-    _db_user: Optional[str]
-    _db_pw: Optional[str]
-    _db_name: Optional[str]
+    _host: Optional[str]
+    _port: Optional[int]
+    _user: Optional[str]
+    _pw: Optional[str]
+    _name: Optional[str]
 
     _timeout: float
 
@@ -28,30 +28,9 @@ class PgBase:
     _maintainer_permission_uid: Optional[int]
     _owner_permission_uid: Optional[int]
 
-    class _Connection:
-        """
-        Implementation for Type Hinting.
-        """
-
-        __slots__ = ("_pool", "_conn", "_timeout")
-
-        def __init__(self, pool: Pool, timeout: Optional[float] = None):
-            self._pool = pool
-            self._conn: Optional[PoolAcquireContext] = None
-            self._timeout = timeout
-            assert self._pool is not None
-
-        async def __aenter__(self) -> Connection:
-            conn = await self._pool.acquire(timeout=self._timeout)
-            self._conn = conn
-            return self._conn
-
-        async def __aexit__(self, exc_type, exc_value, tb):
-            await self._pool.release(self._conn)
-
-    def conn(self, timeout: Optional[float] = None) -> _Connection:
+    def conn(self, timeout: Optional[float] = None) -> PgConnection:
         assert self._pool is not None
-        return self._Connection(self._pool, timeout=timeout)
+        return PgConnection(self._pool, timeout=timeout)
 
     async def execute(
         self,

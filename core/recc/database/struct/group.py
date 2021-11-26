@@ -16,6 +16,3 @@ class Group:
     extra: Optional[Any] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-
-    def remove_sensitive(self):
-        self.uid = None

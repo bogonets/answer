@@ -33,10 +33,13 @@ class ContextTestCase(AsyncTestCase):
         self.task_slug = "test_task"
 
         self.project_uid = await self.context.database.insert_project(
-            group_uid, self.project_slug
+            group_uid,
+            self.project_slug,
         )
         self.client = await self.context.run_task(
-            self.group_slug, self.project_slug, self.task_slug,
+            self.group_slug,
+            self.project_slug,
+            self.task_slug,
         )
 
     async def setUp(self):

@@ -396,7 +396,7 @@ ko:
         <div v-ripple class="card" @click="onClickService">
           <v-icon large>mdi-tools</v-icon>
           <span class="text--secondary text-subtitle-2 text-no-wrap">
-            {{ $t('categories.service', [item.as_count]) }}
+            {{ $t('categories.service', [item.service_count]) }}
           </span>
         </div>
       </v-col>

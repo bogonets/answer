@@ -273,10 +273,11 @@ export interface AirjoySensorA {
 export interface AirjoyDeviceA {
     name: string;
     description: string;
-    online: boolean;
 
-    as_count: number;
-    as_last: string;
+    service_count: number;
+    service_last_time?: string;
+
+    online: boolean;
 
     time: string;
     fw_ver: number;
@@ -326,14 +327,6 @@ export interface AirjoyChartA {
     max: number;
 }
 
-export interface AirjoyChartQ {
-    begin: string;
-    end: string;
-    category: string;
-    period?: string;
-    origin?: string;
-}
-
 export interface AirjoyServiceA {
     airjoy_uid: number;
     airjoy_name: string;
@@ -365,8 +358,8 @@ export function createEmptyAirjoyDeviceA() {
         description: '',
         online: false,
 
-        as_count: 0,
-        as_last: '',
+        service_count: 0,
+        service_last_time: '',
 
         time: '',
         fw_ver: 0,
@@ -431,17 +424,17 @@ export function createDemoAirjoyDevices() {
     items[3].online = false;
     items[4].online = false;
 
-    items[0].as_count = 0;
-    items[1].as_count = 0;
-    items[2].as_count = 10;
-    items[3].as_count = 20;
-    items[4].as_count = 30;
+    items[0].service_count = 0;
+    items[1].service_count = 0;
+    items[2].service_count = 10;
+    items[3].service_count = 20;
+    items[4].service_count = 30;
 
-    items[0].as_last = '';
-    items[1].as_last = '';
-    items[2].as_last = '2020-01-01';
-    items[3].as_last = '2020-01-02';
-    items[4].as_last = '2021-09-10T21:10';
+    items[0].service_last_time = '';
+    items[1].service_last_time = '';
+    items[2].service_last_time = '2020-01-01';
+    items[3].service_last_time = '2020-01-02';
+    items[4].service_last_time = '2021-09-10T21:10';
 
     items[0].fw_ver = 10;
     items[1].fw_ver = 20;

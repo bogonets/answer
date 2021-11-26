@@ -252,15 +252,15 @@ ko:
             <span>{{ $t('tooltip.voc', [item.voc]) }}</span>
           </v-tooltip>
 
-          <v-tooltip v-if="item.as_count" bottom>
+          <v-tooltip v-if="item.service_count" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-chip class="mr-1" @click.stop="clickService" v-bind="attrs" v-on="on">
                 <v-icon left>mdi-wrench</v-icon>
-                {{ item.as_count }}
+                {{ item.service_count }}
               </v-chip>
             </template>
-            <span v-if="item.as_last">
-              {{ $t('tooltip.as_last', [item.as_last]) }}
+            <span v-if="item.service_last_time">
+              {{ $t('tooltip.as_last', [item.service_last_time]) }}
             </span>
           </v-tooltip>
         </div>

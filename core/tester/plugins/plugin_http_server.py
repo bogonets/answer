@@ -25,9 +25,7 @@ class Server:
         self.host = str(kwargs.get("host", DEFAULT_HOST))
         self.port = int(kwargs.get("port", DEFAULT_PORT))
         self.app = Application()
-        self.app.add_routes([
-            web.get("/tester", self.on_get_tester),
-        ])
+        self.app.add_routes([web.get("/tester", self.on_get_tester)])
         self.app.on_startup.append(self.on_startup)
         self.ready = Event()
         self.body = ""

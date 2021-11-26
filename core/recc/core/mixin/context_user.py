@@ -175,19 +175,11 @@ class ContextUser(ContextBase):
     async def get_access_session(self, token: str) -> Session:
         return self.session_factory.decode_access(token)
 
-    async def get_user(self, uid: int, remove_sensitive=True) -> User:
-        result = await self.database.select_user_by_uid(uid)
-        if remove_sensitive:
-            result.remove_sensitive()
-        return result
+    async def get_user(self, uid: int) -> User:
+        return await self.database.select_user_by_uid(uid)
 
-    async def get_users(self, remove_sensitive=True) -> List[User]:
-        result = list()
-        for user in await self.database.select_users():
-            if remove_sensitive:
-                user.remove_sensitive()
-            result.append(user)
-        return result
+    async def get_users(self) -> List[User]:
+        return await self.database.select_users()
 
     async def get_usernames(self) -> List[str]:
         return await self.database.select_user_username()

@@ -26,7 +26,3 @@ class Widget:
     z_order: Optional[int] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-
-    def remove_sensitive(self):
-        self.uid = None
-        self.layout_uid = None

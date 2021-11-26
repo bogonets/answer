@@ -17,7 +17,3 @@ class Project:
     extra: Optional[Any] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-
-    def remove_sensitive(self) -> None:
-        self.uid = None
-        self.group_uid = None

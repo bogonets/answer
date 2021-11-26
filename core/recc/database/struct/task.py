@@ -23,13 +23,3 @@ class Task:
     publish_ports: Optional[Dict[str, Any]] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-
-    def remove_sensitive(self):
-        self.uid = None
-        self.project_uid = None
-        self.rpc_address = None
-        self.auth_algorithm = None
-        self.private_key = None
-        self.public_key = None
-        self.numa_memory_nodes = None
-        self.publish_ports = None

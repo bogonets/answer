@@ -2,7 +2,6 @@
 
 
 def singleton(base):
-
     class _Class(base):
 
         __instance = None

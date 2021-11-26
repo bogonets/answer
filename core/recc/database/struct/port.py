@@ -15,8 +15,3 @@ class Port:
     extra: Optional[Any] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-
-    def remove_sensitive(self):
-        self.group_uid = None
-        self.project_uid = None
-        self.task_uid = None

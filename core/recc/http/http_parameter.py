@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Union, List, Any, get_origin, get_args
+from typing import Optional, TypeVar, Type, Union, List, Any, get_origin, get_args
 from inspect import signature, isclass, iscoroutinefunction
 from functools import wraps
 from http import HTTPStatus
@@ -34,7 +34,10 @@ from recc.http.http_status import (
 )
 from recc.http import http_cache_keys as c
 from recc.http import http_path_keys as p
+from recc.conversion.boolean import str_to_bool
 from recc.variables.http import VERY_VERBOSE_DEBUGGING
+
+_T = TypeVar("_T")
 
 ERROR_MESSAGE_ONLY_SINGLE_POLICIES = (
     "Group and project permissions cannot be checked at the same time."
@@ -77,6 +80,33 @@ def is_subclass_safe(obj, cls) -> bool:
     if not isinstance(obj, type):
         return False
     return issubclass(obj, cls)
+
+
+def is_path_class(obj) -> bool:
+    if not isinstance(obj, type):
+        return False
+    if issubclass(obj, str):
+        return True
+    if issubclass(obj, int):
+        return True
+    if issubclass(obj, float):
+        return True
+    if issubclass(obj, bool):
+        return True
+    return False
+
+
+def cast_builtin_type_from_string(data: str, cls: Type[_T]) -> _T:
+    assert isinstance(cls, type)
+    if issubclass(cls, str):
+        return data  # type: ignore[return-value]
+    elif issubclass(cls, int):
+        return int(data)  # type: ignore[return-value]
+    elif issubclass(cls, float):
+        return float(data)  # type: ignore[return-value]
+    elif issubclass(cls, bool):
+        return str_to_bool(data)  # type: ignore[return-value]
+    return cls(data)  # type: ignore[call-arg]
 
 
 async def _parameter_matcher_main(
@@ -212,16 +242,24 @@ async def _parameter_matcher_main(
 
         # Path
         if (
-            is_subclass_safe(type_origin, str)
+            is_path_class(type_origin)
             and match_count >= 1
             and key in request.match_info
         ):
             path_value = request.match_info[key]
+
             if key == p.group:
                 group_name = path_value
             elif key == p.project:
                 project_name = path_value
-            update_arguments.append(path_value)
+
+            try:
+                path_arg = cast_builtin_type_from_string(path_value, type_origin)
+                update_arguments.append(path_arg)
+            except ValueError:
+                logger.debug(f"Type casting error for path parameter: {key}")
+                update_arguments.append(path_value)
+
             match_count -= 1
             continue
 
@@ -230,10 +268,11 @@ async def _parameter_matcher_main(
             if key in request.rel_url.query:
                 query_value = request.rel_url.query[key]
                 try:
-                    update_arguments.append(optional_parameter(query_value))
-                except TypeError:
+                    query_arg = cast_builtin_type_from_string(query_value, type_origin)
+                    update_arguments.append(query_arg)
+                except ValueError:
                     logger.debug(f"Type casting error for query parameter: {key}")
-                    update_arguments.append(None)
+                    update_arguments.append(query_value)
             else:
                 update_arguments.append(None)
             continue

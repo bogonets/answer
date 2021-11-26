@@ -24,7 +24,6 @@ import type {
     UpdateAirjoyDeviceQ,
     AirjoyControlQ,
     AirjoyChartA,
-    AirjoyChartQ,
     AirjoyServiceA,
     CreateAirjoyServiceQ,
     UpdateAirjoyServiceQ,
@@ -926,15 +925,15 @@ export default class ApiV2 {
         period?: string,
         origin?: string,
     ) {
-        const body = {
-            begin: begin,
-            end: end,
-            category: category,
-            period: period,
-            origin: origin,
-        } as AirjoyChartQ;
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}/chart`;
-        return this.post<Array<AirjoyChartA>>(url, body);  // TODO: Change to 'GET' method
+        let query = `?begin=${begin}&end=${end}&category=${category}`;
+        if (period) {
+            query += `&period=${period}`;
+        }
+        if (origin) {
+            query += `&origin=${origin}`;
+        }
+        return this.get<Array<AirjoyChartA>>(url + query);
     }
 
     getAirjoyServices(
