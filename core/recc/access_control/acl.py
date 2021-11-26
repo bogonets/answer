@@ -5,7 +5,7 @@ from aiohttp.web_exceptions import HTTPBadRequest, HTTPForbidden
 from recc.access_control.policy import Policy, test_policies
 from recc.core.context import Context
 from recc.session.session_ex import SessionEx
-from recc.string.convert import object_to_strings
+from recc.conversion.string import object_to_strings
 from recc.variables.annotation import (
     ANNOTATION_GROUP_PERMISSIONS,
     ANNOTATION_PROJECT_PERMISSIONS,
