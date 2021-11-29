@@ -180,13 +180,10 @@ import AirjoyServiceCard from '@/pages/external/airjoy/components/AirjoyServiceC
 import type {
   AirjoyDeviceA,
   AirjoyServiceA,
-  UpdateAirjoyServiceQ,
-  CreateAirjoyServiceQ,
+  AirjoyUpdateServiceQ,
+  AirjoyCreateServiceQ,
 } from '@/packet/airjoy';
-import {
-  UNKNOWN_ROUTE_PARAMS_DEVICE,
-  createEmptyAirjoyServiceA,
-} from '@/packet/airjoy';
+import {UNKNOWN_ROUTE_PARAMS_DEVICE} from '@/packet/airjoy';
 import {iso8601ToLocalDate} from '@/chrono/iso8601';
 
 @Component({
@@ -292,11 +289,11 @@ export default class MainAirjoyService extends VueBase {
 
   showEditDialog = false;
   loadingEditDevice = false;
-  editService = createEmptyAirjoyServiceA();
+  editService = {} as AirjoyServiceA;
 
   showDeleteDialog = false;
   loadingDelete = false;
-  deleteService = createEmptyAirjoyServiceA();
+  deleteService = {} as AirjoyServiceA;
 
   created() {
     if (!!this.$route.params.device && this.$route.params.device !== UNKNOWN_ROUTE_PARAMS_DEVICE) {
@@ -372,7 +369,7 @@ export default class MainAirjoyService extends VueBase {
       author: item.author,
       description: item.description,
       time: item.time,
-    } as CreateAirjoyServiceQ;
+    } as AirjoyCreateServiceQ;
     this.$api2.postAirjoyServices(group, project, item.uid.toString(), body)
         .then(() => {
           this.loadingAddDevice = false;
@@ -408,7 +405,7 @@ export default class MainAirjoyService extends VueBase {
       author: item.author,
       description: item.description,
       time: item.time,
-    } as UpdateAirjoyServiceQ;
+    } as AirjoyUpdateServiceQ;
     this.loadingEditDevice = true;
     this.$api2.patchAirjoyServices(group, project, device, service, body)
         .then(() => {

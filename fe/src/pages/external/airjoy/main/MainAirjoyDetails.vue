@@ -661,7 +661,7 @@ import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
-import type {AirjoyControlQ, UpdateAirjoyDeviceQ} from '@/packet/airjoy';
+import type {AirjoyControlQ, AirjoyUpdateDeviceQ} from '@/packet/airjoy';
 import {
   CATEGORY_PM10,
   CATEGORY_PM2_5,
@@ -1166,7 +1166,7 @@ export default class MainAirjoyDetails extends VueBase {
     const body = {
       name: name,
       description: description,
-    } as UpdateAirjoyDeviceQ;
+    } as AirjoyUpdateDeviceQ;
     this.loadingSubmit = true;
     this.$api2.patchAirjoyDevice(group, project, device, body)
         .then(() => {
@@ -1211,7 +1211,7 @@ export default class MainAirjoyDetails extends VueBase {
     const body = {
       name: this.editName,
       description: this.originalDescription,
-    } as UpdateAirjoyDeviceQ;
+    } as AirjoyUpdateDeviceQ;
 
     this.$api2.patchAirjoyDevice(group, project, device, body)
         .then(() => {

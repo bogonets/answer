@@ -103,7 +103,7 @@ ko:
 import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import requiredField from '@/rules/required';
-import type {CreateAirjoyDeviceQ} from '@/packet/airjoy';
+import type {AirjoyCreateDeviceQ} from '@/packet/airjoy';
 import {UID_RULES} from "@/rules";
 
 @Component
@@ -157,7 +157,7 @@ export default class AirjoyDeviceAdd extends VueBase {
       name: this.name,
       uid: Number.parseInt(this.uid),
       description: this.description,
-    } as CreateAirjoyDeviceQ;
+    } as AirjoyCreateDeviceQ;
   }
 }
 </script>

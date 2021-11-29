@@ -118,7 +118,7 @@ import {
   CATEGORY_CO2,
   CATEGORY_HUMIDITY,
   CATEGORY_TEMPERATURE,
-  CATEGORY_VOC, CreateAirjoyDeviceQ, AirjoyControlQ,
+  CATEGORY_VOC, AirjoyCreateDeviceQ, AirjoyControlQ,
 } from '@/packet/airjoy';
 import {Control} from "@/pages/external/airjoy/main/MainAirjoyDetails.vue";
 
@@ -228,7 +228,7 @@ export default class MainAirjoyDevices extends VueBase {
     this.showAddDialog = false;
   }
 
-  onClickAddOk(body: CreateAirjoyDeviceQ) {
+  onClickAddOk(body: AirjoyCreateDeviceQ) {
     this.loadingAddDevice = true;
     const group = this.$route.params.group;
     const project = this.$route.params.project;

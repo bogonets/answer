@@ -20,13 +20,13 @@ import type {
 import type {
     AirjoySensorA,
     AirjoyDeviceA,
-    CreateAirjoyDeviceQ,
-    UpdateAirjoyDeviceQ,
+    AirjoyCreateDeviceQ,
+    AirjoyUpdateDeviceQ,
     AirjoyControlQ,
     AirjoyChartA,
     AirjoyServiceA,
-    CreateAirjoyServiceQ,
-    UpdateAirjoyServiceQ,
+    AirjoyCreateServiceQ,
+    AirjoyUpdateServiceQ,
 } from '@/packet/airjoy';
 import type {
     VmsImageA,
@@ -872,7 +872,7 @@ export default class ApiV2 {
         return this.get<Array<AirjoyDeviceA>>(url);
     }
 
-    postAirjoyDevices(group: string, project: string, body: CreateAirjoyDeviceQ) {
+    postAirjoyDevices(group: string, project: string, body: AirjoyCreateDeviceQ) {
         const url = `/plugins/airjoy/${group}/${project}/devices`;
         return this.post(url, body);
     }
@@ -890,7 +890,7 @@ export default class ApiV2 {
         group: string,
         project: string,
         device: number | string,
-        body: UpdateAirjoyDeviceQ,
+        body: AirjoyUpdateDeviceQ,
     ) {
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}`;
         return this.patch(url, body);
@@ -954,7 +954,7 @@ export default class ApiV2 {
         group: string,
         project: string,
         device: number | string,
-        body: CreateAirjoyServiceQ,
+        body: AirjoyCreateServiceQ,
     ) {
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}/services`;
         return this.post(url, body);
@@ -965,7 +965,7 @@ export default class ApiV2 {
         project: string,
         device: number | string,
         service: number | string,
-        body: UpdateAirjoyServiceQ,
+        body: AirjoyUpdateServiceQ,
     ) {
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}/services/${service}`;
         return this.patch(url, body);
