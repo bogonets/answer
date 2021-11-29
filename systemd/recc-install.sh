@@ -85,9 +85,25 @@ function print_error
 function check_dir_or_create
 {
     local dir=$1
-    if [[ ! -d "$dir" ]]; then
+    if [[ -d "$dir" ]]; then
+        print_verbose "Exists directory: $dir"
+    else
         print_verbose "Create directory: $dir"
         mkdir -p "$dir"
+    fi
+}
+
+function check_dir_or_create_chown
+{
+    local dir=$1
+    local user=$2
+    local group=$3
+    if [[ -d "$dir" ]]; then
+        print_verbose "Exists directory: $dir"
+    else
+        print_verbose "Create directory: $dir"
+        mkdir -p "$dir"
+        chown $user:$group "$dir"
     fi
 }
 
@@ -404,13 +420,8 @@ function install_user_and_group
         usermod -aG docker "$RECC_USER"
     fi
 
-    if [[ -d "$RECC_HOME_DIR" ]]; then
-        print_verbose "Exists home directory: $RECC_HOME_DIR"
-    else
-        print_verbose "Create directory: $RECC_HOME_DIR"
-        mkdir -p "$RECC_HOME_DIR"
-        chown $RECC_USER:$RECC_GROUP "$RECC_HOME_DIR"
-    fi
+    check_dir_or_create_chown "$RECC_HOME_DIR" "$RECC_USER" "$RECC_GROUP"
+    check_dir_or_create_chown "$RECC_STORAGE_DIR" "$RECC_USER" "$RECC_GROUP"
 }
 
 function cleanup_cache
