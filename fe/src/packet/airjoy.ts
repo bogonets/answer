@@ -71,8 +71,8 @@ export const VALID_TEMPERATURE_MAX = 70;
 export const CHART_SCALE_Y_MAX_PM10 = undefined;
 export const CHART_SCALE_Y_MAX_PM2_5 = undefined;
 export const CHART_SCALE_Y_MAX_CO2 = undefined;
-export const CHART_SCALE_Y_MAX_HUMIDITY = 100;
-export const CHART_SCALE_Y_MAX_TEMPERATURE = 100;
+export const CHART_SCALE_Y_MAX_HUMIDITY = undefined; // prev: 100
+export const CHART_SCALE_Y_MAX_TEMPERATURE = undefined; // prev: 100
 export const CHART_SCALE_Y_MAX_VOC = 3;
 
 export function calcHumidity(value: number) {
@@ -322,9 +322,31 @@ export interface AirjoyControlQ {
 }
 
 export interface AirjoyChartA {
-    bucket: string;
-    min: number;
-    max: number;
+    begin: string;
+    end: string;
+
+    avg_pm10: number;
+    avg_pm2_5: number;
+    avg_co2: number;
+    avg_humidity: number;
+    avg_temperature: number;
+    avg_voc: number;
+
+    min_pm10: number;
+    min_pm2_5: number;
+    min_co2: number;
+    min_humidity: number;
+    min_temperature: number;
+    min_voc: number;
+
+    max_pm10: number;
+    max_pm2_5: number;
+    max_co2: number;
+    max_humidity: number;
+    max_temperature: number;
+    max_voc: number;
+
+    n: number;
 }
 
 export interface AirjoyServiceA {

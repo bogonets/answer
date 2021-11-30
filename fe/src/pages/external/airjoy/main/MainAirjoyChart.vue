@@ -238,7 +238,11 @@ import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import Chart from '@/chart/Chart.vue';
-import {dateToString, todayString, yesterdayString} from '@/chrono/date';
+import {
+  createMoment,
+  dateToString,
+  todayString,
+} from '@/chrono/date';
 import {download} from '@/utils/download';
 import type {AirjoyChartA, AirjoyDeviceA} from '@/packet/airjoy';
 import {
@@ -247,9 +251,12 @@ import {
   categoryIndexByName,
   categoryNameByIndex,
   getChartScaleYMax,
+  INDEX_UNKNOWN,
+  INDEX_PM10,
+  INDEX_PM2_5,
+  INDEX_CO2,
   INDEX_HUMIDITY,
   INDEX_TEMPERATURE,
-  INDEX_UNKNOWN,
   INDEX_VOC,
   printableCategoryIndexByName,
   printableCategoryNames,
@@ -257,9 +264,9 @@ import {
 } from '@/packet/airjoy';
 
 export function dateRange(days: number) {
-  const end = new Date(Date.now());
   const start = new Date();
-  start.setDate(end.getDate() - days);
+  const end = new Date(Date.now());
+  start.setDate(end.getDate() - days + 1);
   return [dateToString(start), dateToString(end)];
 }
 
@@ -268,6 +275,52 @@ export function dateRange(days: number) {
  */
 function yMaxDefault(): undefined | number {
   return undefined;
+}
+
+function getCategoryData(categoryIndex: number, chart: AirjoyChartA) {
+  let avg, min, max;
+  switch (categoryIndex) {
+    case INDEX_PM10:
+      avg = chart.avg_pm10;
+      min = chart.min_pm10;
+      max = chart.max_pm10;
+      break;
+    case INDEX_PM2_5:
+      avg = chart.avg_pm2_5;
+      min = chart.min_pm2_5;
+      max = chart.max_pm2_5;
+      break;
+    case INDEX_CO2:
+      avg = chart.avg_co2;
+      min = chart.min_co2;
+      max = chart.max_co2;
+      break;
+    case INDEX_HUMIDITY:
+      avg = calcHumidity(chart.avg_humidity);
+      min = calcHumidity(chart.min_humidity);
+      max = calcHumidity(chart.max_humidity);
+      break;
+    case INDEX_TEMPERATURE:
+      avg = calcHumidity(chart.avg_temperature);
+      min = calcHumidity(chart.min_temperature);
+      max = calcHumidity(chart.max_temperature);
+      break;
+    case INDEX_VOC:
+      avg = chart.avg_voc;
+      min = chart.min_voc;
+      max = chart.max_voc;
+      break;
+    default:
+      avg = undefined;
+      min = undefined;
+      max = undefined;
+      break;
+  }
+  return {avg: Math.round(avg), min, max};
+}
+
+function isFloating(value) {
+  return /\./.test(String(value));
 }
 
 @Component({
@@ -319,6 +372,13 @@ export default class MainAirjoyChart extends VueBase {
     scales: {
       y: {
         max: yMaxDefault(),
+        ticks: {
+          callback: (value, index, values) => {
+            if (!isFloating(value)) {
+              return value;
+            }
+          }
+        },
       }
     },
   };
@@ -333,16 +393,15 @@ export default class MainAirjoyChart extends VueBase {
   devices = [] as Array<AirjoyDeviceA>;
 
   category = '';
+  items = {};
 
   showPeriodStartMenu = false;
-  periodStart = yesterdayString();
+  periodStart = todayString();
 
   showPeriodEndMenu = false;
   periodEnd = todayString();
 
   rangeIndex = -1;
-
-  period = '';
 
   created() {
     const index = categoryIndexByName(this.$route.params.category);
@@ -395,6 +454,14 @@ export default class MainAirjoyChart extends VueBase {
         });
   }
 
+  getStartMoment() {
+    return createMoment(this.periodStart + 'T00:00:00');
+  }
+
+  getEndMoment() {
+    return createMoment(this.periodEnd + 'T23:59:59');
+  }
+
   updateChart() {
     if (typeof this.device !== 'object') {
       return;
@@ -403,49 +470,83 @@ export default class MainAirjoyChart extends VueBase {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     const device = this.device.uid;
-    const start = this.periodStart;
-    const end = this.periodEnd;
+    const begin = this.getStartMoment().format();
+    const end = this.getEndMoment().format();
     const categoryIndex = this.getCurrentCategoryIndex();
-    const category = categoryNameByIndex(categoryIndex);
 
-    this.chartOptions.scales.y.max = getChartScaleYMax(categoryIndex);
-    this.$api2.getAirjoyChart(group, project, device, start, end, category)
+    this.$api2.getAirjoyChart(group, project, device, begin, end)
         .then(items => {
-          this.updateSeries(categoryIndex, items);
+          const unixTimeToChart = {};
+          for (const item of items) {
+            unixTimeToChart[createMoment(item.begin).unix()] = item;
+          }
+          this.items = unixTimeToChart;
+          this.updateSeries(categoryIndex);
         })
         .catch(error => {
           this.toastRequestFailure(error);
         });
   }
 
-  updateSeries(categoryIndex: number, items: Array<AirjoyChartA>) {
-    const labels: Array<string> = [];
-    const data: Array<Array<number>> = [];
-    for (const item of items) {
-      labels.push(item.bucket)
+  updateSeries(categoryIndex: number) {
+    const isOneDay = this.periodStart === this.periodEnd;
 
-      if (categoryIndex == INDEX_HUMIDITY) {
-        const min = calcHumidity(item.min);
-        const max = calcHumidity(item.max);
-        data.push([min, max]);
-      } else if (categoryIndex == INDEX_TEMPERATURE) {
-        const min = calcTemperature(item.min);
-        const max = calcTemperature(item.max);
-        data.push([min, max]);
+    const totalBegin = this.getStartMoment();
+    const totalEnd = this.getEndMoment();
+    const diffHours = totalEnd.diff(totalBegin, 'hours');
+    const diffDays = totalEnd.diff(totalBegin, 'days');
+    const totalIteration = isOneDay ? diffHours : diffDays;
+    const stepHours = isOneDay ? 1 : 24;
+
+    const labels: Array<string> = [];
+    const dataMinMax: Array<Array<number | undefined>> = [];
+    const dataAverages: Array<number | undefined> = [];
+
+    const cursor = this.getStartMoment();
+    for (let i = 0; i <= totalIteration; ++i) {
+      if (isOneDay) {
+        const hourLabel = cursor.format("HH");
+        labels.push(hourLabel);
       } else {
-        data.push([item.min, item.max]);
+        const dayLabel = cursor.format("MM/DD");
+        labels.push(dayLabel);
       }
+
+      const chart = this.items[cursor.unix()] as AirjoyChartA | undefined;
+      if (chart) {
+        const {avg, min, max} = getCategoryData(categoryIndex, chart);
+        dataAverages.push(avg);
+        dataMinMax.push([min, max]);
+      } else {
+        dataMinMax.push([undefined, undefined]);
+        dataAverages.push(undefined);
+      }
+      cursor.add(stepHours, 'hours');
     }
 
-    const background = this.$vuetify.theme.currentTheme.primary?.toString() || 'blue';
+    const primaryTheme = this.$vuetify.theme.currentTheme.primary;
+    const warningTheme = this.$vuetify.theme.currentTheme.warning;
+
+    const barColor = primaryTheme?.toString() || 'blue';
+    const lineColor = warningTheme?.toString() || 'orange';
+
+    this.chartOptions.scales.y.max = getChartScaleYMax(categoryIndex);
     this.chartData = {
       labels: labels,
       datasets: [
         {
-          label: this.category,
-          backgroundColor: background,
-          data: data,
-        }
+          label: 'Min,Max',
+          backgroundColor: barColor,
+          data: dataMinMax,
+          order: 1,
+        },
+        {
+          label: 'Avg',
+          backgroundColor: lineColor,
+          data: dataAverages,
+          type: 'line',
+          order: 0,
+        },
       ],
     };
   }
@@ -467,7 +568,8 @@ export default class MainAirjoyChart extends VueBase {
   }
 
   onChangeCategory() {
-    this.updateChart();
+    const index = this.getCurrentCategoryIndex();
+    this.updateSeries(index);
   }
 
   onClickRange90d() {
@@ -516,7 +618,9 @@ export default class MainAirjoyChart extends VueBase {
   }
 
   onClickDownloadCsv() {
-    download(this.toCsvData(), `chart-${todayString()}`, 'text/csv');
+    const filename = `chart-${this.periodStart}_${this.periodEnd}.csv`;
+    const mime = 'text/csv';
+    download(this.toCsvData(), filename, mime);
   }
 }
 </script>

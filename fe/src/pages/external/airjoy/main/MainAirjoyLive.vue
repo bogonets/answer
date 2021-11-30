@@ -116,6 +116,10 @@ function yMaxDefault(): undefined | number {
   return undefined;
 }
 
+function isFloating(value) {
+  return /\./.test(String(value));
+}
+
 @Component({
   components: {
     BreadcrumbMain,
@@ -153,6 +157,13 @@ export default class MainAirjoyLive extends VueBase {
       y: {
         min: 0,
         max: yMaxDefault(),
+        ticks: {
+          callback: (value, index, values) => {
+            if (!isFloating(value)) {
+              return value;
+            }
+          }
+        },
       },
     }
   };

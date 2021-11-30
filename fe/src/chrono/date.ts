@@ -1,7 +1,16 @@
-import moment, {Moment, MomentInput} from 'moment-timezone';
+import moment, {
+    Moment,
+    MomentInput,
+    DurationInputArg1,
+    DurationInputArg2,
+} from 'moment-timezone';
 
 export function createMoment(inp?: MomentInput) {
     return moment(inp).tz(moment.tz.guess());
+}
+
+export function createDuration(inp?: DurationInputArg1, unit?: DurationInputArg2) {
+    return moment.duration(inp, unit);
 }
 
 export function momentDurationSeconds(x: Moment, y: Moment) {
@@ -17,6 +26,13 @@ export function yesterday() {
   const result = new Date();
   result.setDate(date.getDate() - 1);
   return result;
+}
+
+export function tomorrow() {
+    const date = today();
+    const result = new Date();
+    result.setDate(date.getDate() + 1);
+    return result;
 }
 
 export function dateString(year: number, month: number, day: number) {
@@ -41,4 +57,8 @@ export function todayString() {
 
 export function yesterdayString() {
     return dateToString(yesterday());
+}
+
+export function tomorrowString() {
+    return dateToString(tomorrow());
 }

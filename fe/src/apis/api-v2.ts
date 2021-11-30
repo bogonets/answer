@@ -921,18 +921,11 @@ export default class ApiV2 {
         device: number | string,
         begin: string,
         end: string,
-        category: string,
-        period?: string,
-        origin?: string,
     ) {
+        const queryBegin = encodeURIComponent(begin);
+        const queryEnd = encodeURIComponent(end);
         const url = `/plugins/airjoy/${group}/${project}/devices/${device}/chart`;
-        let query = `?begin=${begin}&end=${end}&category=${category}`;
-        if (period) {
-            query += `&period=${period}`;
-        }
-        if (origin) {
-            query += `&origin=${origin}`;
-        }
+        const query = `?begin=${queryBegin}&end=${queryEnd}`;
         return this.get<Array<AirjoyChartA>>(url + query);
     }
 
