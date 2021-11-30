@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, TypeVar, Type, Union, List, Any, get_origin, get_args
+from typing import Optional, Union, List, Any, get_origin, get_args
 from inspect import signature, isclass, iscoroutinefunction
 from functools import wraps
 from http import HTTPStatus
@@ -36,8 +36,6 @@ from recc.http import http_cache_keys as c
 from recc.http import http_path_keys as p
 from recc.conversion.boolean import str_to_bool
 from recc.variables.http import VERY_VERBOSE_DEBUGGING
-
-_T = TypeVar("_T")
 
 ERROR_MESSAGE_ONLY_SINGLE_POLICIES = (
     "Group and project permissions cannot be checked at the same time."
@@ -96,16 +94,16 @@ def is_path_class(obj) -> bool:
     return False
 
 
-def cast_builtin_type_from_string(data: str, cls: Type[_T]) -> _T:
+def cast_builtin_type_from_string(data: str, cls) -> Any:
     assert isinstance(cls, type)
     if issubclass(cls, str):
-        return data  # type: ignore[return-value]
+        return data
     elif issubclass(cls, int):
-        return int(data)  # type: ignore[return-value]
+        return int(data)
     elif issubclass(cls, float):
-        return float(data)  # type: ignore[return-value]
+        return float(data)
     elif issubclass(cls, bool):
-        return str_to_bool(data)  # type: ignore[return-value]
+        return str_to_bool(data)
     return cls(data)  # type: ignore[call-arg]
 
 
@@ -268,7 +266,9 @@ async def _parameter_matcher_main(
             if key in request.rel_url.query:
                 query_value = request.rel_url.query[key]
                 try:
-                    query_arg = cast_builtin_type_from_string(query_value, type_origin)
+                    query_arg = cast_builtin_type_from_string(
+                        query_value, optional_parameter
+                    )
                     update_arguments.append(query_arg)
                 except ValueError:
                     logger.debug(f"Type casting error for query parameter: {key}")
