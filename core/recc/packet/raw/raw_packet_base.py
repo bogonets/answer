@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Iterable, Union, Optional, Mapping
+from typing import Iterable, Union, Optional, Mapping, List
 from functools import reduce
 from io import BytesIO
 from recc.packet.raw.raw_field_spec import RawFieldSpec
@@ -11,16 +11,21 @@ DEFAULT_VERSION = 0
 
 class RawPacketBase:
 
-    _specs: Mapping[int, Iterable[RawFieldSpec]]
+    _specs: Mapping[int, List[RawFieldSpec]]
 
     def __init__(
         self,
         specs: Union[Mapping[int, Iterable[RawFieldSpec]], Iterable[RawFieldSpec]],
+        *,
+        proofread_floor=False,
+        proofread_ceil=False,
     ):
         if isinstance(specs, Mapping):
-            self._specs = specs
+            self._specs = {k: list(v) for k, v in specs.items()}
         else:
-            self._specs = {DEFAULT_VERSION: specs}
+            self._specs = {DEFAULT_VERSION: list(specs)}
+        self.proofread_floor = proofread_floor
+        self.proofread_ceil = proofread_ceil
 
     def to_dict(self) -> dict:
         return dict(get_public_members(self))
@@ -37,6 +42,18 @@ class RawPacketBase:
         if version not in self._specs:
             raise ValueError(f"Unsupported version number: {version}")
         return reduce(lambda x, y: x + y, [f.size for f in self._specs[version]])
+
+    def get_spec(self, key: Union[str, int], version=DEFAULT_VERSION) -> RawFieldSpec:
+        if version not in self._specs:
+            raise ValueError(f"Unsupported version number: {version}")
+        if isinstance(key, int):
+            return self._specs[version][key]
+        else:
+            assert isinstance(key, str)
+            for spec in self._specs[version]:
+                if spec.name == key:
+                    return spec
+            raise KeyError(f"Not found spec: {key}")
 
     def to_bytes(self, version=DEFAULT_VERSION) -> bytes:
         if version not in self._specs:
@@ -87,6 +104,15 @@ class RawPacketBase:
                 raise EOFError("No more data.")
 
             value = int.from_bytes(encoded_value, field.byteorder, signed=field.signed)
+            if self.proofread_ceil:
+                value_max = field.max
+                if value > value_max:
+                    value = value_max
+            if self.proofread_floor:
+                value_min = field.min
+                if value < value_min:
+                    value = value_min
+
             if validation and field.range:
                 if value not in field.range:
                     raise IndexError(f"`{field.name}` field is out of range")

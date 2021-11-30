@@ -89,6 +89,22 @@ class RawFieldSpec:
     def __str__(self) -> str:
         return self.name
 
+    @property
+    def min(self) -> int:
+        if isinstance(self.range, list):
+            return self.range[0]
+        else:
+            assert isinstance(self.range, range)
+            return self.range.start
+
+    @property
+    def max(self) -> int:
+        if isinstance(self.range, list):
+            return self.range[len(self.range) - 1]
+        else:
+            assert isinstance(self.range, range)
+            return self.range.stop - 1
+
     def random(self) -> int:
         if isinstance(self.range, list):
             index = randint(0, len(self.range) - 1)

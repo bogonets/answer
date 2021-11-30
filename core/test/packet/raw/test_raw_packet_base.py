@@ -24,6 +24,28 @@ class _TestPacket(RawPacketBase):
 
 
 class RawPacketBaseTestCase(TestCase):
+    def test_get_spec(self):
+        packet = _TestPacket()
+        self.assertEqual("a", packet.get_spec(0).name)
+        self.assertEqual("b", packet.get_spec(1).name)
+        self.assertEqual("c", packet.get_spec(2).name)
+        self.assertEqual("d", packet.get_spec(3).name)
+        with self.assertRaises(ValueError):
+            packet.get_spec(0, 22)
+        with self.assertRaises(IndexError):
+            packet.get_spec(4)
+
+    def test_get_spec_name(self):
+        packet = _TestPacket()
+        self.assertEqual("a", packet.get_spec("a").name)
+        self.assertEqual("b", packet.get_spec("b").name)
+        self.assertEqual("c", packet.get_spec("c").name)
+        self.assertEqual("d", packet.get_spec("d").name)
+        with self.assertRaises(ValueError):
+            packet.get_spec("a", 22)
+        with self.assertRaises(KeyError):
+            packet.get_spec("ZZ")
+
     def test_from_hex(self):
         packet = _TestPacket()
         packet.from_hex("01000009000205")
