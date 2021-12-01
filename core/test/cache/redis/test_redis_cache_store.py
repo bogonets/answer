@@ -21,14 +21,59 @@ class RedisCacheStoreTestCase(AsyncTestCase):
         await self.cs.close()
         self.assertFalse(self.cs.is_open())
 
-    async def test_set_get(self):
-        key = "__test_set_get__key__"
-        val = b"__test_set_get__val__"
+    async def test_set_get_append(self):
+        key = "__test_set_get_append__key__"
+        val1 = b"aa"
+        val2 = b"bb"
+        val_total = val1 + val2
         try:
             self.assertFalse(await self.cs.exists(key))
-            await self.cs.set(key, val)
+            await self.cs.set(key, val1)
             self.assertTrue(await self.cs.exists(key))
-            self.assertEqual(val, await self.cs.get(key))
+            self.assertEqual(val1, await self.cs.get(key))
+
+            await self.cs.append(key, val2)
+            self.assertTrue(await self.cs.exists(key))
+            self.assertEqual(val_total, await self.cs.get(key))
+
+            await self.cs.delete(key)
+            self.assertFalse(await self.cs.exists(key))
+        finally:
+            if await self.cs.exists(key):
+                await self.cs.delete(key)
+
+    async def test_append_get(self):
+        key = "__test_append_get__key__"
+        val1 = b"cc"
+        val2 = b"dd"
+        val_total = val1 + val2
+        try:
+            self.assertFalse(await self.cs.exists(key))
+            await self.cs.append(key, val1)
+            self.assertTrue(await self.cs.exists(key))
+            self.assertEqual(val1, await self.cs.get(key))
+
+            await self.cs.append(key, val2)
+            self.assertTrue(await self.cs.exists(key))
+            self.assertEqual(val_total, await self.cs.get(key))
+
+            await self.cs.delete(key)
+            self.assertFalse(await self.cs.exists(key))
+        finally:
+            if await self.cs.exists(key):
+                await self.cs.delete(key)
+
+    async def test_massive_set_get(self):
+        massive_size = 10 * 1024 * 1024
+        key = "__test_massive_set_get__key__"
+        val = bytes(massive_size)
+        self.assertEqual(massive_size, len(val))
+        try:
+            self.assertFalse(await self.cs.exists(key))
+            await self.cs.set(key, val)  # 10MByte -> 0.02s
+            self.assertTrue(await self.cs.exists(key))
+            self.assertEqual(val, await self.cs.get(key))  # 10MByte -> 0.04s
+
             await self.cs.delete(key)
             self.assertFalse(await self.cs.exists(key))
         finally:

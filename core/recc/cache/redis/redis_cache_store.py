@@ -91,6 +91,10 @@ class RedisCacheStore(CacheStoreInterface):
         await self.redis.execute_command("SET", key, val)
 
     @overrides
+    async def append(self, key: str, val: bytes) -> None:
+        await self.redis.execute_command("APPEND", key, val)
+
+    @overrides
     async def get(self, key: str) -> bytes:
         result = await self.redis.execute_command("GET", key)
         assert isinstance(result, bytes)

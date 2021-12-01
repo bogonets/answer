@@ -25,6 +25,10 @@ class CacheStoreInterface(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def append(self, key: str, val: bytes) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def get(self, key: str) -> bytes:
         raise NotImplementedError
 
