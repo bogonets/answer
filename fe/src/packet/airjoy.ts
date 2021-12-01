@@ -75,6 +75,8 @@ export const CHART_SCALE_Y_MAX_HUMIDITY = undefined; // prev: 100
 export const CHART_SCALE_Y_MAX_TEMPERATURE = undefined; // prev: 100
 export const CHART_SCALE_Y_MAX_VOC = 3;
 
+export const DEFAULT_CHART_COLOR = '#00AAAAFF';
+
 export function calcHumidity(value: number) {
     return (value / 10.0);
 }
@@ -273,11 +275,11 @@ export interface AirjoySensorA {
 export interface AirjoyDeviceA {
     name: string;
     description: string;
+    chart_color: string;
+    online: boolean;
 
     service_count: number;
     service_last_time?: string;
-
-    online: boolean;
 
     time: string;
     fw_ver: number;
@@ -303,11 +305,13 @@ export interface AirjoyCreateDeviceQ {
     name: string;
     uid: number;
     description: string;
+    chart_color: string;
 }
 
 export interface AirjoyUpdateDeviceQ {
-    name: string;
-    description: string;
+    name?: string;
+    description?: string;
+    chart_color?: string;
 }
 
 export interface AirjoyControlQ {
@@ -378,6 +382,7 @@ export function createEmptyAirjoyDeviceA() {
     return {
         name: '',
         description: '',
+        chart_color: '',
         online: false,
 
         service_count: 0,

@@ -87,7 +87,10 @@ import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import Chart from '@/chart/Chart.vue';
 import {Chart as ChartJS} from 'chart.js';
-import type {AirjoyDeviceA, AirjoySensorA} from '@/packet/airjoy';
+import type {
+  AirjoyDeviceA,
+  AirjoySensorA,
+} from '@/packet/airjoy';
 import {
   INDEX_UNKNOWN,
   INDEX_PM10,
@@ -186,6 +189,7 @@ export default class MainAirjoyLive extends VueBase {
       this.category = this.categories[0];
     }
     this.updateDevices();
+    this.updateChart();
   }
 
   mounted() {
@@ -247,7 +251,9 @@ export default class MainAirjoyLive extends VueBase {
   }
 
   updateChartData(items: Array<AirjoyDeviceA>) {
-    const background = this.$vuetify.theme.currentTheme.primary?.toString() || 'blue';
+    const primaryTheme = this.$vuetify.theme.currentTheme.primary;
+    const defaultBackground = primaryTheme?.toString() || 'blue';
+
     const chartData = {
       datasets: [] as Array<object>
     };
@@ -256,6 +262,7 @@ export default class MainAirjoyLive extends VueBase {
       const name = item.name.toString();
       const uid = item.uid.toString();
       const label = name ? name : uid;
+      const background = item.chart_color || defaultBackground;
       chartData.datasets.push({
         label: label,
         backgroundColor: background,

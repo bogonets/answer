@@ -111,14 +111,18 @@ import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import AirjoyDeviceRow from '@/pages/external/airjoy/components/AirjoyDeviceRow.vue';
 import AirjoyDeviceAdd from '@/pages/external/airjoy/components/AirjoyDeviceAdd.vue';
-import type {AirjoyDeviceA} from '@/packet/airjoy';
 import {
   CATEGORY_PM10,
   CATEGORY_PM2_5,
   CATEGORY_CO2,
   CATEGORY_HUMIDITY,
   CATEGORY_TEMPERATURE,
-  CATEGORY_VOC, AirjoyCreateDeviceQ, AirjoyControlQ,
+  CATEGORY_VOC,
+} from '@/packet/airjoy';
+import type {
+  AirjoyDeviceA,
+  AirjoyCreateDeviceQ,
+  AirjoyControlQ,
 } from '@/packet/airjoy';
 import {Control} from "@/pages/external/airjoy/main/MainAirjoyDetails.vue";
 

@@ -51,6 +51,7 @@ en:
   labels:
     search: "You can filter by author or description."
     as_new: "New A/S"
+    chart_color: "Chart Color"
     filter_reset: "Filter Reset"
     delete: "Delete a device"
   hints:
@@ -67,6 +68,7 @@ en:
     unknown: "Filter Unknown"
   tooltip:
     edit_name: "Edit AIRJOY device name"
+    chart_color: "Please select a color to use for the chart"
     power:
       on: "Click the button to power off"
       off: "Click the button to power on"
@@ -93,6 +95,7 @@ en:
   filter_reset_confirm: "Are you sure? Are you really filter reset this device?"
   delete_confirm: "Are you sure? Are you really removing this device?"
   cancel: "Cancel"
+  ok: "Ok"
   delete: "Delete"
   submit: "Submit"
   reset: "Reset"
@@ -149,6 +152,7 @@ ko:
   labels:
     search: "담당자 또는 기록을 필터링할 수 있습니다."
     as_new: "새로운 A/S 기록"
+    chart_color: "차트 색상"
     filter_reset: "필터 리셋"
     delete: "장치 제거"
   hints:
@@ -165,6 +169,7 @@ ko:
     unknown: "알수 없음"
   tooltip:
     edit_name: "AIRJOY 기기 이름을 수정합니다"
+    chart_color: "차트에 사용할 색상을 선택해 주세요"
     power:
       on: "버튼을 클릭하여 전원을 끕니다"
       off: "버튼을 클릭하여 전원을 켭니다"
@@ -191,6 +196,7 @@ ko:
   filter_reset_confirm: "필터 리셋을 진행합니까?"
   delete_confirm: "이 장치를 정말 제거합니까?"
   cancel: "취소"
+  ok: "확인"
   delete: "제거"
   submit: "제출"
   reset: "리셋"
@@ -264,6 +270,24 @@ ko:
             </v-btn>
           </template>
           <span>{{ $t('tooltip.edit_name') }}</span>
+        </v-tooltip>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                class="mr-2"
+                x-small
+                plain
+                icon
+                :color="item.chart_color"
+                @click="onClickChartColor"
+                v-bind="attrs"
+                v-on="on"
+            >
+              <v-icon>mdi-chart-line</v-icon>
+            </v-btn>
+          </template>
+          <span>{{ $t('tooltip.chart_color') }}</span>
         </v-tooltip>
 
         <v-tooltip bottom>
@@ -602,8 +626,51 @@ ko:
       </v-row>
     </v-alert>
 
+    <!-- Chart Color dialog -->
+    <v-dialog
+        v-model="showChartColorDialog"
+        :max-width="dialogMaxWidth"
+        @keydown.esc.stop="onClickChartColorCancel"
+    >
+      <v-card>
+        <v-card-title class="text-h5 text--primary">
+          {{ $t('labels.chart_color') }}
+        </v-card-title>
+        <v-card-text>
+          {{ $t('tooltip.chart_color') }}
+        </v-card-text>
+
+        <v-color-picker
+            class="ma-2"
+            :swatches="colorSwatches"
+            v-model="chartColorPicker"
+            show-swatches
+        ></v-color-picker>
+
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="onClickChartColorCancel">
+            {{ $t('cancel') }}
+          </v-btn>
+          <v-btn
+              color="primary"
+              :loading="loadingChartColorSubmit"
+              :disabled="loadingChartColorSubmit"
+              @click="onClickChartColorOk"
+          >
+            {{ $t('ok') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <!-- Delete dialog. -->
-    <v-dialog v-model="showFilterResetDialog" :max-width="dialogMaxWidth">
+    <v-dialog
+        v-model="showFilterResetDialog"
+        :max-width="dialogMaxWidth"
+        @keydown.esc.stop="onClickFilterResetCancel"
+    >
       <v-card>
         <v-card-title class="text-h5 error--text">
           {{ $t('labels.filter_reset') }}
@@ -628,7 +695,11 @@ ko:
     </v-dialog>
 
     <!-- Delete dialog. -->
-    <v-dialog v-model="showDeleteDialog" :max-width="dialogMaxWidth">
+    <v-dialog
+        v-model="showDeleteDialog"
+        :max-width="dialogMaxWidth"
+        @keydown.esc.stop="onClickDeleteCancel"
+    >
       <v-card>
         <v-card-title class="text-h5 error--text">
           {{ $t('labels.delete') }}
@@ -746,6 +817,14 @@ export default class MainAirjoyDetails extends VueBase {
     },
   ];
 
+  readonly colorSwatches = [
+    ['#FF0000FF', '#AA0000FF', '#550000FF'],
+    ['#FFFF00FF', '#AAAA00FF', '#555500FF'],
+    ['#00FF00FF', '#00AA00FF', '#005500FF'],
+    ['#00FFFFFF', '#00AAAAFF', '#005555FF'],
+    ['#0000FFFF', '#0000AAFF', '#000055FF'],
+  ];
+
   @Prop({type: Number, default: 320})
   readonly dialogMaxWidth!: number;
 
@@ -763,6 +842,10 @@ export default class MainAirjoyDetails extends VueBase {
 
   intervalHandle = -1;
 
+  showChartColorDialog = false;
+  loadingChartColorSubmit = false;
+  chartColorPicker = '';
+
   showFilterResetDialog = false;
   loadingFilterReset = false;
 
@@ -771,6 +854,10 @@ export default class MainAirjoyDetails extends VueBase {
 
   loadingSubmit = false;
   originalDescription = '';
+
+  // [IMPORTANT]
+  // Unless separated into individual variables,
+  // they are continually restored during editing.
   description = '';
 
   showEditNameDialog = false;
@@ -1161,18 +1248,16 @@ export default class MainAirjoyDetails extends VueBase {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     const device = this.$route.params.device;
-    const name = this.item.name;
     const description = this.description;
     const body = {
-      name: name,
       description: description,
     } as AirjoyUpdateDeviceQ;
     this.loadingSubmit = true;
     this.$api2.patchAirjoyDevice(group, project, device, body)
         .then(() => {
           this.loadingSubmit = false;
-          this.toastRequestSuccess();
           this.originalDescription = description;
+          this.toastRequestSuccess();
         })
         .catch(error => {
           this.loadingSubmit = false;
@@ -1210,7 +1295,6 @@ export default class MainAirjoyDetails extends VueBase {
     const device = this.$route.params.device;
     const body = {
       name: this.editName,
-      description: this.originalDescription,
     } as AirjoyUpdateDeviceQ;
 
     this.$api2.patchAirjoyDevice(group, project, device, body)
@@ -1288,6 +1372,38 @@ export default class MainAirjoyDetails extends VueBase {
       lock = LOCK;
     }
     this.controlDevice({lock: lock});
+  }
+
+  onClickChartColor() {
+    this.showChartColorDialog = true;
+    this.chartColorPicker = this.item.chart_color;
+  }
+
+  onClickChartColorCancel() {
+    this.showChartColorDialog = false;
+  }
+
+  onClickChartColorOk() {
+    this.loadingChartColorSubmit = true;
+
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    const body = {
+      chart_color: this.chartColorPicker,
+    } as AirjoyUpdateDeviceQ;
+
+    this.$api2.patchAirjoyDevice(group, project, device, body)
+        .then(() => {
+          this.loadingChartColorSubmit = false;
+          this.showChartColorDialog = false;
+          this.item.chart_color = this.chartColorPicker;
+          this.toastRequestSuccess();
+        })
+        .catch(error => {
+          this.loadingChartColorSubmit = false;
+          this.toastRequestFailure(error);
+        });
   }
 
   onClickFilterReset() {
