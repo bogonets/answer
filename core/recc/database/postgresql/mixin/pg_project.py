@@ -11,7 +11,7 @@ from recc.database.interfaces.db_project import DbProject
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.project import (
     INSERT_PROJECT,
-    SAFE_DELETE_PROJECT_BY_UID,
+    DELETE_PROJECT_BY_UID,
     SELECT_PROJECT_UID_BY_GROUP_UID_AND_SLUG,
     SELECT_PROJECT_ALL,
     SELECT_PROJECT_BY_UID,
@@ -82,8 +82,7 @@ class PgProject(DbProject, PgBase):
 
     @overrides
     async def delete_project_by_uid(self, uid: int) -> None:
-        query = SAFE_DELETE_PROJECT_BY_UID.replace("$1", str(uid))
-        await self.execute(query)
+        await self.execute(DELETE_PROJECT_BY_UID, uid)
         logger.info(f"delete_project_by_uid(uid={uid}) ok.")
 
     @overrides

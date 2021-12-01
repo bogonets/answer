@@ -68,18 +68,6 @@ DELETE FROM {TABLE_PROJECT}
 WHERE uid=$1;
 """
 
-SAFE_DELETE_PROJECT_BY_UID = f"""
-BEGIN;
-
-DELETE FROM {TABLE_PROJECT_MEMBER}
-WHERE project_uid=$1;
-
-DELETE FROM {TABLE_PROJECT}
-WHERE uid=$1;
-
-COMMIT;
-"""
-
 ##########
 # SELECT #
 ##########

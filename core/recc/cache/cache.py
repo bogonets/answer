@@ -89,6 +89,11 @@ class Cache:
             self._username_to_uid[username] = user_uid
             self._uid_to_username[user_uid] = username
 
+    def remove_user(self, username: str, user_uid: int) -> None:
+        with self._user_lock:
+            del self._username_to_uid[username]
+            del self._uid_to_username[user_uid]
+
     # -----------------
     # group slug -> uid
     # -----------------
@@ -113,6 +118,11 @@ class Cache:
         with self._group_lock:
             self._group_slug_to_uid[group_slug] = group_uid
             self._group_uid_to_slug[group_uid] = group_slug
+
+    def remove_group(self, group_uid: int, group_slug: str) -> None:
+        with self._group_lock:
+            del self._group_slug_to_uid[group_slug]
+            del self._group_uid_to_slug[group_uid]
 
     # -------------------
     # project slug -> uid
@@ -150,6 +160,16 @@ class Cache:
             key = (group_uid, project_slug)
             self._project_key_to_project_uid[key] = project_uid
 
+    def remove_project(
+        self, project_uid: int, group_uid: int, project_slug: str
+    ) -> None:
+        with self._project_lock:
+            del self._project_uid_to_slug[project_uid]
+            del self._project_uid_to_group_uid[project_uid]
+
+            key = (group_uid, project_slug)
+            del self._project_key_to_project_uid[key]
+
     # ----------------------
     # permission slug -> uid
     # ----------------------
@@ -174,3 +194,8 @@ class Cache:
         with self._permission_lock:
             self._permission_slug_to_uid[slug] = uid
             self._permission_uid_to_slug[uid] = slug
+
+    def remove_permission(self, uid: int, slug: str) -> None:
+        with self._permission_lock:
+            del self._permission_slug_to_uid[slug]
+            del self._permission_uid_to_slug[uid]

@@ -267,9 +267,9 @@ class Plugin:
     async def call_delete_group(self, group: str) -> None:
         on_delete_group = self._global_variables.get(NAME_ON_DELETE_GROUP)
         assert on_delete_group is not None
-        if iscoroutinefunction(on_delete_group):
+        if not iscoroutinefunction(on_delete_group):
             raise RuntimeError(f"`{NAME_ON_DELETE_GROUP}` is not a coroutine function")
-        return on_delete_group(group)
+        await on_delete_group(group)
 
     async def call_create_project(self, group: str, project: str) -> None:
         on_create_project = self._global_variables.get(NAME_ON_CREATE_PROJECT)
@@ -283,11 +283,11 @@ class Plugin:
     async def call_delete_project(self, group: str, project: str) -> None:
         on_delete_project = self._global_variables.get(NAME_ON_DELETE_PROJECT)
         assert on_delete_project is not None
-        if iscoroutinefunction(on_delete_project):
+        if not iscoroutinefunction(on_delete_project):
             raise RuntimeError(
                 f"`{NAME_ON_DELETE_PROJECT}` is not a coroutine function"
             )
-        return on_delete_project(group, project)
+        await on_delete_project(group, project)
 
     async def call_open(self) -> None:
         on_open = self._global_variables.get(NAME_ON_OPEN)
