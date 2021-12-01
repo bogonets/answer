@@ -21,6 +21,10 @@ NAME_ON_CLOSE = "on_close"
 
 # Uses: plugin
 NAME_ON_ROUTES = "on_routes"
+NAME_ON_CREATE_GROUP = "on_create_group"
+NAME_ON_DELETE_GROUP = "on_delete_group"
+NAME_ON_CREATE_PROJECT = "on_create_project"
+NAME_ON_DELETE_PROJECT = "on_delete_project"
 
 # Uses: daemon
 NAME_ON_INIT = "on_init"
@@ -130,6 +134,22 @@ class Plugin:
         return NAME_ON_ROUTES in self._global_variables
 
     @property
+    def exists_create_group(self) -> bool:
+        return NAME_ON_CREATE_GROUP in self._global_variables
+
+    @property
+    def exists_delete_group(self) -> bool:
+        return NAME_ON_DELETE_GROUP in self._global_variables
+
+    @property
+    def exists_create_project(self) -> bool:
+        return NAME_ON_CREATE_PROJECT in self._global_variables
+
+    @property
+    def exists_delete_project(self) -> bool:
+        return NAME_ON_DELETE_PROJECT in self._global_variables
+
+    @property
     def exists_open(self) -> bool:
         return NAME_ON_OPEN in self._global_variables
 
@@ -161,6 +181,18 @@ class Plugin:
 
     def get_on_routes_func(self) -> Any:
         return self._global_variables.get(NAME_ON_ROUTES, None)
+
+    def get_on_create_group_func(self) -> Any:
+        return self._global_variables.get(NAME_ON_CREATE_GROUP, None)
+
+    def get_on_delete_group_func(self) -> Any:
+        return self._global_variables.get(NAME_ON_DELETE_GROUP, None)
+
+    def get_on_create_project_func(self) -> Any:
+        return self._global_variables.get(NAME_ON_CREATE_PROJECT, None)
+
+    def get_on_delete_project_func(self) -> Any:
+        return self._global_variables.get(NAME_ON_DELETE_PROJECT, None)
 
     def get_on_open_func(self) -> Any:
         return self._global_variables.get(NAME_ON_OPEN, None)
@@ -224,6 +256,38 @@ class Plugin:
             return await func(*args, **kwargs)
         else:
             return func(*args, **kwargs)
+
+    async def call_create_group(self, group: str) -> None:
+        on_create_group = self._global_variables.get(NAME_ON_CREATE_GROUP)
+        assert on_create_group is not None
+        if not iscoroutinefunction(on_create_group):
+            raise RuntimeError(f"'{NAME_ON_CREATE_GROUP}' must be a coroutine function")
+        await on_create_group(group)
+
+    async def call_delete_group(self, group: str) -> None:
+        on_delete_group = self._global_variables.get(NAME_ON_DELETE_GROUP)
+        assert on_delete_group is not None
+        if iscoroutinefunction(on_delete_group):
+            raise RuntimeError(f"`{NAME_ON_DELETE_GROUP}` is not a coroutine function")
+        return on_delete_group(group)
+
+    async def call_create_project(self, group: str, project: str) -> None:
+        on_create_project = self._global_variables.get(NAME_ON_CREATE_PROJECT)
+        assert on_create_project is not None
+        if not iscoroutinefunction(on_create_project):
+            raise RuntimeError(
+                f"'{NAME_ON_CREATE_PROJECT}' must be a coroutine function"
+            )
+        await on_create_project(group, project)
+
+    async def call_delete_project(self, group: str, project: str) -> None:
+        on_delete_project = self._global_variables.get(NAME_ON_DELETE_PROJECT)
+        assert on_delete_project is not None
+        if iscoroutinefunction(on_delete_project):
+            raise RuntimeError(
+                f"`{NAME_ON_DELETE_PROJECT}` is not a coroutine function"
+            )
+        return on_delete_project(group, project)
 
     async def call_open(self) -> None:
         on_open = self._global_variables.get(NAME_ON_OPEN)

@@ -33,6 +33,8 @@ class ContextProject(ContextBase):
             await self.database.insert_project_member(
                 project_uid, owner_uid, owner_permission_uid
             )
+        group_slug = await self.get_group_slug(group_uid)
+        await self.plugins.create_project(group_slug, slug)
         return project_uid
 
     async def update_project(
@@ -54,6 +56,10 @@ class ContextProject(ContextBase):
         )
 
     async def delete_project(self, uid: int) -> None:
+        project = await self.database.select_project_by_uid(uid)
+        group_slug = await self.get_group_slug(project.group_uid)
+        await self.plugins.delete_project(group_slug, project.slug)
+
         await self.database.delete_project_by_uid(uid)
 
     async def get_projects(self, group_uid: Optional[int] = None) -> List[Project]:

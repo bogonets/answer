@@ -29,6 +29,34 @@ class PluginManager(Dict[str, Plugin]):
             if plugin.exists_destroy:
                 plugin.call_destroy()
 
+    async def create_group(self, group: str) -> None:
+        coroutines = []
+        for key, plugin in self.items():
+            if plugin.exists_create_group:
+                coroutines.append(plugin.call_create_group(group))
+        await gather(*coroutines)
+
+    async def delete_group(self, group: str) -> None:
+        coroutines = []
+        for key, plugin in self.items():
+            if plugin.exists_delete_group:
+                coroutines.append(plugin.call_delete_group(group))
+        await gather(*coroutines)
+
+    async def create_project(self, group: str, project: str) -> None:
+        coroutines = []
+        for key, plugin in self.items():
+            if plugin.exists_create_project:
+                coroutines.append(plugin.call_create_project(group, project))
+        await gather(*coroutines)
+
+    async def delete_project(self, group: str, project: str) -> None:
+        coroutines = []
+        for key, plugin in self.items():
+            if plugin.exists_delete_project:
+                coroutines.append(plugin.call_delete_project(group, project))
+        await gather(*coroutines)
+
     async def open(self) -> None:
         coroutines = []
         for key, plugin in self.items():
