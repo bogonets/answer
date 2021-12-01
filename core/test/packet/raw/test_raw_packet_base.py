@@ -19,8 +19,12 @@ class _TestPacket(RawPacketBase):
     c: int
     d: int
 
-    def __init__(self):
-        super().__init__(_TEST_SPEC)
+    def __init__(self, proofread_floor=False, proofread_ceil=False):
+        super().__init__(
+            _TEST_SPEC,
+            proofread_floor=proofread_floor,
+            proofread_ceil=proofread_ceil,
+        )
 
 
 class RawPacketBaseTestCase(TestCase):
@@ -62,6 +66,18 @@ class RawPacketBaseTestCase(TestCase):
         packet = _TestPacket()
         packet.from_dict(a=0, b=1, c=2, d=4)
         self.assertEqual("00000001000204", packet.to_hex())
+
+    def test_proofread(self):
+        overflow_hex = "01000009000306"
+        with self.assertRaises(IndexError):
+            _TestPacket().from_hex(overflow_hex)
+
+        packet = _TestPacket(proofread_floor=True, proofread_ceil=True)
+        packet.from_hex(overflow_hex)
+        self.assertEqual(1, packet.a)
+        self.assertEqual(9, packet.b)
+        self.assertEqual(2, packet.c)
+        self.assertEqual(5, packet.d)
 
 
 if __name__ == "__main__":

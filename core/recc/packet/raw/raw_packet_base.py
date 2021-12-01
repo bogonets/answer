@@ -27,17 +27,6 @@ class RawPacketBase:
         self.proofread_floor = proofread_floor
         self.proofread_ceil = proofread_ceil
 
-    def to_dict(self) -> dict:
-        return dict(get_public_members(self))
-
-    def from_dict(self, **kwargs) -> None:
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-    def clear(self) -> None:
-        for key, _ in get_public_members(self):
-            setattr(self, key, type(getattr(self, key))())
-
     def get_packet_size(self, version=DEFAULT_VERSION) -> int:
         if version not in self._specs:
             raise ValueError(f"Unsupported version number: {version}")
@@ -54,6 +43,36 @@ class RawPacketBase:
                 if spec.name == key:
                     return spec
             raise KeyError(f"Not found spec: {key}")
+
+    def proofread_by_spec(self, spec: RawFieldSpec, value: int) -> int:
+        if self.proofread_ceil:
+            value_max = spec.max
+            if value > value_max:
+                return value_max
+        if self.proofread_floor:
+            value_min = spec.min
+            if value < value_min:
+                return value_min
+        return value
+
+    def proofread_by_key(
+        self,
+        key: str,
+        value: int,
+        version=DEFAULT_VERSION,
+    ) -> int:
+        return self.proofread_by_spec(self.get_spec(key, version), value)
+
+    def to_dict(self) -> dict:
+        return dict(get_public_members(self))
+
+    def from_dict(self, **kwargs) -> None:
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    def clear(self) -> None:
+        for key, _ in get_public_members(self):
+            setattr(self, key, type(getattr(self, key))())
 
     def to_bytes(self, version=DEFAULT_VERSION) -> bytes:
         if version not in self._specs:
@@ -104,14 +123,7 @@ class RawPacketBase:
                 raise EOFError("No more data.")
 
             value = int.from_bytes(encoded_value, field.byteorder, signed=field.signed)
-            if self.proofread_ceil:
-                value_max = field.max
-                if value > value_max:
-                    value = value_max
-            if self.proofread_floor:
-                value_min = field.min
-                if value < value_min:
-                    value = value_min
+            value = self.proofread_by_spec(field, value)
 
             if validation and field.range:
                 if value not in field.range:

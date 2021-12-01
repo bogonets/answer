@@ -39,6 +39,8 @@ class RawFieldSpec:
         value_range: Optional[Union[Iterable[int], range]] = None,
         byteorder=DEFAULT_BYTEORDER_NAME,
         signed=DEFAULT_SIGNED,
+        *,
+        range_sort=True,
     ):
         assert size >= 1
         assert byteorder in [BIG_ENDIAN, LITTLE_ENDIAN]
@@ -74,8 +76,14 @@ class RawFieldSpec:
                 else:
                     self.range = range(0, max_unsigned(size) + 1)
         else:
-            assert isinstance(value_range, list) or isinstance(value_range, range)
-            self.range = value_range
+            if isinstance(value_range, list):
+                if range_sort:
+                    self.range = sorted(set(value_range))
+                else:
+                    self.range = value_range
+            else:
+                assert isinstance(value_range, range)
+                self.range = value_range
 
         self.byteorder = byteorder
         self.signed = signed
