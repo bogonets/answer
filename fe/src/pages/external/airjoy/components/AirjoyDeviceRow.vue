@@ -260,7 +260,7 @@ ko:
               </v-chip>
             </template>
             <span v-if="item.service_last_time">
-              {{ $t('tooltip.as_last', [item.service_last_time]) }}
+              {{ $t('tooltip.as_last', [timeFormat(item.service_last_time)]) }}
             </span>
           </v-tooltip>
         </div>
@@ -425,6 +425,10 @@ export default class AirjoyDeviceRow extends VueBase {
 
   calcTemperature(value: number) {
     return _calcTemperature(value);
+  }
+
+  timeFormat(time: string) {
+    return createMoment(time).format("LL");
   }
 
   get textColorPm10() {
