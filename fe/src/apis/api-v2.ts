@@ -929,6 +929,20 @@ export default class ApiV2 {
         return this.get<Array<AirjoyChartA>>(url + query);
     }
 
+    getAirjoyChartCsv(
+        group: string,
+        project: string,
+        device: number | string,
+        begin: string,
+        end: string,
+    ) {
+        const queryBegin = encodeURIComponent(begin);
+        const queryEnd = encodeURIComponent(end);
+        const url = `/plugins/airjoy/${group}/${project}/devices/${device}/chart/csv`;
+        const query = `?begin=${queryBegin}&end=${queryEnd}`;
+        return this.get<string>(url + query);
+    }
+
     getAirjoyServices(
         group: string,
         project: string,

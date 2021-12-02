@@ -609,18 +609,44 @@ export default class MainAirjoyChart extends VueBase {
     }
 
     const labels = this.chartData['labels'];
-    const data = this.chartData['datasets'][0].data;
+    const dataMinMax = this.chartData['datasets'][0].data;
+    const dataAverage = this.chartData['datasets'][0].data;
     const lines = [] as Array<string>;
     for (let i = 0; i < labels.length; ++i) {
-      lines.push(`${labels[i]},${data[i][0]},${data[i][1]}`);
+      const min = dataMinMax[i][0];
+      const max = dataMinMax[i][1];
+      const avg = dataAverage[i];
+      lines.push(`${labels[i]},${min},${max},${avg}`);
     }
     return lines.join('\n');
   }
 
-  onClickDownloadCsv() {
+  downloadChartCsv() {
     const filename = `chart-${this.periodStart}_${this.periodEnd}.csv`;
     const mime = 'text/csv';
     download(this.toCsvData(), filename, mime);
+  }
+
+  onClickDownloadCsv() {
+    if (typeof this.device !== 'object') {
+      return;
+    }
+
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.device.uid;
+    const begin = this.getStartMoment().format();
+    const end = this.getEndMoment().format();
+
+    this.$api2.getAirjoyChartCsv(group, project, device, begin, end)
+        .then(data => {
+          const filename = `chart-${this.periodStart}_${this.periodEnd}.csv`;
+          const mime = 'text/csv';
+          download(data, filename, mime);
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+        });
   }
 }
 </script>

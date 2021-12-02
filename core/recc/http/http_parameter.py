@@ -35,7 +35,7 @@ from recc.http.http_status import (
 from recc.http import http_cache_keys as c
 from recc.http import http_path_keys as p
 from recc.conversion.boolean import str_to_bool
-from recc.variables.http import VERY_VERBOSE_DEBUGGING
+from recc.variables.http import DEBUGGING_BODY_MSG_MAX_SIZE, VERY_VERBOSE_DEBUGGING
 
 ERROR_MESSAGE_ONLY_SINGLE_POLICIES = (
     "Group and project permissions cannot be checked at the same time."
@@ -323,7 +323,10 @@ async def _parameter_matcher_main(
         result = func(*update_arguments)
 
     if very_verbose_debugging:
-        logger.debug(f"RESULT: {str(result)}")
+        debugging_body = str(result)
+        if len(debugging_body) >= DEBUGGING_BODY_MSG_MAX_SIZE:
+            debugging_body = debugging_body[0:DEBUGGING_BODY_MSG_MAX_SIZE] + " ..."
+        logger.debug(f"Response BODY: {debugging_body}")
 
     if result is None:
         return Response()
