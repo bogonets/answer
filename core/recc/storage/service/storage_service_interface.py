@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, Iterable
+from typing import Optional, List, Iterable, Dict, Tuple
 from dataclasses import dataclass
 from datetime import datetime
 from abc import ABCMeta, abstractmethod
@@ -54,6 +54,18 @@ class StorageServiceInterface(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def expiration_bucket_by_tags(
+        self,
+        bucket: str,
+        rule_id: Optional[str] = None,
+        prefix: Optional[str] = None,
+        tag_pair: Optional[Tuple[str, str]] = None,
+        date: Optional[datetime] = None,
+        days: Optional[int] = None,
+    ) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def get_object(self, bucket: str, name: str) -> bytes:
         raise NotImplementedError
 
@@ -64,6 +76,7 @@ class StorageServiceInterface(metaclass=ABCMeta):
         name: str,
         content: bytes,
         content_type: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
     ) -> None:
         raise NotImplementedError
 

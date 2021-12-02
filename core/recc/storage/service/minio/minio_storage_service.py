@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, Iterable
+from typing import Optional, List, Iterable, Dict, Tuple
 from overrides import overrides
+from datetime import datetime
 from io import BytesIO
 from urllib3.response import HTTPResponse
 from minio import Minio, S3Error
 from minio.deleteobjects import DeleteObject
+from minio.commonconfig import Tags, Tag, Filter, ENABLED
+from minio.lifecycleconfig import LifecycleConfig, Rule, Expiration
 from recc.mime.mime_type import APPLICATION_OCTET_STREAM
 from recc.storage.service.storage_service_interface import (
     StorageServiceObject,
@@ -90,6 +93,46 @@ class MinioStorageService(StorageServiceInterface):
         self.minio.remove_bucket(bucket)
 
     @overrides
+    async def expiration_bucket_by_tags(
+        self,
+        bucket: str,
+        rule_id: Optional[str] = None,
+        prefix: Optional[str] = None,
+        tag_pair: Optional[Tuple[str, str]] = None,
+        date: Optional[datetime] = None,
+        days: Optional[int] = None,
+    ) -> None:
+        expiration: Optional[Expiration]
+        if date is None or days is None:
+            expiration = None
+        else:
+            expiration = Expiration(date=date, days=days)
+
+        filter_tag: Optional[Tag]
+        if tag_pair is None:
+            filter_tag = None
+        else:
+            filter_tag = Tag(key=tag_pair[0], value=tag_pair[1])
+
+        rule_filter: Optional[Filter]
+        if prefix is None or filter_tag is None:
+            rule_filter = None
+        else:
+            rule_filter = Filter(prefix=prefix, tag=filter_tag)
+
+        config = LifecycleConfig(
+            rules=[
+                Rule(
+                    status=ENABLED,
+                    expiration=expiration,
+                    rule_filter=rule_filter,
+                    rule_id=rule_id,
+                ),
+            ],
+        )
+        self.minio.set_bucket_lifecycle(bucket, config)
+
+    @overrides
     async def get_object(self, bucket: str, name: str) -> bytes:
         response: Optional[HTTPResponse] = None
         try:
@@ -107,13 +150,25 @@ class MinioStorageService(StorageServiceInterface):
         name: str,
         content: bytes,
         content_type: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
     ) -> None:
+        mime = content_type if content_type else APPLICATION_OCTET_STREAM
+
+        object_tags: Optional[Tags]
+        if tags:
+            object_tags = Tags(for_object=True)
+            for key, value in tags.items():
+                object_tags[key] = value
+        else:
+            object_tags = None
+
         self.minio.put_object(
-            bucket,
-            name,
-            BytesIO(content),
-            len(content),
-            content_type if content_type else APPLICATION_OCTET_STREAM,
+            bucket_name=bucket,
+            object_name=name,
+            data=BytesIO(content),
+            length=len(content),
+            content_type=mime,
+            tags=object_tags,
         )
 
     @overrides
