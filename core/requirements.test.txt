@@ -6,6 +6,7 @@ types-requests
 types-orjson
 types-PyYAML
 types-protobuf
+types-python-dateutil
 pytest>=6.2.1
 pytest-cov>=2.10.1
 coverage>=5.3

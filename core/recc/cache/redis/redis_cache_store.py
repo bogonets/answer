@@ -16,6 +16,9 @@ SubscribeAsyncCallable = Callable[[Any], Awaitable[None]]
 SubscribeSyncCallable = Callable[[Any], None]
 SubscribeCallable = Union[SubscribeAsyncCallable, SubscribeSyncCallable]
 
+# https://redis.io/commands/expire#expire-accuracy
+EXPIRE_ACCURACY_SECONDS = 1
+
 
 class RedisCacheStore(CacheStoreInterface):
     """
@@ -91,14 +94,18 @@ class RedisCacheStore(CacheStoreInterface):
         await self.redis.execute_command("SET", key, val)
 
     @overrides
-    async def append(self, key: str, val: bytes) -> None:
-        await self.redis.execute_command("APPEND", key, val)
-
-    @overrides
     async def get(self, key: str) -> bytes:
         result = await self.redis.execute_command("GET", key)
         assert isinstance(result, bytes)
         return result
+
+    @overrides
+    async def append(self, key: str, val: bytes) -> None:
+        await self.redis.execute_command("APPEND", key, val)
+
+    @overrides
+    async def expire(self, key: str, seconds: int) -> None:
+        await self.redis.execute_command("EXPIRE", key, seconds)
 
     @overrides
     async def delete(self, key: str) -> None:

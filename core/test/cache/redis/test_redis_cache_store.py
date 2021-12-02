@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from unittest import main
+from asyncio import sleep
 from tester.unittest.async_test_case import AsyncTestCase
 from recc.argparse.default_parser import parse_arguments_to_core_config
-from recc.cache.redis.redis_cache_store import RedisCacheStore
+from recc.cache.redis.redis_cache_store import RedisCacheStore, EXPIRE_ACCURACY_SECONDS
 
 
 class RedisCacheStoreTestCase(AsyncTestCase):
@@ -75,6 +76,25 @@ class RedisCacheStoreTestCase(AsyncTestCase):
             self.assertEqual(val, await self.cs.get(key))  # 10MByte -> 0.04s
 
             await self.cs.delete(key)
+            self.assertFalse(await self.cs.exists(key))
+        finally:
+            if await self.cs.exists(key):
+                await self.cs.delete(key)
+
+    async def test_expire(self):
+        key = "__test_expire__key__"
+        val = b"aa"
+        expire_seconds = 1
+        wait_seconds = expire_seconds + EXPIRE_ACCURACY_SECONDS
+        try:
+            self.assertFalse(await self.cs.exists(key))
+            await self.cs.set(key, val)
+            self.assertTrue(await self.cs.exists(key))
+            self.assertEqual(val, await self.cs.get(key))
+
+            await self.cs.expire(key, expire_seconds)
+            self.assertTrue(await self.cs.exists(key))
+            await sleep(wait_seconds)
             self.assertFalse(await self.cs.exists(key))
         finally:
             if await self.cs.exists(key):

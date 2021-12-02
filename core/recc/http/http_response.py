@@ -5,6 +5,7 @@ from multidict import CIMultiDict
 from typing import Any, List, Optional, Union
 from zlib import compress as zlib_compress
 from gzip import compress as gzip_compress
+from http import HTTPStatus
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 from aiohttp.hdrs import (
@@ -254,7 +255,7 @@ def create_response(accept: AcceptType, encoding: Encoding, data: Any) -> Respon
 
     return Response(
         body=body,
-        status=200,
+        status=HTTPStatus.OK,
         reason="OK",
         headers=CIMultiDict(headers),
     )
