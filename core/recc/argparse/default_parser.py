@@ -132,24 +132,31 @@ def parse_arguments_to_namespace(
     if hasattr(cmd_config, "config"):
         joins.append(read_config_file_safe(cmd_config.config, RECC_DOM_ROOT))
 
-    if not ignore_environment:
-        # 3rd: environment variables
+    env_config: Optional[Namespace]
+    if ignore_environment:
+        env_config = None
+    else:
         env_config = get_namespace_by_os_envs(RECC_ENV_PREFIX)
-        joins.append(env_config)
 
-        # 4th: environment config file
-        if hasattr(env_config, "config"):
-            joins.append(read_config_file_safe(env_config.config, RECC_DOM_ROOT))
+    # 3rd: environment config file
+    if env_config and hasattr(env_config, "config"):
+        joins.append(read_config_file_safe(env_config.config, RECC_DOM_ROOT))
 
     if not ignore_default_paths:
-        # 5th: working config file
-        joins.append(read_config_file_safe(WORKING_CONFIG_PATH, RECC_DOM_ROOT))
+        # 4th: global config file
+        joins.append(read_config_file_safe(GLOBAL_CONFIG_PATH, RECC_DOM_ROOT))
 
-        # 6th: home config file
+        # 5th: home config file
         joins.append(read_config_file_safe(HOME_CONFIG_PATH, RECC_DOM_ROOT))
 
-        # 7th: global config file
-        joins.append(read_config_file_safe(GLOBAL_CONFIG_PATH, RECC_DOM_ROOT))
+        # 6th: working config file
+        joins.append(read_config_file_safe(WORKING_CONFIG_PATH, RECC_DOM_ROOT))
+
+    if env_config:
+        # 7th: environment variables
+        joins.append(env_config)
+
+    # TODO: 8th (last): environment variables files
 
     result = Namespace()
     left_join(result, *joins)

@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)
-RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
+CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
+RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
 
+CONFIG_PATH="$CORE_DIR/config.yml"
 STORAGE_DIR="$CORE_DIR/storage"
 SIGNATURE_KEY=aaa
 

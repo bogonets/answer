@@ -12,7 +12,7 @@ flag={TEST_FLAG_VALUE}
 """
 
 
-class ConfigFileTestCase(TestCase):
+class ConfigFileIniTestCase(TestCase):
     def setUp(self):
         fp = tempfile.NamedTemporaryFile(suffix=".ini", delete=False)
         fp.write(TEST_INI_CONTENT.encode("utf-8"))

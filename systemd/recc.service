@@ -8,13 +8,11 @@ Environment=PYTHONPATH=/usr/local/recc/home
 Environment=RECC_VERBOSE=0
 Environment=RECC_DEVELOPER=false
 Environment=RECC_LOG_LEVEL=INFO
-Environment=RECC_CONFIG=/usr/local/recc/home/config.yaml
+Environment=RECC_CONFIG=/usr/local/recc/home/config.yml
 Environment=RECC_STORAGE_ROOT=/usr/local/recc/home/storage
 WorkingDirectory=/usr/local/recc/home
 ExecStart=/usr/local/recc/python/bin/python3.8 -OO -m recc core
 LogNamespace=recc
-User=recc
-Group=recc
 
 [Install]
 WantedBy=multi-user.target
