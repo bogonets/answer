@@ -29,6 +29,8 @@ ko:
 
     <v-data-table
         hide-default-header
+        sort-desc
+        sort-by="name"
         :items="items"
         :search="filter"
         :loading="loading"
