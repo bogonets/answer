@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+function run_configure
+{
+    exit 0
+}
+
+function run_upgrade
+{
+    exit 0
+}
+
+case "$1" in
+configure)
+    run_configure
+    ;;
+upgrade)
+    run_upgrade
+    ;;
+*)
+    echo "Unrecognized postinst argument '$1'"
+esac

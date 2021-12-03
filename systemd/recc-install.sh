@@ -16,10 +16,10 @@ Available options are:
   --               Stop handling options.
 "
 
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)
-SOURCE_ROOT_DIR=$(cd "$SCRIPT_DIR/.."; pwd)
-SOURCE_CORE_DIR=$(cd "$SOURCE_ROOT_DIR/core"; pwd)
-SOURCE_FE_DIR=$(cd "$SOURCE_ROOT_DIR/fe"; pwd)
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
+SOURCE_ROOT_DIR=$(cd "$SCRIPT_DIR/.." || exit; pwd)
+SOURCE_CORE_DIR=$(cd "$SOURCE_ROOT_DIR/core" || exit; pwd)
+SOURCE_FE_DIR=$(cd "$SOURCE_ROOT_DIR/fe" || exit; pwd)
 
 UNINSTALL_FLAG=0
 CLEANUP_FLAG=0
@@ -504,7 +504,7 @@ function print_usage
     echo "$USAGE"
 }
 
-while [[ ! -z $1 ]]; do
+while [[ -n $1 ]]; do
     case $1 in
     -h|--help)
         print_usage

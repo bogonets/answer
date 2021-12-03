@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+function run_remove
+{
+    exit 0
+}
+
+function run_purge
+{
+    exit 0
+}
+
+case "$1" in
+remove)
+    run_remove
+    ;;
+purge)
+    run_purge
+    ;;
+*)
+    echo "Unrecognized postrm argument '$1'"
+esac
