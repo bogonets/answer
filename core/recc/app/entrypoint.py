@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, List, Callable
-from recc.argparse.default_parser import parse_arguments_to_config2, get_command
+from recc.argparse.argument_parser import ArgumentMessage
+from recc.argparse.default_parser import parse_arguments_to_config, get_command
 from recc.argparse.config.core_config import CoreConfig
 from recc.argparse.config.ctrl_config import CtrlConfig
 from recc.argparse.config.task_config import TaskConfig
@@ -12,7 +13,6 @@ from recc.app.ctrl_main import ctrl_main
 from recc.app.task_main import task_main
 from recc.app.daemon_main import daemon_main
 from recc.http.http_app import HttpAppCallback
-from recc.util.version import version_text
 
 
 def main(
@@ -26,28 +26,17 @@ def main(
     """
 
     try:
-        config = parse_arguments_to_config2(cmdline)
+        args = cmdline if cmdline else list()
+        config = parse_arguments_to_config(*args)
+    except ArgumentMessage as e:
+        printer(e.message)
+        return e.code
     except BaseException as e:
         printer(e)
         return 1
 
-    if config.help:
-        printer(config.help_message)
-        return 0
-
-    if config.version:  # nocov
-        printer(version_text)
-        return 0
-
-    if not config.command:
-        printer("Empty command.")
-        return 1
-
     cmd = get_command(config)
-
-    if cmd != Command.ctrl and config.unrecognized_arguments:
-        printer(f"Unrecognized arguments: {config.unrecognized_arguments}")
-        return 1
+    assert cmd != Command.unknown
 
     if cmd == Command.core:
         assert isinstance(config, CoreConfig)
@@ -62,8 +51,7 @@ def main(
         assert isinstance(config, DaemonConfig)
         return daemon_main(config)
 
-    printer(f"Unknown command: {config.command}")
-    return 1
+    assert False, "Inaccessible section"
 
 
 if __name__ == "__main__":

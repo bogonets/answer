@@ -3,6 +3,11 @@
 from enum import Enum
 from typing import List
 
+COMMAND_ARGUMENT_KEY = "command"
+HELP_ARGUMENT_KEY = "help"
+SUBCOMMAND_HELP_ARGUMENT_KEY = "subcommand_help"
+VERSION_ARGUMENT_KEY = "version"
+
 
 class Command(Enum):
     unknown = 0

@@ -2,6 +2,7 @@
 
 from unittest import TestCase, main
 from recc.argparse.parser.env_parse import (
+    normalize_config_key,
     get_filtered_namespace,
     get_namespace_by_os_envs,
 )
@@ -18,6 +19,62 @@ TEST_HTTP_BIND = "local"
 TEST_HTTP_PORT = "8888"
 TEST_VERBOSE = "2"
 TEST_DEVELOPER = "true"
+
+
+class EnvParseApiTestCase(TestCase):
+    def test_normalize_config_key(self):
+        key = "RECC_TEMP_FILE"
+        self.assertEqual("temp_file", normalize_config_key(key, "RECC_"))
+        self.assertEqual("recc_temp", normalize_config_key(key, None, "_FILE"))
+        self.assertEqual("temp", normalize_config_key(key, "RECC_", "_FILE"))
+
+        # Not working case:
+        self.assertEqual(key.lower(), normalize_config_key(key, "ECC_"))
+        self.assertEqual(key.lower(), normalize_config_key(key, "_FIL"))
+
+        # Empty key case:
+        self.assertEqual("", normalize_config_key("", "A"))
+        self.assertEqual("", normalize_config_key("", None, "B"))
+
+        # All remove case:
+        self.assertEqual("", normalize_config_key(key, key))
+        self.assertEqual("", normalize_config_key(key, None, key))
+        self.assertEqual("", normalize_config_key(key, key, key))
+
+    def test_get_filtered_namespace(self):
+        test_dict = {
+            RECC_CONFIG: "test.conf",
+            RECC_HTTP_BIND: "localhost",
+            RECC_HTTP_PORT: 7777,
+            RECC_VERBOSE: 3,
+            RECC_DEVELOPER: True,
+            "CONFIG": "Unknown",
+        }
+
+        config0 = get_filtered_namespace(test_dict)
+        self.assertEqual(6, len(vars(config0)))
+        self.assertEqual(test_dict[RECC_CONFIG], config0.recc_config)
+        self.assertEqual(test_dict[RECC_HTTP_BIND], config0.recc_http_bind)
+        self.assertEqual(test_dict[RECC_HTTP_PORT], config0.recc_http_port)
+        self.assertEqual(test_dict[RECC_VERBOSE], config0.recc_verbose)
+        self.assertEqual(test_dict[RECC_DEVELOPER], config0.recc_developer)
+        self.assertEqual("Unknown", config0.config)
+
+        config1 = get_filtered_namespace(test_dict, "RECC_")
+        self.assertEqual(5, len(vars(config1)))
+        self.assertEqual(test_dict[RECC_CONFIG], config1.config)
+        self.assertEqual(test_dict[RECC_HTTP_BIND], config1.http_bind)
+        self.assertEqual(test_dict[RECC_HTTP_PORT], config1.http_port)
+        self.assertEqual(test_dict[RECC_VERBOSE], config1.verbose)
+        self.assertEqual(test_dict[RECC_DEVELOPER], config1.developer)
+
+        config2 = get_filtered_namespace(test_dict, None, "_BIND")
+        self.assertEqual(1, len(vars(config2)))
+        self.assertEqual(test_dict[RECC_HTTP_BIND], config2.recc_http)
+
+        config3 = get_filtered_namespace(test_dict, "RECC_", "_PORT")
+        self.assertEqual(1, len(vars(config3)))
+        self.assertEqual(test_dict[RECC_HTTP_PORT], config3.http)
 
 
 class EnvParseTestCase(TestCase):
@@ -46,20 +103,6 @@ class EnvParseTestCase(TestCase):
         exchange_env(RECC_HTTP_PORT, self.original_http_port)
         exchange_env(RECC_VERBOSE, self.original_verbose)
         exchange_env(RECC_DEVELOPER, self.original_developer)
-
-    def test_get_namespace_by_envs(self):
-        test_dict = {
-            RECC_CONFIG: "test.conf",
-            RECC_HTTP_BIND: "localhost",
-            RECC_HTTP_PORT: 7777,
-            RECC_VERBOSE: 3,
-            RECC_DEVELOPER: True,
-        }
-        config = get_filtered_namespace(test_dict, "RECC_")
-        self.assertEqual(test_dict[RECC_HTTP_BIND], config.http_bind)
-        self.assertEqual(test_dict[RECC_HTTP_PORT], config.http_port)
-        self.assertEqual(test_dict[RECC_VERBOSE], config.verbose)
-        self.assertEqual(test_dict[RECC_DEVELOPER], config.developer)
 
     def test_get_init_params_by_os_envs(self):
         config = get_namespace_by_os_envs("RECC_")

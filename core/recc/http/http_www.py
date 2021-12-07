@@ -15,7 +15,7 @@ from recc.log.logging import recc_http_logger as logger
 from recc.file.permission import is_readable_dir, is_writable_dir
 from recc.http import http_urls as u
 
-DEFAULT_HTTP_ROOT = ARG_HTTP_ROOT.inference_default_value()
+DEFAULT_HTTP_ROOT = ARG_HTTP_ROOT.last_injection_value
 
 
 class HttpWWW:

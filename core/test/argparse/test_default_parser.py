@@ -5,8 +5,6 @@ from argparse import Namespace
 from recc.argparse.default_parser import (
     ConfigType,
     left_join,
-    get_command_line_namespace,
-    cast_config_type,
     parse_arguments_to_config,
 )
 from recc.argparse.config.core_config import CoreConfig
@@ -67,35 +65,25 @@ class DefaultParserTestCase(TestCase):
         self.assertEqual(2, result.b)
         self.assertEqual(3, result.c)
 
-    def test_get_command_line_namespace_for_unknown(self):
-        namespace = get_command_line_namespace("-vv", "--http-port")
-        config = cast_config_type(namespace)
-        self.assertIsInstance(config, Namespace)
-        self.assertIsInstance(config, GlobalConfig)
-        self.assertNotIsInstance(config, CoreConfig)
-        self.assertNotIsInstance(config, TaskConfig)
-        self.assertEqual(config, namespace)
-        self.assertIsNone(config.command)
-
-    def test_get_command_line_namespace_for_core(self):
-        namespace = get_command_line_namespace("-vv", "core", "--http-port", 9999)
-        config = cast_config_type(namespace)
+    def test_parse_arguments_to_config_for_core(self):
+        config = parse_arguments_to_config("-vv", Command.core.name, "--http-port", 9)
         self.assertIsInstance(config, Namespace)
         self.assertIsInstance(config, GlobalConfig)
         self.assertIsInstance(config, CoreConfig)
         self.assertNotIsInstance(config, TaskConfig)
-        self.assertEqual(config, namespace)
         self.assertEqual(Command.core.name, config.command)
+        self.assertEqual(2, config.verbose)
+        self.assertEqual(9, config.http_port)
 
-    def test_get_command_line_namespace_for_task(self):
-        namespace = get_command_line_namespace("--help", "task", "--task-port", 9999)
-        config = cast_config_type(namespace)
+    def test_parse_arguments_to_config_for_task(self):
+        config = parse_arguments_to_config("-v", Command.task.name, "--task-name", "N")
         self.assertIsInstance(config, Namespace)
         self.assertIsInstance(config, GlobalConfig)
         self.assertIsInstance(config, TaskConfig)
         self.assertNotIsInstance(config, CoreConfig)
-        self.assertEqual(config, namespace)
         self.assertEqual(Command.task.name, config.command)
+        self.assertEqual(1, config.verbose)
+        self.assertEqual("N", config.task_name)
 
     def test_parse_arguments_to_global_config(self):
         original_verbose = exchange_env(RECC_VERBOSE, "100")
@@ -121,7 +109,6 @@ class DefaultParserTestCase(TestCase):
         config = _parse_arguments_to_config("-vv", "core", "--http-port", 9999)
         self.assertIsInstance(config, CoreConfig)
         self.assertEqual(2, config.verbose)
-        self.assertFalse(config.help)
         self.assertEqual("1.2.3.4", config.http_bind)
         self.assertEqual(9999, config.http_port)
 

@@ -2,18 +2,18 @@
 
 from argparse import Namespace
 from recc.argparse.argument import Argument
-from recc.argparse.command import Command
 from recc.argparse.config.core_config import CORE_ARGS
 from recc.argparse.config.ctrl_config import CTRL_ARGS
 from recc.argparse.config.task_config import TASK_ARGS
 from recc.argparse.config.daemon_config import DAEMON_ARGS
-from recc.argparse.config.global_config import GLOBAL_ARGS, ARG_COMMAND
+from recc.argparse.config.global_config import GLOBAL_ARGS
+from recc.argparse.command import Command, COMMAND_ARGUMENT_KEY
 
 
 def injection_value_by_arg(namespace: Namespace, arg: Argument) -> Namespace:
     key = arg.normalize_key
     namespace_value = getattr(namespace, key, None)
-    inference_type = arg.inference_type()
+    inference_type = arg.cls
 
     if namespace_value is None:
         default_value = arg.last_injection_value
@@ -58,7 +58,7 @@ def injection_daemon_default_values(namespace: Namespace) -> Namespace:
 
 def injection_default_values(namespace: Namespace) -> Namespace:
     injection_global_default_values(namespace)
-    command = getattr(namespace, ARG_COMMAND.normalize_key)
+    command = getattr(namespace, COMMAND_ARGUMENT_KEY)
     if command:
         if command == Command.core.name:
             return injection_core_default_values(namespace)

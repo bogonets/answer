@@ -5,7 +5,7 @@ import grpc
 from typing import Optional
 from asyncio import run as asyncio_run
 from recc.aio.connection import try_connection
-from recc.argparse.config.task_config import TaskConfig, get_task_config_members
+from recc.argparse.config.task_config import TaskConfig
 from recc.init.default import (
     init_logger,
     init_json_driver,
@@ -87,38 +87,8 @@ async def wait_connectable(address: str) -> bool:
     )
 
 
-def _logging_config_value(config: TaskConfig, key: str) -> None:
-    if not hasattr(config, key):
-        return
-
-    val = getattr(config, key)
-    if isinstance(val, str):
-        val_text = f"'{val}'"
-    else:
-        val_text = str(val)
-    logger.info(f"- {key}: {val_text}")
-
-
-def _logging_config(config: TaskConfig) -> None:
-    global_keys = (
-        "user",
-        "group",
-        "loop_driver",
-        "json_driver",
-        "suppress_print",
-        "verbose",
-        "teardown",
-        "developer",
-    )
-    for global_key in global_keys:
-        _logging_config_value(config, global_key)
-    for key in get_task_config_members(ignore_global_members=True):
-        _logging_config_value(config, key)
-
-
 async def run_task_server(config: TaskConfig, wait_connect=True) -> None:
     logger.info("Start the task server")
-    _logging_config(config)
 
     accept_info = create_task_server(config)
     servicer = accept_info.servicer
