@@ -45,8 +45,10 @@ class ContextConfig(ContextBase):
         self._config_watcher["log_level"] = self._on_watch_log_level
 
     async def _set_config_value(self, key: str, val: Any) -> None:
+        assert self._config is not None
+
         if key in self._config_watcher:
-            old_value = getattr(self.config, key, None)
+            old_value = getattr(self._config, key, None)
 
             # Call the watcher.
             self._config_watcher.call_synced_watcher(key, val, old_value)
@@ -57,21 +59,30 @@ class ContextConfig(ContextBase):
         await self.database.upsert_info(info_key, info_value)
 
         # Updates the configuration in memory.
-        setattr(self.config, key, val)
+        setattr(self._config, key, val)
 
     async def restore_configs(self, configs: Dict[str, str]) -> None:
+        assert self._config is not None
+
         prefix = CONFIG_PREFIX_RECC_ARGPARSE_CONFIG
         filtered_configs = get_filtered_namespace(configs, prefix)
-        assert self._config is not None
+
         for key, val in vars(filtered_configs).items():
+            if key in CORE_CONFIG_TYPE_HINTS:
+                new_value = CORE_CONFIG_TYPE_HINTS[key](val)
+            else:
+                if hasattr(self._config, key):
+                    new_value = type(getattr(self._config, key))(val)
+                else:
+                    new_value = val
 
             if key in self._config_watcher:
-                old_value = getattr(self.config, key, None)
+                old_value = getattr(self._config, key, None)
 
                 # Call the watcher.
-                self._config_watcher.call_synced_watcher(key, val, old_value)
+                self._config_watcher.call_synced_watcher(key, new_value, old_value)
 
-            setattr(self._config, key, val)
+            setattr(self._config, key, new_value)
 
     @staticmethod
     def get_release_config_keys() -> Set[str]:
@@ -109,9 +120,10 @@ class ContextConfig(ContextBase):
         if key in CORE_CONFIG_TYPE_HINTS:
             cls = CORE_CONFIG_TYPE_HINTS[key]
             if issubclass(cls, bool) and isinstance(val, str):
-                if val == "True":
+                val_lower = val.lower()
+                if val_lower == "true":
                     update_value = True
-                elif val == "False":
+                elif val_lower == "false":
                     update_value = False
                 else:
                     raise ValueError(f"Unknown boolean value: {val}")

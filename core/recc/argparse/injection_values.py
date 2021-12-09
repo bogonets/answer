@@ -36,6 +36,24 @@ def injection_values_by_args(
     return namespace
 
 
+def cast_values_by_args_if_exists(
+    namespace: Namespace,
+    *args: Argument,
+) -> Namespace:
+    for arg in args:
+        key = arg.normalize_key
+        if not hasattr(namespace, key):
+            continue
+
+        val = getattr(namespace, key)
+        if isinstance(val, arg.cls):
+            continue
+
+        setattr(namespace, key, arg.cls(val))
+
+    return namespace
+
+
 def injection_global_default_values(namespace: Namespace) -> Namespace:
     return injection_values_by_args(namespace, *GLOBAL_ARGS)
 
