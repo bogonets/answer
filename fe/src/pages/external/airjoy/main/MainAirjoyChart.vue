@@ -249,7 +249,6 @@ import {
   calcHumidity,
   calcTemperature,
   categoryIndexByName,
-  categoryNameByIndex,
   getChartScaleYMax,
   INDEX_UNKNOWN,
   INDEX_PM10,
@@ -301,9 +300,9 @@ function getCategoryData(categoryIndex: number, chart: AirjoyChartA) {
       max = calcHumidity(chart.max_humidity);
       break;
     case INDEX_TEMPERATURE:
-      avg = calcHumidity(chart.avg_temperature);
-      min = calcHumidity(chart.min_temperature);
-      max = calcHumidity(chart.max_temperature);
+      avg = calcTemperature(chart.avg_temperature);
+      min = calcTemperature(chart.min_temperature);
+      max = calcTemperature(chart.max_temperature);
       break;
     case INDEX_VOC:
       avg = chart.avg_voc;
