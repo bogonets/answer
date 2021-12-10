@@ -8,12 +8,6 @@ CORE_WORKSPACE_NAME = "workspace"
 working/{group}/{project}
 """
 
-CORE_WORKSPACE_GLOBAL_NAME = "workspace.global"
-"""The global project's workspace directory.
-
-working.global/{project}
-"""
-
 CORE_TEMPLATE_NAME = "template"
 CORE_PLUGIN_NAME = "plugin"
 CORE_DAEMON_NAME = "daemon"
@@ -21,7 +15,6 @@ CORE_CACHE_NAME = "cache"
 
 CORE_NAMES = (
     CORE_WORKSPACE_NAME,
-    CORE_WORKSPACE_GLOBAL_NAME,
     CORE_TEMPLATE_NAME,
     CORE_PLUGIN_NAME,
     CORE_DAEMON_NAME,

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+from unittest import main
 from datetime import datetime, timedelta
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
@@ -9,10 +9,12 @@ class PgPortTestCase(PostgresqlTestCase):
     async def setUp(self):
         await super().setUp()
 
+        self.group_uid = await self.db.insert_group("group")
+
         self.project_slug = "project"
-        await self.db.insert_project(self.anonymous_group_uid, self.project_slug)
+        await self.db.insert_project(self.group_uid, self.project_slug)
         self.project_uid = await self.db.select_project_uid_by_group_uid_and_slug(
-            self.anonymous_group_uid, self.project_slug
+            self.group_uid, self.project_slug
         )
         self.project = await self.db.select_project_by_uid(self.project_uid)
 
@@ -28,7 +30,7 @@ class PgPortTestCase(PostgresqlTestCase):
         await self.db.insert_port(number1, created_at=created_at1)
         await self.db.insert_port(
             number2,
-            self.anonymous_group_uid,
+            self.group_uid,
             self.project.uid,
             self.task.uid,
             created_at=created_at2,
@@ -43,11 +45,11 @@ class PgPortTestCase(PostgresqlTestCase):
         self.assertEqual(created_at1, port1.created_at)
         self.assertIsNone(port1.updated_at)
 
-        ports2 = await self.db.select_port_by_group_uid(self.anonymous_group_uid)
+        ports2 = await self.db.select_port_by_group_uid(self.group_uid)
         self.assertEqual(1, len(ports2))
         port2 = ports2[0]
         self.assertEqual(number2, port2.number)
-        self.assertEqual(self.anonymous_group_uid, port2.group_uid)
+        self.assertEqual(self.group_uid, port2.group_uid)
         self.assertEqual(self.project.uid, port2.project_uid)
         self.assertEqual(self.task.uid, port2.task_uid)
         self.assertIsNone(port2.description)
@@ -100,7 +102,7 @@ class PgPortTestCase(PostgresqlTestCase):
         self.assertEqual(created_at, port1.created_at)
         self.assertIsNone(port1.updated_at)
 
-        group_uid = self.anonymous_group_uid
+        group_uid = self.group_uid
         project_uid = self.project.uid
         task_uid = self.task.uid
         extra = {"a": 1, "b": 2}
@@ -136,4 +138,4 @@ class PgPortTestCase(PostgresqlTestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

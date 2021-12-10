@@ -103,9 +103,6 @@ class Context(
         await self._database.create_tables()
         logger.info("Create tables (if not exists)")
 
-        await self._database.update_cache()
-        logger.info("Updated database cache")
-
         assert self._database.is_open()
         config_infos_prefix = CONFIG_PREFIX_RECC_ARGPARSE_CONFIG + "%"
         config_infos = await self.get_infos_like(config_infos_prefix)

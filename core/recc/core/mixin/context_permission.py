@@ -213,9 +213,6 @@ class ContextPermission(ContextBase):
         if not force:
             if await self.database.select_permission_lock_by_uid(uid):
                 raise RuntimeError(f"Locked permission: {uid}")
-            default_uids = self.database.get_default_permission_uids()
-            if uid in default_uids:
-                raise RuntimeError("Default permissions cannot be removed")
         await self.database.delete_permission_by_uid(uid)
 
     async def get_permission(self, uid: int) -> Permission:

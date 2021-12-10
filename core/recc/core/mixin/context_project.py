@@ -4,7 +4,11 @@ from typing import List, Optional, Any
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.project import Project
 from recc.database.struct.project_member import ProjectMember
-from recc.variables.database import VISIBILITY_LEVEL_PRIVATE, VISIBILITY_LEVEL_INTERNAL
+from recc.variables.database import (
+    PERMISSION_UID_OWNER,
+    VISIBILITY_LEVEL_PRIVATE,
+    VISIBILITY_LEVEL_INTERNAL,
+)
 
 
 class ContextProject(ContextBase):
@@ -19,6 +23,7 @@ class ContextProject(ContextBase):
         extra: Optional[Any] = None,
         owner_uid: Optional[int] = None,
     ) -> int:
+        # TODO: merge single query
         project_uid = await self.database.insert_project(
             group_uid=group_uid,
             slug=slug,
@@ -29,9 +34,8 @@ class ContextProject(ContextBase):
             extra=extra,
         )
         if owner_uid is not None:
-            owner_permission_uid = self.database.get_owner_permission_uid()
             await self.database.insert_project_member(
-                project_uid, owner_uid, owner_permission_uid
+                project_uid, owner_uid, PERMISSION_UID_OWNER
             )
         group_slug = await self.get_group_slug(group_uid)
         await self.plugins.create_project(group_slug, slug)

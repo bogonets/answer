@@ -10,16 +10,12 @@ from recc.variables.database import (
     TABLE_PERMISSION,
     TABLE_GROUP_MEMBER,
     TABLE_PROJECT_MEMBER,
-    DEFAULT_PERMISSION_SLUG_GUEST,
-    DEFAULT_PERMISSION_SLUG_REPORTER,
-    DEFAULT_PERMISSION_SLUG_OPERATOR,
-    DEFAULT_PERMISSION_SLUG_MAINTAINER,
     DEFAULT_PERMISSION_SLUG_OWNER,
-    DEFAULT_PERMISSION_NAME_GUEST,
-    DEFAULT_PERMISSION_NAME_REPORTER,
-    DEFAULT_PERMISSION_NAME_OPERATOR,
-    DEFAULT_PERMISSION_NAME_MAINTAINER,
-    DEFAULT_PERMISSION_NAME_OWNER,
+    DEFAULT_PERMISSION_SLUG_MAINTAINER,
+    DEFAULT_PERMISSION_SLUG_DEVELOPER,
+    DEFAULT_PERMISSION_SLUG_OPERATOR,
+    DEFAULT_PERMISSION_SLUG_REPORTER,
+    DEFAULT_PERMISSION_SLUG_GUEST,
 )
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
@@ -28,7 +24,7 @@ from recc.database.query_builder import UpdateBuilder, BuildResult
 ##########
 
 
-_SAFE_INSERT_PERMISSION_FORMAT = f"""
+INITIALIZE_ONLY_INSERT_PERMISSION_FORMAT = f"""
 INSERT INTO {TABLE_PERMISSION} (
     slug,
     name,
@@ -64,17 +60,17 @@ INSERT INTO {TABLE_PERMISSION} (
     {{w_setting}},
     {{hidden}},
     {{lock}},
-    NOW()
+    '{{created_at}}'
 WHERE
     NOT EXISTS(
         SELECT uid
         FROM {TABLE_PERMISSION}
-        WHERE slug LIKE '{DEFAULT_PERMISSION_SLUG_OWNER}'
+        WHERE slug='{{slug}}'
     );
 """
 
 
-def get_safe_insert_permission(
+def get_safe_insert_permission_query(
     slug: str,
     name: Optional[str] = None,
     r_layout=False,
@@ -91,10 +87,12 @@ def get_safe_insert_permission(
     w_setting=False,
     hidden=False,
     lock=False,
+    created_at: Optional[datetime] = None,
 ) -> str:
-    return _SAFE_INSERT_PERMISSION_FORMAT.format(
+    created = created_at if created_at else today()
+    return INITIALIZE_ONLY_INSERT_PERMISSION_FORMAT.format(
         slug=slug,
-        name=name if name else "",
+        name=name if name else slug,
         r_layout=r_layout,
         w_layout=w_layout,
         r_storage=r_storage,
@@ -109,57 +107,12 @@ def get_safe_insert_permission(
         w_setting=w_setting,
         hidden=hidden,
         lock=lock,
+        created_at=created,
     )
 
 
-SAFE_INSERT_PERMISSION_GUEST = get_safe_insert_permission(
-    DEFAULT_PERMISSION_SLUG_GUEST,
-    DEFAULT_PERMISSION_NAME_GUEST,
-    r_layout=True,
-    lock=True,
-)
-SAFE_INSERT_PERMISSION_REPORTER = get_safe_insert_permission(
-    DEFAULT_PERMISSION_SLUG_REPORTER,
-    DEFAULT_PERMISSION_NAME_REPORTER,
-    r_layout=True,
-    r_storage=True,
-    r_manager=True,
-    r_graph=True,
-    lock=True,
-)
-SAFE_INSERT_PERMISSION_OPERATOR = get_safe_insert_permission(
-    DEFAULT_PERMISSION_SLUG_OPERATOR,
-    DEFAULT_PERMISSION_NAME_OPERATOR,
-    r_layout=True,
-    w_layout=True,
-    r_storage=True,
-    w_storage=True,
-    r_manager=True,
-    w_manager=True,
-    r_graph=True,
-    w_graph=True,
-    lock=True,
-)
-SAFE_INSERT_PERMISSION_MAINTAINER = get_safe_insert_permission(
-    DEFAULT_PERMISSION_SLUG_MAINTAINER,
-    DEFAULT_PERMISSION_NAME_MAINTAINER,
-    r_layout=True,
-    w_layout=True,
-    r_storage=True,
-    w_storage=True,
-    r_manager=True,
-    w_manager=True,
-    r_graph=True,
-    w_graph=True,
-    r_member=True,
-    w_member=True,
-    r_setting=True,
-    w_setting=True,
-    lock=True,
-)
-SAFE_INSERT_PERMISSION_OWNER = get_safe_insert_permission(
+INSERT_PERMISSION_OWNER = get_safe_insert_permission_query(
     DEFAULT_PERMISSION_SLUG_OWNER,
-    DEFAULT_PERMISSION_NAME_OWNER,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -173,14 +126,60 @@ SAFE_INSERT_PERMISSION_OWNER = get_safe_insert_permission(
     r_setting=True,
     w_setting=True,
     lock=True,
+)
+INSERT_PERMISSION_MAINTAINER = get_safe_insert_permission_query(
+    DEFAULT_PERMISSION_SLUG_MAINTAINER,
+    r_layout=True,
+    w_layout=True,
+    r_storage=True,
+    w_storage=True,
+    r_manager=True,
+    w_manager=True,
+    r_graph=True,
+    w_graph=True,
+    r_member=True,
+    w_member=True,
+    r_setting=True,
+    w_setting=True,
+)
+INSERT_PERMISSION_DEVELOPER = get_safe_insert_permission_query(
+    DEFAULT_PERMISSION_SLUG_DEVELOPER,
+    r_layout=True,
+    w_layout=True,
+    r_storage=True,
+    w_storage=True,
+    r_manager=True,
+    w_manager=True,
+    r_graph=True,
+    w_graph=True,
+)
+INSERT_PERMISSION_OPERATOR = get_safe_insert_permission_query(
+    DEFAULT_PERMISSION_SLUG_OPERATOR,
+    r_layout=True,
+    w_layout=True,
+    r_storage=True,
+    w_storage=True,
+    r_manager=True,
+    w_manager=True,
+)
+INSERT_PERMISSION_REPORTER = get_safe_insert_permission_query(
+    DEFAULT_PERMISSION_SLUG_REPORTER,
+    r_layout=True,
+    r_storage=True,
+    r_manager=True,
+)
+INSERT_PERMISSION_GUEST = get_safe_insert_permission_query(
+    DEFAULT_PERMISSION_SLUG_GUEST,
+    r_layout=True,
 )
 
-SAFE_INSERT_PERMISSION_DEFAULTS = (
-    SAFE_INSERT_PERMISSION_GUEST,
-    SAFE_INSERT_PERMISSION_REPORTER,
-    SAFE_INSERT_PERMISSION_OPERATOR,
-    SAFE_INSERT_PERMISSION_MAINTAINER,
-    SAFE_INSERT_PERMISSION_OWNER,
+INSERT_PERMISSION_DEFAULTS = (
+    INSERT_PERMISSION_OWNER,
+    INSERT_PERMISSION_MAINTAINER,
+    INSERT_PERMISSION_DEVELOPER,
+    INSERT_PERMISSION_OPERATOR,
+    INSERT_PERMISSION_REPORTER,
+    INSERT_PERMISSION_GUEST,
 )
 
 INSERT_PERMISSION = f"""
@@ -295,36 +294,6 @@ COMMIT;
 # SELECT #
 ##########
 
-SELECT_PERMISSION_GUEST_UID = f"""
-SELECT uid
-FROM {TABLE_PERMISSION}
-WHERE slug LIKE '{DEFAULT_PERMISSION_SLUG_GUEST}';
-"""
-
-SELECT_PERMISSION_REPORTER_UID = f"""
-SELECT uid
-FROM {TABLE_PERMISSION}
-WHERE slug LIKE '{DEFAULT_PERMISSION_SLUG_REPORTER}';
-"""
-
-SELECT_PERMISSION_OPERATOR_UID = f"""
-SELECT uid
-FROM {TABLE_PERMISSION}
-WHERE slug LIKE '{DEFAULT_PERMISSION_SLUG_OPERATOR}';
-"""
-
-SELECT_PERMISSION_MAINTAINER_UID = f"""
-SELECT uid
-FROM {TABLE_PERMISSION}
-WHERE slug LIKE '{DEFAULT_PERMISSION_SLUG_MAINTAINER}';
-"""
-
-SELECT_PERMISSION_OWNER_UID = f"""
-SELECT uid
-FROM {TABLE_PERMISSION}
-WHERE slug LIKE '{DEFAULT_PERMISSION_SLUG_OWNER}';
-"""
-
 SELECT_PERMISSION_UID_BY_SLUG = f"""
 SELECT uid
 FROM {TABLE_PERMISSION}
@@ -352,6 +321,14 @@ WHERE uid=$1;
 SELECT_PERMISSION_ALL = f"""
 SELECT *
 FROM {TABLE_PERMISSION};
+"""
+
+EXISTS_PERMISSION_BY_UID = f"""
+SELECT EXISTS(
+    SELECT *
+    FROM {TABLE_PERMISSION}
+    WHERE uid=$1
+);
 """
 
 ##################

@@ -3,37 +3,12 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from recc.chrono.datetime import today
-from recc.variables.database import (
-    TABLE_GROUP,
-    TABLE_GROUP_MEMBER,
-    ANONYMOUS_GROUP_SLUG,
-    ANONYMOUS_GROUP_DESCRIPTION,
-    VISIBILITY_LEVEL_PUBLIC,
-)
+from recc.variables.database import TABLE_GROUP, TABLE_GROUP_MEMBER
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
 ##########
 # INSERT #
 ##########
-
-SAFE_INSERT_GROUP_ANONYMOUS = f"""
-INSERT INTO {TABLE_GROUP} (
-    slug,
-    description,
-    visibility,
-    created_at
-) SELECT
-    '{ANONYMOUS_GROUP_SLUG}',
-    '{ANONYMOUS_GROUP_DESCRIPTION}',
-    {VISIBILITY_LEVEL_PUBLIC},
-    NOW()
-WHERE
-    NOT EXISTS(
-        SELECT uid
-        FROM {TABLE_GROUP}
-        WHERE slug LIKE '{ANONYMOUS_GROUP_SLUG}'
-    );
-"""
 
 INSERT_GROUP = f"""
 INSERT INTO {TABLE_GROUP} (
@@ -103,12 +78,6 @@ COMMIT;
 ##########
 # SELECT #
 ##########
-
-SELECT_GROUP_ANONYMOUS_UID = f"""
-SELECT uid
-FROM {TABLE_GROUP}
-WHERE slug LIKE '{ANONYMOUS_GROUP_SLUG}';
-"""
 
 SELECT_GROUP_UID_BY_SLUG = f"""
 SELECT uid

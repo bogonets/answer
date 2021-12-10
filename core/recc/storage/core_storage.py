@@ -9,7 +9,6 @@ from recc.storage.mixin.storage_template_manager import StorageTemplateManagerMi
 from recc.storage.mixin.storage_workspace_manager import StorageWorkspaceManagerMixin
 from recc.variables.storage import (
     CORE_WORKSPACE_NAME,
-    CORE_WORKSPACE_GLOBAL_NAME,
     CORE_TEMPLATE_NAME,
     CORE_PLUGIN_NAME,
     CORE_DAEMON_NAME,
@@ -45,8 +44,7 @@ class CoreStorage(
         selected_root_dir = self.get_root_directory()
 
         working_dir = os.path.join(selected_root_dir, CORE_WORKSPACE_NAME)
-        working_global_dir = os.path.join(selected_root_dir, CORE_WORKSPACE_GLOBAL_NAME)
-        self.init_workspace_manager(working_dir, working_global_dir)
+        self.init_workspace_manager(working_dir)
 
         template_dir = os.path.join(selected_root_dir, CORE_TEMPLATE_NAME)
         self.init_template_manager(template_dir, venv_directory=None)

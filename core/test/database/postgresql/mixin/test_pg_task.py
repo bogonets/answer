@@ -1,27 +1,28 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+from unittest import main
 from datetime import datetime, timedelta
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
-from recc.variables.database import ANONYMOUS_GROUP_SLUG
 
 
 class PgTaskTestCase(PostgresqlTestCase):
     async def setUp(self):
         await super().setUp()
+        self.group_slug = "group"
+        self.group_uid = await self.db.insert_group(self.group_slug)
 
         self.project_slug = "project"
         self.project_uid = await self.db.insert_project(
-            self.anonymous_group_uid, self.project_slug
+            self.group_uid, self.project_slug
         )
         self.project = await self.db.select_project_by_uid(self.project_uid)
 
     async def test_none_exists_get(self):
-        group = ANONYMOUS_GROUP_SLUG
+        group = self.group_slug
         project = self.project_slug
         slug = "task"
         unknown = "unknown"
-        await self.db.insert_task(self.project.uid, slug)
+        await self.db.insert_task(self.project_uid, slug)
 
         with self.assertRaises(RuntimeError):
             await self.db.select_task_by_fullpath(unknown, project, slug)
@@ -85,7 +86,7 @@ class PgTaskTestCase(PostgresqlTestCase):
         self.assertEqual(task1, task1_2nd)
         self.assertEqual(task2, task2_2nd)
 
-        group = ANONYMOUS_GROUP_SLUG
+        group = self.group_slug
         project = self.project_slug
         task1_3rd = await self.db.select_task_by_fullpath(group, project, slug1)
         task2_3rd = await self.db.select_task_by_fullpath(group, project, slug2)
@@ -257,4 +258,4 @@ class PgTaskTestCase(PostgresqlTestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

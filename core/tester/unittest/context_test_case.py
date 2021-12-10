@@ -26,20 +26,17 @@ class ContextTestCase(AsyncTestCase):
         self.assertLess(0, len(self.numpy_template_jsons))
         self.context.storage.refresh_templates()
 
-        group_uid = self.context.database.get_anonymous_group_uid()
-        group = await self.context.database.select_group_by_uid(group_uid)
-        self.group_slug = group.slug
+        self.group_slug = "test_group"
         self.project_slug = "test_project"
         self.task_slug = "test_task"
 
+        self.group_uid = await self.context.database.insert_group(self.group_slug)
         self.project_uid = await self.context.database.insert_project(
-            group_uid,
-            self.project_slug,
+            self.group_uid, self.project_slug
         )
+
         self.client = await self.context.run_task(
-            self.group_slug,
-            self.project_slug,
-            self.task_slug,
+            self.group_slug, self.project_slug, self.task_slug
         )
 
     async def setUp(self):

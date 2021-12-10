@@ -39,10 +39,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertEqual(200, response.status)
         self.assertIsNotNone(response.data)
         self.assertIsInstance(response.data, list)
-        self.assertEqual(1, len(response.data))  # Anonymous group
-        response_data0 = response.data[0]
-        self.assertIsInstance(response_data0, GroupA)
-        anonymous_slug = response_data0.slug
+        self.assertEqual(0, len(response.data))
 
         new_group1 = CreateGroupQ(
             slug="group1",
@@ -57,8 +54,8 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertEqual(200, response3.status)
         self.assertIsNotNone(response3.data)
         self.assertIsInstance(response3.data, list)
-        self.assertEqual(2, len(response3.data))
-        group1 = list(filter(lambda g: g.slug != anonymous_slug, response3.data))[0]
+        self.assertEqual(1, len(response3.data))
+        group1 = response3.data[0]
         self.assertIsInstance(group1, GroupA)
         self.assertEqual(new_group1.slug, group1.slug)
         self.assertEqual(new_group1.description, group1.description)
@@ -90,7 +87,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertEqual(200, response8.status)
         self.assertIsNotNone(response8.data)
         self.assertIsInstance(response8.data, list)
-        self.assertEqual(1, len(response8.data))  # Anonymous group
+        self.assertEqual(0, len(response8.data))
 
     async def test_projects(self):
         group1 = CreateGroupQ(slug="group1")

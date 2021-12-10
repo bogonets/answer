@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+from unittest import main
 from datetime import datetime, timedelta
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
@@ -9,9 +9,11 @@ class PgLayoutTestCase(PostgresqlTestCase):
     async def setUp(self):
         await super().setUp()
 
+        self.group_uid = await self.db.insert_group("group")
+
         self.project_slug = "project"
         self.project_uid = await self.db.insert_project(
-            self.anonymous_group_uid, self.project_slug
+            self.group_uid, self.project_slug
         )
         self.project = await self.db.select_project_by_uid(self.project_uid)
 
@@ -113,4 +115,4 @@ class PgLayoutTestCase(PostgresqlTestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

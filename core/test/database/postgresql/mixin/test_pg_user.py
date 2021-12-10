@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import unittest
-from tester.unittest.postgresql_test_case import PostgresqlTestCase
+from unittest import main
 from datetime import datetime, timedelta
+from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
 class PgUserTestCase(PostgresqlTestCase):
@@ -137,4 +137,4 @@ class PgUserTestCase(PostgresqlTestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

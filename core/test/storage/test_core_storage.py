@@ -21,7 +21,6 @@ class CoreStorageTestCase(AsyncTestCase):
         self.assertTrue(os.path.isdir(self.sm.get_root_directory()))
         self.assertTrue(os.path.isdir(self.sm.get_template_directory()))
         self.assertTrue(os.path.isdir(self.sm.get_workspace_directory()))
-        self.assertTrue(os.path.isdir(self.sm.get_workspace_global_directory()))
 
         template_dir = self.sm.get_template_directory()
         self.numpy_json_files = copy_builtin_numpy_nodes(template_dir)

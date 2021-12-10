@@ -5,7 +5,11 @@ from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.group import Group
 from recc.database.struct.group_member import GroupMember
 from recc.database.struct.group_join_member import GroupJoinGroupMember
-from recc.variables.database import VISIBILITY_LEVEL_PRIVATE, VISIBILITY_LEVEL_INTERNAL
+from recc.variables.database import (
+    VISIBILITY_LEVEL_PRIVATE,
+    VISIBILITY_LEVEL_INTERNAL,
+    PERMISSION_UID_OWNER,
+)
 
 
 class ContextGroup(ContextBase):
@@ -19,6 +23,7 @@ class ContextGroup(ContextBase):
         extra: Any = None,
         owner_uid: Optional[int] = None,
     ) -> int:
+        # TODO: merge single query.
         group_uid = await self.database.insert_group(
             slug=slug,
             name=name,
@@ -28,9 +33,8 @@ class ContextGroup(ContextBase):
             extra=extra,
         )
         if owner_uid is not None:
-            owner_permission_uid = self.database.get_owner_permission_uid()
             await self.database.insert_group_member(
-                group_uid, owner_uid, owner_permission_uid
+                group_uid, owner_uid, PERMISSION_UID_OWNER
             )
         await self.plugins.create_group(slug)
         return group_uid

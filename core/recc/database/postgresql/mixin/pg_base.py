@@ -21,13 +21,6 @@ class PgBase:
 
     _timeout: float
 
-    _anonymous_group_uid: Optional[int]
-    _guest_permission_uid: Optional[int]
-    _reporter_permission_uid: Optional[int]
-    _operator_permission_uid: Optional[int]
-    _maintainer_permission_uid: Optional[int]
-    _owner_permission_uid: Optional[int]
-
     def conn(self, timeout: Optional[float] = None) -> PgConnection:
         assert self._pool is not None
         return PgConnection(self._pool, timeout=timeout)
