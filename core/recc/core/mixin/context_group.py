@@ -36,6 +36,7 @@ class ContextGroup(ContextBase):
             await self.database.insert_group_member(
                 group_uid, owner_uid, PERMISSION_UID_OWNER
             )
+        await self.cache.set_group(slug, group_uid)
         await self.plugins.create_group(slug)
         return group_uid
 
@@ -58,12 +59,16 @@ class ContextGroup(ContextBase):
             visibility=visibility,
             extra=extra,
         )
+        if slug is not None:
+            await self.cache.remove_group_by_uid(uid)
+            await self.cache.set_group(slug, uid)
 
     async def delete_group(self, uid: int) -> None:
         group_slug = await self.get_group_slug(uid)
-        await self.plugins.delete_group(group_slug)
 
         await self.database.delete_group_by_uid(uid)
+        await self.plugins.delete_group(group_slug)
+        await self.cache.remove_group_by_uid(uid)
 
     async def get_group(self, uid: int) -> Group:
         return await self.database.select_group_by_uid(uid)

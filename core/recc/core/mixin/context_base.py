@@ -169,23 +169,23 @@ class ContextBase:
         if not username:
             raise ValueError("The `username` argument is empty.")
 
-        uid = self.cache.get_user_uid(username)
+        uid = await self.cache.get_user_uid(username)
         if uid is None:
             try:
                 uid = await self.database.select_user_uid_by_username(username)
                 if caching:
-                    self.cache.set_user(username, uid)
+                    await self.cache.set_user(username, uid)
             except RuntimeError:
                 pass
         return uid
 
-    async def get_username(self, user_uid: int, caching=True) -> str:
-        username = self.cache.get_username(user_uid)
+    async def get_user_name(self, user_uid: int, caching=True) -> str:
+        username = await self.cache.get_user_name(user_uid)
         if username is None:
             try:
                 username = await self.database.select_user_username_by_uid(user_uid)
                 if caching:
-                    self.cache.set_user(username, user_uid)
+                    await self.cache.set_user(username, user_uid)
             except RuntimeError:
                 pass
         return username
@@ -194,23 +194,23 @@ class ContextBase:
         if not group_slug:
             raise ValueError("The `group_slug` argument is empty.")
 
-        uid = self.cache.get_group_uid(group_slug)
+        uid = await self.cache.get_group_uid(group_slug)
         if uid is None:
             try:
                 uid = await self.database.select_group_uid_by_slug(group_slug)
                 if caching:
-                    self.cache.set_group(uid, group_slug)
+                    await self.cache.set_group(group_slug, uid)
             except RuntimeError:
                 pass
         return uid
 
     async def get_group_slug(self, group_uid: int, caching=True) -> str:
-        slug = self.cache.get_group_slug(group_uid)
+        slug = await self.cache.get_group_slug(group_uid)
         if slug is None:
             try:
                 slug = await self.database.select_group_slug_by_uid(group_uid)
                 if caching:
-                    self.cache.set_group(group_uid, slug)
+                    await self.cache.set_group(slug, group_uid)
             except RuntimeError:
                 pass
         return slug
@@ -221,14 +221,14 @@ class ContextBase:
         if not project_slug:
             raise ValueError("The `project_slug` argument is empty.")
 
-        uid = self.cache.get_project_uid(group_uid, project_slug)
+        uid = await self.cache.get_project_uid(group_uid, project_slug)
         if uid is None:
             try:
                 uid = await self.database.select_project_uid_by_group_uid_and_slug(
                     group_uid, project_slug
                 )
                 if caching:
-                    self.cache.set_project(uid, group_uid, project_slug)
+                    await self.cache.set_project(group_uid, project_slug, uid)
             except RuntimeError:
                 pass
         return uid
@@ -237,23 +237,23 @@ class ContextBase:
         if not permission_slug:
             raise ValueError("The `permission_slug` argument is empty.")
 
-        uid = self.cache.get_permission_uid(permission_slug)
+        uid = await self.cache.get_permission_uid(permission_slug)
         if uid is None:
             try:
                 uid = await self.database.select_permission_uid_by_slug(permission_slug)
                 if caching:
-                    self.cache.set_permission(uid, permission_slug)
+                    await self.cache.set_permission(permission_slug, uid)
             except RuntimeError:
                 pass
         return uid
 
     async def get_permission_slug(self, permission_uid: int, caching=True) -> str:
-        slug = self.cache.get_permission_slug(permission_uid)
+        slug = await self.cache.get_permission_slug(permission_uid)
         if slug is None:
             try:
                 slug = await self.database.select_permission_slug_by_uid(permission_uid)
                 if caching:
-                    self.cache.set_permission(permission_uid, slug)
+                    await self.cache.set_permission(slug, permission_uid)
             except RuntimeError:
                 pass
         return slug

@@ -38,12 +38,14 @@ class ContextProject(ContextBase):
                 project_uid, owner_uid, PERMISSION_UID_OWNER
             )
         group_slug = await self.get_group_slug(group_uid)
+        await self.cache.set_project(group_uid, slug, project_uid)
         await self.plugins.create_project(group_slug, slug)
         return project_uid
 
     async def update_project(
         self,
         uid: int,
+        slug: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
         features: Optional[List[str]] = None,
@@ -52,19 +54,25 @@ class ContextProject(ContextBase):
     ) -> None:
         await self.database.update_project_by_uid(
             uid=uid,
+            slug=slug,
             name=name,
             description=description,
             features=features,
             visibility=visibility,
             extra=extra,
         )
+        if slug is not None:
+            project = await self.get_project(uid)
+            await self.cache.remove_project_by_uid(uid)
+            await self.cache.set_project(project.group_uid, project.slug, uid)
 
     async def delete_project(self, uid: int) -> None:
         project = await self.database.select_project_by_uid(uid)
         group_slug = await self.get_group_slug(project.group_uid)
-        await self.plugins.delete_project(group_slug, project.slug)
 
         await self.database.delete_project_by_uid(uid)
+        await self.plugins.delete_project(group_slug, project.slug)
+        await self.cache.remove_project_by_uid(uid)
 
     async def get_projects(self, group_uid: Optional[int] = None) -> List[Project]:
         if not group_uid:

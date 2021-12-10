@@ -62,7 +62,7 @@ class ContextUser(ContextBase):
         if not username:
             raise ValueError("The `username` argument is empty.")
         pass_info = salting_password(hashed_password)
-        return await self.database.insert_user(
+        user_uid = await self.database.insert_user(
             username,
             pass_info.password,
             pass_info.salt,
@@ -73,6 +73,8 @@ class ContextUser(ContextBase):
             is_admin=is_admin,
             extra=extra,
         )
+        await self.cache.set_user(username, user_uid)
+        return user_uid
 
     async def signup_guest(
         self,
@@ -136,6 +138,7 @@ class ContextUser(ContextBase):
 
     async def remove_user_by_uid(self, user_uid: int) -> None:
         await self.database.delete_user_by_uid(user_uid)
+        await self.cache.remove_user_by_uid(user_uid)
 
     async def remove_user(self, username: str) -> None:
         user_uid = await self.get_user_uid(username)
@@ -162,6 +165,10 @@ class ContextUser(ContextBase):
             is_admin=is_admin,
             extra=extra,
         )
+
+        if username is not None:
+            await self.cache.remove_user_by_uid(uid)
+            await self.cache.set_user(username, uid)
 
     async def update_user_extra(self, username: str, extra: Any) -> None:
         user_uid = await self.get_user_uid(username)

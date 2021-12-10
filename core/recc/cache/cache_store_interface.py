@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABCMeta, abstractmethod
+from typing import Optional, Dict, Union
+
+ValueType = Union[bytes, memoryview, str, int, float]
 
 
 class CacheStoreInterface(metaclass=ABCMeta):
@@ -21,15 +24,19 @@ class CacheStoreInterface(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def set(self, key: str, val: bytes) -> None:
+    async def set(self, key: str, val: ValueType) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def get(self, key: str) -> bytes:
+    async def sets(self, pairs: Dict[str, ValueType]) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def append(self, key: str, val: bytes) -> None:
+    async def get(self, key: str) -> Optional[bytes]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def append(self, key: str, val: ValueType) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -37,9 +44,9 @@ class CacheStoreInterface(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def delete(self, key: str) -> None:
+    async def delete(self, *keys: str) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def exists(self, key: str) -> bool:
+    async def exists(self, *key: str) -> int:
         raise NotImplementedError

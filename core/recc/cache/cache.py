@@ -1,10 +1,56 @@
 # -*- coding: utf-8 -*-
 
-from threading import Lock
-from typing import Optional, Dict, Tuple
+from typing import Optional, Tuple
+from recc.cache.cache_store_interface import CacheStoreInterface
 from recc.cache.cache_store import create_cache_store
+from recc.variables.cache import (
+    CACHE_FORMAT_USER_NAME_TO_UID,
+    CACHE_FORMAT_USER_UID_TO_NAME,
+    CACHE_FORMAT_GROUP_SLUG_TO_UID,
+    CACHE_FORMAT_GROUP_UID_TO_SLUG,
+    CACHE_FORMAT_PROJECT_KEY_TO_UID,
+    CACHE_FORMAT_PROJECT_UID_TO_KEY,
+    CACHE_FORMAT_PERMISSION_SLUG_TO_UID,
+    CACHE_FORMAT_PERMISSION_UID_TO_SLUG,
+    PROJECT_KEY_SEPARATOR,
+    PROJECT_KEY_FORMAT,
+)
 
-ProjectKey = Tuple[int, str]
+
+def key_user_name_to_uid(name: str) -> str:
+    return CACHE_FORMAT_USER_NAME_TO_UID.format(name=name)
+
+
+def key_user_uid_to_name(uid: int) -> str:
+    return CACHE_FORMAT_USER_UID_TO_NAME.format(uid=uid)
+
+
+def key_group_slug_to_uid(slug: str) -> str:
+    return CACHE_FORMAT_GROUP_SLUG_TO_UID.format(slug=slug)
+
+
+def key_group_uid_to_slug(uid: int) -> str:
+    return CACHE_FORMAT_GROUP_UID_TO_SLUG.format(uid=uid)
+
+
+def key_project(group_uid: int, project_slug: str) -> str:
+    return PROJECT_KEY_FORMAT.format(group_uid=group_uid, project_slug=project_slug)
+
+
+def key_project_key_to_uid(project_key: str) -> str:
+    return CACHE_FORMAT_PROJECT_KEY_TO_UID.format(key=project_key)
+
+
+def key_project_uid_to_key(project_uid: int) -> str:
+    return CACHE_FORMAT_PROJECT_UID_TO_KEY.format(uid=project_uid)
+
+
+def key_permission_slug_to_uid(slug: str) -> str:
+    return CACHE_FORMAT_PERMISSION_SLUG_TO_UID.format(slug=slug)
+
+
+def key_permission_uid_to_slug(uid: int) -> str:
+    return CACHE_FORMAT_PERMISSION_UID_TO_SLUG.format(uid=uid)
 
 
 class Cache:
@@ -18,31 +64,6 @@ class Cache:
     ):
         self._store = create_cache_store(cs_type, cs_host, cs_port, cs_pw, **kwargs)
 
-        # User
-        self._user_lock = Lock()
-        self._username_to_uid: Dict[str, int] = dict()
-        self._uid_to_username: Dict[int, str] = dict()
-
-        # Group
-        self._group_lock = Lock()
-        self._group_slug_to_uid: Dict[str, int] = dict()
-        self._group_uid_to_slug: Dict[int, str] = dict()
-
-        # Project
-        self._project_lock = Lock()
-        self._project_uid_to_slug: Dict[int, str] = dict()
-        self._project_uid_to_group_uid: Dict[int, int] = dict()
-        self._project_key_to_project_uid: Dict[ProjectKey, int] = dict()
-
-        # Permission
-        self._permission_lock = Lock()
-        self._permission_slug_to_uid: Dict[str, int] = dict()
-        self._permission_uid_to_slug: Dict[int, str] = dict()
-
-    # ------------
-    # Store bypass
-    # ------------
-
     def is_open(self) -> bool:
         return self._store.is_open()
 
@@ -52,150 +73,128 @@ class Cache:
     async def close(self) -> None:
         await self._store.close()
 
-    async def store_set(self, key: str, val: bytes) -> None:
-        await self._store.set(key, val)
+    @property
+    def store(self) -> CacheStoreInterface:
+        assert self._store is not None
+        assert self._store.is_open()
+        return self._store
 
-    async def store_get(self, key: str) -> bytes:
-        return await self._store.get(key)
+    async def get_str(self, key: str, encoding="utf-8") -> Optional[str]:
+        val = await self.store.get(key)
+        return str(val, encoding=encoding) if val else None
 
-    async def store_delete(self, key: str) -> None:
-        await self._store.delete(key)
+    async def get_int(self, key: str) -> Optional[int]:
+        val = await self.store.get(key)
+        return int(val) if val else None
 
-    async def store_exists(self, key: str) -> bool:
-        return await self._store.exists(key)
-
-    # ---------------
-    # username -> uid
-    # ---------------
-
-    def exists_username(self, username: str) -> bool:
-        with self._user_lock:
-            return username in self._username_to_uid
-
-    def exists_user_uid(self, user_uid: int) -> bool:
-        with self._user_lock:
-            return user_uid in self._uid_to_username
-
-    def get_user_uid(self, username: str) -> Optional[int]:
-        with self._user_lock:
-            return self._username_to_uid.get(username, None)
-
-    def get_username(self, user_uid: int) -> Optional[str]:
-        with self._user_lock:
-            return self._uid_to_username.get(user_uid, None)
-
-    def set_user(self, username: str, user_uid: int) -> None:
-        with self._user_lock:
-            self._username_to_uid[username] = user_uid
-            self._uid_to_username[user_uid] = username
-
-    def remove_user(self, username: str, user_uid: int) -> None:
-        with self._user_lock:
-            del self._username_to_uid[username]
-            del self._uid_to_username[user_uid]
+    async def get_float(self, key: str) -> Optional[float]:
+        val = await self.store.get(key)
+        return float(val) if val else None
 
     # -----------------
-    # group slug -> uid
+    # user name <-> uid
     # -----------------
 
-    def exists_group_slug(self, group_slug: str) -> bool:
-        with self._group_lock:
-            return group_slug in self._group_slug_to_uid
+    async def get_user_uid(self, name: str) -> Optional[int]:
+        return await self.get_int(key_user_name_to_uid(name))
 
-    def exists_group_uid(self, group_uid: int) -> bool:
-        with self._group_lock:
-            return group_uid in self._group_uid_to_slug
+    async def get_user_name(self, uid: int) -> Optional[str]:
+        return await self.get_str(key_user_uid_to_name(uid))
 
-    def get_group_uid(self, group_slug: str) -> Optional[int]:
-        with self._group_lock:
-            return self._group_slug_to_uid.get(group_slug, None)
+    async def set_user(self, name: str, uid: int) -> None:
+        name_to_uid = key_user_name_to_uid(name)
+        uid_to_name = key_user_uid_to_name(uid)
+        await self.store.sets({name_to_uid: uid, uid_to_name: name})
 
-    def get_group_slug(self, group_uid: int) -> Optional[str]:
-        with self._group_lock:
-            return self._group_uid_to_slug.get(group_uid, None)
+    async def remove_user_by_uid(self, uid: int) -> None:
+        uid_to_name = key_user_uid_to_name(uid)
+        name = await self.get_str(uid_to_name)
+        if name is not None:
+            name_to_uid = key_user_name_to_uid(name)
+            await self.store.delete(uid_to_name, name_to_uid)
+        else:
+            await self.store.delete(uid_to_name)
 
-    def set_group(self, group_uid: int, group_slug: str) -> None:
-        with self._group_lock:
-            self._group_slug_to_uid[group_slug] = group_uid
-            self._group_uid_to_slug[group_uid] = group_slug
+    # ------------------
+    # group slug <-> uid
+    # ------------------
 
-    def remove_group(self, group_uid: int, group_slug: str) -> None:
-        with self._group_lock:
-            del self._group_slug_to_uid[group_slug]
-            del self._group_uid_to_slug[group_uid]
+    async def get_group_uid(self, slug: str) -> Optional[int]:
+        return await self.get_int(key_group_slug_to_uid(slug))
 
-    # -------------------
-    # project slug -> uid
-    # -------------------
+    async def get_group_slug(self, uid: int) -> Optional[str]:
+        return await self.get_str(key_group_uid_to_slug(uid))
 
-    def exists_project_uid(self, project_uid: int) -> bool:
-        with self._project_lock:
-            return project_uid in self._project_uid_to_group_uid
+    async def set_group(self, slug: str, uid: int) -> None:
+        slug_to_uid = key_group_slug_to_uid(slug)
+        uid_to_slug = key_group_uid_to_slug(uid)
+        await self.store.sets({slug_to_uid: uid, uid_to_slug: slug})
 
-    def exists_group_uid_and_project_slug(
-        self, group_uid: int, project_slug: str
-    ) -> bool:
-        with self._project_lock:
-            key = (group_uid, project_slug)
-            return key in self._project_key_to_project_uid
+    async def remove_group_by_uid(self, uid: int) -> None:
+        uid_to_slug = key_group_uid_to_slug(uid)
+        slug = await self.get_str(uid_to_slug)
+        if slug is not None:
+            slug_to_uid = key_group_slug_to_uid(slug)
+            await self.store.delete(uid_to_slug, slug_to_uid)
+        else:
+            await self.store.delete(uid_to_slug)
 
-    def get_group_uid_by_project_uid(self, project_uid: int) -> Optional[int]:
-        with self._project_lock:
-            return self._project_uid_to_group_uid.get(project_uid, None)
+    # --------------------
+    # project slug <-> uid
+    # --------------------
 
-    def get_project_slug(self, project_uid: int) -> Optional[str]:
-        with self._project_lock:
-            return self._project_uid_to_slug.get(project_uid, None)
+    async def get_project_uid(self, group_uid: int, project_slug: str) -> Optional[int]:
+        project_key = key_project(group_uid, project_slug)
+        return await self.get_int(key_project_key_to_uid(project_key))
 
-    def get_project_uid(self, group_uid: int, project_slug: str) -> Optional[int]:
-        with self._project_lock:
-            key = (group_uid, project_slug)
-            return self._project_key_to_project_uid.get(key, None)
+    async def get_project_key(self, project_uid: int) -> Optional[Tuple[int, str]]:
+        uid_to_key = key_project_uid_to_key(project_uid)
+        val = await self.get_str(uid_to_key)
+        if val is None:
+            return None
+        project_keys = val.split(PROJECT_KEY_SEPARATOR)
+        assert len(project_keys) == 2
+        group_uid = int(project_keys[0])
+        project_slug = project_keys[1]
+        return group_uid, project_slug
 
-    def set_project(self, project_uid: int, group_uid: int, project_slug: str) -> None:
-        with self._project_lock:
-            self._project_uid_to_slug[project_uid] = project_slug
-            self._project_uid_to_group_uid[project_uid] = group_uid
-
-            key = (group_uid, project_slug)
-            self._project_key_to_project_uid[key] = project_uid
-
-    def remove_project(
-        self, project_uid: int, group_uid: int, project_slug: str
+    async def set_project(
+        self, group_uid: int, project_slug: str, project_uid: int
     ) -> None:
-        with self._project_lock:
-            del self._project_uid_to_slug[project_uid]
-            del self._project_uid_to_group_uid[project_uid]
+        project_key = key_project(group_uid, project_slug)
+        key_to_uid = key_project_key_to_uid(project_key)
+        uid_to_key = key_project_uid_to_key(project_uid)
+        await self._store.sets({key_to_uid: project_uid, uid_to_key: project_key})
 
-            key = (group_uid, project_slug)
-            del self._project_key_to_project_uid[key]
+    async def remove_project_by_uid(self, project_uid: int) -> None:
+        uid_to_key = key_project_uid_to_key(project_uid)
+        project_key = await self.get_str(uid_to_key)
+        if project_key is not None:
+            key_to_uid = key_project_key_to_uid(project_key)
+            await self._store.delete(uid_to_key, key_to_uid)
+        else:
+            await self._store.delete(uid_to_key)
 
-    # ----------------------
-    # permission slug -> uid
-    # ----------------------
+    # -----------------------
+    # permission slug <-> uid
+    # -----------------------
 
-    def exists_permission_slug(self, slug: str) -> bool:
-        with self._permission_lock:
-            return slug in self._permission_slug_to_uid
+    async def get_permission_uid(self, slug: str) -> Optional[int]:
+        return await self.get_int(key_permission_slug_to_uid(slug))
 
-    def exists_permission_uid(self, uid: int) -> bool:
-        with self._permission_lock:
-            return uid in self._permission_uid_to_slug
+    async def get_permission_slug(self, uid: int) -> Optional[str]:
+        return await self.get_str(key_permission_uid_to_slug(uid))
 
-    def get_permission_uid(self, slug: str) -> Optional[int]:
-        with self._permission_lock:
-            return self._permission_slug_to_uid.get(slug, None)
+    async def set_permission(self, slug: str, uid: int) -> None:
+        slug_to_uid = key_permission_slug_to_uid(slug)
+        uid_to_slug = key_permission_uid_to_slug(uid)
+        await self._store.sets({slug_to_uid: uid, uid_to_slug: slug})
 
-    def get_permission_slug(self, uid: int) -> Optional[str]:
-        with self._permission_lock:
-            return self._permission_uid_to_slug.get(uid, None)
-
-    def set_permission(self, uid: int, slug: str) -> None:
-        with self._permission_lock:
-            self._permission_slug_to_uid[slug] = uid
-            self._permission_uid_to_slug[uid] = slug
-
-    def remove_permission(self, uid: int, slug: str) -> None:
-        with self._permission_lock:
-            del self._permission_slug_to_uid[slug]
-            del self._permission_uid_to_slug[uid]
+    async def remove_permission_by_uid(self, uid: int) -> None:
+        uid_to_slug = key_permission_uid_to_slug(uid)
+        slug = await self.get_str(uid_to_slug)
+        if slug is not None:
+            slug_to_uid = key_permission_slug_to_uid(slug)
+            await self._store.delete(uid_to_slug, slug_to_uid)
+        else:
+            await self._store.delete(uid_to_slug)

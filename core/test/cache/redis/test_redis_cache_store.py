@@ -22,6 +22,46 @@ class RedisCacheStoreTestCase(AsyncTestCase):
         await self.cs.close()
         self.assertFalse(self.cs.is_open())
 
+    async def test_not_exists_delete(self):
+        key1 = "__test_not_exists_delete__key1__"
+        key2 = "__test_not_exists_delete__key2__"
+        self.assertFalse(await self.cs.exists(key1))
+        self.assertFalse(await self.cs.exists(key2))
+        await self.cs.delete(key1, key2)
+        self.assertFalse(await self.cs.exists(key1))
+        self.assertFalse(await self.cs.exists(key2))
+
+    async def test_not_exists_get(self):
+        key1 = "__test_not_exists_get__key1__"
+        self.assertFalse(await self.cs.exists(key1))
+        self.assertIsNone(await self.cs.get(key1))
+
+    async def test_sets_and_exists(self):
+        key1 = "__test_sets_and_exists__key1__"
+        key2 = "__test_sets_and_exists__key2__"
+        val1 = b"val1"
+        val2 = b"val2"
+        try:
+            self.assertFalse(await self.cs.exists(key1))
+            self.assertFalse(await self.cs.exists(key2))
+
+            await self.cs.sets({key1: val1, key2: val2})
+            self.assertEqual(2, await self.cs.exists(key1, key2))
+            self.assertEqual(val1, await self.cs.get(key1))
+            self.assertEqual(val2, await self.cs.get(key2))
+
+            await self.cs.delete(key1)
+            self.assertEqual(1, await self.cs.exists(key1, key2))
+            self.assertFalse(await self.cs.exists(key1))
+            self.assertTrue(await self.cs.exists(key2))
+
+            await self.cs.delete(key2)
+            self.assertEqual(0, await self.cs.exists(key1, key2))
+            self.assertFalse(await self.cs.exists(key1))
+            self.assertFalse(await self.cs.exists(key2))
+        finally:
+            await self.cs.delete(key1, key2)
+
     async def test_set_get_append(self):
         key = "__test_set_get_append__key__"
         val1 = b"aa"
@@ -40,8 +80,7 @@ class RedisCacheStoreTestCase(AsyncTestCase):
             await self.cs.delete(key)
             self.assertFalse(await self.cs.exists(key))
         finally:
-            if await self.cs.exists(key):
-                await self.cs.delete(key)
+            await self.cs.delete(key)
 
     async def test_append_get(self):
         key = "__test_append_get__key__"
@@ -61,8 +100,7 @@ class RedisCacheStoreTestCase(AsyncTestCase):
             await self.cs.delete(key)
             self.assertFalse(await self.cs.exists(key))
         finally:
-            if await self.cs.exists(key):
-                await self.cs.delete(key)
+            await self.cs.delete(key)
 
     async def test_massive_set_get(self):
         massive_size = 10 * 1024 * 1024
@@ -78,8 +116,7 @@ class RedisCacheStoreTestCase(AsyncTestCase):
             await self.cs.delete(key)
             self.assertFalse(await self.cs.exists(key))
         finally:
-            if await self.cs.exists(key):
-                await self.cs.delete(key)
+            await self.cs.delete(key)
 
     async def test_expire(self):
         key = "__test_expire__key__"
@@ -97,8 +134,7 @@ class RedisCacheStoreTestCase(AsyncTestCase):
             await sleep(wait_seconds)
             self.assertFalse(await self.cs.exists(key))
         finally:
-            if await self.cs.exists(key):
-                await self.cs.delete(key)
+            await self.cs.delete(key)
 
     async def test_pub_sub(self):
         class _Sub:

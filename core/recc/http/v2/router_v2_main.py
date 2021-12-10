@@ -157,7 +157,7 @@ class RouterV2Main:
         for member in members:
             assert member.user_uid is not None
             assert member.permission_uid is not None
-            username = await self.context.get_username(member.user_uid)
+            username = await self.context.get_user_name(member.user_uid)
             permission_slug = await self.context.get_permission_slug(
                 member.permission_uid
             )
@@ -315,7 +315,7 @@ class RouterV2Main:
         for member in members:
             assert member.user_uid is not None
             assert member.permission_uid is not None
-            username = await self.context.get_username(member.user_uid)
+            username = await self.context.get_user_name(member.user_uid)
             permission_slug = await self.context.get_permission_slug(
                 member.permission_uid
             )

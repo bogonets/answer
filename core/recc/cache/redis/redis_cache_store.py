@@ -7,7 +7,7 @@ from aioredis import Redis, ConnectionPool
 from aioredis.client import PubSub
 from inspect import iscoroutinefunction, isfunction
 from async_timeout import timeout as async_timeout_timeout
-from recc.cache.cache_store_interface import CacheStoreInterface
+from recc.cache.cache_store_interface import CacheStoreInterface, ValueType
 from recc.variables.cache import DEFAULT_MAX_CONNECTIONS
 
 EX_KEY_MAX_CONNECTIONS = "max_connections"
@@ -90,32 +90,36 @@ class RedisCacheStore(CacheStoreInterface):
         return self._redis
 
     @overrides
-    async def set(self, key: str, val: bytes) -> None:
-        await self.redis.execute_command("SET", key, val)
+    async def set(self, key: str, val: ValueType) -> None:
+        await self.redis.set(key, val)
 
     @overrides
-    async def get(self, key: str) -> bytes:
-        result = await self.redis.execute_command("GET", key)
-        assert isinstance(result, bytes)
-        return result
+    async def sets(self, pairs: Dict[str, ValueType]) -> None:
+        async with self.redis.pipeline(transaction=True) as pipeline:
+            chain = pipeline
+            for key, val in pairs.items():
+                chain = chain.set(key, val)  # type: ignore[assignment]
+            await chain.execute()
 
     @overrides
-    async def append(self, key: str, val: bytes) -> None:
-        await self.redis.execute_command("APPEND", key, val)
+    async def get(self, key: str) -> Optional[bytes]:
+        return await self.redis.get(key)
+
+    @overrides
+    async def append(self, key: str, val: ValueType) -> None:
+        await self.redis.append(key, val)
 
     @overrides
     async def expire(self, key: str, seconds: int) -> None:
-        await self.redis.execute_command("EXPIRE", key, seconds)
+        await self.redis.expire(key, seconds)
 
     @overrides
-    async def delete(self, key: str) -> None:
-        await self.redis.execute_command("DEL", key)
+    async def delete(self, *keys: str) -> None:
+        await self.redis.delete(*keys)
 
     @overrides
-    async def exists(self, key: str) -> bool:
-        result = await self.redis.execute_command("EXISTS", key)
-        assert isinstance(result, int)
-        return bool(result)
+    async def exists(self, *key: str) -> int:
+        return await self.redis.exists(*key)
 
     async def _subscribe_task(
         self,

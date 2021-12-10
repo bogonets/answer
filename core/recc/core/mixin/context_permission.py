@@ -31,7 +31,7 @@ class ContextPermission(ContextBase):
         hidden=False,
         lock=False,
     ) -> int:
-        return await self.database.insert_permission(
+        permission_uid = await self.database.insert_permission(
             slug=slug,
             name=name,
             description=description,
@@ -52,6 +52,8 @@ class ContextPermission(ContextBase):
             hidden=hidden,
             lock=lock,
         )
+        await self.cache.set_permission(slug, permission_uid)
+        return permission_uid
 
     @staticmethod
     def _is_permission_equals_for_update(
@@ -208,12 +210,16 @@ class ContextPermission(ContextBase):
             hidden=hidden,
             lock=lock,
         )
+        if slug is not None:
+            await self.cache.remove_permission_by_uid(uid)
+            await self.cache.set_permission(slug, uid)
 
     async def delete_permission(self, uid: int, force=False) -> None:
         if not force:
             if await self.database.select_permission_lock_by_uid(uid):
                 raise RuntimeError(f"Locked permission: {uid}")
         await self.database.delete_permission_by_uid(uid)
+        await self.cache.remove_permission_by_uid(uid)
 
     async def get_permission(self, uid: int) -> Permission:
         return await self.database.select_permission_by_uid(uid)
