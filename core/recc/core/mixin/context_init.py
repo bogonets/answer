@@ -134,6 +134,7 @@ class ContextInit(ContextBase):
             self._config.cache_host,
             self._config.cache_port,
             self._config.cache_pw,
+            self._config.cache_prefix,
         )
         logger.info(f"Created cache-store: {self._config.cache_type}")
 

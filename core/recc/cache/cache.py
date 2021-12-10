@@ -57,12 +57,13 @@ class Cache:
     def __init__(
         self,
         cs_type: str,
-        cs_host: str,
-        cs_port: int,
-        cs_pw: Optional[str] = None,
+        host: str,
+        port: int,
+        pw: Optional[str] = None,
+        prefix: Optional[str] = None,
         **kwargs,
     ):
-        self._store = create_cache_store(cs_type, cs_host, cs_port, cs_pw, **kwargs)
+        self._store = create_cache_store(cs_type, host, port, pw, prefix, **kwargs)
 
     def is_open(self) -> bool:
         return self._store.is_open()
@@ -104,7 +105,7 @@ class Cache:
     async def set_user(self, name: str, uid: int) -> None:
         name_to_uid = key_user_name_to_uid(name)
         uid_to_name = key_user_uid_to_name(uid)
-        await self.store.sets({name_to_uid: uid, uid_to_name: name})
+        await self.store.mset({name_to_uid: uid, uid_to_name: name})
 
     async def remove_user_by_uid(self, uid: int) -> None:
         uid_to_name = key_user_uid_to_name(uid)
@@ -128,7 +129,7 @@ class Cache:
     async def set_group(self, slug: str, uid: int) -> None:
         slug_to_uid = key_group_slug_to_uid(slug)
         uid_to_slug = key_group_uid_to_slug(uid)
-        await self.store.sets({slug_to_uid: uid, uid_to_slug: slug})
+        await self.store.mset({slug_to_uid: uid, uid_to_slug: slug})
 
     async def remove_group_by_uid(self, uid: int) -> None:
         uid_to_slug = key_group_uid_to_slug(uid)
@@ -164,7 +165,7 @@ class Cache:
         project_key = key_project(group_uid, project_slug)
         key_to_uid = key_project_key_to_uid(project_key)
         uid_to_key = key_project_uid_to_key(project_uid)
-        await self._store.sets({key_to_uid: project_uid, uid_to_key: project_key})
+        await self._store.mset({key_to_uid: project_uid, uid_to_key: project_key})
 
     async def remove_project_by_uid(self, project_uid: int) -> None:
         uid_to_key = key_project_uid_to_key(project_uid)
@@ -188,7 +189,7 @@ class Cache:
     async def set_permission(self, slug: str, uid: int) -> None:
         slug_to_uid = key_permission_slug_to_uid(slug)
         uid_to_slug = key_permission_uid_to_slug(uid)
-        await self._store.sets({slug_to_uid: uid, uid_to_slug: slug})
+        await self._store.mset({slug_to_uid: uid, uid_to_slug: slug})
 
     async def remove_permission_by_uid(self, uid: int) -> None:
         uid_to_slug = key_permission_uid_to_slug(uid)

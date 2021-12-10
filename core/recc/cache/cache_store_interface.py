@@ -28,7 +28,7 @@ class CacheStoreInterface(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def sets(self, pairs: Dict[str, ValueType]) -> None:
+    async def mset(self, pairs: Dict[str, ValueType]) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -48,5 +48,9 @@ class CacheStoreInterface(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def exists(self, *key: str) -> int:
+    async def exists(self, *keys: str) -> int:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def clear(self) -> None:
         raise NotImplementedError

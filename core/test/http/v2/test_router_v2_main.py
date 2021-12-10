@@ -96,6 +96,41 @@ class RouterV2MainTestCase(AsyncTestCase):
         self.assertIsInstance(response8.data, list)
         self.assertEqual(0, len(response8.data))
 
+    async def test_groups_cache(self):
+        """
+        After group removal, the cache must be updated.
+        """
+        group1_slug = "group1"
+        group1 = CreateGroupQ(group1_slug)
+        response1 = await self.tester.post(v2_main_path(u.groups), data=group1)
+        self.assertEqual(200, response1.status)
+        self.assertIsNone(response1.data)
+
+        path = v2_main_path(u.groups_pgroup, **{p.group: group1_slug})
+        response2 = await self.tester.get(path, cls=GroupA)
+        self.assertEqual(200, response2.status)
+        self.assertIsNotNone(response2.data)
+        self.assertIsInstance(response2.data, GroupA)
+        response2_data = response2.data
+        self.assertEqual(group1_slug, response2_data.slug)
+
+        cache1_uid = await self.tester.context.cache.get_group_uid(group1_slug)
+        self.assertIsNotNone(cache1_uid)
+
+        response3 = await self.tester.delete(path)
+        self.assertEqual(200, response3.status)
+
+        cache2_uid = await self.tester.context.cache.get_group_uid(group1_slug)
+        self.assertIsNone(cache2_uid)
+
+        response4 = await self.tester.get(path, cls=GroupA)
+        self.assertNotEqual(200, response4.status)
+
+        # ONCE MORE !!
+        # Cache should not be updated after 'GET/group'.
+        cache3_uid = await self.tester.context.cache.get_group_uid(group1_slug)
+        self.assertIsNone(cache3_uid)
+
     async def test_group_members(self):
         another_username = "another1"
         another_password = "12345678"

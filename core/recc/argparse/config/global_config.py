@@ -14,7 +14,7 @@ from recc.log.logging import (
     SEVERITY_NAME_NOTSET,
     SEVERITY_NAME_OFF,
 )
-from recc.variables.cache import CS_TYPE_NAME_REDIS
+from recc.variables.cache import CS_TYPE_NAME_REDIS, CACHE_PREFIX_ROOT
 from recc.variables.container import (
     CONTAINER_TYPE_DOCKER,
     CONTAINER_TYPE_SWARM,
@@ -228,6 +228,12 @@ ARG_CACHE_TYPE = Argument(
     choices=(CS_TYPE_NAME_REDIS,),
     help="Cache server type.",
 )
+ARG_CACHE_PREFIX = Argument(
+    key="--cache-prefix",
+    last_injection_value=CACHE_PREFIX_ROOT,
+    cls=str,
+    help="Cache key prefix.",
+)
 
 ARG_CONTAINER_HOST = Argument(
     key="--container-host",
@@ -367,6 +373,7 @@ GLOBAL_ARGS = (
     ARG_CACHE_PORT,
     ARG_CACHE_PW,
     ARG_CACHE_TYPE,
+    ARG_CACHE_PREFIX,
     ARG_CONTAINER_HOST,
     ARG_CONTAINER_PORT,
     ARG_CONTAINER_TYPE,
@@ -414,6 +421,7 @@ class GlobalConfig(Namespace):
     cache_port: int
     cache_pw: str
     cache_type: str
+    cache_prefix: str
 
     container_host: str
     container_port: int

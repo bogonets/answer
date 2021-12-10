@@ -13,8 +13,9 @@ class RedisCacheStoreTestCase(AsyncTestCase):
         self.host = self.config.cache_host
         self.port = self.config.cache_port
         self.pw = self.config.cache_pw
+        self.prefix = "tester:"
 
-        self.cs = RedisCacheStore(self.host, self.port, self.pw)
+        self.cs = RedisCacheStore(self.host, self.port, self.pw, self.prefix)
         await self.cs.open()
         self.assertTrue(self.cs.is_open())
 
@@ -36,16 +37,16 @@ class RedisCacheStoreTestCase(AsyncTestCase):
         self.assertFalse(await self.cs.exists(key1))
         self.assertIsNone(await self.cs.get(key1))
 
-    async def test_sets_and_exists(self):
-        key1 = "__test_sets_and_exists__key1__"
-        key2 = "__test_sets_and_exists__key2__"
+    async def test_mset_and_exists(self):
+        key1 = "__test_mset_and_exists__key1__"
+        key2 = "__test_mset_and_exists__key2__"
         val1 = b"val1"
         val2 = b"val2"
         try:
             self.assertFalse(await self.cs.exists(key1))
             self.assertFalse(await self.cs.exists(key2))
 
-            await self.cs.sets({key1: val1, key2: val2})
+            await self.cs.mset({key1: val1, key2: val2})
             self.assertEqual(2, await self.cs.exists(key1, key2))
             self.assertEqual(val1, await self.cs.get(key1))
             self.assertEqual(val2, await self.cs.get(key2))
@@ -135,6 +136,25 @@ class RedisCacheStoreTestCase(AsyncTestCase):
             self.assertFalse(await self.cs.exists(key))
         finally:
             await self.cs.delete(key)
+
+    async def test_clear(self):
+        key1 = "__test_clear__key1__"
+        key2 = "__test_clear__key2__"
+        val1 = b"val1"
+        val2 = b"val2"
+        try:
+            self.assertFalse(await self.cs.exists(key1))
+            self.assertFalse(await self.cs.exists(key2))
+
+            await self.cs.mset({key1: val1, key2: val2})
+            self.assertTrue(await self.cs.exists(key1))
+            self.assertTrue(await self.cs.exists(key2))
+
+            await self.cs.clear()
+            self.assertFalse(await self.cs.exists(key1))
+            self.assertFalse(await self.cs.exists(key2))
+        finally:
+            await self.cs.delete(key1, key2)
 
     async def test_pub_sub(self):
         class _Sub:

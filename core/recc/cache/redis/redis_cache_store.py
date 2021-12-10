@@ -19,6 +19,8 @@ SubscribeCallable = Union[SubscribeAsyncCallable, SubscribeSyncCallable]
 # https://redis.io/commands/expire#expire-accuracy
 EXPIRE_ACCURACY_SECONDS = 1
 
+CLEAR_SCAN_STEP = 1024
+
 
 class RedisCacheStore(CacheStoreInterface):
     """
@@ -27,16 +29,20 @@ class RedisCacheStore(CacheStoreInterface):
 
     def __init__(
         self,
-        cs_host: str,
-        cs_port: int,
-        cs_pw: Optional[str] = None,
+        host: str,
+        port: int,
+        pw: Optional[str] = None,
+        prefix: Optional[str] = None,
         **kwargs,
     ):
-        self._cs_host = cs_host
-        self._cs_port = cs_port
-        self._cs_pw = cs_pw
+        self._host = host
+        self._port = port
+        self._pw = pw
+        self._prefix = prefix if prefix else str()
         self._kwargs = kwargs
         self._redis: Optional[Redis] = None
+
+        # TODO: Test validation of `self._prefix`
 
         self._subscribes: Dict[str, Task] = dict()
         self._subscribes_tick = 1.0
@@ -56,8 +62,8 @@ class RedisCacheStore(CacheStoreInterface):
     @overrides
     async def open(self) -> None:
         pool = ConnectionPool.from_url(
-            f"redis://{self._cs_host}:{self._cs_port}",
-            password=self._cs_pw if self._cs_pw else None,
+            f"redis://{self._host}:{self._port}",
+            password=self._pw if self._pw else None,
             max_connections=self._get_max_connections(),
         )
         self._redis = Redis(connection_pool=pool)
@@ -91,35 +97,47 @@ class RedisCacheStore(CacheStoreInterface):
 
     @overrides
     async def set(self, key: str, val: ValueType) -> None:
-        await self.redis.set(key, val)
+        await self.redis.set(self._prefix + key, val)
 
     @overrides
-    async def sets(self, pairs: Dict[str, ValueType]) -> None:
-        async with self.redis.pipeline(transaction=True) as pipeline:
-            chain = pipeline
-            for key, val in pairs.items():
-                chain = chain.set(key, val)  # type: ignore[assignment]
-            await chain.execute()
+    async def mset(self, pairs: Dict[str, ValueType]) -> None:
+        await self.redis.mset({self._prefix + k: v for k, v in pairs.items()})
 
     @overrides
     async def get(self, key: str) -> Optional[bytes]:
-        return await self.redis.get(key)
+        return await self.redis.get(self._prefix + key)
 
     @overrides
     async def append(self, key: str, val: ValueType) -> None:
-        await self.redis.append(key, val)
+        await self.redis.append(self._prefix + key, val)
 
     @overrides
     async def expire(self, key: str, seconds: int) -> None:
-        await self.redis.expire(key, seconds)
+        await self.redis.expire(self._prefix + key, seconds)
 
     @overrides
     async def delete(self, *keys: str) -> None:
-        await self.redis.delete(*keys)
+        real_keys = (self._prefix + k for k in keys)
+        await self.redis.delete(*real_keys)
 
     @overrides
-    async def exists(self, *key: str) -> int:
-        return await self.redis.exists(*key)
+    async def exists(self, *keys: str) -> int:
+        real_keys = (self._prefix + k for k in keys)
+        return await self.redis.exists(*real_keys)
+
+    @overrides
+    async def clear(self) -> None:
+        while True:
+            cursor, keys = await self.redis.scan(
+                cursor=0,
+                match=f"{self._prefix}*",
+                count=CLEAR_SCAN_STEP,
+            )
+
+            if keys:
+                await self.redis.delete(*keys)
+            else:
+                break
 
     async def _subscribe_task(
         self,
