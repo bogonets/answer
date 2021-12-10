@@ -10,12 +10,12 @@ from recc.variables.database import (
     TABLE_PERMISSION,
     TABLE_GROUP_MEMBER,
     TABLE_PROJECT_MEMBER,
-    DEFAULT_PERMISSION_SLUG_OWNER,
-    DEFAULT_PERMISSION_SLUG_MAINTAINER,
-    DEFAULT_PERMISSION_SLUG_DEVELOPER,
-    DEFAULT_PERMISSION_SLUG_OPERATOR,
-    DEFAULT_PERMISSION_SLUG_REPORTER,
-    DEFAULT_PERMISSION_SLUG_GUEST,
+    PERMISSION_SLUG_OWNER,
+    PERMISSION_SLUG_MAINTAINER,
+    PERMISSION_SLUG_DEVELOPER,
+    PERMISSION_SLUG_OPERATOR,
+    PERMISSION_SLUG_REPORTER,
+    PERMISSION_SLUG_GUEST,
 )
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
@@ -112,7 +112,7 @@ def get_safe_insert_permission_query(
 
 
 INSERT_PERMISSION_OWNER = get_safe_insert_permission_query(
-    DEFAULT_PERMISSION_SLUG_OWNER,
+    PERMISSION_SLUG_OWNER,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -128,7 +128,7 @@ INSERT_PERMISSION_OWNER = get_safe_insert_permission_query(
     lock=True,
 )
 INSERT_PERMISSION_MAINTAINER = get_safe_insert_permission_query(
-    DEFAULT_PERMISSION_SLUG_MAINTAINER,
+    PERMISSION_SLUG_MAINTAINER,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -143,7 +143,7 @@ INSERT_PERMISSION_MAINTAINER = get_safe_insert_permission_query(
     w_setting=True,
 )
 INSERT_PERMISSION_DEVELOPER = get_safe_insert_permission_query(
-    DEFAULT_PERMISSION_SLUG_DEVELOPER,
+    PERMISSION_SLUG_DEVELOPER,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -154,7 +154,7 @@ INSERT_PERMISSION_DEVELOPER = get_safe_insert_permission_query(
     w_graph=True,
 )
 INSERT_PERMISSION_OPERATOR = get_safe_insert_permission_query(
-    DEFAULT_PERMISSION_SLUG_OPERATOR,
+    PERMISSION_SLUG_OPERATOR,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -163,13 +163,13 @@ INSERT_PERMISSION_OPERATOR = get_safe_insert_permission_query(
     w_manager=True,
 )
 INSERT_PERMISSION_REPORTER = get_safe_insert_permission_query(
-    DEFAULT_PERMISSION_SLUG_REPORTER,
+    PERMISSION_SLUG_REPORTER,
     r_layout=True,
     r_storage=True,
     r_manager=True,
 )
 INSERT_PERMISSION_GUEST = get_safe_insert_permission_query(
-    DEFAULT_PERMISSION_SLUG_GUEST,
+    PERMISSION_SLUG_GUEST,
     r_layout=True,
 )
 

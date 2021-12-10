@@ -3,9 +3,14 @@
 from unittest import main
 from datetime import datetime, timedelta
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
+from recc.variables.database import PERMISSION_UID_OWNER, PERMISSION_SLUG_OWNER
 
 
 class PgPermissionTestCase(PostgresqlTestCase):
+    async def test_owner_permission(self):
+        owner_uid = await self.db.select_permission_uid_by_slug(PERMISSION_SLUG_OWNER)
+        self.assertEqual(PERMISSION_UID_OWNER, owner_uid)
+
     async def test_create_and_get(self):
         slug1 = "permission1"
         slug2 = "permission2"

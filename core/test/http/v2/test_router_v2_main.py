@@ -14,9 +14,9 @@ from recc.packet.permission import PermissionA
 from recc.packet.info import InfoA
 from recc.variables.database import (
     VISIBILITY_LEVEL_PRIVATE,
-    DEFAULT_PERMISSION_SLUG_GUEST,
-    DEFAULT_PERMISSION_SLUG_REPORTER,
-    DEFAULT_PERMISSION_SLUG_OWNER,
+    PERMISSION_SLUG_GUEST,
+    PERMISSION_SLUG_REPORTER,
+    PERMISSION_SLUG_OWNER,
     DEFAULT_PERMISSION_SLUGS,
 )
 
@@ -115,9 +115,9 @@ class RouterV2MainTestCase(AsyncTestCase):
         response2_data0 = response2_data[0]
         self.assertIsInstance(response2_data0, MemberA)
         self.assertEqual(self.username, response2_data0.username)
-        self.assertEqual(DEFAULT_PERMISSION_SLUG_OWNER, response2_data0.permission)
+        self.assertEqual(PERMISSION_SLUG_OWNER, response2_data0.permission)
 
-        member1 = CreateMemberQ(another_username, DEFAULT_PERMISSION_SLUG_REPORTER)
+        member1 = CreateMemberQ(another_username, PERMISSION_SLUG_REPORTER)
         response3 = await self.tester.post(path1, data=member1)
         self.assertEqual(200, response3.status)
 
@@ -133,9 +133,9 @@ class RouterV2MainTestCase(AsyncTestCase):
         response5_data = response5.data
         self.assertIsInstance(response5_data, MemberA)
         self.assertEqual(another_username, response5_data.username)
-        self.assertEqual(DEFAULT_PERMISSION_SLUG_REPORTER, response5_data.permission)
+        self.assertEqual(PERMISSION_SLUG_REPORTER, response5_data.permission)
 
-        update1 = UpdateMemberQ(another_username, DEFAULT_PERMISSION_SLUG_GUEST)
+        update1 = UpdateMemberQ(another_username, PERMISSION_SLUG_GUEST)
         response6 = await self.tester.patch(path2, data=update1)
         self.assertEqual(200, response6.status)
 
@@ -144,7 +144,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         response7_data = response7.data
         self.assertIsInstance(response7_data, MemberA)
         self.assertEqual(another_username, response7_data.username)
-        self.assertEqual(DEFAULT_PERMISSION_SLUG_GUEST, response7_data.permission)
+        self.assertEqual(PERMISSION_SLUG_GUEST, response7_data.permission)
 
         response8 = await self.tester.delete(path2)
         self.assertEqual(200, response8.status)
@@ -262,9 +262,9 @@ class RouterV2MainTestCase(AsyncTestCase):
         response3_data0 = response3_data[0]
         self.assertIsInstance(response3_data0, MemberA)
         self.assertEqual(self.username, response3_data0.username)
-        self.assertEqual(DEFAULT_PERMISSION_SLUG_OWNER, response3_data0.permission)
+        self.assertEqual(PERMISSION_SLUG_OWNER, response3_data0.permission)
 
-        member1 = CreateMemberQ(another_username, DEFAULT_PERMISSION_SLUG_REPORTER)
+        member1 = CreateMemberQ(another_username, PERMISSION_SLUG_REPORTER)
         response4 = await self.tester.post(path1, data=member1)
         self.assertEqual(200, response4.status)
 
@@ -283,9 +283,9 @@ class RouterV2MainTestCase(AsyncTestCase):
         response6_data = response6.data
         self.assertIsInstance(response6_data, MemberA)
         self.assertEqual(another_username, response6_data.username)
-        self.assertEqual(DEFAULT_PERMISSION_SLUG_REPORTER, response6_data.permission)
+        self.assertEqual(PERMISSION_SLUG_REPORTER, response6_data.permission)
 
-        update1 = UpdateMemberQ(another_username, DEFAULT_PERMISSION_SLUG_GUEST)
+        update1 = UpdateMemberQ(another_username, PERMISSION_SLUG_GUEST)
         response7 = await self.tester.patch(path2, data=update1)
         self.assertEqual(200, response7.status)
 
@@ -294,7 +294,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         response8_data = response8.data
         self.assertIsInstance(response8_data, MemberA)
         self.assertEqual(another_username, response8_data.username)
-        self.assertEqual(DEFAULT_PERMISSION_SLUG_GUEST, response8_data.permission)
+        self.assertEqual(PERMISSION_SLUG_GUEST, response8_data.permission)
 
         response9 = await self.tester.delete(path2)
         self.assertEqual(200, response9.status)
@@ -324,7 +324,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         self.assertEqual(200, response3.status)
         response3_data = response3.data
         self.assertIsInstance(response3_data, PermissionA)
-        self.assertEqual(DEFAULT_PERMISSION_SLUG_OWNER, response3_data.slug)
+        self.assertEqual(PERMISSION_SLUG_OWNER, response3_data.slug)
 
         path2 = v2_main_path(
             u.permissions_pgroup_pproject,
@@ -335,7 +335,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         self.assertEqual(200, response4.status)
         response4_data = response4.data
         self.assertIsInstance(response4_data, PermissionA)
-        self.assertEqual(DEFAULT_PERMISSION_SLUG_OWNER, response4_data.slug)
+        self.assertEqual(PERMISSION_SLUG_OWNER, response4_data.slug)
 
     async def test_usernames(self):
         user1_username = "user1"
