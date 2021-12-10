@@ -3,7 +3,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class DbMisc(metaclass=ABCMeta):
+class DbTable(metaclass=ABCMeta):
     """
     Database miscellaneous interface.
     """

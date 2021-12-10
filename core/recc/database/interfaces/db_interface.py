@@ -6,7 +6,7 @@ from recc.database.interfaces.db_group import DbGroup
 from recc.database.interfaces.db_group_member import DbGroupMember
 from recc.database.interfaces.db_info import DbInfo
 from recc.database.interfaces.db_layout import DbLayout
-from recc.database.interfaces.db_misc import DbMisc
+from recc.database.interfaces.db_table import DbTable
 from recc.database.interfaces.db_open import DbOpen
 from recc.database.interfaces.db_permission import DbPermission
 from recc.database.interfaces.db_port import DbPort
@@ -24,12 +24,12 @@ class DbInterface(
     DbGroupMember,
     DbInfo,
     DbLayout,
-    DbMisc,
     DbOpen,
     DbPermission,
     DbPort,
     DbProject,
     DbProjectMember,
+    DbTable,
     DbTask,
     DbUser,
     DbUtils,
