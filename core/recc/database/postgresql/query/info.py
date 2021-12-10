@@ -24,7 +24,7 @@ WHERE
     NOT EXISTS(
         SELECT value
         FROM {TABLE_INFO}
-        WHERE key LIKE '{{key}}'
+        WHERE key='{{key}}'
     );
 """
 
@@ -46,7 +46,7 @@ WHERE
     NOT EXISTS(
         SELECT value
         FROM {TABLE_INFO}
-        WHERE key LIKE '{INFO_KEY_RECC_DB_VERSION}'
+        WHERE key='{INFO_KEY_RECC_DB_VERSION}'
     );
 """
 
@@ -81,7 +81,7 @@ INSERT INTO {TABLE_INFO} (
 UPDATE_INFO_VALUE_BY_KEY = f"""
 UPDATE {TABLE_INFO}
 SET value=$2, updated_at=$3
-WHERE key LIKE $1;
+WHERE key=$1;
 """
 
 ##########
@@ -90,7 +90,7 @@ WHERE key LIKE $1;
 
 DELETE_INFO_BY_KEY = f"""
 DELETE FROM {TABLE_INFO}
-WHERE key LIKE $1;
+WHERE key=$1;
 """
 
 ##########

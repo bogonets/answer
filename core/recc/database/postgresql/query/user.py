@@ -141,14 +141,14 @@ WHERE uid=$1;
 SELECT_USER_UID_BY_USERNAME = f"""
 SELECT uid
 FROM {TABLE_USER}
-WHERE username LIKE $1;
+WHERE username=$1;
 """
 
 SELECT_USER_EXISTS_BY_USERNAME = f"""
 SELECT exists(
     SELECT uid
     FROM {TABLE_USER}
-    WHERE username LIKE $1
+    WHERE username=$1
 );
 """
 

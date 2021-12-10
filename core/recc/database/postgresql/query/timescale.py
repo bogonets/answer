@@ -14,7 +14,7 @@ WHERE
     NOT EXISTS(
         SELECT *
         FROM timescaledb_information.hypertables
-        WHERE hypertable_name LIKE '{table}'
+        WHERE hypertable_name='{table}'
     );
 """
 
@@ -29,8 +29,8 @@ WHERE
         SELECT *
         FROM timescaledb_information.jobs
         WHERE
-            proc_name LIKE 'policy_retention'
-            AND hypertable_name LIKE '{table}'
+            proc_name='policy_retention'
+            AND hypertable_name='{table}'
     );
 """
 

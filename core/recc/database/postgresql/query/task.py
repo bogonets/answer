@@ -45,7 +45,7 @@ WHERE uid=$1;
 UPDATE_TASK_DESCRIPTION_BY_PROJECT_UID_AND_SLUG = f"""
 UPDATE {TABLE_TASK}
 SET description=$3, updated_at=$4
-WHERE project_uid=$1 AND slug LIKE $2;
+WHERE project_uid=$1 AND slug=$2;
 """
 
 UPDATE_TASK_EXTRA_BY_UID = f"""
@@ -57,7 +57,7 @@ WHERE uid=$1;
 UPDATE_TASK_EXTRA_BY_PROJECT_UID_AND_SLUG = f"""
 UPDATE {TABLE_TASK}
 SET extra=$3, updated_at=$4
-WHERE project_uid=$1 AND slug LIKE $2;
+WHERE project_uid=$1 AND slug=$2;
 """
 
 UPDATE_TASK_KEYS_BY_UID = f"""
@@ -69,7 +69,7 @@ WHERE uid=$1;
 UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_SLUG = f"""
 UPDATE {TABLE_TASK}
 SET auth_algorithm=$3, private_key=$4, public_key=$5, updated_at=$6
-WHERE project_uid=$1 AND slug LIKE $2;
+WHERE project_uid=$1 AND slug=$2;
 """
 
 
@@ -121,7 +121,7 @@ WHERE uid=$1;
 
 DELETE_TASK_BY_PROJECT_UID_AND_SLUG = f"""
 DELETE FROM {TABLE_TASK}
-WHERE project_uid=$1 AND slug LIKE $2;
+WHERE project_uid=$1 AND slug=$2;
 """
 
 ##########
@@ -137,13 +137,13 @@ WHERE uid=$1;
 SELECT_TASK_BY_PROJECT_ID_AND_SLUG = f"""
 SELECT *
 FROM {TABLE_TASK}
-WHERE project_uid=$1 AND slug LIKE $2;
+WHERE project_uid=$1 AND slug=$2;
 """
 
 SELECT_TASK_UID_BY_PROJECT_ID_AND_SLUG = f"""
 SELECT uid
 FROM {TABLE_TASK}
-WHERE project_uid=$1 AND slug LIKE $2;
+WHERE project_uid=$1 AND slug=$2;
 """
 
 SELECT_TASK_BY_PROJECT_ID = f"""
@@ -154,14 +154,14 @@ WHERE project_uid=$1;
 
 SELECT_TASK_BY_FULLPATH = f"""
 SELECT t.*
-FROM (SELECT uid FROM {TABLE_GROUP} WHERE slug LIKE $1) g
-    LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.slug LIKE $2
-    LEFT JOIN {TABLE_TASK} t ON t.project_uid=p.uid AND t.slug LIKE $3;
+FROM (SELECT uid FROM {TABLE_GROUP} WHERE slug=$1) g
+    LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.slug=$2
+    LEFT JOIN {TABLE_TASK} t ON t.project_uid=p.uid AND t.slug=$3;
 """
 
 SELECT_TASK_UID_BY_FULLPATH = f"""
 SELECT t.uid AS uid
-FROM (SELECT uid FROM {TABLE_GROUP} WHERE slug LIKE $1) g
-    LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.slug LIKE $2
-    LEFT JOIN {TABLE_TASK} t ON t.project_uid=p.uid AND t.slug LIKE $3;
+FROM (SELECT uid FROM {TABLE_GROUP} WHERE slug=$1) g
+    LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.slug=$2
+    LEFT JOIN {TABLE_TASK} t ON t.project_uid=p.uid AND t.slug=$3;
 """
