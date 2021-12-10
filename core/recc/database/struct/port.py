@@ -8,9 +8,8 @@ from dataclasses import dataclass
 @dataclass
 class Port:
     number: Optional[int] = None
-    group_uid: Optional[int] = None
-    project_uid: Optional[int] = None
-    task_uid: Optional[int] = None
+    ref_uid: Optional[int] = None
+    ref_category: Optional[str] = None
     description: Optional[str] = None
     extra: Optional[Any] = None
     created_at: Optional[datetime] = None

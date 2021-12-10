@@ -15,9 +15,8 @@ class DbPort(metaclass=ABCMeta):
     async def insert_port(
         self,
         number: int,
-        group_uid: Optional[int] = None,
-        project_uid: Optional[int] = None,
-        task_uid: Optional[int] = None,
+        ref_uid: Optional[int] = None,
+        ref_category: Optional[str] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
         created_at: Optional[datetime] = None,
@@ -46,9 +45,8 @@ class DbPort(metaclass=ABCMeta):
     async def update_port_by_number(
         self,
         number: int,
-        group_uid: Optional[int] = None,
-        project_uid: Optional[int] = None,
-        task_uid: Optional[int] = None,
+        ref_uid: Optional[int] = None,
+        ref_category: Optional[str] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
         updated_at: Optional[datetime] = None,
@@ -61,18 +59,6 @@ class DbPort(metaclass=ABCMeta):
 
     @abstractmethod
     async def select_port_by_number(self, number: int) -> Port:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def select_port_by_group_uid(self, group_uid: int) -> List[Port]:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def select_port_by_project_uid(self, project_uid: int) -> List[Port]:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def select_port_by_task_uid(self, task_uid: int) -> List[Port]:
         raise NotImplementedError
 
     @abstractmethod

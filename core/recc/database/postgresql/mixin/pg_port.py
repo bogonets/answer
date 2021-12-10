@@ -14,9 +14,6 @@ from recc.database.postgresql.query.port import (
     UPDATE_PORT_EXTRA_BY_NUMBER,
     DELETE_PORT_BY_NUMBER,
     SELECT_PORT_BY_NUMBER,
-    SELECT_PORT_BY_GROUP_UID,
-    SELECT_PORT_BY_PROJECT_UID,
-    SELECT_PORT_BY_TASK_UID,
     SELECT_PORT_ALL,
     get_update_port_query_by_number,
 )
@@ -27,9 +24,8 @@ class PgPort(DbPort, PgBase):
     async def insert_port(
         self,
         number: int,
-        group_uid: Optional[int] = None,
-        project_uid: Optional[int] = None,
-        task_uid: Optional[int] = None,
+        ref_uid: Optional[int] = None,
+        ref_category: Optional[str] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
         created_at: Optional[datetime] = None,
@@ -39,9 +35,8 @@ class PgPort(DbPort, PgBase):
         await self.execute(
             query,
             number,
-            group_uid,
-            project_uid,
-            task_uid,
+            ref_uid,
+            ref_category,
             description,
             extra,
             created,
@@ -79,9 +74,8 @@ class PgPort(DbPort, PgBase):
     async def update_port_by_number(
         self,
         number: int,
-        group_uid: Optional[int] = None,
-        project_uid: Optional[int] = None,
-        task_uid: Optional[int] = None,
+        ref_uid: Optional[int] = None,
+        ref_category: Optional[str] = None,
         description: Optional[str] = None,
         extra: Optional[Any] = None,
         updated_at: Optional[datetime] = None,
@@ -89,9 +83,8 @@ class PgPort(DbPort, PgBase):
         updated = updated_at if updated_at else today()
         query, args = get_update_port_query_by_number(
             number=number,
-            group_uid=group_uid,
-            project_uid=project_uid,
-            task_uid=task_uid,
+            ref_uid=ref_uid,
+            ref_category=ref_category,
             description=description,
             extra=extra,
             updated_at=updated,
@@ -118,51 +111,6 @@ class PgPort(DbPort, PgBase):
         result = Port(**dict(row))
         result.number = number
         logger.info(f"select_port_by_number({params_msg}) ok.")
-        return result
-
-    @overrides
-    async def select_port_by_group_uid(self, group_uid: int) -> List[Port]:
-        result: List[Port] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_PORT_BY_GROUP_UID
-                async for row in conn.cursor(query, group_uid):
-                    item = Port(**dict(row))
-                    item.group_uid = group_uid
-                    result.append(item)
-        params_msg = f"group_uid={group_uid}"
-        result_msg = f"{len(result)} port"
-        logger.info(f"select_port_by_group_uid({params_msg}) -> {result_msg}")
-        return result
-
-    @overrides
-    async def select_port_by_project_uid(self, project_uid: int) -> List[Port]:
-        result: List[Port] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_PORT_BY_PROJECT_UID
-                async for row in conn.cursor(query, project_uid):
-                    item = Port(**dict(row))
-                    item.project_uid = project_uid
-                    result.append(item)
-        params_msg = f"project_uid={project_uid}"
-        result_msg = f"{len(result)} port"
-        logger.info(f"select_port_by_project_uid({params_msg}) -> {result_msg}")
-        return result
-
-    @overrides
-    async def select_port_by_task_uid(self, task_uid: int) -> List[Port]:
-        result: List[Port] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_PORT_BY_TASK_UID
-                async for row in conn.cursor(query, task_uid):
-                    item = Port(**dict(row))
-                    item.task_uid = task_uid
-                    result.append(item)
-        params_msg = f"task_uid={task_uid}"
-        result_msg = f"{len(result)} port"
-        logger.info(f"select_port_by_task_uid({params_msg}) -> {result_msg}")
         return result
 
     @overrides

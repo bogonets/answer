@@ -33,6 +33,7 @@ from recc.variables.database import (
     WIDGET_TYPE_STR_SIZE,
     TASK_SLUG_STR_SIZE,
     TASK_NAME_STR_SIZE,
+    PORT_CATEGORY_STR_SIZE,
     DAEMON_PLUGIN_STR_SIZE,
     DAEMON_SLUG_STR_SIZE,
     DAEMON_NAME_STR_SIZE,
@@ -235,18 +236,8 @@ CREATE_TABLE_PORT = f"""
 CREATE TABLE IF NOT EXISTS {TABLE_PORT} (
     number INTEGER PRIMARY KEY,
 
-    group_uid INTEGER
-        REFERENCES {TABLE_GROUP} (uid)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    project_uid INTEGER
-        REFERENCES {TABLE_PROJECT} (uid)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    task_uid INTEGER
-        REFERENCES {TABLE_TASK} (uid)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
+    ref_uid INTEGER,
+    ref_category VARCHAR({PORT_CATEGORY_STR_SIZE}),
 
     description TEXT,
     extra JSONB,

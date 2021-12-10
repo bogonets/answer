@@ -13,14 +13,13 @@ from recc.database.query_builder import UpdateBuilder, BuildResult
 INSERT_PORT = f"""
 INSERT INTO {TABLE_PORT} (
     number,
-    group_uid,
-    project_uid,
-    task_uid,
+    ref_uid,
+    ref_category,
     description,
     extra,
     created_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
+    $1, $2, $3, $4, $5, $6
 );
 """
 
@@ -43,9 +42,8 @@ WHERE number=$1;
 
 def get_update_port_query_by_number(
     number: int,
-    group_uid: Optional[int] = None,
-    project_uid: Optional[int] = None,
-    task_uid: Optional[int] = None,
+    ref_uid: Optional[int] = None,
+    ref_category: Optional[str] = None,
     description: Optional[str] = None,
     extra: Optional[Any] = None,
     updated_at: Optional[datetime] = None,
@@ -53,9 +51,8 @@ def get_update_port_query_by_number(
     updated = updated_at if updated_at else today()
     builder = UpdateBuilder(
         if_none_skip=True,
-        group_uid=group_uid,
-        project_uid=project_uid,
-        task_uid=task_uid,
+        ref_uid=ref_uid,
+        ref_category=ref_category,
         description=description,
         extra=extra,
         updated_at=updated,
@@ -78,40 +75,12 @@ WHERE number=$1;
 ##########
 
 SELECT_PORT_BY_NUMBER = f"""
-SELECT
-    group_uid, project_uid, task_uid,
-    description, extra, created_at, updated_at
+SELECT *
 FROM {TABLE_PORT}
 WHERE number=$1;
 """
 
-SELECT_PORT_BY_GROUP_UID = f"""
-SELECT
-    number, project_uid, task_uid,
-    description, extra, created_at, updated_at
-FROM {TABLE_PORT}
-WHERE group_uid=$1;
-"""
-
-SELECT_PORT_BY_PROJECT_UID = f"""
-SELECT
-    number, group_uid, task_uid,
-    description, extra, created_at, updated_at
-FROM {TABLE_PORT}
-WHERE project_uid=$1;
-"""
-
-SELECT_PORT_BY_TASK_UID = f"""
-SELECT
-    number, group_uid, project_uid,
-    description, extra, created_at, updated_at
-FROM {TABLE_PORT}
-WHERE task_uid=$1;
-"""
-
 SELECT_PORT_ALL = f"""
-SELECT
-    number, group_uid, project_uid, task_uid,
-    description, extra, created_at, updated_at
+SELECT *
 FROM {TABLE_PORT};
 """
