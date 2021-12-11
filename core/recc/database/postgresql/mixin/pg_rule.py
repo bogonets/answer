@@ -5,27 +5,27 @@ from datetime import datetime
 from overrides import overrides
 from recc.chrono.datetime import today
 from recc.log.logging import recc_database_logger as logger
-from recc.database.struct.permission import Permission
-from recc.database.interfaces.db_permission import DbPermission
+from recc.database.struct.rule import Rule
+from recc.database.interfaces.db_rule import DbRule
 from recc.database.postgresql.mixin.pg_base import PgBase
-from recc.database.postgresql.query.permission import (
-    INSERT_PERMISSION,
-    SAFE_DELETE_PERMISSION_BY_UID,
-    SELECT_PERMISSION_UID_BY_SLUG,
-    SELECT_PERMISSION_SLUG_BY_UID,
-    SELECT_PERMISSION_BY_UID,
-    SELECT_PERMISSION_LOCK_BY_UID,
-    SELECT_PERMISSION_ALL,
-    SELECT_BEST_PERMISSION_OF_PROJECT_NO_COMMENT,
-    SELECT_PERMISSION_BY_USER_UID_AND_GROUP_UID,
-    SELECT_PERMISSION_BY_USER_UID_AND_PROJECT_UID,
-    get_update_permission_query_by_uid,
+from recc.database.postgresql.query.rule import (
+    INSERT_RULE,
+    DELETE_RULE_BY_UID,
+    SELECT_RULE_UID_BY_SLUG,
+    SELECT_RULE_SLUG_BY_UID,
+    SELECT_RULE_BY_UID,
+    SELECT_RULE_LOCK_BY_UID,
+    SELECT_RULE_ALL,
+    SELECT_BEST_RULE_OF_PROJECT_NO_COMMENT,
+    SELECT_RULE_BY_USER_UID_AND_GROUP_UID,
+    SELECT_RULE_BY_USER_UID_AND_PROJECT_UID,
+    get_update_rule_query_by_uid,
 )
 
 
-class PgPermission(DbPermission, PgBase):
+class PgRule(DbRule, PgBase):
     @overrides
-    async def insert_permission(
+    async def insert_rule(
         self,
         slug: str,
         name: Optional[str] = None,
@@ -50,7 +50,7 @@ class PgPermission(DbPermission, PgBase):
     ) -> int:
         created = created_at if created_at else today()
         uid = await self.fetch_val(
-            INSERT_PERMISSION,
+            INSERT_RULE,
             slug,
             name,
             description,
@@ -72,11 +72,11 @@ class PgPermission(DbPermission, PgBase):
             lock,
             created,
         )
-        logger.info(f"insert_permission(name={name}) -> {uid}")
+        logger.info(f"insert_rule(name={name}) -> {uid}")
         return uid
 
     @overrides
-    async def update_permission_by_uid(
+    async def update_rule_by_uid(
         self,
         uid: int,
         slug: Optional[str] = None,
@@ -100,7 +100,7 @@ class PgPermission(DbPermission, PgBase):
         lock: Optional[bool] = None,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        query, args = get_update_permission_query_by_uid(
+        query, args = get_update_rule_query_by_uid(
             slug=slug,
             uid=uid,
             name=name,
@@ -124,105 +124,101 @@ class PgPermission(DbPermission, PgBase):
             updated_at=updated_at,
         )
         await self.execute(query, *args)
-        params_msg = f"slug={slug}"
-        logger.info(f"update_permission_by_uid({params_msg}) ok.")
+        logger.info(f"update_rule_by_uid(slug={slug}) ok.")
 
     @overrides
-    async def delete_permission_by_uid(self, uid: int) -> None:
-        query = SAFE_DELETE_PERMISSION_BY_UID.replace("$1", str(uid))
-        await self.execute(query)
-        params_msg = f"uid={uid}"
-        logger.info(f"delete_permission_by_uid({params_msg}) ok.")
+    async def delete_rule_by_uid(self, uid: int) -> None:
+        query = DELETE_RULE_BY_UID
+        await self.execute(query, uid)
+        logger.info(f"delete_rule_by_uid(uid={uid}) ok.")
 
     @overrides
-    async def select_permission_uid_by_slug(self, slug: str) -> int:
-        query = SELECT_PERMISSION_UID_BY_SLUG
+    async def select_rule_uid_by_slug(self, slug: str) -> int:
+        query = SELECT_RULE_UID_BY_SLUG
         row = await self.fetch_row(query, slug)
         params_msg = f"slug={slug}"
         if not row:
-            raise RuntimeError(f"Not found permission: {params_msg}")
+            raise RuntimeError(f"Not found rule: {params_msg}")
         result = int(row["uid"])
-        logger.info(f"select_permission_uid_by_slug({params_msg}) -> {result}")
+        logger.info(f"select_rule_uid_by_slug({params_msg}) -> {result}")
         return result
 
     @overrides
-    async def select_permission_slug_by_uid(self, uid: int) -> str:
-        query = SELECT_PERMISSION_SLUG_BY_UID
+    async def select_rule_slug_by_uid(self, uid: int) -> str:
+        query = SELECT_RULE_SLUG_BY_UID
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
         if not row:
-            raise RuntimeError(f"Not found permission: {params_msg}")
+            raise RuntimeError(f"Not found rule: {params_msg}")
         result = str(row["slug"])
-        logger.info(f"select_permission_slug_by_uid({params_msg}) -> {result}")
+        logger.info(f"select_rule_slug_by_uid({params_msg}) -> {result}")
         return result
 
     @overrides
-    async def select_permission_by_uid(self, uid: int) -> Permission:
-        query = SELECT_PERMISSION_BY_UID
+    async def select_rule_by_uid(self, uid: int) -> Rule:
+        query = SELECT_RULE_BY_UID
         row = await self.fetch_row(query, uid)
         params_msg = f"uid={uid}"
         if not row:
-            raise RuntimeError(f"Not found permission: {params_msg}")
-        result = Permission(**dict(row))
+            raise RuntimeError(f"Not found rule: {params_msg}")
+        result = Rule(**dict(row))
         result.uid = uid
-        logger.info(f"select_permission_by_uid({params_msg}) ok.")
+        logger.info(f"select_rule_by_uid({params_msg}) ok.")
         return result
 
     @overrides
-    async def select_permission_lock_by_uid(self, uid: int) -> bool:
-        query = SELECT_PERMISSION_LOCK_BY_UID
+    async def select_rule_lock_by_uid(self, uid: int) -> bool:
+        query = SELECT_RULE_LOCK_BY_UID
         lock = await self.fetch_val(query, uid)
         params_msg = f"uid={uid}"
-        logger.info(f"select_permission_lock_by_uid({params_msg}) -> {lock}")
+        logger.info(f"select_rule_lock_by_uid({params_msg}) -> {lock}")
         return lock
 
     @overrides
-    async def select_permissions(self) -> List[Permission]:
-        result: List[Permission] = list()
+    async def select_rule_all(self) -> List[Rule]:
+        result: List[Rule] = list()
         async with self.conn() as conn:
             async with conn.transaction():
-                query = SELECT_PERMISSION_ALL
+                query = SELECT_RULE_ALL
                 async for row in conn.cursor(query):
-                    result.append(Permission(**dict(row)))
-        result_msg = f"{len(result)} permissions"
-        logger.info(f"select_permissions() -> {result_msg}")
+                    result.append(Rule(**dict(row)))
+        result_msg = f"{len(result)} rules"
+        logger.info(f"select_rules() -> {result_msg}")
         return result
 
     @overrides
-    async def select_best_project_permission(
-        self, user_uid: int, project_uid: int
-    ) -> Permission:
-        query = SELECT_BEST_PERMISSION_OF_PROJECT_NO_COMMENT
+    async def select_best_project_rule(self, user_uid: int, project_uid: int) -> Rule:
+        query = SELECT_BEST_RULE_OF_PROJECT_NO_COMMENT
         row = await self.fetch_row(query, user_uid, project_uid)
         params_msg = f"user_uid={user_uid},project_uid={project_uid}"
         if not row:
-            raise RuntimeError(f"Not found permission: {params_msg}")
-        result = Permission(**dict(row))
-        logger.info(f"select_project_permission_by_uid({params_msg}) ok.")
+            raise RuntimeError(f"Not found rule: {params_msg}")
+        result = Rule(**dict(row))
+        logger.info(f"select_project_rule_by_uid({params_msg}) ok.")
         return result
 
     @overrides
-    async def select_permission_by_user_uid_and_group_uid(
+    async def select_rule_by_user_uid_and_group_uid(
         self, user_uid: int, group_uid: int
-    ) -> Permission:
-        query = SELECT_PERMISSION_BY_USER_UID_AND_GROUP_UID
+    ) -> Rule:
+        query = SELECT_RULE_BY_USER_UID_AND_GROUP_UID
         row = await self.fetch_row(query, user_uid, group_uid)
         params_msg = f"user_uid={user_uid},group_uid={group_uid}"
         if not row:
-            raise RuntimeError(f"Not found permission: {params_msg}")
-        result = Permission(**dict(row))
-        logger.info(f"select_permission_by_user_uid_and_group_uid({params_msg}) ok.")
+            raise RuntimeError(f"Not found rule: {params_msg}")
+        result = Rule(**dict(row))
+        logger.info(f"select_rule_by_user_uid_and_group_uid({params_msg}) ok.")
         return result
 
     @overrides
-    async def select_permission_by_user_uid_and_project_uid(
+    async def select_rule_by_user_uid_and_project_uid(
         self, user_uid: int, project_uid: int
-    ) -> Permission:
-        query = SELECT_PERMISSION_BY_USER_UID_AND_PROJECT_UID
+    ) -> Rule:
+        query = SELECT_RULE_BY_USER_UID_AND_PROJECT_UID
         row = await self.fetch_row(query, user_uid, project_uid)
         params_msg = f"user_uid={user_uid},project_uid={project_uid}"
         if not row:
-            raise RuntimeError(f"Not found permission: {params_msg}")
-        result = Permission(**dict(row))
-        logger.info(f"select_permission_by_user_uid_and_project_uid({params_msg}) ok.")
+            raise RuntimeError(f"Not found rule: {params_msg}")
+        result = Rule(**dict(row))
+        logger.info(f"select_rule_by_user_uid_and_project_uid({params_msg}) ok.")
         return result

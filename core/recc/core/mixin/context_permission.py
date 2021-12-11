@@ -2,7 +2,7 @@
 
 from typing import List, Optional, Any, Union
 from recc.core.mixin.context_base import ContextBase
-from recc.database.struct.permission import Permission
+from recc.database.struct.rule import Rule
 from recc.packet.permission import RawPermission
 from recc.packet.cvt.permission import permission_to_raw
 from recc.session.session_ex import SessionEx
@@ -31,7 +31,7 @@ class ContextPermission(ContextBase):
         hidden=False,
         lock=False,
     ) -> int:
-        permission_uid = await self.database.insert_permission(
+        rule_uid = await self.database.insert_rule(
             slug=slug,
             name=name,
             description=description,
@@ -52,12 +52,12 @@ class ContextPermission(ContextBase):
             hidden=hidden,
             lock=lock,
         )
-        await self.cache.set_permission(slug, permission_uid)
-        return permission_uid
+        await self.cache.set_permission(slug, rule_uid)
+        return rule_uid
 
     @staticmethod
     def _is_permission_equals_for_update(
-        permission: Permission,
+        permission: Rule,
         slug: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
@@ -162,7 +162,7 @@ class ContextPermission(ContextBase):
         force=False,
     ) -> None:
         if not force:
-            permission = await self.database.select_permission_by_uid(uid)
+            permission = await self.database.select_rule_by_uid(uid)
             if permission.lock:
                 permission_equals = self._is_permission_equals_for_update(
                     permission,
@@ -188,7 +188,7 @@ class ContextPermission(ContextBase):
                 if not permission_equals:
                     raise RuntimeError(f"Locked permission: {uid}")
 
-        await self.database.update_permission_by_uid(
+        await self.database.update_rule_by_uid(
             uid=uid,
             slug=slug,
             name=name,
@@ -216,32 +216,30 @@ class ContextPermission(ContextBase):
 
     async def delete_permission(self, uid: int, force=False) -> None:
         if not force:
-            if await self.database.select_permission_lock_by_uid(uid):
+            if await self.database.select_rule_lock_by_uid(uid):
                 raise RuntimeError(f"Locked permission: {uid}")
-        await self.database.delete_permission_by_uid(uid)
+        await self.database.delete_rule_by_uid(uid)
         await self.cache.remove_permission_by_uid(uid)
 
-    async def get_permission(self, uid: int) -> Permission:
-        return await self.database.select_permission_by_uid(uid)
+    async def get_permission(self, uid: int) -> Rule:
+        return await self.database.select_rule_by_uid(uid)
 
-    async def get_permissions(self) -> List[Permission]:
-        return await self.database.select_permissions()
+    async def get_permissions(self) -> List[Rule]:
+        return await self.database.select_rule_all()
 
-    async def get_group_permission(self, user_uid: int, group_uid: int) -> Permission:
-        return await self.database.select_permission_by_user_uid_and_group_uid(
+    async def get_group_permission(self, user_uid: int, group_uid: int) -> Rule:
+        return await self.database.select_rule_by_user_uid_and_group_uid(
             user_uid, group_uid
         )
 
-    async def get_project_permission(
-        self, user_uid: int, project_uid: int
-    ) -> Permission:
-        return await self.database.select_permission_by_user_uid_and_project_uid(
+    async def get_project_permission(self, user_uid: int, project_uid: int) -> Rule:
+        return await self.database.select_rule_by_user_uid_and_project_uid(
             user_uid, project_uid
         )
 
     async def get_best_permission(
         self, user_uid: int, group_uid: int, project_uid: int
-    ) -> Permission:
+    ) -> Rule:
         try:
             return await self.get_project_permission(user_uid, project_uid)
         except:  # noqa

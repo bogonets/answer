@@ -8,10 +8,10 @@ from recc.database.interfaces.db_info import DbInfo
 from recc.database.interfaces.db_layout import DbLayout
 from recc.database.interfaces.db_table import DbTable
 from recc.database.interfaces.db_open import DbOpen
-from recc.database.interfaces.db_permission import DbPermission
 from recc.database.interfaces.db_port import DbPort
 from recc.database.interfaces.db_project import DbProject
 from recc.database.interfaces.db_project_member import DbProjectMember
+from recc.database.interfaces.db_rule import DbRule
 from recc.database.interfaces.db_task import DbTask
 from recc.database.interfaces.db_user import DbUser
 from recc.database.interfaces.db_utils import DbUtils
@@ -25,10 +25,10 @@ class DbInterface(
     DbInfo,
     DbLayout,
     DbOpen,
-    DbPermission,
     DbPort,
     DbProject,
     DbProjectMember,
+    DbRule,
     DbTable,
     DbTask,
     DbUser,

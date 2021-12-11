@@ -240,7 +240,7 @@ class ContextBase:
         uid = await self.cache.get_permission_uid(permission_slug)
         if uid is None:
             try:
-                uid = await self.database.select_permission_uid_by_slug(permission_slug)
+                uid = await self.database.select_rule_uid_by_slug(permission_slug)
                 if caching:
                     await self.cache.set_permission(permission_slug, uid)
             except RuntimeError:
@@ -251,7 +251,7 @@ class ContextBase:
         slug = await self.cache.get_permission_slug(permission_uid)
         if slug is None:
             try:
-                slug = await self.database.select_permission_slug_by_uid(permission_uid)
+                slug = await self.database.select_rule_slug_by_uid(permission_uid)
                 if caching:
                     await self.cache.set_permission(slug, permission_uid)
             except RuntimeError:

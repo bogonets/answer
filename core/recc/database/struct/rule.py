@@ -6,13 +6,15 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Permission:
+class Rule:
     uid: Optional[int] = None
     slug: Optional[str] = None
+
     name: Optional[str] = None
     description: Optional[str] = None
     features: Optional[List[str]] = None
     extra: Optional[Any] = None
+
     r_layout: Optional[bool] = None
     w_layout: Optional[bool] = None
     r_storage: Optional[bool] = None
@@ -25,7 +27,9 @@ class Permission:
     w_member: Optional[bool] = None
     r_setting: Optional[bool] = None
     w_setting: Optional[bool] = None
+
     hidden: Optional[bool] = None
     lock: Optional[bool] = None
+
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

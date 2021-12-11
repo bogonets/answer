@@ -24,7 +24,7 @@ from recc.database.query_builder import UpdateBuilder, BuildResult
 ##########
 
 
-INITIALIZE_ONLY_INSERT_PERMISSION_FORMAT = f"""
+INITIALIZE_ONLY_INSERT_RULE_FORMAT = f"""
 INSERT INTO {TABLE_RULE} (
     slug,
     name,
@@ -70,7 +70,7 @@ WHERE
 """
 
 
-def get_safe_insert_permission_query(
+def get_safe_insert_rule_query(
     slug: str,
     name: Optional[str] = None,
     r_layout=False,
@@ -90,7 +90,7 @@ def get_safe_insert_permission_query(
     created_at: Optional[datetime] = None,
 ) -> str:
     created = created_at if created_at else today()
-    return INITIALIZE_ONLY_INSERT_PERMISSION_FORMAT.format(
+    return INITIALIZE_ONLY_INSERT_RULE_FORMAT.format(
         slug=slug,
         name=name if name else slug,
         r_layout=r_layout,
@@ -111,7 +111,7 @@ def get_safe_insert_permission_query(
     )
 
 
-INSERT_PERMISSION_OWNER = get_safe_insert_permission_query(
+INSERT_RULE_OWNER = get_safe_insert_rule_query(
     RULE_SLUG_OWNER,
     r_layout=True,
     w_layout=True,
@@ -127,7 +127,7 @@ INSERT_PERMISSION_OWNER = get_safe_insert_permission_query(
     w_setting=True,
     lock=True,
 )
-INSERT_PERMISSION_MAINTAINER = get_safe_insert_permission_query(
+INSERT_RULE_MAINTAINER = get_safe_insert_rule_query(
     RULE_SLUG_MAINTAINER,
     r_layout=True,
     w_layout=True,
@@ -142,7 +142,7 @@ INSERT_PERMISSION_MAINTAINER = get_safe_insert_permission_query(
     r_setting=True,
     w_setting=True,
 )
-INSERT_PERMISSION_DEVELOPER = get_safe_insert_permission_query(
+INSERT_RULE_DEVELOPER = get_safe_insert_rule_query(
     RULE_SLUG_DEVELOPER,
     r_layout=True,
     w_layout=True,
@@ -153,7 +153,7 @@ INSERT_PERMISSION_DEVELOPER = get_safe_insert_permission_query(
     r_graph=True,
     w_graph=True,
 )
-INSERT_PERMISSION_OPERATOR = get_safe_insert_permission_query(
+INSERT_RULE_OPERATOR = get_safe_insert_rule_query(
     RULE_SLUG_OPERATOR,
     r_layout=True,
     w_layout=True,
@@ -162,27 +162,27 @@ INSERT_PERMISSION_OPERATOR = get_safe_insert_permission_query(
     r_manager=True,
     w_manager=True,
 )
-INSERT_PERMISSION_REPORTER = get_safe_insert_permission_query(
+INSERT_RULE_REPORTER = get_safe_insert_rule_query(
     RULE_SLUG_REPORTER,
     r_layout=True,
     r_storage=True,
     r_manager=True,
 )
-INSERT_PERMISSION_GUEST = get_safe_insert_permission_query(
+INSERT_RULE_GUEST = get_safe_insert_rule_query(
     RULE_SLUG_GUEST,
     r_layout=True,
 )
 
-INSERT_PERMISSION_DEFAULTS = (
-    INSERT_PERMISSION_OWNER,
-    INSERT_PERMISSION_MAINTAINER,
-    INSERT_PERMISSION_DEVELOPER,
-    INSERT_PERMISSION_OPERATOR,
-    INSERT_PERMISSION_REPORTER,
-    INSERT_PERMISSION_GUEST,
+INSERT_RULE_DEFAULTS = (
+    INSERT_RULE_OWNER,
+    INSERT_RULE_MAINTAINER,
+    INSERT_RULE_DEVELOPER,
+    INSERT_RULE_OPERATOR,
+    INSERT_RULE_REPORTER,
+    INSERT_RULE_GUEST,
 )
 
-INSERT_PERMISSION = f"""
+INSERT_RULE = f"""
 INSERT INTO {TABLE_RULE} (
     slug,
     name,
@@ -215,7 +215,7 @@ INSERT INTO {TABLE_RULE} (
 ##########
 
 
-def get_update_permission_query_by_uid(
+def get_update_rule_query_by_uid(
     uid: int,
     slug: Optional[str] = None,
     name: Optional[str] = None,
@@ -270,60 +270,45 @@ def get_update_permission_query_by_uid(
 # DELETE #
 ##########
 
-DELETE_PERMISSION_BY_UID = f"""
+DELETE_RULE_BY_UID = f"""
 DELETE FROM {TABLE_RULE}
 WHERE uid=$1;
-"""
-
-SAFE_DELETE_PERMISSION_BY_UID = f"""
-BEGIN;
-
-DELETE FROM {TABLE_PROJECT_MEMBER}
-WHERE permission_uid=$1;
-
-DELETE FROM {TABLE_GROUP_MEMBER}
-WHERE permission_uid=$1;
-
-DELETE FROM {TABLE_RULE}
-WHERE uid=$1;
-
-COMMIT;
 """
 
 ##########
 # SELECT #
 ##########
 
-SELECT_PERMISSION_UID_BY_SLUG = f"""
+SELECT_RULE_UID_BY_SLUG = f"""
 SELECT uid
 FROM {TABLE_RULE}
 WHERE slug=$1;
 """
 
-SELECT_PERMISSION_SLUG_BY_UID = f"""
+SELECT_RULE_SLUG_BY_UID = f"""
 SELECT slug
 FROM {TABLE_RULE}
 WHERE uid=$1;
 """
 
-SELECT_PERMISSION_BY_UID = f"""
+SELECT_RULE_BY_UID = f"""
 SELECT *
 FROM {TABLE_RULE}
 WHERE uid=$1;
 """
 
-SELECT_PERMISSION_LOCK_BY_UID = f"""
+SELECT_RULE_LOCK_BY_UID = f"""
 SELECT lock
 FROM {TABLE_RULE}
 WHERE uid=$1;
 """
 
-SELECT_PERMISSION_ALL = f"""
+SELECT_RULE_ALL = f"""
 SELECT *
 FROM {TABLE_RULE};
 """
 
-EXISTS_PERMISSION_BY_UID = f"""
+EXISTS_RULE_BY_UID = f"""
 SELECT EXISTS(
     SELECT *
     FROM {TABLE_RULE}
@@ -335,9 +320,9 @@ SELECT EXISTS(
 # COMPLEX SELECT #
 ##################
 
-# Best permission of project
-# Use the project permission if it exists, and use the group permission if it doesn't.
-SELECT_BEST_PERMISSION_OF_PROJECT = f"""
+# Best rule of project
+# Use the project rule if it exists, and use the group rule if it doesn't.
+SELECT_BEST_RULE_OF_PROJECT = f"""
 SELECT
     -- u.uid AS user_uid,
     -- p.uid AS project_uid,
@@ -355,11 +340,11 @@ FROM
 ORDER BY u.uid, p.uid;
 """
 
-SELECT_BEST_PERMISSION_OF_PROJECT_NO_COMMENT = re_sub(
-    r"^  +--.*\n", "", SELECT_BEST_PERMISSION_OF_PROJECT
+SELECT_BEST_RULE_OF_PROJECT_NO_COMMENT = re_sub(
+    r"^  +--.*\n", "", SELECT_BEST_RULE_OF_PROJECT
 )
 
-SELECT_PERMISSION_BY_USER_UID_AND_GROUP_UID = f"""
+SELECT_RULE_BY_USER_UID_AND_GROUP_UID = f"""
 WITH gm AS (
     SELECT permission_uid
     FROM {TABLE_GROUP_MEMBER}
@@ -370,7 +355,7 @@ FROM {TABLE_RULE} AS perm, gm
 WHERE gm.permission_uid=perm.uid;
 """
 
-SELECT_PERMISSION_BY_USER_UID_AND_PROJECT_UID = f"""
+SELECT_RULE_BY_USER_UID_AND_PROJECT_UID = f"""
 WITH pm AS (
     SELECT permission_uid
     FROM {TABLE_PROJECT_MEMBER}

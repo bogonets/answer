@@ -107,7 +107,7 @@ class Context(
         await self._database.create_tables()
         logger.info("Create tables (if not exists)")
 
-        owner_uid = await self._database.select_permission_uid_by_slug(RULE_SLUG_OWNER)
+        owner_uid = await self._database.select_rule_uid_by_slug(RULE_SLUG_OWNER)
         if owner_uid != RULE_UID_OWNER:
             logger.critical(
                 f"Owner rule ID is not {RULE_UID_OWNER}, It's actually {owner_uid}"

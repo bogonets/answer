@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from recc.database.struct.permission import Permission
+from recc.database.struct.rule import Rule
 from recc.packet.permission import RawPermission, PermissionA
 
 
-def permission_to_raw(permission: Permission, is_admin: bool) -> RawPermission:
+def permission_to_raw(permission: Rule, is_admin: bool) -> RawPermission:
     if is_admin:
         r_layout = True
         w_layout = True
@@ -54,7 +54,7 @@ def permission_to_raw(permission: Permission, is_admin: bool) -> RawPermission:
     )
 
 
-def permission_to_answer(permission: Permission) -> PermissionA:
+def permission_to_answer(permission: Rule) -> PermissionA:
     slug = permission.slug if permission.slug else ""
     return PermissionA(
         slug=slug,

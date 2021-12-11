@@ -9,10 +9,10 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
     async def setUp(self):
         await super().setUp()
 
-        self.guest = await self.db.insert_permission("perm1")
-        self.reporter = await self.db.insert_permission("perm2")
-        self.operator = await self.db.insert_permission("perm3")
-        self.maintainer = await self.db.insert_permission("perm4")
+        self.guest = await self.db.insert_rule("rule1")
+        self.reporter = await self.db.insert_rule("rule2")
+        self.operator = await self.db.insert_rule("rule3")
+        self.maintainer = await self.db.insert_rule("rule4")
 
         self.user1_uid = await self.db.insert_user("user1", "pass1", "salt1")
         self.user2_uid = await self.db.insert_user("user2", "pass2", "salt2")
