@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main
+from unittest import main, skipIf
 from asyncio import sleep
+from datetime import datetime
 from tester.unittest.async_test_case import AsyncTestCase
+from tester.variables import UID_PERFORMANCE_TEST, UID_PERFORMANCE_ITERATION
 from recc.argparse.default_parser import parse_arguments_to_core_config
 from recc.cache.redis.redis_cache_store import RedisCacheStore, EXPIRE_ACCURACY_SECONDS
 
@@ -36,6 +38,28 @@ class RedisCacheStoreTestCase(AsyncTestCase):
         key1 = "__test_not_exists_get__key1__"
         self.assertFalse(await self.cs.exists(key1))
         self.assertIsNone(await self.cs.get(key1))
+
+    @skipIf(UID_PERFORMANCE_TEST, "UID performance testing is off")
+    async def test_set_and_get(self):
+        key1 = "__test_set_and_get__key1__"
+        val1 = b"100"
+        try:
+            self.assertFalse(await self.cs.exists(key1))
+            await self.cs.set(key1, val1)
+            self.assertTrue(await self.cs.exists(key1))
+            self.assertEqual(val1, await self.cs.get(key1))
+
+            total_count = UID_PERFORMANCE_ITERATION
+            total_seconds = 0
+            for n in range(total_count):
+                begin = datetime.now()
+                await self.cs.get(key1)
+                total_seconds += (datetime.now() - begin).total_seconds()
+
+            avg_duration = total_seconds / total_count
+            print(f"Redis UID Performance: {avg_duration}s ({total_count}itr)")
+        finally:
+            await self.cs.delete(key1)
 
     async def test_mset_and_exists(self):
         key1 = "__test_mset_and_exists__key1__"

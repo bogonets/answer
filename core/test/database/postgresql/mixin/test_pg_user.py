@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main
+from unittest import main, skipIf
 from datetime import datetime, timedelta
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
+from tester.variables import UID_PERFORMANCE_TEST, UID_PERFORMANCE_ITERATION
 
 
 class PgUserTestCase(PostgresqlTestCase):
@@ -46,6 +47,23 @@ class PgUserTestCase(PostgresqlTestCase):
         self.assertIsNone(user.last_login)
         username2 = await self.db.select_user_username_by_uid(user_uid)
         self.assertEqual(username, username2)
+
+    @skipIf(UID_PERFORMANCE_TEST, "UID performance testing is off")
+    async def test_user_uid_by_username(self):
+        user1 = "user1"
+        user1_uid1 = await self.db.insert_user(user1, "pw", "salt")
+        user1_uid2 = await self.db.select_user_uid_by_username(user1)
+        self.assertEqual(user1_uid1, user1_uid2)
+
+        total_count = UID_PERFORMANCE_ITERATION
+        total_seconds = 0
+        for n in range(total_count):
+            begin = datetime.now()
+            await self.db.select_user_uid_by_username(user1)
+            total_seconds += (datetime.now() - begin).total_seconds()
+
+        avg_duration = total_seconds / total_count
+        print(f"PgSQL UID Performance: {avg_duration}s ({total_count}itr)")
 
     async def test_last_login(self):
         username = "admin"
