@@ -12,7 +12,7 @@ from recc.database.postgresql.query.permission import (
     INSERT_PERMISSION_DEFAULTS,
     EXISTS_PERMISSION_BY_UID,
 )
-from recc.variables.database import PERMISSION_UID_OWNER
+from recc.variables.database import RULE_UID_OWNER
 
 
 class PgTable(DbTable, PgBase):
@@ -25,7 +25,7 @@ class PgTable(DbTable, PgBase):
                 await conn.execute(SAFE_INSERT_INFO_DB_VERSION)
 
                 exists_owner = await conn.fetchval(
-                    EXISTS_PERMISSION_BY_UID, PERMISSION_UID_OWNER
+                    EXISTS_PERMISSION_BY_UID, RULE_UID_OWNER
                 )
                 if not exists_owner:
                     for perm_query in INSERT_PERMISSION_DEFAULTS:

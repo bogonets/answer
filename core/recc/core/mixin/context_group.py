@@ -8,7 +8,7 @@ from recc.database.struct.group_join_member import GroupJoinGroupMember
 from recc.variables.database import (
     VISIBILITY_LEVEL_PRIVATE,
     VISIBILITY_LEVEL_INTERNAL,
-    PERMISSION_UID_OWNER,
+    RULE_UID_OWNER,
 )
 
 
@@ -34,7 +34,7 @@ class ContextGroup(ContextBase):
         )
         if owner_uid is not None:
             await self.database.insert_group_member(
-                group_uid, owner_uid, PERMISSION_UID_OWNER
+                group_uid, owner_uid, RULE_UID_OWNER
             )
         await self.cache.set_group(slug, group_uid)
         await self.plugins.create_group(slug)

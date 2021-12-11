@@ -7,15 +7,15 @@ from recc.chrono.datetime import today
 from recc.variables.database import (
     TABLE_USER,
     TABLE_PROJECT,
-    TABLE_PERMISSION,
+    TABLE_RULE,
     TABLE_GROUP_MEMBER,
     TABLE_PROJECT_MEMBER,
-    PERMISSION_SLUG_OWNER,
-    PERMISSION_SLUG_MAINTAINER,
-    PERMISSION_SLUG_DEVELOPER,
-    PERMISSION_SLUG_OPERATOR,
-    PERMISSION_SLUG_REPORTER,
-    PERMISSION_SLUG_GUEST,
+    RULE_SLUG_OWNER,
+    RULE_SLUG_MAINTAINER,
+    RULE_SLUG_DEVELOPER,
+    RULE_SLUG_OPERATOR,
+    RULE_SLUG_REPORTER,
+    RULE_SLUG_GUEST,
 )
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
@@ -25,7 +25,7 @@ from recc.database.query_builder import UpdateBuilder, BuildResult
 
 
 INITIALIZE_ONLY_INSERT_PERMISSION_FORMAT = f"""
-INSERT INTO {TABLE_PERMISSION} (
+INSERT INTO {TABLE_RULE} (
     slug,
     name,
     r_layout,
@@ -64,7 +64,7 @@ INSERT INTO {TABLE_PERMISSION} (
 WHERE
     NOT EXISTS(
         SELECT uid
-        FROM {TABLE_PERMISSION}
+        FROM {TABLE_RULE}
         WHERE slug='{{slug}}'
     );
 """
@@ -112,7 +112,7 @@ def get_safe_insert_permission_query(
 
 
 INSERT_PERMISSION_OWNER = get_safe_insert_permission_query(
-    PERMISSION_SLUG_OWNER,
+    RULE_SLUG_OWNER,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -128,7 +128,7 @@ INSERT_PERMISSION_OWNER = get_safe_insert_permission_query(
     lock=True,
 )
 INSERT_PERMISSION_MAINTAINER = get_safe_insert_permission_query(
-    PERMISSION_SLUG_MAINTAINER,
+    RULE_SLUG_MAINTAINER,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -143,7 +143,7 @@ INSERT_PERMISSION_MAINTAINER = get_safe_insert_permission_query(
     w_setting=True,
 )
 INSERT_PERMISSION_DEVELOPER = get_safe_insert_permission_query(
-    PERMISSION_SLUG_DEVELOPER,
+    RULE_SLUG_DEVELOPER,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -154,7 +154,7 @@ INSERT_PERMISSION_DEVELOPER = get_safe_insert_permission_query(
     w_graph=True,
 )
 INSERT_PERMISSION_OPERATOR = get_safe_insert_permission_query(
-    PERMISSION_SLUG_OPERATOR,
+    RULE_SLUG_OPERATOR,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -163,13 +163,13 @@ INSERT_PERMISSION_OPERATOR = get_safe_insert_permission_query(
     w_manager=True,
 )
 INSERT_PERMISSION_REPORTER = get_safe_insert_permission_query(
-    PERMISSION_SLUG_REPORTER,
+    RULE_SLUG_REPORTER,
     r_layout=True,
     r_storage=True,
     r_manager=True,
 )
 INSERT_PERMISSION_GUEST = get_safe_insert_permission_query(
-    PERMISSION_SLUG_GUEST,
+    RULE_SLUG_GUEST,
     r_layout=True,
 )
 
@@ -183,7 +183,7 @@ INSERT_PERMISSION_DEFAULTS = (
 )
 
 INSERT_PERMISSION = f"""
-INSERT INTO {TABLE_PERMISSION} (
+INSERT INTO {TABLE_RULE} (
     slug,
     name,
     description,
@@ -263,7 +263,7 @@ def get_update_permission_query_by_uid(
         updated_at=updated,
     )
     builder.where().eq(uid=uid)
-    return builder.build(TABLE_PERMISSION)
+    return builder.build(TABLE_RULE)
 
 
 ##########
@@ -271,7 +271,7 @@ def get_update_permission_query_by_uid(
 ##########
 
 DELETE_PERMISSION_BY_UID = f"""
-DELETE FROM {TABLE_PERMISSION}
+DELETE FROM {TABLE_RULE}
 WHERE uid=$1;
 """
 
@@ -284,7 +284,7 @@ WHERE permission_uid=$1;
 DELETE FROM {TABLE_GROUP_MEMBER}
 WHERE permission_uid=$1;
 
-DELETE FROM {TABLE_PERMISSION}
+DELETE FROM {TABLE_RULE}
 WHERE uid=$1;
 
 COMMIT;
@@ -296,37 +296,37 @@ COMMIT;
 
 SELECT_PERMISSION_UID_BY_SLUG = f"""
 SELECT uid
-FROM {TABLE_PERMISSION}
+FROM {TABLE_RULE}
 WHERE slug=$1;
 """
 
 SELECT_PERMISSION_SLUG_BY_UID = f"""
 SELECT slug
-FROM {TABLE_PERMISSION}
+FROM {TABLE_RULE}
 WHERE uid=$1;
 """
 
 SELECT_PERMISSION_BY_UID = f"""
 SELECT *
-FROM {TABLE_PERMISSION}
+FROM {TABLE_RULE}
 WHERE uid=$1;
 """
 
 SELECT_PERMISSION_LOCK_BY_UID = f"""
 SELECT lock
-FROM {TABLE_PERMISSION}
+FROM {TABLE_RULE}
 WHERE uid=$1;
 """
 
 SELECT_PERMISSION_ALL = f"""
 SELECT *
-FROM {TABLE_PERMISSION};
+FROM {TABLE_RULE};
 """
 
 EXISTS_PERMISSION_BY_UID = f"""
 SELECT EXISTS(
     SELECT *
-    FROM {TABLE_PERMISSION}
+    FROM {TABLE_RULE}
     WHERE uid=$1
 );
 """
@@ -350,7 +350,7 @@ FROM
     CROSS JOIN (SELECT uid, group_uid FROM {TABLE_PROJECT} WHERE uid=$2) p
     LEFT JOIN {TABLE_GROUP_MEMBER} gm ON gm.user_uid=u.uid AND gm.group_uid=p.group_uid
     LEFT JOIN {TABLE_PROJECT_MEMBER} pm ON pm.user_uid=u.uid AND pm.project_uid=p.uid
-    LEFT JOIN {TABLE_PERMISSION} perm ON
+    LEFT JOIN {TABLE_RULE} perm ON
         perm.uid=COALESCE(pm.permission_uid, gm.permission_uid)
 ORDER BY u.uid, p.uid;
 """
@@ -366,7 +366,7 @@ WITH gm AS (
     WHERE user_uid=$1 AND group_uid=$2
 )
 SELECT perm.*
-FROM {TABLE_PERMISSION} AS perm, gm
+FROM {TABLE_RULE} AS perm, gm
 WHERE gm.permission_uid=perm.uid;
 """
 
@@ -377,6 +377,6 @@ WITH pm AS (
     WHERE user_uid=$1 AND project_uid=$2
 )
 SELECT perm.*
-FROM {TABLE_PERMISSION} AS perm, pm
+FROM {TABLE_RULE} AS perm, pm
 WHERE pm.permission_uid=perm.uid;
 """

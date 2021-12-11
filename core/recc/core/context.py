@@ -28,8 +28,8 @@ from recc.util.version import (
 )
 from recc.variables.database import (
     CONFIG_PREFIX_RECC_ARGPARSE_CONFIG,
-    PERMISSION_UID_OWNER,
-    PERMISSION_SLUG_OWNER,
+    RULE_UID_OWNER,
+    RULE_SLUG_OWNER,
 )
 
 
@@ -107,17 +107,12 @@ class Context(
         await self._database.create_tables()
         logger.info("Create tables (if not exists)")
 
-        owner_uid = await self._database.select_permission_uid_by_slug(
-            PERMISSION_SLUG_OWNER
-        )
-        if owner_uid != PERMISSION_UID_OWNER:
+        owner_uid = await self._database.select_permission_uid_by_slug(RULE_SLUG_OWNER)
+        if owner_uid != RULE_UID_OWNER:
             logger.critical(
-                f"Owner permission ID is not {PERMISSION_UID_OWNER},"
-                f"It's actually {owner_uid}"
+                f"Owner rule ID is not {RULE_UID_OWNER}, It's actually {owner_uid}"
             )
-            raise RuntimeError(
-                f"The owner permission ID must be {PERMISSION_UID_OWNER}"
-            )
+            raise RuntimeError(f"The owner rule ID must be {RULE_UID_OWNER}")
 
         assert self._database.is_open()
         config_infos_prefix = CONFIG_PREFIX_RECC_ARGPARSE_CONFIG
