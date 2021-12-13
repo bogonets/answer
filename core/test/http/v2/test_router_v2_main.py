@@ -150,7 +150,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         response2_data0 = response2_data[0]
         self.assertIsInstance(response2_data0, MemberA)
         self.assertEqual(self.username, response2_data0.username)
-        self.assertEqual(RULE_SLUG_OWNER, response2_data0.permission)
+        self.assertEqual(RULE_SLUG_OWNER, response2_data0.rule)
 
         member1 = CreateMemberQ(another_username, RULE_SLUG_REPORTER)
         response3 = await self.tester.post(path1, data=member1)
@@ -168,7 +168,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         response5_data = response5.data
         self.assertIsInstance(response5_data, MemberA)
         self.assertEqual(another_username, response5_data.username)
-        self.assertEqual(RULE_SLUG_REPORTER, response5_data.permission)
+        self.assertEqual(RULE_SLUG_REPORTER, response5_data.rule)
 
         update1 = UpdateMemberQ(another_username, RULE_SLUG_GUEST)
         response6 = await self.tester.patch(path2, data=update1)
@@ -179,7 +179,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         response7_data = response7.data
         self.assertIsInstance(response7_data, MemberA)
         self.assertEqual(another_username, response7_data.username)
-        self.assertEqual(RULE_SLUG_GUEST, response7_data.permission)
+        self.assertEqual(RULE_SLUG_GUEST, response7_data.rule)
 
         response8 = await self.tester.delete(path2)
         self.assertEqual(200, response8.status)
@@ -297,7 +297,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         response3_data0 = response3_data[0]
         self.assertIsInstance(response3_data0, MemberA)
         self.assertEqual(self.username, response3_data0.username)
-        self.assertEqual(RULE_SLUG_OWNER, response3_data0.permission)
+        self.assertEqual(RULE_SLUG_OWNER, response3_data0.rule)
 
         member1 = CreateMemberQ(another_username, RULE_SLUG_REPORTER)
         response4 = await self.tester.post(path1, data=member1)
@@ -318,7 +318,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         response6_data = response6.data
         self.assertIsInstance(response6_data, MemberA)
         self.assertEqual(another_username, response6_data.username)
-        self.assertEqual(RULE_SLUG_REPORTER, response6_data.permission)
+        self.assertEqual(RULE_SLUG_REPORTER, response6_data.rule)
 
         update1 = UpdateMemberQ(another_username, RULE_SLUG_GUEST)
         response7 = await self.tester.patch(path2, data=update1)
@@ -329,7 +329,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         response8_data = response8.data
         self.assertIsInstance(response8_data, MemberA)
         self.assertEqual(another_username, response8_data.username)
-        self.assertEqual(RULE_SLUG_GUEST, response8_data.permission)
+        self.assertEqual(RULE_SLUG_GUEST, response8_data.rule)
 
         response9 = await self.tester.delete(path2)
         self.assertEqual(200, response9.status)
@@ -338,14 +338,14 @@ class RouterV2MainTestCase(AsyncTestCase):
         self.assertEqual(200, response10.status)
         self.assertEqual(1, len(response10.data))
 
-    async def test_permissions(self):
+    async def test_rules(self):
         response1 = await self.tester.get(v2_main_path(u.rules))
         self.assertEqual(200, response1.status)
         response1_data = response1.data
         self.assertIsInstance(response1_data, list)
         self.assertEqual(len(DEFAULT_RULE_SLUGS), len(response1_data))
 
-    async def test_group_and_project_permissions(self):
+    async def test_group_and_project_rules(self):
         group1 = CreateGroupQ(slug="group1")
         response1 = await self.tester.post(v2_main_path(u.groups), data=group1)
         self.assertEqual(200, response1.status)

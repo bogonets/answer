@@ -6,16 +6,16 @@ from dataclasses import dataclass
 @dataclass
 class MemberA:
     username: str
-    permission: str
+    rule: str
 
 
 @dataclass
 class CreateMemberQ:
     username: str
-    permission: str
+    rule: str
 
 
 @dataclass
 class UpdateMemberQ:
     username: str
-    permission: str
+    rule: str

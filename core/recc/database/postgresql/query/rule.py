@@ -327,8 +327,8 @@ SELECT
     -- u.uid AS user_uid,
     -- p.uid AS project_uid,
     -- p.group_uid AS group_uid,
-    -- pm.permission_uid AS pm_permission_uid,
-    -- gm.permission_uid AS gm_permission_uid,
+    -- pm.rule_uid AS pm_rule_uid,
+    -- gm.rule_uid AS gm_rule_uid,
     perm.*
 FROM
     (SELECT uid FROM {TABLE_USER} WHERE uid=$1) u
@@ -336,7 +336,7 @@ FROM
     LEFT JOIN {TABLE_GROUP_MEMBER} gm ON gm.user_uid=u.uid AND gm.group_uid=p.group_uid
     LEFT JOIN {TABLE_PROJECT_MEMBER} pm ON pm.user_uid=u.uid AND pm.project_uid=p.uid
     LEFT JOIN {TABLE_RULE} perm ON
-        perm.uid=COALESCE(pm.permission_uid, gm.permission_uid)
+        perm.uid=COALESCE(pm.rule_uid, gm.rule_uid)
 ORDER BY u.uid, p.uid;
 """
 
@@ -346,22 +346,22 @@ SELECT_BEST_RULE_OF_PROJECT_NO_COMMENT = re_sub(
 
 SELECT_RULE_BY_USER_UID_AND_GROUP_UID = f"""
 WITH gm AS (
-    SELECT permission_uid
+    SELECT rule_uid
     FROM {TABLE_GROUP_MEMBER}
     WHERE user_uid=$1 AND group_uid=$2
 )
 SELECT perm.*
 FROM {TABLE_RULE} AS perm, gm
-WHERE gm.permission_uid=perm.uid;
+WHERE gm.rule_uid=perm.uid;
 """
 
 SELECT_RULE_BY_USER_UID_AND_PROJECT_UID = f"""
 WITH pm AS (
-    SELECT permission_uid
+    SELECT rule_uid
     FROM {TABLE_PROJECT_MEMBER}
     WHERE user_uid=$1 AND project_uid=$2
 )
 SELECT perm.*
 FROM {TABLE_RULE} AS perm, pm
-WHERE pm.permission_uid=perm.uid;
+WHERE pm.rule_uid=perm.uid;
 """

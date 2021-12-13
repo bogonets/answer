@@ -30,23 +30,23 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
         self.assertEqual(self.group_uid, member2.group_uid)
         self.assertEqual(self.user1_uid, member1.user_uid)
         self.assertEqual(self.user2_uid, member2.user_uid)
-        self.assertEqual(self.guest, member1.permission_uid)
-        self.assertEqual(self.reporter, member2.permission_uid)
+        self.assertEqual(self.guest, member1.rule_uid)
+        self.assertEqual(self.reporter, member2.rule_uid)
 
-    async def test_update_permission(self):
+    async def test_update_rule(self):
         await self.db.insert_group_member(self.group_uid, self.user1_uid, self.guest)
         await self.db.insert_group_member(self.group_uid, self.user2_uid, self.reporter)
-        await self.db.update_group_member_permission(
+        await self.db.update_group_member_rule(
             self.group_uid, self.user1_uid, self.maintainer
         )
-        await self.db.update_group_member_permission(
+        await self.db.update_group_member_rule(
             self.group_uid, self.user2_uid, self.operator
         )
 
         member1 = await self.db.select_group_member(self.group_uid, self.user1_uid)
         member2 = await self.db.select_group_member(self.group_uid, self.user2_uid)
-        self.assertEqual(self.maintainer, member1.permission_uid)
-        self.assertEqual(self.operator, member2.permission_uid)
+        self.assertEqual(self.maintainer, member1.rule_uid)
+        self.assertEqual(self.operator, member2.rule_uid)
 
     async def test_group_members(self):
         await self.db.insert_group_member(self.group_uid, self.user1_uid, self.guest)
@@ -72,7 +72,7 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
         self.assertIsInstance(group0, GroupJoinGroupMember)
         self.assertEqual(self.group_uid, group0.group_uid)
         self.assertEqual(test_user, group0.user_uid)
-        self.assertEqual(self.guest, group0.permission_uid)
+        self.assertEqual(self.guest, group0.rule_uid)
 
         group1 = await self.db.select_group_member_join_group_by_user_uid_and_group_uid(
             test_user, self.group_uid

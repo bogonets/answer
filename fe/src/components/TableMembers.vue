@@ -210,11 +210,11 @@ export default class TableMembers extends VueBase {
   }
 
   selectPermission(item: MemberA) {
-    return this.permissions.find(p => p.slug === item.permission);
+    return this.permissions.find(p => p.slug === item.rule);
   }
 
   inputPermission(event: RuleA, item: MemberA) {
-    item.permission = event.slug;
+    item.rule = event.slug;
   }
 
   @Emit('click:row')
@@ -226,7 +226,7 @@ export default class TableMembers extends VueBase {
   change(event: RuleA, item: MemberA) {
     return {
       username: item.username,
-      permission: event.slug,
+      rule: event.slug,
     } as UpdateMemberQ;
   }
 

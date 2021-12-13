@@ -91,21 +91,21 @@ class ContextGroup(ContextBase):
         return await self.database.select_group_member(group_uid, user_uid)
 
     async def add_group_member(
-        self, group_uid: int, user_uid: int, permission_uid: int
+        self, group_uid: int, user_uid: int, rule_uid: int
     ) -> None:
         return await self.database.insert_group_member(
             group_uid=group_uid,
             user_uid=user_uid,
-            permission_uid=permission_uid,
+            rule_uid=rule_uid,
         )
 
     async def update_group_member(
-        self, group_uid: int, user_uid: int, permission_uid: int
+        self, group_uid: int, user_uid: int, rule_uid: int
     ) -> None:
-        return await self.database.update_group_member_permission(
+        return await self.database.update_group_member_rule(
             group_uid=group_uid,
             user_uid=user_uid,
-            permission_uid=permission_uid,
+            rule_uid=rule_uid,
         )
 
     async def remove_group_member(self, group_uid: int, user_uid: int) -> None:

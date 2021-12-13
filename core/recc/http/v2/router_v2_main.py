@@ -156,20 +156,18 @@ class RouterV2Main:
         result = list()
         for member in members:
             assert member.user_uid is not None
-            assert member.permission_uid is not None
+            assert member.rule_uid is not None
             username = await self.context.get_user_name(member.user_uid)
-            permission_slug = await self.context.get_rule_slug(member.permission_uid)
-            result.append(MemberA(username, permission_slug))
+            rule_slug = await self.context.get_rule_slug(member.rule_uid)
+            result.append(MemberA(username, rule_slug))
         return result
 
     @parameter_matcher(group_policies=[Policy.HasMemberWrite])
     async def post_groups_pgroup_members(self, group: str, body: CreateMemberQ) -> None:
         group_uid = await self.context.get_group_uid(group)
         member_user_uid = await self.context.get_user_uid(body.username)
-        member_permission_uid = await self.context.get_rule_uid(body.permission)
-        await self.context.add_group_member(
-            group_uid, member_user_uid, member_permission_uid
-        )
+        member_rule_uid = await self.context.get_rule_uid(body.rule)
+        await self.context.add_group_member(group_uid, member_user_uid, member_rule_uid)
 
     @parameter_matcher(group_policies=[Policy.HasMemberRead])
     async def get_groups_pgroup_members_pmember(
@@ -178,11 +176,9 @@ class RouterV2Main:
         group_uid = await self.context.get_group_uid(group)
         member_user_uid = await self.context.get_user_uid(member)
         db_member = await self.context.get_group_member(group_uid, member_user_uid)
-        assert db_member.permission_uid is not None
-        member_permission_slug = await self.context.get_rule_slug(
-            db_member.permission_uid
-        )
-        return MemberA(member, member_permission_slug)
+        assert db_member.rule_uid is not None
+        member_rule_slug = await self.context.get_rule_slug(db_member.rule_uid)
+        return MemberA(member, member_rule_slug)
 
     @parameter_matcher(group_policies=[Policy.HasMemberWrite])
     async def patch_groups_pgroup_members_pmember(
@@ -190,9 +186,9 @@ class RouterV2Main:
     ) -> None:
         group_uid = await self.context.get_group_uid(group)
         member_user_uid = await self.context.get_user_uid(member)
-        member_permission_uid = await self.context.get_rule_uid(body.permission)
+        member_rule_uid = await self.context.get_rule_uid(body.rule)
         await self.context.update_group_member(
-            group_uid, member_user_uid, member_permission_uid
+            group_uid, member_user_uid, member_rule_uid
         )
 
     @parameter_matcher(group_policies=[Policy.HasMemberWrite])
@@ -312,10 +308,10 @@ class RouterV2Main:
         result = list()
         for member in members:
             assert member.user_uid is not None
-            assert member.permission_uid is not None
+            assert member.rule_uid is not None
             username = await self.context.get_user_name(member.user_uid)
-            permission_slug = await self.context.get_rule_slug(member.permission_uid)
-            result.append(MemberA(username, permission_slug))
+            rule_slug = await self.context.get_rule_slug(member.rule_uid)
+            result.append(MemberA(username, rule_slug))
         return result
 
     @parameter_matcher(project_policies=[Policy.HasMemberWrite])
@@ -325,9 +321,9 @@ class RouterV2Main:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
         member_user_uid = await self.context.get_user_uid(body.username)
-        member_permission_uid = await self.context.get_rule_uid(body.permission)
+        member_rule_uid = await self.context.get_rule_uid(body.rule)
         await self.context.add_project_member(
-            project_uid, member_user_uid, member_permission_uid
+            project_uid, member_user_uid, member_rule_uid
         )
 
     @parameter_matcher(project_policies=[Policy.HasMemberRead])
@@ -338,11 +334,9 @@ class RouterV2Main:
         project_uid = await self.context.get_project_uid(group_uid, project)
         member_user_uid = await self.context.get_user_uid(member)
         db_member = await self.context.get_project_member(project_uid, member_user_uid)
-        assert db_member.permission_uid is not None
-        member_permission_slug = await self.context.get_rule_slug(
-            db_member.permission_uid
-        )
-        return MemberA(member, member_permission_slug)
+        assert db_member.rule_uid is not None
+        member_rule_slug = await self.context.get_rule_slug(db_member.rule_uid)
+        return MemberA(member, member_rule_slug)
 
     @parameter_matcher(project_policies=[Policy.HasMemberWrite])
     async def patch_projects_pgroup_pproject_members_pmember(
@@ -351,9 +345,9 @@ class RouterV2Main:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
         member_user_uid = await self.context.get_user_uid(member)
-        member_permission_uid = await self.context.get_rule_uid(body.permission)
+        member_rule_uid = await self.context.get_rule_uid(body.rule)
         await self.context.update_project_member(
-            project_uid, member_user_uid, member_permission_uid
+            project_uid, member_user_uid, member_rule_uid
         )
 
     @parameter_matcher(project_policies=[Policy.HasMemberWrite])
@@ -377,7 +371,7 @@ class RouterV2Main:
     async def get_rules_pgroup(self, session: SessionEx, group: str) -> RuleA:
         group_uid = await self.context.get_group_uid(group)
         member = await self.context.get_group_member(group_uid, session.uid)
-        rule_uid = member.permission_uid
+        rule_uid = member.rule_uid
         assert rule_uid is not None
         rule = await self.context.get_rule(rule_uid)
         return rule_to_answer(rule)
@@ -416,11 +410,11 @@ class RouterV2Main:
     #     group_uid = await self.context.get_group_uid(group)
     #     project_uid = await self.context.get_project_uid(group_uid, project)
     #     if not session.is_admin:
-    #         permission = await self.context.get_best_permission(
+    #         rule = await self.context.get_best_rule(
     #             session.uid, group_uid, project_uid
     #         )
-    #         if not permission.r_manager:
-    #             raise HTTPForbidden(reason="You do not have valid permissions")
+    #         if not rule.r_manager:
+    #             raise HTTPForbidden(reason="You do not have valid rules")
     #
     #     result = list()
     #     for container in await self.context.get_tasks(group, project):
@@ -438,11 +432,11 @@ class RouterV2Main:
     #     group_uid = await self.context.get_group_uid(group)
     #     project_uid = await self.context.get_project_uid(group_uid, project)
     #     if not session.is_admin:
-    #         permission = await self.context.get_best_permission(
+    #         rule = await self.context.get_best_rule(
     #             session.uid, group_uid, project_uid
     #         )
-    #         if not permission.w_manager:
-    #             raise HTTPForbidden(reason="You do not have valid permissions")
+    #         if not rule.w_manager:
+    #             raise HTTPForbidden(reason="You do not have valid rules")
     #
     #     operator = ContainerOperator.from_str(body.operator)
     #     if operator == ContainerOperator.Start:

@@ -100,21 +100,21 @@ class ContextProject(ContextBase):
         return await self.database.select_project_member(project_uid, user_uid)
 
     async def add_project_member(
-        self, project_uid: int, user_uid: int, permission_uid: int
+        self, project_uid: int, user_uid: int, rule_uid: int
     ) -> None:
         return await self.database.insert_project_member(
             project_uid=project_uid,
             user_uid=user_uid,
-            permission_uid=permission_uid,
+            rule_uid=rule_uid,
         )
 
     async def update_project_member(
-        self, project_uid: int, user_uid: int, permission_uid: int
+        self, project_uid: int, user_uid: int, rule_uid: int
     ) -> None:
-        return await self.database.update_project_member_permission(
+        return await self.database.update_project_member_rule(
             project_uid=project_uid,
             user_uid=user_uid,
-            permission_uid=permission_uid,
+            rule_uid=rule_uid,
         )
 
     async def remove_project_member(self, project_uid: int, user_uid: int) -> None:

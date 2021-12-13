@@ -35,27 +35,27 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
         self.assertEqual(self.project_uid, member2.project_uid)
         self.assertEqual(self.user1_uid, member1.user_uid)
         self.assertEqual(self.user2_uid, member2.user_uid)
-        self.assertEqual(self.rule1_uid, member1.permission_uid)
-        self.assertEqual(self.rule2_uid, member2.permission_uid)
+        self.assertEqual(self.rule1_uid, member1.rule_uid)
+        self.assertEqual(self.rule2_uid, member2.rule_uid)
 
-    async def test_update_permission(self):
+    async def test_update_rule(self):
         await self.db.insert_project_member(
             self.project_uid, self.user1_uid, self.rule1_uid
         )
         await self.db.insert_project_member(
             self.project_uid, self.user2_uid, self.rule2_uid
         )
-        await self.db.update_project_member_permission(
+        await self.db.update_project_member_rule(
             self.project_uid, self.user1_uid, self.rule4_uid
         )
-        await self.db.update_project_member_permission(
+        await self.db.update_project_member_rule(
             self.project_uid, self.user2_uid, self.rule3_uid
         )
 
         member1 = await self.db.select_project_member(self.project_uid, self.user1_uid)
         member2 = await self.db.select_project_member(self.project_uid, self.user2_uid)
-        self.assertEqual(self.rule4_uid, member1.permission_uid)
-        self.assertEqual(self.rule3_uid, member2.permission_uid)
+        self.assertEqual(self.rule4_uid, member1.rule_uid)
+        self.assertEqual(self.rule3_uid, member2.rule_uid)
 
     async def test_project_members(self):
         await self.db.insert_project_member(
@@ -89,7 +89,7 @@ class PgProjectMemberTestCase(PostgresqlTestCase):
         self.assertIsInstance(project0, ProjectJoinProjectMember)
         self.assertEqual(self.project_uid, project0.project_uid)
         self.assertEqual(test_user, project0.user_uid)
-        self.assertEqual(self.rule1_uid, project0.permission_uid)
+        self.assertEqual(self.rule1_uid, project0.rule_uid)
 
         project1 = await self.db.select_project_member_join_project_by_user_uid_and_project_uid(  # noqa
             test_user, self.project_uid

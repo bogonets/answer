@@ -119,9 +119,7 @@ class AccessControlList:
             raise HTTPBadRequest(reason="The project name is missing")
 
         try:
-            rule = await context.get_project_raw_rule(
-                session, group_name, project_name
-            )
+            rule = await context.get_project_raw_rule(session, group_name, project_name)
             if Policy.HasFeatures in self.projects:
                 self.test_features(rule.features)
             test_policies(self.projects, rule)

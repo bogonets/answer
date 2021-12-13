@@ -37,9 +37,9 @@ ko:
     <v-select
         dense
         persistent-hint
-        v-model="permission"
+        v-model="rule"
         :rules="permissionRules"
-        :items="visiblePermissions"
+        :items="visibleRules"
         :hint="$t('hint.permission')"
         item-value="slug"
         item-disabled="hidden"
@@ -133,10 +133,10 @@ export default class FormInviteMember extends VueBase {
   @Ref()
   readonly form!: VForm;
 
-  visiblePermissions = [] as Array<RuleA>;
+  visibleRules = [] as Array<RuleA>;
   valid = false;
   username = '';
-  permission = {} as RuleA;
+  rule = {} as RuleA;
 
   created() {
     this.updateVisiblePermissionNames();
@@ -154,7 +154,7 @@ export default class FormInviteMember extends VueBase {
         result.push(permission);
       }
     }
-    this.visiblePermissions = result;
+    this.visibleRules = result;
   }
 
   get disableSubmit(): boolean {
@@ -184,7 +184,7 @@ export default class FormInviteMember extends VueBase {
   ok() {
     return {
       username: this.username,
-      permission: this.permission.slug,
+      rule: this.rule.slug,
     } as CreateMemberQ;
   }
 }

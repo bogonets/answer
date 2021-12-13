@@ -65,9 +65,3 @@ class PgDb(
         self._name = name
 
         self._timeout = float(kwargs.get(EX_KEY_TIMEOUT, DEFAULT_TIMEOUT_SECONDS))
-
-        self._anonymous_group_uid = None
-        self._guest_permission_uid = None
-        self._reporter_permission_uid = None
-        self._operator_permission_uid = None
-        self._maintainer_permission_uid = None

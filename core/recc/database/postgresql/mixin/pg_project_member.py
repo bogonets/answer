@@ -9,7 +9,7 @@ from recc.database.interfaces.db_project_member import DbProjectMember
 from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.project_member import (
     INSERT_PROJECT_MEMBER,
-    UPDATE_PROJECT_MEMBER_PERMISSION,
+    UPDATE_PROJECT_MEMBER_RULE,
     DELETE_PROJECT_MEMBER,
     SELECT_PROJECT_MEMBER_BY_PROJECT_UID_AND_USER_UID,
     SELECT_PROJECT_MEMBER_BY_PROJECT_UID,
@@ -23,25 +23,25 @@ from recc.database.postgresql.query.project_member import (
 class PgProjectMember(DbProjectMember, PgBase):
     @overrides
     async def insert_project_member(
-        self, project_uid: int, user_uid: int, permission_uid: int
+        self, project_uid: int, user_uid: int, rule_uid: int
     ) -> None:
         query = INSERT_PROJECT_MEMBER
-        await self.execute(query, project_uid, user_uid, permission_uid)
+        await self.execute(query, project_uid, user_uid, rule_uid)
         params_msg1 = f"project_uid={project_uid},user_uid={user_uid}"
-        params_msg2 = f"permission_uid={permission_uid}"
+        params_msg2 = f"rule_uid={rule_uid}"
         params_msg = f"{params_msg1},{params_msg2}"
         logger.info(f"insert_project_member({params_msg}) ok.")
 
     @overrides
-    async def update_project_member_permission(
-        self, project_uid: int, user_uid: int, permission_uid: int
+    async def update_project_member_rule(
+        self, project_uid: int, user_uid: int, rule_uid: int
     ) -> None:
-        query = UPDATE_PROJECT_MEMBER_PERMISSION
-        await self.execute(query, project_uid, user_uid, permission_uid)
+        query = UPDATE_PROJECT_MEMBER_RULE
+        await self.execute(query, project_uid, user_uid, rule_uid)
         params_msg1 = f"project_uid={project_uid},user_uid={user_uid}"
-        params_msg2 = f"permission_uid={permission_uid}"
+        params_msg2 = f"rule_uid={rule_uid}"
         params_msg = f"{params_msg1},{params_msg2}"
-        logger.info(f"update_project_member_permission({params_msg}) ok.")
+        logger.info(f"update_project_member_rule({params_msg}) ok.")
 
     @overrides
     async def delete_project_member(self, project_uid: int, user_uid: int) -> None:
