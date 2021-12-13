@@ -3,13 +3,13 @@
 from typing import List, Optional, Any, Union
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.rule import Rule
-from recc.packet.permission import RawPermission
-from recc.packet.cvt.permission import permission_to_raw
+from recc.packet.rule import RawRule
+from recc.packet.cvt.rule import rule_to_raw
 from recc.session.session_ex import SessionEx
 
 
-class ContextPermission(ContextBase):
-    async def create_permission(
+class ContextRule(ContextBase):
+    async def create_rule(
         self,
         slug: str,
         name: Optional[str] = None,
@@ -56,8 +56,8 @@ class ContextPermission(ContextBase):
         return rule_uid
 
     @staticmethod
-    def _is_permission_equals_for_update(
-        permission: Rule,
+    def _is_rule_equals_for_update(
+        rule: Rule,
         slug: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
@@ -77,67 +77,67 @@ class ContextPermission(ContextBase):
         w_setting: Optional[bool] = None,
         hidden: Optional[bool] = None,
     ) -> bool:
-        """When permission is 'locked',
-        all attributes except `lock` must not be changed.
+        """
+        When rule is 'locked', all attributes except `lock` must not be changed.
         """
 
         if slug is not None:
-            if permission.slug != slug:
+            if rule.slug != slug:
                 return False
         if name is not None:
-            if permission.name != name:
+            if rule.name != name:
                 return False
         if description is not None:
-            if permission.description != description:
+            if rule.description != description:
                 return False
         if features is not None:
-            if permission.features != features:
+            if rule.features != features:
                 return False
         if extra is not None:
-            if permission.extra != extra:
+            if rule.extra != extra:
                 return False
         if r_layout is not None:
-            if permission.r_layout != r_layout:
+            if rule.r_layout != r_layout:
                 return False
         if w_layout is not None:
-            if permission.w_layout != w_layout:
+            if rule.w_layout != w_layout:
                 return False
         if r_storage is not None:
-            if permission.r_storage != r_storage:
+            if rule.r_storage != r_storage:
                 return False
         if w_storage is not None:
-            if permission.w_storage != w_storage:
+            if rule.w_storage != w_storage:
                 return False
         if r_manager is not None:
-            if permission.r_manager != r_manager:
+            if rule.r_manager != r_manager:
                 return False
         if w_manager is not None:
-            if permission.w_manager != w_manager:
+            if rule.w_manager != w_manager:
                 return False
         if r_graph is not None:
-            if permission.r_graph != r_graph:
+            if rule.r_graph != r_graph:
                 return False
         if w_graph is not None:
-            if permission.w_graph != w_graph:
+            if rule.w_graph != w_graph:
                 return False
         if r_member is not None:
-            if permission.r_member != r_member:
+            if rule.r_member != r_member:
                 return False
         if w_member is not None:
-            if permission.w_member != w_member:
+            if rule.w_member != w_member:
                 return False
         if r_setting is not None:
-            if permission.r_setting != r_setting:
+            if rule.r_setting != r_setting:
                 return False
         if w_setting is not None:
-            if permission.w_setting != w_setting:
+            if rule.w_setting != w_setting:
                 return False
         if hidden is not None:
-            if permission.hidden != hidden:
+            if rule.hidden != hidden:
                 return False
         return True
 
-    async def update_permission(
+    async def update_rule(
         self,
         uid: int,
         slug: Optional[str] = None,
@@ -162,10 +162,10 @@ class ContextPermission(ContextBase):
         force=False,
     ) -> None:
         if not force:
-            permission = await self.database.select_rule_by_uid(uid)
-            if permission.lock:
-                permission_equals = self._is_permission_equals_for_update(
-                    permission,
+            rule = await self.database.select_rule_by_uid(uid)
+            if rule.lock:
+                rule_equals = self._is_rule_equals_for_update(
+                    rule,
                     slug,
                     name,
                     description,
@@ -185,8 +185,8 @@ class ContextPermission(ContextBase):
                     w_setting,
                     hidden,
                 )
-                if not permission_equals:
-                    raise RuntimeError(f"Locked permission: {uid}")
+                if not rule_equals:
+                    raise RuntimeError(f"Locked rule: {uid}")
 
         await self.database.update_rule_by_uid(
             uid=uid,
@@ -214,40 +214,40 @@ class ContextPermission(ContextBase):
             await self.cache.remove_rule_by_uid(uid)
             await self.cache.set_rule(slug, uid)
 
-    async def delete_permission(self, uid: int, force=False) -> None:
+    async def delete_rule(self, uid: int, force=False) -> None:
         if not force:
             if await self.database.select_rule_lock_by_uid(uid):
-                raise RuntimeError(f"Locked permission: {uid}")
+                raise RuntimeError(f"Locked rule: {uid}")
         await self.database.delete_rule_by_uid(uid)
         await self.cache.remove_rule_by_uid(uid)
 
-    async def get_permission(self, uid: int) -> Rule:
+    async def get_rule(self, uid: int) -> Rule:
         return await self.database.select_rule_by_uid(uid)
 
-    async def get_permissions(self) -> List[Rule]:
+    async def get_rules(self) -> List[Rule]:
         return await self.database.select_rule_all()
 
-    async def get_group_permission(self, user_uid: int, group_uid: int) -> Rule:
+    async def get_group_rule(self, user_uid: int, group_uid: int) -> Rule:
         return await self.database.select_rule_by_user_uid_and_group_uid(
             user_uid, group_uid
         )
 
-    async def get_project_permission(self, user_uid: int, project_uid: int) -> Rule:
+    async def get_project_rule(self, user_uid: int, project_uid: int) -> Rule:
         return await self.database.select_rule_by_user_uid_and_project_uid(
             user_uid, project_uid
         )
 
-    async def get_best_permission(
+    async def get_best_rule(
         self, user_uid: int, group_uid: int, project_uid: int
     ) -> Rule:
         try:
-            return await self.get_project_permission(user_uid, project_uid)
+            return await self.get_project_rule(user_uid, project_uid)
         except:  # noqa
-            return await self.get_group_permission(user_uid, group_uid)
+            return await self.get_group_rule(user_uid, group_uid)
 
-    async def get_group_raw_permission(
+    async def get_group_raw_rule(
         self, session: SessionEx, group: Union[str, int]
-    ) -> RawPermission:
+    ) -> RawRule:
         try:
             if isinstance(group, int):
                 group_uid = group
@@ -256,17 +256,17 @@ class ContextPermission(ContextBase):
             else:
                 group_uid = await self.get_group_uid(str(group))
 
-            permission = await self.get_group_permission(session.uid, group_uid)
-            return permission_to_raw(permission, session.is_admin)
+            rule = await self.get_group_rule(session.uid, group_uid)
+            return rule_to_raw(rule, session.is_admin)
         except:  # noqa
             if session.is_admin:
-                return RawPermission.all_true()
+                return RawRule.all_true()
             else:
-                return RawPermission.all_false()
+                return RawRule.all_false()
 
-    async def get_project_raw_permission(
+    async def get_project_raw_rule(
         self, session: SessionEx, group: Union[str, int], project: Union[str, int]
-    ) -> RawPermission:
+    ) -> RawRule:
         try:
             if isinstance(group, int):
                 group_uid = group
@@ -282,12 +282,10 @@ class ContextPermission(ContextBase):
             else:
                 project_uid = await self.get_project_uid(group_uid, str(project))
 
-            permission = await self.get_best_permission(
-                session.uid, group_uid, project_uid
-            )
-            return permission_to_raw(permission, session.is_admin)
+            rule = await self.get_best_rule(session.uid, group_uid, project_uid)
+            return rule_to_raw(rule, session.is_admin)
         except:  # noqa
             if session.is_admin:
-                return RawPermission.all_true()
+                return RawRule.all_true()
             else:
-                return RawPermission.all_false()
+                return RawRule.all_false()

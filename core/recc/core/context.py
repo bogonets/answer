@@ -12,10 +12,10 @@ from recc.core.mixin.context_info import ContextInfo
 from recc.core.mixin.context_init import ContextInit
 from recc.core.mixin.context_lamda import ContextLamda
 from recc.core.mixin.context_layout import ContextLayout
-from recc.core.mixin.context_permission import ContextPermission
 from recc.core.mixin.context_plugin import ContextPlugin
 from recc.core.mixin.context_port import ContextPort
 from recc.core.mixin.context_project import ContextProject
+from recc.core.mixin.context_rule import ContextRule
 from recc.core.mixin.context_storage import ContextStorage
 from recc.core.mixin.context_system import ContextSystem
 from recc.core.mixin.context_task import ContextTask
@@ -41,10 +41,10 @@ class Context(
     ContextInit,
     ContextLamda,
     ContextLayout,
-    ContextPermission,
     ContextPlugin,
     ContextPort,
     ContextProject,
+    ContextRule,
     ContextStorage,
     ContextSystem,
     ContextTask,

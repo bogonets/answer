@@ -14,7 +14,7 @@ from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.container import ContainerOperator, ContainerA, ControlContainersQ
 from recc.packet.daemon import DaemonA, CreateDaemonQ, UpdateDaemonQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
-from recc.packet.permission import PermissionA, CreatePermissionQ, UpdatePermissionQ
+from recc.packet.rule import RuleA, CreateRuleQ, UpdateRuleQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.plugin import PluginNameA
 from recc.packet.system import SystemOverviewA
@@ -22,7 +22,7 @@ from recc.packet.template import TemplateA
 from recc.packet.user import UserA, UpdateUserQ, SignupQ
 from recc.packet.cvt.daemon import daemon_to_answer
 from recc.packet.cvt.project import project_to_answer
-from recc.packet.cvt.permission import permission_to_answer
+from recc.packet.cvt.rule import rule_to_answer
 from recc.packet.cvt.container import container_to_answer
 from recc.database.struct.group import Group
 
@@ -365,18 +365,18 @@ class RouterV2Admin:
     # -----------
 
     @parameter_matcher()
-    async def get_permissions(self) -> List[PermissionA]:
+    async def get_permissions(self) -> List[RuleA]:
         result = list()
-        for permission in await self.context.get_permissions():
-            result.append(permission_to_answer(permission))
+        for permission in await self.context.get_rules():
+            result.append(rule_to_answer(permission))
         return result
 
     @parameter_matcher()
-    async def post_permissions(self, body: CreatePermissionQ) -> None:
+    async def post_permissions(self, body: CreateRuleQ) -> None:
         if not body.slug:
             raise HTTPBadRequest(reason="Not exists `slug` field")
         body.normalize_booleans()
-        await self.context.create_permission(
+        await self.context.create_rule(
             slug=body.slug,
             name=body.name,
             description=body.description,
@@ -399,15 +399,15 @@ class RouterV2Admin:
         )
 
     @parameter_matcher()
-    async def get_permissions_pperm(self, perm: str) -> PermissionA:
+    async def get_permissions_pperm(self, perm: str) -> RuleA:
         uid = await self.context.get_rule_uid(perm)
-        db_permission = await self.context.get_permission(uid)
-        return permission_to_answer(db_permission)
+        db_permission = await self.context.get_rule(uid)
+        return rule_to_answer(db_permission)
 
     @parameter_matcher()
-    async def patch_permissions_pperm(self, perm: str, body: UpdatePermissionQ) -> None:
+    async def patch_permissions_pperm(self, perm: str, body: UpdateRuleQ) -> None:
         uid = await self.context.get_rule_uid(perm)
-        await self.context.update_permission(
+        await self.context.update_rule(
             uid,
             slug=body.slug,
             name=body.name,
@@ -433,7 +433,7 @@ class RouterV2Admin:
     @parameter_matcher()
     async def delete_permissions_pperm(self, perm: str) -> None:
         uid = await self.context.get_rule_uid(perm)
-        await self.context.delete_permission(uid)
+        await self.context.delete_rule(uid)
 
     # ----------
     # Containers

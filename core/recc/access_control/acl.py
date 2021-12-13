@@ -99,7 +99,7 @@ class AccessControlList:
             raise HTTPBadRequest(reason="The group name is missing")
 
         try:
-            permission = await context.get_group_raw_permission(session, group_name)
+            permission = await context.get_group_raw_rule(session, group_name)
             if Policy.HasFeatures in self.groups:
                 self.test_features(permission.features)
             test_policies(self.groups, permission)
@@ -119,7 +119,7 @@ class AccessControlList:
             raise HTTPBadRequest(reason="The project name is missing")
 
         try:
-            permission = await context.get_project_raw_permission(
+            permission = await context.get_project_raw_rule(
                 session, group_name, project_name
             )
             if Policy.HasFeatures in self.projects:

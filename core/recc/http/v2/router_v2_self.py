@@ -9,7 +9,7 @@ from recc.http.http_parameter import parameter_matcher
 from recc.http import http_urls as u
 from recc.session.session_ex import SessionEx
 from recc.packet.user import UserA, UpdateUserQ, UpdatePasswordQ
-from recc.packet.permission import RawPermission
+from recc.packet.rule import RawRule
 
 
 class RouterV2Self:
@@ -122,11 +122,11 @@ class RouterV2Self:
     @parameter_matcher()
     async def get_raw_permission_pgroup(
         self, session: SessionEx, group: str
-    ) -> RawPermission:
-        return await self.context.get_group_raw_permission(session, group)
+    ) -> RawRule:
+        return await self.context.get_group_raw_rule(session, group)
 
     @parameter_matcher()
     async def get_raw_permission_pgroup_pproject(
         self, session: SessionEx, group: str, project: str
-    ) -> RawPermission:
-        return await self.context.get_project_raw_permission(session, group, project)
+    ) -> RawRule:
+        return await self.context.get_project_raw_rule(session, group, project)

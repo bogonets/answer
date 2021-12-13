@@ -17,11 +17,11 @@ from recc.packet.project import (
     ProjectOverviewA,
 )
 from recc.packet.member import MemberA, CreateMemberQ, UpdateMemberQ
-from recc.packet.permission import PermissionA
+from recc.packet.rule import RuleA
 from recc.packet.info import InfoA
 from recc.packet.cvt.project import project_to_answer
 from recc.packet.cvt.group import group_to_answer
-from recc.packet.cvt.permission import permission_to_answer
+from recc.packet.cvt.rule import rule_to_answer
 
 
 class RouterV2Main:
@@ -370,33 +370,31 @@ class RouterV2Main:
     # -----------
 
     @parameter_matcher()
-    async def get_permissions(self) -> List[PermissionA]:
+    async def get_permissions(self) -> List[RuleA]:
         result = list()
-        for permission in await self.context.get_permissions():
-            result.append(permission_to_answer(permission))
+        for permission in await self.context.get_rules():
+            result.append(rule_to_answer(permission))
         return result
 
     @parameter_matcher()
-    async def get_permissions_pgroup(
-        self, session: SessionEx, group: str
-    ) -> PermissionA:
+    async def get_permissions_pgroup(self, session: SessionEx, group: str) -> RuleA:
         group_uid = await self.context.get_group_uid(group)
         member = await self.context.get_group_member(group_uid, session.uid)
         permission_uid = member.permission_uid
         assert permission_uid is not None
-        permission = await self.context.get_permission(permission_uid)
-        return permission_to_answer(permission)
+        permission = await self.context.get_rule(permission_uid)
+        return rule_to_answer(permission)
 
     @parameter_matcher()
     async def get_permissions_pgroup_pproject(
         self, session: SessionEx, group: str, project: str
-    ) -> PermissionA:
+    ) -> RuleA:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        permission = await self.context.get_best_permission(
+        permission = await self.context.get_best_rule(
             session.uid, group_uid, project_uid
         )
-        return permission_to_answer(permission)
+        return rule_to_answer(permission)
 
     # -----
     # Users

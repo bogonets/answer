@@ -2,7 +2,7 @@
 
 from typing import List
 from enum import Enum, auto, unique
-from recc.packet.permission import RawPermission
+from recc.packet.rule import RawRule
 
 
 @unique
@@ -24,62 +24,62 @@ class Policy(Enum):
     HasFeatures = auto()
 
 
-def has_layout_read(permission: RawPermission) -> None:
+def has_layout_read(permission: RawRule) -> None:
     if not permission.r_layout:
         raise PermissionError("You do not have read access to the layout")
 
 
-def has_layout_write(permission: RawPermission) -> None:
+def has_layout_write(permission: RawRule) -> None:
     if not permission.w_layout:
         raise PermissionError("You do not have write access to the layout")
 
 
-def has_storage_read(permission: RawPermission) -> None:
+def has_storage_read(permission: RawRule) -> None:
     if not permission.r_storage:
         raise PermissionError("You do not have read access to the storage")
 
 
-def has_storage_write(permission: RawPermission) -> None:
+def has_storage_write(permission: RawRule) -> None:
     if not permission.w_storage:
         raise PermissionError("You do not have write access to the storage")
 
 
-def has_manager_read(permission: RawPermission) -> None:
+def has_manager_read(permission: RawRule) -> None:
     if not permission.r_manager:
         raise PermissionError("You do not have read access to the manager")
 
 
-def has_manager_write(permission: RawPermission) -> None:
+def has_manager_write(permission: RawRule) -> None:
     if not permission.w_manager:
         raise PermissionError("You do not have write access to the manager")
 
 
-def has_graph_read(permission: RawPermission) -> None:
+def has_graph_read(permission: RawRule) -> None:
     if not permission.r_graph:
         raise PermissionError("You do not have read access to the graph")
 
 
-def has_graph_write(permission: RawPermission) -> None:
+def has_graph_write(permission: RawRule) -> None:
     if not permission.w_graph:
         raise PermissionError("You do not have write access to the graph")
 
 
-def has_member_read(permission: RawPermission) -> None:
+def has_member_read(permission: RawRule) -> None:
     if not permission.r_member:
         raise PermissionError("You do not have read access to the member")
 
 
-def has_member_write(permission: RawPermission) -> None:
+def has_member_write(permission: RawRule) -> None:
     if not permission.w_member:
         raise PermissionError("You do not have write access to the member")
 
 
-def has_setting_read(permission: RawPermission) -> None:
+def has_setting_read(permission: RawRule) -> None:
     if not permission.r_setting:
         raise PermissionError("You do not have read access to the setting")
 
 
-def has_setting_write(permission: RawPermission) -> None:
+def has_setting_write(permission: RawRule) -> None:
     if not permission.w_setting:
         raise PermissionError("You do not have write access to the setting")
 
@@ -100,13 +100,13 @@ POLICY_TO_TESTER_MAP = {
 }
 
 
-def test_policy(policy: Policy, permission: RawPermission) -> None:
+def test_policy(policy: Policy, permission: RawRule) -> None:
     assert policy is not Policy.HasFeatures
     assert policy in POLICY_TO_TESTER_MAP
     POLICY_TO_TESTER_MAP[policy](permission)
 
 
-def test_policies(policies: List[Policy], permission: RawPermission) -> None:
+def test_policies(policies: List[Policy], permission: RawRule) -> None:
     for policy in policies:
         if policy == Policy.HasFeatures:
             continue

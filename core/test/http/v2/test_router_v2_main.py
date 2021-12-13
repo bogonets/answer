@@ -10,7 +10,7 @@ from recc.http import http_path_keys as p
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.member import MemberA, CreateMemberQ, UpdateMemberQ
-from recc.packet.permission import PermissionA
+from recc.packet.rule import RuleA
 from recc.packet.info import InfoA
 from recc.variables.database import (
     VISIBILITY_LEVEL_PRIVATE,
@@ -355,10 +355,10 @@ class RouterV2MainTestCase(AsyncTestCase):
         self.assertEqual(200, response2.status)
 
         path1 = v2_main_path(u.permissions_pgroup, group=group1.slug)
-        response3 = await self.tester.get(path1, cls=PermissionA)
+        response3 = await self.tester.get(path1, cls=RuleA)
         self.assertEqual(200, response3.status)
         response3_data = response3.data
-        self.assertIsInstance(response3_data, PermissionA)
+        self.assertIsInstance(response3_data, RuleA)
         self.assertEqual(RULE_SLUG_OWNER, response3_data.slug)
 
         path2 = v2_main_path(
@@ -366,10 +366,10 @@ class RouterV2MainTestCase(AsyncTestCase):
             group=project1.group_slug,
             project=project1.project_slug,
         )
-        response4 = await self.tester.get(path2, cls=PermissionA)
+        response4 = await self.tester.get(path2, cls=RuleA)
         self.assertEqual(200, response4.status)
         response4_data = response4.data
-        self.assertIsInstance(response4_data, PermissionA)
+        self.assertIsInstance(response4_data, RuleA)
         self.assertEqual(RULE_SLUG_OWNER, response4_data.slug)
 
     async def test_usernames(self):
