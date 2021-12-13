@@ -339,7 +339,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         self.assertEqual(1, len(response10.data))
 
     async def test_permissions(self):
-        response1 = await self.tester.get(v2_main_path(u.permissions))
+        response1 = await self.tester.get(v2_main_path(u.rules))
         self.assertEqual(200, response1.status)
         response1_data = response1.data
         self.assertIsInstance(response1_data, list)
@@ -354,7 +354,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         response2 = await self.tester.post(v2_main_path(u.projects), data=project1)
         self.assertEqual(200, response2.status)
 
-        path1 = v2_main_path(u.permissions_pgroup, group=group1.slug)
+        path1 = v2_main_path(u.rules_pgroup, group=group1.slug)
         response3 = await self.tester.get(path1, cls=RuleA)
         self.assertEqual(200, response3.status)
         response3_data = response3.data
@@ -362,7 +362,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         self.assertEqual(RULE_SLUG_OWNER, response3_data.slug)
 
         path2 = v2_main_path(
-            u.permissions_pgroup_pproject,
+            u.rules_pgroup_pproject,
             group=project1.group_slug,
             project=project1.project_slug,
         )

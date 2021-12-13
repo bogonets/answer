@@ -78,10 +78,10 @@ class RouterV2Main:
             web.patch(u.projects_pgroup_pproject_members_pmember, self.patch_projects_pgroup_pproject_members_pmember),  # noqa
             web.delete(u.projects_pgroup_pproject_members_pmember, self.delete_projects_pgroup_pproject_members_pmember),  # noqa
 
-            # Permissions
-            web.get(u.permissions, self.get_permissions),
-            web.get(u.permissions_pgroup, self.get_permissions_pgroup),
-            web.get(u.permissions_pgroup_pproject, self.get_permissions_pgroup_pproject),  # noqa
+            # Rules
+            web.get(u.rules, self.get_rules),
+            web.get(u.rules_pgroup, self.get_rules_pgroup),
+            web.get(u.rules_pgroup_pproject, self.get_rules_pgroup_pproject),
 
             # Users
             web.get(u.usernames, self.get_usernames),
@@ -365,36 +365,31 @@ class RouterV2Main:
         member_user_uid = await self.context.get_user_uid(member)
         await self.context.remove_project_member(project_uid, member_user_uid)
 
-    # -----------
-    # Permissions
-    # -----------
+    # -----
+    # Rules
+    # -----
 
     @parameter_matcher()
-    async def get_permissions(self) -> List[RuleA]:
-        result = list()
-        for permission in await self.context.get_rules():
-            result.append(rule_to_answer(permission))
-        return result
+    async def get_rules(self) -> List[RuleA]:
+        return [rule_to_answer(rule) for rule in await self.context.get_rules()]
 
     @parameter_matcher()
-    async def get_permissions_pgroup(self, session: SessionEx, group: str) -> RuleA:
+    async def get_rules_pgroup(self, session: SessionEx, group: str) -> RuleA:
         group_uid = await self.context.get_group_uid(group)
         member = await self.context.get_group_member(group_uid, session.uid)
-        permission_uid = member.permission_uid
-        assert permission_uid is not None
-        permission = await self.context.get_rule(permission_uid)
-        return rule_to_answer(permission)
+        rule_uid = member.permission_uid
+        assert rule_uid is not None
+        rule = await self.context.get_rule(rule_uid)
+        return rule_to_answer(rule)
 
     @parameter_matcher()
-    async def get_permissions_pgroup_pproject(
+    async def get_rules_pgroup_pproject(
         self, session: SessionEx, group: str, project: str
     ) -> RuleA:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
-        permission = await self.context.get_best_rule(
-            session.uid, group_uid, project_uid
-        )
-        return rule_to_answer(permission)
+        rule = await self.context.get_best_rule(session.uid, group_uid, project_uid)
+        return rule_to_answer(rule)
 
     # -----
     # Users

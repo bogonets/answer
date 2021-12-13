@@ -7,10 +7,10 @@ from recc.core.context import Context
 from recc.session.session_ex import SessionEx
 from recc.conversion.string import object_to_strings
 from recc.variables.annotation import (
-    ANNOTATION_GROUP_PERMISSIONS,
-    ANNOTATION_PROJECT_PERMISSIONS,
-    ANNOTATION_FEATURE_PERMISSIONS,
-    ANNOTATION_ADMIN_PERMISSION,
+    ANNOTATION_GROUP_RULES,
+    ANNOTATION_PROJECT_RULES,
+    ANNOTATION_FEATURE_RULES,
+    ANNOTATION_ADMIN_RULES,
 )
 
 
@@ -53,7 +53,7 @@ class AccessControlList:
         if group_policies:
             for policy in group_policies:
                 self.groups.append(policy)
-        annotation_group = getattr(func, ANNOTATION_GROUP_PERMISSIONS, None)
+        annotation_group = getattr(func, ANNOTATION_GROUP_RULES, None)
         if annotation_group:
             for policy in _object_to_policies(annotation_group):
                 self.groups.append(policy)
@@ -61,7 +61,7 @@ class AccessControlList:
         if project_policies:
             for policy in project_policies:
                 self.projects.append(policy)
-        annotation_project = getattr(func, ANNOTATION_PROJECT_PERMISSIONS, None)
+        annotation_project = getattr(func, ANNOTATION_PROJECT_RULES, None)
         if annotation_project:
             for policy in _object_to_policies(annotation_project):
                 self.projects.append(policy)
@@ -69,12 +69,12 @@ class AccessControlList:
         if has_features:
             for feature in has_features:
                 self.features.append(feature)
-        annotation_feature = getattr(func, ANNOTATION_FEATURE_PERMISSIONS, None)
+        annotation_feature = getattr(func, ANNOTATION_FEATURE_RULES, None)
         if annotation_feature:
             for feature in object_to_strings(annotation_feature):
                 self.features.append(feature)
 
-        annotation_admin = getattr(func, ANNOTATION_ADMIN_PERMISSION, False)
+        annotation_admin = getattr(func, ANNOTATION_ADMIN_RULES, False)
         self.admin = True if (has_admin or annotation_admin) else False
 
     def exists(self) -> bool:
@@ -99,10 +99,10 @@ class AccessControlList:
             raise HTTPBadRequest(reason="The group name is missing")
 
         try:
-            permission = await context.get_group_raw_rule(session, group_name)
+            rule = await context.get_group_raw_rule(session, group_name)
             if Policy.HasFeatures in self.groups:
-                self.test_features(permission.features)
-            test_policies(self.groups, permission)
+                self.test_features(rule.features)
+            test_policies(self.groups, rule)
         except PermissionError as e:
             raise HTTPForbidden(reason=str(e))
 
@@ -119,11 +119,11 @@ class AccessControlList:
             raise HTTPBadRequest(reason="The project name is missing")
 
         try:
-            permission = await context.get_project_raw_rule(
+            rule = await context.get_project_raw_rule(
                 session, group_name, project_name
             )
             if Policy.HasFeatures in self.projects:
-                self.test_features(permission.features)
-            test_policies(self.projects, permission)
+                self.test_features(rule.features)
+            test_policies(self.projects, rule)
         except PermissionError as e:
             raise HTTPForbidden(reason=str(e))

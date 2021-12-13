@@ -111,12 +111,12 @@ ko:
 import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {MemberA, UpdateMemberQ} from '@/packet/member';
-import type {PermissionA} from '@/packet/permission';
-import {PERMISSION_SLUG_OWNER} from '@/packet/permission';
+import type {RuleA} from '@/packet/rule';
+import {RULE_SLUG_OWNER} from '@/packet/rule';
 
 @Component
 export default class TableMembers extends VueBase {
-  private readonly owner = PERMISSION_SLUG_OWNER;
+  private readonly owner = RULE_SLUG_OWNER;
 
   @Prop({type: Boolean, default: false})
   readonly hideFilterInput!: boolean;
@@ -133,10 +133,10 @@ export default class TableMembers extends VueBase {
   @Prop({type: Array, default: () => new Array<MemberA>()})
   readonly items!: Array<MemberA>;
 
-  @Prop({type: Array, default: () => new Array<PermissionA>()})
-  readonly permissions!: Array<PermissionA>;
+  @Prop({type: Array, default: () => new Array<RuleA>()})
+  readonly permissions!: Array<RuleA>;
 
-  visiblePermissions = [] as Array<PermissionA>;
+  visiblePermissions = [] as Array<RuleA>;
   headers = [] as Array<object>;
   filter = '';
 
@@ -155,7 +155,7 @@ export default class TableMembers extends VueBase {
   }
 
   updateVisiblePermissionNames() {
-    const result = [] as Array<PermissionA>;
+    const result = [] as Array<RuleA>;
     for (const permission of this.permissions) {
       if (!permission.hidden) {
         result.push(permission);
@@ -213,7 +213,7 @@ export default class TableMembers extends VueBase {
     return this.permissions.find(p => p.slug === item.permission);
   }
 
-  inputPermission(event: PermissionA, item: MemberA) {
+  inputPermission(event: RuleA, item: MemberA) {
     item.permission = event.slug;
   }
 
@@ -223,7 +223,7 @@ export default class TableMembers extends VueBase {
   }
 
   @Emit()
-  change(event: PermissionA, item: MemberA) {
+  change(event: RuleA, item: MemberA) {
     return {
       username: item.username,
       permission: event.slug,

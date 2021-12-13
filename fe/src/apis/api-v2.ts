@@ -75,12 +75,7 @@ import type {TemplateA} from '@/packet/template';
 import type {DaemonA, CreateDaemonQ, UpdateDaemonQ} from '@/packet/daemon';
 import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
 import type {SystemOverviewA, VersionsA} from '@/packet/system';
-import type {
-    RawPermission,
-    PermissionA,
-    CreatePermissionQ,
-    UpdatePermissionQ,
-} from '@/packet/permission';
+import type {RawRule, RuleA, CreateRuleQ, UpdateRuleQ} from '@/packet/rule';
 import type {
     ProjectA,
     CreateProjectQ,
@@ -454,11 +449,11 @@ export default class ApiV2 {
     }
 
     getSelfRawPermissionPgroup(group: string) {
-        return this.get<RawPermission>(`/self/raw/permission/${group}`);
+        return this.get<RawRule>(`/self/raw/rule/${group}`);
     }
 
     getSelfRawPermissionPgroupPproject(group: string, project: string) {
-        return this.get<RawPermission>(`/self/raw/permission/${group}/${project}`);
+        return this.get<RawRule>(`/self/raw/rule/${group}/${project}`);
     }
 
     // -----------
@@ -578,20 +573,20 @@ export default class ApiV2 {
         return this.get<ProjectOverviewA>(url);
     }
 
-    // ----------------
-    // Main/Permissions
-    // ----------------
+    // ----------
+    // Main/Rules
+    // ----------
 
-    getMainPermissions() {
-        return this.get<Array<PermissionA>>('/main/permissions');
+    getMainRules() {
+        return this.get<Array<RuleA>>('/main/rules');
     }
 
-    getMainPermissionsPgroup(group: string) {
-        return this.get<PermissionA>(`/main/permissions/${group}`);
+    getMainRulesPgroup(group: string) {
+        return this.get<RuleA>(`/main/rules/${group}`);
     }
 
-    getMainPermissionsPgroupPproject(group: string, project: string) {
-        return this.get<PermissionA>(`/main/permissions/${group}/${project}`);
+    getMainRulesPgroupPproject(group: string, project: string) {
+        return this.get<RuleA>(`/main/rules/${group}/${project}`);
     }
 
     // ----------
@@ -722,28 +717,28 @@ export default class ApiV2 {
         return this.delete(`/admin/projects/${group}/${project}`);
     }
 
-    // -----------------
-    // Admin/Permissions
-    // -----------------
+    // -----------
+    // Admin/Rules
+    // -----------
 
-    getAdminPermissions() {
-        return this.get<Array<PermissionA>>('/admin/permissions');
+    getAdminRules() {
+        return this.get<Array<RuleA>>('/admin/rules');
     }
 
-    postAdminPermissions(body: CreatePermissionQ) {
-        return this.post('/admin/permissions', body);
+    postAdminRules(body: CreateRuleQ) {
+        return this.post('/admin/rules', body);
     }
 
-    getAdminPermissionsPperm(perm: string) {
-        return this.get<PermissionA>(`/admin/permissions/${perm}`);
+    getAdminRulesPrule(rule: string) {
+        return this.get<RuleA>(`/admin/rules/${rule}`);
     }
 
-    patchAdminPermissionsPperm(perm: string, body: UpdatePermissionQ) {
-        return this.patch(`/admin/permissions/${perm}`, body);
+    patchAdminRulesPrule(rule: string, body: UpdateRuleQ) {
+        return this.patch(`/admin/rules/${rule}`, body);
     }
 
-    deleteAdminPermissionsPperm(perm: string) {
-        return this.delete(`/admin/permissions/${perm}`);
+    deleteAdminRulesPrule(rule: string) {
+        return this.delete(`/admin/rules/${rule}`);
     }
 
     // ----------------

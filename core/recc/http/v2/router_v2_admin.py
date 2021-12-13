@@ -88,12 +88,12 @@ class RouterV2Admin:
             web.patch(u.projects_pgroup_pproject, self.patch_projects_pgroup_pproject),
             web.delete(u.projects_pgroup_pproject, self.delete_projects_pgroup_pproject),  # noqa
 
-            # permissions
-            web.get(u.permissions, self.get_permissions),
-            web.post(u.permissions, self.post_permissions),
-            web.get(u.permissions_pperm, self.get_permissions_pperm),
-            web.patch(u.permissions_pperm, self.patch_permissions_pperm),
-            web.delete(u.permissions_pperm, self.delete_permissions_pperm),
+            # rules
+            web.get(u.rules, self.get_rules),
+            web.post(u.rules, self.post_rules),
+            web.get(u.rules_prule, self.get_rules_prule),
+            web.patch(u.rules_prule, self.patch_rules_prule),
+            web.delete(u.rules_prule, self.delete_rules_prule),
 
             # containers
             web.get(u.containers, self.get_containers),
@@ -360,19 +360,19 @@ class RouterV2Admin:
         project_uid = await self.context.get_project_uid(group_uid, project)
         await self.context.delete_project(project_uid)
 
-    # -----------
-    # Permissions
-    # -----------
+    # -----
+    # Rules
+    # -----
 
     @parameter_matcher()
-    async def get_permissions(self) -> List[RuleA]:
+    async def get_rules(self) -> List[RuleA]:
         result = list()
-        for permission in await self.context.get_rules():
-            result.append(rule_to_answer(permission))
+        for rule in await self.context.get_rules():
+            result.append(rule_to_answer(rule))
         return result
 
     @parameter_matcher()
-    async def post_permissions(self, body: CreateRuleQ) -> None:
+    async def post_rules(self, body: CreateRuleQ) -> None:
         if not body.slug:
             raise HTTPBadRequest(reason="Not exists `slug` field")
         body.normalize_booleans()
@@ -399,14 +399,14 @@ class RouterV2Admin:
         )
 
     @parameter_matcher()
-    async def get_permissions_pperm(self, perm: str) -> RuleA:
-        uid = await self.context.get_rule_uid(perm)
-        db_permission = await self.context.get_rule(uid)
-        return rule_to_answer(db_permission)
+    async def get_rules_prule(self, rule: str) -> RuleA:
+        uid = await self.context.get_rule_uid(rule)
+        db_rule = await self.context.get_rule(uid)
+        return rule_to_answer(db_rule)
 
     @parameter_matcher()
-    async def patch_permissions_pperm(self, perm: str, body: UpdateRuleQ) -> None:
-        uid = await self.context.get_rule_uid(perm)
+    async def patch_rules_prule(self, rule: str, body: UpdateRuleQ) -> None:
+        uid = await self.context.get_rule_uid(rule)
         await self.context.update_rule(
             uid,
             slug=body.slug,
@@ -431,8 +431,8 @@ class RouterV2Admin:
         )
 
     @parameter_matcher()
-    async def delete_permissions_pperm(self, perm: str) -> None:
-        uid = await self.context.get_rule_uid(perm)
+    async def delete_rules_prule(self, rule: str) -> None:
+        uid = await self.context.get_rule_uid(rule)
         await self.context.delete_rule(uid)
 
     # ----------

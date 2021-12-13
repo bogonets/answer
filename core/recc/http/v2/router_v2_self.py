@@ -34,7 +34,7 @@ class RouterV2Self:
     def _routes(self) -> List[AbstractRouteDef]:
         # fmt: off
         return [
-            # User
+            # user
             web.get(u.empty, self.get_root),
             web.patch(u.empty, self.patch_root),
             web.delete(u.empty, self.delete_root),
@@ -42,16 +42,16 @@ class RouterV2Self:
             web.patch(u.root, self.patch_root),
             web.delete(u.root, self.delete_root),
 
-            # User Extra
+            # user extra
             web.get(u.extra, self.get_extra),
             web.patch(u.extra, self.patch_extra),
 
-            # Password
+            # password
             web.patch(u.password, self.patch_password),
 
-            # Permission
-            web.get(u.raw_permission_pgroup, self.get_raw_permission_pgroup),
-            web.get(u.raw_permission_pgroup_pproject, self.get_raw_permission_pgroup_pproject),  # noqa
+            # rule
+            web.get(u.raw_rule_pgroup, self.get_raw_rule_pgroup),
+            web.get(u.raw_rule_pgroup_pproject, self.get_raw_rule_pgroup_pproject),
         ]
         # fmt: on
 
@@ -115,18 +115,16 @@ class RouterV2Self:
         else:
             raise HTTPUnauthorized(reason="The password is incorrect.")
 
-    # ----------
-    # Permission
-    # ----------
+    # ----
+    # Rule
+    # ----
 
     @parameter_matcher()
-    async def get_raw_permission_pgroup(
-        self, session: SessionEx, group: str
-    ) -> RawRule:
+    async def get_raw_rule_pgroup(self, session: SessionEx, group: str) -> RawRule:
         return await self.context.get_group_raw_rule(session, group)
 
     @parameter_matcher()
-    async def get_raw_permission_pgroup_pproject(
+    async def get_raw_rule_pgroup_pproject(
         self, session: SessionEx, group: str, project: str
     ) -> RawRule:
         return await self.context.get_project_raw_rule(session, group, project)

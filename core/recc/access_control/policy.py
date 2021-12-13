@@ -24,63 +24,63 @@ class Policy(Enum):
     HasFeatures = auto()
 
 
-def has_layout_read(permission: RawRule) -> None:
-    if not permission.r_layout:
+def has_layout_read(rule: RawRule) -> None:
+    if not rule.r_layout:
         raise PermissionError("You do not have read access to the layout")
 
 
-def has_layout_write(permission: RawRule) -> None:
-    if not permission.w_layout:
+def has_layout_write(rule: RawRule) -> None:
+    if not rule.w_layout:
         raise PermissionError("You do not have write access to the layout")
 
 
-def has_storage_read(permission: RawRule) -> None:
-    if not permission.r_storage:
+def has_storage_read(rule: RawRule) -> None:
+    if not rule.r_storage:
         raise PermissionError("You do not have read access to the storage")
 
 
-def has_storage_write(permission: RawRule) -> None:
-    if not permission.w_storage:
+def has_storage_write(rule: RawRule) -> None:
+    if not rule.w_storage:
         raise PermissionError("You do not have write access to the storage")
 
 
-def has_manager_read(permission: RawRule) -> None:
-    if not permission.r_manager:
+def has_manager_read(rule: RawRule) -> None:
+    if not rule.r_manager:
         raise PermissionError("You do not have read access to the manager")
 
 
-def has_manager_write(permission: RawRule) -> None:
-    if not permission.w_manager:
+def has_manager_write(rule: RawRule) -> None:
+    if not rule.w_manager:
         raise PermissionError("You do not have write access to the manager")
 
 
-def has_graph_read(permission: RawRule) -> None:
-    if not permission.r_graph:
+def has_graph_read(rule: RawRule) -> None:
+    if not rule.r_graph:
         raise PermissionError("You do not have read access to the graph")
 
 
-def has_graph_write(permission: RawRule) -> None:
-    if not permission.w_graph:
+def has_graph_write(rule: RawRule) -> None:
+    if not rule.w_graph:
         raise PermissionError("You do not have write access to the graph")
 
 
-def has_member_read(permission: RawRule) -> None:
-    if not permission.r_member:
+def has_member_read(rule: RawRule) -> None:
+    if not rule.r_member:
         raise PermissionError("You do not have read access to the member")
 
 
-def has_member_write(permission: RawRule) -> None:
-    if not permission.w_member:
+def has_member_write(rule: RawRule) -> None:
+    if not rule.w_member:
         raise PermissionError("You do not have write access to the member")
 
 
-def has_setting_read(permission: RawRule) -> None:
-    if not permission.r_setting:
+def has_setting_read(rule: RawRule) -> None:
+    if not rule.r_setting:
         raise PermissionError("You do not have read access to the setting")
 
 
-def has_setting_write(permission: RawRule) -> None:
-    if not permission.w_setting:
+def has_setting_write(rule: RawRule) -> None:
+    if not rule.w_setting:
         raise PermissionError("You do not have write access to the setting")
 
 
@@ -100,14 +100,14 @@ POLICY_TO_TESTER_MAP = {
 }
 
 
-def test_policy(policy: Policy, permission: RawRule) -> None:
+def test_policy(policy: Policy, rule: RawRule) -> None:
     assert policy is not Policy.HasFeatures
     assert policy in POLICY_TO_TESTER_MAP
-    POLICY_TO_TESTER_MAP[policy](permission)
+    POLICY_TO_TESTER_MAP[policy](rule)
 
 
-def test_policies(policies: List[Policy], permission: RawRule) -> None:
+def test_policies(policies: List[Policy], rule: RawRule) -> None:
     for policy in policies:
         if policy == Policy.HasFeatures:
             continue
-        test_policy(policy, permission)
+        test_policy(policy, rule)

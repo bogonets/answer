@@ -1,4 +1,4 @@
-export interface RawPermission {
+export interface RawRule {
     r_layout: boolean;
     w_layout: boolean;
     r_storage: boolean;
@@ -16,7 +16,7 @@ export interface RawPermission {
     extra: any;
 }
 
-export interface PermissionA {
+export interface RuleA {
     slug: string;
     name?: string;
     description?: string;
@@ -40,7 +40,7 @@ export interface PermissionA {
     updated_at?: string;
 }
 
-export interface CreatePermissionQ {
+export interface CreateRuleQ {
     slug: string;
     name?: string;
     description?: string;
@@ -62,7 +62,7 @@ export interface CreatePermissionQ {
     lock?: boolean;
 }
 
-export interface UpdatePermissionQ {
+export interface UpdateRuleQ {
     slug?: string;
     name?: string;
     description?: string;
@@ -84,8 +84,8 @@ export interface UpdatePermissionQ {
     lock?: boolean;
 }
 
-export const PERMISSION_SLUG_GUEST = 'guest';
-export const PERMISSION_SLUG_REPORTER = 'reporter';
-export const PERMISSION_SLUG_OPERATOR = 'operator';
-export const PERMISSION_SLUG_MAINTAINER = 'maintainer';
-export const PERMISSION_SLUG_OWNER = 'owner';
+export const RULE_SLUG_GUEST = 'guest';
+export const RULE_SLUG_REPORTER = 'reporter';
+export const RULE_SLUG_OPERATOR = 'operator';
+export const RULE_SLUG_MAINTAINER = 'maintainer';
+export const RULE_SLUG_OWNER = 'owner';

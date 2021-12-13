@@ -34,7 +34,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from "@/components/LeftTitle.vue";
 import FormPermission, {PermissionItem} from '@/components/FormPermission.vue';
-import {CreatePermissionQ} from '@/packet/permission';
+import {CreateRuleQ} from '@/packet/rule';
 
 @Component({
   components: {
@@ -85,10 +85,10 @@ export default class AdminPermissionsNew extends VueBase {
       w_member: event.w_member,
       r_setting: event.r_setting,
       w_setting: event.w_setting,
-    } as CreatePermissionQ;
+    } as CreateRuleQ;
 
     this.submitLoading = true;
-    this.$api2.postAdminPermissions(body)
+    this.$api2.postAdminRules(body)
         .then(() => {
           this.submitLoading = false;
           this.moveToAdminPermissions();

@@ -143,11 +143,11 @@ class RouterV2AdminTestCase(AsyncTestCase):
 
     async def test_permission(self):
         perm1 = CreateRuleQ("perm1", r_storage=True)
-        response1 = await self.tester.post(v2_admin_path(u.permissions), data=perm1)
+        response1 = await self.tester.post(v2_admin_path(u.rules), data=perm1)
         self.assertEqual(200, response1.status)
 
         response2 = await self.tester.get(
-            v2_admin_path(u.permissions),
+            v2_admin_path(u.rules),
             cls=List[RuleA],
         )
         self.assertEqual(200, response2.status)
@@ -181,12 +181,12 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertIsNone(response2_data0.updated_at)
 
         perm2_slug = "perm2"
-        path1 = v2_admin_path(u.permissions_pperm).format(perm=perm1.slug)
+        path1 = v2_admin_path(u.rules_prule).format(perm=perm1.slug)
         update = UpdateRuleQ(slug=perm2_slug, w_layout=True)
         response3 = await self.tester.patch(path1, data=update)
         self.assertEqual(200, response3.status)
 
-        path2 = v2_admin_path(u.permissions_pperm).format(perm=perm2_slug)
+        path2 = v2_admin_path(u.rules_prule).format(perm=perm2_slug)
         response4 = await self.tester.get(path2, cls=RuleA)
         self.assertEqual(200, response4.status)
         response4_data = response4.data
@@ -218,7 +218,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertEqual(200, response5.status)
 
         response6 = await self.tester.get(
-            v2_admin_path(u.permissions),
+            v2_admin_path(u.rules),
             cls=List[RuleA],
         )
         self.assertEqual(200, response6.status)

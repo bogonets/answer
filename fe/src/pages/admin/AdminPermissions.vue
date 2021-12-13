@@ -94,7 +94,7 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import {PermissionA} from '@/packet/permission';
+import {RuleA} from '@/packet/rule';
 import {iso8601ToLocalDate} from '@/chrono/iso8601';
 
 @Component({
@@ -170,7 +170,7 @@ export default class AdminPermissions extends VueBase {
   ];
 
   filterText = '';
-  tableItems = [] as Array<PermissionA>;
+  tableItems = [] as Array<RuleA>;
   showLoading = true;
 
   mounted() {
@@ -179,7 +179,7 @@ export default class AdminPermissions extends VueBase {
 
   updateItems() {
     this.showLoading = true;
-    this.$api2.getAdminPermissions()
+    this.$api2.getAdminRules()
         .then(items => {
           this.tableItems = items;
           this.showLoading = false;
@@ -198,11 +198,11 @@ export default class AdminPermissions extends VueBase {
     this.moveToAdminPermissionsNew();
   }
 
-  onClickEdit(item: PermissionA) {
+  onClickEdit(item: RuleA) {
     this.moveToAdminPermissionsEdit(item.slug);
   }
 
-  hiddenIcon(item: PermissionA) {
+  hiddenIcon(item: RuleA) {
     if (item.hidden) {
       return 'mdi-eye-off';
     } else {
@@ -210,7 +210,7 @@ export default class AdminPermissions extends VueBase {
     }
   }
 
-  lockIcon(item: PermissionA) {
+  lockIcon(item: RuleA) {
     if (item.lock) {
       return 'mdi-lock';
     } else {

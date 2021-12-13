@@ -27,7 +27,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import FormInviteMemberEdit from '@/components/FormInviteMemberEdit.vue';
 import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
-import type {PermissionA} from '@/packet/permission';
+import type {RuleA} from '@/packet/rule';
 
 @Component({
   components: {
@@ -59,7 +59,7 @@ export default class GroupMembers extends VueBase {
   loadingMembers = false;
 
   items = [] as Array<MemberA>;
-  permissions = [] as Array<PermissionA>;
+  permissions = [] as Array<RuleA>;
   usernames = [] as Array<string>;
 
   created() {
@@ -77,7 +77,7 @@ export default class GroupMembers extends VueBase {
     try {
       const group = this.$route.params.group;
       const usernames = await this.$api2.getMainUsernames();
-      this.permissions = await this.$api2.getMainPermissions();
+      this.permissions = await this.$api2.getMainRules();
       this.items = await this.$api2.getMainGroupsPgroupMembers(group);
       this.usernames = usernames.filter(name => {
         return this.items.findIndex(i => i.username === name) === -1;
