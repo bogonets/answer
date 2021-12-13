@@ -233,27 +233,27 @@ class ContextBase:
                 pass
         return uid
 
-    async def get_permission_uid(self, permission_slug: str, caching=True) -> int:
-        if not permission_slug:
-            raise ValueError("The `permission_slug` argument is empty.")
+    async def get_rule_uid(self, rule_slug: str, caching=True) -> int:
+        if not rule_slug:
+            raise ValueError("The `rule_slug` argument is empty.")
 
-        uid = await self.cache.get_permission_uid(permission_slug)
+        uid = await self.cache.get_rule_uid(rule_slug)
         if uid is None:
             try:
-                uid = await self.database.select_rule_uid_by_slug(permission_slug)
+                uid = await self.database.select_rule_uid_by_slug(rule_slug)
                 if caching:
-                    await self.cache.set_permission(permission_slug, uid)
+                    await self.cache.set_rule(rule_slug, uid)
             except RuntimeError:
                 pass
         return uid
 
-    async def get_permission_slug(self, permission_uid: int, caching=True) -> str:
-        slug = await self.cache.get_permission_slug(permission_uid)
+    async def get_rule_slug(self, rule_uid: int, caching=True) -> str:
+        slug = await self.cache.get_rule_slug(rule_uid)
         if slug is None:
             try:
-                slug = await self.database.select_rule_slug_by_uid(permission_uid)
+                slug = await self.database.select_rule_slug_by_uid(rule_uid)
                 if caching:
-                    await self.cache.set_permission(slug, permission_uid)
+                    await self.cache.set_rule(slug, rule_uid)
             except RuntimeError:
                 pass
         return slug

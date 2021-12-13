@@ -52,7 +52,7 @@ class ContextPermission(ContextBase):
             hidden=hidden,
             lock=lock,
         )
-        await self.cache.set_permission(slug, rule_uid)
+        await self.cache.set_rule(slug, rule_uid)
         return rule_uid
 
     @staticmethod
@@ -211,15 +211,15 @@ class ContextPermission(ContextBase):
             lock=lock,
         )
         if slug is not None:
-            await self.cache.remove_permission_by_uid(uid)
-            await self.cache.set_permission(slug, uid)
+            await self.cache.remove_rule_by_uid(uid)
+            await self.cache.set_rule(slug, uid)
 
     async def delete_permission(self, uid: int, force=False) -> None:
         if not force:
             if await self.database.select_rule_lock_by_uid(uid):
                 raise RuntimeError(f"Locked permission: {uid}")
         await self.database.delete_rule_by_uid(uid)
-        await self.cache.remove_permission_by_uid(uid)
+        await self.cache.remove_rule_by_uid(uid)
 
     async def get_permission(self, uid: int) -> Rule:
         return await self.database.select_rule_by_uid(uid)

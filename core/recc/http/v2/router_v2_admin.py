@@ -400,13 +400,13 @@ class RouterV2Admin:
 
     @parameter_matcher()
     async def get_permissions_pperm(self, perm: str) -> PermissionA:
-        uid = await self.context.get_permission_uid(perm)
+        uid = await self.context.get_rule_uid(perm)
         db_permission = await self.context.get_permission(uid)
         return permission_to_answer(db_permission)
 
     @parameter_matcher()
     async def patch_permissions_pperm(self, perm: str, body: UpdatePermissionQ) -> None:
-        uid = await self.context.get_permission_uid(perm)
+        uid = await self.context.get_rule_uid(perm)
         await self.context.update_permission(
             uid,
             slug=body.slug,
@@ -432,7 +432,7 @@ class RouterV2Admin:
 
     @parameter_matcher()
     async def delete_permissions_pperm(self, perm: str) -> None:
-        uid = await self.context.get_permission_uid(perm)
+        uid = await self.context.get_rule_uid(perm)
         await self.context.delete_permission(uid)
 
     # ----------

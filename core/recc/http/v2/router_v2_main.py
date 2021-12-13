@@ -158,9 +158,7 @@ class RouterV2Main:
             assert member.user_uid is not None
             assert member.permission_uid is not None
             username = await self.context.get_user_name(member.user_uid)
-            permission_slug = await self.context.get_permission_slug(
-                member.permission_uid
-            )
+            permission_slug = await self.context.get_rule_slug(member.permission_uid)
             result.append(MemberA(username, permission_slug))
         return result
 
@@ -168,7 +166,7 @@ class RouterV2Main:
     async def post_groups_pgroup_members(self, group: str, body: CreateMemberQ) -> None:
         group_uid = await self.context.get_group_uid(group)
         member_user_uid = await self.context.get_user_uid(body.username)
-        member_permission_uid = await self.context.get_permission_uid(body.permission)
+        member_permission_uid = await self.context.get_rule_uid(body.permission)
         await self.context.add_group_member(
             group_uid, member_user_uid, member_permission_uid
         )
@@ -181,7 +179,7 @@ class RouterV2Main:
         member_user_uid = await self.context.get_user_uid(member)
         db_member = await self.context.get_group_member(group_uid, member_user_uid)
         assert db_member.permission_uid is not None
-        member_permission_slug = await self.context.get_permission_slug(
+        member_permission_slug = await self.context.get_rule_slug(
             db_member.permission_uid
         )
         return MemberA(member, member_permission_slug)
@@ -192,7 +190,7 @@ class RouterV2Main:
     ) -> None:
         group_uid = await self.context.get_group_uid(group)
         member_user_uid = await self.context.get_user_uid(member)
-        member_permission_uid = await self.context.get_permission_uid(body.permission)
+        member_permission_uid = await self.context.get_rule_uid(body.permission)
         await self.context.update_group_member(
             group_uid, member_user_uid, member_permission_uid
         )
@@ -316,9 +314,7 @@ class RouterV2Main:
             assert member.user_uid is not None
             assert member.permission_uid is not None
             username = await self.context.get_user_name(member.user_uid)
-            permission_slug = await self.context.get_permission_slug(
-                member.permission_uid
-            )
+            permission_slug = await self.context.get_rule_slug(member.permission_uid)
             result.append(MemberA(username, permission_slug))
         return result
 
@@ -329,7 +325,7 @@ class RouterV2Main:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
         member_user_uid = await self.context.get_user_uid(body.username)
-        member_permission_uid = await self.context.get_permission_uid(body.permission)
+        member_permission_uid = await self.context.get_rule_uid(body.permission)
         await self.context.add_project_member(
             project_uid, member_user_uid, member_permission_uid
         )
@@ -343,7 +339,7 @@ class RouterV2Main:
         member_user_uid = await self.context.get_user_uid(member)
         db_member = await self.context.get_project_member(project_uid, member_user_uid)
         assert db_member.permission_uid is not None
-        member_permission_slug = await self.context.get_permission_slug(
+        member_permission_slug = await self.context.get_rule_slug(
             db_member.permission_uid
         )
         return MemberA(member, member_permission_slug)
@@ -355,7 +351,7 @@ class RouterV2Main:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
         member_user_uid = await self.context.get_user_uid(member)
-        member_permission_uid = await self.context.get_permission_uid(body.permission)
+        member_permission_uid = await self.context.get_rule_uid(body.permission)
         await self.context.update_project_member(
             project_uid, member_user_uid, member_permission_uid
         )
