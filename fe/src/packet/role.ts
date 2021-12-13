@@ -1,4 +1,4 @@
-export interface RawRule {
+export interface RawRole {
     r_layout: boolean;
     w_layout: boolean;
     r_storage: boolean;
@@ -16,7 +16,7 @@ export interface RawRule {
     extra: any;
 }
 
-export interface RuleA {
+export interface RoleA {
     slug: string;
     name?: string;
     description?: string;
@@ -40,7 +40,7 @@ export interface RuleA {
     updated_at?: string;
 }
 
-export interface CreateRuleQ {
+export interface CreateRoleQ {
     slug: string;
     name?: string;
     description?: string;
@@ -62,7 +62,7 @@ export interface CreateRuleQ {
     lock?: boolean;
 }
 
-export interface UpdateRuleQ {
+export interface UpdateRoleQ {
     slug?: string;
     name?: string;
     description?: string;
@@ -84,8 +84,8 @@ export interface UpdateRuleQ {
     lock?: boolean;
 }
 
-export const RULE_SLUG_GUEST = 'guest';
-export const RULE_SLUG_REPORTER = 'reporter';
-export const RULE_SLUG_OPERATOR = 'operator';
-export const RULE_SLUG_MAINTAINER = 'maintainer';
-export const RULE_SLUG_OWNER = 'owner';
+export const ROLE_SLUG_GUEST = 'guest';
+export const ROLE_SLUG_REPORTER = 'reporter';
+export const ROLE_SLUG_OPERATOR = 'operator';
+export const ROLE_SLUG_MAINTAINER = 'maintainer';
+export const ROLE_SLUG_OWNER = 'owner';

@@ -2,7 +2,7 @@
 
 from typing import List
 from enum import Enum, auto, unique
-from recc.packet.rule import RawRule
+from recc.packet.role import RawRole
 
 
 @unique
@@ -24,63 +24,63 @@ class Policy(Enum):
     HasFeatures = auto()
 
 
-def has_layout_read(rule: RawRule) -> None:
-    if not rule.r_layout:
+def has_layout_read(role: RawRole) -> None:
+    if not role.r_layout:
         raise PermissionError("You do not have read access to the layout")
 
 
-def has_layout_write(rule: RawRule) -> None:
-    if not rule.w_layout:
+def has_layout_write(role: RawRole) -> None:
+    if not role.w_layout:
         raise PermissionError("You do not have write access to the layout")
 
 
-def has_storage_read(rule: RawRule) -> None:
-    if not rule.r_storage:
+def has_storage_read(role: RawRole) -> None:
+    if not role.r_storage:
         raise PermissionError("You do not have read access to the storage")
 
 
-def has_storage_write(rule: RawRule) -> None:
-    if not rule.w_storage:
+def has_storage_write(role: RawRole) -> None:
+    if not role.w_storage:
         raise PermissionError("You do not have write access to the storage")
 
 
-def has_manager_read(rule: RawRule) -> None:
-    if not rule.r_manager:
+def has_manager_read(role: RawRole) -> None:
+    if not role.r_manager:
         raise PermissionError("You do not have read access to the manager")
 
 
-def has_manager_write(rule: RawRule) -> None:
-    if not rule.w_manager:
+def has_manager_write(role: RawRole) -> None:
+    if not role.w_manager:
         raise PermissionError("You do not have write access to the manager")
 
 
-def has_graph_read(rule: RawRule) -> None:
-    if not rule.r_graph:
+def has_graph_read(role: RawRole) -> None:
+    if not role.r_graph:
         raise PermissionError("You do not have read access to the graph")
 
 
-def has_graph_write(rule: RawRule) -> None:
-    if not rule.w_graph:
+def has_graph_write(role: RawRole) -> None:
+    if not role.w_graph:
         raise PermissionError("You do not have write access to the graph")
 
 
-def has_member_read(rule: RawRule) -> None:
-    if not rule.r_member:
+def has_member_read(role: RawRole) -> None:
+    if not role.r_member:
         raise PermissionError("You do not have read access to the member")
 
 
-def has_member_write(rule: RawRule) -> None:
-    if not rule.w_member:
+def has_member_write(role: RawRole) -> None:
+    if not role.w_member:
         raise PermissionError("You do not have write access to the member")
 
 
-def has_setting_read(rule: RawRule) -> None:
-    if not rule.r_setting:
+def has_setting_read(role: RawRole) -> None:
+    if not role.r_setting:
         raise PermissionError("You do not have read access to the setting")
 
 
-def has_setting_write(rule: RawRule) -> None:
-    if not rule.w_setting:
+def has_setting_write(role: RawRole) -> None:
+    if not role.w_setting:
         raise PermissionError("You do not have write access to the setting")
 
 
@@ -100,14 +100,14 @@ POLICY_TO_TESTER_MAP = {
 }
 
 
-def test_policy(policy: Policy, rule: RawRule) -> None:
+def test_policy(policy: Policy, role: RawRole) -> None:
     assert policy is not Policy.HasFeatures
     assert policy in POLICY_TO_TESTER_MAP
-    POLICY_TO_TESTER_MAP[policy](rule)
+    POLICY_TO_TESTER_MAP[policy](role)
 
 
-def test_policies(policies: List[Policy], rule: RawRule) -> None:
+def test_policies(policies: List[Policy], role: RawRole) -> None:
     for policy in policies:
         if policy == Policy.HasFeatures:
             continue
-        test_policy(policy, rule)
+        test_policy(policy, role)

@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 
 
 @dataclass
-class RawRule:
+class RawRole:
     r_layout: bool = False
     w_layout: bool = False
     r_storage: bool = False
@@ -38,7 +38,7 @@ class RawRule:
 
 
 @dataclass
-class RuleA:
+class RoleA:
     slug: str
     name: Optional[str] = None
     description: Optional[str] = None
@@ -63,7 +63,7 @@ class RuleA:
 
 
 @dataclass
-class CreateRuleQ:
+class CreateRoleQ:
     slug: str
     name: Optional[str] = None
     description: Optional[str] = None
@@ -102,7 +102,7 @@ class CreateRuleQ:
 
 
 @dataclass
-class UpdateRuleQ:
+class UpdateRoleQ:
     slug: Optional[str] = None
     name: Optional[str] = None
     description: Optional[str] = None

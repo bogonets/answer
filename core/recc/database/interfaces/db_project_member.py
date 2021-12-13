@@ -13,13 +13,13 @@ class DbProjectMember(metaclass=ABCMeta):
 
     @abstractmethod
     async def insert_project_member(
-        self, project_uid: int, user_uid: int, rule_uid: int
+        self, project_uid: int, user_uid: int, role_uid: int
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def update_project_member_rule(
-        self, project_uid: int, user_uid: int, rule_uid: int
+    async def update_project_member_role(
+        self, project_uid: int, user_uid: int, role_uid: int
     ) -> None:
         raise NotImplementedError
 

@@ -13,7 +13,7 @@ from recc.database.postgresql.mixin.pg_table import PgTable
 from recc.database.postgresql.mixin.pg_port import PgPort
 from recc.database.postgresql.mixin.pg_project import PgProject
 from recc.database.postgresql.mixin.pg_project_member import PgProjectMember
-from recc.database.postgresql.mixin.pg_rule import PgRule
+from recc.database.postgresql.mixin.pg_role import PgRole
 from recc.database.postgresql.mixin.pg_task import PgTask
 from recc.database.postgresql.mixin.pg_user import PgUser
 from recc.database.postgresql.mixin.pg_utils import PgUtils
@@ -35,7 +35,7 @@ class PgDb(
     PgPort,
     PgProject,
     PgProjectMember,
-    PgRule,
+    PgRole,
     PgTable,
     PgTask,
     PgUser,

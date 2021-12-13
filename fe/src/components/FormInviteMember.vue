@@ -93,7 +93,7 @@ import {VForm} from 'vuetify/lib/components/VForm';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {USERNAME_RULES} from '@/rules';
 import type {CreateMemberQ} from '@/packet/member';
-import type {RuleA} from '@/packet/rule';
+import type {RoleA} from '@/packet/role';
 import requiredField from '@/rules/required';
 import slugFormat from '@/rules/slug';
 
@@ -127,16 +127,16 @@ export default class FormInviteMember extends VueBase {
   @Prop({type: Array, default: () => new Array<string>()})
   readonly usernames!: Array<string>;
 
-  @Prop({type: Array, default: () => new Array<RuleA>()})
-  readonly permissions!: Array<RuleA>;
+  @Prop({type: Array, default: () => new Array<RoleA>()})
+  readonly permissions!: Array<RoleA>;
 
   @Ref()
   readonly form!: VForm;
 
-  visibleRules = [] as Array<RuleA>;
+  visibleRules = [] as Array<RoleA>;
   valid = false;
   username = '';
-  rule = {} as RuleA;
+  rule = {} as RoleA;
 
   created() {
     this.updateVisiblePermissionNames();
@@ -148,7 +148,7 @@ export default class FormInviteMember extends VueBase {
   }
 
   updateVisiblePermissionNames() {
-    const result = [] as Array<RuleA>;
+    const result = [] as Array<RoleA>;
     for (const permission of this.permissions) {
       if (!permission.hidden) {
         result.push(permission);
@@ -184,7 +184,7 @@ export default class FormInviteMember extends VueBase {
   ok() {
     return {
       username: this.username,
-      rule: this.rule.slug,
+      role: this.rule.slug,
     } as CreateMemberQ;
   }
 }

@@ -75,7 +75,7 @@ import type {TemplateA} from '@/packet/template';
 import type {DaemonA, CreateDaemonQ, UpdateDaemonQ} from '@/packet/daemon';
 import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
 import type {SystemOverviewA, VersionsA} from '@/packet/system';
-import type {RawRule, RuleA, CreateRuleQ, UpdateRuleQ} from '@/packet/rule';
+import type {RawRole, RoleA, CreateRoleQ, UpdateRoleQ} from '@/packet/role';
 import type {
     ProjectA,
     CreateProjectQ,
@@ -448,12 +448,12 @@ export default class ApiV2 {
         return this.patch('/self/password', body);
     }
 
-    getSelfRawPermissionPgroup(group: string) {
-        return this.get<RawRule>(`/self/raw/rule/${group}`);
+    getSelfRawRolePgroup(group: string) {
+        return this.get<RawRole>(`/self/raw/role/${group}`);
     }
 
-    getSelfRawPermissionPgroupPproject(group: string, project: string) {
-        return this.get<RawRule>(`/self/raw/rule/${group}/${project}`);
+    getSelfRawRolePgroupPproject(group: string, project: string) {
+        return this.get<RawRole>(`/self/raw/role/${group}/${project}`);
     }
 
     // -----------
@@ -574,19 +574,19 @@ export default class ApiV2 {
     }
 
     // ----------
-    // Main/Rules
+    // Main/Roles
     // ----------
 
-    getMainRules() {
-        return this.get<Array<RuleA>>('/main/rules');
+    getMainRoles() {
+        return this.get<Array<RoleA>>('/main/roles');
     }
 
-    getMainRulesPgroup(group: string) {
-        return this.get<RuleA>(`/main/rules/${group}`);
+    getMainRolesPgroup(group: string) {
+        return this.get<RoleA>(`/main/roles/${group}`);
     }
 
-    getMainRulesPgroupPproject(group: string, project: string) {
-        return this.get<RuleA>(`/main/rules/${group}/${project}`);
+    getMainRolesPgroupPproject(group: string, project: string) {
+        return this.get<RoleA>(`/main/roles/${group}/${project}`);
     }
 
     // ----------
@@ -718,27 +718,27 @@ export default class ApiV2 {
     }
 
     // -----------
-    // Admin/Rules
+    // Admin/Roles
     // -----------
 
-    getAdminRules() {
-        return this.get<Array<RuleA>>('/admin/rules');
+    getAdminRoles() {
+        return this.get<Array<RoleA>>('/admin/roles');
     }
 
-    postAdminRules(body: CreateRuleQ) {
-        return this.post('/admin/rules', body);
+    postAdminRoles(body: CreateRoleQ) {
+        return this.post('/admin/roles', body);
     }
 
-    getAdminRulesPrule(rule: string) {
-        return this.get<RuleA>(`/admin/rules/${rule}`);
+    getAdminRolesProle(role: string) {
+        return this.get<RoleA>(`/admin/roles/${role}`);
     }
 
-    patchAdminRulesPrule(rule: string, body: UpdateRuleQ) {
-        return this.patch(`/admin/rules/${rule}`, body);
+    patchAdminRolesProle(role: string, body: UpdateRoleQ) {
+        return this.patch(`/admin/roles/${role}`, body);
     }
 
-    deleteAdminRulesPrule(rule: string) {
-        return this.delete(`/admin/rules/${rule}`);
+    deleteAdminRolesProle(role: string) {
+        return this.delete(`/admin/roles/${role}`);
     }
 
     // ----------------

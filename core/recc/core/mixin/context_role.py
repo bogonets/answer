@@ -2,14 +2,14 @@
 
 from typing import List, Optional, Any, Union
 from recc.core.mixin.context_base import ContextBase
-from recc.database.struct.rule import Rule
-from recc.packet.rule import RawRule
-from recc.packet.cvt.rule import rule_to_raw
+from recc.database.struct.role import Role
+from recc.packet.role import RawRole
+from recc.packet.cvt.role import role_to_raw
 from recc.session.session_ex import SessionEx
 
 
-class ContextRule(ContextBase):
-    async def create_rule(
+class ContextRole(ContextBase):
+    async def create_role(
         self,
         slug: str,
         name: Optional[str] = None,
@@ -31,7 +31,7 @@ class ContextRule(ContextBase):
         hidden=False,
         lock=False,
     ) -> int:
-        rule_uid = await self.database.insert_rule(
+        role_uid = await self.database.insert_role(
             slug=slug,
             name=name,
             description=description,
@@ -52,12 +52,12 @@ class ContextRule(ContextBase):
             hidden=hidden,
             lock=lock,
         )
-        await self.cache.set_rule(slug, rule_uid)
-        return rule_uid
+        await self.cache.set_role(slug, role_uid)
+        return role_uid
 
     @staticmethod
-    def _is_rule_equals_for_update(
-        rule: Rule,
+    def _is_role_equals_for_update(
+        role: Role,
         slug: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
@@ -78,66 +78,66 @@ class ContextRule(ContextBase):
         hidden: Optional[bool] = None,
     ) -> bool:
         """
-        When rule is 'locked', all attributes except `lock` must not be changed.
+        When role is 'locked', all attributes except `lock` must not be changed.
         """
 
         if slug is not None:
-            if rule.slug != slug:
+            if role.slug != slug:
                 return False
         if name is not None:
-            if rule.name != name:
+            if role.name != name:
                 return False
         if description is not None:
-            if rule.description != description:
+            if role.description != description:
                 return False
         if features is not None:
-            if rule.features != features:
+            if role.features != features:
                 return False
         if extra is not None:
-            if rule.extra != extra:
+            if role.extra != extra:
                 return False
         if r_layout is not None:
-            if rule.r_layout != r_layout:
+            if role.r_layout != r_layout:
                 return False
         if w_layout is not None:
-            if rule.w_layout != w_layout:
+            if role.w_layout != w_layout:
                 return False
         if r_storage is not None:
-            if rule.r_storage != r_storage:
+            if role.r_storage != r_storage:
                 return False
         if w_storage is not None:
-            if rule.w_storage != w_storage:
+            if role.w_storage != w_storage:
                 return False
         if r_manager is not None:
-            if rule.r_manager != r_manager:
+            if role.r_manager != r_manager:
                 return False
         if w_manager is not None:
-            if rule.w_manager != w_manager:
+            if role.w_manager != w_manager:
                 return False
         if r_graph is not None:
-            if rule.r_graph != r_graph:
+            if role.r_graph != r_graph:
                 return False
         if w_graph is not None:
-            if rule.w_graph != w_graph:
+            if role.w_graph != w_graph:
                 return False
         if r_member is not None:
-            if rule.r_member != r_member:
+            if role.r_member != r_member:
                 return False
         if w_member is not None:
-            if rule.w_member != w_member:
+            if role.w_member != w_member:
                 return False
         if r_setting is not None:
-            if rule.r_setting != r_setting:
+            if role.r_setting != r_setting:
                 return False
         if w_setting is not None:
-            if rule.w_setting != w_setting:
+            if role.w_setting != w_setting:
                 return False
         if hidden is not None:
-            if rule.hidden != hidden:
+            if role.hidden != hidden:
                 return False
         return True
 
-    async def update_rule(
+    async def update_role(
         self,
         uid: int,
         slug: Optional[str] = None,
@@ -162,10 +162,10 @@ class ContextRule(ContextBase):
         force=False,
     ) -> None:
         if not force:
-            rule = await self.database.select_rule_by_uid(uid)
-            if rule.lock:
-                rule_equals = self._is_rule_equals_for_update(
-                    rule,
+            role = await self.database.select_role_by_uid(uid)
+            if role.lock:
+                role_equals = self._is_role_equals_for_update(
+                    role,
                     slug,
                     name,
                     description,
@@ -185,10 +185,10 @@ class ContextRule(ContextBase):
                     w_setting,
                     hidden,
                 )
-                if not rule_equals:
-                    raise RuntimeError(f"Locked rule: {uid}")
+                if not role_equals:
+                    raise RuntimeError(f"Locked role: {uid}")
 
-        await self.database.update_rule_by_uid(
+        await self.database.update_role_by_uid(
             uid=uid,
             slug=slug,
             name=name,
@@ -211,43 +211,43 @@ class ContextRule(ContextBase):
             lock=lock,
         )
         if slug is not None:
-            await self.cache.remove_rule_by_uid(uid)
-            await self.cache.set_rule(slug, uid)
+            await self.cache.remove_role_by_uid(uid)
+            await self.cache.set_role(slug, uid)
 
-    async def delete_rule(self, uid: int, force=False) -> None:
+    async def delete_role(self, uid: int, force=False) -> None:
         if not force:
-            if await self.database.select_rule_lock_by_uid(uid):
-                raise RuntimeError(f"Locked rule: {uid}")
-        await self.database.delete_rule_by_uid(uid)
-        await self.cache.remove_rule_by_uid(uid)
+            if await self.database.select_role_lock_by_uid(uid):
+                raise RuntimeError(f"Locked role: {uid}")
+        await self.database.delete_role_by_uid(uid)
+        await self.cache.remove_role_by_uid(uid)
 
-    async def get_rule(self, uid: int) -> Rule:
-        return await self.database.select_rule_by_uid(uid)
+    async def get_role(self, uid: int) -> Role:
+        return await self.database.select_role_by_uid(uid)
 
-    async def get_rules(self) -> List[Rule]:
-        return await self.database.select_rule_all()
+    async def get_roles(self) -> List[Role]:
+        return await self.database.select_role_all()
 
-    async def get_group_rule(self, user_uid: int, group_uid: int) -> Rule:
-        return await self.database.select_rule_by_user_uid_and_group_uid(
+    async def get_group_role(self, user_uid: int, group_uid: int) -> Role:
+        return await self.database.select_role_by_user_uid_and_group_uid(
             user_uid, group_uid
         )
 
-    async def get_project_rule(self, user_uid: int, project_uid: int) -> Rule:
-        return await self.database.select_rule_by_user_uid_and_project_uid(
+    async def get_project_role(self, user_uid: int, project_uid: int) -> Role:
+        return await self.database.select_role_by_user_uid_and_project_uid(
             user_uid, project_uid
         )
 
-    async def get_best_rule(
+    async def get_best_role(
         self, user_uid: int, group_uid: int, project_uid: int
-    ) -> Rule:
+    ) -> Role:
         try:
-            return await self.get_project_rule(user_uid, project_uid)
+            return await self.get_project_role(user_uid, project_uid)
         except:  # noqa
-            return await self.get_group_rule(user_uid, group_uid)
+            return await self.get_group_role(user_uid, group_uid)
 
-    async def get_group_raw_rule(
+    async def get_group_raw_role(
         self, session: SessionEx, group: Union[str, int]
-    ) -> RawRule:
+    ) -> RawRole:
         try:
             if isinstance(group, int):
                 group_uid = group
@@ -256,17 +256,17 @@ class ContextRule(ContextBase):
             else:
                 group_uid = await self.get_group_uid(str(group))
 
-            rule = await self.get_group_rule(session.uid, group_uid)
-            return rule_to_raw(rule, session.is_admin)
+            role = await self.get_group_role(session.uid, group_uid)
+            return role_to_raw(role, session.is_admin)
         except:  # noqa
             if session.is_admin:
-                return RawRule.all_true()
+                return RawRole.all_true()
             else:
-                return RawRule.all_false()
+                return RawRole.all_false()
 
-    async def get_project_raw_rule(
+    async def get_project_raw_role(
         self, session: SessionEx, group: Union[str, int], project: Union[str, int]
-    ) -> RawRule:
+    ) -> RawRole:
         try:
             if isinstance(group, int):
                 group_uid = group
@@ -282,10 +282,10 @@ class ContextRule(ContextBase):
             else:
                 project_uid = await self.get_project_uid(group_uid, str(project))
 
-            rule = await self.get_best_rule(session.uid, group_uid, project_uid)
-            return rule_to_raw(rule, session.is_admin)
+            role = await self.get_best_role(session.uid, group_uid, project_uid)
+            return role_to_raw(role, session.is_admin)
         except:  # noqa
             if session.is_admin:
-                return RawRule.all_true()
+                return RawRole.all_true()
             else:
-                return RawRule.all_false()
+                return RawRole.all_false()

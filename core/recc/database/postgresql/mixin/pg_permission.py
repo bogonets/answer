@@ -89,6 +89,6 @@ class PgPermission(DbPermission, PgBase):
                 query = SELECT_PERMISSION_ALL
                 async for row in conn.cursor(query):
                     result.append(Permission(**dict(row)))
-        result_msg = f"{len(result)} rules"
+        result_msg = f"{len(result)} permissions"
         logger.info(f"select_permission_all() -> {result_msg}")
         return result

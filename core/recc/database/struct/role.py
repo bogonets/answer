@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Rule:
+class Role:
     uid: Optional[int] = None
     slug: Optional[str] = None
 

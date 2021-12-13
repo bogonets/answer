@@ -27,7 +27,7 @@ import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import FormInviteMemberEdit from '@/components/FormInviteMemberEdit.vue';
 import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
-import type {RuleA} from '@/packet/rule';
+import type {RoleA} from '@/packet/role';
 
 @Component({
   components: {
@@ -42,7 +42,7 @@ export default class MainMembers extends VueBase {
   loadingMembers = false;
 
   items = [] as Array<MemberA>;
-  permissions = [] as Array<RuleA>;
+  permissions = [] as Array<RoleA>;
   usernames = [] as Array<string>;
 
   created() {
@@ -61,7 +61,7 @@ export default class MainMembers extends VueBase {
       const group = this.$route.params.group;
       const project = this.$route.params.project;
       const usernames = await this.$api2.getMainUsernames();
-      this.permissions = await this.$api2.getMainRules();
+      this.permissions = await this.$api2.getMainRoles();
       this.items = await this.$api2.getMainProjectsPgroupPprojectMembers(
           group, project
       );

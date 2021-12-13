@@ -9,7 +9,7 @@ from recc.http import http_urls as u
 from recc.http import http_path_keys as p
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
-from recc.packet.rule import RuleA, CreateRuleQ, UpdateRuleQ
+from recc.packet.role import RoleA, CreateRoleQ, UpdateRoleQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.system import SystemOverviewA
 from recc.log.logging import get_root_level
@@ -141,24 +141,24 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertIsInstance(response7_data, list)
         self.assertEqual(0, len(response7_data))
 
-    async def test_rule(self):
-        rule1 = CreateRuleQ("rule1", r_storage=True)
-        response1 = await self.tester.post(v2_admin_path(u.rules), data=rule1)
+    async def test_role(self):
+        role1 = CreateRoleQ("role1", r_storage=True)
+        response1 = await self.tester.post(v2_admin_path(u.roles), data=role1)
         self.assertEqual(200, response1.status)
 
         response2 = await self.tester.get(
-            v2_admin_path(u.rules),
-            cls=List[RuleA],
+            v2_admin_path(u.roles),
+            cls=List[RoleA],
         )
         self.assertEqual(200, response2.status)
         response2_data = response2.data
         self.assertIsNotNone(response2_data)
         self.assertIsInstance(response2_data, list)
-        after_creation_num_rules = len(response2_data)
-        response2_datas = list(filter(lambda x: x.slug == rule1.slug, response2_data))
+        after_creation_num_roles = len(response2_data)
+        response2_datas = list(filter(lambda x: x.slug == role1.slug, response2_data))
         response2_data0 = response2_datas[0]
-        self.assertIsInstance(response2_data0, RuleA)
-        self.assertEqual(rule1.slug, response2_data0.slug)
+        self.assertIsInstance(response2_data0, RoleA)
+        self.assertEqual(role1.slug, response2_data0.slug)
         self.assertIsNone(response2_data0.name)
         self.assertIsNone(response2_data0.description)
         self.assertIsNone(response2_data0.features)
@@ -180,18 +180,18 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertIsNotNone(response2_data0.created_at)
         self.assertIsNone(response2_data0.updated_at)
 
-        rule2_slug = "rule2"
-        path1 = v2_admin_path(u.rules_prule).format(rule=rule1.slug)
-        update = UpdateRuleQ(slug=rule2_slug, w_layout=True)
+        role2_slug = "role2"
+        path1 = v2_admin_path(u.roles_prole).format(role=role1.slug)
+        update = UpdateRoleQ(slug=role2_slug, w_layout=True)
         response3 = await self.tester.patch(path1, data=update)
         self.assertEqual(200, response3.status)
 
-        path2 = v2_admin_path(u.rules_prule).format(rule=rule2_slug)
-        response4 = await self.tester.get(path2, cls=RuleA)
+        path2 = v2_admin_path(u.roles_prole).format(role=role2_slug)
+        response4 = await self.tester.get(path2, cls=RoleA)
         self.assertEqual(200, response4.status)
         response4_data = response4.data
         self.assertIsNotNone(response4_data)
-        self.assertIsInstance(response4_data, RuleA)
+        self.assertIsInstance(response4_data, RoleA)
         self.assertEqual(update.slug, response4_data.slug)
         self.assertIsNone(response4_data.name)
         self.assertIsNone(response4_data.description)
@@ -218,16 +218,16 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertEqual(200, response5.status)
 
         response6 = await self.tester.get(
-            v2_admin_path(u.rules),
-            cls=List[RuleA],
+            v2_admin_path(u.roles),
+            cls=List[RoleA],
         )
         self.assertEqual(200, response6.status)
         response6_data = response6.data
         self.assertIsNotNone(response6_data)
         self.assertIsInstance(response6_data, list)
 
-        expect_num_rules = len(response6_data) + 1
-        self.assertEqual(after_creation_num_rules, expect_num_rules)
+        expect_num_roles = len(response6_data) + 1
+        self.assertEqual(after_creation_num_roles, expect_num_roles)
 
     async def test_system_overview(self):
         path = v2_admin_path(u.system_overview)

@@ -10,14 +10,14 @@ from recc.http import http_path_keys as p
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.member import MemberA, CreateMemberQ, UpdateMemberQ
-from recc.packet.rule import RuleA
+from recc.packet.role import RoleA
 from recc.packet.info import InfoA
 from recc.variables.database import (
     VISIBILITY_LEVEL_PRIVATE,
-    RULE_SLUG_GUEST,
-    RULE_SLUG_REPORTER,
-    RULE_SLUG_OWNER,
-    DEFAULT_RULE_SLUGS,
+    ROLE_SLUG_GUEST,
+    ROLE_SLUG_REPORTER,
+    ROLE_SLUG_OWNER,
+    DEFAULT_ROLE_SLUGS,
 )
 
 
@@ -150,9 +150,9 @@ class RouterV2MainTestCase(AsyncTestCase):
         response2_data0 = response2_data[0]
         self.assertIsInstance(response2_data0, MemberA)
         self.assertEqual(self.username, response2_data0.username)
-        self.assertEqual(RULE_SLUG_OWNER, response2_data0.rule)
+        self.assertEqual(ROLE_SLUG_OWNER, response2_data0.role)
 
-        member1 = CreateMemberQ(another_username, RULE_SLUG_REPORTER)
+        member1 = CreateMemberQ(another_username, ROLE_SLUG_REPORTER)
         response3 = await self.tester.post(path1, data=member1)
         self.assertEqual(200, response3.status)
 
@@ -168,9 +168,9 @@ class RouterV2MainTestCase(AsyncTestCase):
         response5_data = response5.data
         self.assertIsInstance(response5_data, MemberA)
         self.assertEqual(another_username, response5_data.username)
-        self.assertEqual(RULE_SLUG_REPORTER, response5_data.rule)
+        self.assertEqual(ROLE_SLUG_REPORTER, response5_data.role)
 
-        update1 = UpdateMemberQ(another_username, RULE_SLUG_GUEST)
+        update1 = UpdateMemberQ(another_username, ROLE_SLUG_GUEST)
         response6 = await self.tester.patch(path2, data=update1)
         self.assertEqual(200, response6.status)
 
@@ -179,7 +179,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         response7_data = response7.data
         self.assertIsInstance(response7_data, MemberA)
         self.assertEqual(another_username, response7_data.username)
-        self.assertEqual(RULE_SLUG_GUEST, response7_data.rule)
+        self.assertEqual(ROLE_SLUG_GUEST, response7_data.role)
 
         response8 = await self.tester.delete(path2)
         self.assertEqual(200, response8.status)
@@ -297,9 +297,9 @@ class RouterV2MainTestCase(AsyncTestCase):
         response3_data0 = response3_data[0]
         self.assertIsInstance(response3_data0, MemberA)
         self.assertEqual(self.username, response3_data0.username)
-        self.assertEqual(RULE_SLUG_OWNER, response3_data0.rule)
+        self.assertEqual(ROLE_SLUG_OWNER, response3_data0.role)
 
-        member1 = CreateMemberQ(another_username, RULE_SLUG_REPORTER)
+        member1 = CreateMemberQ(another_username, ROLE_SLUG_REPORTER)
         response4 = await self.tester.post(path1, data=member1)
         self.assertEqual(200, response4.status)
 
@@ -318,9 +318,9 @@ class RouterV2MainTestCase(AsyncTestCase):
         response6_data = response6.data
         self.assertIsInstance(response6_data, MemberA)
         self.assertEqual(another_username, response6_data.username)
-        self.assertEqual(RULE_SLUG_REPORTER, response6_data.rule)
+        self.assertEqual(ROLE_SLUG_REPORTER, response6_data.role)
 
-        update1 = UpdateMemberQ(another_username, RULE_SLUG_GUEST)
+        update1 = UpdateMemberQ(another_username, ROLE_SLUG_GUEST)
         response7 = await self.tester.patch(path2, data=update1)
         self.assertEqual(200, response7.status)
 
@@ -329,7 +329,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         response8_data = response8.data
         self.assertIsInstance(response8_data, MemberA)
         self.assertEqual(another_username, response8_data.username)
-        self.assertEqual(RULE_SLUG_GUEST, response8_data.rule)
+        self.assertEqual(ROLE_SLUG_GUEST, response8_data.role)
 
         response9 = await self.tester.delete(path2)
         self.assertEqual(200, response9.status)
@@ -339,11 +339,11 @@ class RouterV2MainTestCase(AsyncTestCase):
         self.assertEqual(1, len(response10.data))
 
     async def test_rules(self):
-        response1 = await self.tester.get(v2_main_path(u.rules))
+        response1 = await self.tester.get(v2_main_path(u.roles))
         self.assertEqual(200, response1.status)
         response1_data = response1.data
         self.assertIsInstance(response1_data, list)
-        self.assertEqual(len(DEFAULT_RULE_SLUGS), len(response1_data))
+        self.assertEqual(len(DEFAULT_ROLE_SLUGS), len(response1_data))
 
     async def test_group_and_project_rules(self):
         group1 = CreateGroupQ(slug="group1")
@@ -354,23 +354,23 @@ class RouterV2MainTestCase(AsyncTestCase):
         response2 = await self.tester.post(v2_main_path(u.projects), data=project1)
         self.assertEqual(200, response2.status)
 
-        path1 = v2_main_path(u.rules_pgroup, group=group1.slug)
-        response3 = await self.tester.get(path1, cls=RuleA)
+        path1 = v2_main_path(u.roles_pgroup, group=group1.slug)
+        response3 = await self.tester.get(path1, cls=RoleA)
         self.assertEqual(200, response3.status)
         response3_data = response3.data
-        self.assertIsInstance(response3_data, RuleA)
-        self.assertEqual(RULE_SLUG_OWNER, response3_data.slug)
+        self.assertIsInstance(response3_data, RoleA)
+        self.assertEqual(ROLE_SLUG_OWNER, response3_data.slug)
 
         path2 = v2_main_path(
-            u.rules_pgroup_pproject,
+            u.roles_pgroup_pproject,
             group=project1.group_slug,
             project=project1.project_slug,
         )
-        response4 = await self.tester.get(path2, cls=RuleA)
+        response4 = await self.tester.get(path2, cls=RoleA)
         self.assertEqual(200, response4.status)
         response4_data = response4.data
-        self.assertIsInstance(response4_data, RuleA)
-        self.assertEqual(RULE_SLUG_OWNER, response4_data.slug)
+        self.assertIsInstance(response4_data, RoleA)
+        self.assertEqual(ROLE_SLUG_OWNER, response4_data.slug)
 
     async def test_usernames(self):
         user1_username = "user1"

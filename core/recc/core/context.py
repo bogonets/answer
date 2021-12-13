@@ -15,7 +15,7 @@ from recc.core.mixin.context_layout import ContextLayout
 from recc.core.mixin.context_plugin import ContextPlugin
 from recc.core.mixin.context_port import ContextPort
 from recc.core.mixin.context_project import ContextProject
-from recc.core.mixin.context_rule import ContextRule
+from recc.core.mixin.context_role import ContextRole
 from recc.core.mixin.context_storage import ContextStorage
 from recc.core.mixin.context_system import ContextSystem
 from recc.core.mixin.context_task import ContextTask
@@ -28,8 +28,8 @@ from recc.util.version import (
 )
 from recc.variables.database import (
     CONFIG_PREFIX_RECC_ARGPARSE_CONFIG,
-    RULE_UID_OWNER,
-    RULE_SLUG_OWNER,
+    ROLE_UID_OWNER,
+    ROLE_SLUG_OWNER,
 )
 
 
@@ -44,7 +44,7 @@ class Context(
     ContextPlugin,
     ContextPort,
     ContextProject,
-    ContextRule,
+    ContextRole,
     ContextStorage,
     ContextSystem,
     ContextTask,
@@ -107,12 +107,12 @@ class Context(
         await self._database.create_tables()
         logger.info("Create tables (if not exists)")
 
-        owner_uid = await self._database.select_rule_uid_by_slug(RULE_SLUG_OWNER)
-        if owner_uid != RULE_UID_OWNER:
+        owner_uid = await self._database.select_role_uid_by_slug(ROLE_SLUG_OWNER)
+        if owner_uid != ROLE_UID_OWNER:
             logger.critical(
-                f"Owner rule ID is not {RULE_UID_OWNER}, It's actually {owner_uid}"
+                f"Owner role ID is not {ROLE_UID_OWNER}, It's actually {owner_uid}"
             )
-            raise RuntimeError(f"The owner rule ID must be {RULE_UID_OWNER}")
+            raise RuntimeError(f"The owner role ID must be {ROLE_UID_OWNER}")
 
         assert self._database.is_open()
         config_infos_prefix = CONFIG_PREFIX_RECC_ARGPARSE_CONFIG

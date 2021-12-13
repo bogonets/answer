@@ -120,7 +120,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormPermission, {PermissionItem} from '@/components/FormPermission.vue';
-import {RuleA, UpdateRuleQ} from '@/packet/rule';
+import {RoleA, UpdateRoleQ} from '@/packet/role';
 import {iso8601ToLocal} from '@/chrono/iso8601';
 import * as _ from 'lodash';
 
@@ -179,7 +179,7 @@ export default class AdminPermissionsEdit extends VueBase {
   }
 
   requestPermission() {
-    this.$api2.getAdminRulesPrule(this.perm)
+    this.$api2.getAdminRolesProle(this.perm)
         .then(body => {
           this.updatePermission(body);
         })
@@ -189,7 +189,7 @@ export default class AdminPermissionsEdit extends VueBase {
         });
   }
 
-  updatePermission(permission: RuleA) {
+  updatePermission(permission: RoleA) {
     const slug = permission.slug || '';
     const name = permission.name || '';
     const description = permission.description || '';
@@ -269,10 +269,10 @@ export default class AdminPermissionsEdit extends VueBase {
       w_setting: event.w_setting,
       hidden: event.hidden,
       lock: event.lock,
-    } as UpdateRuleQ;
+    } as UpdateRoleQ;
 
     this.showSubmitLoading = true;
-    this.$api2.patchAdminRulesPrule(this.perm, body)
+    this.$api2.patchAdminRolesProle(this.perm, body)
         .then(() => {
           this.showSubmitLoading = false;
           this.toastRequestSuccess();
@@ -298,7 +298,7 @@ export default class AdminPermissionsEdit extends VueBase {
 
   onClickDeleteOk() {
     this.showDeleteLoading = true;
-    this.$api2.deleteAdminRulesPrule(this.perm)
+    this.$api2.deleteAdminRolesProle(this.perm)
         .then(() => {
           this.showDeleteLoading = false;
           this.showDeleteDialog = false;

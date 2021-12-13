@@ -10,7 +10,7 @@ INSERT_GROUP_MEMBER = f"""
 INSERT INTO {TABLE_GROUP_MEMBER} (
     group_uid,
     user_uid,
-    rule_uid
+    role_uid
 ) VALUES (
     $1, $2, $3
 );
@@ -20,9 +20,9 @@ INSERT INTO {TABLE_GROUP_MEMBER} (
 # UPDATE #
 ##########
 
-UPDATE_GROUP_MEMBER_RULE = f"""
+UPDATE_GROUP_MEMBER_ROLE = f"""
 UPDATE {TABLE_GROUP_MEMBER}
-SET rule_uid=$3
+SET role_uid=$3
 WHERE group_uid=$1 AND user_uid=$2;
 """
 
@@ -40,25 +40,25 @@ WHERE group_uid=$1 AND user_uid=$2;
 ##########
 
 SELECT_GROUP_MEMBER_BY_GROUP_UID_AND_USER_UID = f"""
-SELECT rule_uid
+SELECT role_uid
 FROM {TABLE_GROUP_MEMBER}
 WHERE group_uid=$1 AND user_uid=$2;
 """
 
 SELECT_GROUP_MEMBER_BY_GROUP_UID = f"""
-SELECT user_uid, rule_uid
+SELECT user_uid, role_uid
 FROM {TABLE_GROUP_MEMBER}
 WHERE group_uid=$1;
 """
 
 SELECT_GROUP_MEMBER_BY_USER_UID = f"""
-SELECT group_uid, rule_uid
+SELECT group_uid, role_uid
 FROM {TABLE_GROUP_MEMBER}
 WHERE user_uid=$1;
 """
 
 SELECT_GROUP_MEMBER_ALL = f"""
-SELECT group_uid, user_uid, rule_uid
+SELECT group_uid, user_uid, role_uid
 FROM {TABLE_GROUP_MEMBER};
 """
 

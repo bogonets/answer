@@ -3,16 +3,16 @@
 from typing import Any, Optional, List
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from recc.database.struct.rule import Rule
+from recc.database.struct.role import Role
 
 
-class DbRule(metaclass=ABCMeta):
+class DbRole(metaclass=ABCMeta):
     """
-    Database rule interface.
+    Database role interface.
     """
 
     @abstractmethod
-    async def insert_rule(
+    async def insert_role(
         self,
         slug: str,
         name: Optional[str] = None,
@@ -38,7 +38,7 @@ class DbRule(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_rule_by_uid(
+    async def update_role_by_uid(
         self,
         uid: int,
         slug: Optional[str] = None,
@@ -65,41 +65,41 @@ class DbRule(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def delete_rule_by_uid(self, uid: int) -> None:
+    async def delete_role_by_uid(self, uid: int) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def select_rule_uid_by_slug(self, slug: str) -> int:
+    async def select_role_uid_by_slug(self, slug: str) -> int:
         raise NotImplementedError
 
     @abstractmethod
-    async def select_rule_slug_by_uid(self, uid: int) -> str:
+    async def select_role_slug_by_uid(self, uid: int) -> str:
         raise NotImplementedError
 
     @abstractmethod
-    async def select_rule_by_uid(self, uid: int) -> Rule:
+    async def select_role_by_uid(self, uid: int) -> Role:
         raise NotImplementedError
 
     @abstractmethod
-    async def select_rule_lock_by_uid(self, uid: int) -> bool:
+    async def select_role_lock_by_uid(self, uid: int) -> bool:
         raise NotImplementedError
 
     @abstractmethod
-    async def select_rule_all(self) -> List[Rule]:
+    async def select_role_all(self) -> List[Role]:
         raise NotImplementedError
 
     @abstractmethod
-    async def select_best_project_rule(self, user_uid: int, project_uid: int) -> Rule:
+    async def select_best_project_role(self, user_uid: int, project_uid: int) -> Role:
         raise NotImplementedError
 
     @abstractmethod
-    async def select_rule_by_user_uid_and_group_uid(
+    async def select_role_by_user_uid_and_group_uid(
         self, user_uid: int, group_uid: int
-    ) -> Rule:
+    ) -> Role:
         raise NotImplementedError
 
     @abstractmethod
-    async def select_rule_by_user_uid_and_project_uid(
+    async def select_role_by_user_uid_and_project_uid(
         self, user_uid: int, project_uid: int
-    ) -> Rule:
+    ) -> Role:
         raise NotImplementedError

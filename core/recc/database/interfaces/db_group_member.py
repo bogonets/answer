@@ -16,13 +16,13 @@ class DbGroupMember(metaclass=ABCMeta):
 
     @abstractmethod
     async def insert_group_member(
-        self, group_uid: int, user_uid: int, rule_uid: int
+        self, group_uid: int, user_uid: int, role_uid: int
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def update_group_member_rule(
-        self, group_uid: int, user_uid: int, rule_uid: int
+    async def update_group_member_role(
+        self, group_uid: int, user_uid: int, role_uid: int
     ) -> None:
         raise NotImplementedError
 

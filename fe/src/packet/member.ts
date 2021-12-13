@@ -1,14 +1,14 @@
 export interface MemberA {
     username: string;
-    rule: string;
+    role: string;
 }
 
 export interface CreateMemberQ {
     username: string;
-    rule: string;
+    role: string;
 }
 
 export interface UpdateMemberQ {
     username: string;
-    rule: string;
+    role: string;
 }

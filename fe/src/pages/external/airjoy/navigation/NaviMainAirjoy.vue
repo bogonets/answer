@@ -136,7 +136,7 @@ ko:
 import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {ProjectA} from '@/packet/project';
-import type {RawRule} from '@/packet/rule';
+import type {RawRole} from '@/packet/role';
 import mainAirjoyNames from '@/router/names/external/airjoy/main';
 import mainNames from '@/router/names/main';
 
@@ -160,7 +160,7 @@ export default class NaviMainAirjoy extends VueBase {
   index = 0;
   mini = false;
   project = {} as ProjectA;
-  permission = {} as RawRule;
+  permission = {} as RawRole;
 
   get projectSlug(): string {
     const name = this.$route.params.project;

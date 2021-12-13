@@ -5,7 +5,7 @@ from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.project import Project
 from recc.database.struct.project_member import ProjectMember
 from recc.variables.database import (
-    RULE_UID_OWNER,
+    ROLE_UID_OWNER,
     VISIBILITY_LEVEL_PRIVATE,
     VISIBILITY_LEVEL_INTERNAL,
 )
@@ -35,7 +35,7 @@ class ContextProject(ContextBase):
         )
         if owner_uid is not None:
             await self.database.insert_project_member(
-                project_uid, owner_uid, RULE_UID_OWNER
+                project_uid, owner_uid, ROLE_UID_OWNER
             )
         group_slug = await self.get_group_slug(group_uid)
         await self.cache.set_project(group_uid, slug, project_uid)
@@ -100,21 +100,21 @@ class ContextProject(ContextBase):
         return await self.database.select_project_member(project_uid, user_uid)
 
     async def add_project_member(
-        self, project_uid: int, user_uid: int, rule_uid: int
+        self, project_uid: int, user_uid: int, role_uid: int
     ) -> None:
         return await self.database.insert_project_member(
             project_uid=project_uid,
             user_uid=user_uid,
-            rule_uid=rule_uid,
+            role_uid=role_uid,
         )
 
     async def update_project_member(
-        self, project_uid: int, user_uid: int, rule_uid: int
+        self, project_uid: int, user_uid: int, role_uid: int
     ) -> None:
-        return await self.database.update_project_member_rule(
+        return await self.database.update_project_member_role(
             project_uid=project_uid,
             user_uid=user_uid,
-            rule_uid=rule_uid,
+            role_uid=role_uid,
         )
 
     async def remove_project_member(self, project_uid: int, user_uid: int) -> None:

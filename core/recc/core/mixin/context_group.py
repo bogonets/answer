@@ -8,7 +8,7 @@ from recc.database.struct.group_join_member import GroupJoinGroupMember
 from recc.variables.database import (
     VISIBILITY_LEVEL_PRIVATE,
     VISIBILITY_LEVEL_INTERNAL,
-    RULE_UID_OWNER,
+    ROLE_UID_OWNER,
 )
 
 
@@ -34,7 +34,7 @@ class ContextGroup(ContextBase):
         )
         if owner_uid is not None:
             await self.database.insert_group_member(
-                group_uid, owner_uid, RULE_UID_OWNER
+                group_uid, owner_uid, ROLE_UID_OWNER
             )
         await self.cache.set_group(slug, group_uid)
         await self.plugins.create_group(slug)
@@ -91,21 +91,21 @@ class ContextGroup(ContextBase):
         return await self.database.select_group_member(group_uid, user_uid)
 
     async def add_group_member(
-        self, group_uid: int, user_uid: int, rule_uid: int
+        self, group_uid: int, user_uid: int, role_uid: int
     ) -> None:
         return await self.database.insert_group_member(
             group_uid=group_uid,
             user_uid=user_uid,
-            rule_uid=rule_uid,
+            role_uid=role_uid,
         )
 
     async def update_group_member(
-        self, group_uid: int, user_uid: int, rule_uid: int
+        self, group_uid: int, user_uid: int, role_uid: int
     ) -> None:
-        return await self.database.update_group_member_rule(
+        return await self.database.update_group_member_role(
             group_uid=group_uid,
             user_uid=user_uid,
-            rule_uid=rule_uid,
+            role_uid=role_uid,
         )
 
     async def remove_group_member(self, group_uid: int, user_uid: int) -> None:

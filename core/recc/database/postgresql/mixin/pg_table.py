@@ -8,9 +8,9 @@ from recc.database.postgresql.query.tables import CREATE_TABLES, DROP_TABLES
 from recc.database.postgresql.query.indices import CREATE_INDICES, DROP_INDICES
 from recc.database.postgresql.query.views import CREATE_VIEWS, DROP_VIEWS
 from recc.database.postgresql.query.info import SAFE_INSERT_INFO_DB_VERSION
-from recc.database.postgresql.query.rule import INSERT_RULE_DEFAULTS, EXISTS_RULE_BY_UID
+from recc.database.postgresql.query.role import INSERT_ROLE_DEFAULTS, EXISTS_ROLE_BY_UID
 from recc.database.postgresql.query.permission import INSERT_PERMISSION_DEFAULTS
-from recc.variables.database import RULE_UID_OWNER
+from recc.variables.database import ROLE_UID_OWNER
 
 
 class PgTable(DbTable, PgBase):
@@ -25,10 +25,10 @@ class PgTable(DbTable, PgBase):
                 for perm_query in INSERT_PERMISSION_DEFAULTS:
                     await conn.execute(perm_query)
 
-                exists_owner = await conn.fetchval(EXISTS_RULE_BY_UID, RULE_UID_OWNER)
+                exists_owner = await conn.fetchval(EXISTS_ROLE_BY_UID, ROLE_UID_OWNER)
                 if not exists_owner:
-                    for rule_query in INSERT_RULE_DEFAULTS:
-                        await conn.execute(rule_query)
+                    for role_query in INSERT_ROLE_DEFAULTS:
+                        await conn.execute(role_query)
 
     @overrides
     async def drop_tables(self) -> None:

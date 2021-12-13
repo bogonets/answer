@@ -111,12 +111,12 @@ ko:
 import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {MemberA, UpdateMemberQ} from '@/packet/member';
-import type {RuleA} from '@/packet/rule';
-import {RULE_SLUG_OWNER} from '@/packet/rule';
+import type {RoleA} from '@/packet/role';
+import {ROLE_SLUG_OWNER} from '@/packet/role';
 
 @Component
 export default class TableMembers extends VueBase {
-  private readonly owner = RULE_SLUG_OWNER;
+  private readonly owner = ROLE_SLUG_OWNER;
 
   @Prop({type: Boolean, default: false})
   readonly hideFilterInput!: boolean;
@@ -133,10 +133,10 @@ export default class TableMembers extends VueBase {
   @Prop({type: Array, default: () => new Array<MemberA>()})
   readonly items!: Array<MemberA>;
 
-  @Prop({type: Array, default: () => new Array<RuleA>()})
-  readonly permissions!: Array<RuleA>;
+  @Prop({type: Array, default: () => new Array<RoleA>()})
+  readonly permissions!: Array<RoleA>;
 
-  visiblePermissions = [] as Array<RuleA>;
+  visiblePermissions = [] as Array<RoleA>;
   headers = [] as Array<object>;
   filter = '';
 
@@ -155,7 +155,7 @@ export default class TableMembers extends VueBase {
   }
 
   updateVisiblePermissionNames() {
-    const result = [] as Array<RuleA>;
+    const result = [] as Array<RoleA>;
     for (const permission of this.permissions) {
       if (!permission.hidden) {
         result.push(permission);
@@ -210,11 +210,11 @@ export default class TableMembers extends VueBase {
   }
 
   selectPermission(item: MemberA) {
-    return this.permissions.find(p => p.slug === item.rule);
+    return this.permissions.find(p => p.slug === item.role);
   }
 
-  inputPermission(event: RuleA, item: MemberA) {
-    item.rule = event.slug;
+  inputPermission(event: RoleA, item: MemberA) {
+    item.role = event.slug;
   }
 
   @Emit('click:row')
@@ -223,10 +223,10 @@ export default class TableMembers extends VueBase {
   }
 
   @Emit()
-  change(event: RuleA, item: MemberA) {
+  change(event: RoleA, item: MemberA) {
     return {
       username: item.username,
-      rule: event.slug,
+      role: event.slug,
     } as UpdateMemberQ;
   }
 

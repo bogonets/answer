@@ -9,7 +9,7 @@ from recc.http.http_parameter import parameter_matcher
 from recc.http import http_urls as u
 from recc.session.session_ex import SessionEx
 from recc.packet.user import UserA, UpdateUserQ, UpdatePasswordQ
-from recc.packet.rule import RawRule
+from recc.packet.role import RawRole
 
 
 class RouterV2Self:
@@ -49,9 +49,9 @@ class RouterV2Self:
             # password
             web.patch(u.password, self.patch_password),
 
-            # rule
-            web.get(u.raw_rule_pgroup, self.get_raw_rule_pgroup),
-            web.get(u.raw_rule_pgroup_pproject, self.get_raw_rule_pgroup_pproject),
+            # role
+            web.get(u.raw_role_pgroup, self.get_raw_role_pgroup),
+            web.get(u.raw_role_pgroup_pproject, self.get_raw_role_pgroup_pproject),
         ]
         # fmt: on
 
@@ -116,15 +116,15 @@ class RouterV2Self:
             raise HTTPUnauthorized(reason="The password is incorrect.")
 
     # ----
-    # Rule
+    # Role
     # ----
 
     @parameter_matcher()
-    async def get_raw_rule_pgroup(self, session: SessionEx, group: str) -> RawRule:
-        return await self.context.get_group_raw_rule(session, group)
+    async def get_raw_role_pgroup(self, session: SessionEx, group: str) -> RawRole:
+        return await self.context.get_group_raw_role(session, group)
 
     @parameter_matcher()
-    async def get_raw_rule_pgroup_pproject(
+    async def get_raw_role_pgroup_pproject(
         self, session: SessionEx, group: str, project: str
-    ) -> RawRule:
-        return await self.context.get_project_raw_rule(session, group, project)
+    ) -> RawRole:
+        return await self.context.get_project_raw_role(session, group, project)

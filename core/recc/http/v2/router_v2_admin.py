@@ -14,7 +14,7 @@ from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.container import ContainerOperator, ContainerA, ControlContainersQ
 from recc.packet.daemon import DaemonA, CreateDaemonQ, UpdateDaemonQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
-from recc.packet.rule import RuleA, CreateRuleQ, UpdateRuleQ
+from recc.packet.role import RoleA, CreateRoleQ, UpdateRoleQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.plugin import PluginNameA
 from recc.packet.system import SystemOverviewA
@@ -22,7 +22,7 @@ from recc.packet.template import TemplateA
 from recc.packet.user import UserA, UpdateUserQ, SignupQ
 from recc.packet.cvt.daemon import daemon_to_answer
 from recc.packet.cvt.project import project_to_answer
-from recc.packet.cvt.rule import rule_to_answer
+from recc.packet.cvt.role import role_to_answer
 from recc.packet.cvt.container import container_to_answer
 from recc.database.struct.group import Group
 
@@ -88,12 +88,12 @@ class RouterV2Admin:
             web.patch(u.projects_pgroup_pproject, self.patch_projects_pgroup_pproject),
             web.delete(u.projects_pgroup_pproject, self.delete_projects_pgroup_pproject),  # noqa
 
-            # rules
-            web.get(u.rules, self.get_rules),
-            web.post(u.rules, self.post_rules),
-            web.get(u.rules_prule, self.get_rules_prule),
-            web.patch(u.rules_prule, self.patch_rules_prule),
-            web.delete(u.rules_prule, self.delete_rules_prule),
+            # roles
+            web.get(u.roles, self.get_roles),
+            web.post(u.roles, self.post_roles),
+            web.get(u.roles_prole, self.get_roles_prole),
+            web.patch(u.roles_prole, self.patch_roles_prole),
+            web.delete(u.roles_prole, self.delete_roles_prole),
 
             # containers
             web.get(u.containers, self.get_containers),
@@ -361,22 +361,19 @@ class RouterV2Admin:
         await self.context.delete_project(project_uid)
 
     # -----
-    # Rules
+    # Roles
     # -----
 
     @parameter_matcher()
-    async def get_rules(self) -> List[RuleA]:
-        result = list()
-        for rule in await self.context.get_rules():
-            result.append(rule_to_answer(rule))
-        return result
+    async def get_roles(self) -> List[RoleA]:
+        return [role_to_answer(role) for role in await self.context.get_roles()]
 
     @parameter_matcher()
-    async def post_rules(self, body: CreateRuleQ) -> None:
+    async def post_roles(self, body: CreateRoleQ) -> None:
         if not body.slug:
             raise HTTPBadRequest(reason="Not exists `slug` field")
         body.normalize_booleans()
-        await self.context.create_rule(
+        await self.context.create_role(
             slug=body.slug,
             name=body.name,
             description=body.description,
@@ -399,15 +396,14 @@ class RouterV2Admin:
         )
 
     @parameter_matcher()
-    async def get_rules_prule(self, rule: str) -> RuleA:
-        uid = await self.context.get_rule_uid(rule)
-        db_rule = await self.context.get_rule(uid)
-        return rule_to_answer(db_rule)
+    async def get_roles_prole(self, role: str) -> RoleA:
+        uid = await self.context.get_role_uid(role)
+        return role_to_answer(await self.context.get_role(uid))
 
     @parameter_matcher()
-    async def patch_rules_prule(self, rule: str, body: UpdateRuleQ) -> None:
-        uid = await self.context.get_rule_uid(rule)
-        await self.context.update_rule(
+    async def patch_roles_prole(self, role: str, body: UpdateRoleQ) -> None:
+        uid = await self.context.get_role_uid(role)
+        await self.context.update_role(
             uid,
             slug=body.slug,
             name=body.name,
@@ -431,9 +427,9 @@ class RouterV2Admin:
         )
 
     @parameter_matcher()
-    async def delete_rules_prule(self, rule: str) -> None:
-        uid = await self.context.get_rule_uid(rule)
-        await self.context.delete_rule(uid)
+    async def delete_roles_prole(self, role: str) -> None:
+        uid = await self.context.get_role_uid(role)
+        await self.context.delete_role(uid)
 
     # ----------
     # Containers

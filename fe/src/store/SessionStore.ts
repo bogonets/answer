@@ -2,7 +2,7 @@ import VueInterface from 'vue';
 import {PluginObject} from 'vue/types/plugin';
 import {Store, CommitOptions} from 'vuex';
 import VuexPersist from 'vuex-persist'
-import type {RawRule} from '@/packet/rule';
+import type {RawRole} from '@/packet/role';
 
 // Modules
 import permission from '@/store/modules/permission';
@@ -117,7 +117,7 @@ export class SessionStore {
         this.setter(PERMISSION_ADMIN, val);
     }
 
-    set permission(val: RawRule) {
+    set permission(val: RawRole) {
         this.setter(PERMISSION_LAYOUT_READ, val.r_layout);
         this.setter(PERMISSION_LAYOUT_WRITE, val.w_layout);
         this.setter(PERMISSION_STORAGE_READ, val.r_storage);

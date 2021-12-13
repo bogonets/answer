@@ -9,10 +9,10 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
     async def setUp(self):
         await super().setUp()
 
-        self.guest = await self.db.insert_rule("rule1")
-        self.reporter = await self.db.insert_rule("rule2")
-        self.operator = await self.db.insert_rule("rule3")
-        self.maintainer = await self.db.insert_rule("rule4")
+        self.guest = await self.db.insert_role("role1")
+        self.reporter = await self.db.insert_role("role2")
+        self.operator = await self.db.insert_role("role3")
+        self.maintainer = await self.db.insert_role("role4")
 
         self.user1_uid = await self.db.insert_user("user1", "pass1", "salt1")
         self.user2_uid = await self.db.insert_user("user2", "pass2", "salt2")
@@ -30,23 +30,23 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
         self.assertEqual(self.group_uid, member2.group_uid)
         self.assertEqual(self.user1_uid, member1.user_uid)
         self.assertEqual(self.user2_uid, member2.user_uid)
-        self.assertEqual(self.guest, member1.rule_uid)
-        self.assertEqual(self.reporter, member2.rule_uid)
+        self.assertEqual(self.guest, member1.role_uid)
+        self.assertEqual(self.reporter, member2.role_uid)
 
-    async def test_update_rule(self):
+    async def test_update_role(self):
         await self.db.insert_group_member(self.group_uid, self.user1_uid, self.guest)
         await self.db.insert_group_member(self.group_uid, self.user2_uid, self.reporter)
-        await self.db.update_group_member_rule(
+        await self.db.update_group_member_role(
             self.group_uid, self.user1_uid, self.maintainer
         )
-        await self.db.update_group_member_rule(
+        await self.db.update_group_member_role(
             self.group_uid, self.user2_uid, self.operator
         )
 
         member1 = await self.db.select_group_member(self.group_uid, self.user1_uid)
         member2 = await self.db.select_group_member(self.group_uid, self.user2_uid)
-        self.assertEqual(self.maintainer, member1.rule_uid)
-        self.assertEqual(self.operator, member2.rule_uid)
+        self.assertEqual(self.maintainer, member1.role_uid)
+        self.assertEqual(self.operator, member2.role_uid)
 
     async def test_group_members(self):
         await self.db.insert_group_member(self.group_uid, self.user1_uid, self.guest)
@@ -72,7 +72,7 @@ class PgGroupMemberTestCase(PostgresqlTestCase):
         self.assertIsInstance(group0, GroupJoinGroupMember)
         self.assertEqual(self.group_uid, group0.group_uid)
         self.assertEqual(test_user, group0.user_uid)
-        self.assertEqual(self.guest, group0.rule_uid)
+        self.assertEqual(self.guest, group0.role_uid)
 
         group1 = await self.db.select_group_member_join_group_by_user_uid_and_group_uid(
             test_user, self.group_uid

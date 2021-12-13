@@ -7,15 +7,15 @@ from recc.chrono.datetime import today
 from recc.variables.database import (
     TABLE_USER,
     TABLE_PROJECT,
-    TABLE_RULE,
+    TABLE_ROLE,
     TABLE_GROUP_MEMBER,
     TABLE_PROJECT_MEMBER,
-    RULE_SLUG_OWNER,
-    RULE_SLUG_MAINTAINER,
-    RULE_SLUG_DEVELOPER,
-    RULE_SLUG_OPERATOR,
-    RULE_SLUG_REPORTER,
-    RULE_SLUG_GUEST,
+    ROLE_SLUG_OWNER,
+    ROLE_SLUG_MAINTAINER,
+    ROLE_SLUG_DEVELOPER,
+    ROLE_SLUG_OPERATOR,
+    ROLE_SLUG_REPORTER,
+    ROLE_SLUG_GUEST,
 )
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
@@ -24,8 +24,8 @@ from recc.database.query_builder import UpdateBuilder, BuildResult
 ##########
 
 
-INITIALIZE_ONLY_INSERT_RULE_FORMAT = f"""
-INSERT INTO {TABLE_RULE} (
+INITIALIZE_ONLY_INSERT_ROLE_FORMAT = f"""
+INSERT INTO {TABLE_ROLE} (
     slug,
     name,
     r_layout,
@@ -64,13 +64,13 @@ INSERT INTO {TABLE_RULE} (
 WHERE
     NOT EXISTS(
         SELECT uid
-        FROM {TABLE_RULE}
+        FROM {TABLE_ROLE}
         WHERE slug='{{slug}}'
     );
 """
 
 
-def get_safe_insert_rule_query(
+def get_safe_insert_role_query(
     slug: str,
     name: Optional[str] = None,
     r_layout=False,
@@ -90,7 +90,7 @@ def get_safe_insert_rule_query(
     created_at: Optional[datetime] = None,
 ) -> str:
     created = created_at if created_at else today()
-    return INITIALIZE_ONLY_INSERT_RULE_FORMAT.format(
+    return INITIALIZE_ONLY_INSERT_ROLE_FORMAT.format(
         slug=slug,
         name=name if name else slug,
         r_layout=r_layout,
@@ -111,8 +111,8 @@ def get_safe_insert_rule_query(
     )
 
 
-INSERT_RULE_OWNER = get_safe_insert_rule_query(
-    RULE_SLUG_OWNER,
+INSERT_ROLE_OWNER = get_safe_insert_role_query(
+    ROLE_SLUG_OWNER,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -127,8 +127,8 @@ INSERT_RULE_OWNER = get_safe_insert_rule_query(
     w_setting=True,
     lock=True,
 )
-INSERT_RULE_MAINTAINER = get_safe_insert_rule_query(
-    RULE_SLUG_MAINTAINER,
+INSERT_ROLE_MAINTAINER = get_safe_insert_role_query(
+    ROLE_SLUG_MAINTAINER,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -142,8 +142,8 @@ INSERT_RULE_MAINTAINER = get_safe_insert_rule_query(
     r_setting=True,
     w_setting=True,
 )
-INSERT_RULE_DEVELOPER = get_safe_insert_rule_query(
-    RULE_SLUG_DEVELOPER,
+INSERT_ROLE_DEVELOPER = get_safe_insert_role_query(
+    ROLE_SLUG_DEVELOPER,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -153,8 +153,8 @@ INSERT_RULE_DEVELOPER = get_safe_insert_rule_query(
     r_graph=True,
     w_graph=True,
 )
-INSERT_RULE_OPERATOR = get_safe_insert_rule_query(
-    RULE_SLUG_OPERATOR,
+INSERT_ROLE_OPERATOR = get_safe_insert_role_query(
+    ROLE_SLUG_OPERATOR,
     r_layout=True,
     w_layout=True,
     r_storage=True,
@@ -162,28 +162,28 @@ INSERT_RULE_OPERATOR = get_safe_insert_rule_query(
     r_manager=True,
     w_manager=True,
 )
-INSERT_RULE_REPORTER = get_safe_insert_rule_query(
-    RULE_SLUG_REPORTER,
+INSERT_ROLE_REPORTER = get_safe_insert_role_query(
+    ROLE_SLUG_REPORTER,
     r_layout=True,
     r_storage=True,
     r_manager=True,
 )
-INSERT_RULE_GUEST = get_safe_insert_rule_query(
-    RULE_SLUG_GUEST,
+INSERT_ROLE_GUEST = get_safe_insert_role_query(
+    ROLE_SLUG_GUEST,
     r_layout=True,
 )
 
-INSERT_RULE_DEFAULTS = (
-    INSERT_RULE_OWNER,
-    INSERT_RULE_MAINTAINER,
-    INSERT_RULE_DEVELOPER,
-    INSERT_RULE_OPERATOR,
-    INSERT_RULE_REPORTER,
-    INSERT_RULE_GUEST,
+INSERT_ROLE_DEFAULTS = (
+    INSERT_ROLE_OWNER,
+    INSERT_ROLE_MAINTAINER,
+    INSERT_ROLE_DEVELOPER,
+    INSERT_ROLE_OPERATOR,
+    INSERT_ROLE_REPORTER,
+    INSERT_ROLE_GUEST,
 )
 
-INSERT_RULE = f"""
-INSERT INTO {TABLE_RULE} (
+INSERT_ROLE = f"""
+INSERT INTO {TABLE_ROLE} (
     slug,
     name,
     description,
@@ -215,7 +215,7 @@ INSERT INTO {TABLE_RULE} (
 ##########
 
 
-def get_update_rule_query_by_uid(
+def get_update_role_query_by_uid(
     uid: int,
     slug: Optional[str] = None,
     name: Optional[str] = None,
@@ -263,15 +263,15 @@ def get_update_rule_query_by_uid(
         updated_at=updated,
     )
     builder.where().eq(uid=uid)
-    return builder.build(TABLE_RULE)
+    return builder.build(TABLE_ROLE)
 
 
 ##########
 # DELETE #
 ##########
 
-DELETE_RULE_BY_UID = f"""
-DELETE FROM {TABLE_RULE}
+DELETE_ROLE_BY_UID = f"""
+DELETE FROM {TABLE_ROLE}
 WHERE uid=$1;
 """
 
@@ -279,39 +279,39 @@ WHERE uid=$1;
 # SELECT #
 ##########
 
-SELECT_RULE_UID_BY_SLUG = f"""
+SELECT_ROLE_UID_BY_SLUG = f"""
 SELECT uid
-FROM {TABLE_RULE}
+FROM {TABLE_ROLE}
 WHERE slug=$1;
 """
 
-SELECT_RULE_SLUG_BY_UID = f"""
+SELECT_ROLE_SLUG_BY_UID = f"""
 SELECT slug
-FROM {TABLE_RULE}
+FROM {TABLE_ROLE}
 WHERE uid=$1;
 """
 
-SELECT_RULE_BY_UID = f"""
+SELECT_ROLE_BY_UID = f"""
 SELECT *
-FROM {TABLE_RULE}
+FROM {TABLE_ROLE}
 WHERE uid=$1;
 """
 
-SELECT_RULE_LOCK_BY_UID = f"""
+SELECT_ROLE_LOCK_BY_UID = f"""
 SELECT lock
-FROM {TABLE_RULE}
+FROM {TABLE_ROLE}
 WHERE uid=$1;
 """
 
-SELECT_RULE_ALL = f"""
+SELECT_ROLE_ALL = f"""
 SELECT *
-FROM {TABLE_RULE};
+FROM {TABLE_ROLE};
 """
 
-EXISTS_RULE_BY_UID = f"""
+EXISTS_ROLE_BY_UID = f"""
 SELECT EXISTS(
     SELECT *
-    FROM {TABLE_RULE}
+    FROM {TABLE_ROLE}
     WHERE uid=$1
 );
 """
@@ -320,48 +320,48 @@ SELECT EXISTS(
 # COMPLEX SELECT #
 ##################
 
-# Best rule of project
-# Use the project rule if it exists, and use the group rule if it doesn't.
-SELECT_BEST_RULE_OF_PROJECT = f"""
+# Best role of project
+# Use the project role if it exists, and use the group role if it doesn't.
+SELECT_BEST_ROLE_OF_PROJECT = f"""
 SELECT
     -- u.uid AS user_uid,
     -- p.uid AS project_uid,
     -- p.group_uid AS group_uid,
-    -- pm.rule_uid AS pm_rule_uid,
-    -- gm.rule_uid AS gm_rule_uid,
+    -- pm.role_uid AS pm_role_uid,
+    -- gm.role_uid AS gm_role_uid,
     perm.*
 FROM
     (SELECT uid FROM {TABLE_USER} WHERE uid=$1) u
     CROSS JOIN (SELECT uid, group_uid FROM {TABLE_PROJECT} WHERE uid=$2) p
     LEFT JOIN {TABLE_GROUP_MEMBER} gm ON gm.user_uid=u.uid AND gm.group_uid=p.group_uid
     LEFT JOIN {TABLE_PROJECT_MEMBER} pm ON pm.user_uid=u.uid AND pm.project_uid=p.uid
-    LEFT JOIN {TABLE_RULE} perm ON
-        perm.uid=COALESCE(pm.rule_uid, gm.rule_uid)
+    LEFT JOIN {TABLE_ROLE} perm ON
+        perm.uid=COALESCE(pm.role_uid, gm.role_uid)
 ORDER BY u.uid, p.uid;
 """
 
-SELECT_BEST_RULE_OF_PROJECT_NO_COMMENT = re_sub(
-    r"^  +--.*\n", "", SELECT_BEST_RULE_OF_PROJECT
+SELECT_BEST_ROLE_OF_PROJECT_NO_COMMENT = re_sub(
+    r"^  +--.*\n", "", SELECT_BEST_ROLE_OF_PROJECT
 )
 
-SELECT_RULE_BY_USER_UID_AND_GROUP_UID = f"""
+SELECT_ROLE_BY_USER_UID_AND_GROUP_UID = f"""
 WITH gm AS (
-    SELECT rule_uid
+    SELECT role_uid
     FROM {TABLE_GROUP_MEMBER}
     WHERE user_uid=$1 AND group_uid=$2
 )
 SELECT perm.*
-FROM {TABLE_RULE} AS perm, gm
-WHERE gm.rule_uid=perm.uid;
+FROM {TABLE_ROLE} AS perm, gm
+WHERE gm.role_uid=perm.uid;
 """
 
-SELECT_RULE_BY_USER_UID_AND_PROJECT_UID = f"""
+SELECT_ROLE_BY_USER_UID_AND_PROJECT_UID = f"""
 WITH pm AS (
-    SELECT rule_uid
+    SELECT role_uid
     FROM {TABLE_PROJECT_MEMBER}
     WHERE user_uid=$1 AND project_uid=$2
 )
 SELECT perm.*
-FROM {TABLE_RULE} AS perm, pm
-WHERE pm.rule_uid=perm.uid;
+FROM {TABLE_ROLE} AS perm, pm
+WHERE pm.role_uid=perm.uid;
 """

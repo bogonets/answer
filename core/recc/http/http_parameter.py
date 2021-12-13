@@ -38,7 +38,7 @@ from recc.conversion.boolean import str_to_bool
 from recc.variables.http import DEBUGGING_BODY_MSG_MAX_SIZE, VERY_VERBOSE_DEBUGGING
 
 ERROR_MESSAGE_ONLY_SINGLE_POLICIES = (
-    "Group and project rules cannot be checked at the same time."
+    "Group and project roles cannot be checked at the same time."
 )
 
 
