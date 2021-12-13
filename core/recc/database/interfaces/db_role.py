@@ -89,10 +89,6 @@ class DbRole(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    async def select_best_project_role(self, user_uid: int, project_uid: int) -> Role:
-        raise NotImplementedError
-
-    @abstractmethod
     async def select_role_by_user_uid_and_group_uid(
         self, user_uid: int, group_uid: int
     ) -> Role:

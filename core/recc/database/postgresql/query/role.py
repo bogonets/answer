@@ -2,11 +2,8 @@
 
 from datetime import datetime
 from typing import Any, Optional, List
-from re import sub as re_sub
 from recc.chrono.datetime import today
 from recc.variables.database import (
-    TABLE_USER,
-    TABLE_PROJECT,
     TABLE_ROLE,
     TABLE_GROUP_MEMBER,
     TABLE_PROJECT_MEMBER,
@@ -315,34 +312,6 @@ SELECT EXISTS(
     WHERE uid=$1
 );
 """
-
-##################
-# COMPLEX SELECT #
-##################
-
-# Best role of project
-# Use the project role if it exists, and use the group role if it doesn't.
-SELECT_BEST_ROLE_OF_PROJECT = f"""
-SELECT
-    -- u.uid AS user_uid,
-    -- p.uid AS project_uid,
-    -- p.group_uid AS group_uid,
-    -- pm.role_uid AS pm_role_uid,
-    -- gm.role_uid AS gm_role_uid,
-    perm.*
-FROM
-    (SELECT uid FROM {TABLE_USER} WHERE uid=$1) u
-    CROSS JOIN (SELECT uid, group_uid FROM {TABLE_PROJECT} WHERE uid=$2) p
-    LEFT JOIN {TABLE_GROUP_MEMBER} gm ON gm.user_uid=u.uid AND gm.group_uid=p.group_uid
-    LEFT JOIN {TABLE_PROJECT_MEMBER} pm ON pm.user_uid=u.uid AND pm.project_uid=p.uid
-    LEFT JOIN {TABLE_ROLE} perm ON
-        perm.uid=COALESCE(pm.role_uid, gm.role_uid)
-ORDER BY u.uid, p.uid;
-"""
-
-SELECT_BEST_ROLE_OF_PROJECT_NO_COMMENT = re_sub(
-    r"^  +--.*\n", "", SELECT_BEST_ROLE_OF_PROJECT
-)
 
 SELECT_ROLE_BY_USER_UID_AND_GROUP_UID = f"""
 WITH gm AS (

@@ -16,7 +16,6 @@ from recc.database.postgresql.query.role import (
     SELECT_ROLE_BY_UID,
     SELECT_ROLE_LOCK_BY_UID,
     SELECT_ROLE_ALL,
-    SELECT_BEST_ROLE_OF_PROJECT_NO_COMMENT,
     SELECT_ROLE_BY_USER_UID_AND_GROUP_UID,
     SELECT_ROLE_BY_USER_UID_AND_PROJECT_UID,
     get_update_role_query_by_uid,
@@ -184,17 +183,6 @@ class PgRole(DbRole, PgBase):
                     result.append(Role(**dict(row)))
         result_msg = f"{len(result)} roles"
         logger.info(f"select_roles() -> {result_msg}")
-        return result
-
-    @overrides
-    async def select_best_project_role(self, user_uid: int, project_uid: int) -> Role:
-        query = SELECT_BEST_ROLE_OF_PROJECT_NO_COMMENT
-        row = await self.fetch_row(query, user_uid, project_uid)
-        params_msg = f"user_uid={user_uid},project_uid={project_uid}"
-        if not row:
-            raise RuntimeError(f"Not found role: {params_msg}")
-        result = Role(**dict(row))
-        logger.info(f"select_project_role_by_uid({params_msg}) ok.")
         return result
 
     @overrides
