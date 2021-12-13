@@ -9,6 +9,7 @@ from recc.database.postgresql.query.indices import CREATE_INDICES, DROP_INDICES
 from recc.database.postgresql.query.views import CREATE_VIEWS, DROP_VIEWS
 from recc.database.postgresql.query.info import SAFE_INSERT_INFO_DB_VERSION
 from recc.database.postgresql.query.rule import INSERT_RULE_DEFAULTS, EXISTS_RULE_BY_UID
+from recc.database.postgresql.query.permission import INSERT_PERMISSION_DEFAULTS
 from recc.variables.database import RULE_UID_OWNER
 
 
@@ -21,10 +22,13 @@ class PgTable(DbTable, PgBase):
                 await conn.execute(reduce(lambda x, y: x + y, all_create))
                 await conn.execute(SAFE_INSERT_INFO_DB_VERSION)
 
+                for perm_query in INSERT_PERMISSION_DEFAULTS:
+                    await conn.execute(perm_query)
+
                 exists_owner = await conn.fetchval(EXISTS_RULE_BY_UID, RULE_UID_OWNER)
                 if not exists_owner:
-                    for perm_query in INSERT_RULE_DEFAULTS:
-                        await conn.execute(perm_query)
+                    for rule_query in INSERT_RULE_DEFAULTS:
+                        await conn.execute(rule_query)
 
     @overrides
     async def drop_tables(self) -> None:
