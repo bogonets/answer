@@ -4,6 +4,7 @@ from recc.variables.database import (
     TABLE_INFO,
     VIEW_INFO_DB_VERSION,
     INFO_KEY_RECC_DB_VERSION,
+    INFO_KEY_RECC_DB_INIT,
 )
 from recc.util.version import database_version
 
@@ -33,21 +34,28 @@ def get_safe_insert_info_query(key: str, value: str) -> str:
     return _SAFE_INSERT_INFO_FORMAT.format(key=key, value=value)
 
 
-SAFE_INSERT_INFO_DB_VERSION = f"""
+INSERT_INFO_DB_VERSION = f"""
 INSERT INTO {TABLE_INFO} (
     key,
     value,
     created_at
-) SELECT
+) VALUES (
     '{INFO_KEY_RECC_DB_VERSION}',
     '{database_version}',
     NOW()
-WHERE
-    NOT EXISTS(
-        SELECT value
-        FROM {TABLE_INFO}
-        WHERE key='{INFO_KEY_RECC_DB_VERSION}'
-    );
+);
+"""
+
+INSERT_INFO_DB_INIT = f"""
+INSERT INTO {TABLE_INFO} (
+    key,
+    value,
+    created_at
+) VALUES (
+    '{INFO_KEY_RECC_DB_INIT}',
+    'True',
+    NOW()
+);
 """
 
 INSERT_INFO = f"""
@@ -96,6 +104,14 @@ WHERE key=$1;
 ##########
 # SELECT #
 ##########
+
+EXISTS_INFO_BY_KEY = f"""
+SELECT EXISTS (
+    SELECT *
+    FROM {TABLE_INFO}
+    WHERE key=$1
+);
+"""
 
 SELECT_INFO_BY_KEY = f"""
 SELECT *

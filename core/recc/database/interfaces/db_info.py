@@ -43,6 +43,10 @@ class DbInfo(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def exists_info_by_key(self, key: str) -> bool:
+        raise NotImplementedError
+
+    @abstractmethod
     async def select_info_by_key(self, key: str) -> Info:
         raise NotImplementedError
 

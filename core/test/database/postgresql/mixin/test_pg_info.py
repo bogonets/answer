@@ -11,7 +11,8 @@ class PgInfoTestCase(PostgresqlTestCase):
         self.assertEqual(database_version, await self.db.select_database_version())
 
     async def test_upsert_info(self):
-        self.assertEqual(1, len(await self.db.select_infos()))
+        infos1 = await self.db.select_infos()
+        original_count = len(infos1)
 
         key = "aaa"
         val1 = "bbb"
@@ -20,7 +21,7 @@ class PgInfoTestCase(PostgresqlTestCase):
         updated_at = datetime.now().astimezone() + timedelta(days=2)
 
         await self.db.upsert_info(key, val1, created_at)
-        self.assertEqual(2, len(await self.db.select_infos()))
+        self.assertEqual(original_count + 1, len(await self.db.select_infos()))
         info1 = await self.db.select_info_by_key(key)
         self.assertEqual(key, info1.key)
         self.assertEqual(val1, info1.value)
@@ -28,7 +29,7 @@ class PgInfoTestCase(PostgresqlTestCase):
         self.assertIsNone(info1.updated_at)
 
         await self.db.upsert_info(key, val2, updated_at)
-        self.assertEqual(2, len(await self.db.select_infos()))
+        self.assertEqual(original_count + 1, len(await self.db.select_infos()))
         info2 = await self.db.select_info_by_key(key)
         self.assertEqual(key, info2.key)
         self.assertEqual(val2, info2.value)

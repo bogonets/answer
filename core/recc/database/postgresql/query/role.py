@@ -58,7 +58,7 @@ INSERT INTO {TABLE_ROLE} (
     {{lock}},
     '{{created_at}}'
 WHERE
-    NOT EXISTS(
+    NOT EXISTS (
         SELECT uid
         FROM {TABLE_ROLE}
         WHERE slug='{{slug}}'

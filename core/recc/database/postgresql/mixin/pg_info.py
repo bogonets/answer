@@ -14,6 +14,7 @@ from recc.database.postgresql.query.info import (
     UPDATE_INFO_VALUE_BY_KEY,
     UPSERT_INFO,
     DELETE_INFO_BY_KEY,
+    EXISTS_INFO_BY_KEY,
     SELECT_INFO_BY_KEY,
     SELECT_INFO_BY_KEY_LIKE,
     SELECT_INFO_ALL,
@@ -70,6 +71,14 @@ class PgInfo(DbInfo, PgBase):
         await self.execute(query, key)
         params_msg = f"key={key}"
         logger.info(f"delete_task_by_uid({params_msg}) ok.")
+
+    @overrides
+    async def exists_info_by_key(self, key: str) -> bool:
+        query = EXISTS_INFO_BY_KEY
+        result = await self.fetch_val(query, key)
+        params_msg = f"key={key}"
+        logger.info(f"exists_info_by_key({params_msg}) -> {result}")
+        return result
 
     @overrides
     async def select_info_by_key(self, key: str) -> Info:
