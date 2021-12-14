@@ -36,6 +36,7 @@ class HttpAppTester(HttpClient, EmptyHttpAppCallback):
         config.developer = True
         config.teardown = True
         config.database_name = "recc.test"
+        config.cache_prefix = "recc.test"
         config.http_port = DEFAULT_HTTP_TEST_PORT
         config.public_signup = False
         config.verbose = 0

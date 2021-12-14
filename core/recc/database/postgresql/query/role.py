@@ -10,7 +10,6 @@ from recc.variables.database import (
     ROLE_SLUG_OWNER,
     ROLE_SLUG_MAINTAINER,
     ROLE_SLUG_DEVELOPER,
-    ROLE_SLUG_OPERATOR,
     ROLE_SLUG_REPORTER,
     ROLE_SLUG_GUEST,
 )
@@ -21,7 +20,7 @@ from recc.database.query_builder import UpdateBuilder, BuildResult
 ##########
 
 
-INITIALIZE_ONLY_INSERT_ROLE_FORMAT = f"""
+_INITIALIZE_ONLY_INSERT_ROLE_FORMAT = f"""
 INSERT INTO {TABLE_ROLE} (
     slug,
     name,
@@ -87,7 +86,7 @@ def get_safe_insert_role_query(
     created_at: Optional[datetime] = None,
 ) -> str:
     created = created_at if created_at else today()
-    return INITIALIZE_ONLY_INSERT_ROLE_FORMAT.format(
+    return _INITIALIZE_ONLY_INSERT_ROLE_FORMAT.format(
         slug=slug,
         name=name if name else slug,
         r_layout=r_layout,
@@ -108,7 +107,7 @@ def get_safe_insert_role_query(
     )
 
 
-INSERT_ROLE_OWNER = get_safe_insert_role_query(
+_INSERT_ROLE_OWNER = get_safe_insert_role_query(
     ROLE_SLUG_OWNER,
     r_layout=True,
     w_layout=True,
@@ -124,7 +123,7 @@ INSERT_ROLE_OWNER = get_safe_insert_role_query(
     w_setting=True,
     lock=True,
 )
-INSERT_ROLE_MAINTAINER = get_safe_insert_role_query(
+_INSERT_ROLE_MAINTAINER = get_safe_insert_role_query(
     ROLE_SLUG_MAINTAINER,
     r_layout=True,
     w_layout=True,
@@ -139,7 +138,7 @@ INSERT_ROLE_MAINTAINER = get_safe_insert_role_query(
     r_setting=True,
     w_setting=True,
 )
-INSERT_ROLE_DEVELOPER = get_safe_insert_role_query(
+_INSERT_ROLE_DEVELOPER = get_safe_insert_role_query(
     ROLE_SLUG_DEVELOPER,
     r_layout=True,
     w_layout=True,
@@ -150,33 +149,23 @@ INSERT_ROLE_DEVELOPER = get_safe_insert_role_query(
     r_graph=True,
     w_graph=True,
 )
-INSERT_ROLE_OPERATOR = get_safe_insert_role_query(
-    ROLE_SLUG_OPERATOR,
-    r_layout=True,
-    w_layout=True,
-    r_storage=True,
-    w_storage=True,
-    r_manager=True,
-    w_manager=True,
-)
-INSERT_ROLE_REPORTER = get_safe_insert_role_query(
+_INSERT_ROLE_REPORTER = get_safe_insert_role_query(
     ROLE_SLUG_REPORTER,
     r_layout=True,
     r_storage=True,
     r_manager=True,
 )
-INSERT_ROLE_GUEST = get_safe_insert_role_query(
+_INSERT_ROLE_GUEST = get_safe_insert_role_query(
     ROLE_SLUG_GUEST,
     r_layout=True,
 )
 
 INSERT_ROLE_DEFAULTS = (
-    INSERT_ROLE_OWNER,
-    INSERT_ROLE_MAINTAINER,
-    INSERT_ROLE_DEVELOPER,
-    INSERT_ROLE_OPERATOR,
-    INSERT_ROLE_REPORTER,
-    INSERT_ROLE_GUEST,
+    _INSERT_ROLE_OWNER,
+    _INSERT_ROLE_MAINTAINER,
+    _INSERT_ROLE_DEVELOPER,
+    _INSERT_ROLE_REPORTER,
+    _INSERT_ROLE_GUEST,
 )
 
 INSERT_ROLE = f"""

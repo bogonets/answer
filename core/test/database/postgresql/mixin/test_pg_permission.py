@@ -2,38 +2,13 @@
 
 from unittest import main
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
-from recc.variables.database import (
-    PERMISSION_SLUG_RECC_LAYOUT_READ,
-    PERMISSION_SLUG_RECC_LAYOUT_WRITE,
-    PERMISSION_SLUG_RECC_STORAGE_READ,
-    PERMISSION_SLUG_RECC_STORAGE_WRITE,
-    PERMISSION_SLUG_RECC_MANAGER_READ,
-    PERMISSION_SLUG_RECC_MANAGER_WRITE,
-    PERMISSION_SLUG_RECC_GRAPH_READ,
-    PERMISSION_SLUG_RECC_GRAPH_WRITE,
-    PERMISSION_SLUG_RECC_MEMBER_READ,
-    PERMISSION_SLUG_RECC_MEMBER_WRITE,
-    PERMISSION_SLUG_RECC_SETTING_READ,
-    PERMISSION_SLUG_RECC_SETTING_WRITE,
-)
+from recc.variables.database import DEFAULT_PERMISSION_SLUGS
 
 
 class PgPermissionTestCase(PostgresqlTestCase):
     async def test_default_permissions(self):
-        perms = await self.db.select_permission_all()
-        slugs = [p.slug for p in perms]
-        self.assertIn(PERMISSION_SLUG_RECC_LAYOUT_READ, slugs)
-        self.assertIn(PERMISSION_SLUG_RECC_LAYOUT_WRITE, slugs)
-        self.assertIn(PERMISSION_SLUG_RECC_STORAGE_READ, slugs)
-        self.assertIn(PERMISSION_SLUG_RECC_STORAGE_WRITE, slugs)
-        self.assertIn(PERMISSION_SLUG_RECC_MANAGER_READ, slugs)
-        self.assertIn(PERMISSION_SLUG_RECC_MANAGER_WRITE, slugs)
-        self.assertIn(PERMISSION_SLUG_RECC_GRAPH_READ, slugs)
-        self.assertIn(PERMISSION_SLUG_RECC_GRAPH_WRITE, slugs)
-        self.assertIn(PERMISSION_SLUG_RECC_MEMBER_READ, slugs)
-        self.assertIn(PERMISSION_SLUG_RECC_MEMBER_WRITE, slugs)
-        self.assertIn(PERMISSION_SLUG_RECC_SETTING_READ, slugs)
-        self.assertIn(PERMISSION_SLUG_RECC_SETTING_WRITE, slugs)
+        for parm in await self.db.select_permission_all():
+            self.assertIn(parm.slug, DEFAULT_PERMISSION_SLUGS)
 
     async def test_insert_and_delete(self):
         perm_slug = "test.insert.and.delete"

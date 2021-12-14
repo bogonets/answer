@@ -22,8 +22,8 @@ class PgTable(DbTable, PgBase):
                 await conn.execute(reduce(lambda x, y: x + y, all_create))
                 await conn.execute(SAFE_INSERT_INFO_DB_VERSION)
 
-                for perm_query in INSERT_PERMISSION_DEFAULTS:
-                    await conn.execute(perm_query)
+                perm_queries = reduce(lambda x, y: x + y, INSERT_PERMISSION_DEFAULTS)
+                await conn.execute(perm_queries)
 
                 exists_owner = await conn.fetchval(EXISTS_ROLE_BY_UID, ROLE_UID_OWNER)
                 if not exists_owner:

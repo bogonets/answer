@@ -193,6 +193,10 @@ class Context(
         await self._tasks.close()
         logger.info("Closed task-manager")
 
+        if teardown:
+            await self._cache.clear()
+            logger.info("Clear caches")
+
         await self._cache.close()
         logger.info("Closed cache-store")
 

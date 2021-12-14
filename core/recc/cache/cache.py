@@ -80,6 +80,9 @@ class Cache:
         assert self._store.is_open()
         return self._store
 
+    async def clear(self) -> None:
+        await self.store.clear()
+
     async def get_str(self, key: str, encoding="utf-8") -> Optional[str]:
         val = await self.store.get(key)
         return str(val, encoding=encoding) if val else None
