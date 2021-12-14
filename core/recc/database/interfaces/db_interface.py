@@ -13,6 +13,7 @@ from recc.database.interfaces.db_port import DbPort
 from recc.database.interfaces.db_project import DbProject
 from recc.database.interfaces.db_project_member import DbProjectMember
 from recc.database.interfaces.db_role import DbRole
+from recc.database.interfaces.db_role_permission import DbRolePermission
 from recc.database.interfaces.db_task import DbTask
 from recc.database.interfaces.db_user import DbUser
 from recc.database.interfaces.db_utils import DbUtils
@@ -31,6 +32,7 @@ class DbInterface(
     DbProject,
     DbProjectMember,
     DbRole,
+    DbRolePermission,
     DbTable,
     DbTask,
     DbUser,

@@ -14,6 +14,7 @@ from recc.database.postgresql.mixin.pg_port import PgPort
 from recc.database.postgresql.mixin.pg_project import PgProject
 from recc.database.postgresql.mixin.pg_project_member import PgProjectMember
 from recc.database.postgresql.mixin.pg_role import PgRole
+from recc.database.postgresql.mixin.pg_role_permission import PgRolePermission
 from recc.database.postgresql.mixin.pg_task import PgTask
 from recc.database.postgresql.mixin.pg_user import PgUser
 from recc.database.postgresql.mixin.pg_utils import PgUtils
@@ -36,6 +37,7 @@ class PgDb(
     PgProject,
     PgProjectMember,
     PgRole,
+    PgRolePermission,
     PgTable,
     PgTask,
     PgUser,
