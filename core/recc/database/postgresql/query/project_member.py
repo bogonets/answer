@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from recc.variables.database import TABLE_PROJECT, TABLE_PROJECT_MEMBER
+from recc.variables.database import TABLE_PROJECT_MEMBER
 
 
 ##########
@@ -61,26 +61,4 @@ WHERE user_uid=$1;
 SELECT_PROJECT_MEMBER_ALL = f"""
 SELECT project_uid, user_uid, role_uid
 FROM {TABLE_PROJECT_MEMBER};
-"""
-
-SELECT_PROJECT_MEMBER_JOIN_PROJECT_BY_USER_UID = f"""
-WITH pm AS (
-    SELECT *
-    FROM {TABLE_PROJECT_MEMBER}
-    WHERE user_uid=$1
-)
-SELECT *
-FROM pm
-INNER JOIN {TABLE_PROJECT} p ON pm.project_uid=p.uid;
-"""
-
-SELECT_PROJECT_MEMBER_JOIN_PROJECT_BY_USER_UID_PROJECT_UID = f"""
-WITH pm AS (
-    SELECT *
-    FROM {TABLE_PROJECT_MEMBER}
-    WHERE user_uid=$1 AND project_uid=$2
-)
-SELECT *
-FROM pm
-INNER JOIN {TABLE_PROJECT} p ON pm.project_uid=p.uid;
 """
