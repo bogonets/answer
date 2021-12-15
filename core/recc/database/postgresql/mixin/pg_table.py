@@ -16,8 +16,15 @@ from recc.database.postgresql.query.info import (
 )
 from recc.database.postgresql.query.role import INSERT_ROLE_DEFAULTS
 from recc.database.postgresql.query.permission import INSERT_PERMISSION_DEFAULTS
+from recc.database.postgresql.query.role_permission import (
+    DEFAULT_INSERT_ROLE_PERMISSIONS,
+)
 from recc.database.struct.info import Info
 from recc.variables.database import INFO_KEY_RECC_DB_INIT
+
+
+def _merge_queries(*args: str) -> str:
+    return reduce(lambda x, y: x + y, args)
 
 
 class PgTable(DbTable, PgBase):
@@ -25,13 +32,13 @@ class PgTable(DbTable, PgBase):
     async def create_tables(self) -> None:
         async with self.conn() as conn:
             async with conn.transaction():
-                create_tables = reduce(lambda x, y: x + y, CREATE_TABLES)
+                create_tables = _merge_queries(*CREATE_TABLES)
                 await conn.execute(create_tables)
 
-                create_indices = reduce(lambda x, y: x + y, CREATE_INDICES)
+                create_indices = _merge_queries(*CREATE_INDICES)
                 await conn.execute(create_indices)
 
-                create_views = reduce(lambda x, y: x + y, CREATE_VIEWS)
+                create_views = _merge_queries(*CREATE_VIEWS)
                 await conn.execute(create_views)
 
                 init_key = INFO_KEY_RECC_DB_INIT
@@ -42,19 +49,24 @@ class PgTable(DbTable, PgBase):
                     logger.info(f"Already database initialized: {init_info.created_at}")
                     return
 
-                insert_perms = reduce(lambda x, y: x + y, INSERT_PERMISSION_DEFAULTS)
+                insert_perms = _merge_queries(*INSERT_PERMISSION_DEFAULTS)
                 await conn.execute(insert_perms)
 
-                insert_roles = reduce(lambda x, y: x + y, INSERT_ROLE_DEFAULTS)
+                insert_roles = _merge_queries(*INSERT_ROLE_DEFAULTS)
                 await conn.execute(insert_roles)
+
+                insert_role_perms = _merge_queries(*DEFAULT_INSERT_ROLE_PERMISSIONS)
+                await conn.execute(insert_role_perms)
 
                 await conn.execute(INSERT_INFO_DB_VERSION)
                 await conn.execute(INSERT_INFO_DB_INIT)
+                logger.info("Database initialization complete")
 
     @overrides
     async def drop_tables(self) -> None:
         all_drop = DROP_TABLES + DROP_INDICES + DROP_VIEWS
         all_drop_reverse = all_drop[::-1]
-        queries = reduce(lambda x, y: x + y, all_drop_reverse)
+        queries = _merge_queries(*all_drop_reverse)
         assert isinstance(queries, str)
         await self.execute(queries)
+        logger.info("All tables have been successfully dropped")

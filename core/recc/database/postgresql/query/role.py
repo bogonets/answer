@@ -15,11 +15,6 @@ from recc.variables.database import (
 )
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
-##########
-# INSERT #
-##########
-
-
 _INITIALIZE_ONLY_INSERT_ROLE_FORMAT = f"""
 INSERT INTO {TABLE_ROLE} (
     slug,

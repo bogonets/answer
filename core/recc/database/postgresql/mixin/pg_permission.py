@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List
+from typing import Optional, List, Any
 from datetime import datetime
 from overrides import overrides
 from recc.chrono.datetime import today
@@ -24,10 +24,12 @@ class PgPermission(DbPermission, PgBase):
     async def insert_permission(
         self,
         slug: str,
+        description: Optional[str] = None,
+        extra: Optional[Any] = None,
         created_at: Optional[datetime] = None,
     ) -> int:
         created = created_at if created_at else today()
-        uid = await self.fetch_val(INSERT_PERMISSION, slug, created)
+        uid = await self.fetch_val(INSERT_PERMISSION, slug, description, extra, created)
         logger.info(f"insert_permission(slug={slug}) -> {uid}")
         return uid
 
