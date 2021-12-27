@@ -50,7 +50,7 @@ export default class VueBase extends mixins(
 
     async requestGroupPermission() {
         const group = this.$route.params.group;
-        const perm = await this.$api2.getSelfRawRolePgroup(group);
+        const perm = await this.$api2.getSelfPermissionsPgroup(group);
         this.$sessionStore.permissionGroup = group;
         this.$sessionStore.clearPermissionProject();
         this.$sessionStore.permission = perm;
@@ -60,7 +60,7 @@ export default class VueBase extends mixins(
     async requestProjectPermission() {
         const group = this.$route.params.group;
         const project = this.$route.params.project;
-        const perm = await this.$api2.getSelfRawRolePgroupPproject(group, project);
+        const perm = await this.$api2.getSelfPermissionsPgroupPproject(group, project);
         this.$sessionStore.permissionGroup = group;
         this.$sessionStore.permissionProject = project;
         this.$sessionStore.permission = perm;

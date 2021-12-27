@@ -21,15 +21,11 @@ class PgRoleTestCase(PostgresqlTestCase):
         result1_uid = await self.db.insert_role(
             slug1,
             description=desc1,
-            w_graph=True,
-            w_member=True,
             created_at=created_at1,
         )
         result2_uid = await self.db.insert_role(
             slug2,
             description=desc2,
-            r_layout=True,
-            r_storage=True,
             created_at=created_at2,
         )
         role1_uid = await self.db.select_role_uid_by_slug(slug1)
@@ -47,33 +43,9 @@ class PgRoleTestCase(PostgresqlTestCase):
         self.assertEqual(created_at1, role1.created_at)
         self.assertEqual(created_at2, role2.created_at)
 
-        self.assertFalse(role1.r_layout)
-        self.assertFalse(role1.w_layout)
-        self.assertFalse(role1.r_storage)
-        self.assertFalse(role1.w_storage)
-        self.assertFalse(role1.r_manager)
-        self.assertFalse(role1.w_manager)
-        self.assertFalse(role1.r_graph)
-        self.assertTrue(role1.w_graph)
-        self.assertFalse(role1.r_member)
-        self.assertTrue(role1.w_member)
-        self.assertFalse(role1.r_setting)
-        self.assertFalse(role1.w_setting)
         self.assertFalse(role1.hidden)
         self.assertFalse(role1.lock)
 
-        self.assertTrue(role2.r_layout)
-        self.assertFalse(role2.w_layout)
-        self.assertTrue(role2.r_storage)
-        self.assertFalse(role2.w_storage)
-        self.assertFalse(role2.r_manager)
-        self.assertFalse(role2.w_manager)
-        self.assertFalse(role2.r_graph)
-        self.assertFalse(role2.w_graph)
-        self.assertFalse(role2.r_member)
-        self.assertFalse(role2.w_member)
-        self.assertFalse(role2.r_setting)
-        self.assertFalse(role2.w_setting)
         self.assertFalse(role2.hidden)
         self.assertFalse(role2.lock)
 
@@ -96,18 +68,6 @@ class PgRoleTestCase(PostgresqlTestCase):
         self.assertIsNone(role1.description)
         self.assertIsNone(role1.extra)
         self.assertIsNone(role1.updated_at)
-        self.assertFalse(role1.r_layout)
-        self.assertFalse(role1.w_layout)
-        self.assertFalse(role1.r_storage)
-        self.assertFalse(role1.w_storage)
-        self.assertFalse(role1.r_manager)
-        self.assertFalse(role1.w_manager)
-        self.assertFalse(role1.r_graph)
-        self.assertFalse(role1.w_graph)
-        self.assertFalse(role1.r_member)
-        self.assertFalse(role1.w_member)
-        self.assertFalse(role1.r_setting)
-        self.assertFalse(role1.w_setting)
 
         updated_slug = "role2"
         updated_desc = "desc2"
@@ -118,9 +78,6 @@ class PgRoleTestCase(PostgresqlTestCase):
             slug=updated_slug,
             description=updated_desc,
             extra=updated_extra,
-            r_layout=True,
-            w_layout=True,
-            w_graph=False,
             updated_at=updated_at,
         )
         updated_role1 = await self.db.select_role_by_uid(role1.uid)
@@ -129,18 +86,6 @@ class PgRoleTestCase(PostgresqlTestCase):
         self.assertEqual(updated_desc, updated_role1.description)
         self.assertEqual(updated_extra, updated_role1.extra)
         self.assertEqual(updated_at, updated_role1.updated_at)
-        self.assertTrue(updated_role1.r_layout)
-        self.assertTrue(updated_role1.w_layout)
-        self.assertFalse(updated_role1.r_storage)
-        self.assertFalse(updated_role1.w_storage)
-        self.assertFalse(updated_role1.r_manager)
-        self.assertFalse(updated_role1.w_manager)
-        self.assertFalse(updated_role1.r_graph)
-        self.assertFalse(updated_role1.w_graph)
-        self.assertFalse(updated_role1.r_member)
-        self.assertFalse(updated_role1.w_member)
-        self.assertFalse(updated_role1.r_setting)
-        self.assertFalse(updated_role1.w_setting)
         self.assertFalse(updated_role1.hidden)
         self.assertFalse(updated_role1.lock)
 
@@ -185,25 +130,6 @@ class PgRoleTestCase(PostgresqlTestCase):
             user1_uid, project1_uid
         )
         self.assertEqual(role2_uid, role.uid)
-
-    async def test_features(self):
-        slug1 = "role1"
-        features1 = ["a", "b"]
-        await self.db.insert_role(slug1, features=features1)
-        uid1 = await self.db.select_role_uid_by_slug(slug1)
-        role1 = await self.db.select_role_by_uid(uid1)
-        self.assertEqual(slug1, role1.slug)
-        self.assertEqual(features1, role1.features)
-
-        features2 = ["c", "d", "e"]
-        await self.db.update_role_by_uid(uid=uid1, features=features2)
-        role2 = await self.db.select_role_by_uid(uid1)
-        self.assertEqual(features2, role2.features)
-
-        features3 = ["f"]
-        await self.db.update_role_by_uid(uid=uid1, features=features3)
-        role3 = await self.db.select_role_by_uid(uid1)
-        self.assertEqual(features3, role3.features)
 
 
 if __name__ == "__main__":

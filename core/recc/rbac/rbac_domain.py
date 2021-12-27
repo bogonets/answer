@@ -42,29 +42,32 @@ class RbacDomain:
     def test_permission(
         self,
         subject: RbacSubject,
-        permission: RbacPermission,
+        *permission: RbacPermission,
         inherit=True,
     ) -> None:
         if self.context != subject.context:
             raise RbacMismatchContextError
-        if self.context != permission.context:
-            raise RbacMismatchContextError
+        for p in permission:
+            if self.context != p.context:
+                raise RbacMismatchContextError
 
         if subject in self._subjects:
-            self._subjects[subject].test_permission(permission)
+            role = self._subjects[subject]
+            for p in permission:
+                role.test_permission(p)
         elif inherit and self._parent is not None:
-            self._parent.test_permission(subject, permission, inherit)
+            self._parent.test_permission(subject, *permission, inherit=inherit)
         else:
             raise RbacKeyError(f"Not found subject: {str(subject)}")
 
     def has_permission(
         self,
         subject: RbacSubject,
-        permission: RbacPermission,
+        *permissions: RbacPermission,
         inherit=True,
     ) -> bool:
         try:
-            self.test_permission(subject, permission, inherit)
+            self.test_permission(subject, *permissions, inherit=inherit)
         except:  # noqa
             return False
         else:

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main
+from unittest import IsolatedAsyncioTestCase, main
 from typing import List
-from tester.unittest.async_test_case import AsyncTestCase
+from asyncio import get_event_loop
 from tester.http.http_app_tester import HttpAppTester
 from recc.http.http_utils import v2_main_path
 from recc.http import http_urls as u
@@ -21,9 +21,9 @@ from recc.variables.database import (
 )
 
 
-class RouterV2MainTestCase(AsyncTestCase):
-    async def setUp(self):
-        self.tester = HttpAppTester(self.loop)
+class RouterV2MainTestCase(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.tester = HttpAppTester(get_event_loop())
         await self.tester.setup()
         await self.tester.wait_startup()
 
@@ -36,7 +36,7 @@ class RouterV2MainTestCase(AsyncTestCase):
         except:  # noqa
             await self.tester.teardown()
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.tester.teardown()
 
     async def test_groups(self):

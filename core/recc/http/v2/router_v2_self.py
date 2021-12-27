@@ -9,7 +9,8 @@ from recc.http.http_parameter import parameter_matcher
 from recc.http import http_urls as u
 from recc.session.session_ex import SessionEx
 from recc.packet.user import UserA, UpdateUserQ, UpdatePasswordQ
-from recc.packet.role import RawRole
+from recc.packet.permission import PermissionA
+from recc.packet.cvt.permission import permission_to_answer
 
 
 class RouterV2Self:
@@ -34,7 +35,7 @@ class RouterV2Self:
     def _routes(self) -> List[AbstractRouteDef]:
         # fmt: off
         return [
-            # user
+            # User
             web.get(u.empty, self.get_root),
             web.patch(u.empty, self.patch_root),
             web.delete(u.empty, self.delete_root),
@@ -42,16 +43,16 @@ class RouterV2Self:
             web.patch(u.root, self.patch_root),
             web.delete(u.root, self.delete_root),
 
-            # user extra
+            # User extra
             web.get(u.extra, self.get_extra),
             web.patch(u.extra, self.patch_extra),
 
-            # password
+            # Password
             web.patch(u.password, self.patch_password),
 
-            # role
-            web.get(u.raw_role_pgroup, self.get_raw_role_pgroup),
-            web.get(u.raw_role_pgroup_pproject, self.get_raw_role_pgroup_pproject),
+            # Permission
+            web.get(u.permissions_pgroup, self.get_permissions_pgroup),
+            web.get(u.permissions_pgroup_pproject, self.get_permissions_pgroup_pproject),  # noqa
         ]
         # fmt: on
 
@@ -59,7 +60,7 @@ class RouterV2Self:
     # User
     # ----
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_root(self, session: SessionEx) -> UserA:
         db_user = await self.context.get_user(session.uid)
         assert db_user.username is not None
@@ -76,7 +77,7 @@ class RouterV2Self:
             last_login=db_user.last_login,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def patch_root(self, session: SessionEx, body: UpdateUserQ) -> None:
         await self.context.update_user(
             uid=session.uid,
@@ -87,7 +88,7 @@ class RouterV2Self:
             extra=body.extra,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def delete_root(self, session: SessionEx) -> None:
         await self.context.remove_user_by_uid(session.uid)
 
@@ -95,12 +96,12 @@ class RouterV2Self:
     # User Extra
     # ----------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_extra(self, session: SessionEx) -> Any:
         db_user = await self.context.get_user(session.uid)
         return db_user.extra
 
-    @parameter_matcher()
+    @parameter_matcher
     async def patch_extra(self, session: SessionEx, body: Dict[str, Any]) -> None:
         await self.context.update_user_extra(session.audience, body)
 
@@ -108,23 +109,27 @@ class RouterV2Self:
     # Password
     # --------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def patch_password(self, session: SessionEx, body: UpdatePasswordQ) -> None:
         if await self.context.challenge_password(session.audience, body.before):
             await self.context.change_password(session.audience, body.after)
         else:
             raise HTTPUnauthorized(reason="The password is incorrect.")
 
-    # ----
-    # Role
-    # ----
+    # ----------
+    # Permission
+    # ----------
 
-    @parameter_matcher()
-    async def get_raw_role_pgroup(self, session: SessionEx, group: str) -> RawRole:
-        return await self.context.get_group_raw_role(session, group)
+    @parameter_matcher
+    async def get_permissions_pgroup(
+        self, session: SessionEx, group: str
+    ) -> List[PermissionA]:
+        roles = await self.context.get_group_permission(session, group)
+        return [permission_to_answer(role) for role in roles]
 
-    @parameter_matcher()
-    async def get_raw_role_pgroup_pproject(
+    @parameter_matcher
+    async def get_permissions_pgroup_pproject(
         self, session: SessionEx, group: str, project: str
-    ) -> RawRole:
-        return await self.context.get_project_raw_role(session, group, project)
+    ) -> List[PermissionA]:
+        roles = await self.context.get_project_permission(session, group, project)
+        return [permission_to_answer(role) for role in roles]

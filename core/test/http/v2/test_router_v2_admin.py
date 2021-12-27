@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main
+from unittest import IsolatedAsyncioTestCase, main
 from typing import List
-from tester.unittest.async_test_case import AsyncTestCase
+from asyncio import get_event_loop
 from tester.http.http_app_tester import HttpAppTester
 from recc.http.http_utils import v2_admin_path
 from recc.http import http_urls as u
@@ -16,9 +16,9 @@ from recc.log.logging import get_root_level
 from logging import CRITICAL, DEBUG
 
 
-class RouterV2AdminTestCase(AsyncTestCase):
-    async def setUp(self):
-        self.tester = HttpAppTester(self.loop)
+class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.tester = HttpAppTester(get_event_loop())
         await self.tester.setup()
         await self.tester.wait_startup()
         try:
@@ -26,7 +26,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         except:  # noqa
             await self.tester.teardown()
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.tester.teardown()
 
     async def test_users(self):
@@ -142,7 +142,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertEqual(0, len(response7_data))
 
     async def test_role(self):
-        role1 = CreateRoleQ("role1", r_storage=True)
+        role1 = CreateRoleQ("role1")
         response1 = await self.tester.post(v2_admin_path(u.roles), data=role1)
         self.assertEqual(200, response1.status)
 
@@ -161,20 +161,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertEqual(role1.slug, response2_data0.slug)
         self.assertIsNone(response2_data0.name)
         self.assertIsNone(response2_data0.description)
-        self.assertIsNone(response2_data0.features)
         self.assertIsNone(response2_data0.extra)
-        self.assertFalse(response2_data0.r_layout)
-        self.assertFalse(response2_data0.w_layout)
-        self.assertTrue(response2_data0.r_storage)
-        self.assertFalse(response2_data0.w_storage)
-        self.assertFalse(response2_data0.r_manager)
-        self.assertFalse(response2_data0.w_manager)
-        self.assertFalse(response2_data0.r_graph)
-        self.assertFalse(response2_data0.w_graph)
-        self.assertFalse(response2_data0.r_member)
-        self.assertFalse(response2_data0.w_member)
-        self.assertFalse(response2_data0.r_setting)
-        self.assertFalse(response2_data0.w_setting)
         self.assertFalse(response2_data0.hidden)
         self.assertFalse(response2_data0.lock)
         self.assertIsNotNone(response2_data0.created_at)
@@ -182,7 +169,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
 
         role2_slug = "role2"
         path1 = v2_admin_path(u.roles_prole).format(role=role1.slug)
-        update = UpdateRoleQ(slug=role2_slug, w_layout=True)
+        update = UpdateRoleQ(slug=role2_slug)
         response3 = await self.tester.patch(path1, data=update)
         self.assertEqual(200, response3.status)
 
@@ -195,20 +182,7 @@ class RouterV2AdminTestCase(AsyncTestCase):
         self.assertEqual(update.slug, response4_data.slug)
         self.assertIsNone(response4_data.name)
         self.assertIsNone(response4_data.description)
-        self.assertIsNone(response4_data.features)
         self.assertIsNone(response4_data.extra)
-        self.assertFalse(response4_data.r_layout)
-        self.assertTrue(response4_data.w_layout)
-        self.assertTrue(response4_data.r_storage)
-        self.assertFalse(response4_data.w_storage)
-        self.assertFalse(response4_data.r_manager)
-        self.assertFalse(response4_data.w_manager)
-        self.assertFalse(response4_data.r_graph)
-        self.assertFalse(response4_data.w_graph)
-        self.assertFalse(response4_data.r_member)
-        self.assertFalse(response4_data.w_member)
-        self.assertFalse(response4_data.r_setting)
-        self.assertFalse(response4_data.w_setting)
         self.assertFalse(response4_data.hidden)
         self.assertFalse(response4_data.lock)
         self.assertIsNotNone(response4_data.created_at)

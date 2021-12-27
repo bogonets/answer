@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main
-from tester.unittest.async_test_case import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase, main
+from asyncio import get_event_loop
 from tester.http.http_app_tester import HttpAppTester
 from recc.http.http_utils import v2_self_path
 from recc.http import http_urls as u
 from recc.packet.user import UserExtraA
 
 
-class RouterV2SelfTestCase(AsyncTestCase):
-    async def setUp(self):
-        self.tester = HttpAppTester(self.loop)
+class RouterV2SelfTestCase(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.tester = HttpAppTester(get_event_loop())
         await self.tester.setup()
         await self.tester.wait_startup()
 
@@ -23,7 +23,7 @@ class RouterV2SelfTestCase(AsyncTestCase):
         except:  # noqa
             await self.tester.teardown()
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.tester.teardown()
 
     async def test_self(self):

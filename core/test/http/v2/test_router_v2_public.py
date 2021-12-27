@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main
-from tester.unittest.async_test_case import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase, main
+from asyncio import get_event_loop
 from tester.http.http_app_tester import HttpAppTester
 from recc.packet.user import SignupQ
 from recc.http import http_urls as u
@@ -11,13 +11,13 @@ from recc.util.version import version_text
 from aiohttp.hdrs import AUTHORIZATION
 
 
-class RouterV2PublicTestCase(AsyncTestCase):
-    async def setUp(self):
-        self.tester = HttpAppTester(self.loop)
+class RouterV2PublicTestCase(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.tester = HttpAppTester(get_event_loop())
         await self.tester.setup()
         await self.tester.wait_startup()
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.tester.teardown()
 
     async def test_heartbeat(self):

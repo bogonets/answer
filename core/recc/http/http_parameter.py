@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, Union, List, Any, get_origin, get_args
-from inspect import signature, isclass, iscoroutinefunction
+from inspect import Parameter, signature, isclass, iscoroutinefunction
 from functools import wraps
 from http import HTTPStatus
 
@@ -14,7 +14,6 @@ from aiohttp.web_exceptions import (
     HTTPUnauthorized,
 )
 
-from recc.access_control.acl import AccessControlList
 from recc.core.context import Context
 from recc.chrono.datetime import today
 from recc.session.session import Session
@@ -23,7 +22,7 @@ from recc.log.logging import recc_http_logger as logger
 from recc.serialization.serialize import serialize_default
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.header.bearer_auth import BearerAuth
-from recc.access_control.policy import Policy
+from recc.http.http_decorator import object_to_permissions
 from recc.http.http_packet import HttpRequest, HttpResponse
 from recc.http.http_payload import payload_to_object, request_payload_to_class
 from recc.http.http_response import get_accept_type, get_encoding, create_response
@@ -36,10 +35,9 @@ from recc.http import http_cache_keys as c
 from recc.http import http_path_keys as p
 from recc.conversion.boolean import str_to_bool
 from recc.variables.http import DEBUGGING_BODY_MSG_MAX_SIZE, VERY_VERBOSE_DEBUGGING
+from recc.variables.annotation import ANNOTATION_PERMISSIONS, ANNOTATION_DOMAIN, Domain
 
-ERROR_MESSAGE_ONLY_SINGLE_POLICIES = (
-    "Group and project roles cannot be checked at the same time."
-)
+_INTERNAL_SERVER_ERROR = HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 def _is_serializable_instance(obj: Any) -> bool:
@@ -107,69 +105,179 @@ def cast_builtin_type_from_string(data: str, cls) -> Any:
     return cls(data)  # type: ignore[call-arg]
 
 
-async def _parameter_matcher_main(
-    func,
-    obj: Any,
-    request: Request,
-    acl: AccessControlList,
-) -> Response:
-    accept = get_accept_type(request)
-    encoding = get_encoding(request)
+def _get_type_origin(param: Parameter) -> Any:
+    result = get_origin(param.annotation)
+    if result is None:
+        if isinstance(param.annotation, type):
+            result = param.annotation
+        elif isinstance(param.annotation, str):
+            if param.annotation == "str":
+                result = str
+            elif param.annotation == "int":
+                result = int
+            elif param.annotation == "float":
+                result = float
+            elif param.annotation == "bytes":
+                result = bytes
+            elif param.annotation == "list":
+                result = list
+            elif param.annotation == "set":
+                result = set
+            elif param.annotation == "dict":
+                result = dict
+            else:
+                msg = f"Unknown annotation string: {param.annotation}"
+                raise NotImplementedError(msg)
+        else:
+            msg = f"Unknown annotation type: {type(param.annotation).__name__}"
+            raise NotImplementedError(msg)
 
-    sig = signature(func)
-    keys = list(sig.parameters.keys())
-    update_arguments: List[Any] = list()
-    match_count = len(request.match_info)
-    assign_body = False
+    assert result is not None
+    assert isinstance(result, type) or result is Union
 
-    group_name: Optional[str] = None
-    project_name: Optional[str] = None
+    return result
 
-    very_verbose_debugging = False
-    context = request[c.context] if c.context in request else None
-    if context:
-        if isinstance(context, Context):
+
+class HttpParameterMatcher:
+    def __init__(
+        self,
+        func,
+        obj: Any,
+        request: Request,
+        *,
+        group_path_key: Optional[str] = None,
+        project_path_key: Optional[str] = None,
+    ):
+        self.func = func
+        self.obj = obj
+        self.request = request
+
+        self.accept = get_accept_type(request)
+        self.encoding = get_encoding(request)
+        self.signature = signature(self.func)
+
+        group_key = group_path_key if group_path_key else p.group
+        project_key = project_path_key if project_path_key else p.project
+        self.group_name: Optional[str] = request.match_info.get(group_key)
+        self.project_name: Optional[str] = request.match_info.get(project_key)
+
+        self.permissions: List[Union[int, str]] = list()
+        if hasattr(self.func, ANNOTATION_PERMISSIONS):
+            permissions = getattr(self.func, ANNOTATION_PERMISSIONS)
+            for perm in object_to_permissions(permissions):
+                self.permissions.append(perm)
+
+        self.domain: Domain
+        if hasattr(self.func, ANNOTATION_DOMAIN):
+            domain = getattr(self.func, ANNOTATION_DOMAIN)
+            if isinstance(domain, Domain):
+                self.domain = domain
+            else:
+                raise RuntimeError(f"Unsupported domain type: {type(domain).__name__}")
+        else:
+            if self.group_name and self.project_name:
+                self.domain = Domain.Project
+            elif self.group_name and not self.project_name:
+                self.domain = Domain.Group
+            else:
+                self.domain = Domain.Unknown
+
+        self.very_verbose_debugging = False
+        context = request[c.context] if c.context in request else None
+        if context and isinstance(context, Context):
             config = context.config
             if config and config.developer and config.verbose >= VERY_VERBOSE_DEBUGGING:
-                very_verbose_debugging = True
+                self.very_verbose_debugging = True
         else:
             context = None
+        self.context: Optional[Context] = context
 
-    if obj is None:
-        argument_keys = keys
-    else:
-        assert len(keys) >= 1
-        update_arguments.append(obj)  # keys[0] is class instance. maybe 'self'
-        argument_keys = keys[1:]
+        self._assign_body = False
 
-    for key in argument_keys:
-        param = sig.parameters[key]
-        type_origin = get_origin(param.annotation)
+    async def verify_permissions(self):
+        if not self.permissions:
+            return  # No permissions required.
+
+        if self.domain == Domain.Unknown:
+            raise RuntimeError("Unknown domain")
+
+        if not self.context:
+            raise RuntimeError("The context does not exist")
+        if c.session not in self.request:
+            raise HTTPUnauthorized(reason=f"Not exists session: {c.session}")
+
+        session = self.request[c.session]
+        if not isinstance(session, SessionEx):
+            raise RuntimeError(f"Unsupported session type: {type(session).__name__}")
+
+        if self.domain == Domain.Group:
+            await self.context.verify_group_permissions(
+                session,
+                self.group_name,
+                self.permissions,
+            )
+        else:
+            assert self.domain == Domain.Project
+            await self.context.verify_project_permissions(
+                session,
+                self.group_name,
+                self.project_name,
+                self.permissions,
+            )
+
+    async def call(self):
+        update_arguments = await self._get_arguments()
+        if iscoroutinefunction(self.func):
+            result = await self.func(*update_arguments)
+        else:
+            result = self.func(*update_arguments)
+
+        if self.very_verbose_debugging:
+            debugging_body = str(result)
+            if len(debugging_body) >= DEBUGGING_BODY_MSG_MAX_SIZE:
+                debugging_body = debugging_body[0:DEBUGGING_BODY_MSG_MAX_SIZE] + " ..."
+            logger.debug(f"Response BODY: {debugging_body}")
+
+        if result is None:
+            return Response()
+        elif isinstance(result, Response):
+            return result
+        elif isinstance(result, HttpResponse):
+            return Response(
+                body=result.data,
+                status=result.status if result.status else _INTERNAL_SERVER_ERROR,
+                reason=result.reason,
+                headers=result.headers,
+            )
+        elif _is_serializable_instance(result):
+            return create_response(self.accept, self.encoding, result)
+        elif isclass(type(result)):
+            return create_response(
+                self.accept, self.encoding, serialize_default(result)
+            )
+
+        raise NotImplementedError
+
+    async def _get_arguments(self) -> List[Any]:
+        result: List[Any] = list()
+        keys = list(self.signature.parameters.keys())
+        if self.obj is None:
+            argument_keys = keys
+        else:
+            assert len(keys) >= 1
+            result.append(self.obj)  # [0] is class instance. maybe 'self'
+            argument_keys = keys[1:]
+
+        for key in argument_keys:
+            result.append(await self._get_argument(key))
+
+        return result
+
+    async def _get_argument(self, key: str) -> Any:
+        param = self.signature.parameters[key]
+
+        type_origin = _get_type_origin(param)
         type_args = get_args(param.annotation)
-        if type_origin is None:
-            if isinstance(param.annotation, type):
-                type_origin = param.annotation
-            elif isinstance(param.annotation, str):
-                if param.annotation == "str":
-                    type_origin = str
-                elif param.annotation == "int":
-                    type_origin = int
-                elif param.annotation == "float":
-                    type_origin = float
-                elif param.annotation == "bytes":
-                    type_origin = bytes
-                elif param.annotation == "list":
-                    type_origin = list
-                elif param.annotation == "set":
-                    type_origin = set
-                elif param.annotation == "dict":
-                    type_origin = dict
-                else:
-                    msg = f"Unknown annotation string: {param.annotation}"
-                    raise NotImplementedError(msg)
-            else:
-                msg = f"Unknown annotation type: {type(param.annotation).__name__}"
-                raise NotImplementedError(msg)
 
         assert type_origin is not None
         assert isinstance(type_origin, type) or type_origin is Union
@@ -185,178 +293,100 @@ async def _parameter_matcher_main(
 
         # BasicAuth
         if is_subclass_safe(type_origin, BasicAuth):
-            if AUTHORIZATION not in request.headers:
+            if AUTHORIZATION not in self.request.headers:
                 raise HTTPBadRequest(reason=f"Not exists {AUTHORIZATION} header")
             try:
-                authorization = request.headers[AUTHORIZATION]
-                basic = BasicAuth.decode_from_authorization_header(authorization)
+                authorization = self.request.headers[AUTHORIZATION]
+                return BasicAuth.decode_from_authorization_header(authorization)
             except ValueError as e:
                 raise HTTPBadRequest(reason=str(e))
-            update_arguments.append(basic)
-            continue
 
         # BearerAuth
         if is_subclass_safe(type_origin, BearerAuth):
-            if AUTHORIZATION not in request.headers:
+            if AUTHORIZATION not in self.request.headers:
                 raise HTTPBadRequest(reason=f"Not exists {AUTHORIZATION} header")
             try:
-                authorization = request.headers[AUTHORIZATION]
-                bearer = BearerAuth.decode_from_authorization_header(authorization)
+                authorization = self.request.headers[AUTHORIZATION]
+                return BearerAuth.decode_from_authorization_header(authorization)
             except ValueError as e:
                 raise HTTPBadRequest(reason=str(e))
-            update_arguments.append(bearer)
-            continue
 
         # Request
         if is_subclass_safe(type_origin, Request):
-            update_arguments.append(request)
-            continue
+            return self.request
 
         # HttpRequest
         if is_subclass_safe(type_origin, HttpRequest):
-            update_arguments.append(
-                HttpRequest(
-                    method=request.method,
-                    path=request.path,
-                    data=await request.read(),
-                    headers=request.headers,
-                )
+            return HttpRequest(
+                method=self.request.method,
+                path=self.request.path,
+                data=await self.request.read(),
+                headers=self.request.headers,
             )
-            continue
 
         # Session
         if is_subclass_safe(type_origin, Session):
-            if c.session not in request:
+            if c.session in self.request:
+                return self.request[c.session]
+            else:
                 raise HTTPUnauthorized(reason=f"Not exists {c.session}")
-            update_arguments.append(request[c.session])
-            continue
 
         # SessionEx
         if is_subclass_safe(type_origin, SessionEx):
-            if c.session not in request:
+            if c.session in self.request:
+                return self.request[c.session]
+            else:
                 raise HTTPUnauthorized(reason=f"Not exists {c.session}")
-            update_arguments.append(request[c.session])
-            continue
 
         # Path
-        if (
-            is_path_class(type_origin)
-            and match_count >= 1
-            and key in request.match_info
-        ):
-            path_value = request.match_info[key]
-
-            if key == p.group:
-                group_name = path_value
-            elif key == p.project:
-                project_name = path_value
-
+        if is_path_class(type_origin) and key in self.request.match_info:
+            path_value = self.request.match_info[key]
             try:
                 path_arg = cast_builtin_type_from_string(path_value, type_origin)
-                update_arguments.append(path_arg)
+                return path_arg
             except ValueError:
                 logger.debug(f"Type casting error for path parameter: {key}")
-                update_arguments.append(path_value)
-
-            match_count -= 1
-            continue
+                return path_value
 
         # Query
         if optional_parameter is not None:
-            if key in request.rel_url.query:
-                query_value = request.rel_url.query[key]
+            if key in self.request.rel_url.query:
+                query_value = self.request.rel_url.query[key]
                 try:
                     query_arg = cast_builtin_type_from_string(
                         query_value, optional_parameter
                     )
-                    update_arguments.append(query_arg)
+                    return query_arg
                 except ValueError:
                     logger.debug(f"Type casting error for query parameter: {key}")
-                    update_arguments.append(query_value)
+                    return query_value
             else:
-                update_arguments.append(None)
-            continue
+                return None
 
         # Body
-        if not assign_body:
+        if not self._assign_body:
             if _is_serializable_class(type_origin):
-                body = payload_to_object(request.headers, await request.text())
-                assign_body = True
+                body = payload_to_object(
+                    self.request.headers,
+                    await self.request.text(),
+                )
+                self._assign_body = True
             elif isclass(type_origin):
-                body = await request_payload_to_class(request, type_origin)  # noqa
-                assign_body = True
+                body = await request_payload_to_class(self.request, type_origin)  # noqa
+                self._assign_body = True
             else:
                 body = None
 
-            if assign_body:
+            if self._assign_body:
                 assert body is not None
-                if very_verbose_debugging:
+                if self.very_verbose_debugging:
                     logger.debug(f"Request BODY: {str(body)}")
-                update_arguments.append(body)
-                continue
+                return body
 
-        update_arguments.append(None)
-
-    if acl.exists():
-        if not context:
-            raise RuntimeError("The context does not exist")
-        if c.session not in request:
-            raise HTTPUnauthorized(reason=f"Not exists session: {c.session}")
-
-        session = request[c.session]
-        assert isinstance(session, SessionEx)
-
-        if not session.is_admin:
-            if acl.admin:
-                raise PermissionError("You do not have administrator privileges")
-            if acl.groups and acl.projects:
-                raise RuntimeError(ERROR_MESSAGE_ONLY_SINGLE_POLICIES)
-            if acl.groups:
-                await acl.test_groups(context, session, group_name)
-            else:
-                assert acl.projects
-                await acl.test_projects(context, session, group_name, project_name)
-
-    if iscoroutinefunction(func):
-        result = await func(*update_arguments)
-    else:
-        result = func(*update_arguments)
-
-    if very_verbose_debugging:
-        debugging_body = str(result)
-        if len(debugging_body) >= DEBUGGING_BODY_MSG_MAX_SIZE:
-            debugging_body = debugging_body[0:DEBUGGING_BODY_MSG_MAX_SIZE] + " ..."
-        logger.debug(f"Response BODY: {debugging_body}")
-
-    if result is None:
-        return Response()
-    elif isinstance(result, Response):
-        return result
-    elif isinstance(result, HttpResponse):
-        return Response(
-            body=result.data,
-            status=result.status if result.status else HTTPStatus.INTERNAL_SERVER_ERROR,
-            reason=result.reason,
-            headers=result.headers,
-        )
-    elif _is_serializable_instance(result):
-        return create_response(accept, encoding, result)
-    elif isclass(type(result)):
-        return create_response(accept, encoding, serialize_default(result))
-
-    raise NotImplementedError
+        return None
 
 
-async def parameter_matcher_main(
-    func,
-    obj: Any,
-    request: Request,
-    *,
-    group_policies: Optional[List[Policy]] = None,
-    project_policies: Optional[List[Policy]] = None,
-    has_features: Optional[List[str]] = None,
-    has_admin=False,
-) -> Response:
+async def parameter_matcher_main(func, obj: Any, request: Request) -> Response:
     now = today()
 
     # Forwarded
@@ -370,14 +400,9 @@ async def parameter_matcher_main(
     request_info = f"{remote} {method} {path} HTTP/{version[0]}.{version[1]}"
 
     try:
-        acl = AccessControlList(
-            func,
-            group_policies,
-            project_policies,
-            has_features,
-            has_admin,
-        )
-        result = await _parameter_matcher_main(func, obj, request, acl)
+        matcher = HttpParameterMatcher(func, obj, request)
+        await matcher.verify_permissions()
+        result = await matcher.call()
     except HTTPException as e:
         logger.error(e)
         result = Response(
@@ -405,29 +430,9 @@ async def parameter_matcher_main(
     return result
 
 
-def parameter_matcher(
-    *,
-    group_policies: Optional[List[Policy]] = None,
-    project_policies: Optional[List[Policy]] = None,
-    has_features: Optional[List[str]] = None,
-    has_admin=False,
-):
-    if group_policies and project_policies:
-        raise RuntimeError(ERROR_MESSAGE_ONLY_SINGLE_POLICIES)
-
-    def _wrap(func):
-        @wraps(func)
-        async def __wrap(obj, request):
-            return await parameter_matcher_main(
-                func,
-                obj,
-                request,
-                group_policies=group_policies,
-                project_policies=project_policies,
-                has_features=has_features,
-                has_admin=has_admin,
-            )
-
-        return __wrap
+def parameter_matcher(func):
+    @wraps(func)
+    async def _wrap(obj, request):
+        return await parameter_matcher_main(func, obj, request)
 
     return _wrap

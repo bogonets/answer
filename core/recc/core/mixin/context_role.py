@@ -3,8 +3,7 @@
 from typing import List, Optional, Any, Union
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.role import Role
-from recc.packet.role import RawRole
-from recc.packet.cvt.role import role_to_raw
+from recc.database.struct.permission import Permission
 from recc.session.session_ex import SessionEx
 
 
@@ -14,20 +13,7 @@ class ContextRole(ContextBase):
         slug: str,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
-        r_layout=False,
-        w_layout=False,
-        r_storage=False,
-        w_storage=False,
-        r_manager=False,
-        w_manager=False,
-        r_graph=False,
-        w_graph=False,
-        r_member=False,
-        w_member=False,
-        r_setting=False,
-        w_setting=False,
         hidden=False,
         lock=False,
     ) -> int:
@@ -35,20 +21,7 @@ class ContextRole(ContextBase):
             slug=slug,
             name=name,
             description=description,
-            features=features,
             extra=extra,
-            r_layout=r_layout,
-            w_layout=w_layout,
-            r_storage=r_storage,
-            w_storage=w_storage,
-            r_manager=r_manager,
-            w_manager=w_manager,
-            r_graph=r_graph,
-            w_graph=w_graph,
-            r_member=r_member,
-            w_member=w_member,
-            r_setting=r_setting,
-            w_setting=w_setting,
             hidden=hidden,
             lock=lock,
         )
@@ -61,20 +34,7 @@ class ContextRole(ContextBase):
         slug: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
-        r_layout: Optional[bool] = None,
-        w_layout: Optional[bool] = None,
-        r_storage: Optional[bool] = None,
-        w_storage: Optional[bool] = None,
-        r_manager: Optional[bool] = None,
-        w_manager: Optional[bool] = None,
-        r_graph: Optional[bool] = None,
-        w_graph: Optional[bool] = None,
-        r_member: Optional[bool] = None,
-        w_member: Optional[bool] = None,
-        r_setting: Optional[bool] = None,
-        w_setting: Optional[bool] = None,
         hidden: Optional[bool] = None,
     ) -> bool:
         """
@@ -90,47 +50,8 @@ class ContextRole(ContextBase):
         if description is not None:
             if role.description != description:
                 return False
-        if features is not None:
-            if role.features != features:
-                return False
         if extra is not None:
             if role.extra != extra:
-                return False
-        if r_layout is not None:
-            if role.r_layout != r_layout:
-                return False
-        if w_layout is not None:
-            if role.w_layout != w_layout:
-                return False
-        if r_storage is not None:
-            if role.r_storage != r_storage:
-                return False
-        if w_storage is not None:
-            if role.w_storage != w_storage:
-                return False
-        if r_manager is not None:
-            if role.r_manager != r_manager:
-                return False
-        if w_manager is not None:
-            if role.w_manager != w_manager:
-                return False
-        if r_graph is not None:
-            if role.r_graph != r_graph:
-                return False
-        if w_graph is not None:
-            if role.w_graph != w_graph:
-                return False
-        if r_member is not None:
-            if role.r_member != r_member:
-                return False
-        if w_member is not None:
-            if role.w_member != w_member:
-                return False
-        if r_setting is not None:
-            if role.r_setting != r_setting:
-                return False
-        if w_setting is not None:
-            if role.w_setting != w_setting:
                 return False
         if hidden is not None:
             if role.hidden != hidden:
@@ -143,20 +64,7 @@ class ContextRole(ContextBase):
         slug: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        features: Optional[List[str]] = None,
         extra: Optional[Any] = None,
-        r_layout: Optional[bool] = None,
-        w_layout: Optional[bool] = None,
-        r_storage: Optional[bool] = None,
-        w_storage: Optional[bool] = None,
-        r_manager: Optional[bool] = None,
-        w_manager: Optional[bool] = None,
-        r_graph: Optional[bool] = None,
-        w_graph: Optional[bool] = None,
-        r_member: Optional[bool] = None,
-        w_member: Optional[bool] = None,
-        r_setting: Optional[bool] = None,
-        w_setting: Optional[bool] = None,
         hidden: Optional[bool] = None,
         lock: Optional[bool] = None,
         force=False,
@@ -165,25 +73,7 @@ class ContextRole(ContextBase):
             role = await self.database.select_role_by_uid(uid)
             if role.lock:
                 role_equals = self._is_role_equals_for_update(
-                    role,
-                    slug,
-                    name,
-                    description,
-                    features,
-                    extra,
-                    r_layout,
-                    w_layout,
-                    r_storage,
-                    w_storage,
-                    r_manager,
-                    w_manager,
-                    r_graph,
-                    w_graph,
-                    r_member,
-                    w_member,
-                    r_setting,
-                    w_setting,
-                    hidden,
+                    role, slug, name, description, extra, hidden
                 )
                 if not role_equals:
                     raise RuntimeError(f"Locked role: {uid}")
@@ -193,20 +83,7 @@ class ContextRole(ContextBase):
             slug=slug,
             name=name,
             description=description,
-            features=features,
             extra=extra,
-            r_layout=r_layout,
-            w_layout=w_layout,
-            r_storage=r_storage,
-            w_storage=w_storage,
-            r_manager=r_manager,
-            w_manager=w_manager,
-            r_graph=r_graph,
-            w_graph=w_graph,
-            r_member=r_member,
-            w_member=w_member,
-            r_setting=r_setting,
-            w_setting=w_setting,
             hidden=hidden,
             lock=lock,
         )
@@ -245,47 +122,79 @@ class ContextRole(ContextBase):
         except:  # noqa
             return await self.get_group_role(user_uid, group_uid)
 
-    async def get_group_raw_role(
+    async def get_group_permission(
         self, session: SessionEx, group: Union[str, int]
-    ) -> RawRole:
-        try:
-            if isinstance(group, int):
-                group_uid = group
-            elif isinstance(group, str):
-                group_uid = await self.get_group_uid(group)
-            else:
-                group_uid = await self.get_group_uid(str(group))
+    ) -> List[Permission]:
+        if session.is_admin:
+            return await self.database.select_permission_all()
 
-            role = await self.get_group_role(session.uid, group_uid)
-            return role_to_raw(role, session.is_admin)
-        except:  # noqa
-            if session.is_admin:
-                return RawRole.all_true()
-            else:
-                return RawRole.all_false()
+        if isinstance(group, int):
+            group_uid = group
+        elif isinstance(group, str):
+            group_uid = await self.get_group_uid(group)
+        else:
+            group_uid = await self.get_group_uid(str(group))
 
-    async def get_project_raw_role(
+        return await self.database.select_permission_by_user_and_group(
+            session.uid, group_uid
+        )
+
+    async def get_project_permission(
         self, session: SessionEx, group: Union[str, int], project: Union[str, int]
-    ) -> RawRole:
-        try:
-            if isinstance(group, int):
-                group_uid = group
-            elif isinstance(group, str):
-                group_uid = await self.get_group_uid(group)
-            else:
-                group_uid = await self.get_group_uid(str(group))
+    ) -> List[Permission]:
+        if session.is_admin:
+            return await self.database.select_permission_all()
 
-            if isinstance(project, int):
-                project_uid = project
-            elif isinstance(project, str):
-                project_uid = await self.get_project_uid(group_uid, project)
-            else:
-                project_uid = await self.get_project_uid(group_uid, str(project))
+        if isinstance(group, int):
+            group_uid = group
+        elif isinstance(group, str):
+            group_uid = await self.get_group_uid(group)
+        else:
+            group_uid = await self.get_group_uid(str(group))
 
-            role = await self.get_best_role(session.uid, group_uid, project_uid)
-            return role_to_raw(role, session.is_admin)
-        except:  # noqa
-            if session.is_admin:
-                return RawRole.all_true()
+        if isinstance(project, int):
+            project_uid = project
+        elif isinstance(project, str):
+            project_uid = await self.get_project_uid(group_uid, project)
+        else:
+            project_uid = await self.get_project_uid(group_uid, str(project))
+
+        return await self.database.select_permission_by_user_and_group(
+            session.uid, project_uid
+        )
+
+    @staticmethod
+    def _verify_permissions(
+        required_permissions: List[Union[int, str]],
+        have_permissions: List[Permission],
+    ) -> None:
+        uid_perms = set(map(lambda x: x.uid, have_permissions))
+        slug_perms = set(map(lambda x: x.slug, have_permissions))
+
+        for perm in required_permissions:
+            if isinstance(perm, int):
+                if perm not in uid_perms:
+                    raise PermissionError(f"Permission denied: Not have {perm}")
             else:
-                return RawRole.all_false()
+                assert isinstance(perm, str)
+                if perm not in slug_perms:
+                    raise PermissionError(f'Permission denied: Not have "{perm}"')
+
+    async def verify_group_permissions(
+        self,
+        session: SessionEx,
+        group: Union[str, int],
+        required_permissions: List[Union[int, str]],
+    ) -> None:
+        have_permissions = await self.get_group_permission(session, group)
+        self._verify_permissions(required_permissions, have_permissions)
+
+    async def verify_project_permissions(
+        self,
+        session: SessionEx,
+        group: Union[str, int],
+        project: Union[str, int],
+        required_permissions: List[Union[int, str]],
+    ) -> None:
+        have_permissions = await self.get_project_permission(session, group, project)
+        self._verify_permissions(required_permissions, have_permissions)

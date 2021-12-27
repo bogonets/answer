@@ -2,10 +2,6 @@
 
 from recc.variables.database import TABLE_GROUP, TABLE_GROUP_MEMBER, TABLE_PROJECT
 
-##########
-# INSERT #
-##########
-
 INSERT_GROUP_MEMBER = f"""
 INSERT INTO {TABLE_GROUP_MEMBER} (
     group_uid,
@@ -16,28 +12,16 @@ INSERT INTO {TABLE_GROUP_MEMBER} (
 );
 """
 
-##########
-# UPDATE #
-##########
-
 UPDATE_GROUP_MEMBER_ROLE = f"""
 UPDATE {TABLE_GROUP_MEMBER}
 SET role_uid=$3
 WHERE group_uid=$1 AND user_uid=$2;
 """
 
-##########
-# DELETE #
-##########
-
 DELETE_GROUP_MEMBER = f"""
 DELETE FROM {TABLE_GROUP_MEMBER}
 WHERE group_uid=$1 AND user_uid=$2;
 """
-
-##########
-# SELECT #
-##########
 
 SELECT_GROUP_MEMBER_BY_GROUP_UID_AND_USER_UID = f"""
 SELECT role_uid

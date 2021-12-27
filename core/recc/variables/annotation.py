@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 
-ANNOTATION_GROUP_ROLES = "__recc_group_roles__"
-ANNOTATION_PROJECT_ROLES = "__recc_project_roles__"
-ANNOTATION_FEATURE_ROLES = "__recc_feature_roles__"
-ANNOTATION_ADMIN_ROLES = "__recc_admin_roles__"
+from enum import Enum
+
+ANNOTATION_PERMISSIONS = "__recc_permissions__"
+ANNOTATION_DOMAIN = "__recc_domain__"
+
+
+class Domain(Enum):
+    Unknown = 0
+    Group = 1
+    Project = 2

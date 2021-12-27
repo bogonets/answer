@@ -116,18 +116,18 @@ class RouterV2Admin:
     # Configs
     # -------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_configs(self) -> List[ConfigA]:
         return self.context.get_configs(dev_mode=False)
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_configs_pkey(self, key: str) -> ConfigA:
         try:
             return self.context.get_config(key, dev_mode=False)
         except KeyError as e:
             raise HTTPBadRequest(reason=str(e))
 
-    @parameter_matcher()
+    @parameter_matcher
     async def patch_configs_pkey(self, key: str, body: UpdateConfigValueQ) -> None:
         try:
             await self.context.set_config(key, body.value, dev_mode=False)
@@ -138,7 +138,7 @@ class RouterV2Admin:
     # System
     # ------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_system_overview(self) -> SystemOverviewA:
         return await self.context.get_system_overview()
 
@@ -146,7 +146,7 @@ class RouterV2Admin:
     # Plugin
     # ------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_plugin_names(self) -> List[PluginNameA]:
         return list(map(lambda x: PluginNameA(x), self.context.get_plugin_keys()))
 
@@ -154,7 +154,7 @@ class RouterV2Admin:
     # Templates
     # ---------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_templates(self) -> List[TemplateA]:
         return self.context.get_template_keys()
 
@@ -162,7 +162,7 @@ class RouterV2Admin:
     # Users
     # -----
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_users(self) -> List[UserA]:
         result = list()
         for user in await self.context.get_users():
@@ -182,7 +182,7 @@ class RouterV2Admin:
             result.append(item)
         return result
 
-    @parameter_matcher()
+    @parameter_matcher
     async def post_users(self, body: SignupQ) -> None:
         if not body.username:
             raise HTTPBadRequest(reason="Not exists `username` field")
@@ -203,7 +203,7 @@ class RouterV2Admin:
             extra=body.extra,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_users_puser(self, user: str) -> UserA:
         user_uid = await self.context.get_user_uid(user)
         db_user = await self.context.get_user(user_uid)
@@ -221,7 +221,7 @@ class RouterV2Admin:
             last_login=db_user.last_login,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def patch_users_puser(self, user: str, body: UpdateUserQ) -> None:
         body.strip()
         body.empty_is_none()
@@ -236,7 +236,7 @@ class RouterV2Admin:
             extra=body.extra,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def delete_users_puser(self, user: str) -> None:
         await self.context.remove_user(user)
 
@@ -258,14 +258,14 @@ class RouterV2Admin:
             updated_at=group.updated_at,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_groups(self) -> List[GroupA]:
         result = list()
         for group in await self.context.get_groups():
             result.append(self._group_to_answer(group))
         return result
 
-    @parameter_matcher()
+    @parameter_matcher
     async def post_groups(self, session: SessionEx, body: CreateGroupQ) -> None:
         if not body.slug:
             raise HTTPBadRequest(reason="Not exists `slug` field")
@@ -278,13 +278,13 @@ class RouterV2Admin:
             owner_uid=session.uid,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_groups_pgroup(self, group: str) -> GroupA:
         group_uid = await self.context.get_group_uid(group)
         db_group = await self.context.get_group(group_uid)
         return self._group_to_answer(db_group)
 
-    @parameter_matcher()
+    @parameter_matcher
     async def patch_groups_pgroup(self, group: str, body: UpdateGroupQ) -> None:
         group_uid = await self.context.get_group_uid(group)
         await self.context.update_group(
@@ -296,7 +296,7 @@ class RouterV2Admin:
             extra=body.extra,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def delete_groups_pgroup(self, group: str) -> None:
         group_uid = await self.context.get_group_uid(group)
         await self.context.delete_group(group_uid)
@@ -305,7 +305,7 @@ class RouterV2Admin:
     # Projects
     # --------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_projects(self) -> List[ProjectA]:
         result = list()
         for project in await self.context.get_projects():
@@ -316,7 +316,7 @@ class RouterV2Admin:
             result.append(project_to_answer(project, group_slug))
         return result
 
-    @parameter_matcher()
+    @parameter_matcher
     async def post_projects(self, session: SessionEx, body: CreateProjectQ) -> None:
         group_uid = await self.context.get_group_uid(body.group_slug)
         await self.context.create_project(
@@ -330,7 +330,7 @@ class RouterV2Admin:
             owner_uid=session.uid,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_projects_pgroup_pproject(self, group: str, project: str) -> ProjectA:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
@@ -339,7 +339,7 @@ class RouterV2Admin:
         assert project == db_project.slug
         return project_to_answer(db_project, group)
 
-    @parameter_matcher()
+    @parameter_matcher
     async def patch_projects_pgroup_pproject(
         self, group: str, project: str, body: UpdateProjectQ
     ) -> None:
@@ -354,7 +354,7 @@ class RouterV2Admin:
             extra=body.extra,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def delete_projects_pgroup_pproject(self, group: str, project: str) -> None:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
@@ -364,11 +364,11 @@ class RouterV2Admin:
     # Roles
     # -----
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_roles(self) -> List[RoleA]:
         return [role_to_answer(role) for role in await self.context.get_roles()]
 
-    @parameter_matcher()
+    @parameter_matcher
     async def post_roles(self, body: CreateRoleQ) -> None:
         if not body.slug:
             raise HTTPBadRequest(reason="Not exists `slug` field")
@@ -377,30 +377,17 @@ class RouterV2Admin:
             slug=body.slug,
             name=body.name,
             description=body.description,
-            features=body.features,
             extra=body.extra,
-            r_layout=body.r_layout,
-            w_layout=body.w_layout,
-            r_storage=body.r_storage,
-            w_storage=body.w_storage,
-            r_manager=body.r_manager,
-            w_manager=body.w_manager,
-            r_graph=body.r_graph,
-            w_graph=body.w_graph,
-            r_member=body.r_member,
-            w_member=body.w_member,
-            r_setting=body.r_setting,
-            w_setting=body.w_setting,
             hidden=body.hidden,
             lock=body.lock,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_roles_prole(self, role: str) -> RoleA:
         uid = await self.context.get_role_uid(role)
         return role_to_answer(await self.context.get_role(uid))
 
-    @parameter_matcher()
+    @parameter_matcher
     async def patch_roles_prole(self, role: str, body: UpdateRoleQ) -> None:
         uid = await self.context.get_role_uid(role)
         await self.context.update_role(
@@ -408,25 +395,12 @@ class RouterV2Admin:
             slug=body.slug,
             name=body.name,
             description=body.description,
-            features=body.features,
             extra=body.extra,
-            r_layout=body.r_layout,
-            w_layout=body.w_layout,
-            r_storage=body.r_storage,
-            w_storage=body.w_storage,
-            r_manager=body.r_manager,
-            w_manager=body.w_manager,
-            r_graph=body.r_graph,
-            w_graph=body.w_graph,
-            r_member=body.r_member,
-            w_member=body.w_member,
-            r_setting=body.r_setting,
-            w_setting=body.w_setting,
             hidden=body.hidden,
             lock=body.lock,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def delete_roles_prole(self, role: str) -> None:
         uid = await self.context.get_role_uid(role)
         await self.context.delete_role(uid)
@@ -435,14 +409,14 @@ class RouterV2Admin:
     # Containers
     # ----------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_containers(self) -> List[ContainerA]:
         result = list()
         for container in await self.context.get_containers():
             result.append(container_to_answer(container))
         return result
 
-    @parameter_matcher()
+    @parameter_matcher
     async def patch_containers(self, body: ControlContainersQ) -> None:
         operator = ContainerOperator.from_str(body.operator)
         if operator == ContainerOperator.Start:
@@ -471,7 +445,7 @@ class RouterV2Admin:
         else:
             assert False, "Not accessible section"
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_containers_pcontainer(self, container: str) -> ContainerA:
         return container_to_answer(await self.context.get_container(container))
 
@@ -479,11 +453,11 @@ class RouterV2Admin:
     # Daemon
     # ------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_daemon_plugins(self) -> List[str]:
         return self.context.get_daemon_plugins()
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_daemons(self) -> List[DaemonA]:
         result = list()
         daemons = await self.context.get_daemons()
@@ -496,7 +470,7 @@ class RouterV2Admin:
             result.append(answer)
         return result
 
-    @parameter_matcher()
+    @parameter_matcher
     async def post_daemons(self, body: CreateDaemonQ) -> None:
         await self.context.create_daemon(
             plugin=body.plugin,
@@ -509,7 +483,7 @@ class RouterV2Admin:
             enable=body.enable,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_daemons_pdaemon(self, daemon: str) -> DaemonA:
         db_daemon = await self.context.get_daemon_by_slug(daemon)
         if not db_daemon.slug:
@@ -519,7 +493,7 @@ class RouterV2Admin:
         answer.exit_code = None
         return answer
 
-    @parameter_matcher()
+    @parameter_matcher
     async def patch_daemons_pdaemon(self, daemon: str, body: UpdateDaemonQ) -> None:
         uid = await self.context.get_daemon_uid_by_slug(daemon)
         await self.context.update_daemon(
@@ -534,14 +508,14 @@ class RouterV2Admin:
             enable=body.enable,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def delete_daemons_pdaemon(self, daemon: str) -> None:
         await self.context.delete_daemon_by_slug(daemon)
 
-    @parameter_matcher()
+    @parameter_matcher
     async def post_daemons_pdaemon_start(self, daemon: str) -> None:
         await self.context.start_daemon(daemon)
 
-    @parameter_matcher()
+    @parameter_matcher
     async def post_daemons_pdaemon_stop(self, daemon: str) -> None:
         await self.context.stop_daemon(daemon)

@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from recc.variables.database import TABLE_PERMISSION, DEFAULT_PERMISSION_SLUGS
+from recc.variables.database import (
+    TABLE_PERMISSION,
+    TABLE_ROLE_PERMISSION,
+    TABLE_GROUP_MEMBER,
+    TABLE_PROJECT_MEMBER,
+    DEFAULT_PERMISSION_SLUGS,
+)
 
 INSERT_PERMISSION = f"""
 INSERT INTO {TABLE_PERMISSION} (
@@ -48,6 +54,36 @@ WHERE uid=$1;
 SELECT_PERMISSION_ALL = f"""
 SELECT *
 FROM {TABLE_PERMISSION};
+"""
+
+SELECT_PERMISSION_BY_USER_AND_GROUP = f"""
+WITH gm AS (
+    SELECT role_uid
+    FROM {TABLE_GROUP_MEMBER}
+    WHERE user_uid=$1 AND group_uid=$2
+), rp1 AS (
+    SELECT permission_uid
+    FROM {TABLE_ROLE_PERMISSION} rp2, gm
+    WHERE rp2.role_uid=gm.role_uid
+)
+SELECT *
+FROM {TABLE_PERMISSION} p, rp1
+WHERE p.uid=rp1.permission_uid
+"""
+
+SELECT_PERMISSION_BY_USER_AND_PROJECT = f"""
+WITH pm AS (
+    SELECT role_uid
+    FROM {TABLE_PROJECT_MEMBER}
+    WHERE user_uid=$1 AND project_uid=$2
+), rp1 AS (
+    SELECT permission_uid
+    FROM {TABLE_ROLE_PERMISSION} rp2, pm
+    WHERE rp2.role_uid=pm.role_uid
+)
+SELECT *
+FROM {TABLE_PERMISSION} p, rp1
+WHERE p.uid=rp1.permission_uid
 """
 
 _INSERT_PERMISSION_ONLY_SLUG_FORMAT = f"""

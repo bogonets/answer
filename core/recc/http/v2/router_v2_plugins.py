@@ -69,11 +69,11 @@ class RouterV2Plugins:
     # Handlers
     # --------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_root(self) -> List[str]:
         return self.context.get_plugin_keys()
 
-    @parameter_matcher()
+    @parameter_matcher
     async def any_pplugin_ptail(self, plugin: str, tail: str, request: Request) -> Any:
         module = self.context.plugins.get(plugin, None)
         if module is None:

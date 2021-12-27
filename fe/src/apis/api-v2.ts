@@ -75,7 +75,8 @@ import type {TemplateA} from '@/packet/template';
 import type {DaemonA, CreateDaemonQ, UpdateDaemonQ} from '@/packet/daemon';
 import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
 import type {SystemOverviewA, VersionsA} from '@/packet/system';
-import type {RawRole, RoleA, CreateRoleQ, UpdateRoleQ} from '@/packet/role';
+import type {RoleA, CreateRoleQ, UpdateRoleQ} from '@/packet/role';
+import type {PermissionA} from '@/packet/permission';
 import type {
     ProjectA,
     CreateProjectQ,
@@ -448,12 +449,12 @@ export default class ApiV2 {
         return this.patch('/self/password', body);
     }
 
-    getSelfRawRolePgroup(group: string) {
-        return this.get<RawRole>(`/self/raw/role/${group}`);
+    getSelfPermissionsPgroup(group: string) {
+        return this.get<Array<PermissionA>>(`/self/permissions/${group}`);
     }
 
-    getSelfRawRolePgroupPproject(group: string, project: string) {
-        return this.get<RawRole>(`/self/raw/role/${group}/${project}`);
+    getSelfPermissionsPgroupPproject(group: string, project: string) {
+        return this.get<Array<PermissionA>>(`/self/permissions/${group}/${project}`);
     }
 
     // -----------

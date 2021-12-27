@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
 
 
-class RbacKeyError(Exception):
+class RbacError(Exception):
     def __init__(self, *args):
         super().__init__(*args)
 
 
-class RbacMismatchContextError(Exception):
+class RbacKeyError(RbacError):
     def __init__(self, *args):
         super().__init__(*args)
 
 
-class RbacPermissionError(Exception):
+class RbacMismatchContextError(RbacError):
+    def __init__(self, *args):
+        super().__init__(*args)
+
+
+class RbacPermissionError(RbacError):
     def __init__(self, *args):
         super().__init__(*args)

@@ -44,3 +44,15 @@ class DbPermission(metaclass=ABCMeta):
     @abstractmethod
     async def select_permission_all(self) -> List[Permission]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def select_permission_by_user_and_group(
+        self, user_uid: int, group_uid: int
+    ) -> List[Permission]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def select_permission_by_user_and_project(
+        self, user_uid: int, project_uid: int
+    ) -> List[Permission]:
+        raise NotImplementedError

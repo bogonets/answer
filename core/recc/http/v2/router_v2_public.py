@@ -52,19 +52,19 @@ class RouterV2Public:
     # Handlers
     # --------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_heartbeat(self) -> None:
         pass
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_version(self) -> str:
         return version_text
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_state_already(self) -> bool:
         return await self.context.is_initialized_database()
 
-    @parameter_matcher()
+    @parameter_matcher
     async def post_signup(self, body: SignupQ) -> None:
         if not self.context.config.public_signup:
             raise HTTPServiceUnavailable(reason="You cannot signup without permission")
@@ -77,13 +77,13 @@ class RouterV2Public:
             phone2=body.phone2,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def post_signup_admin(self, signup: SignupQ) -> None:
         if await self.context.is_initialized_database():
             raise HTTPServiceUnavailable(reason="An admin account already exists")
         await self.context.signup_admin(signup.username, signup.password)
 
-    @parameter_matcher()
+    @parameter_matcher
     async def post_signin(self, auth: BasicAuth) -> SigninA:
         username = auth.user_id
         password = auth.password
@@ -121,7 +121,7 @@ class RouterV2Public:
     # Token
     # -----
 
-    @parameter_matcher()
+    @parameter_matcher
     async def post_token_refresh(self, bearer: BearerAuth) -> RefreshTokenA:
         refresh_token = bearer.token
         token = await self.context.renew_access_token(refresh_token)

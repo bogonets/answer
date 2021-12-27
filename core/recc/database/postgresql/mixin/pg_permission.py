@@ -16,6 +16,8 @@ from recc.database.postgresql.query.permission import (
     SELECT_PERMISSION_BY_SLUG,
     SELECT_PERMISSION_BY_UID,
     SELECT_PERMISSION_ALL,
+    SELECT_PERMISSION_BY_USER_AND_GROUP,
+    SELECT_PERMISSION_BY_USER_AND_PROJECT,
 )
 
 
@@ -93,4 +95,26 @@ class PgPermission(DbPermission, PgBase):
                     result.append(Permission(**dict(row)))
         result_msg = f"{len(result)} permissions"
         logger.info(f"select_permission_all() -> {result_msg}")
+        return result
+
+    @overrides
+    async def select_permission_by_user_and_group(
+        self, user_uid: int, group_uid: int
+    ) -> List[Permission]:
+        query = SELECT_PERMISSION_BY_USER_AND_GROUP
+        rows = await self.fetch(query, user_uid, group_uid)
+        result = [Permission(**dict(row)) for row in rows]
+        result_msg = f"{len(result)} permissions"
+        logger.info(f"select_permission_by_user_and_group() -> {result_msg}")
+        return result
+
+    @overrides
+    async def select_permission_by_user_and_project(
+        self, user_uid: int, project_uid: int
+    ) -> List[Permission]:
+        query = SELECT_PERMISSION_BY_USER_AND_PROJECT
+        rows = await self.fetch(query, user_uid, project_uid)
+        result = [Permission(**dict(row)) for row in rows]
+        result_msg = f"{len(result)} permissions"
+        logger.info(f"select_permission_by_user_and_project() -> {result_msg}")
         return result

@@ -72,18 +72,18 @@ class RouterV2Dev:
     # Configs
     # -------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_configs(self) -> List[ConfigA]:
         return self.context.get_configs(dev_mode=True)
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_configs_pkey(self, key: str) -> ConfigA:
         try:
             return self.context.get_config(key, dev_mode=True)
         except KeyError as e:
             raise HTTPBadRequest(reason=str(e))
 
-    @parameter_matcher()
+    @parameter_matcher
     async def patch_configs_pkey(self, key: str, body: UpdateConfigValueQ) -> None:
         try:
             await self.context.set_config(key, body.value, dev_mode=True)
@@ -94,7 +94,7 @@ class RouterV2Dev:
     # Infos
     # -----
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_infos(self) -> List[InfoA]:
         result = list()
         for info in await self.context.get_infos():
@@ -108,14 +108,14 @@ class RouterV2Dev:
             result.append(item)
         return result
 
-    @parameter_matcher()
+    @parameter_matcher
     async def post_infos(self, body: CreateInfoQ) -> None:
         try:
             await self.context.create_info(body.key, body.value)
         except KeyError as e:
             raise HTTPBadRequest(reason=str(e))
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_infos_pkey(self, key: str) -> InfoA:
         try:
             db_info = await self.context.get_info(key)
@@ -129,14 +129,14 @@ class RouterV2Dev:
             updated_at=db_info.updated_at,
         )
 
-    @parameter_matcher()
+    @parameter_matcher
     async def patch_infos_pkey(self, key: str, body: UpdateInfoQ) -> None:
         try:
             await self.context.update_info(key, body.value)
         except KeyError as e:
             raise HTTPBadRequest(reason=str(e))
 
-    @parameter_matcher()
+    @parameter_matcher
     async def delete_infos_pkey(self, key: str) -> None:
         await self.context.delete_info(key)
 
@@ -144,7 +144,7 @@ class RouterV2Dev:
     # System
     # ------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_versions(self) -> VersionsA:
         return VersionsA(python=self.context.get_python_version_info())
 
@@ -152,7 +152,7 @@ class RouterV2Dev:
     # Plugins
     # -------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_plugins(self) -> List[PluginA]:
         return self.context.get_plugins()
 
@@ -160,7 +160,7 @@ class RouterV2Dev:
     # Environments
     # ------------
 
-    @parameter_matcher()
+    @parameter_matcher
     async def get_environments(self) -> List[EnvironmentA]:
         if self.context.config.developer:
             return self.context.get_environments()

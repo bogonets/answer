@@ -34,19 +34,7 @@ VIEW_PREFIX = "recc_"
 VIEW_INFO_DB_VERSION = f"{VIEW_PREFIX}info_db_version"
 VIEW_USER_ADMIN = f"{VIEW_PREFIX}user_admin"
 VIEW_USER_ADMIN_COUNT = f"{VIEW_PREFIX}user_admin_count"
-# VIEW_USER_GROUP = f"{VIEW_PREFIX}user_group"
-# VIEW_USER_PROJECT = f"{VIEW_PREFIX}user_project"
-# VIEW_USER_TASK = f"{VIEW_PREFIX}user_task"
-# VIEW_USER_LAYOUT = f"{VIEW_PREFIX}user_layout"
-# VIEW_USER_WIDGET = f"{VIEW_PREFIX}user_widget"
-# VIEW_GROUP_PROJECT = f"{VIEW_PREFIX}group_project"
-# VIEW_GROUP_TASK = f"{VIEW_PREFIX}group_task"
-# VIEW_GROUP_LAYOUT = f"{VIEW_PREFIX}group_layout"
-# VIEW_GROUP_WIDGET = f"{VIEW_PREFIX}group_widget"
-# VIEW_PROJECT_TASK = f"{VIEW_PREFIX}project_task"
-# VIEW_PROJECT_LAYOUT = f"{VIEW_PREFIX}project_layout"
-# VIEW_PROJECT_WIDGET = f"{VIEW_PREFIX}project_widget"
-# VIEW_LAYOUT_WIDGET = f"{VIEW_PREFIX}layout_widget"
+VIEW_UNION_MEMBER = f"{VIEW_PREFIX}union_member"
 
 INFO_KEY_RECC_DB_VERSION = "recc.db.version"
 INFO_KEY_RECC_DB_INIT = "recc.db.init"
@@ -54,6 +42,9 @@ INFO_KEY_RECC_ARGPARSE_CONFIG = "recc.argparse.config"
 INFO_KEY_RECC_UUID = "recc.uuid"
 INFO_KEY_RECC_INSTALL_TIMESTAMP = "recc.install.timestamp"
 INFO_KEY_OEM = "oem"
+
+UNION_MEMBER_CATEGORY_GROUP = 0
+UNION_MEMBER_CATEGORY_PROJECT = 1
 
 CONFIG_PREFIX_RECC_ARGPARSE_CONFIG = INFO_KEY_RECC_ARGPARSE_CONFIG + "."
 
