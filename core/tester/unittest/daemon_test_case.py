@@ -2,7 +2,7 @@
 
 import os
 from tempfile import TemporaryDirectory
-from tester.unittest.async_test_case import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase
 from recc.daemon.daemon_client import create_daemon_client
 from recc.daemon.daemon_servicer import create_daemon_server
 from recc.variables.rpc import DEFAULT_DAEMON_ADDRESS
@@ -10,7 +10,7 @@ from recc.variables.storage import CORE_DAEMON_NAME
 from tester.plugins.copy_plugin import copy_plugin
 
 
-class DaemonTestCase(AsyncTestCase):
+class DaemonTestCase(IsolatedAsyncioTestCase):
     async def _setup(self):
         self.temp = TemporaryDirectory()
         self.daemon_dir = os.path.join(self.temp.name, CORE_DAEMON_NAME)
@@ -31,7 +31,7 @@ class DaemonTestCase(AsyncTestCase):
         await self.client.open()
         self.assertTrue(self.client.is_open())
 
-    async def setUp(self):
+    async def asyncSetUp(self):
         try:
             await self._setup()
         except:  # noqa
@@ -43,5 +43,5 @@ class DaemonTestCase(AsyncTestCase):
         await self.server.stop(None)
         self.assertFalse(self.client.is_open())
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self._teardown()

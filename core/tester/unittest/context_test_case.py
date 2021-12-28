@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
+from unittest import IsolatedAsyncioTestCase
+from asyncio import get_event_loop
 from tempfile import TemporaryDirectory
 from recc.argparse.default_parser import parse_arguments_to_core_config
 from recc.core.context import Context
-from tester.unittest.async_test_case import AsyncTestCase
 from tester.lamda.numpy_plugins import copy_builtin_numpy_nodes
 
 
-class ContextTestCase(AsyncTestCase):
+class ContextTestCase(IsolatedAsyncioTestCase):
     async def _setup(self):
         self.temp_dir = TemporaryDirectory()
 
@@ -15,7 +16,7 @@ class ContextTestCase(AsyncTestCase):
         config.database_name = "recc.test"
         config.storage_root = self.temp_dir.name
         config.teardown = True
-        self.context = Context(config, loop=self.loop)
+        self.context = Context(config, loop=get_event_loop())
         await self.context.open()
         self.assertTrue(self.context.is_database_open())
         self.assertTrue(self.context.is_container_open())
@@ -39,7 +40,7 @@ class ContextTestCase(AsyncTestCase):
             self.group_slug, self.project_slug, self.task_slug
         )
 
-    async def setUp(self):
+    async def asyncSetUp(self):
         try:
             await self._setup()
         except:  # noqa
@@ -71,5 +72,5 @@ class ContextTestCase(AsyncTestCase):
         await self.context.close()
         self.temp_dir.cleanup()
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self._teardown()

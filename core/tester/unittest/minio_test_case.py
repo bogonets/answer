@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from unittest import IsolatedAsyncioTestCase
 from recc.storage.service.minio.minio_storage_service import MinioStorageService
 from recc.argparse.default_parser import parse_arguments_to_core_config
-from tester.unittest.async_test_case import AsyncTestCase
 
 
-class MinioTestCase(AsyncTestCase):
+class MinioTestCase(IsolatedAsyncioTestCase):
     async def _setup(self):
         self.config = parse_arguments_to_core_config()
         self.host = self.config.storage_host
@@ -31,7 +31,7 @@ class MinioTestCase(AsyncTestCase):
         if await self.minio.exists_bucket(self.bucket):
             await self.minio.remove_bucket(self.bucket, force=True)
 
-    async def setUp(self):
+    async def asyncSetUp(self):
         try:
             await self._setup()
         except BaseException as e:  # noqa
@@ -45,5 +45,5 @@ class MinioTestCase(AsyncTestCase):
         await self.minio.close()
         self.assertFalse(self.minio.is_open())
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self._teardown()

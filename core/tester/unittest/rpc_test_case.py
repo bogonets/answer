@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from tester.unittest.async_test_case import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase
 from recc.argparse.default_namespace import get_default_task_config
 from recc.rpc.rpc_client import create_rpc_client
 from recc.task.task_server import create_task_server
 
 
-class RpcTestCase(AsyncTestCase):
+class RpcTestCase(IsolatedAsyncioTestCase):
     async def _setup(self):
         self.config = get_default_task_config()
         server_info = create_task_server(self.config)
@@ -20,7 +20,7 @@ class RpcTestCase(AsyncTestCase):
         await self.client.open()
         self.assertTrue(self.client.is_open())
 
-    async def setUp(self):
+    async def asyncSetUp(self):
         try:
             await self._setup()
         except:  # noqa
@@ -32,5 +32,5 @@ class RpcTestCase(AsyncTestCase):
         await self.server.stop(None)
         self.assertFalse(self.client.is_open())
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self._teardown()

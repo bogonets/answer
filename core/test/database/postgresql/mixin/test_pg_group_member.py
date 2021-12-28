@@ -6,8 +6,8 @@ from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
 class PgGroupMemberTestCase(PostgresqlTestCase):
-    async def setUp(self):
-        await super().setUp()
+    async def asyncSetUp(self):
+        await super().asyncSetUp()
 
         self.guest = await self.db.insert_role("role1")
         self.reporter = await self.db.insert_role("role2")

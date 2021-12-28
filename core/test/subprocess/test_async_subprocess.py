@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from sys import executable, version_info
-from unittest import main
 from collections import deque
-from tester.unittest.async_test_case import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase, main
 from recc.subprocess.async_subprocess import start_async_subprocess
 
 
-class AsyncSubprocessTestCase(AsyncTestCase):
+class AsyncSubprocessTestCase(IsolatedAsyncioTestCase):
     async def test_default(self):
         stdout_deque = deque()
         stderr_deque = deque()

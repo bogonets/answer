@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from sys import executable, version_info
-from unittest import main
-from tester.unittest.async_test_case import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase, main
 from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
 
 
-class AsyncPythonSubprocessTestCase(AsyncTestCase):
+class AsyncPythonSubprocessTestCase(IsolatedAsyncioTestCase):
     async def test_version_tuple(self):
         python = AsyncPythonSubprocess(executable)
         version = await python.version_tuple()

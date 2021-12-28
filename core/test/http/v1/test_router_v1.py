@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main
+from unittest import IsolatedAsyncioTestCase, main
 from hashlib import sha256
-from tester.unittest.async_test_case import AsyncTestCase
+from asyncio import get_event_loop
 from tester.http.http_app_tester import HttpAppTester
 from recc.http.v1 import path_v1 as pv1
 from recc.http.v1.common import k_user, get_v1_path
 from recc.util.version import version_text
 
 
-class RouterV1TestCase(AsyncTestCase):
-    async def setUp(self):
-        self.tester = HttpAppTester(self.loop)
+class RouterV1TestCase(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.tester = HttpAppTester(get_event_loop())
         await self.tester.setup()
         await self.tester.wait_startup()
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.tester.teardown()
 
     async def test_ver(self):

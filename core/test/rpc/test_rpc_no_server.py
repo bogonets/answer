@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import unittest
 import grpc
-from tester.unittest.async_test_case import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase, main
 from recc.proto.rpc import rpc_api_pb2 as api
 from recc.proto.rpc.rpc_api_pb2_grpc import RpcApiStub
 
 
-class RpcNoServerTestCase(AsyncTestCase):
-    async def setUp(self):
+class RpcNoServerTestCase(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
         self.host = "localhost"
         self.port = 19999
         self.client = grpc.aio.insecure_channel(f"{self.host}:{self.port}")
         self.assertEqual(grpc.ChannelConnectivity.IDLE, self.client.get_state(True))
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.client.close()
 
     async def test_healthcheck(self):
@@ -24,4 +23,4 @@ class RpcNoServerTestCase(AsyncTestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from tester.unittest.async_test_case import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase
 from recc.container.docker.docker_container_manager import DockerContainerManager
 
 
-class DockerTestCase(AsyncTestCase):
-    async def setUp(self):
+class DockerTestCase(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
         self.container = DockerContainerManager()
         await self.container.open()
         self.assertTrue(self.container.is_open())
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         self.assertTrue(self.container.is_open())
         await self.container.close()
         self.assertFalse(self.container.is_open())

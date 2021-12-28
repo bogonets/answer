@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import unittest
-from tester.unittest.async_test_case import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase, main
+from asyncio import get_event_loop
 from tester.http.http_app_tester import HttpAppTester
 from recc.http import http_urls as u
 from recc.util.version import version_text
 
 
-class HttpAppTestCase(AsyncTestCase):
-    async def setUp(self):
-        self.tester = HttpAppTester(self.loop)
+class HttpAppTestCase(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.tester = HttpAppTester(get_event_loop())
         await self.tester.setup()
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.tester.teardown()
 
     async def test_heartbeat(self):
@@ -26,4 +26,4 @@ class HttpAppTestCase(AsyncTestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

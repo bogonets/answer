@@ -11,8 +11,8 @@ from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
 class PgProjectTestCase(PostgresqlTestCase):
-    async def setUp(self):
-        await super().setUp()
+    async def asyncSetUp(self):
+        await super().asyncSetUp()
         self.group_uid = await self.db.insert_group("group")
         self.group = await self.db.select_group_by_uid(self.group_uid)
 

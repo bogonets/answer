@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main, skipIf
+from unittest import IsolatedAsyncioTestCase, main, skipIf
 from asyncio import sleep
 from datetime import datetime
-from tester.unittest.async_test_case import AsyncTestCase
 from tester.variables import UID_PERFORMANCE_TEST, UID_PERFORMANCE_ITERATION
 from recc.argparse.default_parser import parse_arguments_to_core_config
 from recc.cache.redis.redis_cache_store import RedisCacheStore, EXPIRE_ACCURACY_SECONDS
 
 
-class RedisCacheStoreTestCase(AsyncTestCase):
-    async def setUp(self):
+class RedisCacheStoreTestCase(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
         self.config = parse_arguments_to_core_config()
         self.host = self.config.cache_host
         self.port = self.config.cache_port
@@ -21,7 +20,7 @@ class RedisCacheStoreTestCase(AsyncTestCase):
         await self.cs.open()
         self.assertTrue(self.cs.is_open())
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.cs.close()
         self.assertFalse(self.cs.is_open())
 

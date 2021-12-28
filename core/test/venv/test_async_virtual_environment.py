@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from sys import version_info
-from unittest import main
 from tempfile import TemporaryDirectory
-from tester.unittest.async_test_case import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase, main
 from recc.venv.async_virtual_environment import AsyncVirtualEnvironment
 
 
-class VirtualEnvironmentTestCase(AsyncTestCase):
-    async def setUp(self):
+class VirtualEnvironmentTestCase(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
         self.temp_dir = TemporaryDirectory()
         self.venv = AsyncVirtualEnvironment(self.temp_dir.name)
         await self.venv.create_if_not_exists()
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         self.temp_dir.cleanup()
 
     async def test_default(self):

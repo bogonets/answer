@@ -5,16 +5,15 @@ from io import BytesIO
 from tarfile import open as tar_open
 from tempfile import TemporaryDirectory
 from shutil import copyfile
-from unittest import main
-from tester.unittest.async_test_case import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase, main
 from tester.lamda.numpy_plugins import copy_builtin_numpy_nodes
 from tester.plugins import plugin_simple
 from recc.package.package_utils import get_module_path
 from recc.storage.core_storage import CoreStorage
 
 
-class CoreStorageTestCase(AsyncTestCase):
-    async def setUp(self):
+class CoreStorageTestCase(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
         self.temp_dir = TemporaryDirectory()
         self.sm = CoreStorage(self.temp_dir.name)
 
@@ -36,7 +35,7 @@ class CoreStorageTestCase(AsyncTestCase):
         os.mkdir(plugin_dir)
         copyfile(plugin_path, plugin_output)
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         self.temp_dir.cleanup()
 
     async def test_default(self):

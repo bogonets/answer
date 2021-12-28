@@ -6,8 +6,8 @@ from datetime import datetime, timedelta
 
 
 class PgWidgetTestCase(PostgresqlTestCase):
-    async def setUp(self):
-        await super().setUp()
+    async def asyncSetUp(self):
+        await super().asyncSetUp()
         self.group_uid = await self.db.insert_group("group")
         self.project_uid = await self.db.insert_project(self.group_uid, "project")
         self.layout_uid = await self.db.insert_layout(self.project_uid, "layout")

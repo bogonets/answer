@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main
-from tester.unittest.async_test_case import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase, main
+from asyncio import get_event_loop
 from tester.http.http_app_tester import HttpAppTester
 from recc.http.v1.common import get_airjoy_v1_path
 from recc.http.v1.extra.airjoy_v1 import (
@@ -12,13 +12,13 @@ from recc.http.v1.extra.airjoy_v1 import (
 )
 
 
-class AirjoyV1TestGraphCase(AsyncTestCase):
-    async def setUp(self):
-        self.tester = HttpAppTester(self.loop)
+class AirjoyV1TestGraphCase(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.tester = HttpAppTester(get_event_loop())
         await self.tester.setup()
         await self.tester.run_v1_admin_login()
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.tester.teardown()
 
     async def test_default(self):

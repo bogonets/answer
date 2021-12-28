@@ -2,23 +2,22 @@
 
 import os
 from tempfile import TemporaryDirectory
-from unittest import main
-from tester.unittest.async_test_case import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase, main
 from tester.plugins.copy_plugin import copy_plugin
 from recc.plugin.plugin import Plugin
 from recc.http.http_client import HttpClient
 from recc.variables.http import DEFAULT_HTTP_TEST_PORT
 
 
-class PluginHttpServerTestCase(AsyncTestCase):
-    async def setUp(self):
+class PluginHttpServerTestCase(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
         self.temp_dir = TemporaryDirectory()
         self.plugin_name = "plugin_http_server"
         self.plugin_filename = self.plugin_name + ".py"
         self.plugin_output = copy_plugin(self.plugin_filename, self.temp_dir.name)
         self.assertTrue(os.path.isfile(self.plugin_output))
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         self.temp_dir.cleanup()
 
     async def test_default(self):

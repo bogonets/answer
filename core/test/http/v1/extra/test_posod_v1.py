@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import unittest
-from tester.unittest.async_test_case import AsyncTestCase
+from unittest import IsolatedAsyncioTestCase, main
+from asyncio import get_event_loop
 from tester.http.http_app_tester import HttpAppTester
 from recc.http.v1.common import get_posod_v1_path
 
 
-class PosodV1TestCase(AsyncTestCase):
-    async def setUp(self):
-        self.tester = HttpAppTester(self.loop)
+class PosodV1TestCase(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.tester = HttpAppTester(get_event_loop())
         await self.tester.setup()
         await self.tester.run_v1_admin_login()
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.tester.teardown()
 
     async def test_posod(self):
@@ -22,4 +22,4 @@ class PosodV1TestCase(AsyncTestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

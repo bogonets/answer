@@ -6,8 +6,8 @@ from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
 class PgTaskTestCase(PostgresqlTestCase):
-    async def setUp(self):
-        await super().setUp()
+    async def asyncSetUp(self):
+        await super().asyncSetUp()
         self.group_slug = "group"
         self.group_uid = await self.db.insert_group(self.group_slug)
 
