@@ -9,8 +9,6 @@ from recc.http.http_parameter import parameter_matcher
 from recc.http import http_urls as u
 from recc.session.session_ex import SessionEx
 from recc.packet.user import UserA, UpdateUserQ, UpdatePasswordQ
-from recc.packet.permission import PermissionA
-from recc.packet.cvt.permission import permission_to_answer
 
 
 class RouterV2Self:
@@ -121,15 +119,13 @@ class RouterV2Self:
     # ----------
 
     @parameter_matcher
-    async def get_permissions_pgroup(
-        self, session: SessionEx, group: str
-    ) -> List[PermissionA]:
+    async def get_permissions_pgroup(self, session: SessionEx, group: str) -> List[str]:
         roles = await self.context.get_group_permission(session, group)
-        return [permission_to_answer(role) for role in roles]
+        return [role.slug for role in roles if role.slug]
 
     @parameter_matcher
     async def get_permissions_pgroup_pproject(
         self, session: SessionEx, group: str, project: str
-    ) -> List[PermissionA]:
+    ) -> List[str]:
         roles = await self.context.get_project_permission(session, group, project)
-        return [permission_to_answer(role) for role in roles]
+        return [role.slug for role in roles if role.slug]

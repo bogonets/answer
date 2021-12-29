@@ -366,7 +366,14 @@ class RouterV2Admin:
 
     @parameter_matcher
     async def get_roles(self) -> List[RoleA]:
-        return [role_to_answer(role) for role in await self.context.get_roles()]
+        roles = await self.context.get_roles()
+        role_permissions = await self.context.get_role_permission_slugs_dict()
+        result = list()
+        for role in roles:
+            assert role.uid is not None
+            permissions = role_permissions.get(role.uid, None)
+            result.append(role_to_answer(role, permissions))
+        return result
 
     @parameter_matcher
     async def post_roles(self, body: CreateRoleQ) -> None:
@@ -380,12 +387,15 @@ class RouterV2Admin:
             extra=body.extra,
             hidden=body.hidden,
             lock=body.lock,
+            permissions=body.permissions,
         )
 
     @parameter_matcher
     async def get_roles_prole(self, role: str) -> RoleA:
-        uid = await self.context.get_role_uid(role)
-        return role_to_answer(await self.context.get_role(uid))
+        role_uid = await self.context.get_role_uid(role)
+        role_info = await self.context.get_role(role_uid)
+        permission_slugs = await self.context.get_permission_slugs(role_uid)
+        return role_to_answer(role_info, permission_slugs)
 
     @parameter_matcher
     async def patch_roles_prole(self, role: str, body: UpdateRoleQ) -> None:
@@ -398,6 +408,7 @@ class RouterV2Admin:
             extra=body.extra,
             hidden=body.hidden,
             lock=body.lock,
+            permissions=body.permissions,
         )
 
     @parameter_matcher

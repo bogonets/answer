@@ -39,7 +39,7 @@ ko:
         persistent-hint
         v-model="rule"
         :rules="permissionRules"
-        :items="visibleRules"
+        :items="visibleRoles"
         :hint="$t('hint.permission')"
         item-value="slug"
         item-disabled="hidden"
@@ -94,11 +94,13 @@ import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {USERNAME_RULES} from '@/rules';
 import type {CreateMemberQ} from '@/packet/member';
 import type {RoleA} from '@/packet/role';
+import {ROLE_SLUG_OWNER} from "@/packet/role";
 import requiredField from '@/rules/required';
 import slugFormat from '@/rules/slug';
 
 @Component
 export default class FormInviteMember extends VueBase {
+  readonly owner = ROLE_SLUG_OWNER;
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly usernameRules = USERNAME_RULES;
   readonly permissionRules = [
@@ -133,7 +135,7 @@ export default class FormInviteMember extends VueBase {
   @Ref()
   readonly form!: VForm;
 
-  visibleRules = [] as Array<RoleA>;
+  visibleRoles = [] as Array<RoleA>;
   valid = false;
   username = '';
   rule = {} as RoleA;
@@ -148,13 +150,9 @@ export default class FormInviteMember extends VueBase {
   }
 
   updateVisiblePermissionNames() {
-    const result = [] as Array<RoleA>;
-    for (const permission of this.permissions) {
-      if (!permission.hidden) {
-        result.push(permission);
-      }
-    }
-    this.visibleRules = result;
+    this.visibleRoles = this.permissions.filter(x => {
+      return x.slug !== this.owner && !x.hidden;
+    });
   }
 
   get disableSubmit(): boolean {

@@ -334,11 +334,11 @@ export default class MainAirjoyService extends VueBase {
   }
 
   get showAdd() {
-    return this.isManagerWrite;
+    return this.hasPermissionManagerEdit();
   }
 
   get showDelete() {
-    return this.isManagerWrite;
+    return this.hasPermissionManagerEdit();
   }
 
   datetimeToDate(text) {

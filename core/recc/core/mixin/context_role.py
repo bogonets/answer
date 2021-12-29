@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Optional, Any, Union
+from typing import List, Optional, Any, Union, Dict, Set
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.role import Role
 from recc.database.struct.permission import Permission
+from recc.database.struct.role_permission import RolePermission
 from recc.session.session_ex import SessionEx
 
 
@@ -16,6 +17,7 @@ class ContextRole(ContextBase):
         extra: Optional[Any] = None,
         hidden=False,
         lock=False,
+        permissions: Optional[List[str]] = None,
     ) -> int:
         role_uid = await self.database.insert_role(
             slug=slug,
@@ -26,6 +28,9 @@ class ContextRole(ContextBase):
             lock=lock,
         )
         await self.cache.set_role(slug, role_uid)
+        if permissions:
+            # TODO: Merge into a single query
+            await self.database.insert_role_permissions_by_slug(slug, permissions)
         return role_uid
 
     @staticmethod
@@ -67,6 +72,7 @@ class ContextRole(ContextBase):
         extra: Optional[Any] = None,
         hidden: Optional[bool] = None,
         lock: Optional[bool] = None,
+        permissions: Optional[List[str]] = None,
         force=False,
     ) -> None:
         if not force:
@@ -87,9 +93,15 @@ class ContextRole(ContextBase):
             hidden=hidden,
             lock=lock,
         )
+
         if slug is not None:
+            # TODO: Merge into a single operation
             await self.cache.remove_role_by_uid(uid)
             await self.cache.set_role(slug, uid)
+
+        if permissions is not None:
+            # TODO: Merge into a single query
+            await self.database.update_role_permissions_by_slug(uid, permissions)
 
     async def delete_role(self, uid: int, force=False) -> None:
         if not force:
@@ -98,11 +110,60 @@ class ContextRole(ContextBase):
         await self.database.delete_role_by_uid(uid)
         await self.cache.remove_role_by_uid(uid)
 
+    async def get_permissions(self) -> List[Permission]:
+        return await self.database.select_permission_all()
+
+    async def get_permission_slugs_dict(self) -> Dict[int, str]:
+        permissions = await self.get_permissions()
+        result = dict()
+        for p in permissions:
+            assert p.uid is not None
+            assert p.slug is not None
+            result[p.uid] = p.slug
+        return result
+
     async def get_role(self, uid: int) -> Role:
         return await self.database.select_role_by_uid(uid)
 
     async def get_roles(self) -> List[Role]:
         return await self.database.select_role_all()
+
+    async def get_role_permissions(
+        self, role_uid: Optional[int] = None
+    ) -> List[RolePermission]:
+        if role_uid is None:
+            return await self.database.select_role_permission_all()
+        else:
+            return await self.database.select_role_permission_by_role_uid(role_uid)
+
+    async def get_permission_slugs(self, role_uid: int) -> List[str]:
+        permissions = await self.get_permission_slugs_dict()
+        role_permissions = await self.get_role_permissions(role_uid)
+        result = list()
+        for rp in role_permissions:
+            assert rp.permission_uid is not None
+            result.append(permissions[rp.permission_uid])
+        return result
+
+    async def get_role_permissions_dict(self) -> Dict[int, Set[int]]:
+        result: Dict[int, Set[int]] = dict()
+        role_permissions = await self.get_role_permissions()
+        for rp in role_permissions:
+            assert rp.role_uid is not None
+            assert rp.permission_uid is not None
+            if rp.role_uid not in result:
+                result[rp.role_uid] = set()
+            result[rp.role_uid].add(rp.permission_uid)
+        return result
+
+    async def get_role_permission_slugs_dict(self) -> Dict[int, List[str]]:
+        permissions = await self.get_permission_slugs_dict()
+        role_permissions = await self.get_role_permissions_dict()
+        result = dict()
+        for role_uid, permission_uids in role_permissions.items():
+            p_slugs = [permissions[p_uid] for p_uid in permission_uids]
+            result[role_uid] = p_slugs
+        return result
 
     async def get_group_role(self, user_uid: int, group_uid: int) -> Role:
         return await self.database.select_role_by_user_uid_and_group_uid(

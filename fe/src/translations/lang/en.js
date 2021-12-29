@@ -28,6 +28,22 @@ export default {
         no_setting_write: 'Setting write permission is required',
     },
 
+    permissions: {
+        recc_domain_layout_view: 'Layout View',
+        recc_domain_layout_edit: 'Layout Edit',
+        recc_domain_storage_view: 'Storage View',
+        recc_domain_storage_edit: 'Storage Edit',
+        recc_domain_manager_view: 'Manager View',
+        recc_domain_manager_edit: 'Manager Edit',
+        recc_domain_graph_view: 'Graph View',
+        recc_domain_graph_edit: 'Graph Edit',
+        recc_domain_member_view: 'Member View',
+        recc_domain_member_edit: 'Member Edit',
+        recc_domain_setting_view: 'Setting View',
+        recc_domain_setting_edit: 'Setting Edit',
+        recc_domain_delete: 'Domain Delete',
+    },
+
     basic: {
         admin: "AdminOverview.vue",
         apply: "Apply",

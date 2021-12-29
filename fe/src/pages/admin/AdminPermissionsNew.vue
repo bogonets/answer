@@ -17,12 +17,12 @@ ko:
         :header="$t('header')"
         :subheader="$t('subheader')"
     >
-      <form-permission
-          hide-origin-prefix
+      <form-role
           :loading="submitLoading"
+          :permissions="permissions"
           @cancel="onClickCancel"
-          @ok="onClickOk"
-      ></form-permission>
+          @submit="onClickSubmit"
+      ></form-role>
     </left-title>
 
   </v-container>
@@ -33,14 +33,14 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from "@/components/LeftTitle.vue";
-import FormPermission, {PermissionItem} from '@/components/FormPermission.vue';
-import {CreateRoleQ} from '@/packet/role';
+import FormRole from '@/components/FormRole.vue';
+import {RoleA, CreateRoleQ} from '@/packet/role';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
     LeftTitle,
-    FormPermission,
+    FormRole,
   }
 })
 export default class AdminPermissionsNew extends VueBase {
@@ -61,30 +61,37 @@ export default class AdminPermissionsNew extends VueBase {
     },
   ];
 
+  permissions = [] as Array<string>;
   submitLoading = false;
+
+  created() {
+    this.requestPermission();
+  }
+
+  requestPermission() {
+    this.$api2.getMainPermissions()
+        .then(items => {
+          this.permissions = items;
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+          this.moveToBack();
+        });
+  }
+
 
   onClickCancel() {
     this.moveToBack();
   }
 
-  onClickOk(event: PermissionItem) {
+  onClickSubmit(event: RoleA) {
     const body = {
       slug: event.slug,
       name: event.name,
       description: event.description,
-      features: event.features,
-      r_layout: event.r_layout,
-      w_layout: event.w_layout,
-      r_storage: event.r_storage,
-      w_storage: event.w_storage,
-      r_manager: event.r_manager,
-      w_manager: event.w_manager,
-      r_graph: event.r_graph,
-      w_graph: event.w_graph,
-      r_member: event.r_member,
-      w_member: event.w_member,
-      r_setting: event.r_setting,
-      w_setting: event.w_setting,
+      hidden: event.hidden,
+      lock: event.lock,
+      permissions: event.permissions,
     } as CreateRoleQ;
 
     this.submitLoading = true;

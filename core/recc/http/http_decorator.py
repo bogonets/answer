@@ -38,7 +38,7 @@ def _wrapper(func):
         return _wrap2
 
 
-def _add_annotation(func, annotation: str, data: Any):
+def _add_list_annotation(func, annotation: str, data: Any):
     att = getattr(func, annotation, list())
     if isinstance(data, list):
         setattr(func, annotation, att + list(data))
@@ -47,8 +47,13 @@ def _add_annotation(func, annotation: str, data: Any):
     return _wrapper(func)
 
 
+def _set_annotation(func, annotation: str, data: Any):
+    setattr(func, annotation, data)
+    return _wrapper(func)
+
+
 def _set_role(func, role: Union[int, str]):
-    return _add_annotation(func, ANNOTATION_PERMISSIONS, role)
+    return _add_list_annotation(func, ANNOTATION_PERMISSIONS, role)
 
 
 def has_layout_view(func):
@@ -104,11 +109,11 @@ def has_delete(func):
 
 
 def domain_group(func):
-    return _add_annotation(func, ANNOTATION_DOMAIN, Domain.Group)
+    return _set_annotation(func, ANNOTATION_DOMAIN, Domain.Group)
 
 
 def domain_project(func):
-    return _add_annotation(func, ANNOTATION_DOMAIN, Domain.Project)
+    return _set_annotation(func, ANNOTATION_DOMAIN, Domain.Project)
 
 
 def object_to_permissions(obj: Any) -> List[Union[int, str]]:

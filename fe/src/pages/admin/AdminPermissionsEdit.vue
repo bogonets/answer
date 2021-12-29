@@ -43,16 +43,17 @@ ko:
         :header="$t('header.basic')"
         :subheader="$t('subheader.basic')"
     >
-      <form-permission
+      <form-role
           disable-slug
           hide-cancel-button
           :disable-all-ignore-lock="original.lock"
           :disable-submit-button="!modified"
+          :loading="showSubmitLoading"
+          :permissions="permissions"
           :value="current"
           @input="inputCurrent"
-          :loading="showSubmitLoading"
-          @ok="onClickOk"
-      ></form-permission>
+          @submit="onClickSubmit"
+      ></form-role>
     </left-title>
 
     <left-title
@@ -119,7 +120,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
-import FormPermission, {PermissionItem} from '@/components/FormPermission.vue';
+import FormRole from '@/components/FormRole.vue';
 import {RoleA, UpdateRoleQ} from '@/packet/role';
 import {iso8601ToLocal} from '@/chrono/iso8601';
 import * as _ from 'lodash';
@@ -128,7 +129,7 @@ import * as _ from 'lodash';
   components: {
     ToolbarBreadcrumbs,
     LeftTitle,
-    FormPermission,
+    FormRole,
   }
 })
 export default class AdminPermissionsEdit extends VueBase {
@@ -161,9 +162,10 @@ export default class AdminPermissionsEdit extends VueBase {
     },
   ];
 
+  permissions = [] as Array<string>;
   detailItems = [] as Array<object>;
-  current = new PermissionItem();
-  original = new PermissionItem();
+  current = {} as RoleA;
+  original = {} as RoleA;
 
   modified = false;
   showSubmitLoading = false;
@@ -175,13 +177,26 @@ export default class AdminPermissionsEdit extends VueBase {
   }
 
   created() {
-    this.requestPermission();
+    (async () => {
+      await this.setup();
+    })();
   }
 
-  requestPermission() {
+  async setup() {
+    try {
+      this.permissions = await this.$api2.getMainPermissions();
+      const role = await this.$api2.getAdminRolesProle(this.perm)
+      this.updatePermission(role);
+    } catch (error) {
+      this.toastRequestFailure(error);
+      this.moveToBack();
+    }
+  }
+
+  requestRole() {
     this.$api2.getAdminRolesProle(this.perm)
-        .then(body => {
-          this.updatePermission(body);
+        .then(role => {
+          this.updatePermission(role);
         })
         .catch(error => {
           this.toastRequestFailure(error);
@@ -190,85 +205,35 @@ export default class AdminPermissionsEdit extends VueBase {
   }
 
   updatePermission(permission: RoleA) {
-    const slug = permission.slug || '';
-    const name = permission.name || '';
-    const description = permission.description || '';
-    const features = permission.features || [];
-    const r_layout = permission.r_layout || false;
-    const w_layout = permission.w_layout || false;
-    const r_storage = permission.r_storage || false;
-    const w_storage = permission.w_storage || false;
-    const r_manager = permission.r_manager || false;
-    const w_manager = permission.w_manager || false;
-    const r_graph = permission.r_graph || false;
-    const w_graph = permission.w_graph || false;
-    const r_member = permission.r_member || false;
-    const w_member = permission.w_member || false;
-    const r_setting = permission.r_setting || false;
-    const w_setting = permission.w_setting || false;
-    const hidden = permission.hidden || false;
-    const lock = permission.lock || false;
-    const createdAt = permission.created_at || '';
-    const updatedAt = permission.updated_at || '';
-
-    this.current.slug = slug;
-    this.current.name = name;
-    this.current.description = description;
-    this.current.features = features;
-    this.current.r_layout = r_layout;
-    this.current.w_layout = w_layout;
-    this.current.r_storage = r_storage;
-    this.current.w_storage = w_storage;
-    this.current.r_manager = r_manager;
-    this.current.w_manager = w_manager;
-    this.current.r_graph = r_graph;
-    this.current.w_graph = w_graph;
-    this.current.r_member = r_member;
-    this.current.w_member = w_member;
-    this.current.r_setting = r_setting;
-    this.current.w_setting = w_setting;
-    this.current.hidden = hidden;
-    this.current.lock = lock;
-    this.original.fromObject(this.current);
+    this.current = permission;
+    this.original = _.cloneDeep(permission);
     this.modified = !_.isEqual(this.original, this.current);
 
     this.detailItems = [
       {
         name: this.$t('label.created_at'),
-        value: iso8601ToLocal(createdAt),
+        value: iso8601ToLocal(this.original.created_at),
       },
       {
         name: this.$t('label.updated_at'),
-        value: iso8601ToLocal(updatedAt),
+        value: iso8601ToLocal(this.original.updated_at),
       },
     ];
   }
 
-  inputCurrent(value: PermissionItem) {
+  inputCurrent(value: RoleA) {
     this.current = value;
     this.modified = !_.isEqual(this.original, this.current);
   }
 
-  onClickOk(event: PermissionItem) {
+  onClickSubmit(event: RoleA) {
     const body = {
       slug: event.slug,
       name: event.name,
       description: event.description,
-      features: event.features,
-      r_layout: event.r_layout,
-      w_layout: event.w_layout,
-      r_storage: event.r_storage,
-      w_storage: event.w_storage,
-      r_manager: event.r_manager,
-      w_manager: event.w_manager,
-      r_graph: event.r_graph,
-      w_graph: event.w_graph,
-      r_member: event.r_member,
-      w_member: event.w_member,
-      r_setting: event.r_setting,
-      w_setting: event.w_setting,
       hidden: event.hidden,
       lock: event.lock,
+      permissions: event.permissions || [],
     } as UpdateRoleQ;
 
     this.showSubmitLoading = true;
@@ -276,7 +241,7 @@ export default class AdminPermissionsEdit extends VueBase {
         .then(() => {
           this.showSubmitLoading = false;
           this.toastRequestSuccess();
-          this.requestPermission();
+          this.requestRole();
         })
         .catch(error => {
           this.showSubmitLoading = false;

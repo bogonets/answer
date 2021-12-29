@@ -76,7 +76,6 @@ import type {DaemonA, CreateDaemonQ, UpdateDaemonQ} from '@/packet/daemon';
 import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
 import type {SystemOverviewA, VersionsA} from '@/packet/system';
 import type {RoleA, CreateRoleQ, UpdateRoleQ} from '@/packet/role';
-import type {PermissionA} from '@/packet/permission';
 import type {
     ProjectA,
     CreateProjectQ,
@@ -450,11 +449,11 @@ export default class ApiV2 {
     }
 
     getSelfPermissionsPgroup(group: string) {
-        return this.get<Array<PermissionA>>(`/self/permissions/${group}`);
+        return this.get<Array<string>>(`/self/permissions/${group}`);
     }
 
     getSelfPermissionsPgroupPproject(group: string, project: string) {
-        return this.get<Array<PermissionA>>(`/self/permissions/${group}/${project}`);
+        return this.get<Array<string>>(`/self/permissions/${group}/${project}`);
     }
 
     // -----------
@@ -572,6 +571,14 @@ export default class ApiV2 {
     getMainProjectsPgroupPprojectOverview(group: string, project: string) {
         const url = `/main/projects/${group}/${project}/overview`;
         return this.get<ProjectOverviewA>(url);
+    }
+
+    // ----------------
+    // Main/Permissions
+    // ----------------
+
+    getMainPermissions() {
+        return this.get<Array<string>>('/main/permissions');
     }
 
     // ----------

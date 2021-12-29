@@ -3,6 +3,7 @@
 from unittest import IsolatedAsyncioTestCase, main
 from typing import List
 from asyncio import get_event_loop
+from logging import CRITICAL, DEBUG
 from tester.http.http_app_tester import HttpAppTester
 from recc.http.http_utils import v2_admin_path
 from recc.http import http_urls as u
@@ -13,7 +14,12 @@ from recc.packet.role import RoleA, CreateRoleQ, UpdateRoleQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.system import SystemOverviewA
 from recc.log.logging import get_root_level
-from logging import CRITICAL, DEBUG
+from recc.variables.database import (
+    PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_SETTING_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_EDIT,
+)
 
 
 class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
@@ -142,7 +148,11 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(0, len(response7_data))
 
     async def test_role(self):
-        role1 = CreateRoleQ("role1")
+        permissions1 = [
+            PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
+            PERMISSION_SLUG_RECC_DOMAIN_SETTING_EDIT,
+        ]
+        role1 = CreateRoleQ("role1", permissions=permissions1)
         response1 = await self.tester.post(v2_admin_path(u.roles), data=role1)
         self.assertEqual(200, response1.status)
 
@@ -166,10 +176,17 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
         self.assertFalse(response2_data0.lock)
         self.assertIsNotNone(response2_data0.created_at)
         self.assertIsNone(response2_data0.updated_at)
+        sorted_permissions1 = list(set(permissions1))
+        sorted_response2_permissions = list(set(response2_data0.permissions))
+        self.assertListEqual(sorted_permissions1, sorted_response2_permissions)
 
+        permissions2 = [
+            PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_VIEW,
+            PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_EDIT,
+        ]
         role2_slug = "role2"
         path1 = v2_admin_path(u.roles_prole).format(role=role1.slug)
-        update = UpdateRoleQ(slug=role2_slug)
+        update = UpdateRoleQ(slug=role2_slug, permissions=permissions2)
         response3 = await self.tester.patch(path1, data=update)
         self.assertEqual(200, response3.status)
 
@@ -187,6 +204,9 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
         self.assertFalse(response4_data.lock)
         self.assertIsNotNone(response4_data.created_at)
         self.assertIsNotNone(response4_data.updated_at)
+        sorted_permissions2 = list(set(permissions2))
+        sorted_response4_permissions = list(set(response4_data.permissions))
+        self.assertListEqual(sorted_permissions2, sorted_response4_permissions)
 
         response5 = await self.tester.delete(path2)
         self.assertEqual(200, response5.status)

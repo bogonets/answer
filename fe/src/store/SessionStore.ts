@@ -2,7 +2,6 @@ import VueInterface from 'vue';
 import {PluginObject} from 'vue/types/plugin';
 import {Store, CommitOptions} from 'vuex';
 import VuexPersist from 'vuex-persist'
-import type {RawRole} from '@/packet/role';
 
 // Modules
 import permission from '@/store/modules/permission';
@@ -16,22 +15,8 @@ const DEFAULT_STRICT = process.env.NODE_ENV !== 'production';
 
 const PERMISSION_GROUP = 'permission/group';
 const PERMISSION_PROJECT = 'permission/project';
-const PERMISSION_ADMIN = 'permission/admin';
-const PERMISSION_LAYOUT_READ = 'permission/layoutRead';
-const PERMISSION_LAYOUT_WRITE = 'permission/layoutWrite';
-const PERMISSION_STORAGE_READ = 'permission/storageRead';
-const PERMISSION_STORAGE_WRITE = 'permission/storageWrite';
-const PERMISSION_MANAGER_READ = 'permission/managerRead';
-const PERMISSION_MANAGER_WRITE = 'permission/managerWrite';
-const PERMISSION_GRAPH_READ = 'permission/graphRead';
-const PERMISSION_GRAPH_WRITE = 'permission/graphWrite';
-const PERMISSION_MEMBER_READ = 'permission/memberRead';
-const PERMISSION_MEMBER_WRITE = 'permission/memberWrite';
-const PERMISSION_SETTING_READ = 'permission/settingRead';
-const PERMISSION_SETTING_WRITE = 'permission/settingWrite';
-const PERMISSION_IS_ADMIN = 'permission/isAdmin';
-const PERMISSION_FEATURES = 'permission/features';
-const PERMISSION_EXTRA = 'permission/extra';
+const PERMISSION_PERMISSIONS = 'permission/permissions';
+
 const VMS_WSD = 'vms/wsd';
 
 export interface SessionStoreOptions {
@@ -109,77 +94,12 @@ export class SessionStore {
         this.setter(PERMISSION_PROJECT, val);
     }
 
-    get permissionAdmin() {
-        return this.getter(PERMISSION_ADMIN) as boolean;
+    get permissionPermissions() {
+        return this.getter(PERMISSION_PERMISSIONS) as Array<string>;
     }
 
-    set permissionAdmin(val: boolean) {
-        this.setter(PERMISSION_ADMIN, val);
-    }
-
-    set permission(val: RawRole) {
-        this.setter(PERMISSION_LAYOUT_READ, val.r_layout);
-        this.setter(PERMISSION_LAYOUT_WRITE, val.w_layout);
-        this.setter(PERMISSION_STORAGE_READ, val.r_storage);
-        this.setter(PERMISSION_STORAGE_WRITE, val.w_storage);
-        this.setter(PERMISSION_MANAGER_READ, val.r_manager);
-        this.setter(PERMISSION_MANAGER_WRITE, val.w_manager);
-        this.setter(PERMISSION_GRAPH_READ, val.r_graph);
-        this.setter(PERMISSION_GRAPH_WRITE, val.w_graph);
-        this.setter(PERMISSION_MEMBER_READ, val.r_member);
-        this.setter(PERMISSION_MEMBER_WRITE, val.w_member);
-        this.setter(PERMISSION_SETTING_READ, val.r_setting);
-        this.setter(PERMISSION_SETTING_WRITE, val.w_setting);
-        this.setter(PERMISSION_FEATURES, val.features);
-        this.setter(PERMISSION_EXTRA, val.extra);
-    }
-
-    get permissionLayoutRead() {
-        return this.getter(PERMISSION_LAYOUT_READ) as boolean;
-    }
-
-    get permissionLayoutWrite() {
-        return this.getter(PERMISSION_LAYOUT_WRITE) as boolean;
-    }
-
-    get permissionStorageRead() {
-        return this.getter(PERMISSION_STORAGE_READ) as boolean;
-    }
-
-    get permissionStorageWrite() {
-        return this.getter(PERMISSION_STORAGE_WRITE) as boolean;
-    }
-
-    get permissionManagerRead() {
-        return this.getter(PERMISSION_MANAGER_READ) as boolean;
-    }
-
-    get permissionManagerWrite() {
-        return this.getter(PERMISSION_MANAGER_WRITE) as boolean;
-    }
-
-    get permissionGraphRead() {
-        return this.getter(PERMISSION_GRAPH_READ) as boolean;
-    }
-
-    get permissionGraphWrite() {
-        return this.getter(PERMISSION_GRAPH_WRITE) as boolean;
-    }
-
-    get permissionMemberRead() {
-        return this.getter(PERMISSION_MEMBER_READ) as boolean;
-    }
-
-    get permissionMemberWrite() {
-        return this.getter(PERMISSION_MEMBER_WRITE) as boolean;
-    }
-
-    get permissionSettingRead() {
-        return this.getter(PERMISSION_SETTING_READ) as boolean;
-    }
-
-    get permissionSettingWrite() {
-        return this.getter(PERMISSION_SETTING_WRITE) as boolean;
+    set permissionPermissions(val: Array<string>) {
+        this.setter(PERMISSION_PERMISSIONS, val);
     }
 
     // ---

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List
+from typing import List, Union
 from recc.variables.database import (
     TABLE_ROLE,
     TABLE_PERMISSION,
@@ -28,7 +28,28 @@ SELECT *
 FROM {TABLE_ROLE_PERMISSION};
 """
 
-_INSERT_ROLE_PERMISSION_BY_SLUG_FORMAT = f"""
+SELECT_ROLE_PERMISSION_BY_ROLE_UID = f"""
+SELECT *
+FROM {TABLE_ROLE_PERMISSION}
+WHERE role_uid=$1;
+"""
+
+_DELETE_ROLE_PERMISSION_BY_ROLE_UID_FORMAT = f"""
+DELETE FROM {TABLE_ROLE_PERMISSION}
+WHERE role_uid={{role_uid}};
+"""
+
+_INSERT_ROLE_PERMISSION_BY_PERMISSION_SLUG_FORMAT = f"""
+INSERT INTO {TABLE_ROLE_PERMISSION} (
+    role_uid,
+    permission_uid
+) VALUES (
+    {{role_uid}},
+    (SELECT uid FROM {TABLE_PERMISSION} WHERE slug='{{permission_slug}}')
+);
+"""
+
+_INSERT_ROLE_PERMISSION_BY_ONLY_SLUG_FORMAT = f"""
 INSERT INTO {TABLE_ROLE_PERMISSION} (
     role_uid,
     permission_uid
@@ -39,21 +60,34 @@ INSERT INTO {TABLE_ROLE_PERMISSION} (
 """
 
 
-def _insert_role_permission_by_slug(
-    role_slug: str,
+def delete_role_permission_by_role_uid(role_uid: int) -> str:
+    return _DELETE_ROLE_PERMISSION_BY_ROLE_UID_FORMAT.format(role_uid=role_uid)
+
+
+def insert_role_permission_by_slug(
+    role_uid_or_slug: Union[int, str],
     permission_slug: str,
 ) -> str:
-    return _INSERT_ROLE_PERMISSION_BY_SLUG_FORMAT.format(
-        role_slug=role_slug,
-        permission_slug=permission_slug,
-    )
+    if isinstance(role_uid_or_slug, int):
+        return _INSERT_ROLE_PERMISSION_BY_PERMISSION_SLUG_FORMAT.format(
+            role_uid=role_uid_or_slug,
+            permission_slug=permission_slug,
+        )
+    else:
+        assert isinstance(role_uid_or_slug, str)
+        return _INSERT_ROLE_PERMISSION_BY_ONLY_SLUG_FORMAT.format(
+            role_slug=role_uid_or_slug,
+            permission_slug=permission_slug,
+        )
 
 
 def _default_insert_role_permissions() -> List[str]:
     result = list()
     for role_slug, permissions in DEFAULT_ROLE_PERMISSIONS_MAP.items():
+        assert isinstance(role_slug, str)
         for permission_slug in permissions:
-            query = _insert_role_permission_by_slug(role_slug, permission_slug)
+            assert isinstance(permission_slug, str)
+            query = insert_role_permission_by_slug(role_slug, permission_slug)
             result.append(query)
     return result
 

@@ -383,7 +383,7 @@ export default class FormVmsEventConfigsOcr extends VueBase {
         })
   }
 
-  create() {
+  created() {
     this.requestModels();
   }
 

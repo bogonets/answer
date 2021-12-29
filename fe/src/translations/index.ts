@@ -18,4 +18,14 @@ const i18n = new VueI18n({
   },
 });
 
+export function getPermissionName(perm: string) {
+  const suffix = perm.replaceAll('.', '_');
+  const i18nName = `permissions.${suffix}`;
+  if (i18n.te(i18nName)) {
+    return i18n.t(i18nName).toString();
+  } else {
+    return perm;
+  }
+}
+
 export default i18n;

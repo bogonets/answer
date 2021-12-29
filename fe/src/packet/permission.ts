@@ -1,6 +1,13 @@
-export interface PermissionA {
-    slug?: string;
-    description?: string;
-    extra?: any;
-    created_at?: string;
-}
+export const PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_VIEW = 'recc.domain.layout.view';
+export const PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_EDIT = 'recc.domain.layout.edit';
+export const PERMISSION_SLUG_RECC_DOMAIN_STORAGE_VIEW = 'recc.domain.storage.view';
+export const PERMISSION_SLUG_RECC_DOMAIN_STORAGE_EDIT = 'recc.domain.storage.edit';
+export const PERMISSION_SLUG_RECC_DOMAIN_MANAGER_VIEW = 'recc.domain.manager.view';
+export const PERMISSION_SLUG_RECC_DOMAIN_MANAGER_EDIT = 'recc.domain.manager.edit';
+export const PERMISSION_SLUG_RECC_DOMAIN_GRAPH_VIEW = 'recc.domain.graph.view';
+export const PERMISSION_SLUG_RECC_DOMAIN_GRAPH_EDIT = 'recc.domain.graph.edit';
+export const PERMISSION_SLUG_RECC_DOMAIN_MEMBER_VIEW = 'recc.domain.member.view';
+export const PERMISSION_SLUG_RECC_DOMAIN_MEMBER_EDIT = 'recc.domain.member.edit';
+export const PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW = 'recc.domain.setting.view';
+export const PERMISSION_SLUG_RECC_DOMAIN_SETTING_EDIT = 'recc.domain.setting.edit';
+export const PERMISSION_SLUG_RECC_DOMAIN_DELETE = 'recc.domain.delete';

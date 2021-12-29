@@ -5,7 +5,7 @@ en:
     owner: "Owner"
   headers:
     username: "Username"
-    permission: "Permission"
+    role: "Role"
     actions: "Actions"
   msg:
     loading: "Loading... Please wait"
@@ -17,7 +17,7 @@ ko:
     owner: "소유자"
   headers:
     username: "사용자명"
-    permission: "권한"
+    role: "역할"
     actions: "관리"
   msg:
     loading: "불러오는중 입니다... 잠시만 기다려 주세요."
@@ -48,9 +48,9 @@ ko:
       </v-toolbar>
     </template>
 
-    <template v-slot:item.permission="{ item }">
+    <template v-slot:item.role="{ item }">
       <div class="d-flex justify-center">
-        <span class="font-weight-bold" v-if="item.permission === owner">
+        <span class="font-weight-bold" v-if="item.role === owner">
           {{ $t('label.owner') }}
         </span>
         <v-select
@@ -61,10 +61,10 @@ ko:
             outlined
             rounded
             hide-details
-            :disabled="item.permission === owner"
+            :disabled="item.role === owner"
             :value="selectPermission(item)"
             @input="inputPermission($event, item)"
-            :items="visiblePermissions"
+            :items="visibleRoles"
             @change="change($event, item)"
             item-text="slug"
             item-value="slug"
@@ -92,7 +92,7 @@ ko:
 
     <template v-if="!hideActions" v-slot:item.actions="{ item }">
       <v-icon
-          v-if="!hideActionDelete && item.permission !== owner"
+          v-if="!hideActionDelete && item.role !== owner"
           small
           color="red"
           @click="clickDelete(item)"
@@ -116,7 +116,7 @@ import {ROLE_SLUG_OWNER} from '@/packet/role';
 
 @Component
 export default class TableMembers extends VueBase {
-  private readonly owner = ROLE_SLUG_OWNER;
+  readonly owner = ROLE_SLUG_OWNER;
 
   @Prop({type: Boolean, default: false})
   readonly hideFilterInput!: boolean;
@@ -130,13 +130,13 @@ export default class TableMembers extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly loading!: boolean;
 
-  @Prop({type: Array, default: () => new Array<MemberA>()})
+  @Prop({type: Array, default: () => []})
   readonly items!: Array<MemberA>;
 
-  @Prop({type: Array, default: () => new Array<RoleA>()})
+  @Prop({type: Array, default: () => []})
   readonly permissions!: Array<RoleA>;
 
-  visiblePermissions = [] as Array<RoleA>;
+  visibleRoles = [] as Array<RoleA>;
   headers = [] as Array<object>;
   filter = '';
 
@@ -150,18 +150,14 @@ export default class TableMembers extends VueBase {
   }
 
   @Watch('permissions')
-  onWatchPermissions(value) {
+  onWatchPermissions(newVal: Array<RoleA>) {
     this.updateVisiblePermissionNames();
   }
 
   updateVisiblePermissionNames() {
-    const result = [] as Array<RoleA>;
-    for (const permission of this.permissions) {
-      if (!permission.hidden) {
-        result.push(permission);
-      }
-    }
-    this.visiblePermissions = result;
+    this.visibleRoles = this.permissions.filter(x => {
+      return x.slug !== this.owner && !x.hidden;
+    });
   }
 
   get hideTopBar(): boolean {
@@ -182,11 +178,11 @@ export default class TableMembers extends VueBase {
         value: 'username',
       },
       {
-        text: this.$t('headers.permission').toString(),
+        text: this.$t('headers.role').toString(),
         align: 'center',
         filterable: false,
         sortable: false,
-        value: 'permission',
+        value: 'role',
       },
     ];
     if (includeActions) {

@@ -87,9 +87,6 @@ export default class Root extends VueBase {
 
   async _setup() {
     try {
-      const user = await this.$api2.getSelf();
-      this.$sessionStore.permissionAdmin = user.is_admin || false;
-
       this.groups = await this.$api2.getMainGroups();
       this.projects = await this.$api2.getMainProjects();
     } catch (error) {

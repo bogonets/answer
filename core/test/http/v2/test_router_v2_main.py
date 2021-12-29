@@ -14,6 +14,7 @@ from recc.packet.role import RoleA
 from recc.packet.info import InfoA
 from recc.variables.database import (
     VISIBILITY_LEVEL_PRIVATE,
+    DEFAULT_PERMISSION_SLUGS,
     ROLE_SLUG_GUEST,
     ROLE_SLUG_REPORTER,
     ROLE_SLUG_OWNER,
@@ -338,7 +339,15 @@ class RouterV2MainTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(200, response10.status)
         self.assertEqual(1, len(response10.data))
 
-    async def test_rules(self):
+    async def test_permissions(self):
+        response1 = await self.tester.get(v2_main_path(u.permissions))
+        self.assertEqual(200, response1.status)
+        response1_data = response1.data
+        self.assertIsInstance(response1_data, list)
+        for default_permission in DEFAULT_PERMISSION_SLUGS:
+            self.assertIn(default_permission, response1_data)
+
+    async def test_roles(self):
         response1 = await self.tester.get(v2_main_path(u.roles))
         self.assertEqual(200, response1.status)
         response1_data = response1.data

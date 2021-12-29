@@ -60,6 +60,14 @@ ko:
         </v-toolbar>
       </template>
 
+      <template v-slot:item.name="{ item }">
+        {{ item.name }}
+        <v-chip class="ml-2" x-small outlined color="primary">
+          <v-icon left>mdi-identifier</v-icon>
+          {{ item.slug }}
+        </v-chip>
+      </template>
+
       <template v-slot:item.hidden="{ item }">
         <v-icon dense v-if="item.hidden">{{ hiddenIcon(item) }}</v-icon>
       </template>
@@ -117,22 +125,10 @@ export default class AdminPermissions extends VueBase {
 
   private readonly headers = [
     {
-      text: this.$t('headers.slug').toString(),
-      align: 'center',
-      filterable: true,
-      value: 'slug',
-    },
-    {
       text: this.$t('headers.name').toString(),
       align: 'center',
       filterable: true,
       value: 'name',
-    },
-    {
-      text: this.$t('headers.description').toString(),
-      align: 'center',
-      filterable: true,
-      value: 'description',
     },
     {
       text: this.$t('headers.hidden').toString(),

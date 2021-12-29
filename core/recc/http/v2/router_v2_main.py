@@ -10,6 +10,8 @@ from recc.http.http_decorator import (
     has_member_view,
     has_member_edit,
     has_setting_edit,
+    has_delete,
+    domain_group,
 )
 from recc.http.http_parameter import parameter_matcher
 from recc.http import http_urls as u
@@ -82,6 +84,9 @@ class RouterV2Main:
             web.patch(u.projects_pgroup_pproject_members_pmember, self.patch_projects_pgroup_pproject_members_pmember),  # noqa
             web.delete(u.projects_pgroup_pproject_members_pmember, self.delete_projects_pgroup_pproject_members_pmember),  # noqa
 
+            # Permissions
+            web.get(u.permissions, self.get_permissions),
+
             # Roles
             web.get(u.roles, self.get_roles),
             web.get(u.roles_pgroup, self.get_roles_pgroup),
@@ -132,8 +137,8 @@ class RouterV2Main:
         db_group = await self.context.get_group(group_uid)
         return group_to_answer(db_group)
 
-    @has_setting_edit
     @parameter_matcher
+    @has_setting_edit
     async def patch_groups_pgroup(self, group: str, body: UpdateGroupQ) -> None:
         group_uid = await self.context.get_group_uid(group)
         await self.context.update_group(
@@ -145,8 +150,9 @@ class RouterV2Main:
             extra=body.extra,
         )
 
-    @has_setting_edit
     @parameter_matcher
+    @has_delete
+    @domain_group
     async def delete_groups_pgroup(self, group: str) -> None:
         group_uid = await self.context.get_group_uid(group)
         await self.context.delete_group(group_uid)
@@ -155,8 +161,8 @@ class RouterV2Main:
     # Group members
     # -------------
 
-    @has_member_view
     @parameter_matcher
+    @has_member_view
     async def get_groups_pgroup_members(self, group: str) -> List[MemberA]:
         group_uid = await self.context.get_group_uid(group)
         members = await self.context.get_group_members(group_uid)
@@ -169,16 +175,16 @@ class RouterV2Main:
             result.append(MemberA(username, role_slug))
         return result
 
-    @has_member_edit
     @parameter_matcher
+    @has_member_edit
     async def post_groups_pgroup_members(self, group: str, body: CreateMemberQ) -> None:
         group_uid = await self.context.get_group_uid(group)
         member_user_uid = await self.context.get_user_uid(body.username)
         member_role_uid = await self.context.get_role_uid(body.role)
         await self.context.add_group_member(group_uid, member_user_uid, member_role_uid)
 
-    @has_member_view
     @parameter_matcher
+    @has_member_view
     async def get_groups_pgroup_members_pmember(
         self, group: str, member: str
     ) -> MemberA:
@@ -189,8 +195,8 @@ class RouterV2Main:
         member_role_slug = await self.context.get_role_slug(db_member.role_uid)
         return MemberA(member, member_role_slug)
 
-    @has_member_edit
     @parameter_matcher
+    @has_member_edit
     async def patch_groups_pgroup_members_pmember(
         self, group: str, member: str, body: UpdateMemberQ
     ) -> None:
@@ -201,8 +207,8 @@ class RouterV2Main:
             group_uid, member_user_uid, member_role_uid
         )
 
-    @has_member_edit
     @parameter_matcher
+    @has_member_edit
     async def delete_groups_pgroup_members_pmember(
         self, group: str, member: str
     ) -> None:
@@ -266,8 +272,8 @@ class RouterV2Main:
         assert project == db_project.slug
         return project_to_answer(db_project, group)
 
-    @has_setting_edit
     @parameter_matcher
+    @has_setting_edit
     async def patch_projects_pgroup_pproject(
         self, group: str, project: str, body: UpdateProjectQ
     ) -> None:
@@ -282,15 +288,15 @@ class RouterV2Main:
             extra=body.extra,
         )
 
-    @has_setting_edit
     @parameter_matcher
+    @has_setting_edit
     async def delete_projects_pgroup_pproject(self, group: str, project: str) -> None:
         group_uid = await self.context.get_group_uid(group)
         project_uid = await self.context.get_project_uid(group_uid, project)
         await self.context.delete_project(project_uid)
 
-    @has_member_view
     @parameter_matcher
+    @has_member_view
     async def get_projects_pgroup_pproject_overview(
         self, group: str, project: str
     ) -> ProjectOverviewA:
@@ -312,8 +318,8 @@ class RouterV2Main:
     # Project members
     # ---------------
 
-    @has_member_view
     @parameter_matcher
+    @has_member_view
     async def get_projects_pgroup_pproject_members(
         self, group: str, project: str
     ) -> List[MemberA]:
@@ -329,8 +335,8 @@ class RouterV2Main:
             result.append(MemberA(username, role_slug))
         return result
 
-    @has_member_edit
     @parameter_matcher
+    @has_member_edit
     async def post_projects_pgroup_pproject_members(
         self, group: str, project: str, body: CreateMemberQ
     ) -> None:
@@ -342,8 +348,8 @@ class RouterV2Main:
             project_uid, member_user_uid, member_role_uid
         )
 
-    @has_member_view
     @parameter_matcher
+    @has_member_view
     async def get_projects_pgroup_pproject_members_pmember(
         self, group: str, project: str, member: str
     ) -> MemberA:
@@ -355,8 +361,8 @@ class RouterV2Main:
         member_role_slug = await self.context.get_role_slug(db_member.role_uid)
         return MemberA(member, member_role_slug)
 
-    @has_member_edit
     @parameter_matcher
+    @has_member_edit
     async def patch_projects_pgroup_pproject_members_pmember(
         self, group: str, project: str, member: str, body: UpdateMemberQ
     ) -> None:
@@ -368,8 +374,8 @@ class RouterV2Main:
             project_uid, member_user_uid, member_role_uid
         )
 
-    @has_member_edit
     @parameter_matcher
+    @has_member_edit
     async def delete_projects_pgroup_pproject_members_pmember(
         self, group: str, project: str, member: str
     ) -> None:
@@ -377,6 +383,17 @@ class RouterV2Main:
         project_uid = await self.context.get_project_uid(group_uid, project)
         member_user_uid = await self.context.get_user_uid(member)
         await self.context.remove_project_member(project_uid, member_user_uid)
+
+    # -----------
+    # Permissions
+    # -----------
+
+    @parameter_matcher
+    async def get_permissions(self) -> List[str]:
+        perms = await self.context.get_permissions()
+        result = [perm.slug for perm in perms if perm.slug]
+        assert len(perms) == len(result), "Permissions with blank slugs must not exist."
+        return result
 
     # -----
     # Roles

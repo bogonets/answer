@@ -11,14 +11,10 @@ from recc.variables.database import (
 INSERT_PERMISSION = f"""
 INSERT INTO {TABLE_PERMISSION} (
     slug,
-    description,
-    extra,
     created_at
 ) VALUES (
     $1,
-    $2,
-    $3,
-    $4
+    $2
 ) RETURNING uid;
 """
 
@@ -66,7 +62,7 @@ WITH gm AS (
     FROM {TABLE_ROLE_PERMISSION} rp2, gm
     WHERE rp2.role_uid=gm.role_uid
 )
-SELECT *
+SELECT p.*
 FROM {TABLE_PERMISSION} p, rp1
 WHERE p.uid=rp1.permission_uid
 """
@@ -81,7 +77,7 @@ WITH pm AS (
     FROM {TABLE_ROLE_PERMISSION} rp2, pm
     WHERE rp2.role_uid=pm.role_uid
 )
-SELECT *
+SELECT p.*
 FROM {TABLE_PERMISSION} p, rp1
 WHERE p.uid=rp1.permission_uid
 """

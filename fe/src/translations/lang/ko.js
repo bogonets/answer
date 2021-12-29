@@ -28,6 +28,22 @@ export default {
         no_setting_write: '설정 쓰기 권한이 필요합니다.',
     },
 
+    permissions: {
+        recc_domain_layout_view: '레이아웃 보기',
+        recc_domain_layout_edit: '레이아웃 편집',
+        recc_domain_storage_view: '저장소 보기',
+        recc_domain_storage_edit: '저장소 편집',
+        recc_domain_manager_view: '매니저 보기',
+        recc_domain_manager_edit: '매니저 편집',
+        recc_domain_graph_view: '그래프 보기',
+        recc_domain_graph_edit: '그래프 편집',
+        recc_domain_member_view: '회원 보기',
+        recc_domain_member_edit: '회원 편집',
+        recc_domain_setting_view: '설정 보기',
+        recc_domain_setting_edit: '설정 편집',
+        recc_domain_delete: '도메인 제거',
+    },
+
     basic: {
         admin: "관리자",
         apply: "적용",

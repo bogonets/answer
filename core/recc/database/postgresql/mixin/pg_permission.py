@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, Any
+from typing import Optional, List
 from datetime import datetime
 from overrides import overrides
 from recc.chrono.datetime import today
@@ -26,12 +26,10 @@ class PgPermission(DbPermission, PgBase):
     async def insert_permission(
         self,
         slug: str,
-        description: Optional[str] = None,
-        extra: Optional[Any] = None,
         created_at: Optional[datetime] = None,
     ) -> int:
         created = created_at if created_at else today()
-        uid = await self.fetch_val(INSERT_PERMISSION, slug, description, extra, created)
+        uid = await self.fetch_val(INSERT_PERMISSION, slug, created)
         logger.info(f"insert_permission(slug={slug}) -> {uid}")
         return uid
 
@@ -87,12 +85,9 @@ class PgPermission(DbPermission, PgBase):
 
     @overrides
     async def select_permission_all(self) -> List[Permission]:
-        result: List[Permission] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_PERMISSION_ALL
-                async for row in conn.cursor(query):
-                    result.append(Permission(**dict(row)))
+        query = SELECT_PERMISSION_ALL
+        rows = await self.fetch(query)
+        result = [Permission(**dict(row)) for row in rows]
         result_msg = f"{len(result)} permissions"
         logger.info(f"select_permission_all() -> {result_msg}")
         return result

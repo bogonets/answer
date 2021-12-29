@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, Any
+from typing import Optional, List
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from recc.database.struct.permission import Permission
@@ -15,8 +15,6 @@ class DbPermission(metaclass=ABCMeta):
     async def insert_permission(
         self,
         slug: str,
-        description: Optional[str] = None,
-        extra: Optional[Any] = None,
         created_at: Optional[datetime] = None,
     ) -> int:
         raise NotImplementedError

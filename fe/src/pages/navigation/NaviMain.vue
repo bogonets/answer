@@ -208,13 +208,11 @@ ko:
 import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {ProjectA} from '@/packet/project';
-import type {RawRole} from '@/packet/role';
 import {FEATURE_VMS} from '@/packet/features';
 import mainNames from '@/router/names/main';
 
 @Component
 export default class NaviMain extends VueBase {
-
   @Prop({type: Boolean, default: false})
   readonly noDefault!: boolean;
 
@@ -227,7 +225,7 @@ export default class NaviMain extends VueBase {
   index = 0;
   mini = false;
   project = {} as ProjectA;
-  permission = {} as RawRole;
+  permission = {} as Array<string>;
 
   get projectSlug(): string {
     const project = this.$route.params.project;
@@ -254,7 +252,7 @@ export default class NaviMain extends VueBase {
   }
 
   get hasManagerRead() {
-    return this.permission?.r_manager || false;
+    return this.hasPermissionManagerView();
   }
 
   created() {
