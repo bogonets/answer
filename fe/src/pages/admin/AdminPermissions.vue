@@ -38,6 +38,8 @@ ko:
     <v-divider></v-divider>
 
     <v-data-table
+        sort-desc
+        sort-by="name"
         :headers="headers"
         :items="tableItems"
         :search="filterText"
@@ -76,12 +78,8 @@ ko:
         <v-icon dense v-if="item.lock">{{ lockIcon(item) }}</v-icon>
       </template>
 
-      <template v-slot:item.created_at="{ item }">
-        {{ datetimeToDate(item.created_at) }}
-      </template>
-
       <template v-slot:item.updated_at="{ item }">
-        {{ datetimeToDate(item.updated_at) }}
+        {{ datetimeToDate(item.created_at, item.updated_at) }}
       </template>
 
       <template v-slot:item.actions="{ item }">
@@ -145,12 +143,6 @@ export default class AdminPermissions extends VueBase {
       value: 'lock',
     },
     {
-      text: this.$t('headers.created_at').toString(),
-      align: 'center',
-      filterable: false,
-      value: 'created_at',
-    },
-    {
       text: this.$t('headers.updated_at').toString(),
       align: 'center',
       filterable: false,
@@ -186,8 +178,14 @@ export default class AdminPermissions extends VueBase {
         });
   }
 
-  datetimeToDate(text) {
-    return iso8601ToLocalDate(text);
+  datetimeToDate(createdAt?: string, updatedAt?: string) {
+    if (updatedAt) {
+      return iso8601ToLocalDate(updatedAt);
+    }
+    if (createdAt) {
+      return iso8601ToLocalDate(createdAt);
+    }
+    return '';
   }
 
   onClickNew() {

@@ -186,9 +186,6 @@ class ContextRole(ContextBase):
     async def get_group_permission(
         self, session: SessionEx, group: Union[str, int]
     ) -> List[Permission]:
-        if session.is_admin:
-            return await self.database.select_permission_all()
-
         if isinstance(group, int):
             group_uid = group
         elif isinstance(group, str):
@@ -196,16 +193,13 @@ class ContextRole(ContextBase):
         else:
             group_uid = await self.get_group_uid(str(group))
 
-        return await self.database.select_permission_by_user_and_group(
+        return await self.database.select_appropriate_permission_by_user_and_group(
             session.uid, group_uid
         )
 
     async def get_project_permission(
         self, session: SessionEx, group: Union[str, int], project: Union[str, int]
     ) -> List[Permission]:
-        if session.is_admin:
-            return await self.database.select_permission_all()
-
         if isinstance(group, int):
             group_uid = group
         elif isinstance(group, str):
@@ -220,9 +214,11 @@ class ContextRole(ContextBase):
         else:
             project_uid = await self.get_project_uid(group_uid, str(project))
 
-        return await self.database.select_permission_by_user_and_group(
-            session.uid, project_uid
+        # fmt:off
+        return await self.database.select_appropriate_permission_by_user_and_group_and_project(  # noqa
+            session.uid, group_uid, project_uid
         )
+        # fmt:on
 
     @staticmethod
     def _verify_permissions(

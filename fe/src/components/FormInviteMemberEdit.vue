@@ -95,6 +95,9 @@ export default class FormInviteMemberEdit extends VueBase {
   private readonly titleClass = TITLE_CLASS;
 
   @Prop({type: Boolean, default: false})
+  readonly hideDelete!: boolean;
+
+  @Prop({type: Boolean, default: false})
   readonly showDeleteDialog!: boolean;
 
   @Prop({type: Boolean, default: false})

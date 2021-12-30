@@ -76,7 +76,13 @@ ko:
       </v-card>
     </left-title>
 
-    <v-alert outlined prominent type="error" class="ma-4">
+    <v-alert
+        v-if="showDelete"
+        outlined
+        prominent
+        class="ma-4"
+        type="error"
+    >
       <v-row align="center" class="pl-4">
         <v-col>
           <v-row>
@@ -141,8 +147,8 @@ export default class FormGroupEdit extends VueBase {
   @Prop({type: Boolean})
   readonly hideVisibility!: boolean;
 
-  @Prop({type: Object})
-  readonly value!: GroupA;
+  @Prop({type: Boolean})
+  readonly showDelete!: boolean;
 
   @Prop({type: Boolean, default: false})
   readonly showDeleteDialog!: boolean;
@@ -152,6 +158,9 @@ export default class FormGroupEdit extends VueBase {
 
   @Prop({type: Boolean, default: false})
   readonly loadingSubmit!: boolean;
+
+  @Prop({type: Object})
+  readonly value!: GroupA;
 
   current = new GroupItem();
   original = new GroupItem();

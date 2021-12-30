@@ -9,6 +9,7 @@
         :value="group"
         :loading-submit="loadingSubmit"
         :loading-delete="loadingDelete"
+        :show-delete="hasPermissionDelete()"
         :show-delete-dialog="showDeleteDialog"
         @ok="onClickOk"
         @delete:show="onClickDelete"

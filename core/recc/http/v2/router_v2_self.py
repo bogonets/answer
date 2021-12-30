@@ -6,6 +6,7 @@ from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_exceptions import HTTPUnauthorized
 from recc.core.context import Context
 from recc.http.http_parameter import parameter_matcher
+from recc.http.http_decorator import domain_group, domain_project
 from recc.http import http_urls as u
 from recc.session.session_ex import SessionEx
 from recc.packet.user import UserA, UpdateUserQ, UpdatePasswordQ
@@ -119,11 +120,13 @@ class RouterV2Self:
     # ----------
 
     @parameter_matcher
+    @domain_group
     async def get_permissions_pgroup(self, session: SessionEx, group: str) -> List[str]:
         roles = await self.context.get_group_permission(session, group)
         return [role.slug for role in roles if role.slug]
 
     @parameter_matcher
+    @domain_project
     async def get_permissions_pgroup_pproject(
         self, session: SessionEx, group: str, project: str
     ) -> List[str]:

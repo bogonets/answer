@@ -96,15 +96,23 @@ ko:
               {{ permissionName(perm) }}
             </span>
             <v-spacer></v-spacer>
-            <v-btn icon small @click="onClickPermissionRemove(perm)">
+            <v-btn
+                icon
+                small
+                :disabled="disableAllIgnoreLock"
+                @click="onClickPermissionRemove(perm)"
+            >
               <v-icon>mdi-minus</v-icon>
             </v-btn>
           </div>
         </div>
       </div>
-      <v-divider></v-divider>
 
-      <div class="my-2 mx-4 d-flex flex-row align-center">
+      <v-divider v-if="!disableAllIgnoreLock"></v-divider>
+      <div
+          class="my-2 mx-4 d-flex flex-row align-center"
+          v-if="!disableAllIgnoreLock"
+      >
         <v-select
             dense
             rounded
@@ -113,7 +121,13 @@ ko:
             :items="permissionItems"
             v-model="selectPermission"
         ></v-select>
-        <v-btn class="ml-4" small icon elevation="2" @click="onClickPermissionAdd">
+        <v-btn
+            class="ml-4"
+            elevation="2"
+            small
+            icon
+            @click="onClickPermissionAdd"
+        >
           <v-icon>mdi-plus</v-icon>
         </v-btn>
       </div>

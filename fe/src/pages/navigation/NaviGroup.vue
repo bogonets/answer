@@ -56,7 +56,11 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item v-if="!hideMembers" link @click.stop="members">
+        <v-list-item
+            v-if="!hideMembers && hasPermissionMemberView()"
+            link
+            @click.stop="members"
+        >
           <v-list-item-icon>
             <v-icon>mdi-account-group</v-icon>
           </v-list-item-icon>
@@ -65,7 +69,11 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item v-if="!hideSettings" link @click.stop="settings">
+        <v-list-item
+            v-if="!hideSettings && hasPermissionSettingView()"
+            link
+            @click.stop="settings"
+        >
           <v-list-item-icon>
             <v-icon>mdi-cog-outline</v-icon>
           </v-list-item-icon>

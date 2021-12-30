@@ -8,6 +8,7 @@ from recc.database.postgresql.mixin.pg_base import PgBase
 from recc.database.postgresql.query.tables import CREATE_TABLES, DROP_TABLES
 from recc.database.postgresql.query.indices import CREATE_INDICES, DROP_INDICES
 from recc.database.postgresql.query.views import CREATE_VIEWS, DROP_VIEWS
+from recc.database.postgresql.query.functions import CREATE_FUNCTIONS, DROP_FUNCTIONS
 from recc.database.postgresql.query.info import (
     INSERT_INFO_DB_VERSION,
     INSERT_INFO_DB_INIT,
@@ -41,6 +42,9 @@ class PgTable(DbTable, PgBase):
                 create_views = _merge_queries(*CREATE_VIEWS)
                 await conn.execute(create_views)
 
+                create_functions = _merge_queries(*CREATE_FUNCTIONS)
+                await conn.execute(create_functions)
+
                 init_key = INFO_KEY_RECC_DB_INIT
                 is_init = await conn.fetchval(EXISTS_INFO_BY_KEY, init_key)
                 if is_init:
@@ -64,7 +68,7 @@ class PgTable(DbTable, PgBase):
 
     @overrides
     async def drop_tables(self) -> None:
-        all_drop = DROP_TABLES + DROP_INDICES + DROP_VIEWS
+        all_drop = DROP_TABLES + DROP_INDICES + DROP_VIEWS + DROP_FUNCTIONS
         all_drop_reverse = all_drop[::-1]
         queries = _merge_queries(*all_drop_reverse)
         assert isinstance(queries, str)

@@ -12,6 +12,7 @@ en:
     delete: "Delete a permission"
   hint:
     delete: "Please be careful! It cannot be recovered."
+    cannot_owner_delete: "The owner role cannot be deleted."
   delete_confirm: "Are you sure? Are you really removing this permission?"
   cancel: "Cancel"
   delete: "Delete"
@@ -29,6 +30,7 @@ ko:
     delete: "권한 제거"
   hint:
     delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
+    cannot_owner_delete: "소유자(owner) 권한은 제거할 수 없습니다."
   delete_confirm: "이 권한를 정말 제거합니까?"
   cancel: "취소"
   delete: "제거"
@@ -72,7 +74,22 @@ ko:
       </v-card>
     </left-title>
 
-    <v-alert v-if="!original.lock" outlined prominent type="error" class="ma-4">
+    <v-alert
+        v-if="original.slug === owner"
+        outlined
+        prominent
+        border="left"
+        type="warning"
+    >
+      {{ $t('hint.cannot_owner_delete') }}
+    </v-alert>
+    <v-alert
+        v-else-if="!original.lock"
+        outlined
+        prominent
+        type="error"
+        class="ma-4"
+    >
       <v-row align="center" class="pl-4">
         <v-col>
           <v-row>
@@ -121,7 +138,8 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormRole from '@/components/FormRole.vue';
-import {RoleA, UpdateRoleQ} from '@/packet/role';
+import type {RoleA, UpdateRoleQ} from '@/packet/role';
+import {ROLE_SLUG_OWNER} from '@/packet/role';
 import {iso8601ToLocal} from '@/chrono/iso8601';
 import * as _ from 'lodash';
 
@@ -133,7 +151,9 @@ import * as _ from 'lodash';
   }
 })
 export default class AdminPermissionsEdit extends VueBase {
-  private readonly navigationItems = [
+  readonly owner = ROLE_SLUG_OWNER;
+
+  readonly navigationItems = [
     {
       text: 'Admin',
       disabled: false,
@@ -150,7 +170,7 @@ export default class AdminPermissionsEdit extends VueBase {
     },
   ];
 
-  private readonly detailHeaders = [
+  readonly detailHeaders = [
     {
       text: 'name',
       value: 'name',

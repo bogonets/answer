@@ -16,8 +16,9 @@ from recc.database.postgresql.query.permission import (
     SELECT_PERMISSION_BY_SLUG,
     SELECT_PERMISSION_BY_UID,
     SELECT_PERMISSION_ALL,
-    SELECT_PERMISSION_BY_USER_AND_GROUP,
-    SELECT_PERMISSION_BY_USER_AND_PROJECT,
+    SELECT_PERMISSION_BY_ROLE_UID,
+    SELECT_APPROPRIATE_PERMISSION_BY_USER_AND_GROUP,
+    SELECT_APPROPRIATE_PERMISSION_BY_USER_AND_GROUP_AND_PROJECT,
 )
 
 
@@ -87,29 +88,26 @@ class PgPermission(DbPermission, PgBase):
     async def select_permission_all(self) -> List[Permission]:
         query = SELECT_PERMISSION_ALL
         rows = await self.fetch(query)
-        result = [Permission(**dict(row)) for row in rows]
-        result_msg = f"{len(result)} permissions"
-        logger.info(f"select_permission_all() -> {result_msg}")
-        return result
+        return [Permission(**dict(row)) for row in rows]
 
     @overrides
-    async def select_permission_by_user_and_group(
+    async def select_permission_by_role_uid(self, role_uid: int) -> List[Permission]:
+        query = SELECT_PERMISSION_BY_ROLE_UID
+        rows = await self.fetch(query, role_uid)
+        return [Permission(**dict(row)) for row in rows]
+
+    @overrides
+    async def select_appropriate_permission_by_user_and_group(
         self, user_uid: int, group_uid: int
     ) -> List[Permission]:
-        query = SELECT_PERMISSION_BY_USER_AND_GROUP
+        query = SELECT_APPROPRIATE_PERMISSION_BY_USER_AND_GROUP
         rows = await self.fetch(query, user_uid, group_uid)
-        result = [Permission(**dict(row)) for row in rows]
-        result_msg = f"{len(result)} permissions"
-        logger.info(f"select_permission_by_user_and_group() -> {result_msg}")
-        return result
+        return [Permission(**dict(row)) for row in rows]
 
     @overrides
-    async def select_permission_by_user_and_project(
-        self, user_uid: int, project_uid: int
+    async def select_appropriate_permission_by_user_and_group_and_project(
+        self, user_uid: int, group_uid: int, project_uid: int
     ) -> List[Permission]:
-        query = SELECT_PERMISSION_BY_USER_AND_PROJECT
-        rows = await self.fetch(query, user_uid, project_uid)
-        result = [Permission(**dict(row)) for row in rows]
-        result_msg = f"{len(result)} permissions"
-        logger.info(f"select_permission_by_user_and_project() -> {result_msg}")
-        return result
+        query = SELECT_APPROPRIATE_PERMISSION_BY_USER_AND_GROUP_AND_PROJECT
+        rows = await self.fetch(query, user_uid, group_uid, project_uid)
+        return [Permission(**dict(row)) for row in rows]

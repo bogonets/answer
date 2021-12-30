@@ -1,3 +1,4 @@
+export const PERMISSION_FAKE_RECC_INHERITANCE_GROUP = '_.recc.inheritance.group';
 export const PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_VIEW = 'recc.domain.layout.view';
 export const PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_EDIT = 'recc.domain.layout.edit';
 export const PERMISSION_SLUG_RECC_DOMAIN_STORAGE_VIEW = 'recc.domain.storage.view';
