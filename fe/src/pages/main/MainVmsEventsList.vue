@@ -364,7 +364,7 @@ import {
   EVENT_CATEGORY_NAME_OCR,
 } from '@/packet/vms';
 import {todayString} from '@/chrono/date';
-import {iso8601ToLocal, splitDateAndTime} from '@/chrono/iso8601';
+import {iso8601ToLocal} from '@/chrono/iso8601';
 
 const ANY_DEVICE_UID = -1;
 const CONTAINER_BOTTOM_MARGIN = 12;

@@ -34,6 +34,8 @@ ko:
 
 <template>
   <v-data-table
+      sort-desc
+      sort-by="name"
       :class="dataTableClass"
       :headers="headers"
       :items="items"
@@ -59,19 +61,25 @@ ko:
       </v-toolbar>
     </template>
 
-    <template v-slot:item.created_at="{ item }">
-      {{ datetimeToDate(item.created_at) }}
+    <template v-slot:item.name="{ item }">
+      <span>{{ item.name }}</span>
+      <v-chip class="ml-2" x-small outlined color="primary">
+        <v-icon left>mdi-identifier</v-icon>
+        {{ item.group_slug }}
+        <v-icon>mdi-slash-forward</v-icon>
+        {{ item.project_slug }}
+      </v-chip>
     </template>
 
     <template v-slot:item.updated_at="{ item }">
-      {{ datetimeToDate(item.updated_at) }}
+      {{ datetimeToDate(item.created_at, item.updated_at) }}
     </template>
 
     <template v-if="!hideActions" v-slot:item.actions="{ item }">
-      <v-icon v-if="!hideActionEdit" small class="mr-2" @click="clickEdit(item)">
+      <v-icon v-if="!hideActionEdit" small @click="clickEdit(item)">
         mdi-pencil
       </v-icon>
-      <v-icon v-if="!hideActionMove" small class="mr-2" @click="clickMove(item)">
+      <v-icon v-if="!hideActionMove" small class="ml-2" @click="clickMove(item)">
         mdi-exit-to-app
       </v-icon>
     </template>
@@ -169,13 +177,6 @@ export default class TableProjects extends VueBase {
           value: 'description',
         },
         {
-          text: this.$t('headers.created_at').toString(),
-          align: 'center',
-          filterable: false,
-          sortable: true,
-          value: 'created_at',
-        },
-        {
           text: this.$t('headers.updated_at').toString(),
           align: 'center',
           filterable: false,
@@ -191,6 +192,7 @@ export default class TableProjects extends VueBase {
         filterable: false,
         sortable: false,
         value: 'actions',
+        width: '84px',
       })
     }
     return headers;
@@ -204,8 +206,14 @@ export default class TableProjects extends VueBase {
     }
   }
 
-  datetimeToDate(text) {
-    return iso8601ToLocalDate(text);
+  datetimeToDate(createdAt?: string, updatedAt?: string) {
+    if (updatedAt) {
+      return iso8601ToLocalDate(updatedAt);
+    }
+    if (createdAt) {
+      return iso8601ToLocalDate(createdAt);
+    }
+    return '';
   }
 
   @Emit('click:new')
