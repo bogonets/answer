@@ -15,8 +15,12 @@ import {
     PERMISSION_SLUG_RECC_DOMAIN_MEMBER_VIEW,
     PERMISSION_SLUG_RECC_DOMAIN_SETTING_EDIT,
     PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
-    PERMISSION_SLUG_RECC_DOMAIN_VMS_VIEW,
-    PERMISSION_SLUG_RECC_DOMAIN_VMS_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_VMS_LIVE_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_VMS_LIVE_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_VMS_DEVICE_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_VMS_DEVICE_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_VMS_EVENT_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_VMS_EVENT_EDIT,
     PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_DEVICE_VIEW,
     PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_DEVICE_EDIT,
     PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_LIVE_VIEW,
@@ -126,12 +130,41 @@ export default class StorePermission extends Vue {
         return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_DELETE);
     }
 
-    hasPermissionVmsView() {
-        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_VMS_VIEW);
+    hasPermissionVmsAny() {
+        const vmsPermissions = [
+            PERMISSION_SLUG_RECC_DOMAIN_VMS_LIVE_VIEW,
+            PERMISSION_SLUG_RECC_DOMAIN_VMS_LIVE_EDIT,
+            PERMISSION_SLUG_RECC_DOMAIN_VMS_DEVICE_VIEW,
+            PERMISSION_SLUG_RECC_DOMAIN_VMS_DEVICE_EDIT,
+            PERMISSION_SLUG_RECC_DOMAIN_VMS_EVENT_VIEW,
+            PERMISSION_SLUG_RECC_DOMAIN_VMS_EVENT_EDIT,
+        ];
+        const perms = this.$sessionStore.permissionPermissions;
+        return perms.some(x => vmsPermissions.includes(x))
     }
 
-    hasPermissionVmsEdit() {
-        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_VMS_EDIT);
+    hasPermissionVmsLiveView() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_VMS_LIVE_VIEW);
+    }
+
+    hasPermissionVmsLiveEdit() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_VMS_LIVE_EDIT);
+    }
+
+    hasPermissionVmsDeviceView() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_VMS_DEVICE_VIEW);
+    }
+
+    hasPermissionVmsDeviceEdit() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_VMS_DEVICE_EDIT);
+    }
+
+    hasPermissionVmsEventView() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_VMS_EVENT_VIEW);
+    }
+
+    hasPermissionVmsEventEdit() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_VMS_EVENT_EDIT);
     }
 
     hasPermissionAirjoyDeviceView() {

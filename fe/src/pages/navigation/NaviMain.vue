@@ -144,10 +144,10 @@ ko:
           </v-list-item>
         </div>
 
-        <div v-show="isVms">
+        <div v-show="hasPermissionVmsAny()">
           <v-divider></v-divider>
 
-          <v-list-item v-show="hasPermissionVmsView()" link @click.stop="vmsLive">
+          <v-list-item v-show="hasPermissionVmsLiveView()" link @click.stop="vmsLive">
             <v-list-item-icon>
               <v-icon>mdi-broadcast</v-icon>
             </v-list-item-icon>
@@ -156,7 +156,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasPermissionVmsView()" link @click.stop="vmsDevices">
+          <v-list-item v-show="hasPermissionVmsDeviceView()" link @click.stop="vmsDevices">
             <v-list-item-icon>
               <v-icon>mdi-cctv</v-icon>
             </v-list-item-icon>
@@ -165,7 +165,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasPermissionVmsView()" link @click.stop="vmsLayouts">
+          <v-list-item v-show="hasPermissionVmsLiveEdit()" link @click.stop="vmsLayouts">
             <v-list-item-icon>
               <v-icon>mdi-view-dashboard</v-icon>
             </v-list-item-icon>
@@ -174,7 +174,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasPermissionVmsView()" link @click.stop="vmsEventsCalendar">
+          <v-list-item v-show="hasPermissionVmsEventView()" link @click.stop="vmsEventsCalendar">
             <v-list-item-icon>
               <v-icon>mdi-calendar</v-icon>
             </v-list-item-icon>
@@ -183,7 +183,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasPermissionVmsView()" link @click.stop="vmsEventsList">
+          <v-list-item v-show="hasPermissionVmsEventView()" link @click.stop="vmsEventsList">
             <v-list-item-icon>
               <v-icon>mdi-view-list</v-icon>
             </v-list-item-icon>
@@ -192,7 +192,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasPermissionVmsView()" link @click.stop="vmsUserConfigs">
+          <v-list-item link @click.stop="vmsUserConfigs">
             <v-list-item-icon>
               <v-icon>mdi-camera-account</v-icon>
             </v-list-item-icon>

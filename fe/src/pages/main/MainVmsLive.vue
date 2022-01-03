@@ -385,7 +385,7 @@ export default class MainVmsLive extends VueBase {
           }
         })
         .catch(error => {
-          this.toastRequestFailure(error);
+          // this.toastRequestFailure(error);
         });
   }
 
