@@ -61,15 +61,15 @@ class DbDaemon(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def select_daemon_by_slug(self, slug: str) -> Daemon:
+        raise NotImplementedError
+
+    @abstractmethod
     async def select_daemon_uid_by_slug(self, slug: str) -> int:
         raise NotImplementedError
 
     @abstractmethod
     async def select_daemon_address_by_slug(self, slug: str) -> str:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def select_daemon_by_slug(self, slug: str) -> Daemon:
         raise NotImplementedError
 
     @abstractmethod
