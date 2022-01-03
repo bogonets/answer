@@ -29,8 +29,8 @@ export interface UpdateProjectQ {
 }
 
 export interface ProjectOverviewA {
-    layouts: number;
-    tables: number;
-    tasks: number;
-    members: number;
+    layouts?: number;
+    tables?: number;
+    tasks?: number;
+    members?: number;
 }

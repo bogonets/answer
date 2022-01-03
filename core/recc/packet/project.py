@@ -46,7 +46,7 @@ class UpdateProjectQ:
 
 @dataclass
 class ProjectOverviewA:
-    layouts: int
-    tables: int
-    tasks: int
-    members: int
+    layouts: Optional[int] = None
+    tables: Optional[int] = None
+    tasks: Optional[int] = None
+    members: Optional[int] = None

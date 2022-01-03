@@ -69,21 +69,26 @@ SELECT_APPROPRIATE_PERMISSION_BY_USER_AND_GROUP_AND_PROJECT = f"""
 SELECT * FROM {FUNC_APPROPRIATE_PERMISSION}($1, $2, $3);
 """
 
-_INSERT_PERMISSION_ONLY_SLUG_FORMAT = f"""
+_SAFE_INSERT_PERMISSION_ONLY_SLUG_FORMAT = f"""
 INSERT INTO {TABLE_PERMISSION} (
     slug,
     created_at
-) VALUES (
+) SELECT
     '{{slug}}',
     NOW()
-);
+WHERE
+    NOT EXISTS (
+        SELECT *
+        FROM {TABLE_PERMISSION}
+        WHERE slug='{{slug}}'
+    );
 """
 
 
-def _insert_permission_only_slug(slug: str) -> str:
-    return _INSERT_PERMISSION_ONLY_SLUG_FORMAT.format(slug=slug)
+def safe_insert_permission_only_slug(slug: str) -> str:
+    return _SAFE_INSERT_PERMISSION_ONLY_SLUG_FORMAT.format(slug=slug)
 
 
 INSERT_PERMISSION_DEFAULTS = list(
-    map(lambda x: _insert_permission_only_slug(x), DEFAULT_PERMISSION_SLUGS)
+    map(lambda x: safe_insert_permission_only_slug(x), DEFAULT_PERMISSION_SLUGS)
 )

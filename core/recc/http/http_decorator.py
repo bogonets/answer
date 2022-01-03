@@ -7,12 +7,14 @@ from recc.variables.annotation import ANNOTATION_PERMISSIONS, ANNOTATION_DOMAIN,
 from recc.variables.database import (
     PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_VIEW,
     PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_EDIT,
-    PERMISSION_SLUG_RECC_DOMAIN_STORAGE_VIEW,
-    PERMISSION_SLUG_RECC_DOMAIN_STORAGE_EDIT,
-    PERMISSION_SLUG_RECC_DOMAIN_MANAGER_VIEW,
-    PERMISSION_SLUG_RECC_DOMAIN_MANAGER_EDIT,
-    PERMISSION_SLUG_RECC_DOMAIN_GRAPH_VIEW,
-    PERMISSION_SLUG_RECC_DOMAIN_GRAPH_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_FILE_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_FILE_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_TABLE_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_TABLE_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_TASK_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_TASK_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_VP_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_VP_EDIT,
     PERMISSION_SLUG_RECC_DOMAIN_MEMBER_VIEW,
     PERMISSION_SLUG_RECC_DOMAIN_MEMBER_EDIT,
     PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
@@ -52,60 +54,68 @@ def _set_annotation(func, annotation: str, data: Any):
     return _wrapper(func)
 
 
-def _set_role(func, role: Union[int, str]):
+def has_role(func, role: Union[int, str]):
     return _add_list_annotation(func, ANNOTATION_PERMISSIONS, role)
 
 
 def has_layout_view(func):
-    return _set_role(func, PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_VIEW)
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_VIEW)
 
 
 def has_layout_edit(func):
-    return _set_role(func, PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_EDIT)
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_EDIT)
 
 
-def has_storage_view(func):
-    return _set_role(func, PERMISSION_SLUG_RECC_DOMAIN_STORAGE_VIEW)
+def has_file_view(func):
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_FILE_VIEW)
 
 
-def has_storage_edit(func):
-    return _set_role(func, PERMISSION_SLUG_RECC_DOMAIN_STORAGE_EDIT)
+def has_file_edit(func):
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_FILE_EDIT)
 
 
-def has_manager_view(func):
-    return _set_role(func, PERMISSION_SLUG_RECC_DOMAIN_MANAGER_VIEW)
+def has_table_view(func):
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_TABLE_VIEW)
 
 
-def has_manager_edit(func):
-    return _set_role(func, PERMISSION_SLUG_RECC_DOMAIN_MANAGER_EDIT)
+def has_table_edit(func):
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_TABLE_EDIT)
 
 
-def has_graph_view(func):
-    return _set_role(func, PERMISSION_SLUG_RECC_DOMAIN_GRAPH_VIEW)
+def has_task_view(func):
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_TASK_VIEW)
 
 
-def has_graph_edit(func):
-    return _set_role(func, PERMISSION_SLUG_RECC_DOMAIN_GRAPH_EDIT)
+def has_task_edit(func):
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_TASK_EDIT)
+
+
+def has_vp_view(func):
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_VP_VIEW)
+
+
+def has_vp_edit(func):
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_VP_EDIT)
 
 
 def has_member_view(func):
-    return _set_role(func, PERMISSION_SLUG_RECC_DOMAIN_MEMBER_VIEW)
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_MEMBER_VIEW)
 
 
 def has_member_edit(func):
-    return _set_role(func, PERMISSION_SLUG_RECC_DOMAIN_MEMBER_EDIT)
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_MEMBER_EDIT)
 
 
 def has_setting_view(func):
-    return _set_role(func, PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW)
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW)
 
 
 def has_setting_edit(func):
-    return _set_role(func, PERMISSION_SLUG_RECC_DOMAIN_SETTING_EDIT)
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_SETTING_EDIT)
 
 
 def has_delete(func):
-    return _set_role(func, PERMISSION_SLUG_RECC_DOMAIN_DELETE)
+    return has_role(func, PERMISSION_SLUG_RECC_DOMAIN_DELETE)
 
 
 def domain_group(func):

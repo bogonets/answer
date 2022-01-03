@@ -16,6 +16,7 @@ from recc.variables.database import (
     PERMISSIONS_OF_REPORTER,
     PERMISSIONS_OF_GUEST,
 )
+from recc.database.postgresql.query.permission import safe_insert_permission_only_slug
 
 
 class PgPermissionTestCase(PostgresqlTestCase):
@@ -24,6 +25,18 @@ class PgPermissionTestCase(PostgresqlTestCase):
             self.assertIn(parm.slug, DEFAULT_PERMISSION_SLUGS)
         for role in await self.db.select_role_all():
             self.assertIn(role.slug, DEFAULT_ROLE_SLUGS)
+
+    async def test_safe_insert(self):
+        perm_slug = "test.safe.insert"
+        query1 = safe_insert_permission_only_slug(perm_slug)
+        await self.db.execute(query1)
+        items1 = await self.db.select_permission_all()
+
+        query2 = safe_insert_permission_only_slug(perm_slug)
+        await self.db.execute(query2)
+        items2 = await self.db.select_permission_all()
+
+        self.assertListEqual(items1, items2)
 
     async def test_insert_and_delete(self):
         perm_slug = "test.insert.and.delete"

@@ -107,17 +107,16 @@ FROM {TABLE_PROJECT};
 """
 
 SELECT_PROJECT_BY_USER_UID = f"""
-WITH pm AS (
-    SELECT *
-    FROM {TABLE_PROJECT_MEMBER}
-    WHERE user_uid=$1
-), gm AS (
-    SELECT *
-    FROM {TABLE_GROUP_MEMBER}
-    WHERE user_uid=$1
-)
-SELECT p.*
-FROM {TABLE_PROJECT} AS p, pm, gm
-WHERE pm.project_uid=p.uid OR gm.group_uid=p.group_uid
-GROUP BY p.uid;
+SELECT *
+FROM {TABLE_PROJECT}
+WHERE uid IN (
+        SELECT project_uid
+        FROM {TABLE_PROJECT_MEMBER}
+        WHERE user_uid=$1
+    ) OR group_uid IN (
+        SELECT group_uid
+        FROM {TABLE_GROUP_MEMBER}
+        WHERE user_uid=$1
+    )
+GROUP BY uid;
 """

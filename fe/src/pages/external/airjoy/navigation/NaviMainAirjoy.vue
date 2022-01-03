@@ -196,19 +196,19 @@ export default class NaviMainAirjoy extends VueBase {
   }
 
   get showDevices() {
-    return this.hasPermissionManagerView();
+    return this.hasPermissionAirjoyDeviceView();
   }
 
   get showLive() {
-    return this.hasPermissionManagerView();
+    return this.hasPermissionAirjoyLiveView();
   }
 
   get showChart() {
-    return this.hasPermissionManagerView();
+    return this.hasPermissionAirjoyChartView();
   }
 
   get showService() {
-    return this.hasPermissionManagerView();
+    return this.hasPermissionAirjoyServiceView();
   }
 
   get showMember() {

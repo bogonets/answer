@@ -296,7 +296,6 @@ class RouterV2Main:
         await self.context.delete_project(project_uid)
 
     @parameter_matcher
-    @has_member_view
     async def get_projects_pgroup_pproject_overview(
         self, group: str, project: str
     ) -> ProjectOverviewA:
@@ -305,6 +304,7 @@ class RouterV2Main:
 
         layouts = 0
         tables = 0
+        # TODO: Permission test ...
         tasks = await self.context.get_container_infos(group, project)
         members = await self.context.get_project_members(project_uid)
         return ProjectOverviewA(

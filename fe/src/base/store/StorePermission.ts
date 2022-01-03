@@ -1,18 +1,30 @@
 import {Vue, Component} from 'vue-property-decorator';
 import {
     PERMISSION_SLUG_RECC_DOMAIN_DELETE,
-    PERMISSION_SLUG_RECC_DOMAIN_GRAPH_EDIT,
-    PERMISSION_SLUG_RECC_DOMAIN_GRAPH_VIEW,
     PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_EDIT,
     PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_VIEW,
-    PERMISSION_SLUG_RECC_DOMAIN_MANAGER_EDIT,
-    PERMISSION_SLUG_RECC_DOMAIN_MANAGER_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_FILE_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_FILE_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_TABLE_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_TABLE_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_TASK_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_TASK_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_VP_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_VP_EDIT,
     PERMISSION_SLUG_RECC_DOMAIN_MEMBER_EDIT,
     PERMISSION_SLUG_RECC_DOMAIN_MEMBER_VIEW,
     PERMISSION_SLUG_RECC_DOMAIN_SETTING_EDIT,
     PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
-    PERMISSION_SLUG_RECC_DOMAIN_STORAGE_EDIT,
-    PERMISSION_SLUG_RECC_DOMAIN_STORAGE_VIEW
+    PERMISSION_SLUG_RECC_DOMAIN_VMS_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_VMS_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_DEVICE_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_DEVICE_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_LIVE_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_LIVE_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_CHART_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_CHART_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_SERVICE_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_SERVICE_EDIT,
 } from '@/packet/permission';
 
 @Component
@@ -62,28 +74,36 @@ export default class StorePermission extends Vue {
         return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_EDIT);
     }
 
-    hasPermissionStorageView() {
-        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_STORAGE_VIEW);
+    hasPermissionFileView() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_FILE_VIEW);
     }
 
-    hasPermissionStorageEdit() {
-        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_STORAGE_EDIT);
+    hasPermissionFileEdit() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_FILE_EDIT);
     }
 
-    hasPermissionManagerView() {
-        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_MANAGER_VIEW);
+    hasPermissionTableView() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_TABLE_VIEW);
     }
 
-    hasPermissionManagerEdit() {
-        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_MANAGER_EDIT);
+    hasPermissionTableEdit() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_TABLE_EDIT);
     }
 
-    hasPermissionGraphView() {
-        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_GRAPH_VIEW);
+    hasPermissionTaskView() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_TASK_VIEW);
     }
 
-    hasPermissionGraphEdit() {
-        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_GRAPH_EDIT);
+    hasPermissionTaskEdit() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_TASK_EDIT);
+    }
+
+    hasPermissionVpView() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_VP_VIEW);
+    }
+
+    hasPermissionVpEdit() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_VP_EDIT);
     }
 
     hasPermissionMemberView() {
@@ -104,5 +124,45 @@ export default class StorePermission extends Vue {
 
     hasPermissionDelete() {
         return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_DELETE);
+    }
+
+    hasPermissionVmsView() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_VMS_VIEW);
+    }
+
+    hasPermissionVmsEdit() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_VMS_EDIT);
+    }
+
+    hasPermissionAirjoyDeviceView() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_DEVICE_VIEW);
+    }
+
+    hasPermissionAirjoyDeviceEdit() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_DEVICE_EDIT);
+    }
+
+    hasPermissionAirjoyLiveView() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_LIVE_VIEW);
+    }
+
+    hasPermissionAirjoyLiveEdit() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_LIVE_EDIT);
+    }
+
+    hasPermissionAirjoyChartView() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_CHART_VIEW);
+    }
+
+    hasPermissionAirjoyChartEdit() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_CHART_EDIT);
+    }
+
+    hasPermissionAirjoyServiceView() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_SERVICE_VIEW);
+    }
+
+    hasPermissionAirjoyServiceEdit() {
+        return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_SERVICE_EDIT);
     }
 }

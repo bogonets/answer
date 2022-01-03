@@ -18,7 +18,7 @@ ko:
     <v-divider></v-divider>
 
     <v-row class="mt-2">
-      <v-col cols="6" sm="3">
+      <v-col v-if="false" v-show="hasPermissionLayoutView()" cols="6" sm="3">
         <card-button @click="onClickLayouts">
           <v-icon large>mdi-view-dashboard</v-icon>
           <span class="text--secondary text-subtitle-2 text-no-wrap">
@@ -27,7 +27,7 @@ ko:
         </card-button>
       </v-col>
 
-      <v-col cols="6" sm="3">
+      <v-col v-if="false" v-show="hasPermissionTableView()" cols="6" sm="3">
         <card-button @click="onClickTables">
           <v-icon large>mdi-table-multiple</v-icon>
           <span class="text--secondary text-subtitle-2 text-no-wrap">
@@ -36,7 +36,7 @@ ko:
         </card-button>
       </v-col>
 
-      <v-col cols="6" sm="3">
+      <v-col v-if="false" v-show="hasPermissionTaskView()" cols="6" sm="3">
         <card-button @click="onClickTasks">
           <v-icon large>mdi-format-list-checks</v-icon>
           <span class="text--secondary text-subtitle-2 text-no-wrap">
@@ -45,7 +45,7 @@ ko:
         </card-button>
       </v-col>
 
-      <v-col cols="6" sm="3">
+      <v-col v-if="false" v-show="hasPermissionMemberView()" cols="6" sm="3">
         <card-button @click="onClickMembers">
           <v-icon large>mdi-account-group</v-icon>
           <span class="text--secondary text-subtitle-2 text-no-wrap">

@@ -20,7 +20,7 @@ INSERT INTO {TABLE_INFO} (
 ) SELECT
     '{{key}}',
     '{{value}}',
-    now()
+    NOW()
 WHERE
     NOT EXISTS(
         SELECT value

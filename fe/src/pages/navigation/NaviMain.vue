@@ -63,10 +63,13 @@ ko:
           :value="index"
           @change="input"
       >
-        <div v-show="false">
+        <div>
           <v-divider></v-divider>
 
-          <v-list-item link @click.stop="dashboard">
+          <v-list-item
+              link
+              @click.stop="dashboard"
+          >
             <v-list-item-icon>
               <v-icon>mdi-gauge</v-icon>
             </v-list-item-icon>
@@ -75,7 +78,11 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item link @click.stop="layouts">
+          <v-list-item
+              v-show="false"
+              link
+              @click.stop="layouts"
+          >
             <v-list-item-icon>
               <v-icon>mdi-view-dashboard</v-icon>
             </v-list-item-icon>
@@ -84,7 +91,11 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item link @click.stop="files">
+          <v-list-item
+              v-show="false"
+              link
+              @click.stop="files"
+          >
             <v-list-item-icon>
               <v-icon>mdi-folder</v-icon>
             </v-list-item-icon>
@@ -93,7 +104,11 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item link @click.stop="tables">
+          <v-list-item
+              v-show="false"
+              link
+              @click.stop="tables"
+          >
             <v-list-item-icon>
               <v-icon>mdi-table-multiple</v-icon>
             </v-list-item-icon>
@@ -102,7 +117,11 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item link @click.stop="tasks">
+          <v-list-item
+              v-show="false"
+              link
+              @click.stop="tasks"
+          >
             <v-list-item-icon>
               <v-icon>mdi-format-list-checks</v-icon>
             </v-list-item-icon>
@@ -111,7 +130,11 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item link @click.stop="visualProgramming">
+          <v-list-item
+              v-show="false"
+              link
+              @click.stop="visualProgramming"
+          >
             <v-list-item-icon>
               <v-icon>mdi-lambda</v-icon>
             </v-list-item-icon>
@@ -124,7 +147,7 @@ ko:
         <div v-show="isVms">
           <v-divider></v-divider>
 
-          <v-list-item v-show="hasManagerRead" link @click.stop="vmsLive">
+          <v-list-item v-show="hasPermissionVmsView()" link @click.stop="vmsLive">
             <v-list-item-icon>
               <v-icon>mdi-broadcast</v-icon>
             </v-list-item-icon>
@@ -133,7 +156,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasManagerRead" link @click.stop="vmsDevices">
+          <v-list-item v-show="hasPermissionVmsView()" link @click.stop="vmsDevices">
             <v-list-item-icon>
               <v-icon>mdi-cctv</v-icon>
             </v-list-item-icon>
@@ -142,7 +165,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasManagerRead" link @click.stop="vmsLayouts">
+          <v-list-item v-show="hasPermissionVmsView()" link @click.stop="vmsLayouts">
             <v-list-item-icon>
               <v-icon>mdi-view-dashboard</v-icon>
             </v-list-item-icon>
@@ -151,7 +174,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasManagerRead" link @click.stop="vmsEventsCalendar">
+          <v-list-item v-show="hasPermissionVmsView()" link @click.stop="vmsEventsCalendar">
             <v-list-item-icon>
               <v-icon>mdi-calendar</v-icon>
             </v-list-item-icon>
@@ -160,7 +183,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasManagerRead" link @click.stop="vmsEventsList">
+          <v-list-item v-show="hasPermissionVmsView()" link @click.stop="vmsEventsList">
             <v-list-item-icon>
               <v-icon>mdi-view-list</v-icon>
             </v-list-item-icon>
@@ -169,7 +192,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasManagerRead" link @click.stop="vmsUserConfigs">
+          <v-list-item v-show="hasPermissionVmsView()" link @click.stop="vmsUserConfigs">
             <v-list-item-icon>
               <v-icon>mdi-camera-account</v-icon>
             </v-list-item-icon>
@@ -179,9 +202,15 @@ ko:
           </v-list-item>
         </div>
 
-        <v-divider></v-divider>
+        <v-divider
+            v-if="hasPermissionMemberView() || hasPermissionSettingView()"
+        ></v-divider>
 
-        <v-list-item link @click.stop="members">
+        <v-list-item
+            v-show="hasPermissionMemberView()"
+            link
+            @click.stop="members"
+        >
           <v-list-item-icon>
             <v-icon>mdi-account-group</v-icon>
           </v-list-item-icon>
@@ -190,7 +219,11 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item link @click.stop="settings">
+        <v-list-item
+            v-show="hasPermissionSettingView()"
+            link
+            @click.stop="settings"
+        >
           <v-list-item-icon>
             <v-icon>mdi-cog-outline</v-icon>
           </v-list-item-icon>
@@ -252,7 +285,7 @@ export default class NaviMain extends VueBase {
   }
 
   get hasManagerRead() {
-    return this.hasPermissionManagerView();
+    return this.hasPermissionMemberView();
   }
 
   created() {

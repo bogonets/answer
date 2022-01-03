@@ -13,7 +13,7 @@ from recc.database.postgresql.query.role_permission import (
     SELECT_ROLE_PERMISSION_ALL,
     SELECT_ROLE_PERMISSION_BY_ROLE_UID,
     delete_role_permission_by_role_uid,
-    insert_role_permission_by_slug,
+    safe_insert_role_permission_by_slug,
 )
 
 
@@ -30,7 +30,7 @@ class PgRolePermission(DbRolePermission, PgBase):
     ) -> None:
         query_buffer = StringIO()
         for p_slug in permission_slugs:
-            query_buffer.write(insert_role_permission_by_slug(role_uid, p_slug))
+            query_buffer.write(safe_insert_role_permission_by_slug(role_uid, p_slug))
         query = query_buffer.getvalue()
 
         await self.execute(query)
@@ -50,7 +50,7 @@ class PgRolePermission(DbRolePermission, PgBase):
         query_buffer = StringIO()
         query_buffer.write(delete_role_permission_by_role_uid(role_uid))
         for p_slug in permission_slugs:
-            query_buffer.write(insert_role_permission_by_slug(role_uid, p_slug))
+            query_buffer.write(safe_insert_role_permission_by_slug(role_uid, p_slug))
         query = query_buffer.getvalue()
 
         await self.execute(query)

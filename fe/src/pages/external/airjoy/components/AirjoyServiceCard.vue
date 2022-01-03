@@ -250,7 +250,7 @@ export default class AirjoyServiceCard extends VueBase {
   }
 
   get isEditable() {
-    return this.hasPermissionManagerEdit();
+    return this.hasPermissionAirjoyServiceEdit();
   }
 
   formValidate() {
