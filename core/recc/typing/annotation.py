@@ -31,3 +31,9 @@ def eval_annotations(
             update_annotations[key] = annotation
 
     obj.__annotations__ = update_annotations
+
+    # It can be a wrapped object.
+    # Where to use: `inspect.signature` -> ... -> `inspect.unwrap`
+
+    if hasattr(obj, "__wrapped__"):
+        eval_annotations(obj.__wrapped__, global_variables, local_variables)
