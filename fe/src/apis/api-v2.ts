@@ -1061,6 +1061,29 @@ export default class ApiV2 {
         return this.delete(url);
     }
 
+    // ---------------------------
+    // Plugins/VMS/Devices/Configs
+    // ---------------------------
+
+    getVmsDeviceEventsConfigs(
+        group: string,
+        project: string,
+        device: string,
+    ) {
+        const url = `/plugins/vms/${group}/${project}/devices/${device}/events/configs`;
+        return this.get<Array<VmsEventConfigA>>(url);
+    }
+
+    postVmsDeviceEventsConfigs(
+        group: string,
+        project: string,
+        device: string,
+        body: VmsCreateEventConfigQ
+    ) {
+        const url = `/plugins/vms/${group}/${project}/devices/${device}/events/configs`;
+        return this.post(url, body);
+    }
+
     // -----------------------------
     // Plugins/VMS/Devices/Debugging
     // -----------------------------
@@ -1213,16 +1236,6 @@ export default class ApiV2 {
     getVmsEventsDevices(group: string, project: string) {
         const url = `/plugins/vms/${group}/${project}/events/devices`;
         return this.get<Array<number>>(url);
-    }
-
-    getVmsEventsConfigs(group: string, project: string) {
-        const url = `/plugins/vms/${group}/${project}/events/configs`;
-        return this.get<Array<VmsEventConfigA>>(url);
-    }
-
-    postVmsEventsConfigs(group: string, project: string, body: VmsCreateEventConfigQ) {
-        const url = `/plugins/vms/${group}/${project}/events/configs`;
-        return this.post(url, body);
     }
 
     getVmsEventsConfigsPconfig(group: string, project: string, config: string) {

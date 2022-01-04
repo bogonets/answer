@@ -1,11 +1,13 @@
 <i18n lang="yaml">
 en:
+  dashboard: "Dashboard"
   layouts: "Layout: {0}"
   tables: "Tables: {0}"
   tasks: "Tasks: {0}"
   members: "Members: {0}"
 
 ko:
+  dashboard: "대시보드"
   layouts: "레이아웃: {0}"
   tables: "테이블: {0}"
   tasks: "태스크: {0}"
@@ -15,6 +17,20 @@ ko:
 <template>
   <v-container>
     <breadcrumb-main name="Dashboard"></breadcrumb-main>
+    <v-divider></v-divider>
+
+    <v-toolbar flat>
+      <span class="text--secondary text-h6 font-weight-bold">
+        {{ $t('dashboard') }}
+      </span>
+      <v-spacer></v-spacer>
+      <v-chip class="ml-2" small outlined color="primary">
+        <v-icon left>mdi-identifier</v-icon>
+        {{ groupSlug }}
+        <v-icon>mdi-slash-forward</v-icon>
+        {{ projectSlug }}
+      </v-chip>
+    </v-toolbar>
     <v-divider></v-divider>
 
     <v-row class="mt-2">
@@ -75,6 +91,14 @@ export default class MainDashboard extends VueBase {
 
   loading = false;
   item = {} as ProjectOverviewA;
+
+  get groupSlug() {
+    return this.$route.params.group;
+  }
+
+  get projectSlug() {
+    return this.$route.params.project;
+  }
 
   created() {
     this.updateOverview();

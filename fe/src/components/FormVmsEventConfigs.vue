@@ -106,7 +106,7 @@ ko:
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon v-show="false" small class="mr-2" @click="onClickEventEdit(item)">
+        <v-icon small class="mr-2" @click="onClickEventEdit(item)">
           mdi-pencil
         </v-icon>
         <v-icon small class="mr-2" color="error" @click="onClickEventDelete(item)">
@@ -273,8 +273,9 @@ export default class FormVmsEventConfigs extends VueBase {
   requestItems() {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
+    const device = this.$route.params.device;
     this.loading = true;
-    this.$api2.getVmsEventsConfigs(group, project)
+    this.$api2.getVmsDeviceEventsConfigs(group, project, device)
         .then(items => {
           this.loading = false;
           this.items = items;
@@ -320,8 +321,9 @@ export default class FormVmsEventConfigs extends VueBase {
   onClickNewSubmit(body: VmsCreateEventConfigQ) {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
+    const device = this.$route.params.device;
     this.loadingNew = true;
-    this.$api2.postVmsEventsConfigs(group, project, body)
+    this.$api2.postVmsDeviceEventsConfigs(group, project, device, body)
         .then(() => {
           this.loadingNew = false;
           this.showNewDialog = false;
@@ -335,9 +337,6 @@ export default class FormVmsEventConfigs extends VueBase {
   }
 
   onInputEnable(item: VmsEventConfigA, event) {
-    // console.debug(`onInputEnable -> ${event}`)
-    // console.dir(item);
-    // console.dir(event);
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     const config = item.event_config_uid.toString();

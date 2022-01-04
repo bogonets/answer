@@ -4,16 +4,23 @@ en:
     distance: "Distance"
     threshold: "Threshold"
     operator: "Operator"
+    emit_condition: "Emit Condition"
     train_image: "Train Image"
     query_image: "Query Image"
     snapshots: "Snapshots"
+    true: "True"
+    false: "False"
   hints:
     distance: >
       Hamming distance. The higher the value, the more feature points.
     threshold: >
       The higher the threshold value, the more exact the similarity must be.
     operator: >
-      An event is raised when the result of the comparison operation becomes 'True'.
+      An event is raised when the result
+      of the comparison operation becomes {0}.
+    emit_condition: >
+      An event is emitted when the result
+      of the comparison operation becomes {condition}.
     snapshots: "You can select an existing snapshot."
   tools:
     snapshot: "Snapshot"
@@ -26,13 +33,17 @@ ko:
     distance: "거리 임계점"
     threshold: "임계점"
     operator: "비교 연산자"
+    emit_condition: "방출 조건"
     train_image: "기준 이미지"
     query_image: "비교 대상"
     snapshots: "스냅샷"
+    true: "참"
+    false: "거짓"
   hints:
     distance: "해밍 거리 (Hamming distance) 임계점. 값이 클 수록, 특징점이 많아집니다."
     threshold: "임계점 값이 클 수록, 유사도가 정확히 일치해야 합니다."
-    operator: "비교 연산 결과가 '참'이 되면 이벤트가 발생됩니다."
+    operator: "비교 연산 결과가 {0}이 되면 이벤트가 발생됩니다."
+    emit_condition: "비교 연산 결과가 {condition}이 되면 이벤트가 방출됩니다."
     snapshots: "기존에 사용한 스냅샷을 선택할 수 있습니다."
   tools:
     snapshot: "캡쳐"
@@ -143,14 +154,41 @@ ko:
         ></v-slider>
 
         <v-select
+            v-if="showOperator"
             class="mt-2"
             dense
             persistent-hint
             v-model="operator"
             :items="operators"
-            :hint="$t('hints.operator')"
+            :hint="$t('hints.operator', [emitConditionText])"
             @change="onChangeOperator"
         ></v-select>
+
+        <div class="d-flex flex-column mt-2">
+          <div class="d-flex flex-row align-center">
+            <span class="text-body-1 text--secondary">
+              {{ $t('labels.emit_condition') }}
+            </span>
+            <v-spacer></v-spacer>
+            <v-switch
+                class="mt-0"
+                dense
+                inset
+                v-model="emitCondition"
+                hide-details
+            ></v-switch>
+          </div>
+          <i18n
+              class="text-caption text--secondary mt-1"
+              path="hints.emit_condition"
+              tag="span"
+          >
+            <template #condition>
+              <strong :class="emitConditionClass">{{ emitConditionText }}</strong>
+            </template>
+          </i18n>
+        </div>
+
       </v-col>
 
       <v-col
@@ -234,6 +272,9 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     '<=',
   ];
 
+  @Prop({type: Boolean})
+  readonly showOperator!: boolean;
+
   @Prop({type: Number, default: 0})
   readonly minDistance!: number;
 
@@ -246,7 +287,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
   @Prop({type: Number, default: 100})
   readonly maxThreshold!: number;
 
-  @Prop({type: Boolean, default: false})
+  @Prop({type: Boolean})
   readonly useRoiAbsolutePosition!: boolean;
 
   @Prop({type: Object, default: createEmptyObject})
@@ -295,6 +336,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
   distance = 50;
   threshold = 50;
   operator = '>=';
+  emitCondition = true;
 
   trainX1 = 0;
   trainY1 = 0;
@@ -373,6 +415,22 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     return x / width;
   }
 
+  get emitConditionText() {
+    if (this.emitCondition) {
+      return this.$t('labels.true');
+    } else {
+      return this.$t('labels.false');
+    }
+  }
+
+  get emitConditionClass() {
+    if (this.emitCondition) {
+      return 'green--text';
+    } else {
+      return 'red--text';
+    }
+  }
+
   getExtra() {
     return {
       train_image_uuid: this.snapshotName,
@@ -383,6 +441,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
       distance: this.distancePercentage,
       threshold: this.thresholdPercentage,
       operator: this.operator,
+      emit_condition: this.emitCondition,
       x1: this.x1,
       y1: this.y1,
       x2: this.x2,
@@ -416,6 +475,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     this.value.distance = this.distancePercentage;
     this.value.threshold = this.thresholdPercentage;
     this.value.operator = this.operator;
+    this.value.emit_condition = this.emitCondition;
     this.value.x1 = this.x1;
     this.value.y1 = this.y1;
     this.value.x2 = this.x2;

@@ -3,11 +3,19 @@ en:
   labels:
     threshold: "Threshold"
     operator: "Operator"
+    emit_condition: "Emit Condition"
+    true: "True"
+    false: "False"
   hints:
     threshold: >
-      The higher the threshold value, the more accurately the colors should match.
+      The higher the threshold value,
+      the more accurately the colors should match.
     operator: >
-      An event is raised when the result of the comparison operation becomes 'True'.
+      An event is raised when the result
+      of the comparison operation becomes {0}.
+    emit_condition: >
+      An event is emitted when the result
+      of the comparison operation becomes {condition}.
   tools:
     pipette: "Pipette"
     clear: "Clear selection"
@@ -17,9 +25,13 @@ ko:
   labels:
     threshold: "임계점"
     operator: "비교 연산자"
+    emit_condition: "방출 조건"
+    true: "참"
+    false: "거짓"
   hints:
     threshold: "임계점 값이 클 수록, 색상과 정확히 일치해야 합니다."
-    operator: "비교 연산 결과가 '참'이 되면 이벤트가 발생됩니다."
+    operator: "비교 연산 결과가 {0}이 되면 이벤트가 발생됩니다."
+    emit_condition: "비교 연산 결과가 {condition}이 되면 이벤트가 방출됩니다."
   tools:
     pipette: "스포이드"
     clear: "영역 해제"
@@ -55,15 +67,42 @@ ko:
             @change="onChangeThreshold"
         ></v-slider>
         <v-select
+            v-if="showOperator"
             class="mt-2"
             dense
             persistent-hint
             v-model="operator"
             :items="operators"
-            :hint="$t('hints.operator')"
+            :hint="$t('hints.operator', [emitConditionText])"
             @change="onChangeOperator"
         >
         </v-select>
+
+        <div class="d-flex flex-column mt-2">
+          <div class="d-flex flex-row align-center">
+            <span class="text-body-1 text--secondary">
+              {{ $t('labels.emit_condition') }}
+            </span>
+            <v-spacer></v-spacer>
+            <v-switch
+                class="mt-0"
+                dense
+                inset
+                v-model="emitCondition"
+                hide-details
+            ></v-switch>
+          </div>
+          <i18n
+              class="text-caption text--secondary mt-1"
+              path="hints.emit_condition"
+              tag="span"
+          >
+            <template #condition>
+              <strong :class="emitConditionClass">{{ emitConditionText }}</strong>
+            </template>
+          </i18n>
+        </div>
+
       </v-col>
       <v-col
           cols="12"
@@ -121,28 +160,7 @@ import VueBase from '@/base/VueBase';
 import MediaPlayer from '@/media/MediaPlayer.vue';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import type {VmsEventConfigColorQ} from '@/packet/vms';
-
-function createEmptyObject() {
-  return {} as VmsEventConfigColorQ;
-}
-
-function componentToHex(c: number) {
-  const hex = c.toString(16);
-  return hex.length == 1 ? '0' + hex : hex;
-}
-
-function rgbToHex(r: number, g: number, b: number) {
-  return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
-}
-
-function hexToRgb(hex: string) {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16),
-  } : undefined;
-}
+import {rgbToHex} from '@/color';
 
 @Component({
   components: {
@@ -160,13 +178,16 @@ export default class FormVmsEventConfigsColor extends VueBase {
     '<=',
   ];
 
+  @Prop({type: Boolean})
+  readonly showOperator!: boolean;
+
   @Prop({type: Number, default: 0})
   readonly minThreshold!: number;
 
   @Prop({type: Number, default: 100})
   readonly maxThreshold!: number;
 
-  @Prop({type: Object, default: createEmptyObject})
+  @Prop({type: Object, default: () => new Object()})
   readonly value!: VmsEventConfigColorQ;
 
   @Prop({type: Boolean, default: false})
@@ -180,6 +201,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
   color = '#FF0000';
   threshold = 50;
   operator = '>=';
+  emitCondition = true;
   x1 = 0;
   y1 = 0;
   x2 = 0;
@@ -205,6 +227,22 @@ export default class FormVmsEventConfigsColor extends VueBase {
     return x / width;
   }
 
+  get emitConditionText() {
+    if (this.emitCondition) {
+      return this.$t('labels.true');
+    } else {
+      return this.$t('labels.false');
+    }
+  }
+
+  get emitConditionClass() {
+    if (this.emitCondition) {
+      return 'green--text';
+    } else {
+      return 'red--text';
+    }
+  }
+
   getExtra() {
     const red = Number.parseInt(this.color.substr(1, 2), 16);
     const green = Number.parseInt(this.color.substr(3, 2), 16);
@@ -216,6 +254,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
       blue: blue,
       threshold: this.thresholdPercentage,
       operator: this.operator,
+      emit_condition: this.emitCondition,
       x1: this.x1,
       y1: this.y1,
       x2: this.x2,
@@ -249,6 +288,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
     this.value.blue = blue;
     this.value.threshold = this.thresholdPercentage;
     this.value.operator = this.operator;
+    this.value.emit_condition = this.emitCondition;
     this.value.x1 = this.x1;
     this.value.y1 = this.y1;
     this.value.x2 = this.x2;

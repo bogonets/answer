@@ -383,6 +383,7 @@ export interface VmsEventConfigColorQ {
     blue: number;
     threshold: number;
     operator: string;
+    emit_condition: boolean;
     x1: number;
     y1: number;
     x2: number;
@@ -409,6 +410,7 @@ export interface VmsEventConfigMatchingQ {
     distance: number;
     threshold: number;
     operator: string;
+    emit_condition: boolean;
     x1: number;
     y1: number;
     x2: number;

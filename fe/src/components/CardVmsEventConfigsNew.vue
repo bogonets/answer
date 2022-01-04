@@ -267,10 +267,6 @@ import requiredField from '@/rules/required';
 import type {
   VmsDeviceA,
   VmsCreateEventConfigQ,
-  VmsEventConfigColorQ,
-  VmsEventConfigDetectionQ,
-  VmsEventConfigMatchingQ,
-  VmsEventConfigOcrQ,
 } from '@/packet/vms';
 import {
   EVENT_CATEGORY_NAME_COLOR,
@@ -368,11 +364,6 @@ export default class CardVmsEventConfigsNew extends VueBase {
   enable = false;
   extra = {};
   extraValid = false;
-
-  // VmsEventConfigColorQ
-  // VmsEventConfigDetectionQ
-  // VmsEventConfigMatchingQ
-  // VmsEventConfigOcrQ;
 
   created() {
     this.requestSetup();
