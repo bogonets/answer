@@ -7,16 +7,11 @@ ko:
 </i18n>
 
 <template>
-  <v-row
-      v-intersect="onIntersect"
-      class="fill-height ma-0"
-      align="center"
-      justify="center"
-  >
+  <div class="d-flex flex-row align-center justify-center" @click="onClick">
     <v-progress-circular
         v-if="loading"
         indeterminate
-        color="grey lighten-5"
+        :color="progressCircularColor"
     ></v-progress-circular>
     <v-img
         v-else-if="existsSnapshot"
@@ -32,14 +27,23 @@ ko:
     <v-icon v-else>
       mdi-close
     </v-icon>
-  </v-row>
+  </div>
 </template>
 
 <script lang="ts">
 import {Vue, Component, Prop} from 'vue-property-decorator';
+import colors from 'vuetify/lib/util/colors'
+import Viewer from 'viewerjs';
+import 'viewerjs/dist/viewer.css';
+
+function defaultOptions() {
+  return {
+  } as Viewer.Options;
+}
+
 
 @Component
-export default class LeftTitle extends Vue {
+export default class VmsSnapshot extends Vue {
   @Prop({type: String})
   readonly group!: string;
 
@@ -48,6 +52,9 @@ export default class LeftTitle extends Vue {
 
   @Prop({type: String})
   readonly file!: string;
+
+  @Prop({type: String})
+  readonly progressColor!: string;
 
   @Prop({type: Number})
   readonly height!: number;
@@ -67,74 +74,89 @@ export default class LeftTitle extends Vue {
   @Prop({type: Number})
   readonly minWidth!: number;
 
-  @Prop({type: Boolean})
-  readonly thumbnail!: boolean;
-
-  isIntersecting = true;
   loading = false;
+  contentType = '';
+  encoding = '';
+  content = '';
 
-  snapshotContentType = '';
-  snapshotEncoding = '';
-  snapshotContent = '';
+  mounted() {
+    this.loading = true;
+    const group = this.group;
+    const project = this.project;
+    const file = this.file;
+
+    this.$api2.getVmsEventsThumbnailsPevent(group, project, file)
+        .then(item => {
+          this.loading = false;
+          this.contentType = item.content_type;
+          this.encoding = item.encoding;
+          this.content = item.content;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.contentType = '';
+          this.encoding = '';
+          this.content = '';
+          console.error(error);
+        });
+  }
 
   get existsSnapshot() {
-    const contentType = this.snapshotContentType;
-    const encoding = this.snapshotEncoding;
-    const content = this.snapshotContent;
-    return contentType && encoding && content;
+    return this.contentType && this.encoding && this.content;
   }
 
   get snapshotData() {
-    const contentType = this.snapshotContentType;
-    const encoding = this.snapshotEncoding;
-    const content = this.snapshotContent;
-    return `data:${contentType};${encoding}, ${content}`;
+    return `data:${this.contentType};${this.encoding}, ${this.content}`;
   }
 
-  onIntersect(entries, observer, isIntersecting) {
-    this.isIntersecting = entries[0].isIntersecting;
-
-    if (this.isIntersecting) {
-      if (this.existsSnapshot) {
-        return;  // Exists snapshot.
-      }
-      if (this.loading) {
-        return;  // Load did not complete.
-      }
-
-      this.loading = true;
-      const group = this.group;
-      const project = this.project;
-      const file = this.file;
-
-      let promise;
-      if (this.thumbnail) {
-        promise = this.$api2.getVmsEventsThumbnailsPevent(group, project, file)
-      } else {
-        promise = this.$api2.getVmsEventsSnapshotsPevent(group, project, file)
-      }
-
-      const imageTypeMsg = this.thumbnail ? 'thumbnail' : 'snapshot';
-      promise
-          .then(item => {
-            this.loading = false;
-            this.snapshotContentType = item.content_type;
-            this.snapshotEncoding = item.encoding;
-            this.snapshotContent = item.content;
-            if (this.existsSnapshot) {
-              console.debug(`Event ${file} ${imageTypeMsg} load successful!`);
-            } else {
-              console.warn(`Event ${file} ${imageTypeMsg} loaded. but content is none.`);
-            }
-          })
-          .catch(error => {
-            this.loading = false;
-            this.snapshotContentType = '';
-            this.snapshotEncoding = '';
-            this.snapshotContent = '';
-            console.error(error);
-          });
+  get progressCircularColor() {
+    if (this.progressColor) {
+      return this.progressColor;
     }
+    if (this.$vuetify.theme.dark) {
+      return colors.grey.darken1;
+    } else {
+      return colors.grey.lighten5;
+    }
+  }
+
+  onClick() {
+    const group = this.group;
+    const project = this.project;
+    const file = this.file;
+
+    this.$api2.getVmsEventsSnapshotsPevent(group, project, file)
+        .then(item => {
+          const contentType = item.content_type;
+          const encoding = item.encoding;
+          const content = item.content;
+          const image = new Image();
+          image.src = `data:${contentType};${encoding}, ${content}`;
+          image.alt = file;
+          const viewer = new Viewer(image, {
+            navbar: false,
+            toolbar: {
+              flipHorizontal: 1,
+              flipVertical: 1,
+              next: 0,
+              oneToOne: 1,
+              play: 0,
+              prev: 0,
+              reset: 1,
+              rotateLeft: 1,
+              rotateRight: 1,
+              zoomIn: 1,
+              zoomOut: 1,
+            },
+            hidden: function () {
+              viewer.destroy();
+            },
+          });
+          viewer.show();
+        })
+        .catch(error => {
+          console.error(error);
+        });
   }
 }
 </script>

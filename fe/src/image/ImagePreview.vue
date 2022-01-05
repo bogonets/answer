@@ -27,8 +27,8 @@
 <script lang="ts">
 import {Vue, Component, Prop, Ref, Watch} from 'vue-property-decorator';
 import colors from 'vuetify/lib/util/colors'
-import 'viewerjs/dist/viewer.css';
 import Viewer from 'viewerjs';
+import 'viewerjs/dist/viewer.css';
 
 function defaultOptions() {
   return {
@@ -87,6 +87,9 @@ export default class ImagePreview extends Vue {
   @Prop({type: Boolean})
   readonly loading!: boolean;
 
+  @Prop({type: Boolean})
+  readonly preview!: boolean;
+
   @Ref()
   readonly image!: HTMLImageElement;
 
@@ -102,7 +105,9 @@ export default class ImagePreview extends Vue {
   }
 
   refreshViewer() {
-    this.viewer = new Viewer(this.image, this.options);
+    if (this.preview) {
+      this.viewer = new Viewer(this.image, this.options);
+    }
   }
 
   show() {

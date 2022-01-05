@@ -9,7 +9,6 @@ en:
     search: "Search"
     description: "Description"
     new_description: "Add new description"
-    snapshot: "Snapshot"
   period:
     date: "Date"
   category:
@@ -41,7 +40,6 @@ ko:
     search: "검색"
     description: "상세 설명"
     new_description: "새로운 설명 추가"
-    snapshot: "스냅샷"
   period:
     date: "날짜"
   category:
@@ -249,10 +247,7 @@ ko:
             </div>
           </div>
 
-          <div
-              class="event-reference"
-              @click="onClickThumbnail(item)"
-          >
+          <div class="event-reference">
             <vms-snapshot
                 thumbnail
                 v-ripple
@@ -309,33 +304,7 @@ ko:
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="showSnapshotDialog" max-width="90%">
-      <v-card>
-        <div class="d-flex flex-column align-center justify-center text-h6 text--secondary pa-2">
-          {{ $t('labels.snapshot') }}
-        </div>
-
-        <div class="d-flex flex-column align-center justify-center mt-4">
-          <vms-snapshot
-              v-if="!!snapshotEventUid"
-              :key="snapshotEventUid"
-              :group="$route.params.group"
-              :project="$route.params.project"
-              :file="snapshotEventUid"
-          ></vms-snapshot>
-        </div>
-
-        <div class="d-flex flex-row align-center justify-center pa-4">
-          <v-btn @click="onClickSnapshotClose">
-            <v-icon left>
-              mdi-close
-            </v-icon>
-            {{ $t('close') }}
-          </v-btn>
-        </div>
-      </v-card>
-    </v-dialog>
-
+    <div v-show="false"></div>
   </v-container>
 </template>
 
@@ -484,9 +453,6 @@ export default class MainVmsEventsList extends VueBase {
   modified = false;
   submitTagLoading = false;
 
-  showSnapshotDialog = false;
-  snapshotEventUid = '';
-
   created() {
     if (typeof this.$route.params.date !== 'undefined') {
       this.date = this.$route.params.date;
@@ -606,16 +572,6 @@ export default class MainVmsEventsList extends VueBase {
           this.search = false;
           this.toastRequestFailure(error);
         });
-  }
-
-  onClickThumbnail(item: VmsEventA) {
-    this.snapshotEventUid = item.file;
-    this.showSnapshotDialog = true;
-  }
-
-  onClickSnapshotClose() {
-    this.showSnapshotDialog = false;
-    this.snapshotEventUid = '';
   }
 
   onClickTag(item: VmsEventA) {

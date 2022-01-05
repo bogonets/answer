@@ -3,8 +3,6 @@ en:
   menu:
     events: "Events"
     setting: "Setting"
-  labels:
-    snapshot: "Snapshot"
   msg:
     new_events: "{0} events have been added."
   unknown_device: "[Unknown Device]"
@@ -15,8 +13,6 @@ ko:
   menu:
     events: "이벤트"
     setting: "설정"
-  labels:
-    snapshot: "스냅샷"
   msg:
     new_events: "{0}개의 이벤트가 추가되었습니다."
   unknown_device: "[알 수 없는 장치]"
@@ -59,10 +55,7 @@ ko:
         >
           <template v-slot:default="{ item }">
             <v-list-item class="ma-0" :key="item.event_uid">
-              <div
-                  class="event-reference"
-                  @click="onClickThumbnail(item)"
-              >
+              <div class="event-reference">
                 <vms-snapshot
                     thumbnail
                     v-ripple
@@ -127,35 +120,6 @@ ko:
         </v-list>
       </v-menu>
     </view-port>
-
-    <v-dialog v-model="showSnapshotDialog" max-width="500px">
-      <v-card>
-        <div class="d-flex flex-column align-center justify-center text-h6 text--secondary pa-2">
-          {{ $t('labels.snapshot') }}
-        </div>
-
-        <div class="d-flex flex-column align-center justify-center mt-4">
-          <vms-snapshot
-              v-if="snapshotEventUid"
-              :key="snapshotEventUid"
-              :group="$route.params.group"
-              :project="$route.params.project"
-              :file="snapshotEventUid"
-              :height="480"
-              :width="480"
-          ></vms-snapshot>
-        </div>
-
-        <div class="d-flex flex-row align-center justify-center pa-4">
-          <v-btn @click="onClickSnapshotClose">
-            <v-icon left>
-              mdi-close
-            </v-icon>
-            {{ $t('close') }}
-          </v-btn>
-        </div>
-      </v-card>
-    </v-dialog>
 
   </div>
 </template>
@@ -231,9 +195,6 @@ export default class MainVmsLive extends VueBase {
   latestTime = Date.now();
   events = [] as Array<VmsEventA>;
   lastEventTime = moment().tz(moment.tz.guess()).format();
-
-  showSnapshotDialog = false;
-  snapshotEventUid = '';
 
   intervalHandle = -1;
 
@@ -480,18 +441,6 @@ export default class MainVmsLive extends VueBase {
 
   onClickFoldNavigation() {
     this.mini = !this.mini;
-  }
-
-  onClickThumbnail(item: VmsEventA) {
-    this.showSnapshotDialog = true;
-    this.$nextTick(() => {
-      this.snapshotEventUid = item.file;
-    });
-  }
-
-  onClickSnapshotClose() {
-    this.showSnapshotDialog = false;
-    this.snapshotEventUid = '';
   }
 
   onResize() {
