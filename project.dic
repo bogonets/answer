@@ -82,6 +82,7 @@ newshape
 nobuffer
 nocov
 noninteractive
+notext
 oem
 oems
 objname

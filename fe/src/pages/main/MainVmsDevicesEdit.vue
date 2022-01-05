@@ -63,7 +63,7 @@ ko:
                 :value="original"
                 :group="$route.params.group"
                 :project="$route.params.project"
-                :device="Number.parseInt($route.params.device)"
+                :device="$route.params.device"
             ></media-player>
           </v-tab-item>
 

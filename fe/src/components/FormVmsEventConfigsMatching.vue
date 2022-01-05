@@ -210,7 +210,7 @@ ko:
               :value="device"
               :group="$route.params.group"
               :project="$route.params.project"
-              :device="Number.parseInt($route.params.device)"
+              :device="$route.params.device"
               :use-annotation-tools="annotationMode"
               :use-roi-absolute-position="useRoiAbsolutePosition"
               @roi="onRoi"

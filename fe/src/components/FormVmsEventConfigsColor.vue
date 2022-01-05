@@ -118,7 +118,7 @@ ko:
             height="300px"
             :group="$route.params.group"
             :project="$route.params.project"
-            :device="Number.parseInt($route.params.device)"
+            :device="$route.params.device"
             :use-color-picker="pipetteMode"
             @pipette="onPipette"
             :use-annotation-tools="annotationMode"

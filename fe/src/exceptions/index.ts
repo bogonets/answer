@@ -15,3 +15,21 @@ export class TypeException extends TypeError {
     super(message);
   }
 }
+
+export class IllegalStateException extends Error {
+  constructor(message?: string) {
+    super(message);
+  }
+}
+
+export class IllegalArgumentException extends Error {
+  constructor(message?: string) {
+    super(message);
+  }
+}
+
+export class InaccessibleAreaException extends Error {
+  constructor(message?: string) {
+    super(message);
+  }
+}

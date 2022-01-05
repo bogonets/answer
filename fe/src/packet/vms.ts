@@ -157,6 +157,7 @@ export interface VmsDeviceA {
 
     server_running?: boolean;
     server_status?: number;
+    server_debugging?: boolean;
 }
 
 export interface VmsCreateDeviceQ {
@@ -453,8 +454,8 @@ export interface VmsEventConfigOcrQ {
 export const VMS_CHANNEL_META_CODE_SUCCESS = 0;
 export const VMS_CHANNEL_META_CODE_OPENED = 1;
 export const VMS_CHANNEL_META_CODE_FILTERED = 2;
-export const VMS_CHANNEL_META_CODE_BAD_ARGUMENT = 10;
-export const VMS_CHANNEL_META_CODE_NOT_READY_ROI = 11;
+export const VMS_CHANNEL_META_CODE_BAD_ARGUMENT = -1;
+export const VMS_CHANNEL_META_CODE_NOT_READY_ROI = -2;
 
 export interface VmsChannelMeta {
     code: number;

@@ -19,7 +19,7 @@
           :width="width"
           :height="height"
           :style="imgStyle"
-      >
+      />
     </div>
   </div>
 </template>

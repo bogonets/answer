@@ -95,7 +95,6 @@ ko:
             v-for="n in maxCards"
             :key="`${n}-${loading}`"
             :style="cardStyle(n)"
-            hide-controller
             :group="$route.params.group"
             :project="$route.params.project"
             :device="getDeviceUid(n)"

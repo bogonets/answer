@@ -7,11 +7,30 @@ en:
     ice_complete: "ICE complete"
     ice_unknown: "ICE unknown error"
     sdp_exchange: "Exchanging SDP ..."
+    online: "Online"
     negotiation_failed: "Negotiation failed"
     disconnected: "Disconnected"
-    server_status_error: "Server status error: {0}"
+    server_error: "Server status error: {0}"
     invalid: "Settings are required"
     unknown: "Unknown status"
+  labels:
+    reconnect: "Reconnect"
+    fullscreen: "Fullscreen"
+    debugging: "Debugging"
+    information: "Information"
+  hints:
+    logo_alt: "Answer"
+  tooltips:
+    debugging_mode: "Debugging mode is enabled"
+    enable_event_detection: "Event detection is enabled"
+    disable_event_detection: "Event detection is disabled"
+    latest_event_time: "Latest event time: {0}"
+  vms_channel_meta:
+    opened: "A channel between server and client has been opened"
+    filtered: "Completed successfully, but no event occurred"
+    not_ready_roi: "Not ready ROI"
+    bad_argument: "Bad arguments"
+    unknown_code: "Unknown code: {0}"
 
 ko:
   status:
@@ -21,11 +40,30 @@ ko:
     ice_complete: "ICE 후보 수집 완료"
     ice_unknown: "알 수 없는 ICE 상태"
     sdp_exchange: "SDP 교환 중..."
+    online: "온라인"
     negotiation_failed: "Negotiation failed"
-    disconnected: "연결이 끊어졌습니다"
-    server_status_error: "서버가 비정상 상태 입니다: {0}"
+    disconnected: "서버와 연결이 끊어졌습니다"
+    server_error: "서버가 비정상 상태 입니다: {0}"
     invalid: "설정이 필요합니다"
     unknown: "알 수 없는 상태"
+  labels:
+    reconnect: "재접속"
+    fullscreen: "전체 화면"
+    debugging: "디버깅"
+    information: "정보"
+  hints:
+    logo_alt: "Answer"
+  tooltips:
+    debugging_mode: "디버깅 모드가 활성화 되었습니다"
+    enable_event_detection: "이벤트 감지 중 입니다"
+    disable_event_detection: "이벤트 감지가 비활성화 되었습니다"
+    latest_event_time: "마지막 이벤트 발생 시간: {0}"
+  vms_channel_meta:
+    opened: "서버와 클라이언트 사이의 채널이 열렸습니다"
+    filtered: "성공적으로 완료되었지만 이벤트가 발생하지 않았습니다"
+    not_ready_roi: "관심영역(ROI)이 준비되지 않았습니다"
+    bad_argument: "잘못된 인수"
+    unknown_code: "알 수 없는 에러 코드: {0}"
 </i18n>
 
 <template>
@@ -48,13 +86,26 @@ ko:
           v-show="showSystemBar(hover)"
           absolute
           lights-out
+          :height="systemBarHeight"
       >
-        <v-icon :color="statusIconColor">{{ statusIcon }}</v-icon>
-        <span>{{ statusLabel }}</span>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon
+                :color="statusIconColor"
+                v-bind="attrs"
+                v-on="on"
+            >
+              {{ statusIcon }}
+            </v-icon>
+          </template>
+          <span>{{ statusTooltip }}</span>
+        </v-tooltip>
+
+        <span>{{ value.name }}</span>
 
         <v-spacer></v-spacer>
         <v-progress-circular
-            v-if="loading || loadingStatusCode"
+            v-if="loading || loadingByStatusCode"
             size="14"
             width="2"
             indeterminate
@@ -63,10 +114,51 @@ ko:
           <v-icon v-if="false">mdi-video-4k-box</v-icon>
           <v-icon v-if="false">mdi-video-off</v-icon>
           <v-icon v-if="false" color="red">mdi-record</v-icon>
-          <v-icon>mdi-volume-off</v-icon>
-          <v-icon>{{ signalIcon }}</v-icon>
+
+          <v-tooltip v-if="value.server_debugging" bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon v-bind="attrs" v-on="on">mdi-bug</v-icon>
+            </template>
+            <span>{{ $t('tooltips.debugging_mode') }}</span>
+          </v-tooltip>
+
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon v-bind="attrs" v-on="on">
+                {{ activeIcon }}
+              </v-icon>
+            </template>
+            <span>{{ activeTooltip }}</span>
+          </v-tooltip>
+
+          <v-icon v-if="false">mdi-volume-off</v-icon>
+          <v-icon v-if="false">{{ signalIcon }}</v-icon>
         </div>
       </v-system-bar>
+
+      <v-sheet
+          v-if="showInformationPanel && online && channelOpened"
+          rounded
+          class="information-panel"
+          transition="slide-x-transition"
+          :style="`top: ${getInfoPanelTop(hover)};`"
+      >
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon small :color="informationIconColor">
+              {{ informationIcon }}
+            </v-icon>
+            <div v-bind="attrs" v-on="on">
+              <span class="ml-1 text--secondary text-body-2">
+                {{ informationText }}
+              </span>
+            </div>
+          </template>
+          <span>
+            {{ $t('tooltips.latest_event_time', [informationDate]) }}
+          </span>
+        </v-tooltip>
+      </v-sheet>
 
       <div
           class="media-content"
@@ -101,6 +193,8 @@ ko:
             @play="onPlay"
             @resize="onResize"
         ></video>
+
+        <!-- Canvas for real-time snapshots -->
         <canvas
             v-show="online"
             class="canvas-snap"
@@ -113,7 +207,7 @@ ko:
             v-show="!online"
             class="brand-logo"
             src="@/assets/logo/answer-logo-notext.svg"
-            alt="ANSWER"
+            :alt="$t('hints.logo_alt')"
         />
       </div>
 
@@ -123,12 +217,89 @@ ko:
           v-show="showController(hover)"
       >
         <v-btn icon @click="onClickPlay">
-          <v-icon>{{ playIcon }}</v-icon>
+          <v-icon>{{ playButtonIcon }}</v-icon>
         </v-btn>
-        <v-progress-linear rounded color="grey"></v-progress-linear>
-        <v-btn icon @click="onClickMore">
-          <v-icon>mdi-dots-horizontal</v-icon>
+        <v-progress-linear
+            rounded
+            :color="progressLineColor"
+        ></v-progress-linear>
+
+        <v-btn icon :disabled="disableActiveButton" @click="onClickActive">
+          <v-icon>{{ activeButtonIcon }}</v-icon>
         </v-btn>
+
+        <v-menu
+            top
+            left
+            offset-y
+            transition="slide-x-reverse-transition"
+            :close-on-content-click="false"
+            v-model="showMoreMenu"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                icon
+                @click="onClickMore"
+                v-bind="attrs"
+                v-on="on"
+            >
+              <v-icon>mdi-dots-horizontal</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list dense>
+            <v-list-item :disabled="loadingByStatusCode" @click="onClickReconnect">
+              <v-list-item-icon>
+                <v-icon>mdi-reload</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('labels.reconnect') }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-bug</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('labels.debugging') }}</v-list-item-title>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-switch
+                    dense
+                    :disabled="disableDebugButton"
+                    :value="value.server_debugging"
+                    @change="onChangeDebugging"
+                ></v-switch>
+              </v-list-item-action>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-information</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('labels.information') }}</v-list-item-title>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-switch
+                    dense
+                    :disabled="disableInfoButton"
+                    v-model="showInformationPanel"
+                ></v-switch>
+              </v-list-item-action>
+            </v-list-item>
+
+            <v-list-item @click="onClickFullscreen">
+              <v-list-item-icon>
+                <v-icon>mdi-fullscreen</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('labels.fullscreen') }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </div>
     </v-card>
   </v-hover>
@@ -137,11 +308,14 @@ ko:
 <script lang="ts">
 import {Component, Prop, Ref, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import {createMoment} from '@/chrono/date';
+import colors from 'vuetify/lib/util/colors'
 import type {
   VmsDeviceA,
   RtcOfferQ,
   VmsChannelMeta,
   VmsChannelMetaConsume,
+  VmsUpdateDeviceQ,
 } from '@/packet/vms';
 import {
   TRANSCEIVER_KIND_VIDEO,
@@ -151,43 +325,70 @@ import {
   DEFAULT_VIDEO_TRANSCEIVER_INIT,
   DEFAULT_AUDIO_TRANSCEIVER_INIT,
   DEFAULT_DATA_CHANNEL_INIT,
-  createEmptyVmsDeviceA,
   VMS_CHANNEL_META_CODE_SUCCESS,
   VMS_CHANNEL_META_CODE_OPENED,
   VMS_CHANNEL_META_CODE_BAD_ARGUMENT,
   VMS_CHANNEL_META_CODE_NOT_READY_ROI,
   VMS_CHANNEL_META_CONSUME_CODE_SUCCESS,
   VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN_ERRORS,
+  VMS_CHANNEL_META_CODE_FILTERED,
 } from '@/packet/vms';
+import {
+  IllegalStateException,
+  IllegalArgumentException,
+} from "@/exceptions";
 
-const OFFLINE_MEDIA_PLAYER_HEIGHT = "400px";
+enum Status {
+  Loading,
+  IceNew,
+  IceGathering,
+  IceComplete,
+  SdpExchange,
+  Online,
+  NegotiationFailed,
+  IceUnknown,
+  Disconnected,
+  ServerError,
+  InvalidParameters,
+  Closed,
+}
 
-const STATUS_LOADING = 0;
-const STATUS_ICE_NEW = 1;
-const STATUS_ICE_GATHERING = 2;
-const STATUS_ICE_COMPLETE = 3;
-const STATUS_SDP_EXCHANGE = 4;
-const STATUS_ONLINE = 10;
-const STATUS_NEGOTIATION_FAILED = -1;
-const STATUS_ICE_UNKNOWN = -2;
-const STATUS_DISCONNECTED = -3;
-const STATUS_SERVER_STATUS_ERROR = -4;
-const STATUS_INVALID_PARAMETERS = -5;
+function loadingStatus(status: Status) {
+  switch (status) {
+    case Status.Loading:
+    case Status.IceNew:
+    case Status.IceGathering:
+    case Status.IceComplete:
+    case Status.SdpExchange:
+      return true;
+    default:
+      return false;
+  }
+}
 
-function gatheringStateCode(state: RTCIceGatheringState) {
+function gatheringStatus(state: RTCIceGatheringState) {
   if (state === 'new') {
-    return STATUS_ICE_NEW;
+    return Status.IceNew;
   } else if (state === 'gathering') {
-    return STATUS_ICE_GATHERING;
+    return Status.IceGathering;
   } else if (state === 'complete') {
-    return STATUS_ICE_COMPLETE;
+    return Status.IceComplete;
   } else {
-    return STATUS_ICE_UNKNOWN;
+    return Status.IceUnknown;
   }
 }
 
 @Component
 export default class MediaPlayer extends VueBase {
+  @Prop({type: String, default: ''})
+  readonly group!: string;
+
+  @Prop({type: String, default: ''})
+  readonly project!: string;
+
+  @Prop({type: [String, Number]})
+  readonly device?: string | number;
+
   @Prop({type: Boolean, default: false})
   readonly hideSystemBar!: boolean;
 
@@ -218,34 +419,28 @@ export default class MediaPlayer extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly loading!: boolean;
 
-  @Prop({type: String})
-  readonly group!: string;
+  @Prop({type: [String, Number]})
+  readonly width?: string | number;
 
-  @Prop({type: String})
-  readonly project!: string;
+  @Prop({type: [String, Number]})
+  readonly height?: string | number;
 
-  @Prop({type: Number})
-  readonly device!: number;
+  @Prop({type: [String, Number]})
+  readonly minWidth?: string | number;
 
-  @Prop({type: String})
-  readonly width!: string;
+  @Prop({type: [String, Number]})
+  readonly minHeight?: string | number;
 
-  @Prop({type: String})
-  readonly height!: string;
+  @Prop({type: [String, Number]})
+  readonly maxWidth?: string | number;
 
-  @Prop({type: String})
-  readonly minWidth!: string;
+  @Prop({type: [String, Number]})
+  readonly maxHeight?: string | number;
 
-  @Prop({type: String})
-  readonly minHeight!: string;
+  @Prop({type: [String, Number], default: '24px'})
+  readonly systemBarHeight?: string | number;
 
-  @Prop({type: String})
-  readonly maxWidth!: string;
-
-  @Prop({type: String})
-  readonly maxHeight!: string;
-
-  @Prop({type: Object, default: createEmptyVmsDeviceA})
+  @Prop({type: Object, default: () => new Object()})
   readonly value!: VmsDeviceA;
 
   @Ref('canvas-user')
@@ -270,7 +465,8 @@ export default class MediaPlayer extends VueBase {
   videoWidth = 0;
   videoHeight = 0;
 
-  statusCode = STATUS_LOADING;
+  statusCode = Status.Closed;
+  channelOpened = false;
   signalLevel = 0;
   connectionState = '';
   channelState = '';
@@ -281,34 +477,80 @@ export default class MediaPlayer extends VueBase {
   dataChannelInit = DEFAULT_DATA_CHANNEL_INIT;
 
   peer_id?: number = undefined;
-  pc?: RTCPeerConnection = undefined;
   channel?: RTCDataChannel = undefined;
+  pc?: RTCPeerConnection = undefined;
 
   channel_message_working = false;
 
+  showInformationPanel = true;
+  informationCode = VMS_CHANNEL_META_CODE_SUCCESS;
+  informationText = '';
+  informationDate = '';
+
+  showMoreMenu = false;
+  disableActiveButton = false;
+  disableDebugButton = false;
+  disableInfoButton = false;
+
   mounted() {
     this.paused = this.rtcVideo.paused;
+    try {
+      this.open();
+    } catch (error) {
+      if (error instanceof IllegalArgumentException) {
+        // Nothing to do.
+      } else {
+        throw error;
+      }
+    }
+  }
 
-    const group = this.group;
-    const project = this.project;
-    const device = this.device;
+  beforeDestroy() {
+    this.close();
+  }
 
-    if (!(group && project && device)) {
-      this.statusCode = STATUS_INVALID_PARAMETERS;
-      return;
+  get deviceNumber() {
+    if (typeof this.device === 'undefined') {
+      return 0;
+    } else if (typeof this.device === 'string') {
+      return Number.parseInt(this.device);
+    } else {
+      return this.device;
+    }
+  }
+
+  get deviceText() {
+    if (typeof this.device === 'undefined') {
+      return '';
+    } else if (typeof this.device === 'string') {
+      return this.device;
+    } else {
+      return this.device.toString();
+    }
+  }
+
+  open() {
+    if (loadingStatus(this.statusCode)) {
+      throw new IllegalStateException('Now loading ...');
     }
 
-    this.statusCode = STATUS_LOADING;
+    if (!(this.group && this.project && this.device)) {
+      this.statusCode = Status.InvalidParameters;
+      throw new IllegalArgumentException();
+    }
+
+    this.statusCode = Status.Loading;
+    this.channelOpened = false;
     (async () => {
       await this.doNegotiate();
     })();
   }
 
-  beforeDestroy() {
+  close() {
     if (typeof this.peer_id !== 'undefined') {
       const group = this.group;
       const project = this.project;
-      const device = this.device.toString();
+      const device = this.deviceText;
       const peer = this.peer_id.toString();
       this.$api2.deleteVmsDeviceRtcJsep(group, project, device, peer)
           .then(() => {
@@ -317,6 +559,7 @@ export default class MediaPlayer extends VueBase {
           .catch(error => {
             this.toastRequestFailure(error);
           });
+      this.peer_id = undefined;
     }
 
     if (this.channel) {
@@ -338,11 +581,11 @@ export default class MediaPlayer extends VueBase {
         this.pc.close();
       }
       await this.createPeerAndMetaChannel();
-      this.statusCode = STATUS_ONLINE;
+      this.statusCode = Status.Online;
     } catch (error) {
       this.pc = undefined;
       this.channel = undefined;
-      this.statusCode = STATUS_NEGOTIATION_FAILED;
+      this.statusCode = Status.NegotiationFailed;
       this.toastError(error);
     }
   }
@@ -350,7 +593,7 @@ export default class MediaPlayer extends VueBase {
   async createPeerAndMetaChannel() {
     const group = this.group;
     const project = this.project;
-    const device = this.device.toString();
+    const device = this.deviceText;
     const ices = await this.$api2.getVmsDeviceRtcIces(group, project, device);
 
     const iceServers = [] as Array<RTCIceServer>;
@@ -397,7 +640,7 @@ export default class MediaPlayer extends VueBase {
     this.pc.onconnectionstatechange = this.onConnectionStateChange;
     // ----------------------------------------
 
-    this.statusCode = STATUS_SDP_EXCHANGE;
+    this.statusCode = Status.SdpExchange;
 
     const body = {
       type: this.pc.localDescription?.type || '',
@@ -433,7 +676,7 @@ export default class MediaPlayer extends VueBase {
 
   onIceGatheringStateChange(event: Event) {
     const peer = event.target as RTCPeerConnection;
-    gatheringStateCode(peer.iceGatheringState);
+    gatheringStatus(peer.iceGatheringState);
   }
 
   onConnectionStateChange(event: Event) {
@@ -492,6 +735,7 @@ export default class MediaPlayer extends VueBase {
         const content = JSON.parse(event.data) as VmsChannelMeta;
         context.clearRect(0, 0, canvasWidth, canvasHeight);
         await this.onRenderMetaData(context, canvasWidth, canvasHeight, content);
+        this.sendChannelResponseSuccessful();
       } catch (error) {
         context.clearRect(0, 0, canvasWidth, canvasHeight);
         this.predict([]);
@@ -508,37 +752,36 @@ export default class MediaPlayer extends VueBase {
       canvasHeight: number,
       content: VmsChannelMeta,
   ) {
-    // console.debug(`onRenderMetaData(w=${canvasWidth},h=${canvasHeight})`);
-    // console.dir(content);
-
-    if (content.message) {
-      context.font = '62px serif';
-      context.fillStyle = 'red';
-      context.fillText(content.message, 10, 62, canvasWidth);
-    }
+    this.informationCode = content.code;
+    this.informationDate = createMoment().format('LL, LTS');
+    console.debug(`content.code: ${content.code}`);
 
     switch (content.code) {
+      // Successful cases
       case VMS_CHANNEL_META_CODE_SUCCESS:
-        // TODO: Do rendering !!
-        this.sendChannelResponseSuccessful();
-        return;
-
+        this.informationText = content.message.trim();
+        break;
       case VMS_CHANNEL_META_CODE_OPENED:
-        console.log('A channel between server and client has been opened.');
-        this.sendChannelResponseSuccessful();
-        return;
+        this.informationText = this.$t('vms_channel_meta.opened').toString();
+        this.channelOpened = true;
+        break;
+      case VMS_CHANNEL_META_CODE_FILTERED:
+        this.informationText = content.message.trim();
+        break;
 
+      // Failed cases
       case VMS_CHANNEL_META_CODE_NOT_READY_ROI:
-        console.warn('ROI setup is required.');
-        this.sendChannelResponseSuccessful();
-        return;
-
+        this.informationText = this.$t('vms_channel_meta.not_ready_roi').toString();
+        break;
       case VMS_CHANNEL_META_CODE_BAD_ARGUMENT:
-        this.sendChannelResponseSuccessful();
-        return;
-
+        this.informationText = this.$t('vms_channel_meta.bad_argument').toString();
+        break;
       default:
-        return;
+        this.informationText = this.$t(
+            'vms_channel_meta.unknown_code',
+            [content.code]
+        ).toString();
+        break;
     }
 
     //   const x1 = canvasWidth * obj.x1;
@@ -569,26 +812,22 @@ export default class MediaPlayer extends VueBase {
 
   waitToCompleteIceGathering(pc: RTCPeerConnection) {
     return new Promise(resolve => {
-      this.statusCode = gatheringStateCode(pc.iceGatheringState);
+      this.statusCode = gatheringStatus(pc.iceGatheringState);
       if (pc.iceGatheringState === 'complete') {
         return resolve();  // DONE !!
       }
 
       const stateChangeCallback = () => {
-        this.statusCode = gatheringStateCode(pc.iceGatheringState);
+        this.statusCode = gatheringStatus(pc.iceGatheringState);
         if (pc.iceGatheringState === 'complete') {
           pc.removeEventListener('icegatheringstatechange', stateChangeCallback);
-          this.statusCode = STATUS_ICE_COMPLETE;
+          this.statusCode = Status.IceComplete;
           return resolve();  // DONE !!
         }
       };
 
       pc.addEventListener('icegatheringstatechange', stateChangeCallback);
     });
-  }
-
-  requestFullScreen() {
-    this.rtcVideo.requestFullscreen();
   }
 
   showSystemBar(hover?: boolean) {
@@ -606,159 +845,198 @@ export default class MediaPlayer extends VueBase {
   }
 
   get online() {
-    return this.statusCode === STATUS_ONLINE;
+    return this.statusCode === Status.Online;
   }
 
-  get loadingStatusCode() {
-    switch (this.statusCode) {
-      case STATUS_LOADING:
-        return true;
-      case STATUS_ICE_NEW:
-        return true;
-      case STATUS_ICE_GATHERING:
-        return true;
-      case STATUS_ICE_COMPLETE:
-        return true;
-      case STATUS_SDP_EXCHANGE:
-        return true;
-      // ----------------------
-      case STATUS_ONLINE:
-        return false;
-      case STATUS_NEGOTIATION_FAILED:
-        return false;
-      case STATUS_ICE_UNKNOWN:
-        return false;
-      case STATUS_DISCONNECTED:
-        return false;
-      case STATUS_SERVER_STATUS_ERROR:
-        return false;
-      case STATUS_INVALID_PARAMETERS:
-        return false;
-      default:
-        return false;
-    }
+  get loadingByStatusCode() {
+    return loadingStatus(this.statusCode);
   }
 
   get statusIconColor() {
     switch (this.statusCode) {
-      case STATUS_LOADING:
-        return 'blue';
-      case STATUS_ICE_NEW:
-        return 'blue accent-1';
-      case STATUS_ICE_GATHERING:
-        return 'blue accent-2';
-      case STATUS_ICE_COMPLETE:
-        return 'blue accent-3';
-      case STATUS_SDP_EXCHANGE:
-        return 'blue accent-4';
-      case STATUS_ONLINE:
+      case Status.Loading:
+        return colors.blue.base;
+      case Status.IceNew:
+        return colors.blue.accent1;
+      case Status.IceGathering:
+        return colors.blue.accent2;
+      case Status.IceComplete:
+        return colors.blue.accent3;
+      case Status.SdpExchange:
+        return colors.blue.accent4;
+      case Status.Online:
         if (this.paused) {
           return '';
         } else {
-          return 'green';
+          return colors.green.base;
         }
-      case STATUS_NEGOTIATION_FAILED:
-        return 'red';
-      case STATUS_ICE_UNKNOWN:
-        return 'deep-orange';
-      case STATUS_DISCONNECTED:
+      case Status.NegotiationFailed:
+        return colors.red.base;
+      case Status.IceUnknown:
+        return colors.deepOrange.base;
+      case Status.Disconnected:
         return '';
-      case STATUS_SERVER_STATUS_ERROR:
+      case Status.ServerError:
         return '';
-      case STATUS_INVALID_PARAMETERS:
+      case Status.InvalidParameters:
         return '';
       default:
-        return 'deep-orange';
+        return colors.deepOrange.base;
     }
   }
 
   get statusIcon() {
     switch (this.statusCode) {
-      case STATUS_LOADING:
+      case Status.Loading:
         return 'mdi-dots-horizontal';
-      case STATUS_ICE_NEW:
+      case Status.IceNew:
         return 'mdi-webrtc';
-      case STATUS_ICE_GATHERING:
+      case Status.IceGathering:
         return 'mdi-webrtc';
-      case STATUS_ICE_COMPLETE:
+      case Status.IceComplete:
         return 'mdi-webrtc';
-      case STATUS_SDP_EXCHANGE:
+      case Status.SdpExchange:
         return 'mdi-handshake';
-      case STATUS_ONLINE:
+      case Status.Online:
         if (this.paused) {
           return 'mdi-pause';
         } else {
-          return '';
+          return 'mdi-play';
         }
-      case STATUS_NEGOTIATION_FAILED:
+      case Status.NegotiationFailed:
         return 'mdi-alert';
-      case STATUS_ICE_UNKNOWN:
+      case Status.IceUnknown:
         return 'mdi-help';
-      case STATUS_DISCONNECTED:
+      case Status.Disconnected:
         return 'mdi-lan-disconnect';
-      case STATUS_SERVER_STATUS_ERROR:
+      case Status.ServerError:
         return 'mdi-lan-disconnect';
-      case STATUS_INVALID_PARAMETERS:
+      case Status.InvalidParameters:
         return 'mdi-cog-off';
       default:
         return 'mdi-help';
     }
   }
 
-  get statusLabel() {
+  get statusTooltip() {
     switch (this.statusCode) {
-      case STATUS_LOADING:
-        return this.$t('status.loading').toString();
-      case STATUS_ICE_NEW:
-        return this.$t('status.ice_new').toString();
-      case STATUS_ICE_GATHERING:
-        return this.$t('status.ice_gathering').toString();
-      case STATUS_ICE_COMPLETE:
-        return this.$t('status.ice_complete').toString();
-      case STATUS_SDP_EXCHANGE:
-        return this.$t('status.sdp_exchange').toString();
-      case STATUS_ONLINE:
-        if (this.connectionState) {
-          return `${this.value.name} (${this.connectionState})`;
-        } else {
-          return this.value.name;
-        }
-      case STATUS_NEGOTIATION_FAILED:
-        return this.$t('status.negotiation_failed').toString();
-      case STATUS_ICE_UNKNOWN:
-        return this.$t('status.ice_unknown').toString();
-      case STATUS_DISCONNECTED:
-        return this.$t('status.disconnected').toString();
-      case STATUS_SERVER_STATUS_ERROR:
-        return this.$t(
-            'status.server_status_error',
-            [this.value.server_status]
-        ).toString();
-      case STATUS_INVALID_PARAMETERS:
-        return this.$t('status.invalid').toString();
+      case Status.Loading:
+        return this.$t('status.loading');
+      case Status.IceNew:
+        return this.$t('status.ice_new');
+      case Status.IceGathering:
+        return this.$t('status.ice_gathering');
+      case Status.IceComplete:
+        return this.$t('status.ice_complete');
+      case Status.SdpExchange:
+        return this.$t('status.sdp_exchange');
+      case Status.Online:
+        return this.$t('status.online');
+      case Status.NegotiationFailed:
+        return this.$t('status.negotiation_failed');
+      case Status.IceUnknown:
+        return this.$t('status.ice_unknown');
+      case Status.Disconnected:
+        return this.$t('status.disconnected');
+      case Status.ServerError:
+        return this.$t('status.server_error', [this.value.server_status]);
+      case Status.InvalidParameters:
+        return this.$t('status.invalid');
       default:
-        return this.$t('status.unknown').toString();
+        return this.$t('status.unknown');
+    }
+  }
+
+  get activeIcon() {
+    if (this.value.active) {
+      return 'mdi-eye';
+    } else {
+      return 'mdi-eye-off';
+    }
+  }
+
+  get activeTooltip() {
+    if (this.value.active) {
+      return this.$t('tooltips.enable_event_detection');
+    } else {
+      return this.$t('tooltips.disable_event_detection');
     }
   }
 
   get signalIcon() {
     const level = this.signalLevel;
     if (level >= 3) {
-      return 'signal-cellular-3';
+      return 'mdi-signal-cellular-3';
     } else if (level == 2) {
-      return 'signal-cellular-2';
+      return 'mdi-signal-cellular-2';
     } else if (level == 1) {
-      return 'signal-cellular-1';
+      return 'mdi-signal-cellular-1';
     } else {
       return 'mdi-signal-cellular-outline';
     }
   }
 
-  get playIcon() {
+  getInfoPanelTop(hover: boolean) {
+    if (this.hideSystemBar) {
+      return 0;
+    }
+    if (this.hoverSystemBar && !hover) {
+      return 0;
+    }
+    return this.systemBarHeight;
+  }
+
+  get informationIconColor() {
+    switch (this.informationCode) {
+      case VMS_CHANNEL_META_CODE_SUCCESS:
+        return this.$vuetify.theme.currentTheme.secondary;
+      case VMS_CHANNEL_META_CODE_OPENED:
+        return this.$vuetify.theme.currentTheme.secondary;
+      case VMS_CHANNEL_META_CODE_FILTERED:
+        return this.$vuetify.theme.currentTheme.secondary;
+      case VMS_CHANNEL_META_CODE_NOT_READY_ROI:
+        return colors.deepOrange.base;
+      case VMS_CHANNEL_META_CODE_BAD_ARGUMENT:
+        return colors.deepOrange.base;
+      default:
+        return colors.red.base;
+    }
+  }
+
+  get informationIcon() {
+    switch (this.informationCode) {
+      case VMS_CHANNEL_META_CODE_SUCCESS:
+        return 'mdi-chat-processing-outline';
+      case VMS_CHANNEL_META_CODE_OPENED:
+        return 'mdi-chat-outline';
+      case VMS_CHANNEL_META_CODE_FILTERED:
+        return 'mdi-chat-outline';
+      case VMS_CHANNEL_META_CODE_NOT_READY_ROI:
+        return 'mdi-alert-octagram-outline';
+      case VMS_CHANNEL_META_CODE_BAD_ARGUMENT:
+        return 'mdi-alert-octagram-outline';
+      default:
+        return 'mdi-help-circle-outline';
+    }
+  }
+
+  get playButtonIcon() {
     if (this.paused) {
       return 'mdi-play';
     } else {
       return 'mdi-pause';
+    }
+  }
+
+  get progressLineColor() {
+    return colors.grey.base;
+  }
+
+  get activeButtonIcon() {
+    if (this.value.active) {
+      return 'mdi-eye-off';
+    } else {
+      return 'mdi-eye';
     }
   }
 
@@ -780,12 +1058,12 @@ export default class MediaPlayer extends VueBase {
   }
 
   @Watch('videoWidth')
-  onWatchVideoWidth(newVal, oldVal) {
+  onWatchVideoWidth() {
     this.resizeVideo();
   }
 
   @Watch('videoHeight')
-  onWatchVideoHeight(newVal, oldVal) {
+  onWatchVideoHeight() {
     this.resizeVideo();
   }
 
@@ -802,30 +1080,81 @@ export default class MediaPlayer extends VueBase {
     }
   }
 
+  onClickActive() {
+    const updateActiveFlag = !this.value.active;
+    const body = {
+      active: updateActiveFlag,
+    } as VmsUpdateDeviceQ;
+
+    const group = this.group;
+    const project = this.project;
+    const device = this.deviceText;
+    this.disableActiveButton = true;
+    this.$api2.patchVmsDevice(group, project, device, body)
+        .then(() => {
+          this.value.active = updateActiveFlag;
+          this.disableActiveButton = false;
+        })
+        .catch(error => {
+          this.disableActiveButton = false;
+          console.error(error);
+        });
+  }
+
   onClickMore() {
+    this.showMoreMenu = true;
+  }
+
+  onClickReconnect() {
+    this.showMoreMenu = false;
+    this.close();
+    this.open();
+  }
+
+  onChangeDebugging() {
+    const group = this.group;
+    const project = this.project;
+    const device = this.deviceText;
+    this.disableDebugButton = true;
+
+    const updateDebugFlag = !this.value.server_debugging;
+    const thenCallback = () => {
+      this.value.server_debugging = updateDebugFlag;
+      this.disableDebugButton = false;
+    };
+    const catchCallback = error => {
+      this.disableDebugButton = false;
+      console.error(error);
+    };
+
+    if (updateDebugFlag) {
+      this.$api2.postVmsDeviceProcessDebugStart(group, project, device)
+          .then(thenCallback).catch(catchCallback);
+    } else {
+      this.$api2.postVmsDeviceProcessDebugStop(group, project, device)
+          .then(thenCallback).catch(catchCallback);
+    }
+  }
+
+  onClickFullscreen() {
+    this.showMoreMenu = false;
     this.rtcVideo.requestFullscreen();
   }
 
   @Watch('value.server_running')
-  onWatchServerRunning(newVal, oldVal) {
+  onWatchServerRunning() {
   }
 
   @Watch('value.server_status')
-  onWatchServerStatus(newVal, oldVal) {
+  onWatchServerStatus() {
   }
 
   @Watch('useColorPicker')
-  onWatchUseColorPicker(newVal, oldVal) {
-    if (newVal) {
-    } else {
-    }
+  onWatchUseColorPicker() {
   }
 
   @Watch('useAnnotationTools')
-  onWatchUseAnnotationTools(newVal, oldVal) {
-    if (newVal) {
-    } else {
-    }
+  onWatchUseAnnotationTools() {
   }
 
   onMouseDownMediaContent(event: MouseEvent) {
@@ -1007,6 +1336,22 @@ export default class MediaPlayer extends VueBase {
 </script>
 
 <style lang="scss" scoped>
+@import '~vuetify/src/styles/styles.sass';
+
+$color-grey: map-get($colors, 'grey');
+$color-grey-base: map-get($color-grey, 'base');
+$color-grey-lighten-5: map-get($color-grey, 'lighten-5');
+$color-grey-lighten-4: map-get($color-grey, 'lighten-4');
+$color-grey-lighten-3: map-get($color-grey, 'lighten-3');
+$color-grey-lighten-2: map-get($color-grey, 'lighten-2');
+$color-grey-lighten-1: map-get($color-grey, 'lighten-1');
+$color-grey-darken-1: map-get($color-grey, 'darken-1');
+$color-grey-darken-2: map-get($color-grey, 'darken-2');
+$color-grey-darken-3: map-get($color-grey, 'darken-3');
+$color-grey-darken-4: map-get($color-grey, 'darken-4');
+
+$ghost-transparent: 0.4;
+
 @mixin common-media {
   position: absolute;
 
@@ -1024,18 +1369,49 @@ export default class MediaPlayer extends VueBase {
   margin: 0;
 }
 
+.theme--light.v-application {
+  .media-player {
+    background-color: $color-grey-lighten-1;
+
+    .information-panel {
+      background-color: rgba(map-get($shades, 'white'), $ghost-transparent);
+    }
+  }
+}
+
+.theme--dark.v-application {
+  .media-player {
+    background-color: $color-grey-darken-3;
+
+    .information-panel {
+      background-color: rgba(map-get($shades, 'black'), $ghost-transparent);
+    }
+  }
+}
+
 .media-player {
   display: flex;
 
   padding: 0;
   margin: 0;
 
-  background: gray;
-
   min-width: 100px;
   min-height: 100px;
 
   .status-bar {
+    z-index: 60;
+  }
+
+  .information-panel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    padding: 0 4px 0 4px;
+    margin: 4px 4px 0 4px;
+
+    position: absolute;
+
     z-index: 50;
   }
 
@@ -1087,8 +1463,7 @@ export default class MediaPlayer extends VueBase {
     width: 100%;
     bottom: 0;
 
-    z-index: 60;
+    z-index: 70;
   }
-
 }
 </style>
