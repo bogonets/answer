@@ -52,7 +52,7 @@ class HttpAppTester(HttpClient, EmptyHttpAppCallback):
         bind = config.http_bind
         port = config.http_port
         timeout = config.http_timeout
-        super().__init__(f"{bind}:{port}", scheme, timeout)
+        super().__init__(f"{bind}:{port}", timeout=timeout, scheme=scheme)
 
         self._temp = temp
         self._context = Context(config, loop=loop)

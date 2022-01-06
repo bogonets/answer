@@ -4,7 +4,9 @@ import requests
 from http import HTTPStatus
 from time import time
 from typing import Optional, Tuple, TypeVar, Any, Dict, Type
-from aiohttp import ClientSession
+from urllib.parse import urlparse
+from multidict import CIMultiDict
+from aiohttp import ClientSession, ClientTimeout
 from aiohttp.hdrs import (
     METH_HEAD,
     METH_GET,
@@ -16,7 +18,6 @@ from aiohttp.hdrs import (
     AUTHORIZATION,
     CONTENT_TYPE,
 )
-from multidict import CIMultiDict
 
 from recc.driver.json import global_json_encoder
 from recc.mime.mime_type import MIME_APPLICATION_JSON_UTF8, APPLICATION_JSON
@@ -109,6 +110,10 @@ def request_version(
     )
 
 
+def has_scheme(address: str) -> bool:
+    return bool(urlparse(address).scheme)
+
+
 _T = TypeVar("_T")
 
 
@@ -116,12 +121,25 @@ class HttpClient:
     def __init__(
         self,
         address: str,
-        scheme=DEFAULT_SCHEME,
-        timeout=DEFAULT_REQUEST_TIMEOUT_SECONDS,
+        *,
+        timeout: Optional[float] = None,
+        scheme: Optional[str] = None,
     ):
-        self.scheme = scheme
-        self.address = address
-        self.timeout = timeout
+        if has_scheme(address):
+            if scheme is not None:
+                raise ValueError(
+                    "The `schema` argument cannot be used"
+                    "if `address` contains a schema"
+                )
+            self.prefix = address
+        else:
+            if scheme:
+                self.prefix = f"{scheme}://{address}"
+            else:
+                self.prefix = f"{DEFAULT_SCHEME}://{address}"
+
+        total_timeout = timeout if timeout else DEFAULT_REQUEST_TIMEOUT_SECONDS
+        self.timeout = ClientTimeout(total=total_timeout)
 
         self.username: Optional[str] = None
         self.password: Optional[str] = None
@@ -130,10 +148,14 @@ class HttpClient:
 
     @property
     def origin(self) -> str:
-        if self.address[-1] == URL_PATH_SEPARATOR:
-            return f"{self.scheme}://{self.address[0:-1]}"
+        if self.prefix[-1] == URL_PATH_SEPARATOR:
+            return f"{self.prefix[0:-1]}"
         else:
-            return f"{self.scheme}://{self.address}"
+            return f"{self.prefix}"
+
+    @property
+    def scheme(self) -> str:
+        return urlparse(self.prefix).scheme
 
     @staticmethod
     def get_method_caller(method: str, session: ClientSession):
@@ -157,19 +179,21 @@ class HttpClient:
     async def request(
         self,
         method: str,
-        path: str,
+        path: Optional[str] = None,
         headers: Optional[Dict[str, str]] = None,
         text: Optional[str] = None,
         data: Optional[Any] = None,
         cls: Optional[Type[_T]] = None,
     ) -> HttpResponse:
         if path:
+            origin = self.origin
+            assert origin[-1] != URL_PATH_SEPARATOR
             if path[0] == URL_PATH_SEPARATOR:
-                url = self.origin + path
+                request_url = origin + path
             else:
-                url = self.origin + URL_PATH_SEPARATOR + path
+                request_url = origin + URL_PATH_SEPARATOR + path
         else:
-            url = self.origin
+            request_url = self.prefix
 
         updated_headers = CIMultiDict[str]()
         if headers:
@@ -198,10 +222,9 @@ class HttpClient:
             async with ClientSession(timeout=self.timeout) as session:
                 method_caller = self.get_method_caller(method, session)
                 async with method_caller(
-                    url=url,
+                    url=request_url,
                     data=request_body,
                     headers=updated_headers,
-                    timeout=self.timeout,
                 ) as response:
                     response_data: Any = None
 
@@ -232,7 +255,7 @@ class HttpClient:
 
     async def get(
         self,
-        path: str,
+        path: Optional[str] = None,
         headers: Optional[Dict[str, str]] = None,
         text: Optional[str] = None,
         data: Optional[Any] = None,
@@ -242,7 +265,7 @@ class HttpClient:
 
     async def post(
         self,
-        path: str,
+        path: Optional[str] = None,
         headers: Optional[Dict[str, str]] = None,
         text: Optional[str] = None,
         data: Optional[Any] = None,
@@ -252,7 +275,7 @@ class HttpClient:
 
     async def patch(
         self,
-        path: str,
+        path: Optional[str] = None,
         headers: Optional[Dict[str, str]] = None,
         text: Optional[str] = None,
         data: Optional[Any] = None,
@@ -262,7 +285,7 @@ class HttpClient:
 
     async def put(
         self,
-        path: str,
+        path: Optional[str] = None,
         headers: Optional[Dict[str, str]] = None,
         text: Optional[str] = None,
         data: Optional[Any] = None,
@@ -272,7 +295,7 @@ class HttpClient:
 
     async def delete(
         self,
-        path: str,
+        path: Optional[str] = None,
         headers: Optional[Dict[str, str]] = None,
         text: Optional[str] = None,
         data: Optional[Any] = None,

@@ -249,8 +249,8 @@ class HttpParameterMatcher:
                 reason=result.reason,
                 headers=result.headers,
             )
-        elif _is_serializable_instance(result):
-            return create_response(self.accept, self.encoding, result)
+        # elif _is_serializable_instance(result):
+        #     return create_response(self.accept, self.encoding, result)
         elif isclass(type(result)):
             return create_response(
                 self.accept, self.encoding, serialize_default(result)

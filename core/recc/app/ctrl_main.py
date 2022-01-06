@@ -14,7 +14,7 @@ async def ctrl_main_runner(config: CtrlConfig) -> int:
     scheme = config.scheme
     address = config.address
     timeout = config.timeout
-    client = HttpClient(address, scheme, timeout)
+    client = HttpClient(address, timeout=timeout, scheme=scheme)
 
     print(f"Origin: {client.origin}")
 
