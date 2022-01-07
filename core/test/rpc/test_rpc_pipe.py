@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-import pickle
-import orjson
-import zlib
-import gzip
-import lzma
-import bz2
+from json import loads as json_loads
 from typing import Any, Callable
 from datetime import datetime
 from dataclasses import dataclass
@@ -15,73 +10,33 @@ from unittest import IsolatedAsyncioTestCase, main, skipIf
 from recc.argparse.default_namespace import get_default_task_config
 from recc.rpc.rpc_client import create_rpc_client
 from recc.task.task_server import create_task_server
-from recc.variables.rpc import (
-    DEFAULT_PICKLE_PROTOCOL_VERSION,
-    DEFAULT_PICKLE_ENCODING,
+from recc.serialization.byte import (
+    pickling,
+    unpickling,
+    orjson_encoder,
+    orjson_decoder,
+    orjson_zlib_encoder,
+    orjson_zlib_decoder,
+    orjson_gzip_encoder,
+    orjson_gzip_decoder,
+    orjson_lzma_encoder,
+    orjson_lzma_decoder,
+    orjson_bz2_encoder,
+    orjson_bz2_decoder,
 )
 from tester.samples.read_samples import read_sample
 from tester.variables import (
     GRPC_PACKET_PERFORMANCE_TEST_SKIP,
     GRPC_PACKET_PERFORMANCE_ITERATION,
+    GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE,
 )
 
 ByteEncoder = Callable[[Any], bytes]
 ByteDecoder = Callable[[bytes], Any]
 
 
-def pickling(data: Any) -> bytes:
-    return pickle.dumps(data, protocol=DEFAULT_PICKLE_PROTOCOL_VERSION)
-
-
-def unpickling(data: bytes) -> Any:
-    return pickle.loads(data, encoding=DEFAULT_PICKLE_ENCODING)
-
-
-def orjson_byte_encoder(data: Any) -> bytes:
-    return orjson.dumps(data)
-
-
-def orjson_byte_decoder(data: bytes) -> Any:
-    return orjson.loads(data)
-
-
-def orjson_byte_zlib_encoder(data: Any, level: int = 1) -> bytes:
-    assert level == -1 or 0 <= level <= 9
-    return zlib.compress(orjson.dumps(data), level=level)
-
-
-def orjson_byte_zlib_decoder(data: bytes) -> Any:
-    return orjson.loads(zlib.decompress(data))
-
-
-def orjson_byte_gzip_encoder(data: Any, level: int = 1) -> bytes:
-    assert 0 <= level <= 9
-    return gzip.compress(orjson.dumps(data), compresslevel=level)
-
-
-def orjson_byte_gzip_decoder(data: bytes) -> Any:
-    return orjson.loads(gzip.decompress(data))
-
-
-def orjson_byte_lzma_encoder(data: Any) -> bytes:
-    return lzma.compress(orjson.dumps(data))
-
-
-def orjson_byte_lzma_decoder(data: bytes) -> Any:
-    return orjson.loads(lzma.decompress(data))
-
-
-def orjson_byte_bz2_encoder(data: Any, level: int = 1) -> bytes:
-    assert 1 <= level <= 9
-    return bz2.compress(orjson.dumps(data), compresslevel=level)
-
-
-def orjson_byte_bz2_decoder(data: bytes) -> Any:
-    return orjson.loads(bz2.decompress(data))
-
-
-def read_sample_object() -> Any:
-    return orjson.loads(read_sample("set_graph.v1.data.json"))
+def _read_sample_object() -> Any:
+    return json_loads(read_sample("set_graph.v1.data.json"))
 
 
 @dataclass
@@ -189,7 +144,7 @@ class RpcPipeClientTestCase(IsolatedAsyncioTestCase):
         self, encoder: ByteEncoder, decoder: ByteDecoder
     ) -> str:
         result = await self._performance_echo_data(
-            read_sample_object(),
+            _read_sample_object(),
             GRPC_PACKET_PERFORMANCE_ITERATION,
             encoder,
             decoder,
@@ -202,71 +157,71 @@ class RpcPipeClientTestCase(IsolatedAsyncioTestCase):
             f"{time:.4f}s ({size:,} byte/packet)"
         )
 
-    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, "GRPC Packet performance testing is off")
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
     async def test_pickle_echo_data(self):
         message = await self._default_performance_echo_data(pickling, unpickling)
         print(f"Pickle {message}")
 
-    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, "GRPC Packet performance testing is off")
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
     async def test_orjson_byte_echo_data(self):
         message = await self._default_performance_echo_data(
-            orjson_byte_encoder, orjson_byte_decoder
+            orjson_encoder, orjson_decoder
         )
         print(f"Orjson {message}")
 
-    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, "GRPC Packet performance testing is off")
-    async def test_orjson_byte_zlib_level1_echo_data(self):
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_orjson_zlib_level1_echo_data(self):
         message = await self._default_performance_echo_data(
-            lambda x: orjson_byte_zlib_encoder(x, 1),
-            orjson_byte_zlib_decoder,
+            lambda x: orjson_zlib_encoder(x, 1),
+            orjson_zlib_decoder,
         )
         print(f"Orjson+zlib(level=1) {message}")
 
-    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, "GRPC Packet performance testing is off")
-    async def test_orjson_byte_zlib_level9_echo_data(self):
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_orjson_zlib_level9_echo_data(self):
         message = await self._default_performance_echo_data(
-            lambda x: orjson_byte_zlib_encoder(x, 9),
-            orjson_byte_zlib_decoder,
+            lambda x: orjson_zlib_encoder(x, 9),
+            orjson_zlib_decoder,
         )
         print(f"Orjson+zlib(level=9) {message}")
 
-    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, "GRPC Packet performance testing is off")
-    async def test_orjson_byte_gzip_level1_echo_data(self):
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_orjson_gzip_level1_echo_data(self):
         message = await self._default_performance_echo_data(
-            lambda x: orjson_byte_gzip_encoder(x, 1),
-            orjson_byte_gzip_decoder,
+            lambda x: orjson_gzip_encoder(x, 1),
+            orjson_gzip_decoder,
         )
         print(f"Orjson+gzip(level=1) {message}")
 
-    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, "GRPC Packet performance testing is off")
-    async def test_orjson_byte_gzip_level9_echo_data(self):
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_orjson_gzip_level9_echo_data(self):
         message = await self._default_performance_echo_data(
-            lambda x: orjson_byte_gzip_encoder(x, 9),
-            orjson_byte_gzip_decoder,
+            lambda x: orjson_gzip_encoder(x, 9),
+            orjson_gzip_decoder,
         )
         print(f"Orjson+gzip(level=9) {message}")
 
-    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, "GRPC Packet performance testing is off")
-    async def test_orjson_byte_bz2_level1_echo_data(self):
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_orjson_bz2_level1_echo_data(self):
         message = await self._default_performance_echo_data(
-            lambda x: orjson_byte_bz2_encoder(x, 1),
-            orjson_byte_bz2_decoder,
+            lambda x: orjson_bz2_encoder(x, 1),
+            orjson_bz2_decoder,
         )
         print(f"Orjson+bz2(level=1) {message}")
 
-    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, "GRPC Packet performance testing is off")
-    async def test_orjson_byte_bz2_level9_echo_data(self):
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_orjson_bz2_level9_echo_data(self):
         message = await self._default_performance_echo_data(
-            lambda x: orjson_byte_bz2_encoder(x, 9),
-            orjson_byte_bz2_decoder,
+            lambda x: orjson_bz2_encoder(x, 9),
+            orjson_bz2_decoder,
         )
         print(f"Orjson+bz2(level=9) {message}")
 
-    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, "GRPC Packet performance testing is off")
-    async def test_orjson_byte_lzma_echo_data(self):
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_orjson_lzma_echo_data(self):
         message = await self._default_performance_echo_data(
-            orjson_byte_lzma_encoder,
-            orjson_byte_lzma_decoder,
+            orjson_lzma_encoder,
+            orjson_lzma_decoder,
         )
         print(f"Orjson+lzma {message}")
 

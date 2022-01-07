@@ -20,16 +20,16 @@ from typing import (
 from datetime import datetime
 from dataclasses import is_dataclass
 from enum import Enum
-from recc.serialization.serializable import (
+from recc.serialization.utils import (
     MAPPING_METHOD_ITEMS,
     MAPPING_METHOD_KEYS,
     SEQUENCE_METHOD_INSERT,
-    DeserializeError,
-    DESERIALIZE_METHOD_NAME,
     is_deserialize_cls,
     is_serializable_pod_cls,
     is_none,
 )
+from recc.serialization.interface import DESERIALIZE_METHOD_NAME
+from recc.serialization.errors import DeserializeError
 from recc.inspect.member import get_public_members
 from recc.inspect.init_signature import required_init_parameters
 from recc.util.version import version_info

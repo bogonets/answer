@@ -1,63 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, List, Optional, Iterable, Dict, TypeVar, Final
-from abc import ABCMeta, abstractmethod
-
-_T = TypeVar("_T")
+from typing import Any, List, Optional, Iterable, Dict, Final
+from recc.serialization.interface import (
+    SerializeInterface,
+    DeserializeInterface,
+    SERIALIZE_METHOD_NAME,
+    DESERIALIZE_METHOD_NAME,
+)
 
 MAPPING_METHOD_ITEMS: Final[str] = "items"
 MAPPING_METHOD_KEYS: Final[str] = "keys"
 SEQUENCE_METHOD_INSERT: Final[str] = "insert"
-
-
-class _Error(BaseException):
-    def __init__(self, msg: str, key: Optional[str] = None):
-        self.msg = msg
-        self.key = key if key else str()
-
-    def insert_first(self, key: Optional[str]) -> None:
-        if not key:
-            return
-        if self.key:
-            self.key = key + "." + self.key
-        else:
-            self.key = key
-
-
-class SerializeError(_Error):
-    def __init__(self, msg: str, key: Optional[str] = None):
-        super().__init__(msg, key if key else "")
-
-
-class DeserializeError(_Error):
-    def __init__(self, msg: str, key: Optional[str] = None):
-        super().__init__(msg, key if key else "")
-
-
-class NotImplementedSerializeError(SerializeError):
-    def __init__(self):
-        super().__init__("Not implement serialize")
-
-
-class NotImplementedDeserializeError(DeserializeError):
-    def __init__(self):
-        super().__init__("Not implement deserialize")
-
-
-class SerializeInterface(metaclass=ABCMeta):
-    @abstractmethod
-    def serialize(self, version: int) -> Any:
-        raise NotImplementedError
-
-
-class DeserializeInterface(metaclass=ABCMeta):
-    @abstractmethod
-    def deserialize(self, version: int, data: Any) -> None:
-        raise NotImplementedError
-
-
-SERIALIZE_METHOD_NAME = SerializeInterface.serialize.__name__
-DESERIALIZE_METHOD_NAME = DeserializeInterface.deserialize.__name__
 
 
 def is_serialize_cls(cls: Any) -> bool:
@@ -109,14 +62,6 @@ def is_none(obj: Any) -> bool:
         return issubclass(obj, type(None))
     else:
         return obj is None
-
-
-class Serializable(SerializeInterface, DeserializeInterface):
-    def serialize(self, version: int) -> Any:
-        raise NotImplementedSerializeError()
-
-    def deserialize(self, version: int, data: Any) -> None:
-        raise NotImplementedDeserializeError()
 
 
 def update_dict(

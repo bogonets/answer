@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Any, Optional
 from dataclasses import dataclass
 from enum import Enum
-from recc.serialization.serializable import Serializable
+from recc.serialization.interface import Serializable
 from recc.serialization.serialize import serialize, serialize_default
 
 

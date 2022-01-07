@@ -2,7 +2,8 @@
 
 from typing import Dict, Any, Optional, List
 from functools import reduce
-from recc.serialization.serializable import Serializable, update_dict
+from recc.serialization.utils import update_dict
+from recc.serialization.interface import Serializable
 from recc.serialization.deserialize import deserialize
 from recc.serialization.serialize import serialize
 from recc.template.locale import Locale

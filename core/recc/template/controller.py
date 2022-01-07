@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Dict, Any, Optional, List
-from recc.serialization.serializable import Serializable
+from recc.serialization.interface import Serializable
 from recc.serialization.deserialize import deserialize
 from recc.template.control import Control
 from recc.template.v1 import keys as v1k

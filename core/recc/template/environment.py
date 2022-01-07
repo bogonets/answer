@@ -2,7 +2,8 @@
 
 from typing import Optional, Any, Dict
 from enum import Enum
-from recc.serialization.serializable import Serializable, update_dict
+from recc.serialization.utils import update_dict
+from recc.serialization.interface import Serializable
 from recc.template.v1 import keys as v1k
 from recc.template.v2 import keys as v2k
 

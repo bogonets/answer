@@ -7,6 +7,7 @@ UID_PERFORMANCE_ITERATION = 10000
 
 GRPC_PACKET_PERFORMANCE_TEST_SKIP = True
 GRPC_PACKET_PERFORMANCE_ITERATION = 10000
+GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE = "GRPC Packet performance testing is off"
 # Pickle               grpc-pipe echo-data 10000 iteration 25.1275s (4,671 byte/packet)
 # Orjson               grpc-pipe echo-data 10000 iteration 25.5181s (5,902 byte/packet)
 # Orjson+zlib(level=1) grpc-pipe echo-data 10000 iteration 26.8770s (1,790 byte/packet)

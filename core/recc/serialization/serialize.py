@@ -1,31 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from typing import (
-    Dict,
-    Any,
-    List,
-    Tuple,
-    TypeVar,
-    Iterable,
-    Mapping,
-    Optional,
-)
+from typing import Dict, Any, List, Tuple, Iterable, Mapping, Optional
 from datetime import datetime
 from enum import Enum
-from recc.serialization.serializable import (
+from recc.serialization.utils import (
     MAPPING_METHOD_ITEMS,
     MAPPING_METHOD_KEYS,
-    SerializeError,
-    NotImplementedSerializeError,
-    SERIALIZE_METHOD_NAME,
     is_serialize_obj,
     is_serializable_pod_obj,
 )
+from recc.serialization.interface import SERIALIZE_METHOD_NAME
+from recc.serialization.errors import SerializeError, NotImplementedSerializeError
 from recc.inspect.member import get_public_members
 from recc.util.version import version_info
-
-_K = TypeVar("_K")
-_V = TypeVar("_V")
 
 
 def _create_serialize_dict(

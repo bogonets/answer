@@ -2,7 +2,8 @@
 
 from typing import Optional, Any, Dict, List
 from recc.typing.optional import strip_optional
-from recc.serialization.serializable import Serializable, update_dict, normalize_strings
+from recc.serialization.utils import update_dict, normalize_strings
+from recc.serialization.interface import Serializable
 from recc.serialization.deserialize import deserialize
 from recc.serialization.serialize import serialize
 from recc.template.dependency import Dependency
