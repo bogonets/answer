@@ -3,7 +3,7 @@
 from unittest import IsolatedAsyncioTestCase, main, skipIf
 from asyncio import sleep
 from datetime import datetime
-from tester.variables import UID_PERFORMANCE_TEST, UID_PERFORMANCE_ITERATION
+from tester.variables import UID_PERFORMANCE_TEST_SKIP, UID_PERFORMANCE_ITERATION
 from recc.argparse.default_parser import parse_arguments_to_core_config
 from recc.cache.redis.redis_cache_store import RedisCacheStore, EXPIRE_ACCURACY_SECONDS
 
@@ -38,7 +38,7 @@ class RedisCacheStoreTestCase(IsolatedAsyncioTestCase):
         self.assertFalse(await self.cs.exists(key1))
         self.assertIsNone(await self.cs.get(key1))
 
-    @skipIf(UID_PERFORMANCE_TEST, "UID performance testing is off")
+    @skipIf(UID_PERFORMANCE_TEST_SKIP, "UID performance testing is off")
     async def test_set_and_get(self):
         key1 = "__test_set_and_get__key1__"
         val1 = b"100"

@@ -3,7 +3,7 @@
 from unittest import main, skipIf
 from datetime import datetime, timedelta
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
-from tester.variables import UID_PERFORMANCE_TEST, UID_PERFORMANCE_ITERATION
+from tester.variables import UID_PERFORMANCE_TEST_SKIP, UID_PERFORMANCE_ITERATION
 
 
 class PgUserTestCase(PostgresqlTestCase):
@@ -48,7 +48,7 @@ class PgUserTestCase(PostgresqlTestCase):
         username2 = await self.db.select_user_username_by_uid(user_uid)
         self.assertEqual(username, username2)
 
-    @skipIf(UID_PERFORMANCE_TEST, "UID performance testing is off")
+    @skipIf(UID_PERFORMANCE_TEST_SKIP, "UID performance testing is off")
     async def test_user_uid_by_username(self):
         user1 = "user1"
         user1_uid1 = await self.db.insert_user(user1, "pw", "salt")
