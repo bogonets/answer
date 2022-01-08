@@ -27,3 +27,13 @@ export function iso8601ToLocalDateTime(text?: string) {
         return '';
     }
 }
+
+export function updatedOrCreated(updatedAt?: string, createdAt?: string) {
+    if (updatedAt) {
+        return iso8601ToLocalDate(updatedAt);
+    }
+    if (createdAt) {
+        return iso8601ToLocalDate(createdAt);
+    }
+    return '';
+}

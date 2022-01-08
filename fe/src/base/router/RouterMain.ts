@@ -65,13 +65,45 @@ export default class RouterMain extends mixins(RouterMainAirjoy) {
         this._moveToMainSubpage(mainNames.mainVmsDevicesDiscovery, group, project);
     }
 
-    moveToMainVmsDevicesEdit(group?: string, project?: string, device?: string) {
+    moveToMainVmsDevicesEdit(
+        group?: string, project?: string, device?: string, tab?: string,
+    ) {
+        const params = {
+            group: group || this.$route.params.group,
+            project: project || this.$route.params.project,
+            device: device || this.$route.params.device,
+            tab: tab || this.$route.params.tab,
+        };
+        this.moveTo(mainNames.mainVmsDevicesEdit, params);
+    }
+
+    moveToMainVmsDevicesEditEventConfigs(
+        group?: string, project?: string, device?: string
+    ) {
+        this.moveToMainVmsDevicesEdit(group, project, device, "3");
+    }
+
+    moveToMainVmsDevicesEditEventConfigsEdit(
+        group?: string, project?: string, device?: string, event?: string,
+    ) {
+        const params = {
+            group: group || this.$route.params.group,
+            project: project || this.$route.params.project,
+            device: device || this.$route.params.device,
+            event: event || this.$route.params.event,
+        };
+        this.moveTo(mainNames.mainVmsDevicesEditEventConfigsEdit, params);
+    }
+
+    moveToMainVmsDevicesEditEventConfigsNew(
+        group?: string, project?: string, device?: string,
+    ) {
         const params = {
             group: group || this.$route.params.group,
             project: project || this.$route.params.project,
             device: device || this.$route.params.device,
         };
-        this.moveTo(mainNames.mainVmsDevicesEdit, params);
+        this.moveTo(mainNames.mainVmsDevicesEditEventConfigsNew, params);
     }
 
     moveToMainVmsDevicesDiscoveryEpr(group?: string, project?: string, epr?: string) {

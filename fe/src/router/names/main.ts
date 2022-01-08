@@ -13,6 +13,8 @@ export const mainNames = {
     mainVmsDevicesDiscovery: 'mainVmsDevicesDiscovery',
     mainVmsDevicesDiscoveryEpr: 'mainVmsDevicesDiscoveryEpr',
     mainVmsDevicesEdit: 'mainVmsDevicesEdit',
+    mainVmsDevicesEditEventConfigsEdit: 'mainVmsDevicesEditEventConfigsEdit',
+    mainVmsDevicesEditEventConfigsNew: 'mainVmsDevicesEditEventConfigsNew',
     mainVmsDevicesNew: 'mainVmsDevicesNew',
     mainVmsEventsCalendar: 'mainVmsEventsCalendar',
     mainVmsEventsList: 'mainVmsEventsList',

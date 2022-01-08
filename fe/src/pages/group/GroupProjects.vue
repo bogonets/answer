@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
+    <toolbar-breadcrumbs :items="breadcrumbs"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
     <table-projects
@@ -30,12 +30,7 @@ import {ProjectA} from "@/packet/project";
   }
 })
 export default class GroupProjects extends VueBase {
-  private readonly navigationItems = [
-    {
-      text: 'Groups',
-      disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
+  readonly breadcrumbs = [
     {
       text: this.$route.params.group,
       disabled: false,

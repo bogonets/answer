@@ -11,6 +11,8 @@ import MainVmsDevices from '@/pages/main/MainVmsDevices.vue';
 import MainVmsDevicesDiscovery from '@/pages/main/MainVmsDevicesDiscovery.vue';
 import MainVmsDevicesDiscoveryEpr from '@/pages/main/MainVmsDevicesDiscoveryEpr.vue';
 import MainVmsDevicesEdit from '@/pages/main/MainVmsDevicesEdit.vue';
+import MainVmsDevicesEditEventConfigsEdit from '@/pages/main/MainVmsDevicesEditEventConfigsEdit.vue';
+import MainVmsDevicesEditEventConfigsNew from '@/pages/main/MainVmsDevicesEditEventConfigsNew.vue';
 import MainVmsDevicesNew from '@/pages/main/MainVmsDevicesNew.vue';
 import MainVmsEventsCalendar from '@/pages/main/MainVmsEventsCalendar.vue';
 import MainVmsEventsList from '@/pages/main/MainVmsEventsList.vue';
@@ -83,6 +85,16 @@ export const mainChildren = [
         path: ':group/:project/vms/devices/edit/:device',
         component: MainVmsDevicesEdit,
         name: mainNames.mainVmsDevicesEdit,
+    },
+    {
+        path: ':group/:project/vms/devices/edit/:device/event/configs/edit/:event',
+        component: MainVmsDevicesEditEventConfigsEdit,
+        name: mainNames.mainVmsDevicesEditEventConfigsEdit,
+    },
+    {
+        path: ':group/:project/vms/devices/edit/:device/event/configs/new',
+        component: MainVmsDevicesEditEventConfigsNew,
+        name: mainNames.mainVmsDevicesEditEventConfigsNew,
     },
     {
         path: ':group/:project/vms/devices/new',

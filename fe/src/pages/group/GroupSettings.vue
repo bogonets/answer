@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
+    <toolbar-breadcrumbs :items="breadcrumbs"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
     <form-group-edit
@@ -34,12 +34,7 @@ import {GroupA, UpdateGroupQ} from '@/packet/group';
   }
 })
 export default class GroupSettings extends VueBase {
-  private readonly navigationItems = [
-    {
-      text: 'Groups',
-      disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
+  readonly breadcrumbs = [
     {
       text: this.$route.params.group,
       disabled: false,

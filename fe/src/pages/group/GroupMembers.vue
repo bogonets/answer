@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
+    <toolbar-breadcrumbs :items="breadcrumbs"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
     <form-invite-member-edit
@@ -36,12 +36,7 @@ import type {RoleA} from '@/packet/role';
   }
 })
 export default class GroupMembers extends VueBase {
-  private readonly navigationItems = [
-    {
-      text: 'Groups',
-      disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
+  readonly breadcrumbs = [
     {
       text: this.$route.params.group,
       disabled: false,

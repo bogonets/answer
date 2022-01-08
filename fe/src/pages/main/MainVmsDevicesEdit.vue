@@ -72,8 +72,14 @@ ko:
           </v-tab-item>
 
           <v-tab-item>
-            <form-vms-event-configs
-            ></form-vms-event-configs>
+<!--            <form-vms-event-configs></form-vms-event-configs>-->
+            <table-vms-event-configs
+                :items="eventConfigs"
+                @click:new="onClickEventConfigNew"
+                @click:active="onClickEventConfigItemActive"
+                @click:edit="onClickEventConfigEdit"
+                @click:delete="onClickEventConfigDelete"
+            ></table-vms-event-configs>
           </v-tab-item>
         </v-tabs-items>
       </v-col>
@@ -89,9 +95,11 @@ import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import MediaPlayer from '@/media/MediaPlayer.vue';
 import FormVmsDevice from '@/components/FormVmsDevice.vue';
 import FormVmsEventConfigs from '@/components/FormVmsEventConfigs.vue';
+import TableVmsEventConfigs from '@/components/TableVmsEventConfigs.vue';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import type {VmsDeviceA, VmsUpdateDeviceQ} from '@/packet/vms';
 import * as _ from 'lodash';
+import {VmsEventConfigA, VmsUpdateEventConfigQ} from "@/packet/vms";
 
 @Component({
   components: {
@@ -99,6 +107,7 @@ import * as _ from 'lodash';
     MediaPlayer,
     FormVmsDevice,
     FormVmsEventConfigs,
+    TableVmsEventConfigs,
   }
 })
 export default class MainVmsDevicesEdit extends VueBase {
@@ -142,11 +151,40 @@ export default class MainVmsDevicesEdit extends VueBase {
   loadingSubmit = false;
   modified = false;
 
+  eventConfigs = [] as Array<VmsEventConfigA>;
+
   showDeleteDialog = false;
   loadingDelete = false;
 
   created() {
+    this.setup();
     this.requestDevice();
+  }
+
+  setup() {
+    this.loading = true;
+    (async () => {
+      await this.requestSetup();
+    })();
+  }
+
+  async requestSetup() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+
+    try {
+      this.original = await this.$api2.getVmsDevice(group, project, device);
+      this.current = _.cloneDeep(this.original);
+      this.modified = false;
+
+      this.eventConfigs = await this.$api2.getVmsDeviceEventsConfigs(
+          group, project, device
+      );
+    } catch (error) {
+    } finally {
+      this.loading = false;
+    }
   }
 
   requestDevice() {
@@ -229,6 +267,42 @@ export default class MainVmsDevicesEdit extends VueBase {
           this.loadingDelete = false;
           this.toastRequestFailure(error);
         });
+  }
+
+  onClickEventConfigNew() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    this.moveToMainVmsDevicesEditEventConfigsNew(group, project, device);
+  }
+
+  onClickEventConfigItemActive(item: VmsEventConfigA) {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const evnet = item.event_config_uid.toString();
+    const updateEnableFlag = !item.enable;
+    const body = {
+      enable: updateEnableFlag,
+    } as VmsUpdateEventConfigQ;
+    this.$api2.patchVmsEventsConfigsPconfig(group, project, evnet, body)
+        .then(() => {
+          item.enable = updateEnableFlag;
+          this.toastRequestSuccess();
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+        });
+  }
+
+  onClickEventConfigEdit(item: VmsEventConfigA) {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    const evnet = item.event_config_uid.toString();
+    this.moveToMainVmsDevicesEditEventConfigsEdit(group, project, device, evnet);
+  }
+
+  onClickEventConfigDelete(item: VmsEventConfigA) {
   }
 }
 </script>

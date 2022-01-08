@@ -83,6 +83,9 @@ ko:
             <v-btn color="primary" class="align-self-center mr-2" @click="onClickAdd">
               {{ $t('labels.add') }}
             </v-btn>
+            <v-btn color="primary" class="align-self-center mr-2" @click="onClickAdd2">
+              {{ 'ADD TEMP' }}
+            </v-btn>
           </v-toolbar>
         </div>
       </template>
@@ -312,6 +315,9 @@ export default class FormVmsEventConfigs extends VueBase {
 
   onClickAdd() {
     this.showNewDialog = true;
+  }
+
+  onClickAdd2() {
   }
 
   onClickNewCancel() {
