@@ -754,7 +754,7 @@ export default class MediaPlayer extends VueBase {
   ) {
     this.informationCode = content.code;
     this.informationDate = createMoment().format('LL, LTS');
-    console.debug(`content.code: ${content.code}`);
+    // console.debug(`content.code: ${content.code}`);
 
     switch (content.code) {
       // Successful cases

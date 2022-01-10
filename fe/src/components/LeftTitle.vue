@@ -9,10 +9,18 @@
           :lg="leftRatio"
           :xl="leftRatio"
       >
-        <div class="text--primary text-h6" :class="headerClass">
+        <div
+            v-if="header"
+            class="text--primary text-h6"
+            :class="headerClass"
+        >
           {{ header }}
         </div>
-        <div class="text--secondary text-subtitle-2" :class="subheaderClass">
+        <div
+            v-if="subheader"
+            class="text--secondary text-subtitle-2"
+            :class="subheaderClass"
+        >
           {{ subheader }}
         </div>
       </v-col>
@@ -33,14 +41,15 @@
 
 <script lang="ts">
 import {Vue, Component, Prop} from 'vue-property-decorator';
+import VueI18n from 'vue-i18n';
 
 @Component
 export default class LeftTitle extends Vue {
-  @Prop({type: String, default: ''})
-  readonly header!: string;
+  @Prop({type: [String, Object]})
+  readonly header?: VueI18n.TranslateResult;
 
-  @Prop({type: String, default: ''})
-  readonly subheader!: string;
+  @Prop({type: [String, Object]})
+  readonly subheader?: VueI18n.TranslateResult;
 
   @Prop({type: Number, default: 4})
   readonly leftRatio!: number;

@@ -1084,6 +1084,43 @@ export default class ApiV2 {
         return this.post(url, body);
     }
 
+    getVmsDeviceEventsConfigsPconfig(
+        group: string,
+        project: string,
+        device: string,
+        config: string
+    ) {
+        const prefix = `/plugins/vms/${group}/${project}`;
+        const suffix = `/devices/${device}/events/configs/${config}`;
+        const url = prefix + suffix;
+        return this.get<VmsEventConfigA>(url);
+    }
+
+    patchVmsDeviceEventsConfigsPconfig(
+        group: string,
+        project: string,
+        device: string,
+        config: string,
+        body: VmsUpdateEventConfigQ,
+    ) {
+        const prefix = `/plugins/vms/${group}/${project}`;
+        const suffix = `/devices/${device}/events/configs/${config}`;
+        const url = prefix + suffix;
+        return this.patch(url, body);
+    }
+
+    deleteVmsDeviceEventsConfigsPconfig(
+        group: string,
+        project: string,
+        device: string,
+        config: string,
+    ) {
+        const prefix = `/plugins/vms/${group}/${project}`;
+        const suffix = `/devices/${device}/events/configs/${config}`;
+        const url = prefix + suffix;
+        return this.delete(url);
+    }
+
     // -----------------------------
     // Plugins/VMS/Devices/Debugging
     // -----------------------------
@@ -1236,26 +1273,6 @@ export default class ApiV2 {
     getVmsEventsDevices(group: string, project: string) {
         const url = `/plugins/vms/${group}/${project}/events/devices`;
         return this.get<Array<number>>(url);
-    }
-
-    getVmsEventsConfigsPconfig(group: string, project: string, config: string) {
-        const url = `/plugins/vms/${group}/${project}/events/configs/${config}`;
-        return this.get<VmsEventConfigA>(url);
-    }
-
-    patchVmsEventsConfigsPconfig(
-        group: string,
-        project: string,
-        config: string,
-        body: VmsUpdateEventConfigQ,
-    ) {
-        const url = `/plugins/vms/${group}/${project}/events/configs/${config}`;
-        return this.patch(url, body);
-    }
-
-    deleteVmsEventsConfigsPconfig(group: string, project: string, config: string) {
-        const url = `/plugins/vms/${group}/${project}/events/configs/${config}`;
-        return this.delete(url);
     }
 
     getVmsEventsTags(group: string, project: string) {

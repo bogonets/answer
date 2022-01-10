@@ -1,7 +1,6 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  devices: "VMS Devices"
+  devices: "Devices"
   discovery: "Discovery"
   epr: "EPR"
   headers:
@@ -45,8 +44,7 @@ en:
     session: "A key value to maintain the session."
 
 ko:
-  groups: "Groups"
-  devices: "VMS Devices"
+  devices: "Devices"
   discovery: "Discovery"
   epr: "EPR"
   headers:
@@ -351,11 +349,6 @@ export default class MainVmsDevicesDiscoveryEpr extends VueBase {
   readonly protocols = PROTOCOLS;
 
   readonly breadcrumbs = [
-    {
-      text: this.$t('groups'),
-      disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
     {
       text: this.$route.params.group,
       disabled: false,

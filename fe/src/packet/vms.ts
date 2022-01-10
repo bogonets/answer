@@ -82,6 +82,16 @@ export const USER_CONFIG_BEEP = false;
 export const USER_CONFIG_BEEP_INTERVAL = 2;
 export const USER_CONFIG_BEEP_DURATION = 10;
 
+export const EVENT_CONFIG_OPERATOR_DEFAULT = '>=';
+export const EVENT_CONFIG_OPERATORS = [
+    '=',
+    '!=',
+    '>',
+    '<',
+    '>=',
+    '<=',
+];
+
 export interface VmsImageA {
     content_type: string;
     encoding: string;

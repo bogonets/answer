@@ -1,7 +1,6 @@
 <i18n lang="yaml">
 en:
   events: "Events"
-  list: "List"
   labels:
     device_uid: "Device UID"
     category: "Event Category"
@@ -32,7 +31,6 @@ en:
 
 ko:
   events: "Events"
-  list: "List"
   labels:
     device_uid: "장치 UID"
     category: "이벤트 종류"
@@ -363,11 +361,6 @@ export default class MainVmsEventsList extends VueBase {
 
   readonly breadcrumbs = [
     {
-      text: this.$t('groups'),
-      disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
-    {
       text: this.$route.params.group,
       disabled: false,
       href: () => this.moveToGroup(),
@@ -379,10 +372,6 @@ export default class MainVmsEventsList extends VueBase {
     },
     {
       text: this.$t('events'),
-      disabled: true,
-    },
-    {
-      text: this.$t('list'),
       disabled: true,
     },
   ];

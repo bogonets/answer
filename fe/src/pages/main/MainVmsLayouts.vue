@@ -1,7 +1,6 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  layouts: "VMS Layouts"
+  layouts: "Layouts"
   headers:
     name: "Name"
     index: "Index"
@@ -15,8 +14,7 @@ en:
     add: "Add Layout"
 
 ko:
-  groups: "Groups"
-  layouts: "VMS Layouts"
+  layouts: "Layouts"
   headers:
     name: "이름"
     index: "배치 순서"
@@ -92,11 +90,6 @@ const ITEMS_PER_PAGE = 15;
 export default class MainVmsLayouts extends VueBase {
   readonly itemsPerPage = ITEMS_PER_PAGE;
   readonly breadcrumbs = [
-    {
-      text: this.$t('groups'),
-      disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
     {
       text: this.$route.params.group,
       disabled: false,

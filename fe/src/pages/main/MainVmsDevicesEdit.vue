@@ -1,23 +1,33 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  devices: "VMS Devices"
+  devices: "Devices"
   edit: "Edit"
   tab:
     info: "Information"
     live: "Live"
     record: "Record"
     event: "Event"
+  labels:
+    delete: "Delete a config"
+  msg:
+    delete_confirm: "Are you sure? Are you really removing this config?"
+  cancel: "Cancel"
+  delete: "Delete"
 
 ko:
-  groups: "Groups"
-  devices: "VMS Devices"
+  devices: "Devices"
   edit: "Edit"
   tab:
     info: "정보"
     live: "실시간"
     record: "녹화"
     event: "이벤트"
+  labels:
+    delete: "설정 제거"
+  msg:
+    delete_confirm: "이 설정을 정말 제거합니까?"
+  cancel: "취소"
+  delete: "제거"
 </i18n>
 
 <template>
@@ -25,65 +35,87 @@ ko:
     <toolbar-breadcrumbs :items="breadcrumbs"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
-    <v-row>
-      <v-col>
-        <v-tabs v-model="tabIndex">
-          <v-tab>{{ $t('tab.info') }}</v-tab>
-          <v-tab>{{ $t('tab.live') }}</v-tab>
-          <v-tab v-show="false">{{ $t('tab.record') }}</v-tab>
-          <v-tab>{{ $t('tab.event') }}</v-tab>
-        </v-tabs>
+    <v-tabs v-model="tabIndex">
+      <v-tab>{{ $t('tab.info') }}</v-tab>
+      <v-tab>{{ $t('tab.live') }}</v-tab>
+      <v-tab v-show="false">{{ $t('tab.record') }}</v-tab>
+      <v-tab>{{ $t('tab.event') }}</v-tab>
+    </v-tabs>
+    <v-divider></v-divider>
+
+    <v-tabs-items v-model="tabIndex">
+      <v-tab-item>
+        <form-vms-device
+            hide-cancel-button
+            :disabled="loading"
+            :disable-submit-button="!modified"
+            :loading-submit="loadingSubmit"
+            :show-delete-dialog="showDeleteDialog"
+            :loading-delete="loadingDelete"
+            :value="current"
+            @input="onUpdateCurrent"
+            @ok="onClickOk"
+            @delete:show="onClickDelete"
+            @delete:cancel="onClickDeleteCancel"
+            @delete:ok="onClickDeleteOk"
+        ></form-vms-device>
+      </v-tab-item>
+
+      <v-tab-item>
+        <!-- To release MediaPlayer memory, `v-if` must be used. -->
+        <media-player
+            v-if="tabIndex === 1"
+            hover-system-bar
+            hide-controller
+            min-height="400px"
+            :value="original"
+            :group="$route.params.group"
+            :project="$route.params.project"
+            :device="$route.params.device"
+        ></media-player>
+      </v-tab-item>
+
+      <v-tab-item>
+        <!-- TODO: Record Tab -->
+      </v-tab-item>
+
+      <v-tab-item>
+        <table-vms-event-configs
+            :items="eventConfigs"
+            :loading="loadingEventConfigs"
+            @click:new="onClickEventConfigNew"
+            @click:active="onClickEventConfigItemActive"
+            @click:edit="onClickEventConfigEdit"
+            @click:delete="onClickEventConfigDelete"
+        ></table-vms-event-configs>
+      </v-tab-item>
+    </v-tabs-items>
+
+    <!-- Delete dialog. -->
+    <v-dialog v-model="showEventConfigDeleteDialog" max-width="320">
+      <v-card>
+        <v-card-title class="text-h5 error--text">
+          {{ $t('labels.delete') }}
+        </v-card-title>
+        <v-card-text>
+          {{ $t('msg.delete_confirm') }}
+        </v-card-text>
         <v-divider></v-divider>
-
-        <v-tabs-items v-model="tabIndex">
-          <v-tab-item>
-            <form-vms-device
-                hide-cancel-button
-                :disabled="loading"
-                :disable-submit-button="!modified"
-                :loading-submit="loadingSubmit"
-                :show-delete-dialog="showDeleteDialog"
-                :loading-delete="loadingDelete"
-                :value="current"
-                @input="onUpdateCurrent"
-                @ok="onClickOk"
-                @delete:show="onClickDelete"
-                @delete:cancel="onClickDeleteCancel"
-                @delete:ok="onClickDeleteOk"
-            ></form-vms-device>
-          </v-tab-item>
-
-          <v-tab-item>
-            <!-- To release MediaPlayer memory, `v-if` must be used. -->
-            <media-player
-                v-if="tabIndex === 1"
-                hover-system-bar
-                hide-controller
-                min-height="400px"
-                :value="original"
-                :group="$route.params.group"
-                :project="$route.params.project"
-                :device="$route.params.device"
-            ></media-player>
-          </v-tab-item>
-
-          <v-tab-item>
-            <!-- TODO: Record Tab -->
-          </v-tab-item>
-
-          <v-tab-item>
-<!--            <form-vms-event-configs></form-vms-event-configs>-->
-            <table-vms-event-configs
-                :items="eventConfigs"
-                @click:new="onClickEventConfigNew"
-                @click:active="onClickEventConfigItemActive"
-                @click:edit="onClickEventConfigEdit"
-                @click:delete="onClickEventConfigDelete"
-            ></table-vms-event-configs>
-          </v-tab-item>
-        </v-tabs-items>
-      </v-col>
-    </v-row>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="onClickEventConfigDeleteCancel">
+            {{ $t('cancel') }}
+          </v-btn>
+          <v-btn
+              color="error"
+              :loading="loadingEventConfigDelete"
+              @click="onClickEventConfigDeleteOk"
+          >
+            {{ $t('delete') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
   </v-container>
 </template>
@@ -94,30 +126,27 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import MediaPlayer from '@/media/MediaPlayer.vue';
 import FormVmsDevice from '@/components/FormVmsDevice.vue';
-import FormVmsEventConfigs from '@/components/FormVmsEventConfigs.vue';
 import TableVmsEventConfigs from '@/components/TableVmsEventConfigs.vue';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
-import type {VmsDeviceA, VmsUpdateDeviceQ} from '@/packet/vms';
+import type {
+  VmsDeviceA,
+  VmsUpdateDeviceQ,
+  VmsEventConfigA,
+  VmsUpdateEventConfigQ,
+} from '@/packet/vms';
 import * as _ from 'lodash';
-import {VmsEventConfigA, VmsUpdateEventConfigQ} from "@/packet/vms";
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
     MediaPlayer,
     FormVmsDevice,
-    FormVmsEventConfigs,
     TableVmsEventConfigs,
   }
 })
 export default class MainVmsDevicesEdit extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly breadcrumbs = [
-    {
-      text: this.$t('groups'),
-      disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
     {
       text: this.$route.params.group,
       disabled: false,
@@ -134,10 +163,6 @@ export default class MainVmsDevicesEdit extends VueBase {
       href: () => this.moveToMainVmsDevices(),
     },
     {
-      text: this.$t('edit'),
-      disabled: true,
-    },
-    {
       text: this.$route.params.device,
       disabled: true,
     },
@@ -151,18 +176,36 @@ export default class MainVmsDevicesEdit extends VueBase {
   loadingSubmit = false;
   modified = false;
 
+  loadingEventConfigs = false;
   eventConfigs = [] as Array<VmsEventConfigA>;
 
   showDeleteDialog = false;
   loadingDelete = false;
+
+  showEventConfigDeleteDialog = false;
+  loadingEventConfigDelete = false;
+  eventConfigCandidate = 0;
 
   created() {
     this.setup();
     this.requestDevice();
   }
 
+  mounted() {
+    if (this.$route.params.tab) {
+      try {
+        this.tabIndex = Number.parseInt(this.$route.params.tab);
+      } catch (error) {
+        this.tabIndex = 0;
+      }
+    } else {
+      this.tabIndex = 0;
+    }
+  }
+
   setup() {
     this.loading = true;
+    this.loadingEventConfigs = true;
     (async () => {
       await this.requestSetup();
     })();
@@ -184,6 +227,7 @@ export default class MainVmsDevicesEdit extends VueBase {
     } catch (error) {
     } finally {
       this.loading = false;
+      this.loadingEventConfigs = false;
     }
   }
 
@@ -201,6 +245,23 @@ export default class MainVmsDevicesEdit extends VueBase {
         })
         .catch(error => {
           this.loading = false;
+          this.toastRequestFailure(error);
+        });
+  }
+
+  requestEventConfigs() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+
+    this.loadingEventConfigs = true;
+    this.$api2.getVmsDeviceEventsConfigs(group, project, device)
+        .then(items => {
+          this.loadingEventConfigs = false;
+          this.eventConfigs = items;
+        })
+        .catch(error => {
+          this.loadingEventConfigs = false;
           this.toastRequestFailure(error);
         });
   }
@@ -279,12 +340,13 @@ export default class MainVmsDevicesEdit extends VueBase {
   onClickEventConfigItemActive(item: VmsEventConfigA) {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    const evnet = item.event_config_uid.toString();
+    const device = this.$route.params.device;
+    const config = item.event_config_uid.toString();
     const updateEnableFlag = !item.enable;
     const body = {
       enable: updateEnableFlag,
     } as VmsUpdateEventConfigQ;
-    this.$api2.patchVmsEventsConfigsPconfig(group, project, evnet, body)
+    this.$api2.patchVmsDeviceEventsConfigsPconfig(group, project, device, config, body)
         .then(() => {
           item.enable = updateEnableFlag;
           this.toastRequestSuccess();
@@ -298,11 +360,37 @@ export default class MainVmsDevicesEdit extends VueBase {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     const device = this.$route.params.device;
-    const evnet = item.event_config_uid.toString();
-    this.moveToMainVmsDevicesEditEventConfigsEdit(group, project, device, evnet);
+    const config = item.event_config_uid.toString();
+    this.moveToMainVmsDevicesEditEventConfigsEdit(group, project, device, config);
   }
 
   onClickEventConfigDelete(item: VmsEventConfigA) {
+    this.showEventConfigDeleteDialog = true;
+    this.eventConfigCandidate = item.event_config_uid;
+  }
+
+  onClickEventConfigDeleteCancel() {
+    this.showEventConfigDeleteDialog = false;
+  }
+
+  onClickEventConfigDeleteOk() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    const config = this.eventConfigCandidate.toString();
+
+    this.loadingEventConfigDelete = true;
+    this.$api2.deleteVmsDeviceEventsConfigsPconfig(group, project, device, config)
+        .then(() => {
+          this.showEventConfigDeleteDialog = false;
+          this.loadingEventConfigDelete = false;
+          this.toastRequestSuccess();
+          this.requestEventConfigs();
+        })
+        .catch(error => {
+          this.loadingEventConfigDelete = false;
+          this.toastRequestFailure(error);
+        });
   }
 }
 </script>

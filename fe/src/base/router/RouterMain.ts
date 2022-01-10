@@ -80,17 +80,19 @@ export default class RouterMain extends mixins(RouterMainAirjoy) {
     moveToMainVmsDevicesEditEventConfigs(
         group?: string, project?: string, device?: string
     ) {
-        this.moveToMainVmsDevicesEdit(group, project, device, "3");
+        const eventConfigTabIndex = 3;
+        const tab = eventConfigTabIndex.toString();
+        this.moveToMainVmsDevicesEdit(group, project, device, tab);
     }
 
     moveToMainVmsDevicesEditEventConfigsEdit(
-        group?: string, project?: string, device?: string, event?: string,
+        group?: string, project?: string, device?: string, config?: string,
     ) {
         const params = {
             group: group || this.$route.params.group,
             project: project || this.$route.params.project,
             device: device || this.$route.params.device,
-            event: event || this.$route.params.event,
+            config: config || this.$route.params.config,
         };
         this.moveTo(mainNames.mainVmsDevicesEditEventConfigsEdit, params);
     }

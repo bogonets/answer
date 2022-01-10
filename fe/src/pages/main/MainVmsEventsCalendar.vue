@@ -1,7 +1,5 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  events: "Events"
   calendar: "Calendar"
   first_event_day: "First Event Day"
   today: "Today"
@@ -10,8 +8,6 @@ en:
   empty: "There are no registered events."
 
 ko:
-  groups: "Groups"
-  events: "Events"
   calendar: "Calendar"
   first_event_day: "처음"
   today: "오늘"
@@ -109,11 +105,6 @@ import {todayString, dateToString} from '@/chrono/date';
 export default class MainVmsEventsCalendar extends VueBase {
   readonly breadcrumbs = [
     {
-      text: this.$t('groups'),
-      disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
-    {
       text: this.$route.params.group,
       disabled: false,
       href: () => this.moveToGroup(),
@@ -122,10 +113,6 @@ export default class MainVmsEventsCalendar extends VueBase {
       text: this.$route.params.project,
       disabled: false,
       href: () => this.moveToMain(),
-    },
-    {
-      text: this.$t('events'),
-      disabled: true,
     },
     {
       text: this.$t('calendar'),

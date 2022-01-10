@@ -1,7 +1,6 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  devices: "VMS Devices"
+  devices: "Devices"
   new: "New"
   labels:
     name: "Name"
@@ -21,8 +20,7 @@ en:
     password: "Please enter the password."
 
 ko:
-  groups: "Groups"
-  devices: "VMS Devices"
+  devices: "Devices"
   new: "New"
   labels:
     name: "이름"
@@ -165,11 +163,6 @@ export default class MainVmsDevicesNew extends VueBase {
   readonly protocols = PROTOCOLS;
 
   readonly breadcrumbs = [
-    {
-      text: this.$t('groups'),
-      disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
     {
       text: this.$route.params.group,
       disabled: false,

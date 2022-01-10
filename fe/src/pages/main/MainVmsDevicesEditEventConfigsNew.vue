@@ -1,8 +1,6 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  devices: "VMS Devices"
-  edit: "Edit/{0}"
+  devices: "Devices"
   new: "New"
   msg:
     enable_debugging: "Enable Device Debugging Mode"
@@ -11,9 +9,7 @@ en:
     failed_stop_debugging: "Failed to stop device debugging mode."
 
 ko:
-  groups: "Groups"
-  devices: "VMS Devices"
-  edit: "Edit/{0}"
+  devices: "Devices"
   new: "New"
   msg:
     enable_debugging: "장치 디버깅 모드를 활성화 했습니다."
@@ -28,9 +24,6 @@ ko:
     <v-divider></v-divider>
 
     <form-vms-event-config
-        disable-device
-        :device="device"
-        :devices="devices"
         :loading-submit="loadingSubmit"
         @cancel="onClickCancel"
         @ok="onClickOk"
@@ -44,11 +37,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import FormVmsEventConfig from '@/components/FormVmsEventConfig.vue';
-import type {
-  VmsDeviceA,
-  VmsEventConfigA,
-  VmsCreateEventConfigQ,
-} from '@/packet/vms';
+import type {VmsEventConfigA, VmsCreateEventConfigQ} from '@/packet/vms';
 
 @Component({
   components: {
@@ -74,11 +63,7 @@ export default class MainVmsDevicesEditEventConfigsNew extends VueBase {
       href: () => this.moveToMainVmsDevices(),
     },
     {
-      text: this.$t('edit', [this.$route.params.device]),
-      disabled: true,
-    },
-    {
-      text: this.$t('event_config'),
+      text: this.$route.params.device,
       disabled: false,
       href: () => this.moveToMainVmsDevicesEditEventConfigs(),
     },
@@ -90,8 +75,6 @@ export default class MainVmsDevicesEditEventConfigsNew extends VueBase {
 
   loading = false;
   loadingSubmit = false;
-  device = {} as VmsDeviceA;
-  devices = [] as Array<VmsDeviceA>;
 
   // You cannot directly reference `$route` in the `beforeDestroy` event.
   currentGroup = '';
@@ -115,15 +98,6 @@ export default class MainVmsDevicesEditEventConfigsNew extends VueBase {
     const device = this.$route.params.device;
 
     try {
-      this.devices = await this.$api2.getVmsDevices(group, project);
-      const device_uid = Number.parseInt(device);
-      const findDevice = this.devices.find(i => i.device_uid == device_uid);
-      if (typeof findDevice === 'undefined') {
-        this.device = {} as VmsDeviceA;
-      } else {
-        this.device = findDevice;
-      }
-
       await this.$api2.postVmsDeviceProcessDebugStart(group, project, device);
       this.currentGroup = this.$route.params.group;
       this.currentProject = this.$route.params.project;
@@ -156,7 +130,6 @@ export default class MainVmsDevicesEditEventConfigsNew extends VueBase {
   onClickOk(event: VmsEventConfigA) {
     const body = {
       sequence: 0,
-      device_uid: this.device.device_uid,
       category: event.category,
       name: event.name || '',
       enable: event.enable || false,

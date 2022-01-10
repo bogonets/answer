@@ -66,39 +66,46 @@ ko:
 
 <template>
   <v-form ref="form" v-model="valid" lazy-validation>
-    <p :class="subtitleClass">{{ $t('labels.device_uid') }}</p>
-    <v-select
-        dense
-        outlined
-        :persistent-hint="!(loading || disableDevice)"
-        :hide-details="loading || disableDevice"
-        :disabled="loading || disableDevice"
-        :rules="ruleDevice"
-        v-model="device"
-        :items="devices"
-        :hint="$t('hints.device_uid')"
-        item-text="name"
-        item-value="device_uid"
-        return-object
+<!--    <p :class="subtitleClass">{{ $t('labels.device_uid') }}</p>-->
+<!--    <v-select-->
+<!--        dense-->
+<!--        outlined-->
+<!--        :persistent-hint="!(loading || disableDevice)"-->
+<!--        :hide-details="loading || disableDevice"-->
+<!--        :disabled="loading || disableDevice"-->
+<!--        :rules="ruleDevice"-->
+<!--        v-model="device"-->
+<!--        :items="devices"-->
+<!--        :hint="$t('hints.device_uid')"-->
+<!--        item-text="name"-->
+<!--        item-value="device_uid"-->
+<!--        return-object-->
+<!--    >-->
+<!--      <template v-slot:item="{ item }">-->
+<!--        {{ item.name }}-->
+<!--        <v-chip class="ml-2" x-small outlined color="primary">-->
+<!--          <v-icon left>mdi-identifier</v-icon>-->
+<!--          {{ item.device_uid }}-->
+<!--        </v-chip>-->
+<!--      </template>-->
+
+<!--      <template v-slot:selection="{ item }">-->
+<!--        {{ item.name }}-->
+<!--        <v-chip class="ml-2" x-small outlined color="primary">-->
+<!--          <v-icon left>mdi-identifier</v-icon>-->
+<!--          {{ item.device_uid }}-->
+<!--        </v-chip>-->
+<!--      </template>-->
+<!--    </v-select>-->
+
+    <label-span
+        class="mt-2"
+        size="subtitle-2"
+        opacity="secondary"
+        weight="bold"
     >
-      <template v-slot:item="{ item }">
-        {{ item.name }}
-        <v-chip class="ml-2" x-small outlined color="primary">
-          <v-icon left>mdi-identifier</v-icon>
-          {{ item.device_uid }}
-        </v-chip>
-      </template>
-
-      <template v-slot:selection="{ item }">
-        {{ item.name }}
-        <v-chip class="ml-2" x-small outlined color="primary">
-          <v-icon left>mdi-identifier</v-icon>
-          {{ item.device_uid }}
-        </v-chip>
-      </template>
-    </v-select>
-
-    <p :class="subtitleClass">{{ $t('labels.name') }}</p>
+      {{ $t('labels.name') }}
+    </label-span>
     <v-text-field
         dense
         persistent-hint
@@ -106,22 +113,41 @@ ko:
         autocomplete="off"
         :disabled="loading"
         :rules="ruleName"
-        v-model="value.name"
+        :value="value.name"
+        @input="onInputName"
         :hint="$t('hints.name')"
     ></v-text-field>
 
     <v-row class="mt-2" no-gutters>
       <div>
-        <p :class="subtitleClass">{{ $t('labels.enable') }}</p>
+        <label-span
+            class="mt-2"
+            size="subtitle-2"
+            opacity="secondary"
+            weight="bold"
+        >
+          {{ $t('labels.enable') }}
+        </label-span>
         <p class="text-caption text--secondary">{{ $t('hints.enable') }}</p>
       </div>
       <v-spacer></v-spacer>
       <div>
-        <v-switch inset v-model="value.enable"></v-switch>
+        <v-switch
+            inset
+            :value="value.enable"
+            @change="onChangeEnable"
+        ></v-switch>
       </div>
     </v-row>
 
-    <p :class="subtitleClass">{{ $t('labels.category') }}</p>
+    <label-span
+        class="mt-2"
+        size="subtitle-2"
+        opacity="secondary"
+        weight="bold"
+    >
+      {{ $t('labels.category') }}
+    </label-span>
     <v-select
         class="category-z-index"
         dense
@@ -129,7 +155,8 @@ ko:
         :persistent-hint="!(loading || disableCategory)"
         :disabled="loading || disableCategory"
         :rules="ruleCategory"
-        v-model="value.category"
+        :value="value.category"
+        @input="onInputCategory"
         :items="categories"
         item-text="text"
         item-value="value"
@@ -137,49 +164,69 @@ ko:
     >
       <template v-slot:item="{ item }">
         <v-icon class="mr-2">{{ item.icon }}</v-icon>
-        <span :class="subtitleClass">{{ item.text }}</span>
+        <label-span
+            size="subtitle-2"
+            opacity="secondary"
+            weight="bold"
+        >
+          {{ item.text }}
+        </label-span>
       </template>
 
       <template v-slot:selection="{ item }">
         <v-icon class="mr-2">{{ item.icon }}</v-icon>
-        <span :class="subtitleClass">{{ item.text }}</span>
+        <label-span
+            size="subtitle-2"
+            opacity="secondary"
+            weight="bold"
+        >
+          {{ item.text }}
+        </label-span>
       </template>
     </v-select>
 
-    <div class="mt-2">
-      <v-sheet v-if="existsCategory" class="pa-2" outlined rounded>
-        <form-vms-event-configs-color
-            v-if="isColor"
-            v-model="value.extra"
-            :valid.sync="validExtra"
-        ></form-vms-event-configs-color>
-        <form-vms-event-configs-detection
-            v-else-if="isDetection"
-            v-model="value.extra"
-            :valid.sync="validExtra"
-        ></form-vms-event-configs-detection>
-        <form-vms-event-configs-matching
-            v-else-if="isMatching"
-            v-model="value.extra"
-            :valid.sync="validExtra"
-        ></form-vms-event-configs-matching>
-        <form-vms-event-configs-ocr
-            v-else-if="isOcr"
-            v-model="value.extra"
-            :valid.sync="validExtra"
-        ></form-vms-event-configs-ocr>
-      </v-sheet>
-      <div v-else-if="!value.category">
-        <v-alert outlined icon="mdi-alert" type="warning">
+    <v-sheet class="mt-2 pa-2" outlined rounded>
+      <form-vms-event-configs-color
+          v-if="isColor"
+          :value="value.extra"
+          @input="onInputExtra"
+          :valid.sync="validExtra"
+      ></form-vms-event-configs-color>
+      <form-vms-event-configs-detection
+          v-else-if="isDetection"
+          :value="value.extra"
+          @input="onInputExtra"
+          :valid.sync="validExtra"
+      ></form-vms-event-configs-detection>
+      <form-vms-event-configs-matching
+          v-else-if="isMatching"
+          :value="value.extra"
+          @input="onInputExtra"
+          :valid.sync="validExtra"
+      ></form-vms-event-configs-matching>
+      <form-vms-event-configs-ocr
+          v-else-if="isOcr"
+          :value="value.extra"
+          @input="onInputExtra"
+          :valid.sync="validExtra"
+      ></form-vms-event-configs-ocr>
+      <div v-else-if="isNotSelected" class="pa-2 d-flex flex-row align-center">
+        <v-icon large color="warning">
+          mdi-alert-circle
+        </v-icon>
+        <label-span class="ml-2" size="subtitle-1" color="warning">
           {{ $t('msg.select_category') }}
-        </v-alert>
+        </label-span>
       </div>
-      <div v-else>
-        <v-alert outlined icon="mdi-alert" type="error">
+      <div v-else class="pa-2 d-flex flex-row align-center">
+        <v-icon large color="error">
+          mdi-alert-circle
+        </v-icon>
+        <label-span class="ml-2" size="subtitle-1" color="error">
           {{ $t('msg.unknown_category') }}
-        </v-alert>
+        </label-span>
       </div>
-    </div>
+    </v-sheet>
 
     <v-row v-if="!hideButtons" class="mt-2" no-gutters>
       <v-spacer></v-spacer>
@@ -209,26 +256,24 @@ ko:
 import {Component, Emit, Prop, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {VForm} from 'vuetify/lib/components/VForm';
-import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import requiredField from '@/rules/required';
 import {
-  EVENT_CATEGORIES,
   EVENT_CATEGORY_NAME_COLOR,
   EVENT_CATEGORY_NAME_DETECTION,
   EVENT_CATEGORY_NAME_MATCHING,
   EVENT_CATEGORY_NAME_OCR,
+  EVENT_CATEGORIES,
 } from '@/packet/vms';
-import type {
-  VmsDeviceA,
-  VmsEventConfigA,
-} from '@/packet/vms';
-import FormVmsEventConfigsColor from "@/components/FormVmsEventConfigsColor.vue";
-import FormVmsEventConfigsDetection from "@/components/FormVmsEventConfigsDetection.vue";
-import FormVmsEventConfigsMatching from "@/components/FormVmsEventConfigsMatching.vue";
-import FormVmsEventConfigsOcr from "@/components/FormVmsEventConfigsOcr.vue";
+import type {VmsEventConfigA} from '@/packet/vms';
+import LabelSpan from '@/components/LabelSpan.vue';
+import FormVmsEventConfigsColor from '@/components/FormVmsEventConfigsColor.vue';
+import FormVmsEventConfigsDetection from '@/components/FormVmsEventConfigsDetection.vue';
+import FormVmsEventConfigsMatching from '@/components/FormVmsEventConfigsMatching.vue';
+import FormVmsEventConfigsOcr from '@/components/FormVmsEventConfigsOcr.vue';
 
 @Component({
   components: {
+    LabelSpan,
     FormVmsEventConfigsColor,
     FormVmsEventConfigsDetection,
     FormVmsEventConfigsMatching,
@@ -236,10 +281,11 @@ import FormVmsEventConfigsOcr from "@/components/FormVmsEventConfigsOcr.vue";
   },
 })
 export default class FormVmsEventConfig extends VueBase {
-  readonly subtitleClass = SUBTITLE_CLASS;
-  readonly ruleDevice = [requiredField];
-  readonly ruleCategory = [requiredField];
   readonly ruleName = [requiredField];
+  readonly ruleCategory = [
+    requiredField,
+    x => EVENT_CATEGORIES.includes(x) || this.$t('msg.unknown_category')
+  ];
 
   readonly categories = [
     {
@@ -265,9 +311,6 @@ export default class FormVmsEventConfig extends VueBase {
   ];
 
   @Prop({type: Boolean})
-  readonly disableDevice!: boolean;
-
-  @Prop({type: Boolean})
   readonly disableCategory!: boolean;
 
   @Prop({type: Boolean})
@@ -289,12 +332,6 @@ export default class FormVmsEventConfig extends VueBase {
   readonly disableSubmitButton!: boolean;
 
   @Prop({type: Object, default: () => new Object()})
-  readonly device!: VmsDeviceA;
-
-  @Prop({type: Array, default: () => []})
-  readonly devices!: Array<VmsDeviceA>;
-
-  @Prop({type: Object, default: () => new Object()})
   readonly value!: VmsEventConfigA;
 
   @Ref()
@@ -303,15 +340,6 @@ export default class FormVmsEventConfig extends VueBase {
   valid = false;
   validExtra = false;
   loading = false;
-
-  // // You cannot directly reference `$route` in the `beforeDestroy` event.
-  // currentGroup = '';
-  // currentProject = '';
-  // currentDevice = '';
-
-  get existsCategory() {
-    return EVENT_CATEGORIES.includes(this.value.category);
-  }
 
   get isColor() {
     return this.value.category === EVENT_CATEGORY_NAME_COLOR;
@@ -329,11 +357,39 @@ export default class FormVmsEventConfig extends VueBase {
     return this.value.category === EVENT_CATEGORY_NAME_OCR;
   }
 
+  get isNotSelected() {
+    return !this.value.category;
+  }
+
   get disableSubmit() {
     return this.loadingSubmit
         || !this.valid
         || !this.validExtra
         || this.disableSubmitButton;
+  }
+
+  onInputName(event: string) {
+    console.debug('onInputName', event)
+    this.$set(this.value, 'name', event);
+    this.input();
+  }
+
+  onChangeEnable(event?: boolean | null) {
+    console.debug('onChangeEnable', !!event)
+    this.$set(this.value, 'enable', !!event);
+    this.input();
+  }
+
+  onInputCategory(event: string) {
+    console.debug('onInputCategory', event)
+    this.$set(this.value, 'category', event);
+    this.input();
+  }
+
+  onInputExtra(event: any) {
+    console.debug('onInputExtra', event)
+    this.$set(this.value, 'extra', event);
+    this.input();
   }
 
   formValidate() {
@@ -349,6 +405,11 @@ export default class FormVmsEventConfig extends VueBase {
     }
 
     this.ok();
+  }
+
+  @Emit()
+  input() {
+    return this.value;
   }
 
   @Emit()

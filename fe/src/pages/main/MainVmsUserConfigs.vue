@@ -1,7 +1,6 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  settings: "VMS Settings"
+  settings: "Settings"
   headers:
     common: "Common Settings"
     visual: "Visual Settings"
@@ -22,8 +21,7 @@ en:
     seconds: "Seconds"
 
 ko:
-  groups: "Groups"
-  settings: "VMS Settings"
+  settings: "Settings"
   headers:
     common: "일반 설정"
     visual: "시각 설정"
@@ -187,11 +185,6 @@ import {
 export default class MainVmsUserConfigs extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly breadcrumbs = [
-    {
-      text: this.$t('groups'),
-      disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
     {
       text: this.$route.params.group,
       disabled: false,

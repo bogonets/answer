@@ -1,23 +1,45 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  devices: "VMS Devices"
-  edit: "Edit/{0}"
+  devices: "Devices"
+  headers:
+    detail: "Detail"
+  subheaders:
+    detail: "Detailed information about this config."
+  labels:
+    created_at: "Created At"
+    updated_at: "Updated At"
+    delete: "Delete a config"
+  hints:
+    delete: "Please be careful! It cannot be recovered."
   msg:
     enable_debugging: "Enable Device Debugging Mode"
     disable_debugging: "Disable Device Debugging Mode"
     failed_start_debugging: "Failed to switch device debugging mode."
     failed_stop_debugging: "Failed to stop device debugging mode."
+    delete_confirm: "Are you sure? Are you really removing this config?"
+  cancel: "Cancel"
+  delete: "Delete"
 
 ko:
-  groups: "Groups"
-  devices: "VMS Devices"
-  edit: "Edit/{0}"
+  devices: "Devices"
+  headers:
+    detail: "상세 정보"
+  subheaders:
+    detail: "이 설정에 대한 자세한 정보입니다."
+  labels:
+    created_at: "설정 생성일"
+    updated_at: "설정 갱신일"
+    delete: "설정 제거"
+  hints:
+    delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
   msg:
     enable_debugging: "장치 디버깅 모드를 활성화 했습니다."
     disable_debugging: "장치 디버깅 모드를 비활성화 했습니다."
     failed_start_debugging: "장치 디버깅 모드 전환에 실패하였습니다."
     failed_stop_debugging: "장치 디버깅 모드 중단에 실패하였습니다."
+    delete_confirm: "이 설정을 정말 제거합니까?"
+  cancel: "취소"
+  delete: "제거"
 </i18n>
 
 <template>
@@ -26,29 +48,100 @@ ko:
     <v-divider></v-divider>
 
     <form-vms-event-config
-        disable-device
-        :device="device"
-        :devices="devices"
+        disable-category
         :loading-submit="loadingSubmit"
+        :disable-submit-button="!modified"
+        :value="current"
+        @input="inputCurrent"
         @cancel="onClickCancel"
         @ok="onClickOk"
     ></form-vms-event-config>
+
+    <left-title
+        :header="$t('headers.detail')"
+        :subheader="$t('subheaders.detail')"
+    >
+      <v-card outlined>
+        <v-simple-table class="elevation-1">
+          <template v-slot:default>
+            <tbody>
+            <tr>
+              <td>{{ $t('labels.created_at') }}</td>
+              <td>{{ createdAt }}</td>
+            </tr>
+            <tr>
+              <td>{{ $t('labels.updated_at') }}</td>
+              <td>{{ updatedAt }}</td>
+            </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+      </v-card>
+    </left-title>
+
+    <v-alert
+        outlined
+        prominent
+        class="ma-4"
+        type="error"
+    >
+      <v-row align="center" class="pl-4">
+        <v-col>
+          <v-row>
+            <h6 class="text-h6">{{ $t('labels.delete') }}</h6>
+          </v-row>
+          <v-row>
+            <span class="text-body-2">{{ $t('hints.delete') }}</span>
+          </v-row>
+        </v-col>
+        <v-col class="shrink">
+          <v-btn color="error" @click.stop="onClickDelete">
+            {{ $t('delete') }}
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-alert>
+
+    <!-- Delete dialog. -->
+    <v-dialog v-model="showDeleteDialog" max-width="320">
+      <v-card>
+        <v-card-title class="text-h5 error--text">
+          {{ $t('labels.delete') }}
+        </v-card-title>
+        <v-card-text>
+          {{ $t('msg.delete_confirm') }}
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="onClickDeleteCancel">
+            {{ $t('cancel') }}
+          </v-btn>
+          <v-btn :loading="loadingDelete" color="error" @click="onClickDeleteOk">
+            {{ $t('delete') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
   </v-container>
 </template>
 
 <script lang="ts">
-import {Component, Prop} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import FormVmsEventConfig from '@/components/FormVmsEventConfig.vue';
+import LeftTitle from '@/components/LeftTitle.vue';
 import type {VmsEventConfigA} from '@/packet/vms';
-import {VmsCreateEventConfigQ, VmsDeviceA} from "@/packet/vms";
+import {iso8601ToLocal} from "@/chrono/iso8601";
+import * as _ from 'lodash';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
     FormVmsEventConfig,
+    LeftTitle,
   }
 })
 export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
@@ -69,24 +162,18 @@ export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
       href: () => this.moveToMainVmsDevices(),
     },
     {
-      text: this.$t('edit', [this.$route.params.device]),
-      disabled: true,
-    },
-    {
-      text: this.$t('event_config'),
+      text: this.$route.params.device,
       disabled: false,
       href: () => this.moveToMainVmsDevicesEditEventConfigs(),
     },
     {
-      text: this.$t('edit', [this.$route.params.event]),
+      text: this.$route.params.config,
       disabled: true,
     },
   ];
 
   loading = false;
   loadingSubmit = false;
-  device = {} as VmsDeviceA;
-  devices = [] as Array<VmsDeviceA>;
 
   // You cannot directly reference `$route` in the `beforeDestroy` event.
   currentGroup = '';
@@ -96,6 +183,9 @@ export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
   current = {} as VmsEventConfigA;
   original = {} as VmsEventConfigA;
   modified = false;
+
+  showDeleteDialog = false;
+  loadingDelete = false;
 
   created() {
     this.requestSetup();
@@ -112,22 +202,20 @@ export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     const device = this.$route.params.device;
+    const config = this.$route.params.config;
 
     try {
-      this.devices = await this.$api2.getVmsDevices(group, project);
-      const device_uid = Number.parseInt(device);
-      const findDevice = this.devices.find(i => i.device_uid == device_uid);
-      if (typeof findDevice === 'undefined') {
-        this.device = {} as VmsDeviceA;
-      } else {
-        this.device = findDevice;
-      }
-
       await this.$api2.postVmsDeviceProcessDebugStart(group, project, device);
       this.currentGroup = this.$route.params.group;
       this.currentProject = this.$route.params.project;
       this.currentDevice = this.$route.params.device;
       this.toastWarning(this.$t('msg.enable_debugging'));
+
+      this.original = await this.$api2.getVmsDeviceEventsConfigsPconfig(
+          group, project, device, config
+      );
+      this.current = _.cloneDeep(this.original);
+      this.modified = false;
     } catch (error) {
       this.toastRequestFailure(error);
     } finally {
@@ -148,11 +236,27 @@ export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
         });
   }
 
+  get createdAt() {
+    return iso8601ToLocal(this.original.created_at || '');
+  }
+
+  get updatedAt() {
+    return iso8601ToLocal(this.original.updated_at || '');
+  }
+
+  inputCurrent(item: VmsEventConfigA) {
+    this.current = item;
+    this.modified = !_.isEqual(this.original, this.current);
+    console.debug('InputCurrent->', this.current);
+    console.debug('InputOriginal->', this.original);
+    console.debug('modified', this.modified);
+  }
+
   onClickCancel() {
     this.moveToBack();
   }
 
-  onClickOk(event: VmsEventConfigA) {
+  onClickOk(item: VmsEventConfigA) {
     // const body = {
     //   sequence: 0,
     //   device_uid: this.device.device_uid,
@@ -176,6 +280,34 @@ export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
     //       this.loadingSubmit = false;
     //       this.toastRequestFailure(error);
     //     });
+  }
+
+  onClickDelete() {
+    this.showDeleteDialog = true;
+  }
+
+  onClickDeleteCancel() {
+    this.showDeleteDialog = false;
+  }
+
+  onClickDeleteOk() {
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    const config = this.$route.params.config;
+
+    this.loadingDelete = true;
+    this.$api2.deleteVmsDeviceEventsConfigsPconfig(group, project, device, config)
+        .then(() => {
+          this.loadingDelete = false;
+          this.showDeleteDialog = false;
+          this.toastRequestSuccess();
+          this.moveToMainVmsDevicesEditEventConfigs();
+        })
+        .catch(error => {
+          this.loadingDelete = false;
+          this.toastRequestFailure(error);
+        });
   }
 }
 </script>

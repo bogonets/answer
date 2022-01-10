@@ -1,7 +1,6 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  devices: "VMS Devices"
+  devices: "Devices"
   discovery: "Discovery"
   headers:
     epr: "EndPoint Reference (EPR)"
@@ -27,8 +26,7 @@ en:
     ipv6: "IPv6"
 
 ko:
-  groups: "Groups"
-  devices: "VMS Devices"
+  devices: "Devices"
   discovery: "Discovery"
   headers:
     epr: "엔드포인트 참조 (EPR)"
@@ -182,11 +180,6 @@ export default class MainVmsDevicesDiscovery extends VueBase {
   readonly itemsPerPage = ITEMS_PER_PAGE;
 
   readonly breadcrumbs = [
-    {
-      text: this.$t('groups'),
-      disabled: false,
-      href: () => this.moveToRootGroups(),
-    },
     {
       text: this.$route.params.group,
       disabled: false,
