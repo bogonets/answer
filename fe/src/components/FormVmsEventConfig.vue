@@ -188,24 +188,28 @@ ko:
     <v-sheet class="mt-2 pa-2" outlined rounded>
       <form-vms-event-configs-color
           v-if="isColor"
+          :device="device"
           :value="value.extra"
           @input="onInputExtra"
           :valid.sync="validExtra"
       ></form-vms-event-configs-color>
       <form-vms-event-configs-detection
           v-else-if="isDetection"
+          :device="device"
           :value="value.extra"
           @input="onInputExtra"
           :valid.sync="validExtra"
       ></form-vms-event-configs-detection>
       <form-vms-event-configs-matching
           v-else-if="isMatching"
+          :device="device"
           :value="value.extra"
           @input="onInputExtra"
           :valid.sync="validExtra"
       ></form-vms-event-configs-matching>
       <form-vms-event-configs-ocr
           v-else-if="isOcr"
+          :device="device"
           :value="value.extra"
           @input="onInputExtra"
           :valid.sync="validExtra"
@@ -264,7 +268,7 @@ import {
   EVENT_CATEGORY_NAME_OCR,
   EVENT_CATEGORIES,
 } from '@/packet/vms';
-import type {VmsEventConfigA} from '@/packet/vms';
+import type {VmsEventConfigA, VmsDeviceA} from '@/packet/vms';
 import LabelSpan from '@/components/LabelSpan.vue';
 import FormVmsEventConfigsColor from '@/components/FormVmsEventConfigsColor.vue';
 import FormVmsEventConfigsDetection from '@/components/FormVmsEventConfigsDetection.vue';
@@ -332,6 +336,9 @@ export default class FormVmsEventConfig extends VueBase {
   readonly disableSubmitButton!: boolean;
 
   @Prop({type: Object, default: () => new Object()})
+  readonly device!: VmsDeviceA;
+
+  @Prop({type: Object, default: () => new Object()})
   readonly value!: VmsEventConfigA;
 
   @Ref()
@@ -369,25 +376,21 @@ export default class FormVmsEventConfig extends VueBase {
   }
 
   onInputName(event: string) {
-    console.debug('onInputName', event)
     this.$set(this.value, 'name', event);
     this.input();
   }
 
   onChangeEnable(event?: boolean | null) {
-    console.debug('onChangeEnable', !!event)
     this.$set(this.value, 'enable', !!event);
     this.input();
   }
 
   onInputCategory(event: string) {
-    console.debug('onInputCategory', event)
     this.$set(this.value, 'category', event);
     this.input();
   }
 
   onInputExtra(event: any) {
-    console.debug('onInputExtra', event)
     this.$set(this.value, 'extra', event);
     this.input();
   }

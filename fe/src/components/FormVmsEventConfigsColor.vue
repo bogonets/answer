@@ -116,11 +116,11 @@ ko:
             ref="media-player"
             hover-system-bar
             hide-controller
-            height="300px"
             :group="$route.params.group"
             :project="$route.params.project"
             :device="$route.params.device"
             :use-color-picker="pipetteMode"
+            :value="device"
             @pipette="onPipette"
             :use-annotation-tools="annotationMode"
             @roi="onRoi"
@@ -159,8 +159,11 @@ ko:
 import {Component, Ref, Emit, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import MediaPlayer from '@/media/MediaPlayer.vue';
-import {EVENT_CONFIG_OPERATOR_DEFAULT, EVENT_CONFIG_OPERATORS} from '@/packet/vms';
-import type {VmsEventConfigColorQ} from '@/packet/vms';
+import {
+  EVENT_CONFIG_OPERATOR_DEFAULT,
+  EVENT_CONFIG_OPERATORS,
+} from '@/packet/vms';
+import type {VmsEventConfigColorQ, VmsDeviceA} from '@/packet/vms';
 import {rgbToHex, hexToRgb} from '@/color';
 
 @Component({
@@ -179,6 +182,9 @@ export default class FormVmsEventConfigsColor extends VueBase {
 
   @Prop({type: Number, default: 100})
   readonly maxThreshold!: number;
+
+  @Prop({type: Object, default: () => new Object()})
+  readonly device!: VmsDeviceA;
 
   @Prop({type: Object, default: () => new Object()})
   readonly value!: VmsEventConfigColorQ;
@@ -206,6 +212,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
     this.value.y2 = this.value.y2 ?? 0;
 
     this.requestEventColor();
+    this.updateValid();
   }
 
   get color() {
@@ -275,13 +282,20 @@ export default class FormVmsEventConfigsColor extends VueBase {
         })
   }
 
+  get validColor() {
+    return (0 <= this.value.red && this.value.red <= 255)
+        && (0 <= this.value.green && this.value.green <= 255)
+        && (0 <= this.value.blue && this.value.blue <= 255);
+  }
+
+  get validRoi() {
+    return Math.abs(this.value.x2 - this.value.x1) > 0
+        && Math.abs(this.value.y2 - this.value.y1) > 0;
+  }
+
   @Emit('update:valid')
   updateValid() {
-    return !!this.color
-        && !!this.value.x1
-        && !!this.value.y1
-        && !!this.value.x2
-        && !!this.value.y2;
+    return this.validColor && this.validRoi;
   }
 
   @Emit()

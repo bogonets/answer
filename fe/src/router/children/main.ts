@@ -87,7 +87,7 @@ export const mainChildren = [
         name: mainNames.mainVmsDevicesEdit,
     },
     {
-        path: ':group/:project/vms/devices/edit/:device/event/configs/edit/:event',
+        path: ':group/:project/vms/devices/edit/:device/event/configs/edit/:config',
         component: MainVmsDevicesEditEventConfigsEdit,
         name: mainNames.mainVmsDevicesEditEventConfigsEdit,
     },

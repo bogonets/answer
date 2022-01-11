@@ -67,7 +67,6 @@ ko:
             v-if="tabIndex === 1"
             hover-system-bar
             hide-controller
-            min-height="400px"
             :value="original"
             :group="$route.params.group"
             :project="$route.params.project"

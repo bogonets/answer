@@ -206,7 +206,6 @@ ko:
               ref="media-player"
               hover-system-bar
               hide-controller
-              height="300px"
               :value="device"
               :group="$route.params.group"
               :project="$route.params.project"
@@ -564,7 +563,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
   }
 
   onClickSnapshot() {
-    const image = this.mediaPlayer.snapshotVideoAsDataUrl();
+    const image = this.mediaPlayer.snapshotAsDataUrl();
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     const device = this.$route.params.device;

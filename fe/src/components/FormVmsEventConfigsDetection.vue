@@ -173,14 +173,19 @@ export default class FormVmsEventConfigsDetection extends VueBase {
   @Prop({type: Number, default: 100})
   readonly maxThreshold!: number;
 
-  @Prop({type: Object, default: createEmptyObject})
-  readonly value!: any;
+  @Prop({type: Object, default: () => new Object()})
+  readonly device!: VmsDeviceA;
+
+  @Prop({type: Object, default: () => new Object()})
+  readonly value!: VmsEventConfigDetectionQ;
+
+  @Prop({type: Boolean, default: false})
+  readonly valid!: boolean;
 
   @Ref('media-player')
   readonly mediaPlayer!: MediaPlayer;
 
   loading = false;
-  device = {} as VmsDeviceA;
 
   searchLabel = '';
 

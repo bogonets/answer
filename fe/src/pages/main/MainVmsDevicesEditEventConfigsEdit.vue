@@ -51,8 +51,9 @@ ko:
         disable-category
         :loading-submit="loadingSubmit"
         :disable-submit-button="!modified"
+        :device="device"
         :value="current"
-        @input="inputCurrent"
+        @input="onInputCurrent"
         @cancel="onClickCancel"
         @ok="onClickOk"
     ></form-vms-event-config>
@@ -136,6 +137,7 @@ import LeftTitle from '@/components/LeftTitle.vue';
 import type {VmsEventConfigA} from '@/packet/vms';
 import {iso8601ToLocal} from "@/chrono/iso8601";
 import * as _ from 'lodash';
+import {VmsDeviceA} from "@/packet/vms";
 
 @Component({
   components: {
@@ -180,6 +182,8 @@ export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
   currentProject = '';
   currentDevice = '';
 
+  device = {} as VmsDeviceA;
+
   current = {} as VmsEventConfigA;
   original = {} as VmsEventConfigA;
   modified = false;
@@ -206,11 +210,12 @@ export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
 
     try {
       await this.$api2.postVmsDeviceProcessDebugStart(group, project, device);
-      this.currentGroup = this.$route.params.group;
-      this.currentProject = this.$route.params.project;
-      this.currentDevice = this.$route.params.device;
+      this.currentGroup = group;
+      this.currentProject = project;
+      this.currentDevice = device;
       this.toastWarning(this.$t('msg.enable_debugging'));
 
+      this.device = await this.$api2.getVmsDevice(group, project, device);
       this.original = await this.$api2.getVmsDeviceEventsConfigsPconfig(
           group, project, device, config
       );
@@ -244,12 +249,9 @@ export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
     return iso8601ToLocal(this.original.updated_at || '');
   }
 
-  inputCurrent(item: VmsEventConfigA) {
+  onInputCurrent(item: VmsEventConfigA) {
     this.current = item;
     this.modified = !_.isEqual(this.original, this.current);
-    console.debug('InputCurrent->', this.current);
-    console.debug('InputOriginal->', this.original);
-    console.debug('modified', this.modified);
   }
 
   onClickCancel() {

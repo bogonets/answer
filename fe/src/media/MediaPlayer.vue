@@ -68,29 +68,23 @@ ko:
 
 <template>
   <v-hover v-slot="{ hover }">
-    <v-card
-        outlined
-        tile
+    <div
         class="media-player"
+        ref="media-player"
         @contextmenu="contextmenu"
-        :width="width"
-        :height="height"
-        :min-width="minWidth"
-        :min-height="minHeight"
-        :max-width="maxWidth"
-        :max-height="maxHeight"
+        :style="mediaPlayerStyle"
     >
-      <v-system-bar
+      <div
           class="status-bar"
-          v-if="!hideSystemBar"
-          v-show="showSystemBar(hover)"
-          absolute
-          lights-out
-          :height="systemBarHeight"
+          v-if="!hideStatusBar"
+          v-show="showStatusBar(hover)"
+          :style="statusBarStyle"
       >
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-icon
+                class="mr-1"
+                small
                 :color="statusIconColor"
                 v-bind="attrs"
                 v-on="on"
@@ -101,7 +95,7 @@ ko:
           <span>{{ statusTooltip }}</span>
         </v-tooltip>
 
-        <span>{{ value.name }}</span>
+        <span class="mr-1 text-caption text--secondary">{{ value.name }}</span>
 
         <v-spacer></v-spacer>
         <v-progress-circular
@@ -110,31 +104,46 @@ ko:
             width="2"
             indeterminate
         ></v-progress-circular>
+
         <div v-if="online">
-          <v-icon v-if="false">mdi-video-4k-box</v-icon>
-          <v-icon v-if="false">mdi-video-off</v-icon>
-          <v-icon v-if="false" color="red">mdi-record</v-icon>
+          <v-icon v-if="false" class="ml-1" small>mdi-video-4k-box</v-icon>
+          <v-icon v-if="false" class="ml-1" small>mdi-video-off</v-icon>
+          <v-icon v-if="false" class="ml-1" small color="red">mdi-record</v-icon>
 
           <v-tooltip v-if="value.server_debugging" bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on">mdi-bug</v-icon>
+              <v-icon
+                  class="ml-1"
+                  color="warning"
+                  small
+                  v-bind="attrs"
+                  v-on="on"
+              >
+                mdi-bug
+              </v-icon>
             </template>
             <span>{{ $t('tooltips.debugging_mode') }}</span>
           </v-tooltip>
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on">
+              <v-icon
+                  class="ml-1"
+                  small
+                  :color="activeIconColor"
+                  v-bind="attrs"
+                  v-on="on"
+              >
                 {{ activeIcon }}
               </v-icon>
             </template>
             <span>{{ activeTooltip }}</span>
           </v-tooltip>
 
-          <v-icon v-if="false">mdi-volume-off</v-icon>
-          <v-icon v-if="false">{{ signalIcon }}</v-icon>
+          <v-icon v-if="false" class="ml-1" small>mdi-volume-off</v-icon>
+          <v-icon v-if="false" class="ml-1" small>{{ signalIcon }}</v-icon>
         </div>
-      </v-system-bar>
+      </div>
 
       <v-sheet
           v-if="showInformationPanel && online && channelOpened"
@@ -161,7 +170,7 @@ ko:
       </v-sheet>
 
       <div
-          class="media-content"
+          class="media-placeholder"
           @mousedown="onMouseDownMediaContent"
           @mousemove="onMouseMoveMediaContent"
           @mouseup="onMouseUpMediaContent"
@@ -202,9 +211,10 @@ ko:
             :width="videoWidth"
             :height="videoHeight"
         ></canvas>
+      </div>
 
+      <div v-show="!online" class="brand-logo-container">
         <img
-            v-show="!online"
             class="brand-logo"
             src="@/assets/logo/answer-logo-notext.svg"
             :alt="$t('hints.logo_alt')"
@@ -301,22 +311,14 @@ ko:
           </v-list>
         </v-menu>
       </div>
-    </v-card>
+    </div>
   </v-hover>
 </template>
 
 <script lang="ts">
 import {Component, Prop, Ref, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import {createMoment} from '@/chrono/date';
 import colors from 'vuetify/lib/util/colors'
-import type {
-  VmsDeviceA,
-  RtcOfferQ,
-  VmsChannelMeta,
-  VmsChannelMetaConsume,
-  VmsUpdateDeviceQ,
-} from '@/packet/vms';
 import {
   TRANSCEIVER_KIND_VIDEO,
   TRANSCEIVER_KIND_AUDIO,
@@ -333,24 +335,52 @@ import {
   VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN_ERRORS,
   VMS_CHANNEL_META_CODE_FILTERED,
 } from '@/packet/vms';
+import type {
+  VmsDeviceA,
+  RtcOfferQ,
+  VmsChannelMeta,
+  VmsChannelMetaConsume,
+  VmsUpdateDeviceQ,
+  VmsEventConfigA,
+} from '@/packet/vms';
 import {
   IllegalStateException,
   IllegalArgumentException,
-} from "@/exceptions";
+} from '@/exceptions';
+import {createMoment} from '@/chrono/date';
 
-enum Status {
+export enum Status {
+  // --[[ Loading
   Loading,
   IceNew,
   IceGathering,
   IceComplete,
   SdpExchange,
+  // ]]--
+
   Online,
+
+  // --[[ Errors
   NegotiationFailed,
   IceUnknown,
   Disconnected,
   ServerError,
   InvalidParameters,
   Closed,
+  // ]]--
+}
+
+export interface PixelRgb {
+  r: number;
+  g: number;
+  b: number;
+}
+
+export interface Roi {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
 }
 
 function loadingStatus(status: Status) {
@@ -390,7 +420,7 @@ export default class MediaPlayer extends VueBase {
   readonly device?: string | number;
 
   @Prop({type: Boolean, default: false})
-  readonly hideSystemBar!: boolean;
+  readonly hideStatusBar!: boolean;
 
   @Prop({type: Boolean, default: false})
   readonly hideCanvasUser!: boolean;
@@ -402,7 +432,7 @@ export default class MediaPlayer extends VueBase {
   readonly hideController!: boolean;
 
   @Prop({type: Boolean, default: false})
-  readonly hoverSystemBar!: boolean;
+  readonly hoverStatusBar!: boolean;
 
   @Prop({type: Boolean, default: false})
   readonly hoverController!: boolean;
@@ -415,6 +445,12 @@ export default class MediaPlayer extends VueBase {
 
   @Prop({type: Boolean, default: false})
   readonly useRoiAbsolutePosition!: boolean;
+
+  @Prop({type: Number, default: 5})
+  readonly lineWidth!: number;
+
+  @Prop({type: String, default: 'red'})
+  readonly strokeStyle!: string;
 
   @Prop({type: Boolean, default: false})
   readonly loading!: boolean;
@@ -438,10 +474,19 @@ export default class MediaPlayer extends VueBase {
   readonly maxHeight?: string | number;
 
   @Prop({type: [String, Number], default: '24px'})
-  readonly systemBarHeight?: string | number;
+  readonly statusBarHeight!: string | number;
+
+  @Prop({type: Boolean, default: false})
+  readonly disableAspectRatio!: boolean;
+
+  @Prop({type: Array, default: () => []})
+  readonly eventConfigs!: Array<VmsEventConfigA>;
 
   @Prop({type: Object, default: () => new Object()})
   readonly value!: VmsDeviceA;
+
+  @Ref('media-player')
+  readonly mediaPlayer!: HTMLDivElement;
 
   @Ref('canvas-user')
   readonly canvasUser!: HTMLCanvasElement;
@@ -455,11 +500,11 @@ export default class MediaPlayer extends VueBase {
   @Ref('rtc-video')
   readonly rtcVideo!: HTMLVideoElement;
 
+  editRoi = false;
   roiLeft = 0;
   roiRight = 0;
   roiTop = 0;
   roiBottom = 0;
-  roiButtonPressed = false;
 
   paused = true;
   videoWidth = 0;
@@ -507,6 +552,36 @@ export default class MediaPlayer extends VueBase {
 
   beforeDestroy() {
     this.close();
+  }
+
+  get mediaPlayerStyle() {
+    let style = '';
+    if (typeof this.width !== 'undefined') {
+      style += `width: ${this.width};`;
+    }
+    if (typeof this.height !== 'undefined') {
+      style += `height: ${this.height};`;
+    }
+    if (typeof this.minWidth !== 'undefined') {
+      style += `min-width: ${this.minWidth};`;
+    }
+    if (typeof this.minHeight !== 'undefined') {
+      style += `min-height: ${this.minHeight};`;
+    }
+    if (typeof this.maxWidth !== 'undefined') {
+      style += `max-width: ${this.maxWidth};`;
+    }
+    if (typeof this.maxHeight !== 'undefined') {
+      style += `max-height: ${this.maxHeight};`;
+    }
+    if (!this.disableAspectRatio && this.videoWidth && this.videoHeight) {
+      style += `aspect-ratio: ${this.videoWidth}/${this.videoHeight};`;
+    }
+    return style;
+  }
+
+  get statusBarStyle() {
+    return `height: ${this.statusBarHeight};`;
   }
 
   get deviceNumber() {
@@ -685,14 +760,14 @@ export default class MediaPlayer extends VueBase {
   }
 
   onChannelOpen() {
-    console.debug(`Channel opened.`);
+    // console.debug(`Channel opened.`);
     if (typeof this.channel === 'undefined') {
       return;
     }
   }
 
   onChannelClose() {
-    console.debug(`Channel closed.`);
+    // console.debug(`Channel closed.`);
   }
 
   sendChannelResponse(body: VmsChannelMetaConsume) {
@@ -734,7 +809,7 @@ export default class MediaPlayer extends VueBase {
       try {
         const content = JSON.parse(event.data) as VmsChannelMeta;
         context.clearRect(0, 0, canvasWidth, canvasHeight);
-        await this.onRenderMetaData(context, canvasWidth, canvasHeight, content);
+        await this.renderMetaData(context, canvasWidth, canvasHeight, content);
         this.sendChannelResponseSuccessful();
       } catch (error) {
         context.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -746,7 +821,7 @@ export default class MediaPlayer extends VueBase {
     })();
   }
 
-  async onRenderMetaData(
+  async renderMetaData(
       context: CanvasRenderingContext2D,
       canvasWidth: number,
       canvasHeight: number,
@@ -830,8 +905,8 @@ export default class MediaPlayer extends VueBase {
     });
   }
 
-  showSystemBar(hover?: boolean) {
-    if (this.hoverSystemBar) {
+  showStatusBar(hover?: boolean) {
+    if (this.hoverStatusBar) {
       return !!hover;
     }
     return true;
@@ -842,6 +917,16 @@ export default class MediaPlayer extends VueBase {
       return !!hover;
     }
     return true;
+  }
+
+  getInfoPanelTop(hover: boolean) {
+    if (this.hideStatusBar) {
+      return 0;
+    }
+    if (this.hoverStatusBar && !hover) {
+      return 0;
+    }
+    return this.statusBarHeight;
   }
 
   get online() {
@@ -947,6 +1032,14 @@ export default class MediaPlayer extends VueBase {
     }
   }
 
+  get activeIconColor() {
+    if (this.value.active) {
+      return 'success';
+    } else {
+      return '';
+    }
+  }
+
   get activeIcon() {
     if (this.value.active) {
       return 'mdi-eye';
@@ -974,16 +1067,6 @@ export default class MediaPlayer extends VueBase {
     } else {
       return 'mdi-signal-cellular-outline';
     }
-  }
-
-  getInfoPanelTop(hover: boolean) {
-    if (this.hideSystemBar) {
-      return 0;
-    }
-    if (this.hoverSystemBar && !hover) {
-      return 0;
-    }
-    return this.systemBarHeight;
   }
 
   get informationIconColor() {
@@ -1046,30 +1129,11 @@ export default class MediaPlayer extends VueBase {
 
   onPlay() {
     this.paused = false;
-    this.videoWidth = this.rtcVideo.videoWidth;
-    this.videoHeight = this.rtcVideo.videoHeight;
-    console.debug(`onPlay() -> w=${this.videoWidth}, h=${this.videoHeight}`);
   }
 
   onResize() {
     this.videoWidth = this.rtcVideo.videoWidth;
     this.videoHeight = this.rtcVideo.videoHeight;
-    console.debug(`onResize() -> w=${this.videoWidth}, h=${this.videoHeight}`);
-  }
-
-  @Watch('videoWidth')
-  onWatchVideoWidth() {
-    this.resizeVideo();
-  }
-
-  @Watch('videoHeight')
-  onWatchVideoHeight() {
-    this.resizeVideo();
-  }
-
-  @Emit('video:resize')
-  resizeVideo() {
-    return {width: this.videoWidth, height: this.videoHeight};
   }
 
   onClickPlay() {
@@ -1092,7 +1156,9 @@ export default class MediaPlayer extends VueBase {
     this.disableActiveButton = true;
     this.$api2.patchVmsDevice(group, project, device, body)
         .then(() => {
-          this.value.active = updateActiveFlag;
+          this.$set(this.value, 'active', updateActiveFlag)
+          this.input();
+
           this.disableActiveButton = false;
         })
         .catch(error => {
@@ -1119,7 +1185,9 @@ export default class MediaPlayer extends VueBase {
 
     const updateDebugFlag = !this.value.server_debugging;
     const thenCallback = () => {
-      this.value.server_debugging = updateDebugFlag;
+      this.$set(this.value, 'server_debugging', updateDebugFlag)
+      this.input();
+
       this.disableDebugButton = false;
     };
     const catchCallback = error => {
@@ -1141,20 +1209,53 @@ export default class MediaPlayer extends VueBase {
     this.rtcVideo.requestFullscreen();
   }
 
-  @Watch('value.server_running')
-  onWatchServerRunning() {
+  @Watch('eventConfigs', {deep: true})
+  onWatchEventConfigs() {
   }
 
-  @Watch('value.server_status')
-  onWatchServerStatus() {
+  @Watch('videoWidth')
+  onWatchVideoWidth() {
+    this.resizeVideo();
   }
 
-  @Watch('useColorPicker')
-  onWatchUseColorPicker() {
+  @Watch('videoHeight')
+  onWatchVideoHeight() {
+    this.resizeVideo();
   }
 
-  @Watch('useAnnotationTools')
-  onWatchUseAnnotationTools() {
+  @Emit('video:resize')
+  resizeVideo() {
+    return {width: this.videoWidth, height: this.videoHeight};
+  }
+
+  @Emit()
+  input() {
+    return this.value;
+  }
+
+  @Emit()
+  predict(obj: Array<object>) {
+    return obj;
+  }
+
+  @Emit()
+  contextmenu(event) {
+    return event;
+  }
+
+  @Emit('pipette')
+  pipette(color: PixelRgb) {
+    return color;
+  }
+
+  @Emit('roi')
+  roi(left: number, right: number, top: number, bottom: number) {
+    return {
+      x1: left,
+      y1: top,
+      x2: right,
+      y2: bottom,
+    } as Roi;
   }
 
   onMouseDownMediaContent(event: MouseEvent) {
@@ -1179,12 +1280,12 @@ export default class MediaPlayer extends VueBase {
       const imageY = Math.round(ratioY * this.canvasUser.height);
       this.roiLeft = imageX;
       this.roiTop = imageY;
-      this.roiButtonPressed = true;
+      this.editRoi = true;
     }
   }
 
   onMouseMoveMediaContent(event) {
-    if (this.useAnnotationTools && this.roiButtonPressed) {
+    if (this.useAnnotationTools && this.editRoi) {
       const clientRect = this.canvasUser.getBoundingClientRect();
       const x = Math.round(event.clientX - clientRect.left);
       const y = Math.round(event.clientY - clientRect.top);
@@ -1201,15 +1302,15 @@ export default class MediaPlayer extends VueBase {
       }
       const roiWidth = imageX - this.roiLeft;
       const roiHeight = imageY - this.roiTop;
-      context.lineWidth = 5;
-      context.strokeStyle = 'red';
+      context.lineWidth = this.lineWidth;
+      context.strokeStyle = this.strokeStyle;
       context.clearRect(0, 0, width, height);
       context.strokeRect(this.roiLeft, this.roiTop, roiWidth, roiHeight);
     }
   }
 
   onMouseUpMediaContent(event) {
-    if (this.useAnnotationTools && this.roiButtonPressed) {
+    if (this.useAnnotationTools && this.editRoi) {
       const clientRect = this.canvasUser.getBoundingClientRect();
       const x = Math.round(event.clientX - clientRect.left);
       const y = Math.round(event.clientY - clientRect.top);
@@ -1226,12 +1327,13 @@ export default class MediaPlayer extends VueBase {
       }
       const roiWidth = imageX - this.roiLeft;
       const roiHeight = imageY - this.roiTop;
-      context.lineWidth = 5;
+      context.lineWidth = this.lineWidth;
+      context.strokeStyle = this.strokeStyle;
       context.clearRect(0, 0, width, height);
       context.strokeRect(this.roiLeft, this.roiTop, roiWidth, roiHeight);
       this.roiRight = imageX;
       this.roiBottom = imageY;
-      this.roiButtonPressed = false;
+      this.editRoi = false;
       if (this.useRoiAbsolutePosition) {
         this.roi(this.roiLeft, this.roiRight, this.roiTop, this.roiBottom);
       } else {
@@ -1245,22 +1347,7 @@ export default class MediaPlayer extends VueBase {
     }
   }
 
-  @Emit()
-  predict(obj: Array<object>) {
-    return obj;
-  }
-
-  @Emit()
-  contextmenu(event) {
-    return event;
-  }
-
-  @Emit('pipette')
-  pipette(color) {
-    return color;
-  }
-
-  snapshotVideoAsImageData(clear = true) {
+  snapshotAsImageData(clear = true) {
     const context = this.canvasSnap.getContext('2d');
     const width = this.canvasSnap.width;
     const height = this.canvasSnap.height;
@@ -1275,7 +1362,7 @@ export default class MediaPlayer extends VueBase {
     return image;
   }
 
-  snapshotVideoAsDataUrl(contentType = 'image/png', clear = true) {
+  snapshotAsDataUrl(contentType = 'image/png', clear = true) {
     const context = this.canvasSnap.getContext('2d');
     const width = this.canvasSnap.width;
     const height = this.canvasSnap.height;
@@ -1297,24 +1384,14 @@ export default class MediaPlayer extends VueBase {
       throw new Error('Not exists 2d context from user\'s canvas.');
     }
 
-    const image = this.snapshotVideoAsImageData(true);
+    const image = this.snapshotAsImageData(true);
     const pixels = image.data;
 
     const i = (x + (y * width)) * 4;
     const r = pixels[i];
     const g = pixels[i + 1];
     const b = pixels[i + 2];
-    return {r, g, b};
-  }
-
-  @Emit('roi')
-  roi(left, right, top, bottom) {
-    return {
-      x1: left,
-      y1: top,
-      x2: right,
-      y2: bottom,
-    };
+    return {r, g, b} as PixelRgb;
   }
 
   clearAnnotations() {
@@ -1322,7 +1399,7 @@ export default class MediaPlayer extends VueBase {
     this.roiRight = 0;
     this.roiTop = 0;
     this.roiBottom = 0;
-    this.roiButtonPressed = false;
+    this.editRoi = false;
 
     const context = this.canvasUser.getContext('2d');
     const width = this.canvasUser.width;
@@ -1350,31 +1427,19 @@ $color-grey-darken-2: map-get($color-grey, 'darken-2');
 $color-grey-darken-3: map-get($color-grey, 'darken-3');
 $color-grey-darken-4: map-get($color-grey, 'darken-4');
 
-$ghost-transparent: 0.4;
-
-@mixin common-media {
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-
-  object-fit: contain;
-  object-position: center;
-
-  max-width: 100%;
-  max-height: 100%;
-
-  padding: 0;
-  margin: 0;
-}
+$status-bar-transparent: 0.6;
+$information-panel-transparent: 0.4;
 
 .theme--light.v-application {
   .media-player {
     background-color: $color-grey-lighten-1;
 
+    .status-bar {
+      background-color: rgba(map-get($shades, 'white'), $status-bar-transparent);
+    }
+
     .information-panel {
-      background-color: rgba(map-get($shades, 'white'), $ghost-transparent);
+      background-color: rgba(map-get($shades, 'white'), $information-panel-transparent);
     }
   }
 }
@@ -1383,26 +1448,67 @@ $ghost-transparent: 0.4;
   .media-player {
     background-color: $color-grey-darken-3;
 
+    .status-bar {
+      background-color: rgba(map-get($shades, 'black'), $status-bar-transparent);
+    }
+
     .information-panel {
-      background-color: rgba(map-get($shades, 'black'), $ghost-transparent);
+      background-color: rgba(map-get($shades, 'black'), $information-panel-transparent);
     }
   }
 }
 
+@mixin media-block {
+  position: absolute;
+
+  padding: 0;
+  margin: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  object-position: center;
+
+  //left: 0;
+  //top: 0;
+  //left: 50%;
+  //top: 50%;
+  //transform: translate(-50%, -50%);
+}
+
 .media-player {
+  // Important:
+  // Required to fix the position of the 'absolute block' among the child elements.
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block
+  position: relative;
+
   display: flex;
 
   padding: 0;
   margin: 0;
 
-  min-width: 100px;
-  min-height: 100px;
+  min-width: 64px;
+  min-height: 64px;
 
   .status-bar {
-    z-index: 60;
+    position: absolute;
+    width: 100%;
+    top: 0;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    padding: 0 4px;
+    margin: 0;
+
+    z-index: 50;
   }
 
   .information-panel {
+    position: absolute;
+
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -1410,48 +1516,14 @@ $ghost-transparent: 0.4;
     padding: 0 4px 0 4px;
     margin: 4px 4px 0 4px;
 
-    position: absolute;
-
-    z-index: 50;
-  }
-
-  .media-content {
-    flex: 1;
-
-    padding: 0;
-    margin: 0;
-
-    .canvas-user {
-      @include common-media;
-      z-index: 40;
-    }
-
-    .canvas-meta {
-      @include common-media;
-      z-index: 30;
-    }
-
-    .brand-logo {
-      @include common-media;
-
-      min-width: 16px;
-      min-height: 16px;
-
-      max-width: 256px;
-      max-height: 256px;
-    }
-
-    .canvas-snap {
-      @include common-media;
-      z-index: 10;
-    }
-
-    .video-player {
-      @include common-media;
-    }
+    z-index: 60;
   }
 
   .controller {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -1459,11 +1531,52 @@ $ghost-transparent: 0.4;
     padding: 0;
     margin: 0;
 
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-
     z-index: 70;
+  }
+
+  .media-placeholder {
+    padding: 0;
+    margin: 0;
+
+    .canvas-user {
+      @include media-block;
+      z-index: 40;
+    }
+
+    .canvas-meta {
+      @include media-block;
+      z-index: 30;
+    }
+
+    .canvas-snap {
+      @include media-block;
+      z-index: 10;
+    }
+
+    .video-player {
+      @include media-block;
+    }
+  }
+
+  .brand-logo-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 0;
+    margin: 0;
+
+    .brand-logo {
+      min-width: 8px;
+      min-height: 8px;
+
+      max-width: 256px;
+      max-height: 256px;
+    }
   }
 }
 </style>
