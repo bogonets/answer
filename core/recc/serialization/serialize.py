@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Dict, Any, List, Tuple, Iterable, Mapping, Optional
-from datetime import datetime
+from datetime import datetime, date, time
 from enum import Enum
 from recc.serialization.utils import (
     MAPPING_METHOD_ITEMS,
@@ -72,6 +72,10 @@ def _serialize_any(version: int, obj: Any, key: Optional[str] = None) -> Any:
         if obj is None:
             return None
         elif isinstance(obj, datetime):
+            return obj.isoformat()
+        elif isinstance(obj, date):
+            return obj.isoformat()
+        elif isinstance(obj, time):
             return obj.isoformat()
         elif isinstance(obj, Enum):
             return obj.value
