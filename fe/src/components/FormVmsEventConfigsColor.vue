@@ -75,8 +75,7 @@ ko:
             :hint="$t('hints.operator', [emitConditionText])"
             :value="value.operator"
             @change="onChangeOperator"
-        >
-        </v-select>
+        ></v-select>
 
         <div class="d-flex flex-column mt-2">
           <div class="d-flex flex-row align-center">
@@ -103,8 +102,8 @@ ko:
             </template>
           </i18n>
         </div>
-
       </v-col>
+
       <v-col
           cols="12"
           sm="12"
@@ -163,7 +162,10 @@ import {
   EVENT_CONFIG_OPERATOR_DEFAULT,
   EVENT_CONFIG_OPERATORS,
 } from '@/packet/vms';
-import type {VmsEventConfigColorQ, VmsDeviceA} from '@/packet/vms';
+import type {
+  VmsEventConfigColorQ,
+  VmsDeviceA,
+} from '@/packet/vms';
 import {rgbToHex, hexToRgb} from '@/color';
 
 @Component({
@@ -174,7 +176,7 @@ import {rgbToHex, hexToRgb} from '@/color';
 export default class FormVmsEventConfigsColor extends VueBase {
   readonly operators = EVENT_CONFIG_OPERATORS
 
-  @Prop({type: Boolean})
+  @Prop({type: Boolean, default: false})
   readonly showOperator!: boolean;
 
   @Prop({type: Number, default: 0})

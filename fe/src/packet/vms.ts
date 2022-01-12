@@ -470,6 +470,7 @@ export const VMS_CHANNEL_META_CODE_NOT_READY_ROI = -2;
 export interface VmsChannelMeta {
     code: number;
     message: string;
+
     content?: any;
 
     x1?: number;
@@ -480,7 +481,8 @@ export interface VmsChannelMeta {
 }
 
 export const VMS_CHANNEL_META_CONSUME_CODE_SUCCESS = 0;
-export const VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN_ERRORS = 1;
+export const VMS_CHANNEL_META_CONSUME_CODE_SKIP = 1;
+export const VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN_ERRORS = -1;
 
 export interface VmsChannelMetaConsume {
     code: number;
@@ -507,18 +509,4 @@ export function createEmptyVmsDeviceA() {
         created_at: '',
         updated_at: '',
     } as VmsDeviceA;
-}
-
-export function createEmptyVmsEventConfigA() {
-    return {
-        event_config_uid: 0,
-        sequence: 0,
-        device_uid: 0,
-        category: '',
-        name: '',
-        enable: false,
-        extra: undefined,
-        created_at: '',
-        updated_at: '',
-    } as VmsEventConfigA;
 }

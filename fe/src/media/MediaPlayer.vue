@@ -332,6 +332,7 @@ import {
   VMS_CHANNEL_META_CODE_BAD_ARGUMENT,
   VMS_CHANNEL_META_CODE_NOT_READY_ROI,
   VMS_CHANNEL_META_CONSUME_CODE_SUCCESS,
+  VMS_CHANNEL_META_CONSUME_CODE_SKIP,
   VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN_ERRORS,
   VMS_CHANNEL_META_CODE_FILTERED,
 } from '@/packet/vms';
@@ -341,9 +342,10 @@ import type {
   VmsChannelMeta,
   VmsChannelMetaConsume,
   VmsUpdateDeviceQ,
-  VmsEventConfigA,
 } from '@/packet/vms';
 import {
+  ContextException,
+  UndefinedException,
   IllegalStateException,
   IllegalArgumentException,
 } from '@/exceptions';
@@ -479,9 +481,6 @@ export default class MediaPlayer extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly disableAspectRatio!: boolean;
 
-  @Prop({type: Array, default: () => []})
-  readonly eventConfigs!: Array<VmsEventConfigA>;
-
   @Prop({type: Object, default: () => new Object()})
   readonly value!: VmsDeviceA;
 
@@ -525,7 +524,7 @@ export default class MediaPlayer extends VueBase {
   channel?: RTCDataChannel = undefined;
   pc?: RTCPeerConnection = undefined;
 
-  channel_message_working = false;
+  processingMessage = false;
 
   showInformationPanel = true;
   informationCode = VMS_CHANNEL_META_CODE_SUCCESS;
@@ -770,53 +769,57 @@ export default class MediaPlayer extends VueBase {
     // console.debug(`Channel closed.`);
   }
 
-  sendChannelResponse(body: VmsChannelMetaConsume) {
-    if (this.channel) {
-      this.channel.send(JSON.stringify(body))
+  sendChannelResponse(code: number) {
+    if (!this.channel) {
+      throw new UndefinedException('Channel is not opened');
     }
+
+    const body = {
+      code: code,
+    } as VmsChannelMetaConsume;
+
+    this.channel.send(JSON.stringify(body))
   }
 
   sendChannelResponseSuccessful() {
-    const body = {
-      code: VMS_CHANNEL_META_CONSUME_CODE_SUCCESS,
-    } as VmsChannelMetaConsume;
-    this.sendChannelResponse(body);
+    this.sendChannelResponse(VMS_CHANNEL_META_CONSUME_CODE_SUCCESS);
+  }
+
+  sendChannelResponseSkip() {
+    this.sendChannelResponse(VMS_CHANNEL_META_CONSUME_CODE_SKIP);
   }
 
   sendChannelResponseError() {
-    const body = {
-      code: VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN_ERRORS,
-    } as VmsChannelMetaConsume;
-    this.sendChannelResponse(body);
+    this.sendChannelResponse(VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN_ERRORS);
   }
 
   onChannelMessage(event: MessageEvent) {
-    if (this.channel_message_working) {
-      this.sendChannelResponseSuccessful();
-      return;  // Now working ...
-    }
-
     const canvasWidth = this.canvasMeta.width;
     const canvasHeight = this.canvasMeta.height;
     const context = this.canvasMeta.getContext('2d');
     if (!context) {
-      this.sendChannelResponseSuccessful();
-      return;
+      throw new ContextException('Unable to get context for 2D canvas');
     }
 
-    this.channel_message_working = true;
+    if (this.processingMessage) {
+      this.sendChannelResponseSkip();
+      return;
+    } else {
+      this.processingMessage = true;
+    }
+
     (async () => {
       try {
-        const content = JSON.parse(event.data) as VmsChannelMeta;
+        const meta = JSON.parse(event.data) as VmsChannelMeta;
         context.clearRect(0, 0, canvasWidth, canvasHeight);
-        await this.renderMetaData(context, canvasWidth, canvasHeight, content);
+        await this.renderMetaData(context, canvasWidth, canvasHeight, meta);
         this.sendChannelResponseSuccessful();
       } catch (error) {
         context.clearRect(0, 0, canvasWidth, canvasHeight);
         this.predict([]);
         this.sendChannelResponseError();
       } finally {
-        this.channel_message_working = false;
+        this.processingMessage = false;
       }
     })();
   }

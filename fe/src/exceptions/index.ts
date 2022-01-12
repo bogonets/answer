@@ -4,6 +4,12 @@ export class EmptyException extends Error {
   }
 }
 
+export class ContextException extends Error {
+  constructor(message?: string) {
+    super(message);
+  }
+}
+
 export class UndefinedException extends Error {
   constructor(message?: string) {
     super(message);

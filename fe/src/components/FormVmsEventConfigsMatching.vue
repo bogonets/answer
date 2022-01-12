@@ -247,7 +247,11 @@ import type {
   VmsDeviceA,
   VmsEventConfigMatchingQ,
 } from '@/packet/vms';
-import {imageDataUrlToVmsUploadImageQ} from '@/packet/vms';
+import {
+  EVENT_CONFIG_OPERATOR_DEFAULT,
+  EVENT_CONFIG_OPERATORS,
+  imageDataUrlToVmsUploadImageQ,
+} from '@/packet/vms';
 
 function createEmptyObject() {
   return {};
@@ -261,17 +265,9 @@ function createEmptyObject() {
 export default class FormVmsEventConfigsMatching extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
   readonly captionClass = CAPTION_CLASS;
+  readonly operators = EVENT_CONFIG_OPERATORS;
 
-  readonly operators = [
-    '=',
-    '!=',
-    '>',
-    '<',
-    '>=',
-    '<=',
-  ];
-
-  @Prop({type: Boolean})
+  @Prop({type: Boolean, default: false})
   readonly showOperator!: boolean;
 
   @Prop({type: Number, default: 0})
@@ -286,7 +282,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
   @Prop({type: Number, default: 100})
   readonly maxThreshold!: number;
 
-  @Prop({type: Boolean})
+  @Prop({type: Boolean, default: false})
   readonly useRoiAbsolutePosition!: boolean;
 
   @Prop({type: Object, default: createEmptyObject})
@@ -334,7 +330,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
 
   distance = 50;
   threshold = 50;
-  operator = '>=';
+  operator = EVENT_CONFIG_OPERATOR_DEFAULT;
   emitCondition = true;
 
   trainX1 = 0;
@@ -783,25 +779,6 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     console.debug(`onVideoResize(width=${width},height=${height})`);
     this.videoWidth = width;
     this.videoHeight = height;
-
-    // const rect = this.mediaPlayerPlaceholder.getBoundingClientRect();
-    // this.trainContent.style.width = `${rect.width}px`;
-    // this.trainContent.style.height = `${rect.height}px`;
-    // this.trainContent.style.maxWidth = `${rect.width}px`;
-    // this.trainContent.style.maxHeight = `${rect.height}px`;
-    // this.trainContent.style.minWidth = `${rect.width}px`;
-    // this.trainContent.style.minHeight = `${rect.height}px`;
-    //
-    // this.canvasTrain.style.width = `${rect.width}px`;
-    // this.canvasTrain.style.height = `${rect.height}px`;
-    // this.canvasTrain.style.maxWidth = `${rect.width}px`;
-    // this.canvasTrain.style.maxHeight = `${rect.height}px`;
-
-    // const imgElement = this.trainImage.$el;
-    // imgElement.style.width = `${rect.width}px`;
-    // imgElement.style.height = `${rect.height}px`;
-    // imgElement.style.maxWidth = `${rect.width}px`;
-    // imgElement.style.maxHeight = `${rect.height}px`;
   }
 }
 </script>
