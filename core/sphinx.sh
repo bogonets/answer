@@ -78,7 +78,7 @@ function run_sphinx_html_builder
 
 function recc_sphinx_main
 {
-    while [[ ! -z $1 ]]; do
+    while [[ -n $1 ]]; do
         case $1 in
         -h|--help)
             echo "$USAGE_MESSAGE"
