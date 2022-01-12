@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)
-RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
+CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
+RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
 
 STORAGE_DIR="$CORE_DIR/storage"
 DAEMON_ADDRESS=0.0.0.0:19999

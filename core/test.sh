@@ -11,8 +11,7 @@ Available options are:
                     Number of repetitions. (default: 1)
 "
 
-CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)
-RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
+RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
 ITERATOR=1
 
 while [[ ! -z $1 ]]; do

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)
-RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
+CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 ERROR_COUNT=0
 
 trap "on_interrupt" SIGHUP SIGINT SIGTERM
@@ -16,11 +15,13 @@ function ci_runner
 {
     local name=$1
     echo "[CI:${name}] running ..."
+
     "${CORE_DIR}/${name}.sh"
+
     local code=$?
     echo "[CI:${name}] done(${code})"
     if [[ $code -ne 0 ]]; then
-        let "ERROR_COUNT=${ERROR_COUNT}+1"
+        (( ERROR_COUNT++ ))
     fi
 }
 

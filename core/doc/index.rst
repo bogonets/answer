@@ -101,7 +101,6 @@
     :name: section-reference-core
 
     architecture/design
-    reference/core/auth
     reference/core/file
     reference/core/session
     reference/core/struct

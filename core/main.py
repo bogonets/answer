@@ -6,7 +6,7 @@ import sys
 SOURCE_PATH = os.path.abspath(__file__)
 SOURCE_DIR = os.path.dirname(SOURCE_PATH)
 
-# Ensure we're in the proper directory whether or not we're being used by pip.
+# Make it run even if you don't install it as a package.
 os.chdir(SOURCE_DIR)
 sys.path.append(SOURCE_DIR)
 
