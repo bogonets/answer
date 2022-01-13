@@ -11,11 +11,9 @@ from recc.typing.annotation import eval_annotations
 COMPILE_MODE_EXEC = "exec"
 COMPILE_FLAGS = get_annotations_compiler_flag()
 
-# Uses: plugin
+# Uses: plugin, daemon
 NAME_ON_CREATE = "on_create"
 NAME_ON_DESTROY = "on_destroy"
-
-# Uses: plugin, daemon
 NAME_ON_OPEN = "on_open"
 NAME_ON_CLOSE = "on_close"
 
@@ -25,11 +23,6 @@ NAME_ON_CREATE_GROUP = "on_create_group"
 NAME_ON_DELETE_GROUP = "on_delete_group"
 NAME_ON_CREATE_PROJECT = "on_create_project"
 NAME_ON_DELETE_PROJECT = "on_delete_project"
-
-# Uses: daemon
-NAME_ON_INIT = "on_init"
-NAME_ON_PACKET = "on_packet"
-NAME_ON_PICKLING = "on_pickling"
 
 PYTHON_PLUGIN_PREFIX = """# -*- coding: utf-8 -*-
 import sys
@@ -157,18 +150,6 @@ class Plugin:
     def exists_close(self) -> bool:
         return NAME_ON_CLOSE in self._global_variables
 
-    @property
-    def exists_init_func(self) -> bool:
-        return NAME_ON_INIT in self._global_variables
-
-    @property
-    def exists_packet_func(self) -> bool:
-        return NAME_ON_PACKET in self._global_variables
-
-    @property
-    def exists_pickling_func(self) -> bool:
-        return NAME_ON_PICKLING in self._global_variables
-
     # ----------
     # Get Caller
     # ----------
@@ -199,15 +180,6 @@ class Plugin:
 
     def get_on_close_func(self) -> Any:
         return self._global_variables.get(NAME_ON_CLOSE, None)
-
-    def get_on_init_func(self) -> Any:
-        return self._global_variables.get(NAME_ON_INIT, None)
-
-    def get_on_packet_func(self) -> Any:
-        return self._global_variables.get(NAME_ON_PACKET, None)
-
-    def get_on_pickling_func(self) -> Any:
-        return self._global_variables.get(NAME_ON_PICKLING, None)
 
     # ------
     # Caller
@@ -303,14 +275,6 @@ class Plugin:
             raise RuntimeError(f"'{NAME_ON_CLOSE}' must be a coroutine function")
         await on_close()
 
-    async def call_init(self, *args, **kwargs) -> None:
-        on_init = self._global_variables.get(NAME_ON_INIT)
-        assert on_init is not None
-        if iscoroutinefunction(on_init):
-            await on_init(*args, **kwargs)
-        else:
-            on_init(*args, **kwargs)
-
     @staticmethod
     def object_to_packet_answer(
         obj: Any,
@@ -342,37 +306,23 @@ class Plugin:
             return obj[0], obj[1], None
         return obj[0], obj[1], obj[2]
 
-    async def call_packet(
-        self,
-        method: int,
-        headers: Optional[Mapping[Text, Text]] = None,
-        content: Optional[bytes] = None,
-    ) -> Tuple[int, Mapping[Text, Text], Optional[bytes]]:
-        func = self._global_variables.get(NAME_ON_PACKET)
-        assert func is not None
-        if iscoroutinefunction(func):
-            result = await func(method, headers, content)
-        else:
-            result = func(method, headers, content)
-        updated_result = self.object_to_packet_answer(result)
-        content = updated_result[2]
-        if content is not None and not isinstance(content, bytes):
-            raise TypeError(
-                "The third element of the tuple must be a `bytes` type. "
-                f"({type(content).__name__})"
-            )
-        return updated_result
-
-    async def call_pickling(
-        self,
-        method: int,
-        headers: Optional[Mapping[Text, Text]] = None,
-        content: Optional[Any] = None,
-    ) -> Tuple[int, Mapping[Text, Text], Optional[Any]]:
-        func = self._global_variables.get(NAME_ON_PICKLING)
-        assert func is not None
-        if iscoroutinefunction(func):
-            result = await func(method, headers, content)
-        else:
-            result = func(method, headers, content)
-        return self.object_to_packet_answer(result)
+    # async def call_packet(
+    #     self,
+    #     method: int,
+    #     headers: Optional[Mapping[Text, Text]] = None,
+    #     content: Optional[bytes] = None,
+    # ) -> Tuple[int, Mapping[Text, Text], Optional[bytes]]:
+    #     func = self._global_variables.get(NAME_ON_PACKET)
+    #     assert func is not None
+    #     if iscoroutinefunction(func):
+    #         result = await func(method, headers, content)
+    #     else:
+    #         result = func(method, headers, content)
+    #     updated_result = self.object_to_packet_answer(result)
+    #     content = updated_result[2]
+    #     if content is not None and not isinstance(content, bytes):
+    #         raise TypeError(
+    #             "The third element of the tuple must be a `bytes` type. "
+    #             f"({type(content).__name__})"
+    #         )
+    #     return updated_result

@@ -15,8 +15,7 @@ class DaemonTestCase(IsolatedAsyncioTestCase):
         self.temp = TemporaryDirectory()
         self.daemon_dir = os.path.join(self.temp.name, CORE_DAEMON_NAME)
         os.mkdir(self.daemon_dir)
-        self.daemon_name = "daemon_simple"
-        self.daemon_filename = self.daemon_name + ".py"
+        self.daemon_filename = "daemon_simple.py"
         self.daemon_path = copy_plugin(self.daemon_filename, self.daemon_dir)
         self.assertTrue(os.path.isfile(self.daemon_path))
 
@@ -27,9 +26,16 @@ class DaemonTestCase(IsolatedAsyncioTestCase):
         self.address = f"localhost:{self.port}"
         self.client = create_daemon_client(self.address)
 
+        self.assertFalse(self.servicer.plugin.globals["assert_on_open"])
+        self.assertFalse(self.servicer.plugin.globals["assert_on_close"])
+        await self.servicer.on_open()
+        self.assertTrue(self.servicer.plugin.globals["assert_on_open"])
+        self.assertFalse(self.servicer.plugin.globals["assert_on_close"])
+
         await self.server.start()
         await self.client.open()
         self.assertTrue(self.client.is_open())
+        self.assertEqual(0, await self.client.init())
 
     async def asyncSetUp(self):
         try:
@@ -39,6 +45,12 @@ class DaemonTestCase(IsolatedAsyncioTestCase):
             raise
 
     async def _teardown(self):
+        self.assertTrue(self.servicer.plugin.globals["assert_on_open"])
+        self.assertFalse(self.servicer.plugin.globals["assert_on_close"])
+        await self.servicer.on_close()
+        self.assertTrue(self.servicer.plugin.globals["assert_on_open"])
+        self.assertTrue(self.servicer.plugin.globals["assert_on_close"])
+
         await self.client.close()
         await self.server.stop(None)
         self.assertFalse(self.client.is_open())

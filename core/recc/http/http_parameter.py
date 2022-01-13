@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Union, List, Any, get_origin, get_args
-from inspect import Parameter, signature, isclass, iscoroutinefunction
+from typing import Optional, Union, List, Any, get_args
+from inspect import signature, isclass, iscoroutinefunction
 from functools import wraps
 from http import HTTPStatus
 
@@ -16,6 +16,7 @@ from aiohttp.web_exceptions import (
 
 from recc.core.context import Context
 from recc.chrono.datetime import today
+from recc.inspect.type_origin import get_type_origin
 from recc.session.session import Session
 from recc.session.session_ex import SessionEx
 from recc.log.logging import recc_http_logger as logger
@@ -103,39 +104,6 @@ def cast_builtin_type_from_string(data: str, cls) -> Any:
     elif issubclass(cls, bool):
         return str_to_bool(data)
     return cls(data)  # type: ignore[call-arg]
-
-
-def _get_type_origin(param: Parameter) -> Any:
-    result = get_origin(param.annotation)
-    if result is None:
-        if isinstance(param.annotation, type):
-            result = param.annotation
-        elif isinstance(param.annotation, str):
-            if param.annotation == "str":
-                result = str
-            elif param.annotation == "int":
-                result = int
-            elif param.annotation == "float":
-                result = float
-            elif param.annotation == "bytes":
-                result = bytes
-            elif param.annotation == "list":
-                result = list
-            elif param.annotation == "set":
-                result = set
-            elif param.annotation == "dict":
-                result = dict
-            else:
-                msg = f"Unknown annotation string: {param.annotation}"
-                raise NotImplementedError(msg)
-        else:
-            msg = f"Unknown annotation type: {type(param.annotation).__name__}"
-            raise NotImplementedError(msg)
-
-    assert result is not None
-    assert isinstance(result, type) or result is Union
-
-    return result
 
 
 class HttpParameterMatcher:
@@ -276,7 +244,7 @@ class HttpParameterMatcher:
     async def _get_argument(self, key: str) -> Any:
         param = self.signature.parameters[key]
 
-        type_origin = _get_type_origin(param)
+        type_origin = get_type_origin(param)
         type_args = get_args(param.annotation)
 
         assert type_origin is not None

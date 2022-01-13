@@ -7,10 +7,6 @@ import gzip
 import lzma
 import bz2
 from typing import Any, Callable
-from recc.variables.rpc import (
-    DEFAULT_PICKLE_PROTOCOL_VERSION,
-    DEFAULT_PICKLE_ENCODING,
-)
 
 ByteEncoder = Callable[[Any], bytes]
 ByteDecoder = Callable[[bytes], Any]
@@ -20,12 +16,12 @@ COMPRESS_LEVEL_TRADEOFF = 6
 COMPRESS_LEVEL_BEST = 9
 
 
-def pickling(data: Any, protocol=DEFAULT_PICKLE_PROTOCOL_VERSION) -> bytes:
-    return pickle.dumps(data, protocol=protocol)
+def pickling(data: Any) -> bytes:
+    return pickle.dumps(data)
 
 
-def unpickling(data: bytes, encoding=DEFAULT_PICKLE_ENCODING) -> Any:
-    return pickle.loads(data, encoding=encoding)
+def unpickling(data: bytes) -> Any:
+    return pickle.loads(data)
 
 
 def orjson_encoder(data: Any) -> bytes:

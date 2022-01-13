@@ -4,13 +4,24 @@ import pickle
 import grpc
 from asyncio import sleep
 from asyncio import run as asyncio_run
-from typing import Optional, Any
+from typing import Optional, Any, List
+from inspect import signature, iscoroutinefunction
+from multiprocessing.shared_memory import SharedMemory
 from grpc.aio import ServicerContext
 from recc.aio.connection import try_connection
 from recc.argparse.config.daemon_config import DaemonConfig
-from recc.plugin.plugin import Plugin, NAME_ON_PACKET, NAME_ON_PICKLING
+from recc.plugin.plugin import Plugin
 from recc.log.logging import recc_daemon_logger as logger
 from recc.network.uds import is_uds_family
+from recc.inspect.type_origin import get_type_origin
+from recc.conversion.boolean import str_to_bool
+from recc.serialization.serialize import serialize_default
+from recc.serialization.deserialize import deserialize_default
+from recc.serialization.byte import (
+    COMPRESS_LEVEL_BEST,
+    orjson_zlib_encoder,
+    orjson_zlib_decoder,
+)
 from recc.proto.daemon.daemon_api_pb2 import Pit, Pat, InitQ, InitA, PacketQ, PacketA
 from recc.proto.daemon.daemon_api_pb2_grpc import (
     DaemonApiServicer,
@@ -35,27 +46,49 @@ INIT_CODE_SUCCESS = 0
 INIT_CODE_NOT_FOUND_INIT_FUNCTION = 1
 
 
+def _test_shared_memory(name: str, password: str) -> bool:
+    if name and password:
+        try:
+            sm = SharedMemory(name=name)
+            return bytes(sm.buf[:]) == bytes.fromhex(password)
+        except:  # noqa
+            pass
+    return False
+
+
+def _is_path_class(obj) -> bool:
+    if not isinstance(obj, type):
+        return False
+    if issubclass(obj, str):
+        return True
+    if issubclass(obj, int):
+        return True
+    if issubclass(obj, float):
+        return True
+    if issubclass(obj, bool):
+        return True
+    return False
+
+
+def _cast_builtin_type_from_string(data: str, cls) -> Any:
+    assert isinstance(cls, type)
+    if issubclass(cls, str):
+        return data
+    elif issubclass(cls, int):
+        return int(data)
+    elif issubclass(cls, float):
+        return float(data)
+    elif issubclass(cls, bool):
+        return str_to_bool(data)
+    return cls(data)  # type: ignore[call-arg]
+
+
 class DaemonServicer(DaemonApiServicer):
     def __init__(self, plugin: Plugin):
         self._plugin = plugin
         self._pickling_protocol_version = DEFAULT_PICKLE_PROTOCOL_VERSION
         self._unpickling_encoding = DEFAULT_PICKLE_ENCODING
-
-        self.database_type: Optional[str] = None
-        self.database_host: Optional[str] = None
-        self.database_port: Optional[int] = None
-        self.database_user: Optional[str] = None
-        self.database_pw: Optional[str] = None
-        self.database_name: Optional[str] = None
-        self.database_timeout: Optional[float] = None
-
-        self.storage_type: Optional[str] = None
-        self.storage_host: Optional[str] = None
-        self.storage_port: Optional[int] = None
-        self.storage_user: Optional[str] = None
-        self.storage_pw: Optional[str] = None
-        self.storage_region: Optional[str] = None
-        self.storage_timeout: Optional[float] = None
+        self._zlib_compress_level = COMPRESS_LEVEL_BEST
 
     @property
     def plugin(self) -> Plugin:
@@ -71,6 +104,8 @@ class DaemonServicer(DaemonApiServicer):
         logger.info("Daemon opening ...")
         if self._plugin.exists_open:
             await self._plugin.call_open()
+        if self._plugin.exists_routes:
+            self._plugin.update_routes()
         logger.info("Daemon opened.")
 
     async def on_close(self) -> None:
@@ -86,33 +121,75 @@ class DaemonServicer(DaemonApiServicer):
 
     async def Init(self, request: InitQ, context: ServicerContext) -> InitA:
         logger.debug(f"Init(args={request.args},kwargs={request.kwargs})")
-        if not self._plugin.exists_init_func:
-            return InitA(code=INIT_CODE_NOT_FOUND_INIT_FUNCTION)
-        args = [str(a) for a in request.args]
-        kwargs = {str(k): str(v) for k, v in request.kwargs.items()}
-        await self._plugin.call_init(*args, **kwargs)
-        return InitA(code=INIT_CODE_SUCCESS)
+        is_sm = _test_shared_memory(request.test_sm_name, request.test_sm_pass)
+        return InitA(code=INIT_CODE_SUCCESS, is_sm=is_sm)
+
+    async def _call_route(self, method: str, path: str, content: bytes) -> bytes:
+        route, match_info = self._plugin.get_route(method, path)
+
+        sig = signature(route)
+        args: List[Any] = list()
+
+        for key, param in sig.parameters.items():
+            type_origin = get_type_origin(param)
+
+            assert type_origin is not None
+            assert isinstance(type_origin, type)
+
+            # Path
+            if _is_path_class(type_origin) and key in match_info:
+                path_value = match_info[key]
+                try:
+                    path_arg = _cast_builtin_type_from_string(path_value, type_origin)
+                    args.append(path_arg)
+                except ValueError:
+                    logger.debug(f"Type casting error for path parameter: {key}")
+                    args.append(path_value)
+            else:
+                decoded_data = orjson_zlib_decoder(content)
+                deserialize_object = deserialize_default(decoded_data, type_origin)
+                args.append(deserialize_object)
+
+        if iscoroutinefunction(route):
+            result = await route(*args)
+        else:
+            result = route(*args)
+
+        if result is None:
+            return bytes()
+        else:
+            return orjson_zlib_encoder(
+                serialize_default(result),
+                self._zlib_compress_level,
+            )
 
     async def Packet(self, request: PacketQ, context: ServicerContext) -> PacketA:
-        logger.debug(f"Packet(method={request.method})")
-        if not self._plugin.exists_packet_func:
-            raise RuntimeError(f"Not exists `{NAME_ON_PACKET}` method")
-        code, headers, content = await self._plugin.call_packet(
-            request.method, request.headers, request.content
-        )
-        result_content = content if content else bytes()
-        return PacketA(code=code, headers=headers, content=result_content)
+        method = request.method
+        path = request.path
+        sm_name = request.sm_name
+        content_size = request.content_size
+        logger.debug(f"Packet(method={method},path={path},content_size={content_size})")
 
-    async def Pickling(self, request: PacketQ, context: ServicerContext) -> PacketA:
-        logger.debug(f"Pickling(method={request.method})")
-        if not self._plugin.exists_pickling_func:
-            raise RuntimeError(f"Not exists `{NAME_ON_PICKLING}` method")
-        decoded_content = self._unpickling(request.content)
-        code, headers, content = await self._plugin.call_pickling(
-            request.method, request.headers, decoded_content
-        )
-        encoded_content = self._pickling(content)
-        return PacketA(code=code, headers=headers, content=encoded_content)
+        sm: Optional[SharedMemory]
+        if sm_name and content_size > 0:
+            sm = SharedMemory(name=sm_name)
+            request_content = bytes(sm.buf[:content_size])
+        else:
+            sm = None
+            request_content = request.content
+
+        result = await self._call_route(method, path, request_content)
+        result_size = len(result)
+
+        if sm is not None and result and sm.size >= result_size:
+            assert sm_name
+            assert result_size >= 1
+            sm.buf[:result_size] = result
+            response_content = bytes()
+        else:
+            response_content = result
+
+        return PacketA(content_size=result_size, content=response_content)
 
 
 class _AcceptInfo(object):

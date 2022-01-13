@@ -29,11 +29,6 @@ class DaemonApiStub(object):
                 request_serializer=daemon__api__pb2.PacketQ.SerializeToString,
                 response_deserializer=daemon__api__pb2.PacketA.FromString,
                 )
-        self.Pickling = channel.unary_unary(
-                '/recc.proto.daemon.DaemonApi/Pickling',
-                request_serializer=daemon__api__pb2.PacketQ.SerializeToString,
-                response_deserializer=daemon__api__pb2.PacketA.FromString,
-                )
 
 
 class DaemonApiServicer(object):
@@ -57,12 +52,6 @@ class DaemonApiServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def Pickling(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
 
 def add_DaemonApiServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -78,11 +67,6 @@ def add_DaemonApiServicer_to_server(servicer, server):
             ),
             'Packet': grpc.unary_unary_rpc_method_handler(
                     servicer.Packet,
-                    request_deserializer=daemon__api__pb2.PacketQ.FromString,
-                    response_serializer=daemon__api__pb2.PacketA.SerializeToString,
-            ),
-            'Pickling': grpc.unary_unary_rpc_method_handler(
-                    servicer.Pickling,
                     request_deserializer=daemon__api__pb2.PacketQ.FromString,
                     response_serializer=daemon__api__pb2.PacketA.SerializeToString,
             ),
@@ -142,23 +126,6 @@ class DaemonApi(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/recc.proto.daemon.DaemonApi/Packet',
-            daemon__api__pb2.PacketQ.SerializeToString,
-            daemon__api__pb2.PacketA.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def Pickling(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/recc.proto.daemon.DaemonApi/Pickling',
             daemon__api__pb2.PacketQ.SerializeToString,
             daemon__api__pb2.PacketA.FromString,
             options, channel_credentials,

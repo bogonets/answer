@@ -7,7 +7,7 @@ from recc.memory.shared_memory_queue import SharedMemoryQueue
 class SharedMemoryQueueTestCase(TestCase):
     def setUp(self):
         self.buffer_size = 4
-        self.smq = SharedMemoryQueue(buffer_size=self.buffer_size)
+        self.smq = SharedMemoryQueue()
 
     def tearDown(self):
         self.smq.clear()

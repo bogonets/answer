@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, Any
 from asyncio import TimeoutError as AsyncioTimeoutError
 from asyncio import AbstractEventLoop, wait_for
 from recc.log.logging import recc_daemon_logger as logger
@@ -124,7 +124,7 @@ class DaemonManager(Dict[str, DaemonRunner]):
 
     async def init(
         self,
-        configs: Dict[str, str],
+        configs: Optional[Dict[str, Any]] = None,
         connection_timeout: Optional[float] = None,
         query_timeout: Optional[float] = None,
     ) -> None:
@@ -160,7 +160,12 @@ class DaemonManager(Dict[str, DaemonRunner]):
                 continue
 
             try:
-                await client.init(**configs)
+                if configs:
+                    init_configs = {k: str(v) for k, v in configs.items()}
+                else:
+                    init_configs = dict()
+
+                await client.init(configs=init_configs)
                 logger.info("The daemon's Init API call was successful.")
             except BaseException as e:  # noqa
                 logger.error(f"The daemon's Init API call failed. {e}")

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x10\x64\x61\x65mon_api.proto\x12\x11recc.proto.daemon\"\x14\n\x03Pit\x12\r\n\x05\x64\x65lay\x18\x01 \x01(\x02\"\x11\n\x03Pat\x12\n\n\x02ok\x18\x01 \x01(\x08\"z\n\x05InitQ\x12\x0c\n\x04\x61rgs\x18\x01 \x03(\t\x12\x34\n\x06kwargs\x18\x02 \x03(\x0b\x32$.recc.proto.daemon.InitQ.KwargsEntry\x1a-\n\x0bKwargsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x15\n\x05InitA\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\"\xa5\x01\n\x07PacketQ\x12\x0e\n\x06method\x18\x01 \x01(\x05\x12\x38\n\x07headers\x18\x02 \x03(\x0b\x32\'.recc.proto.daemon.PacketQ.HeadersEntry\x12\x14\n\x07\x63ontent\x18\x03 \x01(\x0cH\x00\x88\x01\x01\x1a.\n\x0cHeadersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x42\n\n\x08_content\"\xa3\x01\n\x07PacketA\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\x38\n\x07headers\x18\x02 \x03(\x0b\x32\'.recc.proto.daemon.PacketA.HeadersEntry\x12\x14\n\x07\x63ontent\x18\x03 \x01(\x0cH\x00\x88\x01\x01\x1a.\n\x0cHeadersEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x42\n\n\x08_content2\x92\x02\n\tDaemonApi\x12=\n\tHeartbeat\x12\x16.recc.proto.daemon.Pit\x1a\x16.recc.proto.daemon.Pat\"\x00\x12<\n\x04Init\x12\x18.recc.proto.daemon.InitQ\x1a\x18.recc.proto.daemon.InitA\"\x00\x12\x42\n\x06Packet\x12\x1a.recc.proto.daemon.PacketQ\x1a\x1a.recc.proto.daemon.PacketA\"\x00\x12\x44\n\x08Pickling\x12\x1a.recc.proto.daemon.PacketQ\x1a\x1a.recc.proto.daemon.PacketA\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x10\x64\x61\x65mon_api.proto\x12\x11recc.proto.daemon\"\x14\n\x03Pit\x12\r\n\x05\x64\x65lay\x18\x01 \x01(\x02\"\x11\n\x03Pat\x12\n\n\x02ok\x18\x01 \x01(\x08\"\x8e\x02\n\x05InitQ\x12\x0c\n\x04\x61rgs\x18\x01 \x03(\t\x12\x34\n\x06kwargs\x18\x02 \x03(\x0b\x32$.recc.proto.daemon.InitQ.KwargsEntry\x12\x36\n\x07\x63onfigs\x18\x03 \x03(\x0b\x32%.recc.proto.daemon.InitQ.ConfigsEntry\x12\x14\n\x0ctest_sm_name\x18\x04 \x01(\t\x12\x14\n\x0ctest_sm_pass\x18\x05 \x01(\t\x1a-\n\x0bKwargsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a.\n\x0c\x43onfigsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"$\n\x05InitA\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\r\n\x05is_sm\x18\x02 \x01(\x08\"p\n\x07PacketQ\x12\x0e\n\x06method\x18\x01 \x01(\t\x12\x0c\n\x04path\x18\x02 \x01(\t\x12\x0f\n\x07sm_name\x18\x03 \x01(\t\x12\x14\n\x0c\x63ontent_size\x18\x04 \x01(\x05\x12\x14\n\x07\x63ontent\x18\x05 \x01(\x0cH\x00\x88\x01\x01\x42\n\n\x08_content\"A\n\x07PacketA\x12\x14\n\x0c\x63ontent_size\x18\x01 \x01(\x05\x12\x14\n\x07\x63ontent\x18\x02 \x01(\x0cH\x00\x88\x01\x01\x42\n\n\x08_content2\xcc\x01\n\tDaemonApi\x12=\n\tHeartbeat\x12\x16.recc.proto.daemon.Pit\x1a\x16.recc.proto.daemon.Pat\"\x00\x12<\n\x04Init\x12\x18.recc.proto.daemon.InitQ\x1a\x18.recc.proto.daemon.InitA\"\x00\x12\x42\n\x06Packet\x12\x1a.recc.proto.daemon.PacketQ\x1a\x1a.recc.proto.daemon.PacketA\"\x00\x62\x06proto3'
 )
 
 
@@ -123,8 +123,46 @@ _INITQ_KWARGSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=157,
-  serialized_end=202,
+  serialized_start=258,
+  serialized_end=303,
+)
+
+_INITQ_CONFIGSENTRY = _descriptor.Descriptor(
+  name='ConfigsEntry',
+  full_name='recc.proto.daemon.InitQ.ConfigsEntry',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='key', full_name='recc.proto.daemon.InitQ.ConfigsEntry.key', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='value', full_name='recc.proto.daemon.InitQ.ConfigsEntry.value', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=b'8\001',
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=305,
+  serialized_end=351,
 )
 
 _INITQ = _descriptor.Descriptor(
@@ -149,10 +187,31 @@ _INITQ = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='configs', full_name='recc.proto.daemon.InitQ.configs', index=2,
+      number=3, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='test_sm_name', full_name='recc.proto.daemon.InitQ.test_sm_name', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='test_sm_pass', full_name='recc.proto.daemon.InitQ.test_sm_pass', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
-  nested_types=[_INITQ_KWARGSENTRY, ],
+  nested_types=[_INITQ_KWARGSENTRY, _INITQ_CONFIGSENTRY, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -161,8 +220,8 @@ _INITQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=80,
-  serialized_end=202,
+  serialized_start=81,
+  serialized_end=351,
 )
 
 
@@ -181,6 +240,13 @@ _INITA = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='is_sm', full_name='recc.proto.daemon.InitA.is_sm', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -193,48 +259,10 @@ _INITA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=204,
-  serialized_end=225,
+  serialized_start=353,
+  serialized_end=389,
 )
 
-
-_PACKETQ_HEADERSENTRY = _descriptor.Descriptor(
-  name='HeadersEntry',
-  full_name='recc.proto.daemon.PacketQ.HeadersEntry',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='key', full_name='recc.proto.daemon.PacketQ.HeadersEntry.key', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='value', full_name='recc.proto.daemon.PacketQ.HeadersEntry.value', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=b'8\001',
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=335,
-  serialized_end=381,
-)
 
 _PACKETQ = _descriptor.Descriptor(
   name='PacketQ',
@@ -246,21 +274,35 @@ _PACKETQ = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='method', full_name='recc.proto.daemon.PacketQ.method', index=0,
-      number=1, type=5, cpp_type=1, label=1,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='path', full_name='recc.proto.daemon.PacketQ.path', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='sm_name', full_name='recc.proto.daemon.PacketQ.sm_name', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='content_size', full_name='recc.proto.daemon.PacketQ.content_size', index=3,
+      number=4, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='headers', full_name='recc.proto.daemon.PacketQ.headers', index=1,
-      number=2, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='content', full_name='recc.proto.daemon.PacketQ.content', index=2,
-      number=3, type=12, cpp_type=9, label=1,
+      name='content', full_name='recc.proto.daemon.PacketQ.content', index=4,
+      number=5, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -268,7 +310,7 @@ _PACKETQ = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_PACKETQ_HEADERSENTRY, ],
+  nested_types=[],
   enum_types=[
   ],
   serialized_options=None,
@@ -282,48 +324,10 @@ _PACKETQ = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=228,
-  serialized_end=393,
+  serialized_start=391,
+  serialized_end=503,
 )
 
-
-_PACKETA_HEADERSENTRY = _descriptor.Descriptor(
-  name='HeadersEntry',
-  full_name='recc.proto.daemon.PacketA.HeadersEntry',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='key', full_name='recc.proto.daemon.PacketA.HeadersEntry.key', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='value', full_name='recc.proto.daemon.PacketA.HeadersEntry.value', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=b'8\001',
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=335,
-  serialized_end=381,
-)
 
 _PACKETA = _descriptor.Descriptor(
   name='PacketA',
@@ -334,22 +338,15 @@ _PACKETA = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='code', full_name='recc.proto.daemon.PacketA.code', index=0,
+      name='content_size', full_name='recc.proto.daemon.PacketA.content_size', index=0,
       number=1, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='headers', full_name='recc.proto.daemon.PacketA.headers', index=1,
-      number=2, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='content', full_name='recc.proto.daemon.PacketA.content', index=2,
-      number=3, type=12, cpp_type=9, label=1,
+      name='content', full_name='recc.proto.daemon.PacketA.content', index=1,
+      number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -357,7 +354,7 @@ _PACKETA = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_PACKETA_HEADERSENTRY, ],
+  nested_types=[],
   enum_types=[
   ],
   serialized_options=None,
@@ -371,19 +368,17 @@ _PACKETA = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=396,
-  serialized_end=559,
+  serialized_start=505,
+  serialized_end=570,
 )
 
 _INITQ_KWARGSENTRY.containing_type = _INITQ
+_INITQ_CONFIGSENTRY.containing_type = _INITQ
 _INITQ.fields_by_name['kwargs'].message_type = _INITQ_KWARGSENTRY
-_PACKETQ_HEADERSENTRY.containing_type = _PACKETQ
-_PACKETQ.fields_by_name['headers'].message_type = _PACKETQ_HEADERSENTRY
+_INITQ.fields_by_name['configs'].message_type = _INITQ_CONFIGSENTRY
 _PACKETQ.oneofs_by_name['_content'].fields.append(
   _PACKETQ.fields_by_name['content'])
 _PACKETQ.fields_by_name['content'].containing_oneof = _PACKETQ.oneofs_by_name['_content']
-_PACKETA_HEADERSENTRY.containing_type = _PACKETA
-_PACKETA.fields_by_name['headers'].message_type = _PACKETA_HEADERSENTRY
 _PACKETA.oneofs_by_name['_content'].fields.append(
   _PACKETA.fields_by_name['content'])
 _PACKETA.fields_by_name['content'].containing_oneof = _PACKETA.oneofs_by_name['_content']
@@ -417,12 +412,20 @@ InitQ = _reflection.GeneratedProtocolMessageType('InitQ', (_message.Message,), {
     # @@protoc_insertion_point(class_scope:recc.proto.daemon.InitQ.KwargsEntry)
     })
   ,
+
+  'ConfigsEntry' : _reflection.GeneratedProtocolMessageType('ConfigsEntry', (_message.Message,), {
+    'DESCRIPTOR' : _INITQ_CONFIGSENTRY,
+    '__module__' : 'daemon_api_pb2'
+    # @@protoc_insertion_point(class_scope:recc.proto.daemon.InitQ.ConfigsEntry)
+    })
+  ,
   'DESCRIPTOR' : _INITQ,
   '__module__' : 'daemon_api_pb2'
   # @@protoc_insertion_point(class_scope:recc.proto.daemon.InitQ)
   })
 _sym_db.RegisterMessage(InitQ)
 _sym_db.RegisterMessage(InitQ.KwargsEntry)
+_sym_db.RegisterMessage(InitQ.ConfigsEntry)
 
 InitA = _reflection.GeneratedProtocolMessageType('InitA', (_message.Message,), {
   'DESCRIPTOR' : _INITA,
@@ -432,39 +435,22 @@ InitA = _reflection.GeneratedProtocolMessageType('InitA', (_message.Message,), {
 _sym_db.RegisterMessage(InitA)
 
 PacketQ = _reflection.GeneratedProtocolMessageType('PacketQ', (_message.Message,), {
-
-  'HeadersEntry' : _reflection.GeneratedProtocolMessageType('HeadersEntry', (_message.Message,), {
-    'DESCRIPTOR' : _PACKETQ_HEADERSENTRY,
-    '__module__' : 'daemon_api_pb2'
-    # @@protoc_insertion_point(class_scope:recc.proto.daemon.PacketQ.HeadersEntry)
-    })
-  ,
   'DESCRIPTOR' : _PACKETQ,
   '__module__' : 'daemon_api_pb2'
   # @@protoc_insertion_point(class_scope:recc.proto.daemon.PacketQ)
   })
 _sym_db.RegisterMessage(PacketQ)
-_sym_db.RegisterMessage(PacketQ.HeadersEntry)
 
 PacketA = _reflection.GeneratedProtocolMessageType('PacketA', (_message.Message,), {
-
-  'HeadersEntry' : _reflection.GeneratedProtocolMessageType('HeadersEntry', (_message.Message,), {
-    'DESCRIPTOR' : _PACKETA_HEADERSENTRY,
-    '__module__' : 'daemon_api_pb2'
-    # @@protoc_insertion_point(class_scope:recc.proto.daemon.PacketA.HeadersEntry)
-    })
-  ,
   'DESCRIPTOR' : _PACKETA,
   '__module__' : 'daemon_api_pb2'
   # @@protoc_insertion_point(class_scope:recc.proto.daemon.PacketA)
   })
 _sym_db.RegisterMessage(PacketA)
-_sym_db.RegisterMessage(PacketA.HeadersEntry)
 
 
 _INITQ_KWARGSENTRY._options = None
-_PACKETQ_HEADERSENTRY._options = None
-_PACKETA_HEADERSENTRY._options = None
+_INITQ_CONFIGSENTRY._options = None
 
 _DAEMONAPI = _descriptor.ServiceDescriptor(
   name='DaemonApi',
@@ -473,8 +459,8 @@ _DAEMONAPI = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=562,
-  serialized_end=836,
+  serialized_start=573,
+  serialized_end=777,
   methods=[
   _descriptor.MethodDescriptor(
     name='Heartbeat',
@@ -500,16 +486,6 @@ _DAEMONAPI = _descriptor.ServiceDescriptor(
     name='Packet',
     full_name='recc.proto.daemon.DaemonApi.Packet',
     index=2,
-    containing_service=None,
-    input_type=_PACKETQ,
-    output_type=_PACKETA,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='Pickling',
-    full_name='recc.proto.daemon.DaemonApi.Pickling',
-    index=3,
     containing_service=None,
     input_type=_PACKETQ,
     output_type=_PACKETA,

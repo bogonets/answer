@@ -2,7 +2,7 @@
 
 import sys
 import numpy as np
-from typing import List, Any, Optional
+from typing import List
 from dataclasses import dataclass
 
 
@@ -28,8 +28,8 @@ class NumpyProto:
 
     shape: List[int]
     dtype_name: str
-    buffer: Optional[bytes] = None
-    strides: Optional[Any] = None
+    buffer: bytes
+    strides: List[int]
 
     def to_array(self) -> np.ndarray:
         try:
@@ -49,8 +49,9 @@ class NumpyProto:
             np.dtype(array.dtype.name)
         except:  # noqa
             raise ValueError(f"Unsupported dtype name: {array.dtype.name}")
-        shape = list(array.shape)
-        dtype_name = array.dtype.name
-        buffer = ndarray_to_bytes(array)
-        strides = array.strides
-        return cls(shape=shape, dtype_name=dtype_name, buffer=buffer, strides=strides)
+        return cls(
+            shape=list(array.shape),
+            dtype_name=array.dtype.name,
+            buffer=ndarray_to_bytes(array),
+            strides=list(array.strides),
+        )

@@ -5,7 +5,6 @@ from collections import deque
 from multiprocessing.shared_memory import SharedMemory
 
 SHARED_MEMORY_INFINITY_QUEUE = 0
-SHARED_MEMORY_BUFFER_SIZE = 1024
 
 
 def _create_shared_memory(buffer_size: int) -> SharedMemory:
@@ -18,23 +17,14 @@ def _destroy_shared_memory(sm: SharedMemory) -> None:
 
 
 class SharedMemoryQueue:
-    def __init__(
-        self,
-        max_queue=SHARED_MEMORY_INFINITY_QUEUE,
-        buffer_size=SHARED_MEMORY_BUFFER_SIZE,
-    ):
+    def __init__(self, max_queue=SHARED_MEMORY_INFINITY_QUEUE):
         self._max_queue = max_queue
-        self._buffer_size = buffer_size
         self._waiting: Deque[SharedMemory] = deque()
         self._working: Dict[str, SharedMemory] = dict()
 
     @property
     def max_queue(self) -> int:
         return self._max_queue
-
-    @property
-    def buffer_size(self) -> int:
-        return self._buffer_size
 
     def clear_waiting(self) -> None:
         while self._waiting:
@@ -58,14 +48,19 @@ class SharedMemoryQueue:
     def size_working(self) -> int:
         return len(self._working)
 
+    def get_working(self, key: str) -> SharedMemory:
+        return self._working[key]
+
     def write(self, data: bytes, offset=0) -> str:
-        if (offset + len(data)) > self._buffer_size:
-            raise BufferError("The size of the buffer is small")
+        buffer_size = offset + len(data)
 
         try:
             sm = self._waiting.popleft()
-        except IndexError:
-            sm = _create_shared_memory(self._buffer_size)
+            if sm.size < buffer_size:
+                _destroy_shared_memory(sm)
+                raise BufferError
+        except (IndexError, BufferError):
+            sm = _create_shared_memory(buffer_size)
         assert sm is not None
 
         end = offset + len(data)
