@@ -17,9 +17,11 @@ from typing import (
     MutableSequence,
     MutableMapping,
 )
-from datetime import datetime
+from datetime import datetime, date, time
 from dataclasses import is_dataclass
 from enum import Enum
+from pickle import loads as pickle_loads
+from numpy import ndarray
 from recc.serialization.utils import (
     MAPPING_METHOD_ITEMS,
     MAPPING_METHOD_KEYS,
@@ -271,6 +273,14 @@ def _deserialize_any(
                 return float(data)
             elif issubclass(cls, str):
                 return str(data)
+            elif issubclass(cls, ndarray):
+                if isinstance(data, bytes):
+                    return pickle_loads(data)
+                else:
+                    src_type = f"`{type(data).__name__}` type"
+                    dest_type = "`numpy.ndarray` type"
+                    msg = f"{src_type} cannot be converted to {dest_type}."
+                    raise DeserializeError(msg)
             elif issubclass(cls, datetime):
                 if isinstance(data, float):
                     return datetime.fromtimestamp(data)
@@ -281,6 +291,26 @@ def _deserialize_any(
                 else:
                     src_type = f"`{type(data).__name__}` type"
                     dest_type = "`datetime` type"
+                    msg = f"{src_type} cannot be converted to {dest_type}."
+                    raise DeserializeError(msg)
+            elif issubclass(cls, date):
+                if isinstance(data, float):
+                    return date.fromtimestamp(data)
+                elif isinstance(data, int):
+                    return date.fromordinal(data)
+                elif isinstance(data, str):
+                    return date.fromisoformat(data)
+                else:
+                    src_type = f"`{type(data).__name__}` type"
+                    dest_type = "`date` type"
+                    msg = f"{src_type} cannot be converted to {dest_type}."
+                    raise DeserializeError(msg)
+            elif issubclass(cls, time):
+                if isinstance(data, str):
+                    return time.fromisoformat(data)
+                else:
+                    src_type = f"`{type(data).__name__}` type"
+                    dest_type = "`time` type"
                     msg = f"{src_type} cannot be converted to {dest_type}."
                     raise DeserializeError(msg)
             elif issubclass(cls, Enum):

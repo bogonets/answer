@@ -3,6 +3,8 @@
 from typing import Dict, Any, List, Tuple, Iterable, Mapping, Optional
 from datetime import datetime, date, time
 from enum import Enum
+from pickle import dumps as pickle_dumps
+from numpy import ndarray
 from recc.serialization.utils import (
     MAPPING_METHOD_ITEMS,
     MAPPING_METHOD_KEYS,
@@ -71,6 +73,8 @@ def _serialize_any(version: int, obj: Any, key: Optional[str] = None) -> Any:
     try:
         if obj is None:
             return None
+        elif isinstance(obj, ndarray):
+            return pickle_dumps(obj)
         elif isinstance(obj, datetime):
             return obj.isoformat()
         elif isinstance(obj, date):
