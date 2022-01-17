@@ -26,9 +26,11 @@ class DaemonTestCase(IsolatedAsyncioTestCase):
         self.address = f"localhost:{self.port}"
         self.client = create_daemon_client(self.address)
 
+        self.assertFalse(self.servicer.plugin.globals["assert_main"])
         self.assertFalse(self.servicer.plugin.globals["assert_on_open"])
         self.assertFalse(self.servicer.plugin.globals["assert_on_close"])
         await self.servicer.on_open()
+        self.assertFalse(self.servicer.plugin.globals["assert_main"])
         self.assertTrue(self.servicer.plugin.globals["assert_on_open"])
         self.assertFalse(self.servicer.plugin.globals["assert_on_close"])
 
@@ -45,9 +47,11 @@ class DaemonTestCase(IsolatedAsyncioTestCase):
             raise
 
     async def _teardown(self):
+        self.assertFalse(self.servicer.plugin.globals["assert_main"])
         self.assertTrue(self.servicer.plugin.globals["assert_on_open"])
         self.assertFalse(self.servicer.plugin.globals["assert_on_close"])
         await self.servicer.on_close()
+        self.assertFalse(self.servicer.plugin.globals["assert_main"])
         self.assertTrue(self.servicer.plugin.globals["assert_on_open"])
         self.assertTrue(self.servicer.plugin.globals["assert_on_close"])
 

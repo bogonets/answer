@@ -2,6 +2,7 @@
 
 from unittest import main
 from typing import Dict, List, Any, Optional
+from grpc.aio import AioRpcError
 from dataclasses import dataclass
 from tester.unittest.daemon_test_case import DaemonTestCase
 
@@ -37,6 +38,13 @@ class DaemonCommonTestCase(DaemonTestCase):
         result0 = await self.client.put("/test/body", body0, cls=_Test1)
         self.assertIsInstance(result0, _Test1)
         self.assertEqual(result0, body0)
+
+        result1 = await self.client.put("/test/body", body0)
+        self.assertIsInstance(result1, dict)
+
+    async def test_get_test_exception(self):
+        with self.assertRaises(AioRpcError):
+            await self.client.get("/test/exception")
 
 
 if __name__ == "__main__":

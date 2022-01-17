@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 assert_on_open = False
 assert_on_close = False
+assert_main = False
 
 
 async def on_open() -> None:
@@ -50,10 +51,24 @@ async def put_test_body(body: _Test1):
     )
 
 
+class _TestException(Exception):
+    def __init__(self, *args):
+        super().__init__(*args)
+
+
+async def get_exception():
+    raise _TestException()
+
+
 def on_routes():
     return [
         ("GET", "/test", get_test),
         ("GET", "/test/{value}/path", get_test_value_path),
         ("POST", "/test/{value}/path", post_test_value_path),
         ("PUT", "/test/body", put_test_body),
+        ("GET", "/test/exception", get_exception),
     ]
+
+
+if __name__ == "__main__":
+    assert_main = True

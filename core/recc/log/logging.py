@@ -4,7 +4,7 @@ import os
 import sys
 import logging
 from logging import config as logging_config
-from typing import Union
+from typing import Union, Final, Literal
 
 LOGGER_NAME_RECC = "recc"
 LOGGER_NAME_CORE_RECC = "recc.core"
@@ -47,8 +47,10 @@ SEVERITY_NAME_DEBUG = "debug"
 SEVERITY_NAME_NOTSET = "notset"
 SEVERITY_NAME_OFF = "off"
 
-DEFAULT_SIMPLE_LOGGING_FORMAT = "{levelname[0]} [{name}] {message}"
-DEFAULT_SIMPLE_LOGGING_STYLE = "{"
+LoggingStyleLiteral = Literal["%", "{", "$"]
+
+DEFAULT_SIMPLE_LOGGING_FORMAT: Final[str] = "{levelname[0]} [{name}] {message}"
+DEFAULT_SIMPLE_LOGGING_STYLE: Final[LoggingStyleLiteral] = "{"
 
 
 def convert_level_number(level: Union[str, int]) -> int:
@@ -214,6 +216,9 @@ _DEFAULT_LOGGING_CONFIG = {
         },
         "aioice": {
             "level": "ERROR",
+        },
+        "matplotlib": {
+            "level": "INFO",
         },
     },
 }

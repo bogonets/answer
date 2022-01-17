@@ -51,6 +51,8 @@ loggers:
     level: ERROR
   aioice:
     level: ERROR
+  matplotlib:
+    level: INFO
 
 #  aiohttp:
 #    level: DEBUG

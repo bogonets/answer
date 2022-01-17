@@ -1,4 +1,4 @@
-sphinx
-sphinx-intl
-recommonmark
-furo
+sphinx>=4.4.0
+sphinx-intl>=2.0.1
+recommonmark>=0.7.1
+furo>=2022.1.2
