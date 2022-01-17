@@ -54,7 +54,7 @@ function run_pytest
         file=$i/pytest.sh
         if [[ -x "$file" ]]; then
             print_message "Run '$file' ..."
-            bash "$file"
+            PYTHONPATH="$i:$PYTHONPATH" bash "$file"
         fi
     done
 }
