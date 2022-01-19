@@ -25,10 +25,11 @@ from recc.variables.database import (
     DB_TYPE_NAME_POSTGRES,
     DB_TYPE_NAME_MYSQL,
     DB_TYPE_NAME_SQLITE,
-    DEFAULT_COMMAND_TIMEOUT_SECONDS,
+    DATABASE_COMMAND_TIMEOUT_SECONDS,
 )
 from recc.variables.storage import (
     STORAGE_SERVICE_TYPE_MINIO,
+    STORAGE_REQUEST_TIMEOUT,
 )
 
 _DEFAULT_PROGRAM: Final[str] = "recc"
@@ -202,7 +203,7 @@ ARG_DATABASE_NAME = Argument(
 )
 ARG_DATABASE_TIMEOUT = Argument(
     key="--database-timeout",
-    last_injection_value=DEFAULT_COMMAND_TIMEOUT_SECONDS,
+    last_injection_value=DATABASE_COMMAND_TIMEOUT_SECONDS,
     cls=float,
     metavar="sec",
     help="Database command timeout.",
@@ -328,6 +329,14 @@ ARG_STORAGE_REGION = Argument(
     metavar="region",
     help="Storage service region.",
 )
+ARG_STORAGE_TIMEOUT = Argument(
+    key="--storage-timeout",
+    last_injection_value=STORAGE_REQUEST_TIMEOUT,
+    cls=float,
+    metavar="sec",
+    help="Storage request timeout.",
+)
+
 
 ARG_SUPPRESS_PRINT = Argument(
     key="--suppress-print",
@@ -446,6 +455,7 @@ class GlobalConfig(Namespace):
     storage_pw: str
     storage_region: str
     storage_secure: bool
+    storage_timeout: float
 
     suppress_print: bool
     verbose: int
