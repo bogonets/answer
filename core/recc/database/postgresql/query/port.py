@@ -6,10 +6,6 @@ from recc.chrono.datetime import today
 from recc.variables.database import TABLE_PORT
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
-##########
-# INSERT #
-##########
-
 INSERT_PORT = f"""
 INSERT INTO {TABLE_PORT} (
     number,
@@ -23,10 +19,6 @@ INSERT INTO {TABLE_PORT} (
 );
 """
 
-##########
-# UPDATE #
-##########
-
 UPDATE_PORT_DESCRIPTION_BY_NUMBER = f"""
 UPDATE {TABLE_PORT}
 SET description=$2, updated_at=$3
@@ -37,6 +29,22 @@ UPDATE_PORT_EXTRA_BY_NUMBER = f"""
 UPDATE {TABLE_PORT}
 SET extra=$2, updated_at=$3
 WHERE number=$1;
+"""
+
+DELETE_PORT_BY_NUMBER = f"""
+DELETE FROM {TABLE_PORT}
+WHERE number=$1;
+"""
+
+SELECT_PORT_BY_NUMBER = f"""
+SELECT *
+FROM {TABLE_PORT}
+WHERE number=$1;
+"""
+
+SELECT_PORT_ALL = f"""
+SELECT *
+FROM {TABLE_PORT};
 """
 
 
@@ -59,28 +67,3 @@ def get_update_port_query_by_number(
     )
     builder.where().eq(number=number)
     return builder.build(TABLE_PORT)
-
-
-##########
-# DELETE #
-##########
-
-DELETE_PORT_BY_NUMBER = f"""
-DELETE FROM {TABLE_PORT}
-WHERE number=$1;
-"""
-
-##########
-# SELECT #
-##########
-
-SELECT_PORT_BY_NUMBER = f"""
-SELECT *
-FROM {TABLE_PORT}
-WHERE number=$1;
-"""
-
-SELECT_PORT_ALL = f"""
-SELECT *
-FROM {TABLE_PORT};
-"""

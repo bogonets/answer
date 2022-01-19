@@ -61,6 +61,8 @@ def get_command(obj: Namespace) -> Optional[Command]:
 
     value = getattr(obj, "command", None)
     try:
+        if not isinstance(value, str):
+            raise TypeError
         return Command[value]
     except:  # noqa
         return Command.unknown

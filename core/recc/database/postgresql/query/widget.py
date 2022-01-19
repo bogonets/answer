@@ -2,11 +2,6 @@
 
 from recc.variables.database import TABLE_WIDGET
 
-
-##########
-# INSERT #
-##########
-
 INSERT_WIDGET = f"""
 INSERT INTO {TABLE_WIDGET} (
     layout_uid,
@@ -18,10 +13,6 @@ INSERT INTO {TABLE_WIDGET} (
     $1, $2, $3, $4, $5
 ) RETURNING uid;
 """
-
-##########
-# UPDATE #
-##########
 
 UPDATE_WIDGET_DESCRIPTION_BY_UID = f"""
 UPDATE {TABLE_WIDGET}
@@ -47,10 +38,6 @@ SET extra=$3, updated_at=$4
 WHERE layout_uid=$1 AND name=$2;
 """
 
-##########
-# DELETE #
-##########
-
 DELETE_WIDGET_BY_UID = f"""
 DELETE FROM {TABLE_WIDGET}
 WHERE uid=$1;
@@ -61,24 +48,20 @@ DELETE FROM {TABLE_WIDGET}
 WHERE layout_uid=$1 AND name=$2;
 """
 
-##########
-# SELECT #
-##########
-
 SELECT_WIDGET_BY_UID = f"""
-SELECT layout_uid, name, description, extra, created_at, updated_at
+SELECT *
 FROM {TABLE_WIDGET}
 WHERE uid=$1;
 """
 
 SELECT_WIDGET_BY_LAYOUT_ID_AND_NAME = f"""
-SELECT uid, description, extra, created_at, updated_at
+SELECT *
 FROM {TABLE_WIDGET}
 WHERE layout_uid=$1 AND name=$2;
 """
 
 SELECT_WIDGET_BY_LAYOUT_ID = f"""
-SELECT uid, name, description, extra, created_at, updated_at
+SELECT *
 FROM {TABLE_WIDGET}
 WHERE layout_uid=$1;
 """

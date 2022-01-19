@@ -8,32 +8,6 @@ from recc.variables.database import (
 )
 from recc.util.version import database_version
 
-##########
-# INSERT #
-##########
-
-_SAFE_INSERT_INFO_FORMAT = f"""
-INSERT INTO {TABLE_INFO} (
-    key,
-    value,
-    created_at
-) SELECT
-    '{{key}}',
-    '{{value}}',
-    NOW()
-WHERE
-    NOT EXISTS(
-        SELECT value
-        FROM {TABLE_INFO}
-        WHERE key='{{key}}'
-    );
-"""
-
-
-def get_safe_insert_info_query(key: str, value: str) -> str:
-    return _SAFE_INSERT_INFO_FORMAT.format(key=key, value=value)
-
-
 INSERT_INFO_DB_VERSION = f"""
 INSERT INTO {TABLE_INFO} (
     key,
@@ -82,28 +56,16 @@ INSERT INTO {TABLE_INFO} (
     updated_at=$3;
 """
 
-##########
-# UPDATE #
-##########
-
 UPDATE_INFO_VALUE_BY_KEY = f"""
 UPDATE {TABLE_INFO}
 SET value=$2, updated_at=$3
 WHERE key=$1;
 """
 
-##########
-# DELETE #
-##########
-
 DELETE_INFO_BY_KEY = f"""
 DELETE FROM {TABLE_INFO}
 WHERE key=$1;
 """
-
-##########
-# SELECT #
-##########
 
 EXISTS_INFO_BY_KEY = f"""
 SELECT EXISTS (
@@ -134,3 +96,24 @@ SELECT_INFO_DB_VERSION = f"""
 SELECT version
 FROM {VIEW_INFO_DB_VERSION};
 """
+
+_SAFE_INSERT_INFO_FORMAT = f"""
+INSERT INTO {TABLE_INFO} (
+    key,
+    value,
+    created_at
+) SELECT
+    '{{key}}',
+    '{{value}}',
+    NOW()
+WHERE
+    NOT EXISTS(
+        SELECT value
+        FROM {TABLE_INFO}
+        WHERE key='{{key}}'
+    );
+"""
+
+
+def get_safe_insert_info_query(key: str, value: str) -> str:
+    return _SAFE_INSERT_INFO_FORMAT.format(key=key, value=value)

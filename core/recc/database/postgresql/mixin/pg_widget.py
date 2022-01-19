@@ -4,10 +4,9 @@ from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
 from recc.chrono.datetime import today
-from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.widget import Widget
 from recc.database.interfaces.db_widget import DbWidget
-from recc.database.postgresql.mixin.pg_base import PgBase
+from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.widget import (
     INSERT_WIDGET,
     UPDATE_WIDGET_DESCRIPTION_BY_UID,
@@ -32,12 +31,16 @@ class PgWidget(DbWidget, PgBase):
         extra: Optional[Any] = None,
         created_at: Optional[datetime] = None,
     ) -> int:
-        query = INSERT_WIDGET
         created = created_at if created_at else today()
-        uid = await self.fetch_val(query, layout_uid, name, description, extra, created)
-        params_msg = f"layout_uid={layout_uid},name={name}"
-        logger.info(f"insert_widget({params_msg}) -> {uid}")
-        return uid
+        return await self.column(
+            int,
+            INSERT_WIDGET,
+            layout_uid,
+            name,
+            description,
+            extra,
+            created,
+        )
 
     @overrides
     async def update_widget_description_by_uid(
@@ -46,11 +49,8 @@ class PgWidget(DbWidget, PgBase):
         description: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        query = UPDATE_WIDGET_DESCRIPTION_BY_UID
         updated = updated_at if updated_at else today()
-        await self.execute(query, uid, description, updated)
-        params_msg = f"uid={uid}"
-        logger.info(f"update_widget_description_by_uid({params_msg}) ok.")
+        await self.execute(UPDATE_WIDGET_DESCRIPTION_BY_UID, uid, description, updated)
 
     @overrides
     async def update_widget_description_by_name(
@@ -60,11 +60,14 @@ class PgWidget(DbWidget, PgBase):
         description: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        query = UPDATE_WIDGET_DESCRIPTION_BY_LAYOUT_UID_AND_NAME
         updated = updated_at if updated_at else today()
-        await self.execute(query, layout_uid, name, description, updated)
-        params_msg = f"layout_uid={layout_uid},name={name}"
-        logger.info(f"update_widget_description_by_name({params_msg}) ok.")
+        await self.execute(
+            UPDATE_WIDGET_DESCRIPTION_BY_LAYOUT_UID_AND_NAME,
+            layout_uid,
+            name,
+            description,
+            updated,
+        )
 
     @overrides
     async def update_widget_extra_by_uid(
@@ -73,11 +76,8 @@ class PgWidget(DbWidget, PgBase):
         extra: Any,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        query = UPDATE_WIDGET_EXTRA_BY_UID
         updated = updated_at if updated_at else today()
-        await self.execute(query, uid, extra, updated)
-        params_msg = f"uid={uid}"
-        logger.info(f"update_widget_extra_by_uid({params_msg}) ok.")
+        await self.execute(UPDATE_WIDGET_EXTRA_BY_UID, uid, extra, updated)
 
     @overrides
     async def update_widget_extra_by_name(
@@ -87,64 +87,36 @@ class PgWidget(DbWidget, PgBase):
         extra: Any,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        query = UPDATE_WIDGET_EXTRA_BY_LAYOUT_UID_AND_NAME
         updated = updated_at if updated_at else today()
-        await self.execute(query, layout_uid, name, extra, updated)
-        params_msg = f"layout_uid={layout_uid},name={name}"
-        logger.info(f"update_widget_extra_by_name({params_msg}) ok.")
+        await self.execute(
+            UPDATE_WIDGET_EXTRA_BY_LAYOUT_UID_AND_NAME,
+            layout_uid,
+            name,
+            extra,
+            updated,
+        )
 
     @overrides
     async def delete_widget_by_uid(self, uid: int) -> None:
-        query = DELETE_WIDGET_BY_UID
-        await self.execute(query, uid)
-        params_msg = f"uid={uid}"
-        logger.info(f"delete_widget_by_uid({params_msg}) ok.")
+        await self.execute(DELETE_WIDGET_BY_UID, uid)
 
     @overrides
     async def delete_widget_by_name(self, layout_uid: int, name: str) -> None:
-        query = DELETE_WIDGET_BY_LAYOUT_UID_AND_NAME
-        await self.execute(query, layout_uid, name)
-        params_msg = f"layout_uid={layout_uid},name={name}"
-        logger.info(f"delete_widget_by_name({params_msg}) ok.")
+        await self.execute(DELETE_WIDGET_BY_LAYOUT_UID_AND_NAME, layout_uid, name)
 
     @overrides
     async def select_widget_by_uid(self, uid: int) -> Widget:
-        query = SELECT_WIDGET_BY_UID
-        row = await self.fetch_row(query, uid)
-        params_msg = f"uid={uid}"
-        if not row:
-            raise RuntimeError(f"Not found widget: {params_msg}")
-        assert len(row) == 6
-        result = Widget(**dict(row))
-        result.uid = uid
-        logger.info(f"select_widget_by_uid({params_msg}) ok.")
-        return result
+        return await self.row(Widget, SELECT_WIDGET_BY_UID, uid)
 
     @overrides
     async def select_widget_by_name(self, layout_uid: int, name: str) -> Widget:
-        query = SELECT_WIDGET_BY_LAYOUT_ID_AND_NAME
-        row = await self.fetch_row(query, layout_uid, name)
-        params_msg = f"layout_uid={layout_uid},name={name}"
-        if not row:
-            raise RuntimeError(f"Not found widget({params_msg})")
-        assert len(row) == 5
-        result = Widget(**dict(row))
-        result.layout_uid = layout_uid
-        result.name = name
-        logger.info(f"select_widget_by_name({params_msg}) ok.")
-        return result
+        return await self.row(
+            Widget,
+            SELECT_WIDGET_BY_LAYOUT_ID_AND_NAME,
+            layout_uid,
+            name,
+        )
 
     @overrides
     async def select_widget_by_layout_uid(self, layout_uid: int) -> List[Widget]:
-        result: List[Widget] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_WIDGET_BY_LAYOUT_ID
-                async for row in conn.cursor(query, layout_uid):
-                    item = Widget(**dict(row))
-                    item.layout_uid = layout_uid
-                    result.append(item)
-        params_msg = f"layout_uid={layout_uid}"
-        result_msg = f"{len(result)} widget"
-        logger.info(f"select_widget_by_layout_uid({params_msg}) -> {result_msg}")
-        return result
+        return await self.rows(Widget, SELECT_WIDGET_BY_LAYOUT_ID, layout_uid)

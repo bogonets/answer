@@ -11,11 +11,6 @@ from recc.variables.database import (
 )
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
-
-##########
-# INSERT #
-##########
-
 INSERT_USER = f"""
 INSERT INTO {TABLE_USER} (
     username,
@@ -41,10 +36,6 @@ INSERT INTO {TABLE_USER} (
     $10
 ) RETURNING uid;
 """
-
-##########
-# UPDATE #
-##########
 
 UPDATE_USER_LAST_LOGIN_BY_UID = f"""
 UPDATE
@@ -76,38 +67,6 @@ WHERE
     uid=$1;
 """
 
-
-def get_update_user_query_by_uid(
-    uid: int,
-    username: Optional[str] = None,
-    nickname: Optional[str] = None,
-    email: Optional[str] = None,
-    phone1: Optional[str] = None,
-    phone2: Optional[str] = None,
-    is_admin: Optional[bool] = None,
-    extra: Optional[Any] = None,
-    updated_at: Optional[datetime] = None,
-) -> BuildResult:
-    updated = updated_at if updated_at else today()
-    builder = UpdateBuilder(
-        if_none_skip=True,
-        username=username,
-        nickname=nickname,
-        email=email,
-        phone1=phone1,
-        phone2=phone2,
-        is_admin=is_admin,
-        extra=extra,
-        updated_at=updated,
-    )
-    builder.where().eq(uid=uid)
-    return builder.build(TABLE_USER)
-
-
-##########
-# DELETE #
-##########
-
 DELETE_USER_BY_UID = f"""
 DELETE FROM {TABLE_USER}
 WHERE uid=$1;
@@ -127,10 +86,6 @@ WHERE uid=$1;
 
 COMMIT;
 """
-
-##########
-# SELECT #
-##########
 
 SELECT_USER_USERNAME_BY_UID = f"""
 SELECT username
@@ -189,3 +144,30 @@ SELECT_USER_COUNT = f"""
 SELECT count(uid) AS count
 FROM {TABLE_USER};
 """
+
+
+def get_update_user_query_by_uid(
+    uid: int,
+    username: Optional[str] = None,
+    nickname: Optional[str] = None,
+    email: Optional[str] = None,
+    phone1: Optional[str] = None,
+    phone2: Optional[str] = None,
+    is_admin: Optional[bool] = None,
+    extra: Optional[Any] = None,
+    updated_at: Optional[datetime] = None,
+) -> BuildResult:
+    updated = updated_at if updated_at else today()
+    builder = UpdateBuilder(
+        if_none_skip=True,
+        username=username,
+        nickname=nickname,
+        email=email,
+        phone1=phone1,
+        phone2=phone2,
+        is_admin=is_admin,
+        extra=extra,
+        updated_at=updated,
+    )
+    builder.where().eq(uid=uid)
+    return builder.build(TABLE_USER)

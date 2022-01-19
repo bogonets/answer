@@ -9,11 +9,6 @@ from recc.variables.database import (
 )
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
-
-##########
-# INSERT #
-##########
-
 INSERT_PROJECT = f"""
 INSERT INTO {TABLE_PROJECT} (
     group_uid,
@@ -29,48 +24,10 @@ INSERT INTO {TABLE_PROJECT} (
 ) RETURNING uid;
 """
 
-##########
-# UPDATE #
-##########
-
-
-def get_update_project_query_by_uid(
-    uid: Optional[int] = None,
-    slug: Optional[str] = None,
-    name: Optional[str] = None,
-    description: Optional[str] = None,
-    features: Optional[List[str]] = None,
-    visibility: Optional[int] = None,
-    extra: Optional[Any] = None,
-    updated_at: Optional[datetime] = None,
-) -> BuildResult:
-    assert updated_at is not None
-    builder = UpdateBuilder(
-        if_none_skip=True,
-        slug=slug,
-        name=name,
-        description=description,
-        features=features,
-        visibility=visibility,
-        extra=extra,
-        updated_at=updated_at,
-    )
-    builder.where().eq(uid=uid)
-    return builder.build(TABLE_PROJECT)
-
-
-##########
-# DELETE #
-##########
-
 DELETE_PROJECT_BY_UID = f"""
 DELETE FROM {TABLE_PROJECT}
 WHERE uid=$1;
 """
-
-##########
-# SELECT #
-##########
 
 SELECT_PROJECT_UID_BY_GROUP_UID_AND_SLUG = f"""
 SELECT uid
@@ -120,3 +77,28 @@ WHERE uid IN (
     )
 GROUP BY uid;
 """
+
+
+def get_update_project_query_by_uid(
+    uid: Optional[int] = None,
+    slug: Optional[str] = None,
+    name: Optional[str] = None,
+    description: Optional[str] = None,
+    features: Optional[List[str]] = None,
+    visibility: Optional[int] = None,
+    extra: Optional[Any] = None,
+    updated_at: Optional[datetime] = None,
+) -> BuildResult:
+    assert updated_at is not None
+    builder = UpdateBuilder(
+        if_none_skip=True,
+        slug=slug,
+        name=name,
+        description=description,
+        features=features,
+        visibility=visibility,
+        extra=extra,
+        updated_at=updated_at,
+    )
+    builder.where().eq(uid=uid)
+    return builder.build(TABLE_PROJECT)

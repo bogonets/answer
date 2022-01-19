@@ -34,6 +34,7 @@ datefmt
 dateutil
 dest
 devicemgmt
+demuxing
 dirname
 dtype
 dunder
@@ -74,6 +75,7 @@ mems
 metatags
 mountpoint
 mset
+muxing
 mypies
 nanum
 ndarray
@@ -83,6 +85,7 @@ newshape
 nobuffer
 nocov
 noninteractive
+nopts
 notext
 oem
 oems
@@ -94,6 +97,7 @@ orjson
 osom
 outname
 posod
+postgre
 proj
 projname
 pycache

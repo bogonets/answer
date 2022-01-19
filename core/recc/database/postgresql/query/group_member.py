@@ -24,19 +24,19 @@ WHERE group_uid=$1 AND user_uid=$2;
 """
 
 SELECT_GROUP_MEMBER_BY_GROUP_UID_AND_USER_UID = f"""
-SELECT role_uid
+SELECT *
 FROM {TABLE_GROUP_MEMBER}
 WHERE group_uid=$1 AND user_uid=$2;
 """
 
 SELECT_GROUP_MEMBER_BY_GROUP_UID = f"""
-SELECT user_uid, role_uid
+SELECT *
 FROM {TABLE_GROUP_MEMBER}
 WHERE group_uid=$1;
 """
 
 SELECT_GROUP_MEMBER_BY_USER_UID = f"""
-SELECT group_uid, role_uid
+SELECT *
 FROM {TABLE_GROUP_MEMBER}
 WHERE user_uid=$1;
 """

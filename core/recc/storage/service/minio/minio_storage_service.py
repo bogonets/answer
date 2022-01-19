@@ -137,7 +137,7 @@ class MinioStorageService(StorageServiceInterface):
         response: Optional[HTTPResponse] = None
         try:
             response = self.minio.get_object(bucket, name)
-            return response.read()
+            return response.read() if response else bytes()
         finally:
             if response:
                 response.close()

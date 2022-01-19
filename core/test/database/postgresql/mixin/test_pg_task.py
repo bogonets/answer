@@ -24,18 +24,18 @@ class PgTaskTestCase(PostgresqlTestCase):
         unknown = "unknown"
         await self.db.insert_task(self.project_uid, slug)
 
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(LookupError):
             await self.db.select_task_by_fullpath(unknown, project, slug)
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(LookupError):
             await self.db.select_task_by_fullpath(group, unknown, slug)
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(LookupError):
             await self.db.select_task_by_fullpath(group, project, unknown)
 
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(LookupError):
             await self.db.select_task_uid_by_fullpath(unknown, project, slug)
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(LookupError):
             await self.db.select_task_uid_by_fullpath(group, unknown, slug)
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(LookupError):
             await self.db.select_task_uid_by_fullpath(group, project, unknown)
 
     async def test_create_and_get(self):

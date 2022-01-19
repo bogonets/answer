@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 
-DB_TYPE_NAME_POSTGRES = "postgres"
-DB_TYPE_NAME_MYSQL = "mysql"
-DB_TYPE_NAME_SQLITE = "sqlite"
+from typing import Final, Literal, get_args
+
+DatabaseTypeLiteral = Literal["postgres", "mysql", "sqlite"]
+
+_DATABASE_TYPE_LITERAL_ARGS = get_args(DatabaseTypeLiteral)
+
+DB_TYPE_NAME_POSTGRES: Final[str] = _DATABASE_TYPE_LITERAL_ARGS[0]
+DB_TYPE_NAME_MYSQL: Final[str] = _DATABASE_TYPE_LITERAL_ARGS[1]
+DB_TYPE_NAME_SQLITE: Final[str] = _DATABASE_TYPE_LITERAL_ARGS[2]
 
 TABLE_PREFIX = "recc_"
 TABLE_INFO = f"{TABLE_PREFIX}info"

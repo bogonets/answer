@@ -4,10 +4,9 @@ from typing import Optional, Any, List, Dict
 from datetime import datetime
 from overrides import overrides
 from recc.chrono.datetime import today
-from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.task import Task
 from recc.database.interfaces.db_task import DbTask
-from recc.database.postgresql.mixin.pg_base import PgBase
+from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.task import (
     INSERT_TASK,
     UPDATE_TASK_DESCRIPTION_BY_UID,
@@ -47,10 +46,10 @@ class PgTask(DbTask, PgBase):
         publish_ports: Optional[Dict[str, Any]] = None,
         created_at: Optional[datetime] = None,
     ) -> int:
-        query = INSERT_TASK
         created = created_at if created_at else today()
-        uid = await self.fetch_val(
-            query,
+        return await self.column(
+            int,
+            INSERT_TASK,
             project_uid,
             slug,
             name,
@@ -66,9 +65,6 @@ class PgTask(DbTask, PgBase):
             publish_ports,
             created,
         )
-        params_msg = f"project_uid={project_uid},name={name}"
-        logger.info(f"insert_task({params_msg}) -> {uid}")
-        return uid
 
     @overrides
     async def update_task_description_by_uid(
@@ -77,11 +73,8 @@ class PgTask(DbTask, PgBase):
         description: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        query = UPDATE_TASK_DESCRIPTION_BY_UID
         updated = updated_at if updated_at else today()
-        await self.execute(query, uid, description, updated)
-        params_msg = f"uid={uid}"
-        logger.info(f"update_task_description_by_uid({params_msg}) ok.")
+        await self.execute(UPDATE_TASK_DESCRIPTION_BY_UID, uid, description, updated)
 
     @overrides
     async def update_task_description_by_slug(
@@ -91,11 +84,14 @@ class PgTask(DbTask, PgBase):
         description: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        query = UPDATE_TASK_DESCRIPTION_BY_PROJECT_UID_AND_SLUG
         updated = updated_at if updated_at else today()
-        await self.execute(query, project_uid, slug, description, updated)
-        params_msg = f"project_uid={project_uid},slug={slug}"
-        logger.info(f"update_task_description_by_slug({params_msg}) ok.")
+        await self.execute(
+            UPDATE_TASK_DESCRIPTION_BY_PROJECT_UID_AND_SLUG,
+            project_uid,
+            slug,
+            description,
+            updated,
+        )
 
     @overrides
     async def update_task_extra_by_uid(
@@ -104,11 +100,8 @@ class PgTask(DbTask, PgBase):
         extra: Any,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        query = UPDATE_TASK_EXTRA_BY_UID
         updated = updated_at if updated_at else today()
-        await self.execute(query, uid, extra, updated)
-        params_msg = f"uid={uid}"
-        logger.info(f"update_task_extra_by_uid({params_msg}) ok.")
+        await self.execute(UPDATE_TASK_EXTRA_BY_UID, uid, extra, updated)
 
     @overrides
     async def update_task_extra_by_slug(
@@ -118,11 +111,14 @@ class PgTask(DbTask, PgBase):
         extra: Any,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        query = UPDATE_TASK_EXTRA_BY_PROJECT_UID_AND_SLUG
         updated = updated_at if updated_at else today()
-        await self.execute(query, project_uid, slug, extra, updated)
-        params_msg = f"project_uid={project_uid},slug={slug}"
-        logger.info(f"update_task_extra_by_slug({params_msg}) ok.")
+        await self.execute(
+            UPDATE_TASK_EXTRA_BY_PROJECT_UID_AND_SLUG,
+            project_uid,
+            slug,
+            extra,
+            updated,
+        )
 
     @overrides
     async def update_task_keys_by_uid(
@@ -133,11 +129,15 @@ class PgTask(DbTask, PgBase):
         public_key: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        query = UPDATE_TASK_KEYS_BY_UID
         updated = updated_at if updated_at else today()
-        await self.execute(query, uid, auth_algorithm, private_key, public_key, updated)
-        params_msg = f"uid={uid}"
-        logger.info(f"update_task_keys_by_uid({params_msg}) ok.")
+        await self.execute(
+            UPDATE_TASK_KEYS_BY_UID,
+            uid,
+            auth_algorithm,
+            private_key,
+            public_key,
+            updated,
+        )
 
     @overrides
     async def update_task_keys_by_slug(
@@ -149,10 +149,9 @@ class PgTask(DbTask, PgBase):
         public_key: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        query = UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_SLUG
         updated = updated_at if updated_at else today()
         await self.execute(
-            query,
+            UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_SLUG,
             project_uid,
             slug,
             auth_algorithm,
@@ -160,8 +159,6 @@ class PgTask(DbTask, PgBase):
             public_key,
             updated,
         )
-        params_msg = f"project_uid={project_uid},slug={slug}"
-        logger.info(f"update_task_keys_by_slug({params_msg}) ok.")
 
     @overrides
     async def update_task_by_uid(
@@ -199,103 +196,61 @@ class PgTask(DbTask, PgBase):
             updated_at=updated,
         )
         await self.execute(query, *args)
-        params_msg = f"uid={uid}"
-        logger.info(f"update_task_by_uid({params_msg}) ok.")
 
     @overrides
     async def delete_task_by_uid(self, uid: int) -> None:
-        query = DELETE_TASK_BY_UID
-        await self.execute(query, uid)
-        params_msg = f"uid={uid}"
-        logger.info(f"delete_task_by_uid({params_msg}) ok.")
+        await self.execute(DELETE_TASK_BY_UID, uid)
 
     @overrides
     async def delete_task_by_slug(self, project_uid: int, slug: str) -> None:
-        query = DELETE_TASK_BY_PROJECT_UID_AND_SLUG
-        await self.execute(query, project_uid, slug)
-        params_msg = f"project_uid={project_uid},slug={slug}"
-        logger.info(f"delete_task_by_slug({params_msg}) ok.")
+        await self.execute(DELETE_TASK_BY_PROJECT_UID_AND_SLUG, project_uid, slug)
 
     @overrides
     async def select_task_by_uid(self, uid: int) -> Task:
-        query = SELECT_TASK_BY_UID
-        row = await self.fetch_row(query, uid)
-        params_msg = f"uid={uid}"
-        if not row:
-            raise RuntimeError(f"Not found task: {params_msg}")
-        result = Task(**dict(row))
-        assert result.uid == uid
-        logger.info(f"select_task_by_uid({params_msg}) ok.")
-        return result
+        return await self.row(Task, SELECT_TASK_BY_UID, uid)
 
     @overrides
     async def select_task_by_slug(self, project_uid: int, slug: str) -> Task:
-        query = SELECT_TASK_BY_PROJECT_ID_AND_SLUG
-        row = await self.fetch_row(query, project_uid, slug)
-        params_msg = f"project_uid={project_uid},slug={slug}"
-        if not row:
-            raise RuntimeError(f"Not found task: {params_msg}")
-        result = Task(**dict(row))
-        assert result.project_uid == project_uid
-        assert result.slug == slug
-        logger.info(f"select_task_by_slug({params_msg}) ok.")
-        return result
+        return await self.row(
+            Task,
+            SELECT_TASK_BY_PROJECT_ID_AND_SLUG,
+            project_uid,
+            slug,
+        )
 
     @overrides
     async def select_task_uid_by_slug(self, project_uid: int, slug: str) -> int:
-        query = SELECT_TASK_UID_BY_PROJECT_ID_AND_SLUG
-        row = await self.fetch_row(query, project_uid, slug)
-        params_msg = f"project_uid={project_uid},slug={slug}"
-        if not row:
-            raise RuntimeError(f"Not found task: {params_msg}")
-        result = row.get("uid")
-        if result is None:
-            raise RuntimeError(f"Not found task: {params_msg}")
-        logger.info(f"select_task_uid_by_slug({params_msg}) -> {result}")
-        return result
+        return await self.column(
+            int,
+            SELECT_TASK_UID_BY_PROJECT_ID_AND_SLUG,
+            project_uid,
+            slug,
+        )
 
     @overrides
     async def select_task_by_project_uid(self, project_uid: int) -> List[Task]:
-        result: List[Task] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_TASK_BY_PROJECT_ID
-                async for row in conn.cursor(query, project_uid):
-                    item = Task(**dict(row))
-                    assert item.project_uid == project_uid
-                    result.append(item)
-        params_msg = f"project_uid={project_uid}"
-        result_msg = f"{len(result)} task"
-        logger.info(f"select_task_by_project_uid({params_msg}) -> {result_msg}")
-        return result
+        return await self.rows(Task, SELECT_TASK_BY_PROJECT_ID, project_uid)
 
     @overrides
     async def select_task_by_fullpath(
         self, group_slug: str, project_slug: str, task_slug: str
     ) -> Task:
-        query = SELECT_TASK_BY_FULLPATH
-        row = await self.fetch_row(query, group_slug, project_slug, task_slug)
-        params_msg = f"group={group_slug},project={project_slug},task={task_slug}"
-        if not row:
-            raise RuntimeError(f"Not found task: {params_msg}")
-        if row.get("uid") is None:
-            raise RuntimeError(f"Not found task: {params_msg}")
-        result = Task(**dict(row))
-        assert result.slug == task_slug
-        logger.info(f"select_task_by_fullpath({params_msg}) ok.")
-        return result
+        return await self.row(
+            Task,
+            SELECT_TASK_BY_FULLPATH,
+            group_slug,
+            project_slug,
+            task_slug,
+        )
 
     @overrides
     async def select_task_uid_by_fullpath(
         self, group_slug: str, project_slug: str, task_slug: str
     ) -> int:
-        query = SELECT_TASK_UID_BY_FULLPATH
-        row = await self.fetch_row(query, group_slug, project_slug, task_slug)
-        params_msg = f"group={group_slug},project={project_slug},task={task_slug}"
-        if not row:
-            raise RuntimeError(f"Not found task: {params_msg}")
-        result = row.get("uid")
-        if result is None:
-            raise RuntimeError(f"Not found task: {params_msg}")
-        logger.info(f"select_task_uid_by_fullpath({params_msg}) -> {result}")
-        return result
+        return await self.column(
+            int,
+            SELECT_TASK_UID_BY_FULLPATH,
+            group_slug,
+            project_slug,
+            task_slug,
+        )

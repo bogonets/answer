@@ -52,7 +52,7 @@ function run_flake8
         file=$i/flake8.sh
         if [[ -x "$file" ]]; then
             print_message "Run '$file' ..."
-            PYTHONPATH="$i:$PYTHONPATH" bash "$file"
+            bash "$file"
         fi
     done
 }

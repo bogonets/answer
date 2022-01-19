@@ -4,10 +4,9 @@ from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
 from recc.chrono.datetime import today
-from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.role import Role
 from recc.database.interfaces.db_role import DbRole
-from recc.database.postgresql.mixin.pg_base import PgBase
+from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.role import (
     INSERT_ROLE,
     DELETE_ROLE_BY_UID,
@@ -35,7 +34,8 @@ class PgRole(DbRole, PgBase):
         created_at: Optional[datetime] = None,
     ) -> int:
         created = created_at if created_at else today()
-        uid = await self.fetch_val(
+        return await self.column(
+            int,
             INSERT_ROLE,
             slug,
             name,
@@ -45,8 +45,6 @@ class PgRole(DbRole, PgBase):
             lock,
             created,
         )
-        logger.info(f"insert_role(name={name}) -> {uid}")
-        return uid
 
     @overrides
     async def update_role_by_uid(
@@ -71,90 +69,49 @@ class PgRole(DbRole, PgBase):
             updated_at=updated_at,
         )
         await self.execute(query, *args)
-        logger.info(f"update_role_by_uid(slug={slug}) ok.")
 
     @overrides
     async def delete_role_by_uid(self, uid: int) -> None:
-        query = DELETE_ROLE_BY_UID
-        await self.execute(query, uid)
-        logger.info(f"delete_role_by_uid(uid={uid}) ok.")
+        await self.execute(DELETE_ROLE_BY_UID, uid)
 
     @overrides
     async def select_role_uid_by_slug(self, slug: str) -> int:
-        query = SELECT_ROLE_UID_BY_SLUG
-        row = await self.fetch_row(query, slug)
-        params_msg = f"slug={slug}"
-        if not row:
-            raise RuntimeError(f"Not found role: {params_msg}")
-        result = int(row["uid"])
-        logger.info(f"select_role_uid_by_slug({params_msg}) -> {result}")
-        return result
+        return await self.column(int, SELECT_ROLE_UID_BY_SLUG, slug)
 
     @overrides
     async def select_role_slug_by_uid(self, uid: int) -> str:
-        query = SELECT_ROLE_SLUG_BY_UID
-        row = await self.fetch_row(query, uid)
-        params_msg = f"uid={uid}"
-        if not row:
-            raise RuntimeError(f"Not found role: {params_msg}")
-        result = str(row["slug"])
-        logger.info(f"select_role_slug_by_uid({params_msg}) -> {result}")
-        return result
+        return await self.column(str, SELECT_ROLE_SLUG_BY_UID, uid)
 
     @overrides
     async def select_role_by_uid(self, uid: int) -> Role:
-        query = SELECT_ROLE_BY_UID
-        row = await self.fetch_row(query, uid)
-        params_msg = f"uid={uid}"
-        if not row:
-            raise RuntimeError(f"Not found role: {params_msg}")
-        result = Role(**dict(row))
-        result.uid = uid
-        logger.info(f"select_role_by_uid({params_msg}) ok.")
-        return result
+        return await self.row(Role, SELECT_ROLE_BY_UID, uid)
 
     @overrides
     async def select_role_lock_by_uid(self, uid: int) -> bool:
-        query = SELECT_ROLE_LOCK_BY_UID
-        lock = await self.fetch_val(query, uid)
-        params_msg = f"uid={uid}"
-        logger.info(f"select_role_lock_by_uid({params_msg}) -> {lock}")
-        return lock
+        return await self.column(bool, SELECT_ROLE_LOCK_BY_UID, uid)
 
     @overrides
     async def select_role_all(self) -> List[Role]:
-        result: List[Role] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_ROLE_ALL
-                async for row in conn.cursor(query):
-                    result.append(Role(**dict(row)))
-        result_msg = f"{len(result)} roles"
-        logger.info(f"select_roles() -> {result_msg}")
-        return result
+        return await self.rows(Role, SELECT_ROLE_ALL)
 
     @overrides
     async def select_role_by_user_uid_and_group_uid(
         self, user_uid: int, group_uid: int
     ) -> Role:
-        query = SELECT_ROLE_BY_USER_UID_AND_GROUP_UID
-        row = await self.fetch_row(query, user_uid, group_uid)
-        params_msg = f"user_uid={user_uid},group_uid={group_uid}"
-        if not row:
-            raise RuntimeError(f"Not found role: {params_msg}")
-        result = Role(**dict(row))
-        logger.info(f"select_role_by_user_uid_and_group_uid({params_msg}) ok.")
-        return result
+        return await self.row(
+            Role,
+            SELECT_ROLE_BY_USER_UID_AND_GROUP_UID,
+            user_uid,
+            group_uid,
+        )
 
     @overrides
     async def select_role_by_user_uid_and_project_uid(
         self, user_uid: int, project_uid: int
     ) -> Role:
-        query = SELECT_ROLE_BY_USER_UID_AND_PROJECT_UID
-        row = await self.fetch_row(query, user_uid, project_uid)
-        params_msg = f"user_uid={user_uid},project_uid={project_uid}"
-        if not row:
-            raise RuntimeError(f"Not found role: {params_msg}")
-        result = Role(**dict(row))
-        logger.info(f"select_role_by_user_uid_and_project_uid({params_msg}) ok.")
-        return result
+        return await self.row(
+            Role,
+            SELECT_ROLE_BY_USER_UID_AND_PROJECT_UID,
+            user_uid,
+            project_uid,
+        )

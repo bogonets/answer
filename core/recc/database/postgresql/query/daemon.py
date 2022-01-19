@@ -6,10 +6,6 @@ from recc.chrono.datetime import today
 from recc.variables.database import TABLE_DAEMON
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
-##########
-# INSERT #
-##########
-
 INSERT_DAEMON = f"""
 INSERT INTO {TABLE_DAEMON} (
     plugin,
@@ -26,14 +22,49 @@ INSERT INTO {TABLE_DAEMON} (
 ) RETURNING uid;
 """
 
-##########
-# UPDATE #
-##########
-
 UPDATE_DAEMON_REQUIREMENTS_SHA256_BY_UID = f"""
 UPDATE {TABLE_DAEMON}
 SET requirements_sha256=$2, updated_at=$3
 WHERE uid=$1;
+"""
+
+DELETE_DAEMON_BY_UID = f"""
+DELETE FROM {TABLE_DAEMON}
+WHERE uid=$1;
+"""
+
+DELETE_DAEMON_BY_SLUG = f"""
+DELETE FROM {TABLE_DAEMON}
+WHERE slug=$1;
+"""
+
+SELECT_DAEMON_BY_UID = f"""
+SELECT *
+FROM {TABLE_DAEMON}
+WHERE uid=$1;
+"""
+
+SELECT_DAEMON_UID_BY_SLUG = f"""
+SELECT uid
+FROM {TABLE_DAEMON}
+WHERE slug=$1;
+"""
+
+SELECT_DAEMON_ADDRESS_BY_SLUG = f"""
+SELECT address
+FROM {TABLE_DAEMON}
+WHERE slug=$1;
+"""
+
+SELECT_DAEMON_BY_SLUG = f"""
+SELECT *
+FROM {TABLE_DAEMON}
+WHERE slug=$1;
+"""
+
+SELECT_DAEMON_ALL = f"""
+SELECT *
+FROM {TABLE_DAEMON};
 """
 
 
@@ -64,51 +95,3 @@ def get_update_daemon_query_by_uid(
     )
     builder.where().eq(uid=uid)
     return builder.build(TABLE_DAEMON)
-
-
-##########
-# DELETE #
-##########
-
-DELETE_DAEMON_BY_UID = f"""
-DELETE FROM {TABLE_DAEMON}
-WHERE uid=$1;
-"""
-
-DELETE_DAEMON_BY_SLUG = f"""
-DELETE FROM {TABLE_DAEMON}
-WHERE slug=$1;
-"""
-
-##########
-# SELECT #
-##########
-
-SELECT_DAEMON_BY_UID = f"""
-SELECT *
-FROM {TABLE_DAEMON}
-WHERE uid=$1;
-"""
-
-SELECT_DAEMON_UID_BY_SLUG = f"""
-SELECT uid
-FROM {TABLE_DAEMON}
-WHERE slug=$1;
-"""
-
-SELECT_DAEMON_ADDRESS_BY_SLUG = f"""
-SELECT address
-FROM {TABLE_DAEMON}
-WHERE slug=$1;
-"""
-
-SELECT_DAEMON_BY_SLUG = f"""
-SELECT *
-FROM {TABLE_DAEMON}
-WHERE slug=$1;
-"""
-
-SELECT_DAEMON_ALL = f"""
-SELECT *
-FROM {TABLE_DAEMON};
-"""

@@ -4,16 +4,15 @@ from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
 from recc.chrono.datetime import today
-from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.user import User, PassInfo
 from recc.database.interfaces.db_user import DbUser
-from recc.database.postgresql.mixin.pg_base import PgBase
+from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.user import (
     INSERT_USER,
     UPDATE_USER_LAST_LOGIN_BY_UID,
     UPDATE_USER_PASSWORD_AND_SALT_BY_UID,
     UPDATE_USER_EXTRA_BY_UID,
-    SAFE_DELETE_USER_BY_UID,
+    DELETE_USER_BY_UID,
     SELECT_USER_USERNAME_BY_UID,
     SELECT_USER_UID_BY_USERNAME,
     SELECT_USER_EXISTS_BY_USERNAME,
@@ -50,10 +49,10 @@ class PgUser(DbUser, PgBase):
         extra: Optional[Any] = None,
         created_at: Optional[datetime] = None,
     ) -> int:
-        query = INSERT_USER
         created = created_at if created_at else today()
-        uit = await self.fetch_val(
-            query,
+        return await self.column(
+            int,
+            INSERT_USER,
             username,
             password,
             salt,
@@ -65,11 +64,6 @@ class PgUser(DbUser, PgBase):
             extra,
             created,
         )
-        params_msg = f"username={username}"
-        if is_admin:
-            params_msg += ",admin"
-        logger.info(f"insert_user({params_msg}) -> {uit}")
-        return uit
 
     @overrides
     async def update_user_last_login_by_uid(
@@ -77,11 +71,8 @@ class PgUser(DbUser, PgBase):
         uid: int,
         last_login: Optional[datetime] = None,
     ) -> None:
-        query = UPDATE_USER_LAST_LOGIN_BY_UID
         login = last_login if last_login else today()
-        await self.execute(query, uid, login)
-        params_msg = f"uid={uid},last_login={login}"
-        logger.info(f"update_user_last_login_by_uid({params_msg}) ok.")
+        await self.execute(UPDATE_USER_LAST_LOGIN_BY_UID, uid, login)
 
     @overrides
     async def update_user_password_and_salt_by_uid(
@@ -91,11 +82,14 @@ class PgUser(DbUser, PgBase):
         salt: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        query = UPDATE_USER_PASSWORD_AND_SALT_BY_UID
         updated = updated_at if updated_at else today()
-        await self.execute(query, uid, password, salt, updated)
-        params_msg = f"uid={uid}"
-        logger.info(f"update_user_password_and_salt_by_uid({params_msg}) ok.")
+        await self.execute(
+            UPDATE_USER_PASSWORD_AND_SALT_BY_UID,
+            uid,
+            password,
+            salt,
+            updated,
+        )
 
     @overrides
     async def update_user_extra_by_uid(
@@ -104,11 +98,8 @@ class PgUser(DbUser, PgBase):
         extra: Any,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        query = UPDATE_USER_EXTRA_BY_UID
         updated = updated_at if updated_at else today()
-        await self.execute(query, uid, extra, updated)
-        params_msg = f"uid={uid}"
-        logger.info(f"update_user_extra_by_uid({params_msg}) ok.")
+        await self.execute(UPDATE_USER_EXTRA_BY_UID, uid, extra, updated)
 
     @overrides
     async def update_user_by_uid(
@@ -136,132 +127,52 @@ class PgUser(DbUser, PgBase):
             updated_at=updated,
         )
         await self.execute(query, *args)
-        params_msg = f"uid={uid}"
-        logger.info(f"update_user_by_uid({params_msg}) ok.")
 
     @overrides
     async def delete_user_by_uid(self, uid: int) -> None:
-        query = SAFE_DELETE_USER_BY_UID.replace("$1", str(uid))
-        await self.execute(query)
-        params_msg = f"uid={uid}"
-        logger.info(f"delete_user_by_uid({params_msg}) ok.")
+        await self.execute(DELETE_USER_BY_UID, uid)
 
     @overrides
     async def select_user_username_by_uid(self, uid: int) -> str:
-        query = SELECT_USER_USERNAME_BY_UID
-        row = await self.fetch_row(query, uid)
-        result = row["username"]
-        params_msg = f"uid={uid}"
-        result_msg = f"username={result}"
-        logger.info(f"select_user_username_by_uid({params_msg}) -> {result_msg}")
-        return result
+        return await self.column(str, SELECT_USER_USERNAME_BY_UID, uid)
 
     @overrides
     async def select_user_uid_by_username(self, username: str) -> int:
-        query = SELECT_USER_UID_BY_USERNAME
-        row = await self.fetch_row(query, username)
-        params_msg = f"username={username}"
-        if not row:
-            raise RuntimeError(f"Not found user: {params_msg}")
-        result = row["uid"]
-        result_msg = f"uid={result}"
-        logger.info(f"select_user_uid_by_username({params_msg}) -> {result_msg}")
-        return result
+        return await self.column(int, SELECT_USER_UID_BY_USERNAME, username)
 
     @overrides
     async def select_user_exists_by_username(self, username: str) -> bool:
-        query = SELECT_USER_EXISTS_BY_USERNAME
-        row = await self.fetch_row(query, username)
-        assert row and len(row) == 1
-        result = row["exists"]
-        assert isinstance(result, bool)
-        params_msg = f"username={username}"
-        logger.info(f"select_user_exists_by_username({params_msg}) -> {result}")
-        return result
+        return await self.column(bool, SELECT_USER_EXISTS_BY_USERNAME, username)
 
     @overrides
     async def select_user_password_and_salt_by_uid(self, uid: int) -> PassInfo:
-        query = SELECT_USER_PASSWORD_AND_SALT_BY_UID
-        row = await self.fetch_row(query, uid)
-        params_msg = f"uid={uid}"
-        if not row:
-            raise RuntimeError(f"Not found user: {params_msg}")
-        assert len(row) == 2
-        logger.info(f"select_user_password_and_salt_by_uid({params_msg}) ok.")
-        return PassInfo(**dict(row))
+        return await self.row(PassInfo, SELECT_USER_PASSWORD_AND_SALT_BY_UID, uid)
 
     @overrides
     async def select_user_extra_by_uid(self, uid: int) -> Any:
-        query = SELECT_USER_EXTRA_BY_UID
-        row = await self.fetch_row(query, uid)
-        params_msg = f"uid={uid}"
-        if not row:
-            raise RuntimeError(f"Not found user: {params_msg}")
-        assert len(row) == 1
-        result = row.get("extra", None)
-        logger.info(f"select_user_extra_by_uid({params_msg}) ok.")
-        return result
+        return await self.fetch_first_row_column(SELECT_USER_EXTRA_BY_UID, uid)
 
     @overrides
     async def select_user_by_uid(self, uid: int) -> User:
-        query = SELECT_USER_BY_UID
-        row = await self.fetch_row(query, uid)
-        params_msg = f"uid={uid}"
-        if not row:
-            raise RuntimeError(f"Not found user: {params_msg}")
-        result = User(**dict(row))
-        logger.info(f"select_user_by_uid({params_msg}) ok.")
-        return result
+        return await self.row(User, SELECT_USER_BY_UID, uid)
 
     @overrides
     async def select_users(self) -> List[User]:
-        result: List[User] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_USER_ALL
-                async for row in conn.cursor(query):
-                    result.append(User(**dict(row)))
-        result_msg = f"{len(result)} users"
-        logger.info(f"select_users() -> {result_msg}")
-        return result
+        return await self.rows(User, SELECT_USER_ALL)
 
     @overrides
     async def select_users_count(self) -> int:
-        query = SELECT_USER_COUNT
-        row = await self.fetch_row(query)
-        assert row and len(row) == 1
-        result = row.get("count", 0)
-        assert isinstance(result, int)
-        logger.info(f"select_users_count() -> {result}")
-        return result
+        return await self.column(int, SELECT_USER_COUNT)
 
     @overrides
     async def select_admin_count(self) -> int:
-        query = SELECT_USER_ADMIN_COUNT
-        row = await self.fetch_row(query)
-        assert row and len(row) == 1
-        result = row.get("count", 0)
-        assert isinstance(result, int)
-        logger.info(f"select_admin_count() -> {result}")
-        return result
+        return await self.column(int, SELECT_USER_ADMIN_COUNT)
 
     @overrides
     async def select_exists_admin_user(self) -> bool:
-        query = SELECT_USER_ADMIN_COUNT
-        row = await self.fetch_row(query)
-        assert row and len(row) == 1
-        result = bool(row.get("count", 0) >= 1)
-        logger.info(f"select_exists_admin_user() -> {result}")
-        return result
+        return await self.select_admin_count() >= 1
 
     @overrides
     async def select_user_username(self) -> List[str]:
-        result: List[str] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_USER_USERNAME
-                async for row in conn.cursor(query):
-                    result.append(row["username"])
-        result_msg = f"{len(result)} users"
-        logger.info(f"select_user_username() -> {result_msg}")
-        return result
+        rows = await self.fetch_rows(SELECT_USER_USERNAME)
+        return [row["username"] for row in rows]

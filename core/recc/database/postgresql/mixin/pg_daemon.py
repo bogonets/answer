@@ -6,7 +6,7 @@ from overrides import overrides
 from recc.chrono.datetime import today
 from recc.database.struct.daemon import Daemon
 from recc.database.interfaces.db_daemon import DbDaemon
-from recc.database.postgresql.mixin.pg_base import PgBase
+from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.daemon import (
     INSERT_DAEMON,
     UPDATE_DAEMON_REQUIREMENTS_SHA256_BY_UID,
@@ -35,10 +35,10 @@ class PgDaemon(DbDaemon, PgBase):
         enable=False,
         created_at: Optional[datetime] = None,
     ) -> int:
-        query = INSERT_DAEMON
         created = created_at if created_at else today()
-        return await self.fetch_val(
-            query,
+        return await self.column(
+            int,
+            INSERT_DAEMON,
             plugin,
             slug,
             name,
@@ -57,9 +57,13 @@ class PgDaemon(DbDaemon, PgBase):
         requirements_sha256: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        query = UPDATE_DAEMON_REQUIREMENTS_SHA256_BY_UID
         updated = updated_at if updated_at else today()
-        await self.execute(query, uid, requirements_sha256, updated)
+        await self.execute(
+            UPDATE_DAEMON_REQUIREMENTS_SHA256_BY_UID,
+            uid,
+            requirements_sha256,
+            updated,
+        )
 
     @overrides
     async def update_daemon_by_uid(
@@ -99,27 +103,20 @@ class PgDaemon(DbDaemon, PgBase):
 
     @overrides
     async def select_daemon_by_uid(self, uid: int) -> Daemon:
-        row = await self.fetch_row(SELECT_DAEMON_BY_UID, uid)
-        return Daemon(**row)
+        return await self.row(Daemon, SELECT_DAEMON_BY_UID, uid)
 
     @overrides
     async def select_daemon_by_slug(self, slug: str) -> Daemon:
-        row = await self.fetch_row(SELECT_DAEMON_BY_SLUG, slug)
-        return Daemon(**row)
+        return await self.row(Daemon, SELECT_DAEMON_BY_SLUG, slug)
 
     @overrides
     async def select_daemon_uid_by_slug(self, slug: str) -> int:
-        uid = await self.fetch_val(SELECT_DAEMON_UID_BY_SLUG, slug)
-        assert isinstance(uid, int)
-        return uid
+        return await self.column(int, SELECT_DAEMON_UID_BY_SLUG, slug)
 
     @overrides
     async def select_daemon_address_by_slug(self, slug: str) -> str:
-        address = await self.fetch_val(SELECT_DAEMON_ADDRESS_BY_SLUG, slug)
-        assert isinstance(address, str)
-        return address
+        return await self.column(str, SELECT_DAEMON_ADDRESS_BY_SLUG, slug)
 
     @overrides
     async def select_daemons(self) -> List[Daemon]:
-        rows = await self.fetch(SELECT_DAEMON_ALL)
-        return [Daemon(**row) for row in rows]
+        return await self.rows(Daemon, SELECT_DAEMON_ALL)

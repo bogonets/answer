@@ -6,11 +6,6 @@ from recc.chrono.datetime import today
 from recc.variables.database import TABLE_GROUP, TABLE_PROJECT, TABLE_TASK
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
-
-##########
-# INSERT #
-##########
-
 INSERT_TASK = f"""
 INSERT INTO {TABLE_TASK} (
     project_uid,
@@ -31,10 +26,6 @@ INSERT INTO {TABLE_TASK} (
     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
 ) RETURNING uid;
 """
-
-##########
-# UPDATE #
-##########
 
 UPDATE_TASK_DESCRIPTION_BY_UID = f"""
 UPDATE {TABLE_TASK}
@@ -70,6 +61,70 @@ UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_SLUG = f"""
 UPDATE {TABLE_TASK}
 SET auth_algorithm=$3, private_key=$4, public_key=$5, updated_at=$6
 WHERE project_uid=$1 AND slug=$2;
+"""
+
+DELETE_TASK_BY_UID = f"""
+DELETE FROM {TABLE_TASK}
+WHERE uid=$1;
+"""
+
+DELETE_TASK_BY_PROJECT_UID_AND_SLUG = f"""
+DELETE FROM {TABLE_TASK}
+WHERE project_uid=$1 AND slug=$2;
+"""
+
+SELECT_TASK_BY_UID = f"""
+SELECT *
+FROM {TABLE_TASK}
+WHERE uid=$1;
+"""
+
+SELECT_TASK_BY_PROJECT_ID_AND_SLUG = f"""
+SELECT *
+FROM {TABLE_TASK}
+WHERE project_uid=$1 AND slug=$2;
+"""
+
+SELECT_TASK_UID_BY_PROJECT_ID_AND_SLUG = f"""
+SELECT uid
+FROM {TABLE_TASK}
+WHERE project_uid=$1 AND slug=$2;
+"""
+
+SELECT_TASK_BY_PROJECT_ID = f"""
+SELECT *
+FROM {TABLE_TASK}
+WHERE project_uid=$1;
+"""
+
+SELECT_TASK_BY_FULLPATH = f"""
+WITH rg AS (
+    SELECT uid
+    FROM {TABLE_GROUP}
+    WHERE slug=$1
+), rp AS (
+    SELECT p.uid
+    FROM {TABLE_PROJECT} p, rg
+    WHERE p.group_uid=rg.uid AND p.slug=$2
+)
+SELECT t.*
+FROM {TABLE_TASK} t, rp
+WHERE t.project_uid=rp.uid AND t.slug=$3;
+"""
+
+SELECT_TASK_UID_BY_FULLPATH = f"""
+WITH rg AS (
+    SELECT uid
+    FROM {TABLE_GROUP}
+    WHERE slug=$1
+), rp AS (
+    SELECT p.uid
+    FROM {TABLE_PROJECT} p, rg
+    WHERE p.group_uid=rg.uid AND p.slug=$2
+)
+SELECT t.uid
+FROM {TABLE_TASK} t, rp
+WHERE t.project_uid=rp.uid AND t.slug=$3;
 """
 
 
@@ -108,60 +163,3 @@ def get_update_task_query_by_uid(
     )
     builder.where().eq(uid=uid)
     return builder.build(TABLE_TASK)
-
-
-##########
-# DELETE #
-##########
-
-DELETE_TASK_BY_UID = f"""
-DELETE FROM {TABLE_TASK}
-WHERE uid=$1;
-"""
-
-DELETE_TASK_BY_PROJECT_UID_AND_SLUG = f"""
-DELETE FROM {TABLE_TASK}
-WHERE project_uid=$1 AND slug=$2;
-"""
-
-##########
-# SELECT #
-##########
-
-SELECT_TASK_BY_UID = f"""
-SELECT *
-FROM {TABLE_TASK}
-WHERE uid=$1;
-"""
-
-SELECT_TASK_BY_PROJECT_ID_AND_SLUG = f"""
-SELECT *
-FROM {TABLE_TASK}
-WHERE project_uid=$1 AND slug=$2;
-"""
-
-SELECT_TASK_UID_BY_PROJECT_ID_AND_SLUG = f"""
-SELECT uid
-FROM {TABLE_TASK}
-WHERE project_uid=$1 AND slug=$2;
-"""
-
-SELECT_TASK_BY_PROJECT_ID = f"""
-SELECT *
-FROM {TABLE_TASK}
-WHERE project_uid=$1;
-"""
-
-SELECT_TASK_BY_FULLPATH = f"""
-SELECT t.*
-FROM (SELECT uid FROM {TABLE_GROUP} WHERE slug=$1) g
-    LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.slug=$2
-    LEFT JOIN {TABLE_TASK} t ON t.project_uid=p.uid AND t.slug=$3;
-"""
-
-SELECT_TASK_UID_BY_FULLPATH = f"""
-SELECT t.uid AS uid
-FROM (SELECT uid FROM {TABLE_GROUP} WHERE slug=$1) g
-    LEFT JOIN {TABLE_PROJECT} p ON p.group_uid=g.uid AND p.slug=$2
-    LEFT JOIN {TABLE_TASK} t ON t.project_uid=p.uid AND t.slug=$3;
-"""

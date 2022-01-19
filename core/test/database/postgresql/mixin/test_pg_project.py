@@ -17,7 +17,7 @@ class PgProjectTestCase(PostgresqlTestCase):
         self.group = await self.db.select_group_by_uid(self.group_uid)
 
     async def test_none_exists_get(self):
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(LookupError):
             await self.db.select_project_by_uid(999999)
 
     async def test_create_and_get(self):

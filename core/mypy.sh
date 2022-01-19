@@ -52,7 +52,7 @@ function run_mypy
         file=$i/mypy.sh
         if [[ -x "$file" ]]; then
             print_message "Run '$file' ..."
-            PYTHONPATH="$i:$PYTHONPATH" bash "$file"
+            bash "$file"
         fi
     done
 }

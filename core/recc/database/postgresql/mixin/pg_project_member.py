@@ -2,10 +2,9 @@
 
 from typing import List
 from overrides import overrides
-from recc.log.logging import recc_database_logger as logger
 from recc.database.struct.project_member import ProjectMember
 from recc.database.interfaces.db_project_member import DbProjectMember
-from recc.database.postgresql.mixin.pg_base import PgBase
+from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.project_member import (
     INSERT_PROJECT_MEMBER,
     UPDATE_PROJECT_MEMBER_ROLE,
@@ -22,87 +21,49 @@ class PgProjectMember(DbProjectMember, PgBase):
     async def insert_project_member(
         self, project_uid: int, user_uid: int, role_uid: int
     ) -> None:
-        query = INSERT_PROJECT_MEMBER
-        await self.execute(query, project_uid, user_uid, role_uid)
-        params_msg1 = f"project_uid={project_uid},user_uid={user_uid}"
-        params_msg2 = f"role_uid={role_uid}"
-        params_msg = f"{params_msg1},{params_msg2}"
-        logger.info(f"insert_project_member({params_msg}) ok.")
+        await self.execute(INSERT_PROJECT_MEMBER, project_uid, user_uid, role_uid)
 
     @overrides
     async def update_project_member_role(
         self, project_uid: int, user_uid: int, role_uid: int
     ) -> None:
-        query = UPDATE_PROJECT_MEMBER_ROLE
-        await self.execute(query, project_uid, user_uid, role_uid)
-        params_msg1 = f"project_uid={project_uid},user_uid={user_uid}"
-        params_msg2 = f"role_uid={role_uid}"
-        params_msg = f"{params_msg1},{params_msg2}"
-        logger.info(f"update_project_member_role({params_msg}) ok.")
+        await self.execute(UPDATE_PROJECT_MEMBER_ROLE, project_uid, user_uid, role_uid)
 
     @overrides
     async def delete_project_member(self, project_uid: int, user_uid: int) -> None:
-        query = DELETE_PROJECT_MEMBER
-        await self.execute(query, project_uid, user_uid)
-        params_msg = f"project_uid={project_uid},user_uid={user_uid}"
-        logger.info(f"delete_project_member({params_msg}) ok.")
+        await self.execute(DELETE_PROJECT_MEMBER, project_uid, user_uid)
 
     @overrides
     async def select_project_member(
         self, project_uid: int, user_uid: int
     ) -> ProjectMember:
-        query = SELECT_PROJECT_MEMBER_BY_PROJECT_UID_AND_USER_UID
-        row = await self.fetch_row(query, project_uid, user_uid)
-        params_msg = f"project_uid={project_uid},user_uid={user_uid}"
-        if not row:
-            raise RuntimeError(f"Not found project member: {params_msg}")
-        assert len(row) == 1
-        result = ProjectMember(**dict(row))
-        result.project_uid = project_uid
-        result.user_uid = user_uid
-        logger.info(f"select_project_member({params_msg}) ok.")
-        return result
+        return await self.row(
+            ProjectMember,
+            SELECT_PROJECT_MEMBER_BY_PROJECT_UID_AND_USER_UID,
+            project_uid,
+            user_uid,
+        )
 
     @overrides
     async def select_project_members_by_project_uid(
         self, project_uid: int
     ) -> List[ProjectMember]:
-        result: List[ProjectMember] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_PROJECT_MEMBER_BY_PROJECT_UID
-                async for row in conn.cursor(query, project_uid):
-                    item = ProjectMember(**dict(row))
-                    item.project_uid = project_uid
-                    result.append(item)
-        result_msg = f"{len(result)} project members"
-        logger.info(f"select_project_member_by_project_uid() -> {result_msg}")
-        return result
+        return await self.rows(
+            ProjectMember,
+            SELECT_PROJECT_MEMBER_BY_PROJECT_UID,
+            project_uid,
+        )
 
     @overrides
     async def select_project_members_by_user_uid(
         self, user_uid: int
     ) -> List[ProjectMember]:
-        result: List[ProjectMember] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_PROJECT_MEMBER_BY_USER_UID
-                async for row in conn.cursor(query, user_uid):
-                    item = ProjectMember(**dict(row))
-                    item.user_uid = user_uid
-                    result.append(item)
-        result_msg = f"{len(result)} project members"
-        logger.info(f"select_project_member_by_user_uid() -> {result_msg}")
-        return result
+        return await self.rows(
+            ProjectMember,
+            SELECT_PROJECT_MEMBER_BY_USER_UID,
+            user_uid,
+        )
 
     @overrides
     async def select_project_members(self) -> List[ProjectMember]:
-        result: List[ProjectMember] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_PROJECT_MEMBER_ALL
-                async for row in conn.cursor(query):
-                    result.append(ProjectMember(**dict(row)))
-        result_msg = f"{len(result)} project members"
-        logger.info(f"select_project_members() -> {result_msg}")
-        return result
+        return await self.rows(ProjectMember, SELECT_PROJECT_MEMBER_ALL)

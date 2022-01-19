@@ -55,7 +55,7 @@ function run_black
         file=$i/black.sh
         if [[ -x "$file" ]]; then
             print_message "Run '$file' ..."
-            PYTHONPATH="$i:$PYTHONPATH" bash "$file"
+            bash "$file"
         fi
     done
 }

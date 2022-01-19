@@ -4,11 +4,10 @@ from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
 from recc.chrono.datetime import today
-from recc.log.logging import recc_database_logger as logger
 from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 from recc.database.struct.project import Project
 from recc.database.interfaces.db_project import DbProject
-from recc.database.postgresql.mixin.pg_base import PgBase
+from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.project import (
     INSERT_PROJECT,
     DELETE_PROJECT_BY_UID,
@@ -36,10 +35,10 @@ class PgProject(DbProject, PgBase):
         extra: Optional[Any] = None,
         created_at: Optional[datetime] = None,
     ) -> int:
-        query = INSERT_PROJECT
         created = created_at if created_at else today()
-        uid = await self.fetch_val(
-            query,
+        return await self.column(
+            int,
+            INSERT_PROJECT,
             group_uid,
             slug,
             name,
@@ -49,9 +48,6 @@ class PgProject(DbProject, PgBase):
             extra,
             created,
         )
-        params_msg = f"group_uid={group_uid},slug={slug}"
-        logger.info(f"insert_project({params_msg}) -> {uid}")
-        return uid
 
     @overrides
     async def update_project_by_uid(
@@ -77,103 +73,44 @@ class PgProject(DbProject, PgBase):
             updated_at=updated,
         )
         await self.execute(query, *args)
-        params_msg = f"uid={uid}"
-        logger.info(f"update_project_by_uid({params_msg}) ok.")
 
     @overrides
     async def delete_project_by_uid(self, uid: int) -> None:
         await self.execute(DELETE_PROJECT_BY_UID, uid)
-        logger.info(f"delete_project_by_uid(uid={uid}) ok.")
 
     @overrides
     async def select_project_uid_by_group_uid_and_slug(
         self, group_uid: int, slug: str
     ) -> int:
-        query = SELECT_PROJECT_UID_BY_GROUP_UID_AND_SLUG
-        row = await self.fetch_row(query, group_uid, slug)
-        params_msg = f"group_uid={group_uid},slug={slug}"
-        if not row:
-            raise RuntimeError(f"Not found project: {params_msg}")
-        result = row.get("uid")
-        if result is None:
-            raise RuntimeError(f"Not found project: {params_msg}")
-        msg = f"select_project_uid_by_group_uid_and_slug({params_msg}) -> {result}"
-        logger.info(msg)
-        return result
+        return await self.column(
+            int,
+            SELECT_PROJECT_UID_BY_GROUP_UID_AND_SLUG,
+            group_uid,
+            slug,
+        )
 
     @overrides
     async def select_project_by_uid(self, uid: int) -> Project:
-        query = SELECT_PROJECT_BY_UID
-        row = await self.fetch_row(query, uid)
-        params_msg = f"uid={uid}"
-        if not row:
-            raise RuntimeError(f"Not found project: {params_msg}")
-        result = Project(**dict(row))
-        assert result.uid == uid
-        logger.info(f"select_project_by_uid({params_msg}) ok.")
-        return result
+        return await self.row(Project, SELECT_PROJECT_BY_UID, uid)
 
     @overrides
     async def select_projects_by_group_uid(self, group_uid: int) -> List[Project]:
-        result: List[Project] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_PROJECT_BY_GROUP_ID
-                async for row in conn.cursor(query, group_uid):
-                    item = Project(**dict(row))
-                    assert item.group_uid == group_uid
-                    result.append(item)
-        params_msg = f"group_uid={group_uid}"
-        result_msg = f"{len(result)} project"
-        logger.info(f"select_project_by_group_uid({params_msg}) -> {result_msg}")
-        return result
+        return await self.rows(Project, SELECT_PROJECT_BY_GROUP_ID, group_uid)
 
     @overrides
     async def select_projects_by_below_visibility(
         self, visibility: int
     ) -> List[Project]:
-        result: List[Project] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_PROJECT_BY_BELOW_VISIBILITY
-                async for row in conn.cursor(query, visibility):
-                    result.append(Project(**dict(row)))
-        params_msg = f"visibility={visibility}"
-        result_msg = f"{len(result)} project"
-        msg = f"select_projects_by_less_equal_visibility({params_msg}) -> {result_msg}"
-        logger.info(msg)
-        return result
+        return await self.rows(Project, SELECT_PROJECT_BY_BELOW_VISIBILITY, visibility)
 
     @overrides
     async def select_projects(self) -> List[Project]:
-        result: List[Project] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_PROJECT_ALL
-                async for row in conn.cursor(query):
-                    result.append(Project(**dict(row)))
-        result_msg = f"{len(result)} project"
-        logger.info(f"select_projects() -> {result_msg}")
-        return result
+        return await self.rows(Project, SELECT_PROJECT_ALL)
 
     @overrides
     async def select_projects_count(self) -> int:
-        query = SELECT_PROJECT_COUNT
-        row = await self.fetch_row(query)
-        assert row and len(row) == 1
-        result = int(row.get("count", 0))
-        logger.info(f"select_projects_count() -> {result}")
-        return result
+        return await self.column(int, SELECT_PROJECT_COUNT)
 
     @overrides
     async def select_projects_by_user_uid(self, user_uid: int) -> List[Project]:
-        result: List[Project] = list()
-        async with self.conn() as conn:
-            async with conn.transaction():
-                query = SELECT_PROJECT_BY_USER_UID
-                async for row in conn.cursor(query, user_uid):
-                    result.append(Project(**dict(row)))
-        params_msg = f"user_uid={user_uid}"
-        result_msg = f"{len(result)} project"
-        logger.info(f"select_projects_by_user_uid({params_msg}) -> {result_msg}")
-        return result
+        return await self.rows(Project, SELECT_PROJECT_BY_USER_UID, user_uid)
