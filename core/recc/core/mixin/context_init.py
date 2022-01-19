@@ -146,6 +146,7 @@ class ContextInit(ContextBase):
             self._config.database_user,
             self._config.database_pw,
             self._config.database_name,
+            self._config.database_timeout,
         )
         logger.info(f"Created database: {self._config.database_type}")
 

@@ -73,7 +73,7 @@ class PgDb(
         user: Optional[str] = None,
         pw: Optional[str] = None,
         name: Optional[str] = None,
-        **kwargs,
+        timeout: Optional[float] = None,
     ):
         self._pool = None
         self._host = host
@@ -81,7 +81,7 @@ class PgDb(
         self._user = user
         self._pw = pw
         self._name = name
-        self._timeout = kwargs.get("timeout", None)
+        self._timeout = timeout
 
     @overrides
     def is_open(self) -> bool:
@@ -96,8 +96,8 @@ class PgDb(
         await PgBase.close(self)
 
     @overrides
-    async def drop(self) -> None:
-        await PgBase.drop(self)
+    async def drop_database(self) -> None:
+        await PgBase.drop_database(self)
 
     @overrides
     async def create_tables(self) -> None:

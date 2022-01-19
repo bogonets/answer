@@ -25,6 +25,7 @@ from recc.variables.database import (
     DB_TYPE_NAME_POSTGRES,
     DB_TYPE_NAME_MYSQL,
     DB_TYPE_NAME_SQLITE,
+    DEFAULT_COMMAND_TIMEOUT_SECONDS,
 )
 from recc.variables.storage import (
     STORAGE_SERVICE_TYPE_MINIO,
@@ -199,6 +200,13 @@ ARG_DATABASE_NAME = Argument(
     metavar="name",
     help="Database name.",
 )
+ARG_DATABASE_TIMEOUT = Argument(
+    key="--database-timeout",
+    last_injection_value=DEFAULT_COMMAND_TIMEOUT_SECONDS,
+    cls=float,
+    metavar="sec",
+    help="Database command timeout.",
+)
 
 ARG_CACHE_HOST = Argument(
     key="--cache-host",
@@ -369,6 +377,7 @@ GLOBAL_ARGS = (
     ARG_DATABASE_PW,
     ARG_DATABASE_TYPE,
     ARG_DATABASE_NAME,
+    ARG_DATABASE_TIMEOUT,
     ARG_CACHE_HOST,
     ARG_CACHE_PORT,
     ARG_CACHE_PW,
@@ -416,6 +425,7 @@ class GlobalConfig(Namespace):
     database_pw: str
     database_type: str
     database_name: str
+    database_timeout: float
 
     cache_host: str
     cache_port: int

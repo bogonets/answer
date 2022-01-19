@@ -166,7 +166,7 @@ class PgBase(DbBase):
         self._pool = None
 
     @overrides
-    async def drop(self) -> None:
+    async def drop_database(self) -> None:
         await drop_database(
             self._host,
             self._port,
@@ -177,7 +177,7 @@ class PgBase(DbBase):
 
     def conn(self) -> PgConnection:
         assert self._pool is not None
-        return PgConnection(self._pool, timeout=self._timeout)
+        return PgConnection(self._pool)
 
     @overrides
     async def execute(

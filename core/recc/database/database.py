@@ -20,14 +20,14 @@ def create_database(
     user: Optional[str] = None,
     pw: Optional[str] = None,
     name: Optional[str] = None,
-    **kwargs,
+    timeout: Optional[float] = None,
 ) -> DbInterface:
     if db_type == DB_TYPE_NAME_MYSQL:
         raise NotImplementedError("MySQL database type is not supported.")
     elif db_type == DB_TYPE_NAME_SQLITE:
         raise NotImplementedError("SQLite database type is not supported.")
     elif db_type == DB_TYPE_NAME_POSTGRES:
-        return PgDb(host, port, user, pw, name, **kwargs)
+        return PgDb(host, port, user, pw, name, timeout)
     else:
         raise ValueError(f"Unknown database type: {db_type}")
 
@@ -39,13 +39,13 @@ def create_common_database(
     user: Optional[str] = None,
     pw: Optional[str] = None,
     name: Optional[str] = None,
-    **kwargs,
+    timeout: Optional[float] = None,
 ) -> DbBase:
     if db_type == DB_TYPE_NAME_MYSQL:
         raise NotImplementedError("MySQL database type is not supported.")
     elif db_type == DB_TYPE_NAME_SQLITE:
         raise NotImplementedError("SQLite database type is not supported.")
     elif db_type == DB_TYPE_NAME_POSTGRES:
-        return PgCommon(host, port, user, pw, name, **kwargs)
+        return PgCommon(host, port, user, pw, name, timeout)
     else:
         raise ValueError(f"Unknown database type: {db_type}")

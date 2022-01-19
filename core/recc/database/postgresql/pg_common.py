@@ -12,7 +12,7 @@ class PgCommon(PgBase):
         user: Optional[str] = None,
         pw: Optional[str] = None,
         name: Optional[str] = None,
-        **kwargs,
+        timeout: Optional[float] = None,
     ):
         self._pool = None
         self._host = host
@@ -20,4 +20,4 @@ class PgCommon(PgBase):
         self._user = user
         self._pw = pw
         self._name = name
-        self._timeout = kwargs.get("timeout", None)
+        self._timeout = timeout

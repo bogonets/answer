@@ -48,7 +48,7 @@ class DbInterface(
         raise NotImplementedError
 
     @abstractmethod
-    async def drop(self) -> None:
+    async def drop_database(self) -> None:
         raise NotImplementedError
 
     @abstractmethod
