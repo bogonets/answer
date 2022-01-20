@@ -35,7 +35,7 @@ class PluginHttpServerTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(self.plugin_name, plugin.name)
 
         plugin.update_routes()
-        self.assertEqual(3, len(plugin.routes))
+        self.assertEqual(5, len(plugin.routes))
 
         await plugin.call_open()
 
@@ -44,15 +44,22 @@ class PluginHttpServerTestCase(IsolatedAsyncioTestCase):
         tester_response = await client.get("/tester", text=body)
         self.assertEqual(200, tester_response.status)
 
-        get_result = await plugin.call_route("get", "/")
-        self.assertEqual(body, get_result)
+        result0 = await plugin.call_route("get", "/")
+        self.assertEqual(body, result0)
 
-        post_data = "POST_TEST_BODY"
-        post_result = await plugin.call_route("post", "/", post_data)
-        self.assertEqual(post_data, post_result)
+        data1 = "POST_TEST_BODY"
+        result1 = await plugin.call_route("post", "/", data1)
+        self.assertEqual(data1, result1)
 
-        post_result = await plugin.call_route("get", "/unknown/a/test")
-        self.assertEqual("pattern", post_result)
+        result2 = await plugin.call_route("get", "/unknown/a/test")
+        self.assertEqual("pattern", result2)
+
+        result3 = await plugin.call_route("get", "/layout/view/aaa")
+        self.assertEqual("aaa", result3)
+
+        data4 = "POST_SERVER_DATA"
+        result4 = await plugin.call_route("post", "/server/data", data4)
+        self.assertEqual(data4, result4)
 
         await plugin.call_close()
         plugin.call_destroy()

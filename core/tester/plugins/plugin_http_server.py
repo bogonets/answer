@@ -3,12 +3,14 @@
 from typing import Optional, Any
 from asyncio import Task, Event, create_task
 from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR, SO_REUSEPORT
+from functools import partial
 from logging import getLogger
 from aiohttp.web import Application
 from aiohttp.web import _run_app  # noqa
 from aiohttp import web
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
+from recc.http.http_decorator import has_layout_view
 
 DEFAULT_HOST = "0.0.0.0"
 DEFAULT_PORT = 39999
@@ -66,6 +68,10 @@ class Server:
     def get_body(self) -> str:
         return self.body
 
+    def post_server_data(self, data) -> str:
+        assert self
+        return data
+
 
 server: Optional[Server] = None
 
@@ -104,9 +110,16 @@ async def on_get_pattern() -> str:
     return "pattern"
 
 
+@has_layout_view
+async def on_get_layout_view() -> str:
+    return "aaa"
+
+
 def on_routes():
     return [
         ("GET", "/", on_get),
         ("POST", "/", on_post),
         ("GET", "/unknown/{pattern}/test", on_get_pattern),
+        ("GET", "/layout/view/{data}", on_get_layout_view),
+        ("POST", "/server/data", partial(Server.post_server_data, server)),
     ]

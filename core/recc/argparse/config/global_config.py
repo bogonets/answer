@@ -315,19 +315,19 @@ ARG_STORAGE_PW = Argument(
     metavar="pw",
     help="Storage service user's password. (or secret key)",
 )
-ARG_STORAGE_SECURE = Argument(
-    key="--storage-secure",
-    last_injection_value=False,
-    cls=bool,
-    action="store_true",
-    help="Storage service secure flag.",
-)
 ARG_STORAGE_REGION = Argument(
     key="--storage-region",
     last_injection_value="",
     cls=str,
     metavar="region",
     help="Storage service region.",
+)
+ARG_STORAGE_SECURE = Argument(
+    key="--storage-secure",
+    last_injection_value=False,
+    cls=bool,
+    action="store_true",
+    help="Storage service secure flag.",
 )
 ARG_STORAGE_TIMEOUT = Argument(
     key="--storage-timeout",
@@ -404,6 +404,7 @@ GLOBAL_ARGS = (
     ARG_STORAGE_PW,
     ARG_STORAGE_REGION,
     ARG_STORAGE_SECURE,
+    ARG_STORAGE_TIMEOUT,
     ARG_SUPPRESS_PRINT,
     ARG_VERBOSE,
     ARG_TEARDOWN,

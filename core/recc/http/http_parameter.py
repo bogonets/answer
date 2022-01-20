@@ -110,14 +110,14 @@ class HttpParameterMatcher:
     def __init__(
         self,
         func,
-        obj: Any,
+        bound_instance: Any,
         request: Request,
         *,
         group_path_key: Optional[str] = None,
         project_path_key: Optional[str] = None,
     ):
         self.func = func
-        self.obj = obj
+        self.bound_instance = bound_instance
         self.request = request
 
         self.accept = get_accept_type(request)
@@ -229,11 +229,11 @@ class HttpParameterMatcher:
     async def _get_arguments(self) -> List[Any]:
         result: List[Any] = list()
         keys = list(self.signature.parameters.keys())
-        if self.obj is None:
+        if self.bound_instance is None:
             argument_keys = keys
         else:
             assert len(keys) >= 1
-            result.append(self.obj)  # [0] is class instance. maybe 'self'
+            result.append(self.bound_instance)  # [0] is class instance. maybe 'self'
             argument_keys = keys[1:]
 
         for key in argument_keys:
@@ -354,7 +354,11 @@ class HttpParameterMatcher:
         return None
 
 
-async def parameter_matcher_main(func, obj: Any, request: Request) -> Response:
+async def parameter_matcher_main(
+    func,
+    bound_instance: Any,
+    request: Request,
+) -> Response:
     now = today()
 
     # Forwarded
@@ -368,7 +372,7 @@ async def parameter_matcher_main(func, obj: Any, request: Request) -> Response:
     request_info = f"{remote} {method} {path} HTTP/{version[0]}.{version[1]}"
 
     try:
-        matcher = HttpParameterMatcher(func, obj, request)
+        matcher = HttpParameterMatcher(func, bound_instance, request)
         await matcher.verify_permissions()
         result = await matcher.call()
     except HTTPException as e:
@@ -400,7 +404,7 @@ async def parameter_matcher_main(func, obj: Any, request: Request) -> Response:
 
 def parameter_matcher(func):
     @wraps(func)
-    async def _wrap(obj, request):
-        return await parameter_matcher_main(func, obj, request)
+    async def _wrap(bound_instance, request):
+        return await parameter_matcher_main(func, bound_instance, request)
 
     return _wrap

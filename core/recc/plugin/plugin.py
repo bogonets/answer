@@ -206,10 +206,13 @@ class Plugin:
             raise RuntimeError(f"`{NAME_ON_ROUTES}` is not a coroutine function")
         return on_routes()
 
-    def update_routes(self) -> None:
+    def update_routes(self, deep_copy=False) -> None:
         routes = list()
         for method, path, guest_route in self._call_get_routes():
-            host_route = deepcopy(guest_route)
+            if deep_copy:
+                host_route = deepcopy(guest_route)
+            else:
+                host_route = guest_route
             eval_annotations(host_route, self._global_variables, self._global_variables)
             routes.append(Route(method, path, host_route))
         self._routes = routes

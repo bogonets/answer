@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from typing import Dict, Any, Optional
+from inspect import ismethod
+
+ATTRIBUTE_FUNC = "__func__"
+ATTRIBUTE_ANNOTATIONS = "__annotations__"
+ATTRIBUTE_WRAPPED = "__wrapped__"
 
 
 def eval_annotations(
@@ -8,7 +13,16 @@ def eval_annotations(
     global_variables: Optional[Dict[str, Any]] = None,
     local_variables: Optional[Dict[str, Any]] = None,
 ) -> None:
-    if not hasattr(obj, "__annotations__"):
+    if ismethod(obj):
+        assert hasattr(obj, ATTRIBUTE_FUNC)
+        eval_annotations(
+            getattr(obj, ATTRIBUTE_FUNC),
+            global_variables,
+            local_variables,
+        )
+        return
+
+    if not hasattr(obj, ATTRIBUTE_ANNOTATIONS):
         return
 
     if global_variables is None:
@@ -16,10 +30,11 @@ def eval_annotations(
     if local_variables is None:
         local_variables = locals()
 
-    assert isinstance(obj.__annotations__, dict)
+    annotations = getattr(obj, ATTRIBUTE_ANNOTATIONS)
+    assert isinstance(annotations, dict)
     update_annotations: Dict[str, Any] = dict()
 
-    for key, annotation in obj.__annotations__.items():
+    for key, annotation in annotations.items():
         if isinstance(annotation, str):
             type_origin = eval(annotation, global_variables, local_variables)
             if type_origin is not None:
@@ -30,10 +45,14 @@ def eval_annotations(
         else:
             update_annotations[key] = annotation
 
-    obj.__annotations__ = update_annotations
+    setattr(obj, ATTRIBUTE_ANNOTATIONS, update_annotations)
 
     # It can be a wrapped object.
     # Where to use: `inspect.signature` -> ... -> `inspect.unwrap`
 
-    if hasattr(obj, "__wrapped__"):
-        eval_annotations(obj.__wrapped__, global_variables, local_variables)
+    if hasattr(obj, ATTRIBUTE_WRAPPED):
+        eval_annotations(
+            getattr(obj, ATTRIBUTE_WRAPPED),
+            global_variables,
+            local_variables,
+        )

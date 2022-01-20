@@ -98,4 +98,12 @@ class RouterV2Plugins:
             request.match_info[key] = val
 
         assert route is not None
-        return await parameter_matcher_main(route, None, request)
+
+        # [IMPORTANT]
+        # Do not use `route.__self__` when `ismethod(route)` is true.
+        # This is handled by the Python interpreter.
+        return await parameter_matcher_main(
+            func=route,
+            bound_instance=None,
+            request=request,
+        )
