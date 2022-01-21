@@ -82,7 +82,7 @@ class ContextInit(ContextBase):
         logger.info(f"Signature: {self._signature}")
 
     def _init_storage(self) -> None:
-        self._storage = CoreStorage(self._config.storage_root)
+        self._storage = CoreStorage(self._config.local_storage)
         root_dir = self._storage.get_root_directory()
         logger.info(f"Created storage-manager (root={root_dir})")
         if self._config.verbose >= 1:

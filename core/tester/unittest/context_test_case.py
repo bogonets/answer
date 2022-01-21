@@ -14,7 +14,7 @@ class ContextTestCase(IsolatedAsyncioTestCase):
 
         config = parse_arguments_to_core_config()
         config.database_name = "recc.test"
-        config.storage_root = self.temp_dir.name
+        config.local_storage = self.temp_dir.name
         config.teardown = True
         self.context = Context(config, loop=get_event_loop())
         await self.context.open()

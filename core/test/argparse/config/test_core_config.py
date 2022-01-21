@@ -19,7 +19,7 @@ class CoreConfigTestCase(TestCase):
         self.assertIsNotNone(config.http_timeout)
         self.assertIsNotNone(config.manage_port_min)
         self.assertIsNotNone(config.manage_port_max)
-        self.assertIsNotNone(config.storage_root)
+        self.assertIsNotNone(config.local_storage)
         self.assertIsNotNone(config.signature)
         self.assertIsNotNone(config.public_signup)
         self.assertIsNotNone(config.access_token_duration)

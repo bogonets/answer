@@ -79,12 +79,12 @@ ARG_MANAGE_PORT_MAX = Argument(
     help="Manageable maximum port number.",
 )
 
-ARG_STORAGE_ROOT = Argument(
-    key="--storage-root",
+ARG_LOCAL_STORAGE = Argument(
+    key="--local-storage",
     last_injection_value="",
     cls=str,
     metavar="dir",
-    help="Storage root directory.",
+    help="The root directory of local storage.",
 )
 
 ARG_SIGNATURE = Argument(
@@ -126,7 +126,7 @@ CORE_ARGS = (
     ARG_HTTP_TIMEOUT,
     ARG_MANAGE_PORT_MIN,
     ARG_MANAGE_PORT_MAX,
-    ARG_STORAGE_ROOT,
+    ARG_LOCAL_STORAGE,
     ARG_SIGNATURE,
     ARG_PUBLIC_SIGNUP,
     ARG_ACCESS_TOKEN_DURATION,
@@ -146,7 +146,7 @@ class CoreConfig(GlobalConfig):
     manage_port_min: int
     manage_port_max: int
 
-    storage_root: str
+    local_storage: str
 
     signature: str
 

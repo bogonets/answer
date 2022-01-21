@@ -43,10 +43,10 @@ class HttpAppTester(HttpClient, EmptyHttpAppCallback):
 
         if storage_root:
             temp = None
-            config.storage_root = storage_root
+            config.local_storage = storage_root
         else:
             temp = TemporaryDirectory()
-            config.storage_root = temp.name
+            config.local_storage = temp.name
 
         scheme = DEFAULT_SCHEME
         bind = config.http_bind
