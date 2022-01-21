@@ -19,8 +19,14 @@ en:
     stop: "Stop"
     sync: "Sync"
   status:
-    normal: "Normal"
-    abnormal: "Abnormal"
+    created: "Created"
+    beginning: "Beginning"
+    running: "Running"
+    ending: "Ending"
+    restarting: "Restarting"
+    paused: "Paused"
+    exited: "Exited"
+    dead: "Dead"
     unknown: "Unknown"
     undefined: "Undefined"
 
@@ -44,8 +50,14 @@ ko:
     stop: "Stop"
     sync: "Sync"
   status:
-    normal: "Normal"
-    abnormal: "Abnormal"
+    created: "Created"
+    beginning: "Beginning"
+    running: "Running"
+    ending: "Ending"
+    restarting: "Restarting"
+    paused: "Paused"
+    exited: "Exited"
+    dead: "Dead"
     unknown: "Unknown"
     undefined: "Undefined"
 </i18n>
@@ -161,8 +173,14 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import type {VmsDeviceA} from '@/packet/vms';
 import {
-  VMS_SERVER_STATUS_UNKNOWN,
-  VMS_SERVER_STATUS_NORMAL,
+  MEDIA_SERVER_STATUS_CREATE,
+  MEDIA_SERVER_STATUS_BEGINNING,
+  MEDIA_SERVER_STATUS_RUNNING,
+  MEDIA_SERVER_STATUS_ENDING,
+  MEDIA_SERVER_STATUS_RESTARTING,
+  MEDIA_SERVER_STATUS_PAUSED,
+  MEDIA_SERVER_STATUS_EXITED,
+  MEDIA_SERVER_STATUS_DEAD,
 } from '@/packet/vms';
 
 const ITEMS_PER_PAGE = 15;
@@ -264,10 +282,22 @@ export default class MainVmsDevices extends VueBase {
       return 'grey';
     }
     switch (item.server_status) {
-      case VMS_SERVER_STATUS_UNKNOWN:
-        return 'red';
-      case VMS_SERVER_STATUS_NORMAL:
-        return 'green';
+      case MEDIA_SERVER_STATUS_CREATE:
+        return 'info';
+      case MEDIA_SERVER_STATUS_BEGINNING:
+        return 'info';
+      case MEDIA_SERVER_STATUS_RUNNING:
+        return 'success';
+      case MEDIA_SERVER_STATUS_ENDING:
+        return 'info';
+      case MEDIA_SERVER_STATUS_RESTARTING:
+        return 'info';
+      case MEDIA_SERVER_STATUS_PAUSED:
+        return 'info';
+      case MEDIA_SERVER_STATUS_EXITED:
+        return 'grey';
+      case MEDIA_SERVER_STATUS_DEAD:
+        return 'error';
       default:
         return 'grey';
     }
@@ -278,10 +308,22 @@ export default class MainVmsDevices extends VueBase {
       return this.$t('status.undefined').toString();
     }
     switch (item.server_status) {
-      case VMS_SERVER_STATUS_UNKNOWN:
-        return this.$t('status.abnormal').toString();
-      case VMS_SERVER_STATUS_NORMAL:
-        return this.$t('status.normal').toString();
+      case MEDIA_SERVER_STATUS_CREATE:
+        return this.$t('status.create').toString();
+      case MEDIA_SERVER_STATUS_BEGINNING:
+        return this.$t('status.beginning').toString();
+      case MEDIA_SERVER_STATUS_RUNNING:
+        return this.$t('status.running').toString();
+      case MEDIA_SERVER_STATUS_ENDING:
+        return this.$t('status.ending').toString();
+      case MEDIA_SERVER_STATUS_RESTARTING:
+        return this.$t('status.restarting').toString();
+      case MEDIA_SERVER_STATUS_PAUSED:
+        return this.$t('status.paused').toString();
+      case MEDIA_SERVER_STATUS_EXITED:
+        return this.$t('status.exited').toString();
+      case MEDIA_SERVER_STATUS_DEAD:
+        return this.$t('status.dead').toString();
       default:
         return this.$t('status.unknown').toString();
     }
