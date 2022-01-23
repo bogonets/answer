@@ -73,6 +73,10 @@ class DaemonClient:
     def __str__(self) -> str:
         return f"DaemonClient<{self._address}>"
 
+    @property
+    def address(self) -> str:
+        return self._address
+
     def is_open(self) -> bool:
         return self._channel is not None
 
