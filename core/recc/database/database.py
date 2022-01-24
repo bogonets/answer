@@ -15,7 +15,7 @@ from recc.database.postgresql.pg_common import PgCommon
 
 
 def create_database(
-    db_type: Union[str, DatabaseTypeLiteral],
+    db_type: Optional[Union[str, DatabaseTypeLiteral]] = None,
     host: Optional[str] = None,
     port: Optional[int] = None,
     user: Optional[str] = None,
@@ -35,7 +35,7 @@ def create_database(
 
 
 def create_common_database(
-    db_type: Union[str, DatabaseTypeLiteral],
+    db_type: Optional[Union[str, DatabaseTypeLiteral]] = None,
     host: Optional[str] = None,
     port: Optional[int] = None,
     user: Optional[str] = None,
