@@ -2,9 +2,10 @@
 
 import os
 import sys
-import logging
+from logging import root, getLogger, Logger, Formatter, StreamHandler
+from logging import CRITICAL, FATAL, ERROR, WARNING, WARN, INFO, DEBUG, NOTSET
 from logging import config as logging_config
-from typing import Union, Final, Literal
+from typing import Union, Final, Literal, List
 
 LOGGER_NAME_RECC = "recc"
 LOGGER_NAME_CORE_RECC = "recc.core"
@@ -25,17 +26,17 @@ LOGGER_NAME_ELASTICSEARCH = "elasticsearch"
 LOGGER_NAME_GRPC = "grpc"
 LOGGER_NAME_URLLIB3 = "urllib3"
 
-recc_logger = logging.getLogger(LOGGER_NAME_RECC)
-recc_core_logger = logging.getLogger(LOGGER_NAME_CORE_RECC)
-recc_http_logger = logging.getLogger(LOGGER_NAME_RECC_HTTP)
-recc_rpc_logger = logging.getLogger(LOGGER_NAME_RECC_RPC)
-recc_daemon_logger = logging.getLogger(LOGGER_NAME_DAEMON_RPC)
-recc_container_logger = logging.getLogger(LOGGER_NAME_RECC_CONTAINER)
-recc_cache_logger = logging.getLogger(LOGGER_NAME_RECC_CACHE)
-recc_database_logger = logging.getLogger(LOGGER_NAME_RECC_DATABASE)
-recc_common_logger = logging.getLogger(LOGGER_NAME_RECC_COMMON)
-recc_lamda_logger = logging.getLogger(LOGGER_NAME_RECC_LAMDA)
-recc_network_logger = logging.getLogger(LOGGER_NAME_RECC_NETWORK)
+recc_logger = getLogger(LOGGER_NAME_RECC)
+recc_core_logger = getLogger(LOGGER_NAME_CORE_RECC)
+recc_http_logger = getLogger(LOGGER_NAME_RECC_HTTP)
+recc_rpc_logger = getLogger(LOGGER_NAME_RECC_RPC)
+recc_daemon_logger = getLogger(LOGGER_NAME_DAEMON_RPC)
+recc_container_logger = getLogger(LOGGER_NAME_RECC_CONTAINER)
+recc_cache_logger = getLogger(LOGGER_NAME_RECC_CACHE)
+recc_database_logger = getLogger(LOGGER_NAME_RECC_DATABASE)
+recc_common_logger = getLogger(LOGGER_NAME_RECC_COMMON)
+recc_lamda_logger = getLogger(LOGGER_NAME_RECC_LAMDA)
+recc_network_logger = getLogger(LOGGER_NAME_RECC_NETWORK)
 
 SEVERITY_NAME_CRITICAL = "critical"
 SEVERITY_NAME_FATAL = "fatal"
@@ -53,27 +54,31 @@ DEFAULT_SIMPLE_LOGGING_FORMAT: Final[str] = "{levelname[0]} [{name}] {message}"
 DEFAULT_SIMPLE_LOGGING_STYLE: Final[LoggingStyleLiteral] = "{"
 
 
+def all_loggers() -> List[Logger]:
+    return [getLogger(name) for name in root.manager.loggerDict]
+
+
 def convert_level_number(level: Union[str, int]) -> int:
     if isinstance(level, str):
         ll = level.lower()
         if ll == SEVERITY_NAME_CRITICAL:
-            return logging.CRITICAL
+            return CRITICAL
         elif ll == SEVERITY_NAME_FATAL:
-            return logging.FATAL
+            return FATAL
         elif ll == SEVERITY_NAME_ERROR:
-            return logging.ERROR
+            return ERROR
         elif ll == SEVERITY_NAME_WARNING:
-            return logging.WARNING
+            return WARNING
         elif ll == SEVERITY_NAME_WARN:
-            return logging.WARN
+            return WARN
         elif ll == SEVERITY_NAME_INFO:
-            return logging.INFO
+            return INFO
         elif ll == SEVERITY_NAME_DEBUG:
-            return logging.DEBUG
+            return DEBUG
         elif ll == SEVERITY_NAME_NOTSET:
-            return logging.NOTSET
+            return NOTSET
         elif ll == SEVERITY_NAME_OFF:
-            return logging.CRITICAL + 100
+            return CRITICAL + 100
         else:
             try:
                 return int(ll)
@@ -89,35 +94,35 @@ def convert_printable_level(level: Union[str, int]) -> str:
     if isinstance(level, str):
         return level
     if isinstance(level, int):
-        if level > logging.CRITICAL:
+        if level > CRITICAL:
             return "OverCritical"
-        if level == logging.CRITICAL:
+        if level == CRITICAL:
             return "Critical"
-        if level > logging.ERROR:
+        if level > ERROR:
             return "OverError"
-        if level == logging.ERROR:
+        if level == ERROR:
             return "Error"
-        if level > logging.WARNING:
+        if level > WARNING:
             return "OverWarning"
-        if level == logging.WARNING:
+        if level == WARNING:
             return "Warning"
-        if level > logging.INFO:
+        if level > INFO:
             return "OverInfo"
-        if level == logging.INFO:
+        if level == INFO:
             return "Info"
-        if level > logging.DEBUG:
+        if level > DEBUG:
             return "OverDebug"
-        if level == logging.DEBUG:
+        if level == DEBUG:
             return "Debug"
-        if level > logging.NOTSET:
+        if level > NOTSET:
             return "OverNotSet"
-        if level == logging.NOTSET:
+        if level == NOTSET:
             return "NotSet"
     return str(level)
 
 
 def set_root_level(level: Union[str, int]) -> None:
-    logging.getLogger().setLevel(convert_level_number(level))
+    getLogger().setLevel(convert_level_number(level))
 
 
 def set_basic_config(config_file: str) -> None:
@@ -139,7 +144,7 @@ def set_basic_config(config_file: str) -> None:
 
 
 def get_root_level() -> int:
-    return logging.getLogger().level
+    return getLogger().level
 
 
 _FMT_TIME = "%(asctime)s.%(msecs)03d"
@@ -229,12 +234,12 @@ def set_default_logging_config() -> None:
 
 
 def set_simple_logging_config() -> None:
-    simple_formatter = logging.Formatter(
+    simple_formatter = Formatter(
         fmt=DEFAULT_SIMPLE_LOGGING_FORMAT,
         style=DEFAULT_SIMPLE_LOGGING_STYLE,
     )
-    stream_handler = logging.StreamHandler(sys.stdout)
+    stream_handler = StreamHandler(sys.stdout)
     stream_handler.setFormatter(simple_formatter)
-    root_logger = logging.getLogger()
+    root_logger = getLogger()
     root_logger.addHandler(stream_handler)
-    root_logger.setLevel(logging.DEBUG)
+    root_logger.setLevel(DEBUG)

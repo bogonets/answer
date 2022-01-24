@@ -6,6 +6,7 @@ from recc.variables.database import (
     DB_TYPE_NAME_MYSQL,
     DB_TYPE_NAME_POSTGRES,
     DB_TYPE_NAME_SQLITE,
+    DEFAULT_DATABASE_TYPE,
 )
 from recc.database.interfaces.db_base import DbBase
 from recc.database.interfaces.db_interface import DbInterface
@@ -22,11 +23,12 @@ def create_database(
     name: Optional[str] = None,
     timeout: Optional[float] = None,
 ) -> DbInterface:
-    if db_type == DB_TYPE_NAME_MYSQL:
+    t = db_type if db_type else DEFAULT_DATABASE_TYPE
+    if t == DB_TYPE_NAME_MYSQL:
         raise NotImplementedError("MySQL database type is not supported.")
-    elif db_type == DB_TYPE_NAME_SQLITE:
+    elif t == DB_TYPE_NAME_SQLITE:
         raise NotImplementedError("SQLite database type is not supported.")
-    elif db_type == DB_TYPE_NAME_POSTGRES:
+    elif t == DB_TYPE_NAME_POSTGRES:
         return PgDb(host, port, user, pw, name, timeout)
     else:
         raise ValueError(f"Unknown database type: {db_type}")
@@ -41,11 +43,12 @@ def create_common_database(
     name: Optional[str] = None,
     timeout: Optional[float] = None,
 ) -> DbBase:
-    if db_type == DB_TYPE_NAME_MYSQL:
+    t = db_type if db_type else DEFAULT_DATABASE_TYPE
+    if t == DB_TYPE_NAME_MYSQL:
         raise NotImplementedError("MySQL database type is not supported.")
-    elif db_type == DB_TYPE_NAME_SQLITE:
+    elif t == DB_TYPE_NAME_SQLITE:
         raise NotImplementedError("SQLite database type is not supported.")
-    elif db_type == DB_TYPE_NAME_POSTGRES:
+    elif t == DB_TYPE_NAME_POSTGRES:
         return PgCommon(host, port, user, pw, name, timeout)
     else:
         raise ValueError(f"Unknown database type: {db_type}")

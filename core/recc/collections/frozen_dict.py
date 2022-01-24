@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from typing import TypeVar, Dict
 from collections.abc import Mapping
 
-KT = TypeVar("KT")
-VT = TypeVar("VT")
 
-
-class FrozenDict(Mapping[KT, VT]):
+class FrozenDict(Mapping):
     def __init__(self, *args, **kwargs):
-        self._dict: Dict[KT, VT] = dict(*args, **kwargs)
-        self._hash = None
+        self._dict = dict(*args, **kwargs)
 
     def __iter__(self):
         return self._dict.__iter__()
