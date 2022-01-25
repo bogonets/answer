@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from recc.log.logging import recc_common_logger as logger
+from recc.logging.logging import recc_common_logger as logger
 from recc.storage.mixin.storage_base import StorageBaseMixin
 from recc.storage.mixin.storage_template_manager import StorageTemplateManagerMixin
 from recc.storage.sock.sock_path import get_socket_url

@@ -9,7 +9,7 @@ from grpc.aio import ServicerContext
 from recc.argparse.config.task_config import TaskConfig
 from recc.argparse.default_namespace import get_default_task_config
 from recc.argparse.injection_values import injection_task_default_values
-from recc.log.logging import recc_rpc_logger as logger
+from recc.logging.logging import recc_rpc_logger as logger
 from recc.storage.task_workspace import TaskWorkspace
 from recc.system.user import get_user_id
 from recc.system.group import get_group_id

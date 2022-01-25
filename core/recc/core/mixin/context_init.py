@@ -22,7 +22,7 @@ from recc.database.database import create_database
 from recc.storage.core_storage import CoreStorage
 from recc.task.task_connection_pool import create_task_connection_pool
 from recc.resource.port_manager import PortManager
-from recc.log.logging import recc_core_logger as logger
+from recc.logging.logging import recc_core_logger as logger
 from recc.plugin.plugin_manager import PluginManager
 from recc.daemon.daemon_manager import DaemonManager
 from recc.session.session import (

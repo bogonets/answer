@@ -3,7 +3,7 @@
 from typing import Optional
 from functools import reduce
 from overrides import overrides
-from recc.log.logging import recc_database_logger as logger
+from recc.logging.logging import recc_database_logger as logger
 from recc.database.interfaces.db_interface import DbInterface
 from recc.database.postgresql.mixin._pg_base import PgBase  # noqa
 from recc.database.postgresql.mixin.pg_daemon import PgDaemon

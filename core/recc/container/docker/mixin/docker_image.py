@@ -4,7 +4,7 @@ from typing import Optional, List, Dict, Any
 from io import BytesIO, StringIO
 from overrides import overrides
 from docker.models.images import Image
-from recc.log.logging import recc_container_logger as logger
+from recc.logging.logging import recc_container_logger as logger
 from recc.container.interfaces.container_image import ContainerImage
 from recc.container.docker.mixin.docker_base import DockerBase
 from recc.container.struct.image_info import ImageInfo

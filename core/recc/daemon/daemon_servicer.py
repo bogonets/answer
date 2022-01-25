@@ -11,7 +11,7 @@ from grpc.aio import ServicerContext
 from recc.aio.connection import try_connection
 from recc.argparse.config.daemon_config import DaemonConfig
 from recc.plugin.plugin import Plugin
-from recc.log.logging import recc_daemon_logger as logger
+from recc.logging.logging import recc_daemon_logger as logger
 from recc.network.uds import is_uds_family
 from recc.inspect.type_origin import get_type_origin
 from recc.conversion.boolean import str_to_bool

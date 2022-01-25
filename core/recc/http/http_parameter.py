@@ -19,7 +19,7 @@ from recc.chrono.datetime import today
 from recc.inspect.type_origin import get_type_origin
 from recc.session.session import Session
 from recc.session.session_ex import SessionEx
-from recc.log.logging import recc_http_logger as logger
+from recc.logging.logging import recc_http_logger as logger
 from recc.serialization.serialize import serialize_default
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.header.bearer_auth import BearerAuth

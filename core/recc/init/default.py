@@ -8,8 +8,8 @@ from recc.argparse.config.global_config import (
     YAML_DRIVER_PYYAML,
 )
 from recc.file.permission import is_readable_file
-from recc.log.logging import recc_common_logger as logger
-from recc.log.logging import (
+from recc.logging.logging import recc_common_logger as logger
+from recc.logging.logging import (
     set_basic_config,
     set_root_level,
     convert_printable_level,

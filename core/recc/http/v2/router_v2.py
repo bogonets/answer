@@ -9,7 +9,7 @@ from aiohttp.web_exceptions import (
     HTTPForbidden,
     HTTPServiceUnavailable,
 )
-from recc.log.logging import recc_http_logger as logger
+from recc.logging.logging import recc_http_logger as logger
 from recc.core.context import Context
 from recc.session.session_ex import SessionEx
 from recc.http.v2.router_v2_public import RouterV2Public

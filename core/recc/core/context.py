@@ -3,7 +3,7 @@
 from asyncio import AbstractEventLoop
 from typing import Optional
 from recc.argparse.config.core_config import CoreConfig
-from recc.log.logging import recc_core_logger as logger
+from recc.logging.logging import recc_core_logger as logger
 from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
 from recc.core.mixin.context_config import ContextConfig
 from recc.core.mixin.context_daemon import ContextDaemon

@@ -15,7 +15,7 @@ formatters:
 
   color:
     <<: *default_formatter
-    class: recc.log.colored_formatter.ColoredFormatter
+    class: recc.logging.colored_formatter.ColoredFormatter
 
 handlers:
   stream_stdout: &stream_stdout_handler

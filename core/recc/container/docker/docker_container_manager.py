@@ -6,7 +6,7 @@ from typing import Optional, List, Dict, Any
 from enum import Enum
 from docker import DockerClient
 from overrides import overrides
-from recc.log.logging import recc_container_logger as logger
+from recc.logging.logging import recc_container_logger as logger
 from recc.rule.naming_base import valid_naming
 from recc.rule.naming_task import (
     naming_task,

@@ -5,7 +5,7 @@ from pathlib import Path
 from hashlib import sha256
 from asyncio import AbstractEventLoop, get_event_loop, run_coroutine_threadsafe
 
-from recc.log.logging import recc_daemon_logger as logger
+from recc.logging.logging import recc_daemon_logger as logger
 from recc.network.uds import is_uds_family
 from recc.subprocess.async_subprocess import AsyncSubprocess
 from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess

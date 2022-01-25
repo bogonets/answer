@@ -5,7 +5,7 @@ from aiohttp import web
 from recc.core.context import Context
 from aiohttp.web_request import Request
 from aiohttp.web_routedef import AbstractRouteDef
-from recc.log.logging import recc_http_logger as logger
+from recc.logging.logging import recc_http_logger as logger
 from recc.http.v1.common import (
     PATH_PREFIX_EXTRA_AIRJOY,
     no_name,

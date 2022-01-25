@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Dict, Optional, Any
 from asyncio import TimeoutError as AsyncioTimeoutError
 from asyncio import AbstractEventLoop, wait_for
-from recc.log.logging import recc_daemon_logger as logger
+from recc.logging.logging import recc_daemon_logger as logger
 from recc.database.interfaces.db_interface import DbInterface
 from recc.daemon.daemon_runner import DaemonRunner
 from recc.daemon.daemon_client import DaemonClient

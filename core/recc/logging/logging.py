@@ -173,7 +173,7 @@ _DEFAULT_LOGGING_CONFIG = {
             "style": SIMPLE_STYLE,
         },
         "color": {
-            "class": "recc.log.colored_formatter.ColoredFormatter",
+            "class": "recc.logging.colored_formatter.ColoredFormatter",
             "format": DEFAULT_FORMAT,
             "datefmt": DEFAULT_DATEFMT,
             "style": DEFAULT_STYLE,

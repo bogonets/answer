@@ -13,7 +13,7 @@ from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.role import RoleA, CreateRoleQ, UpdateRoleQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.system import SystemOverviewA
-from recc.log.logging import get_root_level
+from recc.logging.logging import get_root_level
 from recc.variables.database import (
     PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
     PERMISSION_SLUG_RECC_DOMAIN_SETTING_EDIT,

@@ -5,7 +5,7 @@ from typing import Final, Union
 from recc.argparse.command import Command
 from recc.argparse.argument import Argument
 from recc.argparse.shortcut import Shortcut
-from recc.log.logging import (
+from recc.logging.logging import (
     SEVERITY_NAME_CRITICAL,
     SEVERITY_NAME_ERROR,
     SEVERITY_NAME_WARNING,

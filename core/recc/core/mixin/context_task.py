@@ -13,7 +13,7 @@ from recc.container.struct.port_binding_guest import PortBindingGuest
 from recc.core.mixin.context_base import ContextBase
 from recc.rule.naming_base import valid_naming
 from recc.rule.naming_task import naming_task
-from recc.log.logging import recc_core_logger as logger
+from recc.logging.logging import recc_core_logger as logger
 from recc.rpc.rpc_client import (
     heartbeat,
     RpcClient,

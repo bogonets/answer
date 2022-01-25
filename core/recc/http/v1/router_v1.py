@@ -31,7 +31,7 @@ from recc.http.v1.common import (
     response_error,
     response_ok_without_detail,
 )
-from recc.log.logging import recc_http_logger as logger
+from recc.logging.logging import recc_http_logger as logger
 from recc.session.session import Session
 from recc.database.struct.project import Project
 from recc.database.struct.layout import Layout

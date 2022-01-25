@@ -13,7 +13,7 @@ from recc.init.default import (
     init_yaml_driver,
     init_loop_driver,
 )
-from recc.log.logging import recc_rpc_logger as logger
+from recc.logging.logging import recc_rpc_logger as logger
 from recc.proto.rpc.rpc_api_pb2_grpc import add_RpcApiServicer_to_server
 from recc.network.uds import is_uds_family
 from recc.rpc.rpc_client import heartbeat

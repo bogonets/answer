@@ -11,7 +11,7 @@ from socket import (
     SO_REUSEPORT,
 )
 
-from recc.log.logging import recc_network_logger as logger
+from recc.logging.logging import recc_network_logger as logger
 from recc.network.address_family import get_ip_address_family
 
 

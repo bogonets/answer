@@ -5,8 +5,8 @@ from recc.core.mixin.context_base import ContextBase
 from recc.event.watcher_container import WatcherContainer
 from recc.packet.config import ConfigA
 from recc.argparse.config.core_config import CoreConfig
-from recc.log.logging import recc_core_logger as logger
-from recc.log.logging import set_root_level
+from recc.logging.logging import recc_core_logger as logger
+from recc.logging.logging import set_root_level
 from recc.argparse.parser.env_parse import get_filtered_namespace
 from recc.variables.database import CONFIG_PREFIX_RECC_ARGPARSE_CONFIG
 

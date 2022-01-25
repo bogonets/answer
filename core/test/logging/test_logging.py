@@ -2,7 +2,7 @@
 
 import unittest
 from logging import DEBUG, INFO, WARNING
-from recc.log.logging import recc_core_logger, recc_http_logger, recc_rpc_logger
+from recc.logging.logging import recc_core_logger, recc_http_logger, recc_rpc_logger
 
 
 class LoggingTestCase(unittest.TestCase):
