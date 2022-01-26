@@ -39,3 +39,9 @@ export class InaccessibleAreaException extends Error {
     super(message);
   }
 }
+
+export class UnsupportedException extends Error {
+  constructor(message?: string) {
+    super(message);
+  }
+}
