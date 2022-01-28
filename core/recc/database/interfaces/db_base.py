@@ -1,97 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from abc import ABCMeta, abstractmethod
-from typing import Optional, Any, TypeVar, Type, List
+from abc import ABCMeta
+from typing import Optional
+from recc.database.interfaces.db_base_interface import DbBaseInterface
+from recc.database.query_utils import merge_queries
 
-RecordType = TypeVar("RecordType")
-ColumnType = TypeVar("ColumnType")
 
-
-class DbBase(metaclass=ABCMeta):
-    """
-    Database base interface.
-    """
-
-    @abstractmethod
-    def is_open(self) -> bool:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def open(self) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def close(self) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def drop_database(self) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def execute(
+class DbBase(DbBaseInterface, metaclass=ABCMeta):
+    async def executes(
         self,
-        query: str,
-        *args,
+        *queries: str,
         timeout: Optional[float] = None,
-    ) -> Any:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def fetch_rows(
-        self,
-        query: str,
-        *args,
-        timeout: Optional[float] = None,
-    ) -> Any:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def fetch_first_row(
-        self,
-        query: str,
-        *args,
-        timeout: Optional[float] = None,
-    ) -> Any:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def fetch_first_row_column(
-        self,
-        query: str,
-        *args,
-        column=0,
-        timeout: Optional[float] = None,
-    ) -> Any:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def rows(
-        self,
-        cls: Type[RecordType],
-        query: str,
-        *args,
-        timeout: Optional[float] = None,
-    ) -> List[RecordType]:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def row(
-        self,
-        cls: Type[RecordType],
-        query: str,
-        *args,
-        timeout: Optional[float] = None,
-    ) -> RecordType:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def column(
-        self,
-        cls: Type[ColumnType],
-        query: str,
-        *args,
-        column=0,
-        timeout: Optional[float] = None,
-    ) -> ColumnType:
-        raise NotImplementedError
+    ) -> None:
+        merged_single_query = merge_queries(*queries)
+        await self.execute(merged_single_query, timeout=timeout)

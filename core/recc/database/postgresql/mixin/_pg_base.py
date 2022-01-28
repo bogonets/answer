@@ -7,7 +7,8 @@ from asyncpg.pool import Pool, PoolAcquireContext
 from asyncpg.connection import Connection
 from asyncpg.protocol import Record
 from recc.driver.json import global_json_encoder, global_json_decoder
-from recc.database.interfaces.db_base import RecordType, ColumnType, DbBase
+from recc.database.interfaces.db_base_interface import RecordType, ColumnType
+from recc.database.interfaces.db_base import DbBase
 
 _DEFAULT_TEMPLATE_DATABASE = "template1"
 
