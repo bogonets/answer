@@ -2,10 +2,10 @@
 
 import os
 import sys
+from typing import Union, Final, Literal, List, Optional
 from logging import root, getLogger, Logger, Formatter, StreamHandler
 from logging import CRITICAL, FATAL, ERROR, WARNING, WARN, INFO, DEBUG, NOTSET
 from logging import config as logging_config
-from typing import Union, Final, Literal, List
 
 LOGGER_NAME_RECC = "recc"
 LOGGER_NAME_CORE_RECC = "recc.core"
@@ -58,7 +58,21 @@ def all_loggers() -> List[Logger]:
     return [getLogger(name) for name in root.manager.loggerDict]
 
 
-def convert_level_number(level: Union[str, int]) -> int:
+def get_logger(logger: Optional[Union[str, Logger]] = None) -> Logger:
+    if logger is None:
+        return recc_logger
+    if isinstance(logger, str):
+        return getLogger(logger)
+    elif isinstance(logger, Logger):
+        return logger
+    else:
+        raise TypeError(f"Unsupported logger type: {type(logger).__name__}")
+
+
+def convert_level_number(level: Optional[Union[str, int]] = None) -> int:
+    if level is None:
+        return DEBUG
+
     if isinstance(level, str):
         ll = level.lower()
         if ll == SEVERITY_NAME_CRITICAL:

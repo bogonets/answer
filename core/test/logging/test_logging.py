@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+from unittest import TestCase, main
 from logging import DEBUG, INFO, WARNING
 from recc.logging.logging import recc_core_logger, recc_http_logger, recc_rpc_logger
 
 
-class LoggingTestCase(unittest.TestCase):
+class LoggingTestCase(TestCase):
     def test_logging(self):
         recc_core_logger.setLevel("DEBUG")
         recc_http_logger.setLevel("INFO")
@@ -35,4 +35,4 @@ class LoggingTestCase(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()
