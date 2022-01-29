@@ -1,6 +1,15 @@
 <template>
   <div :style="hlsPlayerStyle">
-    <video ref="video"></video>
+    <video
+        ref="hls-video"
+        autoplay
+        muted
+        playsinline
+        preload="auto"
+        @pause="onPause"
+        @play="onPlay"
+        @resize="onResize"
+    ></video>
   </div>
 </template>
 
@@ -18,6 +27,15 @@ export default class HlsPlayer extends VueBase {
 
   @Prop({type: Object, default: () => new Object()})
   readonly options!: HlsConfig;
+
+  @Prop({type: String, default: ''})
+  readonly group!: string;
+
+  @Prop({type: String, default: ''})
+  readonly project!: string;
+
+  @Prop({type: [String, Number]})
+  readonly device?: string | number;
 
   @Prop({type: [String, Number]})
   readonly width?: string | number;
@@ -40,13 +58,21 @@ export default class HlsPlayer extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly disableAspectRatio!: boolean;
 
-  @Ref()
-  video!: HTMLVideoElement;
+  @Ref('hls-video')
+  hlsVideo!: HTMLVideoElement;
 
   hls?: Hls;
 
+  paused = true;
+  videoWidth = 0;
+  videoHeight = 0;
+
   mounted() {
     this.updateHls(this.src, this.options);
+  }
+
+  beforeDestroy() {
+    this.close();
   }
 
   get hlsPlayerStyle() {
@@ -69,9 +95,9 @@ export default class HlsPlayer extends VueBase {
     if (typeof this.maxHeight !== 'undefined') {
       style += `max-height: ${this.maxHeight};`;
     }
-    // if (!this.disableAspectRatio && this.videoWidth && this.videoHeight) {
-    //   style += `aspect-ratio: ${this.videoWidth}/${this.videoHeight};`;
-    // }
+    if (!this.disableAspectRatio && this.videoWidth && this.videoHeight) {
+      style += `aspect-ratio: ${this.videoWidth}/${this.videoHeight};`;
+    }
     return style;
   }
 
@@ -94,12 +120,53 @@ export default class HlsPlayer extends VueBase {
     try {
       const hls = new Hls(options);
       hls.loadSource(src);
-      hls.attachMedia(this.video);
+      hls.attachMedia(this.hlsVideo);
       this.hls = hls;
     } catch (error) {
       this.hls = undefined;
       console.error(error);
     }
   }
+
+  close() {
+    if (this.hls) {
+      this.hls.destroy();
+      this.hls = undefined;
+    }
+  }
+
+  get deviceNumber() {
+    if (typeof this.device === 'undefined') {
+      return 0;
+    } else if (typeof this.device === 'string') {
+      return Number.parseInt(this.device);
+    } else {
+      return this.device;
+    }
+  }
+
+  get deviceText() {
+    if (typeof this.device === 'undefined') {
+      return '';
+    } else if (typeof this.device === 'string') {
+      return this.device;
+    } else {
+      return this.device.toString();
+    }
+  }
+
+  onPause() {
+    this.paused = true;
+  }
+
+  onPlay() {
+    this.paused = false;
+  }
+
+  onResize() {
+    this.videoWidth = this.hlsVideo.videoWidth;
+    this.videoHeight = this.hlsVideo.videoHeight;
+  }
+
 }
 </script>

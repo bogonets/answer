@@ -1357,4 +1357,16 @@ export default class ApiV2 {
         const url = `/plugins/vms/${group}/${project}/onvif/media/snapshot`;
         return this.post<VmsOnvifMediaSnapshotA>(url, body);
     }
+
+    // ------------------
+    // Plugins/VMS/Record
+    // ------------------
+
+    urlVmsRecords(
+        group: string,
+        project: string,
+        device: string,
+    ) {
+        return this.baseURL + `/plugins/vms/${group}/${project}/records/${device}`;
+    }
 }

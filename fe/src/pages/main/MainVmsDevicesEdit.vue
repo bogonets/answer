@@ -38,7 +38,7 @@ ko:
     <v-tabs v-model="tabIndex">
       <v-tab>{{ $t('tab.info') }}</v-tab>
       <v-tab>{{ $t('tab.live') }}</v-tab>
-      <v-tab v-show="false">{{ $t('tab.record') }}</v-tab>
+      <v-tab>{{ $t('tab.record') }}</v-tab>
       <v-tab>{{ $t('tab.event') }}</v-tab>
     </v-tabs>
     <v-divider></v-divider>
@@ -62,7 +62,7 @@ ko:
       </v-tab-item>
 
       <v-tab-item>
-        <!-- To release MediaPlayer memory, `v-if` must be used. -->
+        <!-- [IMPORTANT] To release MediaPlayer memory, `v-if` must be used. -->
         <media-player
             v-if="tabIndex === 1"
             hover-system-bar
@@ -75,7 +75,12 @@ ko:
       </v-tab-item>
 
       <v-tab-item>
-        <!-- TODO: Record Tab -->
+        <form-vms-record
+            v-if="tabIndex === 2"
+            :group="$route.params.group"
+            :project="$route.params.project"
+            :device="$route.params.device"
+        ></form-vms-record>
       </v-tab-item>
 
       <v-tab-item>
@@ -125,6 +130,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import MediaPlayer from '@/media/MediaPlayer.vue';
 import FormVmsDevice from '@/components/FormVmsDevice.vue';
+import FormVmsRecord from '@/components/FormVmsRecord.vue';
 import TableVmsEventConfigs from '@/components/TableVmsEventConfigs.vue';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import type {
@@ -140,6 +146,7 @@ import * as _ from 'lodash';
     ToolbarBreadcrumbs,
     MediaPlayer,
     FormVmsDevice,
+    FormVmsRecord,
     TableVmsEventConfigs,
   }
 })
