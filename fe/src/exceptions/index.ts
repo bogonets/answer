@@ -45,3 +45,9 @@ export class UnsupportedException extends Error {
     super(message);
   }
 }
+
+export class InvalidRangeException extends Error {
+  constructor(message?: string) {
+    super(message);
+  }
+}

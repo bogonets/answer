@@ -1362,6 +1362,15 @@ export default class ApiV2 {
     // Plugins/VMS/Record
     // ------------------
 
+    getVmsRecordsPdeviceDates(
+        group: string,
+        project: string,
+        device: string,
+    ) {
+        const url = `/plugins/vms/${group}/${project}/records/${device}/dates`;
+        return this.get<Array<string>>(url);
+    }
+
     urlVmsRecords(
         group: string,
         project: string,

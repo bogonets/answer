@@ -1,26 +1,110 @@
+<i18n lang="yaml">
+en:
+  hints:
+    logo_alt: "Answer"
+  tooltips:
+    latest_event_time: "Latest event time: {0}"
+
+ko:
+  hints:
+    logo_alt: "Answer"
+  tooltips:
+    latest_event_time: "마지막 이벤트 발생 시간: {0}"
+</i18n>
+
 <template>
-  <div :style="hlsPlayerStyle">
-    <video
-        ref="hls-video"
-        autoplay
-        muted
-        playsinline
-        preload="auto"
-        @pause="onPause"
-        @play="onPlay"
-        @resize="onResize"
-    ></video>
-  </div>
+  <v-hover v-slot="{ hover }">
+    <div
+        class="hls-player"
+        ref="hls-player"
+        @contextmenu="contextmenu"
+        :style="hlsPlayerStyle"
+    >
+      <v-sheet
+          v-if="showInformationPanel && online"
+          rounded
+          class="information-panel"
+          transition="slide-x-transition"
+          :style="`top: ${getInfoPanelTop(hover)};`"
+      >
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon small :color="informationIconColor">
+              {{ informationIcon }}
+            </v-icon>
+            <div v-bind="attrs" v-on="on">
+              <span class="ml-1 text--secondary text-body-2">
+                {{ informationText }}
+              </span>
+            </div>
+          </template>
+          <span>
+            {{ $t('tooltips.latest_event_time', [informationDate]) }}
+          </span>
+        </v-tooltip>
+      </v-sheet>
+
+      <div class="hls-placeholder">
+        <canvas
+            v-show="!hideCanvasUser"
+            class="canvas-user"
+            ref="canvas-user"
+            :width="videoWidth"
+            :height="videoHeight"
+        ></canvas>
+        <canvas
+            v-show="!hideCanvasMeta"
+            class="canvas-meta"
+            ref="canvas-meta"
+            :width="videoWidth"
+            :height="videoHeight"
+        ></canvas>
+
+        <video
+            v-show="online"
+            ref="hls-player"
+            autoplay
+            muted
+            playsinline
+            preload="auto"
+            @pause="onPause"
+            @play="onPlay"
+            @resize="onResize"
+        ></video>
+      </div>
+
+      <div v-show="!online" class="brand-logo-container">
+        <img
+            class="brand-logo"
+            src="@/assets/logo/answer-logo-notext.svg"
+            :alt="$t('hints.logo_alt')"
+        />
+      </div>
+    </div>
+  </v-hover>
 </template>
 
 <script lang="ts">
-import {Component, Prop, Ref, Watch} from 'vue-property-decorator';
+import {Component, Emit, Prop, Ref, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import RecordController from '@/media/RecordController.vue';
 import {UnsupportedException} from '@/exceptions';
+import colors from 'vuetify/lib/util/colors'
 import Hls from 'hls.js';
 import type {HlsConfig} from 'hls.js';
+import {
+  VMS_CHANNEL_META_CODE_BAD_ARGUMENT,
+  VMS_CHANNEL_META_CODE_FILTERED,
+  VMS_CHANNEL_META_CODE_NOT_READY_ROI,
+  VMS_CHANNEL_META_CODE_OPENED,
+  VMS_CHANNEL_META_CODE_SUCCESS
+} from '@/packet/vms';
 
-@Component
+@Component({
+  components: {
+    RecordController,
+  },
+})
 export default class HlsPlayer extends VueBase {
   @Prop({type: String, default: ''})
   readonly src!: string;
@@ -36,6 +120,12 @@ export default class HlsPlayer extends VueBase {
 
   @Prop({type: [String, Number]})
   readonly device?: string | number;
+
+  @Prop({type: Boolean, default: false})
+  readonly hideCanvasUser!: boolean;
+
+  @Prop({type: Boolean, default: false})
+  readonly hideCanvasMeta!: boolean;
 
   @Prop({type: [String, Number]})
   readonly width?: string | number;
@@ -58,14 +148,20 @@ export default class HlsPlayer extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly disableAspectRatio!: boolean;
 
-  @Ref('hls-video')
-  hlsVideo!: HTMLVideoElement;
+  @Ref('hls-player')
+  hlsPlayer!: HTMLVideoElement;
 
   hls?: Hls;
 
+  online = false;
   paused = true;
   videoWidth = 0;
   videoHeight = 0;
+
+  showInformationPanel = true;
+  informationCode = VMS_CHANNEL_META_CODE_SUCCESS;
+  informationText = '';
+  informationDate = '';
 
   mounted() {
     this.updateHls(this.src, this.options);
@@ -120,7 +216,7 @@ export default class HlsPlayer extends VueBase {
     try {
       const hls = new Hls(options);
       hls.loadSource(src);
-      hls.attachMedia(this.hlsVideo);
+      hls.attachMedia(this.hlsPlayer);
       this.hls = hls;
     } catch (error) {
       this.hls = undefined;
@@ -155,6 +251,44 @@ export default class HlsPlayer extends VueBase {
     }
   }
 
+  get informationIconColor() {
+    switch (this.informationCode) {
+      case VMS_CHANNEL_META_CODE_SUCCESS:
+        return this.$vuetify.theme.currentTheme.secondary;
+      case VMS_CHANNEL_META_CODE_OPENED:
+        return this.$vuetify.theme.currentTheme.secondary;
+      case VMS_CHANNEL_META_CODE_FILTERED:
+        return this.$vuetify.theme.currentTheme.secondary;
+      case VMS_CHANNEL_META_CODE_NOT_READY_ROI:
+        return colors.deepOrange.base;
+      case VMS_CHANNEL_META_CODE_BAD_ARGUMENT:
+        return colors.deepOrange.base;
+      default:
+        return colors.red.base;
+    }
+  }
+
+  get informationIcon() {
+    switch (this.informationCode) {
+      case VMS_CHANNEL_META_CODE_SUCCESS:
+        return 'mdi-chat-processing-outline';
+      case VMS_CHANNEL_META_CODE_OPENED:
+        return 'mdi-chat-outline';
+      case VMS_CHANNEL_META_CODE_FILTERED:
+        return 'mdi-chat-outline';
+      case VMS_CHANNEL_META_CODE_NOT_READY_ROI:
+        return 'mdi-alert-octagram-outline';
+      case VMS_CHANNEL_META_CODE_BAD_ARGUMENT:
+        return 'mdi-alert-octagram-outline';
+      default:
+        return 'mdi-help-circle-outline';
+    }
+  }
+
+  getInfoPanelTop(hover: boolean) {
+    return 0;
+  }
+
   onPause() {
     this.paused = true;
   }
@@ -164,9 +298,116 @@ export default class HlsPlayer extends VueBase {
   }
 
   onResize() {
-    this.videoWidth = this.hlsVideo.videoWidth;
-    this.videoHeight = this.hlsVideo.videoHeight;
+    this.videoWidth = this.hlsPlayer.videoWidth;
+    this.videoHeight = this.hlsPlayer.videoHeight;
   }
 
+  @Emit()
+  contextmenu(event) {
+    return event;
+  }
 }
 </script>
+
+<style lang="scss" scoped>
+@import '~vuetify/src/styles/styles.sass';
+
+$color-grey: map-get($colors, 'grey');
+$color-grey-base: map-get($color-grey, 'base');
+$color-grey-lighten-5: map-get($color-grey, 'lighten-5');
+$color-grey-lighten-4: map-get($color-grey, 'lighten-4');
+$color-grey-lighten-3: map-get($color-grey, 'lighten-3');
+$color-grey-lighten-2: map-get($color-grey, 'lighten-2');
+$color-grey-lighten-1: map-get($color-grey, 'lighten-1');
+$color-grey-darken-1: map-get($color-grey, 'darken-1');
+$color-grey-darken-2: map-get($color-grey, 'darken-2');
+$color-grey-darken-3: map-get($color-grey, 'darken-3');
+$color-grey-darken-4: map-get($color-grey, 'darken-4');
+
+.theme--light.v-application {
+  .hls-player {
+    background-color: $color-grey-lighten-1;
+  }
+}
+
+.theme--dark.v-application {
+  .hls-player {
+    background-color: $color-grey-darken-3;
+  }
+}
+
+@mixin media-block {
+  position: absolute;
+
+  padding: 0;
+  margin: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  object-position: center;
+
+  //left: 0;
+  //top: 0;
+  //left: 50%;
+  //top: 50%;
+  //transform: translate(-50%, -50%);
+}
+
+.hls-player {
+  // Important:
+  // Required to fix the position of the 'absolute block' among the child elements.
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 0;
+  margin: 0;
+
+  min-width: 64px;
+  min-height: 64px;
+
+  .hls-placeholder {
+    padding: 0;
+    margin: 0;
+
+    .canvas-user {
+      @include media-block;
+      z-index: 40;
+    }
+
+    .canvas-meta {
+      @include media-block;
+      z-index: 30;
+    }
+
+    .hls-player {
+      @include media-block;
+    }
+  }
+
+  .brand-logo-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 0;
+    margin: 0;
+
+    .brand-logo {
+      min-width: 8px;
+      min-height: 8px;
+
+      max-width: 256px;
+      max-height: 256px;
+    }
+  }
+}
+</style>

@@ -76,7 +76,6 @@ ko:
 
       <v-tab-item>
         <form-vms-record
-            v-if="tabIndex === 2"
             :group="$route.params.group"
             :project="$route.params.project"
             :device="$route.params.device"
