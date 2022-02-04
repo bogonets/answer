@@ -1,44 +1,106 @@
 <i18n lang="yaml">
 en:
-  submit: "Submit"
+  labels:
+    toady: "Today"
 
 ko:
-  submit: "제출"
+  labels:
+    toady: "오늘"
 </i18n>
 
 <template>
   <div class="d-flex flex-column">
     <hls-player
+        ref="hls-player"
         :src="hlsUrl"
         :options="hlsOptions"
         :group="$route.params.group"
         :project="$route.params.project"
         :device="$route.params.device"
+        :online="!disabled"
     ></hls-player>
 
-<!--    ma-2 d-flex flex-row justify-center align-center">-->
     <div class="controllers">
       <div class="left-controller">
-        <v-btn class="mr-2" icon>
-          <v-icon>mdi-calendar</v-icon>
+        <v-menu
+            offset-y
+            transition="scale-transition"
+            min-width="auto"
+            v-model="showDateMenu"
+            :nudge-right="datePickerSize"
+            :close-on-content-click="false"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+            >
+              <v-icon>mdi-calendar</v-icon>
+            </v-btn>
+          </template>
+          <v-date-picker
+              no-title
+              scrollable
+              v-model="date"
+              :min="begin"
+              :max="end"
+              :allowed-dates="allowedDates"
+              @input="onInputDate"
+          ></v-date-picker>
+        </v-menu>
+        <span class="mr-2 text--secondary text-caption">{{ date }}</span>
+        <v-btn color="secondary" outlined rounded x-small @click="onClickToday">
+          {{ $t('labels.toady') }}
         </v-btn>
-        <span class="text--secondary text-caption">{{ now }}</span>
       </div>
 
       <div class="center-controller">
-        <v-btn class="mr-2" icon outlined small>
+        <v-btn
+            class="mr-2"
+            icon
+            outlined
+            small
+            :disabled="disabled"
+            @click="onClickFirst"
+        >
           <v-icon small>mdi-skip-backward</v-icon>
         </v-btn>
-        <v-btn class="mr-2" icon outlined>
-          <v-icon>mdi-skip-previous</v-icon>
+        <v-btn
+            class="mr-2"
+            icon
+            outlined
+            :disabled="disabled"
+            @click="onClickPrevious"
+        >
+         <v-icon>mdi-skip-previous</v-icon>
         </v-btn>
-        <v-btn class="mr-2" icon large outlined>
+        <v-btn
+            class="mr-2"
+            icon
+            large
+            outlined
+            :disabled="disabled"
+            @click="onClickPlay"
+        >
           <v-icon large>{{ playIcon }}</v-icon>
         </v-btn>
-        <v-btn class="mr-2" icon outlined>
+        <v-btn
+            class="mr-2"
+            icon
+            outlined
+            :disabled="disabled"
+            @click="onClickNext"
+        >
           <v-icon>mdi-skip-next</v-icon>
         </v-btn>
-        <v-btn icon outlined small>
+        <v-btn
+            icon
+            outlined
+            small
+            :disabled="disabled"
+            @click="onClickLast"
+        >
           <v-icon small>mdi-skip-forward</v-icon>
         </v-btn>
       </div>
@@ -47,22 +109,27 @@ ko:
       </div>
     </div>
 
-    <record-controller class="mt-1">
+    <record-controller
+        class="mt-2"
+        :disabled="disabled"
+        @click="onClickRecordController"
+    >
     </record-controller>
 
     <div class="d-flex flex-row">
-      <span class="text--secondary text-overline">BEGIN</span>
+      <span class="text--secondary text-overline">00:00:00</span>
       <v-spacer></v-spacer>
-      <span class="text--secondary text-overline">END</span>
+      <span class="text--secondary text-overline">23:59:59</span>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {Component, Prop} from 'vue-property-decorator';
+import {Component, Prop, Watch, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import HlsPlayer from '@/media/HlsPlayer.vue';
 import RecordController from '@/media/RecordController.vue';
+import {todayString} from '@/chrono/date';
 
 @Component({
   components: {
@@ -80,13 +147,65 @@ export default class FormVmsRecord extends VueBase {
   @Prop({type: [String, Number]})
   readonly device?: string | number;
 
+  @Prop({type: Number, default: 40})
+  readonly datePickerSize!: number;
+
+  @Ref('hls-player')
+  readonly hlsPlayer!: HlsPlayer;
+
   hlsUrl = '';
   hlsOptions = {};
 
   play = false;
   recordDates = [] as Array<string>;
 
-  now = '2022-01-03';
+  showDateMenu = false;
+  begin = '';
+  end = '';
+  date = '';
+
+  disabled = true;
+
+  mounted() {
+    if (typeof this.$route.params.date !== 'undefined') {
+      this.date = this.$route.params.date;
+    } else {
+      this.date = todayString();
+    }
+
+    this.hlsOptions = {
+      xhrSetup: this._xhrSetup,
+      licenseXhrSetup: this._licenseXhrSetup,
+    };
+
+    this.$api2.getVmsRecordsPdeviceDates(this.group, this.project, this.deviceText)
+        .then(items => {
+          this.recordDates = items;
+          console.debug('record dates:', this.recordDates)
+          if (items) {
+            this.begin = items[0];
+            this.end = items[items.length - 1];
+
+            this.updateDate(this.date);
+          } else {
+            this.begin = '';
+            this.end = '';
+          }
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+        });
+  }
+
+  _xhrSetup(xhr: XMLHttpRequest, url: string) {
+    const bearerToken = `Bearer ${this.$localStore.access}`;
+    xhr.setRequestHeader('Authorization', bearerToken);
+  }
+
+  _licenseXhrSetup(xhr: XMLHttpRequest, url: string) {
+    const bearerToken = `Bearer ${this.$localStore.access}`;
+    xhr.setRequestHeader('Authorization', bearerToken);
+  }
 
   get deviceNumber() {
     if (typeof this.device === 'undefined') {
@@ -116,31 +235,65 @@ export default class FormVmsRecord extends VueBase {
     }
   }
 
-  xhrSetup(xhr: XMLHttpRequest, url: string) {
-    const bearerToken = `Bearer ${this.$localStore.access}`;
-    xhr.setRequestHeader('Authorization', bearerToken);
+  get dateStart() {
+    return `${this.date}T00:00:00.000`;
   }
 
-  licenseXhrSetup(xhr: XMLHttpRequest, url: string) {
-    const bearerToken = `Bearer ${this.$localStore.access}`;
-    xhr.setRequestHeader('Authorization', bearerToken);
+  get dateLast() {
+    return `${this.date}T23:59:59.999`;
   }
 
-  mounted() {
-    // this.hlsUrl = this.$api2.urlVmsRecords(this.group, this.project, this.deviceText);
-    this.hlsOptions = {
-      xhrSetup: this.xhrSetup,
-      licenseXhrSetup: this.licenseXhrSetup,
-    };
+  @Watch('date')
+  watchDate(newVal: string) {
+    this.updateDate(newVal);
+  }
 
-    this.$api2.getVmsRecordsPdeviceDates(this.group, this.project, this.deviceText)
-        .then(items => {
-          this.recordDates = items;
-          console.dir(this.recordDates);
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-        });
+  updateDate(date: string) {
+    this.disabled = !this.recordDates.includes(date);
+    if (!this.disabled) {
+      this.hlsUrl = this.$api2.urlVmsRecordsPdevicePlaylistMaster(
+          this.group,
+          this.project,
+          this.deviceText,
+          this.dateStart,
+          this.dateLast,
+      );
+    }
+    console.debug(`updateDate('${date}') -> ${this.disabled ? "disabled" : "exists!"}`);
+    console.debug('HLS URL: ', this.hlsUrl);
+  }
+
+  allowedDates(value: string) {
+    return this.recordDates.includes(value);
+  }
+
+  onInputDate() {
+    this.showDateMenu = true;
+  }
+
+  onClickToday() {
+    this.date = todayString();
+  }
+
+  onClickFirst() {
+  }
+
+  onClickPrevious() {
+  }
+
+  onClickPlay() {
+    this.hlsPlayer.play();
+  }
+
+  onClickNext() {
+  }
+
+  onClickLast() {
+  }
+
+  onClickRecordController(pos: number) {
+    console.assert(0 <= pos && pos <= 1);
+    console.debug(`onClickRecordController(pos=${pos})`)
   }
 }
 </script>
@@ -153,7 +306,7 @@ export default class FormVmsRecord extends VueBase {
   align-items: center;
 
   padding: 4px;
-  margin: 0;
+  margin: 8px 0 0 0;
 
   width: 100%;
 

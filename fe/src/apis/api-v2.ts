@@ -1371,11 +1371,15 @@ export default class ApiV2 {
         return this.get<Array<string>>(url);
     }
 
-    urlVmsRecords(
+    urlVmsRecordsPdevicePlaylistMaster(
         group: string,
         project: string,
         device: string,
+        start: string,
+        last: string,
     ) {
-        return this.baseURL + `/plugins/vms/${group}/${project}/records/${device}`;
+        const url = `/plugins/vms/${group}/${project}/records/${device}/playlist/master`;
+        const params = `?start=${start}&last=${last}`;
+        return this.baseURL + url + params;
     }
 }

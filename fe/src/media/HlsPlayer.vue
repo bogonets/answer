@@ -16,7 +16,6 @@ ko:
   <v-hover v-slot="{ hover }">
     <div
         class="hls-player"
-        ref="hls-player"
         @contextmenu="contextmenu"
         :style="hlsPlayerStyle"
     >
@@ -62,8 +61,8 @@ ko:
 
         <video
             v-show="online"
-            ref="hls-player"
-            autoplay
+            class="video"
+            ref="video"
             muted
             playsinline
             preload="auto"
@@ -148,12 +147,17 @@ export default class HlsPlayer extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly disableAspectRatio!: boolean;
 
-  @Ref('hls-player')
-  hlsPlayer!: HTMLVideoElement;
+  @Prop({type: Boolean, default: false})
+  readonly online!: boolean;
+
+  @Prop({type: Number, default: 1000})
+  readonly refreshMilliseconds!: number;
+
+  @Ref('video')
+  readonly video!: HTMLVideoElement;
 
   hls?: Hls;
 
-  online = false;
   paused = true;
   videoWidth = 0;
   videoHeight = 0;
@@ -163,12 +167,43 @@ export default class HlsPlayer extends VueBase {
   informationText = '';
   informationDate = '';
 
+  bufferIntervalHandle = -1;
+
   mounted() {
     this.updateHls(this.src, this.options);
+
+    this.bufferIntervalHandle = window.setInterval(() => {
+      this.onBufferInterval();
+    }, this.refreshMilliseconds);
+
   }
 
   beforeDestroy() {
+    if (this.bufferIntervalHandle != -1) {
+      window.clearInterval(this.bufferIntervalHandle);
+    }
+
     this.close();
+  }
+
+  onBufferInterval() {
+    const seekableEnd = this.getSeekableEnd();
+    const r = this.video.buffered;
+    if (r) {
+      // const pos = this.video.currentTime;
+      // let bufferLen = 0;
+      // ctx.fillStyle = 'gray';
+      // for (let i = 0; i < r.length; i++) {
+      //   const start = (r.start(i) / seekableEnd) * canvas.width;
+      //   const end = (r.end(i) / seekableEnd) * canvas.width;
+      //   ctx.fillRect(start, 2, Math.max(2, end - start), 11);
+      //   if (pos >= r.start(i) && pos < r.end(i)) {
+      //     // play position is inside this buffer TimeRange,
+      //     // retrieve end of buffer position and buffer length
+      //     bufferLen = r.end(i) - pos;
+      //   }
+      // }
+    }
   }
 
   get hlsPlayerStyle() {
@@ -216,7 +251,7 @@ export default class HlsPlayer extends VueBase {
     try {
       const hls = new Hls(options);
       hls.loadSource(src);
-      hls.attachMedia(this.hlsPlayer);
+      hls.attachMedia(this.video);
       this.hls = hls;
     } catch (error) {
       this.hls = undefined;
@@ -298,13 +333,27 @@ export default class HlsPlayer extends VueBase {
   }
 
   onResize() {
-    this.videoWidth = this.hlsPlayer.videoWidth;
-    this.videoHeight = this.hlsPlayer.videoHeight;
+    this.videoWidth = this.video.videoWidth;
+    this.videoHeight = this.video.videoHeight;
   }
 
   @Emit()
   contextmenu(event) {
     return event;
+  }
+
+  play() {
+    this.video.play();
+  }
+
+  getSeekableEnd() {
+    if (isFinite(this.video.duration)) {
+      return this.video.duration;
+    }
+    if (this.video.seekable.length) {
+      return this.video.seekable.end(this.video.seekable.length - 1);
+    }
+    return 0;
   }
 }
 </script>
@@ -324,15 +373,25 @@ $color-grey-darken-2: map-get($color-grey, 'darken-2');
 $color-grey-darken-3: map-get($color-grey, 'darken-3');
 $color-grey-darken-4: map-get($color-grey, 'darken-4');
 
+$information-panel-transparent: 0.4;
+
 .theme--light.v-application {
   .hls-player {
     background-color: $color-grey-lighten-1;
+
+    .information-panel {
+      background-color: rgba(map-get($shades, 'white'), $information-panel-transparent);
+    }
   }
 }
 
 .theme--dark.v-application {
   .hls-player {
     background-color: $color-grey-darken-3;
+
+    .information-panel {
+      background-color: rgba(map-get($shades, 'black'), $information-panel-transparent);
+    }
   }
 }
 
@@ -370,6 +429,19 @@ $color-grey-darken-4: map-get($color-grey, 'darken-4');
   min-width: 64px;
   min-height: 64px;
 
+  .information-panel {
+    position: absolute;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    padding: 0 4px 0 4px;
+    margin: 4px 4px 0 4px;
+
+    z-index: 60;
+  }
+
   .hls-placeholder {
     padding: 0;
     margin: 0;
@@ -384,7 +456,7 @@ $color-grey-darken-4: map-get($color-grey, 'darken-4');
       z-index: 30;
     }
 
-    .hls-player {
+    .video {
       @include media-block;
     }
   }

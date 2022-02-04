@@ -424,7 +424,6 @@ export default class MainVmsEventsList extends VueBase {
 
   begin = '';
   end = '';
-
   date = '';
 
   category = '';

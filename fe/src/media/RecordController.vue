@@ -95,6 +95,9 @@ export default class RecordController extends VueBase {
 
   // -------------------------
 
+  @Prop({type: Boolean, default: false})
+  readonly disabled!: boolean;
+
   @Ref('record-timeline')
   readonly recordTimelineCanvas!: HTMLCanvasElement;
 
@@ -174,6 +177,11 @@ export default class RecordController extends VueBase {
 
   @Watch('cursorColor')
   watchCursorColor() {
+    this.updateRecordTimeline();
+  }
+
+  @Watch('disabled')
+  watchDisabled() {
     this.updateRecordTimeline();
   }
 
@@ -304,11 +312,19 @@ export default class RecordController extends VueBase {
     if (this.cursorColor) {
       return this.cursorColor;
     }
-    const color = this.$vuetify.theme.currentTheme.primary;
+
+    let color;
+    if (this.disabled) {
+      color = this.$vuetify.theme.currentTheme.secondary;
+    } else {
+      color = this.$vuetify.theme.currentTheme.primary;
+    }
+
     if (color) {
       return color.toString();
+    } else {
+      return colors.blue.darken2;
     }
-    return colors.blue.darken2;
   }
 
   drawTimelineRuler(
