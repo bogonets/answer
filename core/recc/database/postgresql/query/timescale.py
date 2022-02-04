@@ -7,7 +7,7 @@ _CREATE_HYPERTABLE_FORMAT = """
 SELECT
     create_hypertable(
         '{table}',
-        'time',
+        '{column}',
         chunk_time_interval => INTERVAL '{chunk_time_interval_days} days'
     )
 WHERE
@@ -37,10 +37,12 @@ WHERE
 
 def get_create_hypertable_format(
     table: str,
+    column: str,
     chunk_time_interval_days=DEFAULT_CHUNK_TIME_INTERVAL_DAYS,
 ) -> str:
     return _CREATE_HYPERTABLE_FORMAT.format(
         table=table,
+        column=column,
         chunk_time_interval_days=chunk_time_interval_days,
     )
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from pathlib import Path
 from typing import Optional, Union, List, Any, get_args
 from inspect import signature, isclass, iscoroutinefunction
 from functools import wraps
@@ -7,7 +8,9 @@ from http import HTTPStatus
 
 from aiohttp.hdrs import AUTHORIZATION
 from aiohttp.web_request import Request
+from aiohttp.web_response import StreamResponse
 from aiohttp.web_response import Response
+from aiohttp.web_fileresponse import FileResponse
 from aiohttp.web_exceptions import (
     HTTPException,
     HTTPBadRequest,
@@ -208,8 +211,10 @@ class HttpParameterMatcher:
 
         if result is None:
             return Response()
-        elif isinstance(result, Response):
+        elif isinstance(result, StreamResponse):
             return result
+        elif isinstance(result, Path):
+            return FileResponse(path=result)
         elif isinstance(result, HttpResponse):
             return Response(
                 body=result.data,
