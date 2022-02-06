@@ -221,12 +221,13 @@ ko:
               ref="media-player"
               hover-system-bar
               hide-controller
-              :value="device"
               :group="$route.params.group"
               :project="$route.params.project"
               :device="$route.params.device"
               :use-annotation-tools="annotationMode"
               :use-roi-absolute-position="useRoiAbsolutePosition"
+              :value="device"
+              :event-config="value"
               @roi="onRoi"
               @video:resize="onVideoResize"
           ></media-player>
@@ -265,7 +266,7 @@ import type {
 import {
   EVENT_CONFIG_OPERATOR_DEFAULT,
   EVENT_CONFIG_OPERATORS,
-  imageDataUrlToVmsUploadImageQ,
+  imageDataUrlToVmsUploadImageQ, VmsEventConfigExtra,
 } from '@/packet/vms';
 import {valueToRatio, ratioToValue} from '@/math/ratio';
 
@@ -707,6 +708,34 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     this.annotationMode = !this.annotationMode;
   }
 
+  updateEventConfig() {
+    if (!(this.trainX1 && this.trainY1 && this.trainX2 && this.trainY2)) {
+      return;
+    }
+    const context = this.canvasTrain.getContext('2d');
+    if (!context) {
+      return;
+    }
+    const width = this.canvasTrain.width;
+    const height = this.canvasTrain.height;
+    if (!(width && height)) {
+      return;
+    }
+
+    this.trainRoiLeft = this.trainX1 * width;
+    this.trainRoiRight = this.trainX2 * width;
+    this.trainRoiTop = this.trainY1 * height;
+    this.trainRoiBottom = this.trainY2 * height;
+
+    const roiWidth = this.trainRoiRight - this.trainRoiLeft;
+    const roiHeight = this.trainRoiBottom - this.trainRoiTop;
+
+    context.lineWidth = 5;
+    context.strokeStyle = 'red';
+    context.clearRect(0, 0, width, height);
+    context.strokeRect(this.trainRoiLeft, this.trainRoiTop, roiWidth, roiHeight);
+  }
+
   onMouseDownTrainCanvas(event: MouseEvent) {
     if (this.enableTrainAnnotation) {
       const clientRect = this.canvasTrain.getBoundingClientRect();
@@ -820,6 +849,10 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     // console.debug(`onVideoResize(width=${width},height=${height})`);
     this.videoWidth = width;
     this.videoHeight = height;
+
+    this.$nextTick(() => {
+      this.updateEventConfig();
+    });
   }
 }
 </script>

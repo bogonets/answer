@@ -288,7 +288,7 @@ export default class HlsPlayer extends VueBase {
 
   get informationIconColor() {
     switch (this.informationCode) {
-      case VMS_CHANNEL_META_CODE_SUCCESS:
+      case VMS_CHANNEL_META_CODE_SUCCESS:  // TODO: Replace to enum.
         return this.$vuetify.theme.currentTheme.secondary;
       case VMS_CHANNEL_META_CODE_OPENED:
         return this.$vuetify.theme.currentTheme.secondary;
@@ -305,7 +305,7 @@ export default class HlsPlayer extends VueBase {
 
   get informationIcon() {
     switch (this.informationCode) {
-      case VMS_CHANNEL_META_CODE_SUCCESS:
+      case VMS_CHANNEL_META_CODE_SUCCESS:  // TODO: Replace to enum.
         return 'mdi-chat-processing-outline';
       case VMS_CHANNEL_META_CODE_OPENED:
         return 'mdi-chat-outline';

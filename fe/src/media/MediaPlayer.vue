@@ -377,17 +377,12 @@ import {
   DEFAULT_VIDEO_TRANSCEIVER_INIT,
   DEFAULT_AUDIO_TRANSCEIVER_INIT,
   DEFAULT_DATA_CHANNEL_INIT,
-  VMS_CHANNEL_META_CODE_SUCCESS,
-  VMS_CHANNEL_META_CODE_OPENED,
-  VMS_CHANNEL_META_CODE_BAD_ARGUMENT,
-  VMS_CHANNEL_META_CODE_NOT_READY_ROI,
   VMS_CHANNEL_META_CONSUME_CODE_SUCCESS,
   VMS_CHANNEL_META_CONSUME_CODE_SKIP,
   VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN,
-  VMS_CHANNEL_META_CODE_FILTERED,
-  VmsChannelEvent,
-  EventCategory,
   EVENT_CATEGORY_TO_ICON,
+  VmsChannelEvent,
+  VmsEventConfigExtra,
 } from '@/packet/vms';
 import {
   VmsChannelEventCode,
@@ -543,6 +538,9 @@ export default class MediaPlayer extends VueBase {
   @Prop({type: Object, default: () => new Object()})
   readonly value!: VmsDeviceA;
 
+  @Prop({type: Object})
+  readonly eventConfig?: VmsEventConfigExtra;
+
   @Ref('media-player')
   readonly mediaPlayer!: HTMLDivElement;
 
@@ -602,6 +600,7 @@ export default class MediaPlayer extends VueBase {
   mounted() {
     this.activeSwitch = this.value.active ?? false;
     this.debugSwitch = this.value.server_debugging ?? false;
+    this.updateEventConfig(this.eventConfig);
 
     this.paused = this.rtcVideo.paused;
     try {
@@ -1239,7 +1238,6 @@ export default class MediaPlayer extends VueBase {
         });
   }
 
-
   onChangeDebugging() {
     const group = this.group;
     const project = this.project;
@@ -1272,14 +1270,46 @@ export default class MediaPlayer extends VueBase {
     this.rtcVideo.requestFullscreen();
   }
 
+  updateEventConfig(config?: VmsEventConfigExtra) {
+    if (!config) {
+      return;
+    }
+    if (!(config.x1 && config.y1 && config.x2 && config.y2)) {
+      return;
+    }
+    const context = this.canvasUser.getContext('2d');
+    if (!context) {
+      return;
+    }
+    const width = this.canvasUser.width;
+    const height = this.canvasUser.height;
+    if (!(width && height)) {
+      return;
+    }
+
+    this.roiLeft = config.x1 * width;
+    this.roiRight = config.x2 * width;
+    this.roiTop = config.y1 * height;
+    this.roiBottom = config.y2 * height;
+
+    const roiWidth = this.roiRight - this.roiLeft;
+    const roiHeight = this.roiBottom - this.roiTop;
+
+    context.lineWidth = this.lineWidth;
+    context.strokeStyle = this.strokeStyle;
+    context.clearRect(0, 0, width, height);
+    context.strokeRect(this.roiLeft, this.roiTop, roiWidth, roiHeight);
+  }
+
   @Watch('value', {deep: true})
   onWatchValue() {
     this.activeSwitch = this.value.active ?? false;
     this.debugSwitch = this.value.server_debugging ?? false;
   }
 
-  @Watch('eventConfigs', {deep: true})
-  onWatchEventConfigs() {
+  @Watch('eventConfig')
+  onWatchEventConfig(newVal?: VmsEventConfigExtra) {
+    this.updateEventConfig(newVal);
   }
 
   @Watch('videoWidth')
@@ -1294,6 +1324,10 @@ export default class MediaPlayer extends VueBase {
 
   @Emit('video:resize')
   resizeVideo() {
+    this.$nextTick(() => {
+      this.updateEventConfig(this.eventConfig);
+    });
+
     return {width: this.videoWidth, height: this.videoHeight};
   }
 

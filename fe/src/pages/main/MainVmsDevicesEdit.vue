@@ -65,8 +65,6 @@ ko:
         <!-- [IMPORTANT] To release MediaPlayer memory, `v-if` must be used. -->
         <media-player
             v-if="tabIndex === 1"
-            hover-system-bar
-            hide-controller
             :value="original"
             :group="$route.params.group"
             :project="$route.params.project"

@@ -122,6 +122,7 @@ ko:
             :device="$route.params.device"
             :use-color-picker="pipetteMode"
             :value="device"
+            :event-config="value"
             @pipette="onPipette"
             :use-annotation-tools="annotationMode"
             @roi="onRoi"

@@ -1,3 +1,8 @@
+import {VmsEventConfigColorQ} from '@/packet/vms/extra/color_matching';
+import {VmsEventConfigMatchingQ} from '@/packet/vms/extra/feature_matching';
+import {VmsEventConfigDetectionQ} from '@/packet/vms/extra/object_detector';
+import {VmsEventConfigOcrQ} from '@/packet/vms/extra/seven_segment_detector';
+
 export const EVENT_CONFIG_OPERATOR_DEFAULT = '>=';
 export const EVENT_CONFIG_OPERATORS = [
     '=',
@@ -8,6 +13,11 @@ export const EVENT_CONFIG_OPERATORS = [
     '<=',
 ];
 
+export type VmsEventConfigExtra = VmsEventConfigColorQ
+    | VmsEventConfigMatchingQ
+    | VmsEventConfigDetectionQ
+    | VmsEventConfigOcrQ;
+
 export interface VmsEventConfigA {
     event_config_uid: number;
     sequence: number;
@@ -15,7 +25,7 @@ export interface VmsEventConfigA {
     category: string;
     name: string;
     enable: boolean;
-    extra?: any;
+    extra?: VmsEventConfigExtra;
     created_at: string;
     updated_at: string;
 }
