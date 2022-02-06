@@ -9,7 +9,7 @@ from recc.serialization.utils import (
     normalize_strings,
 )
 from recc.serialization.interface import Serializable
-from recc.inspect.member import get_public_members
+from recc.inspect.member import get_public_attributes
 
 
 class _Test1:
@@ -50,24 +50,24 @@ class _Test3(Serializable):
 
 class SerializableTestCase(TestCase):
     def test_public_members_by_obj(self):
-        obj1_names = [m[0] for m in get_public_members(_Test1())]
+        obj1_names = [m[0] for m in get_public_attributes(_Test1())]
         self.assertEqual(2, len(obj1_names))
         self.assertIn("number", obj1_names)
         self.assertIn("name", obj1_names)
-        obj2_names = [m[0] for m in get_public_members(_Test2())]
+        obj2_names = [m[0] for m in get_public_attributes(_Test2())]
         self.assertEqual(2, len(obj2_names))
         self.assertIn("test", obj2_names)
         self.assertIn("name", obj2_names)
-        obj3_names = [m[0] for m in get_public_members(_Test3())]
+        obj3_names = [m[0] for m in get_public_attributes(_Test3())]
         self.assertEqual(1, len(obj3_names))
         self.assertEqual("version", obj3_names[0])
 
     def test_public_members_by_cls(self):
-        cls1_names = [m[0] for m in get_public_members(_Test1)]
+        cls1_names = [m[0] for m in get_public_attributes(_Test1)]
         self.assertEqual(0, len(cls1_names))
-        cls2_names = [m[0] for m in get_public_members(_Test2)]
+        cls2_names = [m[0] for m in get_public_attributes(_Test2)]
         self.assertEqual(0, len(cls2_names))
-        cls3_names = [m[0] for m in get_public_members(_Test3)]
+        cls3_names = [m[0] for m in get_public_attributes(_Test3)]
         self.assertEqual(1, len(cls3_names))
         self.assertEqual("version", cls3_names[0])
 

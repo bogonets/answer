@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from typing import Any
-from recc.inspect.member import get_public_members
+from recc.inspect.member import get_public_attributes
 
 
 def lexicographical_members(left: Any, right: Any) -> bool:
-    left_members = set(m[0] for m in get_public_members(left))
-    right_members = set(m[0] for m in get_public_members(right))
+    left_members = set(m[0] for m in get_public_attributes(left))
+    right_members = set(m[0] for m in get_public_attributes(right))
     if len(left_members) != len(right_members):
         return False
     for m in left_members:

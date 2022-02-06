@@ -25,6 +25,7 @@ ko:
 
     <form-vms-event-config
         :loading-submit="loadingSubmit"
+        :device="device"
         @cancel="onClickCancel"
         @ok="onClickOk"
     ></form-vms-event-config>
@@ -38,6 +39,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import FormVmsEventConfig from '@/components/FormVmsEventConfig.vue';
 import type {VmsEventConfigA, VmsCreateEventConfigQ} from '@/packet/vms';
+import {VmsDeviceA} from "@/packet/vms";
 
 @Component({
   components: {
@@ -81,6 +83,8 @@ export default class MainVmsDevicesEditEventConfigsNew extends VueBase {
   currentProject = '';
   currentDevice = '';
 
+  device = {} as VmsDeviceA;
+
   created() {
     this.requestSetup();
   }
@@ -99,10 +103,12 @@ export default class MainVmsDevicesEditEventConfigsNew extends VueBase {
 
     try {
       await this.$api2.postVmsDeviceProcessDebugStart(group, project, device);
-      this.currentGroup = this.$route.params.group;
-      this.currentProject = this.$route.params.project;
-      this.currentDevice = this.$route.params.device;
+      this.currentGroup = group;
+      this.currentProject = project;
+      this.currentDevice = device;
       this.toastWarning(this.$t('msg.enable_debugging'));
+
+      this.device = await this.$api2.getVmsDevice(group, project, device);
     } catch (error) {
       this.toastRequestFailure(error);
     } finally {

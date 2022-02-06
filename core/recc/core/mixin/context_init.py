@@ -34,8 +34,8 @@ from recc.session.session import (
     DEFAULT_LEEWAY_SECONDS,
     SessionPairFactory,
 )
-
-SIGNATURE_SIZE = 32
+from recc.variables.crypto import SIGNATURE_SIZE
+from recc.variables.logging import VERBOSE_LOGGING_LEVEL_1
 
 
 class ContextInit(ContextBase):
@@ -85,7 +85,7 @@ class ContextInit(ContextBase):
         self._storage = CoreStorage(self._config.local_storage)
         root_dir = self._storage.get_root_directory()
         logger.info(f"Created storage-manager (root={root_dir})")
-        if self._config.verbose >= 1:
+        if self._config.verbose >= VERBOSE_LOGGING_LEVEL_1:
             logger.info(self._storage.get_template_manager().to_details())
 
     def _init_session_factory(self) -> None:

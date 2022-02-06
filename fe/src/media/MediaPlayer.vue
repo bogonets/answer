@@ -15,22 +15,25 @@ en:
     unknown: "Unknown status"
   labels:
     reconnect: "Reconnect"
+    active: "Active"
     fullscreen: "Fullscreen"
     debugging: "Debugging"
     information: "Information"
   hints:
     logo_alt: "Answer"
   tooltips:
+    channel_opened: "A channel between server and client has been opened"
     debugging_mode: "Debugging mode is enabled"
     enable_event_detection: "Event detection is enabled"
     disable_event_detection: "Event detection is disabled"
     latest_event_time: "Latest event time: {0}"
   vms_channel_meta:
-    opened: "A channel between server and client has been opened"
     filtered: "Completed successfully, but no event occurred"
+    disabled: "Disabled"
     not_ready_roi: "Not ready ROI"
     bad_argument: "Bad arguments"
     unknown_code: "Unknown code: {0}"
+    empty_events: "Empty events"
 
 ko:
   status:
@@ -48,22 +51,25 @@ ko:
     unknown: "알 수 없는 상태"
   labels:
     reconnect: "재접속"
+    active: "이벤트 감지"
     fullscreen: "전체 화면"
     debugging: "디버깅"
     information: "정보"
   hints:
     logo_alt: "Answer"
   tooltips:
+    channel_opened: "서버와 클라이언트 사이의 채널이 열렸습니다"
     debugging_mode: "디버깅 모드가 활성화 되었습니다"
     enable_event_detection: "이벤트 감지 중 입니다"
     disable_event_detection: "이벤트 감지가 비활성화 되었습니다"
     latest_event_time: "마지막 이벤트 발생 시간: {0}"
   vms_channel_meta:
-    opened: "서버와 클라이언트 사이의 채널이 열렸습니다"
     filtered: "성공적으로 완료되었지만 이벤트가 발생하지 않았습니다"
+    disabled: "비활성화 되었습니다"
     not_ready_roi: "관심영역(ROI)이 준비되지 않았습니다"
     bad_argument: "잘못된 인수"
     unknown_code: "알 수 없는 에러 코드: {0}"
+    empty_events: "감지된 이벤트가 없습니다"
 </i18n>
 
 <template>
@@ -110,6 +116,34 @@ ko:
           <v-icon v-if="false" class="ml-1" small>mdi-video-off</v-icon>
           <v-icon v-if="false" class="ml-1" small color="red">mdi-record</v-icon>
 
+          <v-tooltip v-if="lastEventDate" bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                  class="ml-1"
+                  small
+                  v-bind="attrs"
+                  v-on="on"
+              >
+                mdi-update
+              </v-icon>
+            </template>
+            <span>{{ $t('tooltips.latest_event_time', [lastEventDate]) }}</span>
+          </v-tooltip>
+
+          <v-tooltip v-if="channelOpened" bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                  class="ml-1"
+                  small
+                  v-bind="attrs"
+                  v-on="on"
+              >
+                mdi-broadcast
+              </v-icon>
+            </template>
+            <span>{{ $t('tooltips.channel_opened') }}</span>
+          </v-tooltip>
+
           <v-tooltip v-if="value.server_debugging" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
@@ -146,27 +180,30 @@ ko:
       </div>
 
       <v-sheet
-          v-if="showInformationPanel && online && channelOpened"
+          v-if="showInformationPanel && online && channelOpened && value.active"
           rounded
           class="information-panel"
           transition="slide-x-transition"
           :style="`top: ${getInfoPanelTop(hover)};`"
       >
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-icon small :color="informationIconColor">
-              {{ informationIcon }}
-            </v-icon>
-            <div v-bind="attrs" v-on="on">
-              <span class="ml-1 text--secondary text-body-2">
-                {{ informationText }}
-              </span>
-            </div>
-          </template>
-          <span>
-            {{ $t('tooltips.latest_event_time', [informationDate]) }}
-          </span>
-        </v-tooltip>
+        <div
+            v-for="(event, index) in events"
+            :key="`event-${index}`"
+        >
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                <v-icon small :color="eventColor(event)">
+                  {{ eventIcon(event) }}
+                </v-icon>
+                <span class="ml-1 text--secondary text-body-2">
+                  {{ eventLabel(event) }}
+                </span>
+              </div>
+            </template>
+            <span>{{ eventTooltip(event) }}</span>
+          </v-tooltip>
+        </div>
       </v-sheet>
 
       <div
@@ -234,10 +271,6 @@ ko:
             :color="progressLineColor"
         ></v-progress-linear>
 
-        <v-btn icon :disabled="disableActiveButton" @click="onClickActive">
-          <v-icon>{{ activeButtonIcon }}</v-icon>
-        </v-btn>
-
         <v-menu
             top
             left
@@ -269,6 +302,23 @@ ko:
 
             <v-list-item>
               <v-list-item-icon>
+                <v-icon>mdi-eye</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('labels.active') }}</v-list-item-title>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-switch
+                    dense
+                    :disabled="disableActiveButton"
+                    v-model="activeSwitch"
+                    @change="onChangeActive"
+                ></v-switch>
+              </v-list-item-action>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-icon>
                 <v-icon>mdi-bug</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
@@ -278,7 +328,7 @@ ko:
                 <v-switch
                     dense
                     :disabled="disableDebugButton"
-                    :value="value.server_debugging"
+                    v-model="debugSwitch"
                     @change="onChangeDebugging"
                 ></v-switch>
               </v-list-item-action>
@@ -333,8 +383,16 @@ import {
   VMS_CHANNEL_META_CODE_NOT_READY_ROI,
   VMS_CHANNEL_META_CONSUME_CODE_SUCCESS,
   VMS_CHANNEL_META_CONSUME_CODE_SKIP,
-  VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN_ERRORS,
+  VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN,
   VMS_CHANNEL_META_CODE_FILTERED,
+  VmsChannelEvent,
+  EventCategory,
+  EVENT_CATEGORY_TO_ICON,
+} from '@/packet/vms';
+import {
+  VmsChannelEventCode,
+  VmsChannelMetaCode,
+  VmsChannelMetaConsumeCode,
 } from '@/packet/vms';
 import type {
   VmsDeviceA,
@@ -348,6 +406,7 @@ import {
   UndefinedException,
   IllegalStateException,
   IllegalArgumentException,
+  InaccessibleAreaException,
 } from '@/exceptions';
 import {createMoment} from '@/chrono/date';
 
@@ -524,19 +583,26 @@ export default class MediaPlayer extends VueBase {
   channel?: RTCDataChannel = undefined;
   pc?: RTCPeerConnection = undefined;
 
-  processingMessage = false;
+  workingChannelProcessing = false;
 
   showInformationPanel = true;
-  informationCode = VMS_CHANNEL_META_CODE_SUCCESS;
+  events = [] as Array<VmsChannelEvent>;
+  lastEventCode = VmsChannelMetaCode.Unknown;
+  lastEventDate = '';
   informationText = '';
-  informationDate = '';
 
   showMoreMenu = false;
   disableActiveButton = false;
   disableDebugButton = false;
   disableInfoButton = false;
 
+  activeSwitch = false;
+  debugSwitch = false;
+
   mounted() {
+    this.activeSwitch = this.value.active ?? false;
+    this.debugSwitch = this.value.server_debugging ?? false;
+
     this.paused = this.rtcVideo.paused;
     try {
       this.open();
@@ -790,7 +856,7 @@ export default class MediaPlayer extends VueBase {
   }
 
   sendChannelResponseError() {
-    this.sendChannelResponse(VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN_ERRORS);
+    this.sendChannelResponse(VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN);
   }
 
   onChannelMessage(event: MessageEvent) {
@@ -801,67 +867,57 @@ export default class MediaPlayer extends VueBase {
       throw new ContextException('Unable to get context for 2D canvas');
     }
 
-    if (this.processingMessage) {
-      this.sendChannelResponseSkip();
+    if (this.workingChannelProcessing) {
       return;
     } else {
-      this.processingMessage = true;
+      this.workingChannelProcessing = true;
     }
 
     (async () => {
+      context.clearRect(0, 0, canvasWidth, canvasHeight);
+
       try {
         const meta = JSON.parse(event.data) as VmsChannelMeta;
-        context.clearRect(0, 0, canvasWidth, canvasHeight);
-        await this.renderMetaData(context, canvasWidth, canvasHeight, meta);
+        // console.debug("onChannelMessage", meta);
+        // this.renderMetaData(context, canvasWidth, canvasHeight, meta);
+
+        this.lastEventCode = meta.code;
+        this.lastEventDate = createMoment().format('LL, LTS');
+
+        switch (meta.code) {
+          case VmsChannelMetaCode.Success:
+            this.events = meta.events;
+            break;
+          case VmsChannelMetaCode.ChannelOpened:
+            this.channelOpened = true;
+            this.events = [];
+            return;
+          case VmsChannelMetaCode.Unknown:
+            this.events = [];
+            throw new IllegalStateException(
+                'An unknown error occurred in the `VmsChannelMeta` packet'
+            );
+          default:
+            throw new InaccessibleAreaException();
+        }
+
         this.sendChannelResponseSuccessful();
       } catch (error) {
-        context.clearRect(0, 0, canvasWidth, canvasHeight);
-        this.predict([]);
+        console.error(error);
+        this.events = [];
         this.sendChannelResponseError();
       } finally {
-        this.processingMessage = false;
+        this.workingChannelProcessing = false;
       }
     })();
   }
 
-  async renderMetaData(
+  renderMetaData(
       context: CanvasRenderingContext2D,
       canvasWidth: number,
       canvasHeight: number,
       content: VmsChannelMeta,
   ) {
-    this.informationCode = content.code;
-    this.informationDate = createMoment().format('LL, LTS');
-    // console.debug(`content.code: ${content.code}`);
-
-    switch (content.code) {
-      // Successful cases
-      case VMS_CHANNEL_META_CODE_SUCCESS:
-        this.informationText = content.message.trim();
-        break;
-      case VMS_CHANNEL_META_CODE_OPENED:
-        this.informationText = this.$t('vms_channel_meta.opened').toString();
-        this.channelOpened = true;
-        break;
-      case VMS_CHANNEL_META_CODE_FILTERED:
-        this.informationText = content.message.trim();
-        break;
-
-      // Failed cases
-      case VMS_CHANNEL_META_CODE_NOT_READY_ROI:
-        this.informationText = this.$t('vms_channel_meta.not_ready_roi').toString();
-        break;
-      case VMS_CHANNEL_META_CODE_BAD_ARGUMENT:
-        this.informationText = this.$t('vms_channel_meta.bad_argument').toString();
-        break;
-      default:
-        this.informationText = this.$t(
-            'vms_channel_meta.unknown_code',
-            [content.code]
-        ).toString();
-        break;
-    }
-
     //   const x1 = canvasWidth * obj.x1;
     //   const y1 = canvasHeight * obj.y1;
     //   const x2 = canvasWidth * obj.x2;
@@ -880,8 +936,6 @@ export default class MediaPlayer extends VueBase {
     //   context.lineWidth = 3;
     //   context.strokeRect(x1, y1, w, h);
     //   context.fillText(`${score}`, x1, y1);
-    //
-    //   this.predict([obj]);
   }
 
   onChannelError(event: RTCErrorEvent) {
@@ -1072,37 +1126,49 @@ export default class MediaPlayer extends VueBase {
     }
   }
 
-  get informationIconColor() {
-    switch (this.informationCode) {
-      case VMS_CHANNEL_META_CODE_SUCCESS:
+  eventColor(event: VmsChannelEvent) {
+    switch (event.code) {
+      case VmsChannelEventCode.Emit:
+        return this.$vuetify.theme.currentTheme.primary;
+      case VmsChannelEventCode.Skip:
         return this.$vuetify.theme.currentTheme.secondary;
-      case VMS_CHANNEL_META_CODE_OPENED:
+      case VmsChannelEventCode.Disabled:
         return this.$vuetify.theme.currentTheme.secondary;
-      case VMS_CHANNEL_META_CODE_FILTERED:
-        return this.$vuetify.theme.currentTheme.secondary;
-      case VMS_CHANNEL_META_CODE_NOT_READY_ROI:
-        return colors.deepOrange.base;
-      case VMS_CHANNEL_META_CODE_BAD_ARGUMENT:
-        return colors.deepOrange.base;
+      case VmsChannelEventCode.NotReadyRoi:
+        return this.$vuetify.theme.currentTheme.warning;
+      case VmsChannelEventCode.NotReadyFilters:
+        return this.$vuetify.theme.currentTheme.warning;
       default:
-        return colors.red.base;
+        return this.$vuetify.theme.currentTheme.error;
     }
   }
 
-  get informationIcon() {
-    switch (this.informationCode) {
-      case VMS_CHANNEL_META_CODE_SUCCESS:
-        return 'mdi-chat-processing-outline';
-      case VMS_CHANNEL_META_CODE_OPENED:
-        return 'mdi-chat-outline';
-      case VMS_CHANNEL_META_CODE_FILTERED:
-        return 'mdi-chat-outline';
-      case VMS_CHANNEL_META_CODE_NOT_READY_ROI:
-        return 'mdi-alert-octagram-outline';
-      case VMS_CHANNEL_META_CODE_BAD_ARGUMENT:
-        return 'mdi-alert-octagram-outline';
+  eventIcon(event: VmsChannelEvent) {
+    return EVENT_CATEGORY_TO_ICON[event.category];
+  }
+
+  eventLabel(event: VmsChannelEvent) {
+    switch (event.code) {
+      case VmsChannelEventCode.Emit:
+        return event.message;
+      case VmsChannelEventCode.Skip:
+        return event.message;
+      case VmsChannelEventCode.Disabled:
+        return this.$t('vms_channel_meta.disabled').toString();
+      case VmsChannelEventCode.NotReadyRoi:
+        return this.$t('vms_channel_meta.not_ready_roi').toString();
+      case VmsChannelEventCode.NotReadyFilters:
+        return this.$t('vms_channel_meta.bad_argument').toString();
       default:
-        return 'mdi-help-circle-outline';
+        return this.$t('vms_channel_meta.unknown_code', [event.code]).toString();
+    }
+  }
+
+  eventTooltip(event: VmsChannelEvent) {
+    if (event.items) {
+      return JSON.stringify(event.items);
+    } else {
+      return this.$t('vms_channel_meta.empty_events').toString();
     }
   }
 
@@ -1116,14 +1182,6 @@ export default class MediaPlayer extends VueBase {
 
   get progressLineColor() {
     return colors.grey.base;
-  }
-
-  get activeButtonIcon() {
-    if (this.value.active) {
-      return 'mdi-eye-off';
-    } else {
-      return 'mdi-eye';
-    }
   }
 
   onPause() {
@@ -1147,16 +1205,27 @@ export default class MediaPlayer extends VueBase {
     }
   }
 
-  onClickActive() {
+  onClickMore() {
+    this.showMoreMenu = true;
+  }
+
+  onClickReconnect() {
+    this.showMoreMenu = false;
+    this.close();
+    this.open();
+  }
+
+  onChangeActive() {
+    const group = this.group;
+    const project = this.project;
+    const device = this.deviceText;
+    this.disableActiveButton = true;
+
     const updateActiveFlag = !this.value.active;
     const body = {
       active: updateActiveFlag,
     } as VmsUpdateDeviceQ;
 
-    const group = this.group;
-    const project = this.project;
-    const device = this.deviceText;
-    this.disableActiveButton = true;
     this.$api2.patchVmsDevice(group, project, device, body)
         .then(() => {
           this.$set(this.value, 'active', updateActiveFlag)
@@ -1170,15 +1239,6 @@ export default class MediaPlayer extends VueBase {
         });
   }
 
-  onClickMore() {
-    this.showMoreMenu = true;
-  }
-
-  onClickReconnect() {
-    this.showMoreMenu = false;
-    this.close();
-    this.open();
-  }
 
   onChangeDebugging() {
     const group = this.group;
@@ -1212,6 +1272,12 @@ export default class MediaPlayer extends VueBase {
     this.rtcVideo.requestFullscreen();
   }
 
+  @Watch('value', {deep: true})
+  onWatchValue() {
+    this.activeSwitch = this.value.active ?? false;
+    this.debugSwitch = this.value.server_debugging ?? false;
+  }
+
   @Watch('eventConfigs', {deep: true})
   onWatchEventConfigs() {
   }
@@ -1234,11 +1300,6 @@ export default class MediaPlayer extends VueBase {
   @Emit()
   input() {
     return this.value;
-  }
-
-  @Emit()
-  predict(obj: Array<object>) {
-    return obj;
   }
 
   @Emit()
@@ -1513,8 +1574,7 @@ $information-panel-transparent: 0.4;
     position: absolute;
 
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
 
     padding: 0 4px 0 4px;
     margin: 4px 4px 0 4px;

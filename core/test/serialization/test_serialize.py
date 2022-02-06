@@ -47,6 +47,13 @@ class _Test4:
     test1: str
     test2: Optional[str] = None
 
+    @property
+    def test3(self):
+        return 30
+
+    def test4(self):  # noqa
+        return 40
+
 
 class _Enum1(Enum):
     Value0 = 0
@@ -100,7 +107,7 @@ class SerializeTestCase(TestCase):
     def test_test4(self):
         test = _Test4("aa")
         data = serialize(0, test)
-        result = {"test1": "aa"}
+        result = {"test1": "aa", "test3": 30}
         self.assertEqual(result, data)
 
     def test_datetime(self):

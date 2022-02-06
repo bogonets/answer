@@ -13,7 +13,7 @@ from recc.serialization.utils import (
 )
 from recc.serialization.interface import SERIALIZE_METHOD_NAME
 from recc.serialization.errors import SerializeError, NotImplementedSerializeError
-from recc.inspect.member import get_public_members
+from recc.inspect.member import get_public_attributes
 from recc.util.version import version_info
 
 
@@ -39,7 +39,7 @@ def _serialize_interface(version: int, obj: Any) -> Dict[str, Any]:
             return serialize_func(version)
     except (NotImplementedError, NotImplementedSerializeError):
         pass
-    return _create_serialize_dict(version, get_public_members(obj))
+    return _create_serialize_dict(version, get_public_attributes(obj))
 
 
 def _serialize_mapping(version: int, obj: Mapping) -> Dict[str, Any]:
@@ -51,7 +51,7 @@ def _serialize_mapping(version: int, obj: Mapping) -> Dict[str, Any]:
         keys_func = getattr(obj, MAPPING_METHOD_KEYS)
         items = [(str(k), getattr(obj, str(k))) for k in keys_func()]
     else:
-        items = get_public_members(obj)
+        items = get_public_attributes(obj)
     return _create_serialize_dict(version, items)
 
 
@@ -66,7 +66,7 @@ def _serialize_iterable(version: int, obj: Iterable) -> List[Any]:
 
 
 def _serialize_common(version: int, obj: Any) -> Dict[str, Any]:
-    return _create_serialize_dict(version, get_public_members(obj))
+    return _create_serialize_dict(version, get_public_attributes(obj))
 
 
 def _serialize_any(version: int, obj: Any, key: Optional[str] = None) -> Any:

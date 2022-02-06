@@ -22,6 +22,8 @@ en:
       An event is emitted when the result
       of the comparison operation becomes {condition}.
     snapshots: "You can select an existing snapshot."
+    train_snapshot_alt: "Train Snapshot"
+    logo_alt: "Answer"
   tools:
     snapshot: "Snapshot"
     clear: "Clear selection"
@@ -45,6 +47,8 @@ ko:
     operator: "비교 연산 결과가 {0}이 되면 이벤트가 발생됩니다."
     emit_condition: "비교 연산 결과가 {condition}이 되면 이벤트가 방출됩니다."
     snapshots: "기존에 사용한 스냅샷을 선택할 수 있습니다."
+    train_snapshot_alt: "훈련 스냅샷"
+    logo_alt: "Answer"
   tools:
     snapshot: "캡쳐"
     clear: "영역 해제"
@@ -66,12 +70,13 @@ ko:
         <v-card
             outlined
             tile
-            ref="train-content"
             class="train-content"
-            height="300px"
+            ref="train-content"
+            :style="`aspect-ratio: ${this.videoWidth}/${this.videoHeight};`"
         >
-          <div class="media-content">
+          <div class="train-placeholder">
             <canvas
+                v-show="existsSnapshot"
                 class="train-canvas"
                 ref="train-canvas"
                 :width="videoWidth"
@@ -88,9 +93,18 @@ ko:
                 :height="videoHeight"
             ></canvas>
             <img
+                v-show="existsSnapshot"
                 class="train-image"
                 ref="train-image"
+                :alt="$t('hints.train_snapshot_alt')"
                 :src="snapshotDataUrl"
+            />
+          </div>
+          <div v-show="!existsSnapshot" class="brand-logo-container">
+            <img
+                class="brand-logo"
+                src="@/assets/logo/answer-logo-notext.svg"
+                :alt="$t('hints.logo_alt')"
             />
           </div>
         </v-card>
@@ -175,6 +189,7 @@ ko:
                 dense
                 inset
                 v-model="emitCondition"
+                @change="onChangeEmit"
                 hide-details
             ></v-switch>
           </div>
@@ -252,6 +267,7 @@ import {
   EVENT_CONFIG_OPERATORS,
   imageDataUrlToVmsUploadImageQ,
 } from '@/packet/vms';
+import {valueToRatio, ratioToValue} from '@/math/ratio';
 
 function createEmptyObject() {
   return {};
@@ -276,19 +292,28 @@ export default class FormVmsEventConfigsMatching extends VueBase {
   @Prop({type: Number, default: 100})
   readonly maxDistance!: number;
 
+  @Prop({type: Number, default: 50})
+  readonly defaultDistance!: number;
+
   @Prop({type: Number, default: 0})
   readonly minThreshold!: number;
 
   @Prop({type: Number, default: 100})
   readonly maxThreshold!: number;
 
+  @Prop({type: Number, default: 50})
+  readonly defaultThreshold!: number;
+
   @Prop({type: Boolean, default: false})
   readonly useRoiAbsolutePosition!: boolean;
 
-  @Prop({type: Object, default: createEmptyObject})
-  readonly value!: any;
+  @Prop({type: Object, required: true})
+  readonly device!: VmsDeviceA;
 
-  @Prop({type: Boolean, default: false})
+  @Prop({type: Object, required: true})
+  readonly value!: VmsEventConfigMatchingQ;
+
+  @Prop({type: Boolean, required: true})
   readonly valid!: boolean;
 
   @Ref('train-canvas')
@@ -310,7 +335,6 @@ export default class FormVmsEventConfigsMatching extends VueBase {
   readonly mediaPlayerPlaceholder!: HTMLDivElement;
 
   loading = false;
-  device = {} as VmsDeviceA;
 
   snapshotNames = [] as Array<string>;
   snapshotName = '';
@@ -328,9 +352,9 @@ export default class FormVmsEventConfigsMatching extends VueBase {
   trainRoiButtonPressed = false;
   enableTrainAnnotation = false;
 
-  distance = 50;
-  threshold = 50;
-  operator = EVENT_CONFIG_OPERATOR_DEFAULT;
+  distance = 0;
+  threshold = 0;
+  operator = '';
   emitCondition = true;
 
   trainX1 = 0;
@@ -345,7 +369,46 @@ export default class FormVmsEventConfigsMatching extends VueBase {
 
   annotationMode = false;
 
-  created() {
+  mounted() {
+    const defaultDistance = valueToRatio(
+        this.defaultDistance, this.minDistance, this.maxDistance
+    );
+    const defaultThreshold = valueToRatio(
+        this.defaultThreshold, this.minThreshold, this.maxThreshold
+    );
+
+    this.value.train_image_uuid = this.value.train_image_uuid ?? '';
+    this.value.train_x1 = this.value.train_x1 ?? 0;
+    this.value.train_y1 = this.value.train_y1 ?? 0;
+    this.value.train_x2 = this.value.train_x2 ?? 0;
+    this.value.train_y2 = this.value.train_y2 ?? 0;
+    this.value.distance = this.value.distance ?? defaultDistance;
+    this.value.threshold = this.value.threshold ?? defaultThreshold;
+    this.value.operator = this.value.operator ?? EVENT_CONFIG_OPERATOR_DEFAULT;
+    this.value.emit_condition = this.value.emit_condition ?? true;
+    this.value.x1 = this.value.x1 ?? 0;
+    this.value.y1 = this.value.y1 ?? 0;
+    this.value.x2 = this.value.x2 ?? 0;
+    this.value.y2 = this.value.y2 ?? 0;
+
+    this.snapshotName = this.value.train_image_uuid
+    this.trainX1 = this.value.train_x1;
+    this.trainY1 = this.value.train_y1;
+    this.trainX2 = this.value.train_x2;
+    this.trainY2 = this.value.train_y2;
+    this.distance = ratioToValue(
+        this.value.distance, this.minDistance, this.maxDistance
+    );
+    this.threshold = ratioToValue(
+        this.value.threshold, this.minThreshold, this.maxThreshold
+    );
+    this.operator = this.value.operator;
+    this.emitCondition = this.value.emit_condition;
+    this.x1 = this.value.x1;
+    this.y1 = this.value.y1;
+    this.x2 = this.value.x2;
+    this.y2 = this.value.y2;
+
     this.setup();
   }
 
@@ -375,9 +438,13 @@ export default class FormVmsEventConfigsMatching extends VueBase {
           group, project, device
       );
 
-      const body = this.getExtra();
+      const snapshot = await this.$api2.getVmsDeviceProcessDebugEventMatchingTrainSnapshotsPsnapshot(
+          group, project, device, this.value.train_image_uuid
+      )
+      this.snapshotDataUrl = `data:${snapshot.content_type};${snapshot.encoding},${snapshot.content}`;
+
       await this.$api2.postVmsDeviceProcessDebugEventMatching(
-          group, project, device, body
+          group, project, device, this.value
       );
     } catch (error) {
       this.toastRequestFailure(error);
@@ -386,28 +453,8 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     }
   }
 
-  get distancePercentage() {
-    const min = this.minDistance;
-    const max = this.maxDistance;
-    const distance = this.distance;
-    console.assert(min >= 0);
-    console.assert(max > min);
-    console.assert(min <= distance && distance <= max);
-    const x = Math.abs(distance - min);
-    const width = Math.abs(max - min);
-    return x / width;
-  }
-
-  get thresholdPercentage() {
-    const min = this.minThreshold;
-    const max = this.maxThreshold;
-    const threshold = this.threshold;
-    console.assert(min >= 0);
-    console.assert(max > min);
-    console.assert(min <= threshold && threshold <= max);
-    const x = Math.abs(threshold - min);
-    const width = Math.abs(max - min);
-    return x / width;
+  get existsSnapshot() {
+    return !!this.snapshotDataUrl;
   }
 
   get emitConditionText() {
@@ -426,31 +473,30 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     }
   }
 
-  getExtra() {
-    return {
-      train_image_uuid: this.snapshotName,
-      train_x1: this.trainX1,
-      train_y1: this.trainY1,
-      train_x2: this.trainX2,
-      train_y2: this.trainY2,
-      distance: this.distancePercentage,
-      threshold: this.thresholdPercentage,
-      operator: this.operator,
-      emit_condition: this.emitCondition,
-      x1: this.x1,
-      y1: this.y1,
-      x2: this.x2,
-      y2: this.y2,
-    } as VmsEventConfigMatchingQ;
+  get trainSelectionButtonColor() {
+    if (this.enableTrainAnnotation) {
+      return 'primary';
+    } else {
+      return '';
+    }
+  }
+
+  get selectionButtonColor() {
+    if (this.annotationMode) {
+      return 'primary';
+    } else {
+      return '';
+    }
   }
 
   requestEventMatching() {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     const device = this.$route.params.device;
-    const body = this.getExtra();
     this.loading = true;
-    this.$api2.postVmsDeviceProcessDebugEventMatching(group, project, device, body)
+    this.$api2.postVmsDeviceProcessDebugEventMatching(
+        group, project, device, this.value
+    )
         .then(() => {
           this.loading = false;
         })
@@ -460,30 +506,18 @@ export default class FormVmsEventConfigsMatching extends VueBase {
         })
   }
 
-  @Emit()
-  input() {
-    this.value.train_image_uuid = this.snapshotName;
-    this.value.train_x1 = this.trainX1;
-    this.value.train_y1 = this.trainY1;
-    this.value.train_x2 = this.trainX2;
-    this.value.train_y2 = this.trainY2;
-    this.value.distance = this.distancePercentage;
-    this.value.threshold = this.thresholdPercentage;
-    this.value.operator = this.operator;
-    this.value.emit_condition = this.emitCondition;
-    this.value.x1 = this.x1;
-    this.value.y1 = this.y1;
-    this.value.x2 = this.x2;
-    this.value.y2 = this.y2;
-    this.updateValid();
-    return this.value;
-  }
-
   @Emit('update:valid')
   updateValid() {
     const valid1 = !!this.trainX1 && !!this.trainY1 && !!this.trainX2 && !!this.trainY2;
     const valid2 = !!this.x1 && !!this.y1 && !!this.x2 && !!this.y2;
     return !!this.snapshotName && valid1 && valid2;
+  }
+
+  @Emit()
+  input() {
+    this.requestEventMatching();
+    this.updateValid();
+    return this.value;
   }
 
   onInputSnapshot(value: string) {
@@ -499,7 +533,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
           this.loading = false;
           this.snapshotDataUrl = `data:${item.content_type};${item.encoding},${item.content}`;
           this.snapshotName = value;
-          this.updateVideoSize();
+          this.value.train_image_uuid = value;
 
           // const context = this.canvasSnap.getContext('2d');
           // if (context) {
@@ -508,7 +542,7 @@ export default class FormVmsEventConfigsMatching extends VueBase {
           //   context.drawImage(img,0,0);
           // }
 
-          this.requestEventMatching();
+          this.updateVideoSize();
           this.input();
         })
         .catch(error => {
@@ -518,43 +552,49 @@ export default class FormVmsEventConfigsMatching extends VueBase {
   }
 
   onClickRemoveSnapshot() {
-    if (this.snapshotName) {
-      const group = this.$route.params.group;
-      const project = this.$route.params.project;
-      const device = this.$route.params.device;
-      const snapshot = this.snapshotName;
-      this.$api2.deleteVmsDeviceProcessDebugEventMatchingTrainSnapshotsPsnapshot(
-          group, project, device, snapshot
-      )
-          .then(() => {
-            const index = this.snapshotNames.findIndex(n => n === this.snapshotName);
-            if (index >= 0) {
-              this.snapshotNames.splice(index, 1);
-            }
-            this.snapshotName = '';
-            this.snapshotDataUrl = '';
-
-            this.requestEventMatching();
-            this.input();
-          })
-          .catch(error => {
-            this.toastRequestFailure(error);
-          });
+    if (!this.snapshotName) {
+      return;
     }
+
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+    const device = this.$route.params.device;
+    const snapshot = this.snapshotName;
+    this.$api2.deleteVmsDeviceProcessDebugEventMatchingTrainSnapshotsPsnapshot(
+        group, project, device, snapshot
+    )
+        .then(() => {
+          const index = this.snapshotNames.findIndex(n => n === this.snapshotName);
+          if (index >= 0) {
+            this.snapshotNames.splice(index, 1);
+          }
+          this.snapshotDataUrl = '';
+          this.snapshotName = '';
+          this.value.train_image_uuid = '';
+          this.input();
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+        });
   }
 
   onChangeDistance(value: number) {
-    this.requestEventMatching();
+    this.value.distance = valueToRatio(value, this.minDistance, this.maxDistance);
     this.input();
   }
 
   onChangeThreshold(value: number) {
-    this.requestEventMatching();
+    this.value.threshold = valueToRatio(value, this.minThreshold, this.maxThreshold);
     this.input();
   }
 
   onChangeOperator(value: string) {
-    this.requestEventMatching();
+    this.value.operator = value;
+    this.input();
+  }
+
+  onChangeEmit(value?: boolean) {
+    this.value.emit_condition = !!value;
     this.input();
   }
 
@@ -574,7 +614,9 @@ export default class FormVmsEventConfigsMatching extends VueBase {
           this.snapshotDataUrl = image;
           this.snapshotNames.push(item.name);
           this.snapshotName = item.name;
+          this.value.train_image_uuid = item.name;
           this.updateVideoSize();
+          this.input();
         })
         .catch(error => {
           this.uploading = false;
@@ -588,25 +630,12 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     this.y1 = 0;
     this.x2 = 0;
     this.y2 = 0;
+    this.value.x1 = 0;
+    this.value.y1 = 0;
+    this.value.x2 = 0;
+    this.value.y2 = 0;
     this.mediaPlayer.clearAnnotations();
-    this.requestEventMatching();
     this.input();
-  }
-
-  get trainSelectionButtonColor() {
-    if (this.enableTrainAnnotation) {
-      return 'primary';
-    } else {
-      return '';
-    }
-  }
-
-  get selectionButtonColor() {
-    if (this.annotationMode) {
-      return 'primary';
-    } else {
-      return '';
-    }
   }
 
   onClickTrainClear() {
@@ -614,17 +643,20 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     this.trainY1 = 0;
     this.trainX2 = 0;
     this.trainY2 = 0;
+    this.value.train_x1 = 0;
+    this.value.train_y1 = 0;
+    this.value.train_x2 = 0;
+    this.value.train_y2 = 0;
 
     const context = this.canvasTrain.getContext('2d');
-    const width = this.canvasTrain.width;
-    const height = this.canvasTrain.height;
-    console.debug(`onClickTrainClear(w=${width},h=${height})`);
-    if (!context) {
-      throw new Error('Not exists 2d context from user-canvas.');
+    if (context) {
+      const width = this.canvasTrain.width;
+      const height = this.canvasTrain.height;
+      context.clearRect(0, 0, width, height);
+    } else {
+      console.error('Not exists 2d context from user-canvas');
     }
-    context.clearRect(0, 0, width, height);
 
-    this.requestEventMatching();
     this.input();
   }
 
@@ -637,34 +669,37 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     this.trainY1 = this.y1;
     this.trainX2 = this.x2;
     this.trainY2 = this.y2;
+    this.value.train_x1 = this.x1;
+    this.value.train_y1 = this.y1;
+    this.value.train_x2 = this.x2;
+    this.value.train_y2 = this.y2;
 
     const context = this.canvasTrain.getContext('2d');
     const width = this.canvasTrain.width;
     const height = this.canvasTrain.height;
-    if (!context) {
-      throw new Error('Not exists 2d context from user-canvas.');
-    }
-
-    context.lineWidth = 5;
-    context.strokeStyle = 'red';
-    context.clearRect(0, 0, width, height);
-    if (this.useRoiAbsolutePosition) {
-      context.strokeRect(
-          this.trainX1,
-          this.trainY1,
-          this.trainX2 - this.trainX1,
-          this.trainY2 - this.trainY1,
-      );
+    if (context) {
+      context.lineWidth = 5;
+      context.strokeStyle = 'red';
+      context.clearRect(0, 0, width, height);
+      if (this.useRoiAbsolutePosition) {
+        context.strokeRect(
+            this.trainX1,
+            this.trainY1,
+            this.trainX2 - this.trainX1,
+            this.trainY2 - this.trainY1,
+        );
+      } else {
+        context.strokeRect(
+            this.trainX1 * width,
+            this.trainY1 * height,
+            (this.trainX2 - this.trainX1) * width,
+            (this.trainY2 - this.trainY1) * height,
+        );
+      }
     } else {
-      context.strokeRect(
-          this.trainX1 * width,
-          this.trainY1 * height,
-          (this.trainX2 - this.trainX1) * width,
-          (this.trainY2 - this.trainY1) * height,
-      );
+      console.error('Not exists 2d context from user-canvas');
     }
 
-    this.requestEventMatching();
     this.input();
   }
 
@@ -759,8 +794,11 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     this.trainY1 = top;
     this.trainX2 = right;
     this.trainY2 = bottom;
+    this.value.train_x1 = left;
+    this.value.train_y1 = top;
+    this.value.train_x2 = right;
+    this.value.train_y2 = bottom;
     this.enableTrainAnnotation = false;
-    this.requestEventMatching();
     this.input();
   }
 
@@ -769,14 +807,17 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     this.y1 = roi.y1;
     this.x2 = roi.x2;
     this.y2 = roi.y2;
+    this.value.x1 = roi.x1;
+    this.value.y1 = roi.y1;
+    this.value.x2 = roi.x2;
+    this.value.y2 = roi.y2;
     this.annotationMode = false;
     // console.debug(`onRoi -> x1=${roi.x1},y1=${roi.y1},x2=${roi.x2},y2=${roi.y2}`);
-    this.requestEventMatching();
     this.input();
   }
 
   onVideoResize({width, height}) {
-    console.debug(`onVideoResize(width=${width},height=${height})`);
+    // console.debug(`onVideoResize(width=${width},height=${height})`);
     this.videoWidth = width;
     this.videoHeight = height;
   }
@@ -787,36 +828,36 @@ export default class FormVmsEventConfigsMatching extends VueBase {
 @mixin common-media {
   position: absolute;
 
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  padding: 0;
+  margin: 0;
+
+  width: 100%;
+  height: 100%;
 
   object-fit: contain;
   object-position: center;
-
-  max-width: 100%;
-  max-height: 100%;
-
-  padding: 0;
-  margin: 0;
 }
 
 .train-content {
+  // Important:
+  // Required to fix the position of the 'absolute block' among the child elements.
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block
+  position: relative;
+
   display: flex;
 
   padding: 0;
   margin: 0;
+  border: 0;
+
+  min-width: 64px;
+  min-height: 64px;
 
   background: gray;
 
-  min-width: 100px;
-  min-height: 100px;
-
-  .media-content {
-    flex: 1;
-
+  .train-placeholder {
     padding: 0;
-    border: 0;
+    margin: 0;
 
     .train-canvas {
       @include common-media;
@@ -831,6 +872,27 @@ export default class FormVmsEventConfigsMatching extends VueBase {
     .train-image {
       @include common-media;
       z-index: 10;
+    }
+  }
+
+  .brand-logo-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 0;
+    margin: 0;
+
+    .brand-logo {
+      min-width: 8px;
+      min-height: 8px;
+
+      max-width: 256px;
+      max-height: 256px;
     }
   }
 }

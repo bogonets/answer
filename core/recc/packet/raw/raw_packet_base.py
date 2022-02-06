@@ -4,7 +4,7 @@ from typing import Iterable, Union, Optional, Mapping, List
 from functools import reduce
 from io import BytesIO
 from recc.packet.raw.raw_field_spec import RawFieldSpec
-from recc.inspect.member import get_public_members
+from recc.inspect.member import get_public_attributes
 
 DEFAULT_VERSION = 0
 
@@ -64,14 +64,14 @@ class RawPacketBase:
         return self.proofread_by_spec(self.get_spec(key, version), value)
 
     def to_dict(self) -> dict:
-        return dict(get_public_members(self))
+        return dict(get_public_attributes(self))
 
     def from_dict(self, **kwargs) -> None:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
     def clear(self) -> None:
-        for key, _ in get_public_members(self):
+        for key, _ in get_public_attributes(self):
             setattr(self, key, type(getattr(self, key))())
 
     def to_bytes(self, version=DEFAULT_VERSION) -> bytes:

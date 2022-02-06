@@ -50,8 +50,8 @@ ko:
       >
         <v-color-picker
             elevation="1"
-            :value="color"
-            @input="onInputColor"
+            v-model="color"
+            @change="onChangeColor"
             dot-size="14"
             mode="rgba"
         ></v-color-picker>
@@ -63,9 +63,11 @@ ko:
             :max="maxThreshold"
             :label="$t('labels.threshold')"
             :hint="$t('hints.threshold')"
-            :value="value.threshold"
+            v-model="threshold"
             @change="onChangeThreshold"
         ></v-slider>
+
+        <!-- Not available -->
         <v-select
             v-if="showOperator"
             class="mt-2"
@@ -73,7 +75,7 @@ ko:
             persistent-hint
             :items="operators"
             :hint="$t('hints.operator', [emitConditionText])"
-            :value="value.operator"
+            v-model="operator"
             @change="onChangeOperator"
         ></v-select>
 
@@ -87,8 +89,8 @@ ko:
                 class="mt-0"
                 dense
                 inset
-                :value="value.emit_condition"
-                @change="onChangeEmitCondition"
+                v-model="emit"
+                @change="onChangeEmit"
                 hide-details
             ></v-switch>
           </div>
@@ -167,6 +169,7 @@ import type {
   VmsDeviceA,
 } from '@/packet/vms';
 import {rgbToHex, hexToRgb} from '@/color';
+import {valueToRatio, ratioToValue} from '@/math/ratio';
 
 @Component({
   components: {
@@ -185,13 +188,16 @@ export default class FormVmsEventConfigsColor extends VueBase {
   @Prop({type: Number, default: 100})
   readonly maxThreshold!: number;
 
-  @Prop({type: Object, default: () => new Object()})
+  @Prop({type: Number, default: 50})
+  readonly defaultThreshold!: number;
+
+  @Prop({type: Object, required: true})
   readonly device!: VmsDeviceA;
 
-  @Prop({type: Object, default: () => new Object()})
+  @Prop({type: Object, required: true})
   readonly value!: VmsEventConfigColorQ;
 
-  @Prop({type: Boolean, default: false})
+  @Prop({type: Boolean, required: true})
   readonly valid!: boolean;
 
   @Ref('media-player')
@@ -201,43 +207,40 @@ export default class FormVmsEventConfigsColor extends VueBase {
   pipetteMode = false;
   annotationMode = false;
 
+  color = '';
+  threshold = 0;
+  operator = '';
+  emit = false;
+
   mounted() {
+    const defaultThreshold = valueToRatio(
+        this.defaultThreshold, this.minThreshold, this.maxThreshold
+    );
+
     this.value.red = this.value.red ?? 0;
     this.value.green = this.value.green ?? 0;
     this.value.blue = this.value.blue ?? 0;
-    this.value.threshold = this.value.threshold ?? 0;
+    this.value.threshold = this.value.threshold ?? defaultThreshold;
     this.value.operator = this.value.operator ?? EVENT_CONFIG_OPERATOR_DEFAULT;
-    this.value.emit_condition = this.value.emit_condition ?? false;
+    this.value.emit_condition = this.value.emit_condition ?? true;
     this.value.x1 = this.value.x1 ?? 0;
     this.value.y1 = this.value.y1 ?? 0;
     this.value.x2 = this.value.x2 ?? 0;
     this.value.y2 = this.value.y2 ?? 0;
 
+    this.color = rgbToHex(this.value.red, this.value.green, this.value.blue);
+    this.operator = this.value.operator;
+    this.threshold = ratioToValue(
+        this.value.threshold, this.minThreshold, this.maxThreshold
+    );
+    this.emit = this.value.emit_condition;
+
     this.requestEventColor();
     this.updateValid();
   }
 
-  get color() {
-    const r = this.value.red || 0;
-    const g = this.value.green || 0;
-    const b = this.value.blue || 0;
-    return rgbToHex(r, g, b);
-  }
-
-  // get thresholdPercentage() {
-  //   const min = this.minThreshold;
-  //   const max = this.maxThreshold;
-  //   const threshold = this.value.threshold || 0;
-  //   console.assert(min >= 0);
-  //   console.assert(max > min);
-  //   console.assert(min <= threshold && threshold <= max);
-  //   const x = Math.abs(threshold - min);
-  //   const width = Math.abs(max - min);
-  //   return x / width;
-  // }
-
   get emitConditionText() {
-    if (this.value.emit_condition) {
+    if (this.emit) {
       return this.$t('labels.true');
     } else {
       return this.$t('labels.false');
@@ -245,7 +248,7 @@ export default class FormVmsEventConfigsColor extends VueBase {
   }
 
   get emitConditionClass() {
-    if (this.value.emit_condition) {
+    if (this.emit) {
       return 'green--text';
     } else {
       return 'red--text';
@@ -284,20 +287,20 @@ export default class FormVmsEventConfigsColor extends VueBase {
         })
   }
 
-  get validColor() {
+  validColor() {
     return (0 <= this.value.red && this.value.red <= 255)
         && (0 <= this.value.green && this.value.green <= 255)
         && (0 <= this.value.blue && this.value.blue <= 255);
   }
 
-  get validRoi() {
+  validRoi() {
     return Math.abs(this.value.x2 - this.value.x1) > 0
         && Math.abs(this.value.y2 - this.value.y1) > 0;
   }
 
   @Emit('update:valid')
   updateValid() {
-    return this.validColor && this.validRoi;
+    return this.validColor() && this.validRoi();
   }
 
   @Emit()
@@ -307,31 +310,32 @@ export default class FormVmsEventConfigsColor extends VueBase {
     return this.value;
   }
 
-  onInputColor(event: string) {
+  onChangeColor(event: string) {
     const color = hexToRgb(event);
+
     const red = color?.r || 0;
     const green = color?.g || 0;
     const blue = color?.b || 0;
 
-    this.$set(this.value, 'red', red);
-    this.$set(this.value, 'green', green);
-    this.$set(this.value, 'blue', blue);
+    this.value.red = red;
+    this.value.green = green;
+    this.value.blue = blue;
 
     this.input();
   }
 
-  onChangeThreshold(threshold: number) {
-    this.$set(this.value, 'threshold', threshold);
+  onChangeThreshold(value: number) {
+    this.value.threshold = valueToRatio(value, this.minThreshold, this.maxThreshold);
     this.input();
   }
 
-  onChangeOperator(operator: string) {
-    this.$set(this.value, 'operator', operator);
+  onChangeOperator(value: string) {
+    this.value.operator = value;
     this.input();
   }
 
-  onChangeEmitCondition(condition?: boolean) {
-    this.$set(this.value, 'emit_condition', !!condition);
+  onChangeEmit(value?: boolean) {
+    this.value.emit_condition = !!value;
     this.input();
   }
 
@@ -340,10 +344,10 @@ export default class FormVmsEventConfigsColor extends VueBase {
   }
 
   onClickClear() {
-    this.$set(this.value, 'x1', 0);
-    this.$set(this.value, 'y1', 0);
-    this.$set(this.value, 'x2', 0);
-    this.$set(this.value, 'y2', 0);
+    this.value.x1 = 0;
+    this.value.y1 = 0;
+    this.value.x2 = 0;
+    this.value.y2 = 0;
     this.mediaPlayer.clearAnnotations();
     this.input();
   }
@@ -357,10 +361,11 @@ export default class FormVmsEventConfigsColor extends VueBase {
     const green = color?.g || 0;
     const blue = color?.b || 0;
 
-    this.$set(this.value, 'red', red);
-    this.$set(this.value, 'green', green);
-    this.$set(this.value, 'blue', blue);
+    this.value.red = red;
+    this.value.green = green;
+    this.value.blue = blue;
 
+    this.color = rgbToHex(red, green, blue);
     this.pipetteMode = false;
     this.input();
   }
@@ -371,10 +376,10 @@ export default class FormVmsEventConfigsColor extends VueBase {
     const x2 = roi.x2 || 0;
     const y2 = roi.y2 || 0;
 
-    this.$set(this.value, 'x1', x1);
-    this.$set(this.value, 'y1', y1);
-    this.$set(this.value, 'x2', x2);
-    this.$set(this.value, 'y2', y2);
+    this.value.x1 = x1;
+    this.value.y1 = y1;
+    this.value.x2 = x2;
+    this.value.y2 = y2;
 
     this.annotationMode = false;
     this.input();

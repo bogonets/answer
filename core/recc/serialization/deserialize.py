@@ -32,7 +32,7 @@ from recc.serialization.utils import (
 )
 from recc.serialization.interface import DESERIALIZE_METHOD_NAME
 from recc.serialization.errors import DeserializeError
-from recc.inspect.member import get_public_members
+from recc.inspect.member import get_public_attributes
 from recc.inspect.init_signature import required_init_parameters
 from recc.util.version import version_info
 
@@ -127,7 +127,7 @@ def _deserialize_mapping(
         keys = keys_func()
         return _deserialize_mapping_by_keys(version, data, cls, keys, elem_hint)
     else:
-        members = get_public_members(data)
+        members = get_public_attributes(data)
         return _deserialize_mapping_by_items(version, cls, members, elem_hint)
 
 
@@ -182,7 +182,7 @@ def _deserialize_iterable_any(
 def _deserialize_data_to_dict(version: int, data: Any, cls: Type[_T]) -> Dict[str, Any]:
     result: Dict[str, Any] = dict()
     result_hints = get_type_hints(cls)
-    for key, serialize_value in get_public_members(data):
+    for key, serialize_value in get_public_attributes(data):
         hint = result_hints.get(key)
         origin = get_origin(hint)
 

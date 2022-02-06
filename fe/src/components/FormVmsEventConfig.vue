@@ -275,6 +275,16 @@ import FormVmsEventConfigsDetection from '@/components/FormVmsEventConfigsDetect
 import FormVmsEventConfigsMatching from '@/components/FormVmsEventConfigsMatching.vue';
 import FormVmsEventConfigsOcr from '@/components/FormVmsEventConfigsOcr.vue';
 
+function createEmptyVmsEventConfigA() {
+  return {
+    // [IMPORTANT]
+    // Required for child components.
+    extra: {
+      // EMPTY.
+    }
+  } as VmsEventConfigA;
+}
+
 @Component({
   components: {
     LabelSpan,
@@ -297,11 +307,11 @@ export default class FormVmsEventConfig extends VueBase {
       text: this.$t('category.color'),
       value: EVENT_CATEGORY_NAME_COLOR,
     },
-    {
-      icon: 'mdi-image-search',
-      text: this.$t('category.detection'),
-      value: EVENT_CATEGORY_NAME_DETECTION,
-    },
+    // {
+    //   icon: 'mdi-image-search',
+    //   text: this.$t('category.detection'),
+    //   value: EVENT_CATEGORY_NAME_DETECTION,
+    // },
     {
       icon: 'mdi-compare',
       text: this.$t('category.matching'),
@@ -338,7 +348,7 @@ export default class FormVmsEventConfig extends VueBase {
   @Prop({type: Object, default: () => new Object()})
   readonly device!: VmsDeviceA;
 
-  @Prop({type: Object, default: () => new Object()})
+  @Prop({type: Object, default: createEmptyVmsEventConfigA})
   readonly value!: VmsEventConfigA;
 
   @Ref()

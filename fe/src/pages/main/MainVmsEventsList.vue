@@ -17,14 +17,15 @@ en:
     matching: "Matching"
     ocr: "OCR"
   hints:
-    description: "A detailed description of the event."
+    description: "A detailed description of the event"
   title:
     tag: "Edit Event"
   subtitle:
-    tag: "View or edit specific information about an event."
+    tag: "View or edit specific information about an event"
   all_devices: "All Devices"
   unknown_device: "[Unknown Device]"
   no_name_device: "[No name Device]"
+  empty_extra: "[Emtpy]"
   close: "Close"
   cancel: "Cancel"
   submit: "Submit"
@@ -47,14 +48,15 @@ ko:
     matching: "영상 비교"
     ocr: "문자 인식"
   hints:
-    description: "이벤트에 대한 상세한 설명입니다."
+    description: "이벤트에 대한 상세한 설명입니다"
   title:
     tag: "이벤트 편집"
   subtitle:
-    tag: "이벤트의 구체적인 정보를 열람하거나 편집합니다."
+    tag: "이벤트의 구체적인 정보를 열람하거나 편집합니다"
   all_devices: "전체 장치"
   unknown_device: "[알 수 없는 장치]"
   no_name_device: "[이름 없는 장치]"
+  empty_extra: "[비어있습니다]"
   close: "닫기"
   cancel: "취소"
   submit: "제출"
@@ -224,15 +226,17 @@ ko:
           </div>
 
           <div class="event-description">
-            <span>
-              {{ `${item.extra}` }}
+            <span class="text-truncate text--secondary text-body-2 text-no-wrap mb-1">
+              {{ extraStringify(item) }}
             </span>
+
             <v-btn
                 v-if="!existsDescription(item)"
                 color="secondary"
                 rounded
                 outlined
                 depressed
+                small
                 @click="onClickTag(item)"
             >
               {{ $t('labels.new_description') }}
@@ -521,6 +525,13 @@ export default class MainVmsEventsList extends VueBase {
 
   eventDateTime(item: VmsEventA) {
     return iso8601ToLocal(item.time);
+  }
+
+  extraStringify(item: VmsEventA) {
+    if (!item.extra) {
+      return this.$t('empty_extra').toString();
+    }
+    return item.extra.message;
   }
 
   existsDescription(item: VmsEventA) {

@@ -16,10 +16,15 @@ def is_public_member(name: str) -> bool:
     return not is_private_member(name)
 
 
-def get_public_members(data: Any) -> List[Tuple[str, Any]]:
+def is_property(obj: Any, key: str) -> bool:
+    cls = obj if isinstance(obj, type) else type(obj)
+    return hasattr(cls, key) and isinstance(getattr(cls, key), property)
+
+
+def get_public_attributes(data: Any) -> List[Tuple[str, Any]]:
     if isinstance(data, Mapping):
         return [(str(k), v) for k, v in data.items()]
     if isinstance(data, Iterable):
         return [(str(i), v) for i, v in enumerate(data)]
-    members = getmembers(data, lambda a: not isroutine(a))
-    return list(filter(lambda x: is_public_member(x[0]), members))
+    attributes = getmembers(data, lambda a: not isroutine(a))
+    return list(filter(lambda x: is_public_member(x[0]), attributes))
