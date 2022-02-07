@@ -325,6 +325,7 @@ import type {
   VmsUpdateEventTagQ,
 } from '@/packet/vms';
 import {
+  ANY_DEVICE_UID,
   EVENT_CATEGORY_ID_COLOR,
   EVENT_CATEGORY_ID_DETECTION,
   EVENT_CATEGORY_ID_MATCHING,
@@ -337,7 +338,6 @@ import {
 import {todayString} from '@/chrono/date';
 import {iso8601ToLocal} from '@/chrono/iso8601';
 
-const ANY_DEVICE_UID = -1;
 const CONTAINER_BOTTOM_MARGIN = 12;
 
 interface Snapshot {
@@ -564,8 +564,6 @@ export default class MainVmsEventsList extends VueBase {
         .then(items => {
           this.search = false;
           this.events = items;
-          console.dir(this.events);
-
         })
         .catch(error => {
           this.search = false;

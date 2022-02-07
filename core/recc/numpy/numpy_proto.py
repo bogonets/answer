@@ -11,6 +11,12 @@ def _ndarray_to_bytes_by_darwin(array: np.ndarray) -> bytes:
 
 
 def _ndarray_to_bytes(array: np.ndarray) -> bytes:
+    """
+    .. warning::
+        The following error may occur during serialization:
+        'multi-dimensional sub-views are not implemented'
+    """
+
     if array.flags["C_CONTIGUOUS"]:
         return array.data
     else:
@@ -52,6 +58,7 @@ class NumpyProto:
         return cls(
             shape=list(array.shape),
             dtype_name=array.dtype.name,
-            buffer=ndarray_to_bytes(array),
+            # buffer=ndarray_to_bytes(array),
+            buffer=array.tobytes(),
             strides=list(array.strides),
         )

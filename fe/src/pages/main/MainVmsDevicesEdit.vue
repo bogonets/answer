@@ -73,11 +73,12 @@ ko:
       </v-tab-item>
 
       <v-tab-item>
-        <form-vms-record
+        <hls-player
+            v-if="tabIndex === 2"
             :group="$route.params.group"
             :project="$route.params.project"
             :device="$route.params.device"
-        ></form-vms-record>
+        ></hls-player>
       </v-tab-item>
 
       <v-tab-item>
@@ -126,8 +127,8 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import MediaPlayer from '@/media/MediaPlayer.vue';
+import HlsPlayer from '@/media/HlsPlayer.vue';
 import FormVmsDevice from '@/components/FormVmsDevice.vue';
-import FormVmsRecord from '@/components/FormVmsRecord.vue';
 import TableVmsEventConfigs from '@/components/TableVmsEventConfigs.vue';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import type {
@@ -142,8 +143,8 @@ import * as _ from 'lodash';
   components: {
     ToolbarBreadcrumbs,
     MediaPlayer,
+    HlsPlayer,
     FormVmsDevice,
-    FormVmsRecord,
     TableVmsEventConfigs,
   }
 })

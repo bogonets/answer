@@ -1,3 +1,5 @@
+export const ANY_DEVICE_UID = -1;
+
 export const EVENT_CATEGORY_ID_COLOR = 1;
 export const EVENT_CATEGORY_ID_DETECTION = 2;
 export const EVENT_CATEGORY_ID_MATCHING = 3;

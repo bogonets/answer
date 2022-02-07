@@ -17,9 +17,12 @@ import VueBase from '@/base/VueBase';
 import colors from 'vuetify/lib/util/colors'
 import {ContextException, InvalidRangeException} from '@/exceptions';
 
-interface DateRange {
+export const MILLISECONDS_TO_DAY = 24 * 60 * 60 * 1000;
+
+export interface RatioRange {
   start: number;
   last: number;
+  count: number;
 }
 
 @Component
@@ -54,7 +57,7 @@ export default class RecordController extends VueBase {
   readonly recordHeight!: number;
 
   @Prop({type: Array, default: () => []})
-  readonly recordRanges!: Array<DateRange>;
+  readonly recordRanges!: Array<RatioRange>;
 
   // --------------------------------
   // [Drawing Order #3] Record Buffer
@@ -71,7 +74,7 @@ export default class RecordController extends VueBase {
   readonly eventHeight!: number;
 
   @Prop({type: Array, default: () => []})
-  readonly eventRanges!: Array<DateRange>;
+  readonly eventRanges!: Array<RatioRange>;
 
   // -------------------------------
   // [Drawing Order #5] Event Buffer
@@ -263,14 +266,14 @@ export default class RecordController extends VueBase {
         this.eventHeight,
     );
 
-    const eventBufferY = eventY + this.eventHeight;
-    this.drawEvent(
-        context,
-        this.paddingLeft,
-        eventBufferY,
-        rulerWidth,
-        this.eventBufferHeight,
-    );
+    // const eventBufferY = eventY + this.eventHeight;
+    // this.drawEvent(
+    //     context,
+    //     this.paddingLeft,
+    //     eventBufferY,
+    //     rulerWidth,
+    //     this.eventBufferHeight,
+    // );
 
     this.drawCursor(context, this.paddingLeft, this.rulerHeight, rulerWidth, h);
   }
@@ -364,9 +367,9 @@ export default class RecordController extends VueBase {
   ) {
     context.fillStyle = this.recordColor;
     for (const range of this.recordRanges) {
-      const left = x + (range.start / w);
-      const right = x + (range.last / w);
-      context.fillRect(left, y, right, h);
+      const left = x + (range.start * w);
+      const right = x + (range.last * w);
+      context.fillRect(left, y, Math.abs(right - left), h);
     }
   }
 
@@ -379,9 +382,9 @@ export default class RecordController extends VueBase {
   ) {
     context.fillStyle = this.eventColor;
     for (const range of this.eventRanges) {
-      const left = x + (range.start / w);
-      const right = x + (range.last / w);
-      context.fillRect(left, y, right, h);
+      const left = x + (range.start * w);
+      const right = x + (range.last * w);
+      context.fillRect(left, y, Math.abs(right - left), h);
     }
   }
 
