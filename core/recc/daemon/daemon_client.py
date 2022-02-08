@@ -5,6 +5,8 @@ from typing import Optional, List, Dict, Any
 from uuid import uuid4
 from multiprocessing.shared_memory import SharedMemory
 from grpc.aio._channel import Channel  # noqa
+from recc.chrono.datetime import today
+from recc.logging.logging import recc_daemon_logger as logger
 from recc.daemon.mixin.daemon_packer import DaemonPacker
 from recc.daemon.daemon_content_type import DaemonContentType
 from recc.memory.shared_memory_queue import SharedMemoryQueue
@@ -16,6 +18,7 @@ from recc.variables.rpc import (
     DEFAULT_HEARTBEAT_TIMEOUT,
     DEFAULT_PICKLE_ENCODING,
 )
+from recc.variables.logging import VERBOSE_LOGGING_LEVEL_3
 
 M_GET = "GET"
 M_HEAD = "HEAD"
@@ -199,20 +202,42 @@ class DaemonClient(DaemonPacker):
         path: str,
         data: Optional[Any] = None,
         cls: Optional[Any] = None,
+        verbose_level=0,
     ) -> Any:
         content_type = self._content_type
         level = self._compress_level
         encoding = self._encoding
+        logging = verbose_level >= VERBOSE_LOGGING_LEVEL_3
 
         if data is not None:
+            begin = today() if logging else None
             body = self.encode(data, content_type, level=level)
+            if begin is not None:
+                t = content_type.name
+                e = round((today() - begin).total_seconds(), 4)
+                logger.debug(f"Request data encode (type={t},elapsed={e}s)")
         else:
             body = bytes()
 
+        begin = today() if logging else None
         result = await self.packet(content_type, method, path, body)
+        if begin is not None:
+            e = round((today() - begin).total_seconds(), 4)
+            logger.debug(
+                f"Handshake (send={len(body)}byte,recv={len(result)}byte,elapsed={e}s)"
+            )
 
         if result:
-            return self.decode(result, content_type, cls, encoding=encoding)
+            begin = today() if logging else None
+            decoded_result = self.decode(result, content_type, cls, encoding=encoding)
+            if begin is not None:
+                t = content_type.name
+                s = len(result)
+                e = round((today() - begin).total_seconds(), 4)
+                logger.debug(
+                    f"Response data decode (type={t},size={s}byte,elapsed={e}s)"
+                )
+            return decoded_result
         else:
             return result
 
@@ -221,72 +246,81 @@ class DaemonClient(DaemonPacker):
         path: str,
         data: Optional[Any] = None,
         cls: Optional[Any] = None,
+        verbose_level=0,
     ) -> Any:
-        return await self.request(M_GET, path, data, cls)
+        return await self.request(M_GET, path, data, cls, verbose_level)
 
     async def head(
         self,
         path: str,
         data: Optional[Any] = None,
         cls: Optional[Any] = None,
+        verbose_level=0,
     ) -> Any:
-        return await self.request(M_HEAD, path, data, cls)
+        return await self.request(M_HEAD, path, data, cls, verbose_level)
 
     async def post(
         self,
         path: str,
         data: Optional[Any] = None,
         cls: Optional[Any] = None,
+        verbose_level=0,
     ) -> Any:
-        return await self.request(M_POST, path, data, cls)
+        return await self.request(M_POST, path, data, cls, verbose_level)
 
     async def put(
         self,
         path: str,
         data: Optional[Any] = None,
         cls: Optional[Any] = None,
+        verbose_level=0,
     ) -> Any:
-        return await self.request(M_PUT, path, data, cls)
+        return await self.request(M_PUT, path, data, cls, verbose_level)
 
     async def delete(
         self,
         path: str,
         data: Optional[Any] = None,
         cls: Optional[Any] = None,
+        verbose_level=0,
     ) -> Any:
-        return await self.request(M_DELETE, path, data, cls)
+        return await self.request(M_DELETE, path, data, cls, verbose_level)
 
     async def connect(
         self,
         path: str,
         data: Optional[Any] = None,
         cls: Optional[Any] = None,
+        verbose_level=0,
     ) -> Any:
-        return await self.request(M_CONNECT, path, data, cls)
+        return await self.request(M_CONNECT, path, data, cls, verbose_level)
 
     async def options(
         self,
         path: str,
         data: Optional[Any] = None,
         cls: Optional[Any] = None,
+        verbose_level=0,
     ) -> Any:
-        return await self.request(M_OPTIONS, path, data, cls)
+        return await self.request(M_OPTIONS, path, data, cls, verbose_level)
 
     async def trace(
         self,
         path: str,
         data: Optional[Any] = None,
         cls: Optional[Any] = None,
+        verbose_level=0,
     ) -> Any:
-        return await self.request(M_TRACE, path, data, cls)
+        return await self.request(M_TRACE, path, data, cls, verbose_level)
 
     async def patch(
         self,
         path: str,
         data: Optional[Any] = None,
         cls: Optional[Any] = None,
+        verbose_level=0,
     ) -> Any:
-        return await self.request(M_PATCH, path, data, cls)
+        return await self.request(M_PATCH, path, data, cls, verbose_level)
 
 
 def create_daemon_client(address: str, timeout: Optional[float] = None) -> DaemonClient:
