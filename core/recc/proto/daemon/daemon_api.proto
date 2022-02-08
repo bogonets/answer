@@ -30,12 +30,27 @@ message InitA {
     bool is_sm = 2;
 }
 
+enum ContentType {
+    Pickle5 = 0;
+    Json = 1;
+    JsonZlib = 2;
+    JsonGzip = 3;
+    JsonLzma = 4;
+    JsonBz2 = 5;
+    Msgpack = 6;
+    MsgpackZlib = 7;
+    MsgpackGzip = 8;
+    MsgpackLzma = 9;
+    MsgpackBz2 = 10;
+}
+
 message PacketQ {
     string method = 1;
     string path = 2;
     string sm_name = 3;
-    int32 content_size = 4;
-    optional bytes content = 5;
+    ContentType content_type = 4;
+    int32 content_size = 5;
+    optional bytes content = 6;
 }
 
 message PacketA {

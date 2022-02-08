@@ -1,23 +1,21 @@
 # -*- coding: utf-8 -*-
 
 import grpc
-from typing import Optional, List, Dict, Any, Union, Type, TypeVar
+from typing import Optional, List, Dict, Any
 from uuid import uuid4
 from multiprocessing.shared_memory import SharedMemory
 from grpc.aio._channel import Channel  # noqa
+from recc.daemon.mixin.daemon_packer import DaemonPacker
+from recc.daemon.daemon_content_type import DaemonContentType
 from recc.memory.shared_memory_queue import SharedMemoryQueue
-from recc.serialization.serialize import serialize_default
-from recc.serialization.deserialize import deserialize_default
-from recc.serialization.byte import (
-    COMPRESS_LEVEL_BEST,
-    orjson_zlib_encoder,
-    orjson_zlib_decoder,
-)
+from recc.serialization.byte import COMPRESS_LEVEL_BEST
 from recc.proto.daemon.daemon_api_pb2_grpc import DaemonApiStub
 from recc.proto.daemon.daemon_api_pb2 import Pit, Pat, InitQ, InitA, PacketQ, PacketA
-from recc.variables.rpc import DEFAULT_GRPC_OPTIONS, DEFAULT_HEARTBEAT_TIMEOUT
-
-_T = TypeVar("_T")
+from recc.variables.rpc import (
+    DEFAULT_GRPC_OPTIONS,
+    DEFAULT_HEARTBEAT_TIMEOUT,
+    DEFAULT_PICKLE_ENCODING,
+)
 
 M_GET = "GET"
 M_HEAD = "HEAD"
@@ -47,7 +45,7 @@ async def heartbeat(
     return response.ok
 
 
-class DaemonClient:
+class DaemonClient(DaemonPacker):
 
     _channel: Optional[Channel] = None
     _stub: Optional[DaemonApiStub] = None
@@ -65,7 +63,9 @@ class DaemonClient:
             self._options["timeout"] = timeout
         self._disable_shared_memory = disable_shared_memory
         self._smq = SharedMemoryQueue()
-        self._zlib_compress_level = COMPRESS_LEVEL_BEST
+        self._encoding = DEFAULT_PICKLE_ENCODING
+        self._compress_level = COMPRESS_LEVEL_BEST
+        self._content_type = DaemonContentType.MsgpackZlib
 
     def __repr__(self) -> str:
         return f"DaemonClient<{self._address}>"
@@ -145,6 +145,7 @@ class DaemonClient:
 
     async def packet(
         self,
+        content_type: DaemonContentType,
         method: Optional[str] = None,
         path: Optional[str] = None,
         content: Optional[bytes] = None,
@@ -172,6 +173,7 @@ class DaemonClient:
             method=method if method else str(),
             path=path if path else str(),
             sm_name=sm_name,
+            content_type=int(content_type.value),  # type: ignore[arg-type]
             content_size=packet_content_size,
             content=packet_content,
         )
@@ -196,98 +198,94 @@ class DaemonClient:
         method: str,
         path: str,
         data: Optional[Any] = None,
-        cls: Type[Optional[_T]] = type(None),
-    ) -> Union[bytes, _T]:
-        assert cls is None or isinstance(cls, type)
+        cls: Optional[Any] = None,
+    ) -> Any:
+        content_type = self._content_type
+        level = self._compress_level
+        encoding = self._encoding
 
         if data is not None:
-            request_content = orjson_zlib_encoder(
-                serialize_default(data),
-                self._zlib_compress_level,
-            )
+            body = self.encode(data, content_type, level=level)
         else:
-            request_content = bytes()
+            body = bytes()
 
-        response_content = await self.packet(method, path, request_content)
-        if not response_content:
-            return response_content
+        result = await self.packet(content_type, method, path, body)
 
-        decoded_object = orjson_zlib_decoder(response_content)
-        if cls is None or issubclass(cls, type(None)):
-            return decoded_object
+        if result:
+            return self.decode(result, content_type, cls, encoding=encoding)
         else:
-            return deserialize_default(decoded_object, cls)
+            return result
 
     async def get(
         self,
         path: str,
         data: Optional[Any] = None,
-        cls: Type[Optional[_T]] = type(None),
-    ) -> Union[bytes, _T]:
+        cls: Optional[Any] = None,
+    ) -> Any:
         return await self.request(M_GET, path, data, cls)
 
     async def head(
         self,
         path: str,
         data: Optional[Any] = None,
-        cls: Type[Optional[_T]] = type(None),
-    ) -> Union[bytes, _T]:
+        cls: Optional[Any] = None,
+    ) -> Any:
         return await self.request(M_HEAD, path, data, cls)
 
     async def post(
         self,
         path: str,
         data: Optional[Any] = None,
-        cls: Type[Optional[_T]] = type(None),
-    ) -> Union[bytes, _T]:
+        cls: Optional[Any] = None,
+    ) -> Any:
         return await self.request(M_POST, path, data, cls)
 
     async def put(
         self,
         path: str,
         data: Optional[Any] = None,
-        cls: Type[Optional[_T]] = type(None),
-    ) -> Union[bytes, _T]:
+        cls: Optional[Any] = None,
+    ) -> Any:
         return await self.request(M_PUT, path, data, cls)
 
     async def delete(
         self,
         path: str,
         data: Optional[Any] = None,
-        cls: Type[Optional[_T]] = type(None),
-    ) -> Union[bytes, _T]:
+        cls: Optional[Any] = None,
+    ) -> Any:
         return await self.request(M_DELETE, path, data, cls)
 
     async def connect(
         self,
         path: str,
         data: Optional[Any] = None,
-        cls: Type[Optional[_T]] = type(None),
-    ) -> Union[bytes, _T]:
+        cls: Optional[Any] = None,
+    ) -> Any:
         return await self.request(M_CONNECT, path, data, cls)
 
     async def options(
         self,
         path: str,
         data: Optional[Any] = None,
-        cls: Type[Optional[_T]] = type(None),
-    ) -> Union[bytes, _T]:
+        cls: Optional[Any] = None,
+    ) -> Any:
         return await self.request(M_OPTIONS, path, data, cls)
 
     async def trace(
         self,
         path: str,
         data: Optional[Any] = None,
-        cls: Type[Optional[_T]] = type(None),
-    ) -> Union[bytes, _T]:
+        cls: Optional[Any] = None,
+    ) -> Any:
         return await self.request(M_TRACE, path, data, cls)
 
     async def patch(
         self,
         path: str,
         data: Optional[Any] = None,
-        cls: Type[Optional[_T]] = type(None),
-    ) -> Union[bytes, _T]:
+        cls: Optional[Any] = None,
+    ) -> Any:
         return await self.request(M_PATCH, path, data, cls)
 
 

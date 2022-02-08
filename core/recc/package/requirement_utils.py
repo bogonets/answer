@@ -31,6 +31,7 @@ RECC_REQUIREMENTS_MAIN = (
     "minio>=7.1.3",
     "shapely>=1.8.0",
     "python-dateutil>=2.8.2",
+    "msgpack>=1.0.3",
 )
 
 _SCRIPT_PATH = os.path.abspath(__file__)

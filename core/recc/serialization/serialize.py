@@ -3,7 +3,6 @@
 from typing import Dict, Any, List, Tuple, Iterable, Mapping, Optional
 from datetime import datetime, date, time
 from enum import Enum
-from pickle import dumps as pickle_dumps
 from numpy import ndarray
 from recc.serialization.utils import (
     MAPPING_METHOD_ITEMS,
@@ -13,6 +12,7 @@ from recc.serialization.utils import (
 )
 from recc.serialization.interface import SERIALIZE_METHOD_NAME
 from recc.serialization.errors import SerializeError, NotImplementedSerializeError
+from recc.serialization.numpy import numpy_serialize
 from recc.inspect.member import get_public_attributes
 from recc.util.version import version_info
 
@@ -73,8 +73,12 @@ def _serialize_any(version: int, obj: Any, key: Optional[str] = None) -> Any:
     try:
         if obj is None:
             return None
+        elif isinstance(obj, (bytes, bytearray)):
+            return obj
+        elif isinstance(obj, memoryview):
+            return obj.tobytes()
         elif isinstance(obj, ndarray):
-            return pickle_dumps(obj)
+            return numpy_serialize(obj)
         elif isinstance(obj, datetime):
             return obj.isoformat()
         elif isinstance(obj, date):

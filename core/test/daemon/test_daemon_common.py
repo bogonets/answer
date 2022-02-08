@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from unittest import main
+from numpy.random import randint
+from numpy import ndarray, uint8
 from typing import Dict, List, Any, Optional
 from grpc.aio import AioRpcError
 from dataclasses import dataclass
@@ -45,6 +47,12 @@ class DaemonCommonTestCase(DaemonTestCase):
     async def test_get_test_exception(self):
         with self.assertRaises(AioRpcError):
             await self.client.get("/test/exception")
+
+    async def test_post_test_numpy(self):
+        image = randint(0, 255, size=(1270, 1920, 3), dtype=uint8)
+        result = await self.client.post("/test/numpy", image, cls=ndarray)
+        self.assertIsInstance(result, ndarray)
+        self.assertTrue((result == 0).all())
 
 
 if __name__ == "__main__":

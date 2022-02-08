@@ -2,7 +2,7 @@
 
 from unittest import TestCase, main
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any, Optional, NamedTuple, List
 from dataclasses import dataclass
 from enum import Enum
 from recc.serialization.interface import Serializable
@@ -55,10 +55,22 @@ class _Test4:
         return 40
 
 
+@dataclass
+class _Test5:
+    test1: bytes
+
+
 class _Enum1(Enum):
     Value0 = 0
     Value1 = 1
     Value2 = 2
+
+
+class _Test6(NamedTuple):
+    shape: List[int]
+    dtype: str
+    buffer: bytes
+    strides: List[int]
 
 
 class SerializeTestCase(TestCase):
@@ -108,6 +120,18 @@ class SerializeTestCase(TestCase):
         test = _Test4("aa")
         data = serialize(0, test)
         result = {"test1": "aa", "test3": 30}
+        self.assertEqual(result, data)
+
+    def test_test5(self):
+        test = _Test5(b"abcd")
+        data = serialize(0, test)
+        result = {"test1": b"abcd"}
+        self.assertEqual(result, data)
+
+    def test_test6(self):
+        test = _Test6([1, 2], "uint8", b"abcd", [])
+        data = serialize(0, test)
+        result = [[1, 2], "uint8", b"abcd", []]
         self.assertEqual(result, data)
 
     def test_datetime(self):

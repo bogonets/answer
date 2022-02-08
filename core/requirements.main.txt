@@ -24,3 +24,4 @@ xmltodict>=0.12.0
 minio>=7.1.3
 shapely>=1.8.0
 python-dateutil>=2.8.2
+msgpack>=1.0.3

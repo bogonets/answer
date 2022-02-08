@@ -2,6 +2,7 @@
 
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
+from numpy import ndarray
 
 assert_on_open = False
 assert_on_close = False
@@ -60,6 +61,12 @@ async def get_exception():
     raise _TestException()
 
 
+async def post_test_numpy(body: ndarray) -> ndarray:
+    result = body.copy()
+    result.fill(0)
+    return result
+
+
 def on_routes():
     return [
         ("GET", "/test", get_test),
@@ -67,6 +74,7 @@ def on_routes():
         ("POST", "/test/{value}/path", post_test_value_path),
         ("PUT", "/test/body", put_test_body),
         ("GET", "/test/exception", get_exception),
+        ("POST", "/test/numpy", post_test_numpy),
     ]
 
 

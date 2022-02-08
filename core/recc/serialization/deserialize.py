@@ -20,7 +20,6 @@ from typing import (
 from datetime import datetime, date, time
 from dataclasses import is_dataclass
 from enum import Enum
-from pickle import loads as pickle_loads
 from numpy import ndarray
 from recc.serialization.utils import (
     MAPPING_METHOD_ITEMS,
@@ -32,6 +31,7 @@ from recc.serialization.utils import (
 )
 from recc.serialization.interface import DESERIALIZE_METHOD_NAME
 from recc.serialization.errors import DeserializeError
+from recc.serialization.numpy import numpy_deserialize
 from recc.inspect.member import get_public_attributes
 from recc.inspect.init_signature import required_init_parameters
 from recc.util.version import version_info
@@ -240,9 +240,9 @@ def _deserialize_any(
             assert len(union_types) == 1
             return _deserialize_any(version, data, union_types[0], None, union_types[0])
         elif issubclass(type_origin, bytes):
-            pass  # Does not support. check again with the class.
+            return bytes(data)
         elif issubclass(type_origin, bytearray):
-            pass  # Does not support. check again with the class.
+            return bytearray(data)
         elif is_deserialize_cls(type_origin):
             return _deserialize_interface(version, data, type_origin)
         elif is_serializable_pod_cls(type_origin):
@@ -262,9 +262,9 @@ def _deserialize_any(
 
         if not is_none(cls) and cls is not Any:
             if issubclass(cls, bytes):
-                raise DeserializeError("The `bytes` type is not supported.")
+                return bytes(data)
             elif issubclass(cls, bytearray):
-                raise DeserializeError("The `bytearray` type is not supported.")
+                return bytearray(data)
             elif issubclass(cls, bool):
                 return bool(data)
             elif issubclass(cls, int):
@@ -274,8 +274,8 @@ def _deserialize_any(
             elif issubclass(cls, str):
                 return str(data)
             elif issubclass(cls, ndarray):
-                if isinstance(data, bytes):
-                    return pickle_loads(data)
+                if isinstance(data, (tuple, list)):
+                    return numpy_deserialize(data)
                 else:
                     src_type = f"`{type(data).__name__}` type"
                     dest_type = "`numpy.ndarray` type"
@@ -315,6 +315,8 @@ def _deserialize_any(
                     raise DeserializeError(msg)
             elif issubclass(cls, Enum):
                 return cls(data)
+            elif issubclass(cls, tuple):
+                return cls(*data)
             elif is_deserialize_cls(cls):
                 return _deserialize_interface(version, data, cls)
             elif issubclass(cls, MutableMapping):
@@ -331,18 +333,8 @@ def _deserialize_any(
 
         # Deduced by data.
 
-        if isinstance(data, bytes):
-            raise DeserializeError("The `bytes` data is not supported.")
-        elif isinstance(data, bytearray):
-            raise DeserializeError("The `bytearray` data is not supported.")
-        elif isinstance(data, bool):
-            return bool(data)
-        elif isinstance(data, int):
-            return int(data)
-        elif isinstance(data, float):
-            return float(data)
-        elif isinstance(data, str):
-            return str(data)
+        if isinstance(data, (bytes, bytearray, bool, int, float, str)):
+            return data
         elif isinstance(data, Mapping):
             return _deserialize_mapping(version, data, dict)
         elif isinstance(data, Iterable):

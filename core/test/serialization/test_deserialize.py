@@ -2,7 +2,7 @@
 
 from unittest import TestCase, main
 from datetime import datetime
-from typing import Any, List, Dict, Optional
+from typing import Any, List, Dict, Optional, NamedTuple
 from dataclasses import dataclass
 from enum import Enum
 from recc.serialization.interface import DeserializeInterface
@@ -77,6 +77,18 @@ class _Test6:
 class _Test7:
     test1: str
     test2: Optional[str] = None
+
+
+@dataclass
+class _Test8:
+    test1: bytes
+
+
+class _Test9(NamedTuple):
+    shape: List[int]
+    dtype: str
+    buffer: bytes
+    strides: List[int]
 
 
 class _Enum1(Enum):
@@ -264,6 +276,20 @@ class DeserializeTestCase(TestCase):
         self.assertIsInstance(result["key1"], _Test7)
         self.assertEqual("aa", result["key1"].test1)
         self.assertIsNone(result["key1"].test2)
+
+    def test_test8(self):
+        result = deserialize_default({"test1": b"abcd"}, _Test8)
+        self.assertIsInstance(result, _Test8)
+        self.assertEqual(b"abcd", result.test1)
+
+    def test_test9(self):
+        buffer = bytearray(b"abcd")
+        result = deserialize_default([[1], "int8", buffer, [2]], _Test9)
+        self.assertIsInstance(result, _Test9)
+        self.assertEqual([1], result.shape)
+        self.assertEqual("int8", result.dtype)
+        self.assertEqual(b"abcd", result.buffer)
+        self.assertEqual([2], result.strides)
 
     def test_datetime(self):
         time_format = "2021-08-07T09:42:14.776297"

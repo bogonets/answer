@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import pickle
 import grpc
 from asyncio import sleep
 from asyncio import run as asyncio_run
@@ -15,18 +14,14 @@ from recc.logging.logging import recc_daemon_logger as logger
 from recc.network.uds import is_uds_family
 from recc.inspect.type_origin import get_type_origin
 from recc.conversion.boolean import str_to_bool
-from recc.serialization.serialize import serialize_default
-from recc.serialization.deserialize import deserialize_default
-from recc.serialization.byte import (
-    COMPRESS_LEVEL_BEST,
-    orjson_zlib_encoder,
-    orjson_zlib_decoder,
-)
+from recc.serialization.byte import COMPRESS_LEVEL_BEST
 from recc.proto.daemon.daemon_api_pb2 import Pit, Pat, InitQ, InitA, PacketQ, PacketA
 from recc.proto.daemon.daemon_api_pb2_grpc import (
     DaemonApiServicer,
     add_DaemonApiServicer_to_server,
 )
+from recc.daemon.mixin.daemon_packer import DaemonPacker
+from recc.daemon.daemon_content_type import DaemonContentType
 from recc.daemon.daemon_client import heartbeat
 from recc.init.default import (
     init_logger,
@@ -38,7 +33,6 @@ from recc.init.default import (
 from recc.variables.rpc import (
     ACCEPTED_UDS_PORT_NUMBER,
     DEFAULT_GRPC_OPTIONS,
-    DEFAULT_PICKLE_PROTOCOL_VERSION,
     DEFAULT_PICKLE_ENCODING,
 )
 
@@ -83,22 +77,21 @@ def _cast_builtin_type_from_string(data: str, cls) -> Any:
     return cls(data)  # type: ignore[call-arg]
 
 
-class DaemonServicer(DaemonApiServicer):
+class DaemonServicer(DaemonPacker, DaemonApiServicer):
     def __init__(self, plugin: Plugin):
         self._plugin = plugin
-        self._pickling_protocol_version = DEFAULT_PICKLE_PROTOCOL_VERSION
-        self._unpickling_encoding = DEFAULT_PICKLE_ENCODING
-        self._zlib_compress_level = COMPRESS_LEVEL_BEST
+        self._encoding = DEFAULT_PICKLE_ENCODING
+        self._compress_level = COMPRESS_LEVEL_BEST
+
+    def __repr__(self) -> str:
+        return f"DaemonServicer<{self._plugin.name}>"
+
+    def __str__(self) -> str:
+        return f"DaemonServicer<{self._plugin.name}>"
 
     @property
     def plugin(self) -> Plugin:
         return self._plugin
-
-    def _pickling(self, data: Any) -> bytes:
-        return pickle.dumps(data, protocol=self._pickling_protocol_version)
-
-    def _unpickling(self, data: bytes) -> Any:
-        return pickle.loads(data, encoding=self._unpickling_encoding)
 
     async def on_open(self) -> None:
         logger.info("Daemon opening ...")
@@ -124,7 +117,13 @@ class DaemonServicer(DaemonApiServicer):
         is_sm = _test_shared_memory(request.test_sm_name, request.test_sm_pass)
         return InitA(code=INIT_CODE_SUCCESS, is_sm=is_sm)
 
-    async def _call_route(self, method: str, path: str, content: bytes) -> bytes:
+    async def _call_route(
+        self,
+        method: str,
+        path: str,
+        content_type: DaemonContentType,
+        content: bytes,
+    ) -> bytes:
         route, match_info = self._plugin.get_route(method, path)
 
         sig = signature(route)
@@ -146,27 +145,29 @@ class DaemonServicer(DaemonApiServicer):
                     logger.debug(f"Type casting error for path parameter: {key}")
                     args.append(path_value)
             else:
-                decoded_data = orjson_zlib_decoder(content)
-                deserialize_object = deserialize_default(decoded_data, type_origin)
-                args.append(deserialize_object)
+                argument = self.decode(
+                    content,
+                    content_type,
+                    type_origin,
+                    encoding=self._encoding,
+                )
+                args.append(argument)
 
         if iscoroutinefunction(route):
             result = await route(*args)
         else:
             result = route(*args)
 
-        if result is None:
-            return bytes()
+        if result is not None:
+            return self.encode(result, content_type, level=self._compress_level)
         else:
-            return orjson_zlib_encoder(
-                serialize_default(result),
-                self._zlib_compress_level,
-            )
+            return bytes()
 
     async def Packet(self, request: PacketQ, context: ServicerContext) -> PacketA:
         method = request.method
         path = request.path
         sm_name = request.sm_name
+        content_type = DaemonContentType(request.content_type)
         content_size = request.content_size
         logger.debug(f"Packet(method={method},path={path},content_size={content_size})")
 
@@ -178,7 +179,7 @@ class DaemonServicer(DaemonApiServicer):
             sm = None
             request_content = request.content
 
-        result = await self._call_route(method, path, request_content)
+        result = await self._call_route(method, path, content_type, request_content)
         result_size = len(result)
 
         if sm is not None and result and sm.size >= result_size:

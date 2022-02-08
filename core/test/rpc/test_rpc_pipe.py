@@ -23,6 +23,16 @@ from recc.serialization.byte import (
     orjson_lzma_decoder,
     orjson_bz2_encoder,
     orjson_bz2_decoder,
+    msgpack_encoder,
+    msgpack_decoder,
+    msgpack_zlib_encoder,
+    msgpack_zlib_decoder,
+    msgpack_gzip_encoder,
+    msgpack_gzip_decoder,
+    msgpack_lzma_encoder,
+    msgpack_lzma_decoder,
+    msgpack_bz2_encoder,
+    msgpack_bz2_decoder,
 )
 from tester.samples.read_samples import read_sample
 from tester.variables import (
@@ -224,6 +234,69 @@ class RpcPipeClientTestCase(IsolatedAsyncioTestCase):
             orjson_lzma_decoder,
         )
         print(f"Orjson+lzma {message}")
+
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_msgpack_byte_echo_data(self):
+        message = await self._default_performance_echo_data(
+            msgpack_encoder, msgpack_decoder
+        )
+        print(f"Msgpack {message}")
+
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_msgpack_zlib_level1_echo_data(self):
+        message = await self._default_performance_echo_data(
+            lambda x: msgpack_zlib_encoder(x, 1),
+            msgpack_zlib_decoder,
+        )
+        print(f"Msgpack+zlib(level=1) {message}")
+
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_msgpack_zlib_level9_echo_data(self):
+        message = await self._default_performance_echo_data(
+            lambda x: msgpack_zlib_encoder(x, 9),
+            msgpack_zlib_decoder,
+        )
+        print(f"Msgpack+zlib(level=9) {message}")
+
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_msgpack_gzip_level1_echo_data(self):
+        message = await self._default_performance_echo_data(
+            lambda x: msgpack_gzip_encoder(x, 1),
+            msgpack_gzip_decoder,
+        )
+        print(f"Msgpack+gzip(level=1) {message}")
+
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_msgpack_gzip_level9_echo_data(self):
+        message = await self._default_performance_echo_data(
+            lambda x: msgpack_gzip_encoder(x, 9),
+            msgpack_gzip_decoder,
+        )
+        print(f"Msgpack+gzip(level=9) {message}")
+
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_msgpack_bz2_level1_echo_data(self):
+        message = await self._default_performance_echo_data(
+            lambda x: msgpack_bz2_encoder(x, 1),
+            msgpack_bz2_decoder,
+        )
+        print(f"Msgpack+bz2(level=1) {message}")
+
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_msgpack_bz2_level9_echo_data(self):
+        message = await self._default_performance_echo_data(
+            lambda x: msgpack_bz2_encoder(x, 9),
+            msgpack_bz2_decoder,
+        )
+        print(f"Msgpack+bz2(level=9) {message}")
+
+    @skipIf(GRPC_PACKET_PERFORMANCE_TEST_SKIP, GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE)
+    async def test_msgpack_lzma_echo_data(self):
+        message = await self._default_performance_echo_data(
+            msgpack_lzma_encoder,
+            msgpack_lzma_decoder,
+        )
+        print(f"Msgpack+lzma {message}")
 
 
 if __name__ == "__main__":
