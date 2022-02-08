@@ -21,6 +21,10 @@ def is_property(obj: Any, key: str) -> bool:
     return hasattr(cls, key) and isinstance(getattr(cls, key), property)
 
 
+def is_instance_public_member(obj: Any, key: str) -> bool:
+    return is_public_member(key) and not is_property(obj, key)
+
+
 def get_public_attributes(data: Any) -> List[Tuple[str, Any]]:
     if isinstance(data, Mapping):
         return [(str(k), v) for k, v in data.items()]
@@ -28,3 +32,12 @@ def get_public_attributes(data: Any) -> List[Tuple[str, Any]]:
         return [(str(i), v) for i, v in enumerate(data)]
     attributes = getmembers(data, lambda a: not isroutine(a))
     return list(filter(lambda x: is_public_member(x[0]), attributes))
+
+
+def get_public_instance_attributes(data: Any) -> List[Tuple[str, Any]]:
+    if isinstance(data, Mapping):
+        return [(str(k), v) for k, v in data.items()]
+    if isinstance(data, Iterable):
+        return [(str(i), v) for i, v in enumerate(data)]
+    attributes = getmembers(data, lambda a: not isroutine(a))
+    return list(filter(lambda x: is_instance_public_member(data, x[0]), attributes))

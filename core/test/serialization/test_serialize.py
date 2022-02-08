@@ -119,7 +119,7 @@ class SerializeTestCase(TestCase):
     def test_test4(self):
         test = _Test4("aa")
         data = serialize(0, test)
-        result = {"test1": "aa", "test3": 30}
+        result = {"test1": "aa"}
         self.assertEqual(result, data)
 
     def test_test5(self):
