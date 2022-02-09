@@ -48,24 +48,26 @@ class SharedMemoryQueue:
     def size_working(self) -> int:
         return len(self._working)
 
-    def get_working(self, key: str) -> SharedMemory:
+    def find_working(self, key: str) -> SharedMemory:
         return self._working[key]
 
-    def write(self, data: bytes, offset=0) -> str:
-        buffer_size = offset + len(data)
-
+    def secure_worker(self, size: int) -> SharedMemory:
         try:
             sm = self._waiting.popleft()
-            if sm.size < buffer_size:
+            if sm.size < size:
                 _destroy_shared_memory(sm)
                 raise BufferError
         except (IndexError, BufferError):
-            sm = _create_shared_memory(buffer_size)
+            sm = _create_shared_memory(size)
         assert sm is not None
+        self._working[sm.name] = sm
+        return sm
 
+    def write(self, data: bytes, offset=0) -> str:
+        buffer_size = offset + len(data)
+        sm = self.secure_worker(buffer_size)
         end = offset + len(data)
         sm.buf[offset:end] = data
-        self._working[sm.name] = sm
         return sm.name
 
     def restore(self, name: str) -> None:
@@ -81,3 +83,20 @@ class SharedMemoryQueue:
                 raise ValueError("The 'size' argument must be greater than 0")
             end = offset + size
             return bytes(sm.buf[offset:end])
+
+    class RentalManager:
+
+        __slots__ = ("_sm", "_smq")
+
+        def __init__(self, sm: SharedMemory, smq: "SharedMemoryQueue"):
+            self._sm = sm
+            self._smq = smq
+
+        def __enter__(self) -> SharedMemory:
+            return self._sm
+
+        def __exit__(self, exc_type, exc_value, tb):
+            self._smq.restore(self._sm.name)
+
+    def rent(self, size: Optional[int] = None) -> RentalManager:
+        return self.RentalManager(self.secure_worker(size), self)

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+from multiprocessing.shared_memory import SharedMemory
 from recc.memory.shared_memory_queue import SharedMemoryQueue
 
 
@@ -40,6 +41,24 @@ class SharedMemoryQueueTestCase(TestCase):
 
         self.smq.clear()
         self.assertEqual(0, self.smq.size_waiting())
+        self.assertEqual(0, self.smq.size_working())
+
+    def test_rant(self):
+        self.assertEqual(0, self.smq.size_waiting())
+        self.assertEqual(0, self.smq.size_working())
+
+        test0 = b"aaa"
+        with self.smq.rent(len(test0)) as sm:
+            self.assertEqual(0, self.smq.size_waiting())
+            self.assertEqual(1, self.smq.size_working())
+
+            sm.buf[: len(test0)] = test0
+
+            self.assertIsInstance(sm, SharedMemory)
+            result0 = self.smq.read(sm.name, size=len(test0))
+            self.assertEqual(test0, result0)
+
+        self.assertEqual(1, self.smq.size_waiting())
         self.assertEqual(0, self.smq.size_working())
 
 
