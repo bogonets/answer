@@ -60,8 +60,8 @@ ko:
             outlined
             persistent-hint
             disabled
-            :value="model"
-            @input="inputModel"
+            v-model="model"
+            @change="onChangeModel"
             :items="models"
             :hint="$t('hints.model')"
         ></v-select>
@@ -72,8 +72,8 @@ ko:
             outlined
             persistent-hint
             disabled
-            :value="checkpoint"
-            @input="inputCheckpoint"
+            v-model="checkpoint"
+            @change="onChangeCheckpoint"
             :items="checkpoints"
             :hint="$t('hints.checkpoint')"
         ></v-select>
@@ -107,11 +107,11 @@ ko:
             ref="media-player"
             hover-system-bar
             hide-controller
-            height="300px"
-            :value="device"
             :group="$route.params.group"
             :project="$route.params.project"
             :device="$route.params.device"
+            :value="device"
+            :event-config="value"
             :use-annotation-tools="annotationMode"
             @roi="onRoi"
         ></media-player>
@@ -161,9 +161,9 @@ ko:
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
+                      v-show="n >= 2"
                       class="mr-2"
                       rounded
-                      :disabled="n === 1"
                       v-bind="attrs"
                       v-on="on"
                   >
@@ -288,10 +288,7 @@ import type {
   VmsEventConfigOcrQ,
 } from '@/packet/vms';
 import * as _ from 'lodash';
-
-function createEmptyObject() {
-  return {};
-}
+import {valueToRatio, ratioToValue} from '@/math/ratio';
 
 @Component({
   components: {
@@ -308,17 +305,26 @@ export default class FormVmsEventConfigsOcr extends VueBase {
   @Prop({type: Number, default: 100})
   readonly maxThreshold!: number;
 
+  @Prop({type: Number, default: 50})
+  readonly defaultThreshold!: number;
+
   @Prop({type: String, default: '60%'})
   readonly dialogWidth!: number;
 
-  @Prop({type: Object, default: createEmptyObject})
-  readonly value!: any;
+  @Prop({type: Object, required: true})
+  readonly device!: VmsDeviceA;
+
+  @Prop({type: Object, required: true})
+  readonly value!: VmsEventConfigOcrQ;
+
+  @Prop({type: Boolean, required: true})
+  readonly valid!: boolean;
 
   @Ref('media-player')
   readonly mediaPlayer!: MediaPlayer;
 
   loading = false;
-  device = {} as VmsDeviceA;
+  annotationMode = false;
 
   // model = '';
   // models = [] as Array<string>;
@@ -330,50 +336,51 @@ export default class FormVmsEventConfigsOcr extends VueBase {
   checkpoints = ['seven_segment_20211028_adam.pth'];
   checkpoint = this.checkpoints[0];
 
-  threshold = 50;
-  x1 = 0;
-  y1 = 0;
-  x2 = 0;
-  y2 = 0;
-
-  annotationMode = false;
+  threshold = 0;
 
   showFilterDialog = false;
   filters = [] as Array<VmsEventConfigOcrFilterQ>;
   filtersTemp = [] as Array<VmsEventConfigOcrFilterQ>;
 
-  get thresholdPercentage() {
-    const min = this.minThreshold;
-    const max = this.maxThreshold;
-    const threshold = this.threshold;
-    console.assert(min >= 0);
-    console.assert(max > min);
-    console.assert(min <= threshold && threshold <= max);
-    const x = Math.abs(threshold - min);
-    const width = Math.abs(max - min);
-    return x / width;
+  mounted() {
+    const defaultThreshold = valueToRatio(
+        this.defaultThreshold, this.minThreshold, this.maxThreshold
+    );
+
+    this.value.model = this.value.model ?? '';
+    this.value.checkpoint = this.value.checkpoint ?? '';
+    this.value.threshold = this.value.threshold ?? defaultThreshold;
+    this.value.filters = this.value.filters ?? [];
+    this.value.x1 = this.value.x1 ?? 0;
+    this.value.y1 = this.value.y1 ?? 0;
+    this.value.x2 = this.value.x2 ?? 0;
+    this.value.y2 = this.value.y2 ?? 0;
+
+    this.model = this.value.model;
+    this.checkpoint = this.value.checkpoint;
+    this.threshold = ratioToValue(
+        this.value.threshold, this.minThreshold, this.maxThreshold
+    );
+    this.filters = _.cloneDeep(this.value.filters);
+
+    this.requestEventOcr();
+    this.updateValid();
   }
 
-  getExtra() {
-    return {
-      model: this.model,
-      checkpoint: this.checkpoint,
-      threshold: this.thresholdPercentage,
-      filters: this.filters,
-      x1: this.x1,
-      y1: this.y1,
-      x2: this.x2,
-      y2: this.y2,
-    } as VmsEventConfigOcrQ;
+  get selectionButtonColor() {
+    if (this.annotationMode) {
+      return 'primary';
+    } else {
+      return '';
+    }
   }
 
   requestEventOcr() {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     const device = this.$route.params.device;
-    const body = this.getExtra();
     this.loading = true;
-    this.$api2.postVmsDeviceProcessDebugEventOcr(group, project ,device, body)
+    this.$api2.postVmsDeviceProcessDebugEventOcr(group, project ,device, this.value)
         .then(() => {
           this.loading = false;
         })
@@ -383,48 +390,30 @@ export default class FormVmsEventConfigsOcr extends VueBase {
         })
   }
 
-  created() {
-    this.requestModels();
-  }
-
-  requestModels() {
-  }
-
-  inputModel(event: string) {
-    this.model = event;
-    this.requestEventOcr();
-    this.input();
-  }
-
-  inputCheckpoint(event: string) {
-    this.checkpoint = event;
-    this.requestEventOcr();
-    this.input();
+  @Emit('update:valid')
+  updateValid() {
+    return !!this.model && !!this.checkpoint && this.filters.length >= 1;
   }
 
   @Emit()
   input() {
-    this.value.model = this.model;
-    this.value.checkpoint = this.checkpoint;
-    this.value.threshold = this.thresholdPercentage;
-    this.value.filters = this.filters;
-    this.value.x1 = this.x1;
-    this.value.y1 = this.y1;
-    this.value.x2 = this.x2;
-    this.value.y2 = this.y2;
+    this.requestEventOcr();
     this.updateValid();
     return this.value;
   }
 
-  @Emit('update:valid')
-  updateValid() {
-    const valid1 = !!this.model && !!this.checkpoint && this.filters.length >= 1;
-    const valid2 = !!this.x1 && !!this.y1 && !!this.x2 && !!this.y2;
-    return valid1 && valid2;
+  onChangeModel(event: string) {
+    this.value.model = event;
+    this.input();
+  }
+
+  onChangeCheckpoint(event: string) {
+    this.value.checkpoint = event;
+    this.input();
   }
 
   onChangeThreshold(value: number) {
-    this.requestEventOcr();
+    this.value.threshold = valueToRatio(value, this.minThreshold, this.maxThreshold);
     this.input();
   }
 
@@ -443,39 +432,39 @@ export default class FormVmsEventConfigsOcr extends VueBase {
   }
 
   onClickLogicalAnd(number) {
-    this.filtersTemp[number - 1]['logical'] = 'and';
+    this.filtersTemp[number - 1].logical = 'and';
   }
 
   onClickLogicalOr(number) {
-    this.filtersTemp[number - 1]['logical'] = 'or';
+    this.filtersTemp[number - 1].logical = 'or';
   }
 
   onClickOperatorEq(number) {
-    this.filtersTemp[number - 1]['operator'] = '=';
+    this.filtersTemp[number - 1].operator = '=';
   }
 
   onClickOperatorNe(number) {
-    this.filtersTemp[number - 1]['operator'] = '!=';
+    this.filtersTemp[number - 1].operator = '!=';
   }
 
   onClickOperatorLt(number) {
-    this.filtersTemp[number - 1]['operator'] = '<';
+    this.filtersTemp[number - 1].operator = '<';
   }
 
   onClickOperatorGt(number) {
-    this.filtersTemp[number - 1]['operator'] = '>';
+    this.filtersTemp[number - 1].operator = '>';
   }
 
   onClickOperatorLe(number) {
-    this.filtersTemp[number - 1]['operator'] = '<=';
+    this.filtersTemp[number - 1].operator = '<=';
   }
 
   onClickOperatorGe(number) {
-    this.filtersTemp[number - 1]['operator'] = '>=';
+    this.filtersTemp[number - 1].operator = '>=';
   }
 
   inputFiltersValue(number, event) {
-    this.filtersTemp[number - 1]['value'] = event;
+    this.filtersTemp[number - 1].value = event;
   }
 
   onClickFilterRemove(number) {
@@ -490,26 +479,17 @@ export default class FormVmsEventConfigsOcr extends VueBase {
   onClickFilterOk() {
     this.showFilterDialog = false;
     this.filters = this.filtersTemp;
-    this.requestEventOcr();
+    this.value.filters = this.filters;
     this.input();
   }
 
   onClickClear() {
-    this.x1 = 0;
-    this.y1 = 0;
-    this.x2 = 0;
-    this.y2 = 0;
+    this.value.x1 = 0;
+    this.value.y1 = 0;
+    this.value.x2 = 0;
+    this.value.y2 = 0;
     this.mediaPlayer.clearAnnotations();
-    this.requestEventOcr();
     this.input();
-  }
-
-  get selectionButtonColor() {
-    if (this.annotationMode) {
-      return 'primary';
-    } else {
-      return '';
-    }
   }
 
   onClickSelection() {
@@ -517,13 +497,12 @@ export default class FormVmsEventConfigsOcr extends VueBase {
   }
 
   onRoi(roi) {
-    this.x1 = roi.x1;
-    this.y1 = roi.y1;
-    this.x2 = roi.x2;
-    this.y2 = roi.y2;
+    this.value.x1 = roi.x1 || 0;
+    this.value.y1 = roi.y1 || 0;
+    this.value.x2 = roi.x2 || 0;
+    this.value.y2 = roi.y2 || 0;
+
     this.annotationMode = false;
-    // console.debug(`onRoi -> x1=${roi.x1},y1=${roi.y1},x2=${roi.x2},y2=${roi.y2}`);
-    this.requestEventOcr();
     this.input();
   }
 }

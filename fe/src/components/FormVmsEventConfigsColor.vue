@@ -372,15 +372,10 @@ export default class FormVmsEventConfigsColor extends VueBase {
   }
 
   onRoi(roi) {
-    const x1 = roi.x1 || 0;
-    const y1 = roi.y1 || 0;
-    const x2 = roi.x2 || 0;
-    const y2 = roi.y2 || 0;
-
-    this.value.x1 = x1;
-    this.value.y1 = y1;
-    this.value.x2 = x2;
-    this.value.y2 = y2;
+    this.value.x1 = roi.x1 || 0;
+    this.value.y1 = roi.y1 || 0;
+    this.value.x2 = roi.x2 || 0;
+    this.value.y2 = roi.y2 || 0;
 
     this.annotationMode = false;
     this.input();

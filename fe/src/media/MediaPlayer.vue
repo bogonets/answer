@@ -31,7 +31,8 @@ en:
     filtered: "Completed successfully, but no event occurred"
     disabled: "Disabled"
     not_ready_roi: "Not ready ROI"
-    bad_argument: "Bad arguments"
+    not_ready_filters: "Not ready filters"
+    raise_exception: "Raise exception"
     unknown_code: "Unknown code: {0}"
     empty_events: "Empty events"
 
@@ -67,7 +68,8 @@ ko:
     filtered: "성공적으로 완료되었지만 이벤트가 발생하지 않았습니다"
     disabled: "비활성화 되었습니다"
     not_ready_roi: "관심영역(ROI)이 준비되지 않았습니다"
-    bad_argument: "잘못된 인수"
+    not_ready_filters: "필터가 준비되지 않았습니다"
+    raise_exception: "예외가 발생되었습니다"
     unknown_code: "알 수 없는 에러 코드: {0}"
     empty_events: "감지된 이벤트가 없습니다"
 </i18n>
@@ -1137,6 +1139,8 @@ export default class MediaPlayer extends VueBase {
         return this.$vuetify.theme.currentTheme.warning;
       case VmsChannelEventCode.NotReadyFilters:
         return this.$vuetify.theme.currentTheme.warning;
+      case VmsChannelEventCode.RaiseException:
+        return this.$vuetify.theme.currentTheme.error;
       default:
         return this.$vuetify.theme.currentTheme.error;
     }
@@ -1157,7 +1161,9 @@ export default class MediaPlayer extends VueBase {
       case VmsChannelEventCode.NotReadyRoi:
         return this.$t('vms_channel_meta.not_ready_roi').toString();
       case VmsChannelEventCode.NotReadyFilters:
-        return this.$t('vms_channel_meta.bad_argument').toString();
+        return this.$t('vms_channel_meta.not_ready_filters').toString();
+      case VmsChannelEventCode.RaiseException:
+        return this.$t('vms_channel_meta.raise_exception').toString();
       default:
         return this.$t('vms_channel_meta.unknown_code', [event.code]).toString();
     }

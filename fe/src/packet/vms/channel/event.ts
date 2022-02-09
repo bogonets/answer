@@ -9,6 +9,7 @@ export enum VmsChannelEventCode {
     // Errors
     NotReadyRoi = -1,
     NotReadyFilters = -2,
+    RaiseException = -3,
 }
 
 export interface VmsChannelEventItem {

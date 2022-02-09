@@ -68,6 +68,8 @@ loggers:
 #    level: DEBUG
 #  urllib3:
 #    level: DEBUG
+#  mmdet:
+#    level: DEBUG
 
 root:
   level: DEBUG
