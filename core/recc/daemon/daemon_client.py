@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 
 import grpc
-from typing import Optional, Iterable, Mapping
+from typing import Optional
 from uuid import uuid4
 from grpc.aio._channel import Channel  # noqa
 from recc.chrono.datetime import today
 from recc.logging.logging import recc_daemon_logger as logger
 from recc.serialization.byte_coding import ByteCodingType
 from recc.daemon.daemon_answer import DaemonAnswer
-from recc.daemon.daemon_content import DaemonContent
-from recc.daemon.daemon_content_packer import DaemonContentPacker
-from recc.daemon.daemon_content_unpacker import content_unpack
+from recc.daemon.packet.content_packer import ContentPacker
+from recc.daemon.packet.content_unpacker import content_unpack
 from recc.memory.shared_memory_queue import SharedMemoryQueue
-from recc.memory.shared_memory_tester import SharedMemoryTestInfo, shared_memory_tester
+from recc.memory.shared_memory_validator import (
+    SharedMemoryTestInfo,
+    register_shared_memory,
+)
 from recc.serialization.byte import COMPRESS_LEVEL_BEST
 from recc.proto.daemon.daemon_api_pb2_grpc import DaemonApiStub
 from recc.proto.daemon.daemon_api_pb2 import (
@@ -126,7 +128,7 @@ class DaemonClient:
     async def register(self, *args: str, **kwargs: str) -> int:
         assert self._stub is not None
 
-        with shared_memory_tester(self._disable_shared_memory) as test:
+        with register_shared_memory(self._disable_shared_memory) as test:
             assert isinstance(test, SharedMemoryTestInfo)
             request = RegisterQ(
                 session=self._session,
@@ -152,13 +154,7 @@ class DaemonClient:
             logger.error(f"Unknown register code: {response.code}")
         return response.code
 
-    async def request(
-        self,
-        method: str,
-        path: str,
-        args: Optional[Iterable[DaemonContent]] = None,
-        kwargs: Optional[Mapping[str, DaemonContent]] = None,
-    ) -> DaemonAnswer:
+    async def request(self, method: str, path: str, *args, **kwargs) -> DaemonAnswer:
         assert self._stub is not None
 
         coding = self._coding
@@ -169,12 +165,12 @@ class DaemonClient:
 
         renter = self._smq.multi_rent(min_sm_size, min_sm_byte)
         with renter as sms:
-            packer = DaemonContentPacker(
+            packer = ContentPacker(
                 coding=coding,
-                args=args,
-                kwargs=kwargs,
                 compress_level=compress_level,
                 smq=self._smq,
+                args=args,
+                kwargs=kwargs,
             )
 
             packer_begin = today()
@@ -218,31 +214,31 @@ class DaemonClient:
             return result
 
     async def get(self, path: str, *args, **kwargs):
-        return await self.request(M_GET, path, args, kwargs)
+        return await self.request(M_GET, path, *args, **kwargs)
 
     async def head(self, path: str, *args, **kwargs):
-        return await self.request(M_HEAD, path, args, kwargs)
+        return await self.request(M_HEAD, path, *args, **kwargs)
 
     async def post(self, path: str, *args, **kwargs):
-        return await self.request(M_POST, path, args, kwargs)
+        return await self.request(M_POST, path, *args, **kwargs)
 
     async def put(self, path: str, *args, **kwargs):
-        return await self.request(M_PUT, path, args, kwargs)
+        return await self.request(M_PUT, path, *args, **kwargs)
 
     async def delete(self, path: str, *args, **kwargs):
-        return await self.request(M_DELETE, path, args, kwargs)
+        return await self.request(M_DELETE, path, *args, **kwargs)
 
     async def connect(self, path: str, *args, **kwargs):
-        return await self.request(M_CONNECT, path, args, kwargs)
+        return await self.request(M_CONNECT, path, *args, **kwargs)
 
     async def options(self, path: str, *args, **kwargs):
-        return await self.request(M_OPTIONS, path, args, kwargs)
+        return await self.request(M_OPTIONS, path, *args, **kwargs)
 
     async def trace(self, path: str, *args, **kwargs):
-        return await self.request(M_TRACE, path, args, kwargs)
+        return await self.request(M_TRACE, path, *args, **kwargs)
 
     async def patch(self, path: str, *args, **kwargs):
-        return await self.request(M_PATCH, path, args, kwargs)
+        return await self.request(M_PATCH, path, *args, **kwargs)
 
 
 def create_daemon_client(address: str, timeout: Optional[float] = None) -> DaemonClient:

@@ -27,7 +27,7 @@ from recc.proto.daemon.daemon_api_pb2_grpc import (
     add_DaemonApiServicer_to_server,
 )
 from recc.daemon.daemon_client import heartbeat
-from recc.daemon.daemon_content_parameter import call_daemon_content_parameter
+from recc.daemon.packet.content_parameter import call_router
 from recc.init.default import (
     init_logger,
     init_json_driver,
@@ -91,8 +91,8 @@ class DaemonServicer(DaemonApiServicer):
 
     async def Register(self, request: RegisterQ, context: ServicerContext) -> RegisterA:
         session = request.session
-        args = [a for a in request.args]
-        kwargs = {k: v for k, v in request.kwargs.items()}
+        args = list(request.args)
+        kwargs = dict(request.kwargs)
         logger.debug(f"Register(session={session},args={args},kwargs={kwargs})")
 
         if self._plugin.exists_register:
@@ -131,12 +131,15 @@ class DaemonServicer(DaemonApiServicer):
         )
 
     async def Packet(self, request: PacketQ, context: ServicerContext) -> PacketA:
-        coding = ByteCodingType(request.coding)
-        route, match_info = self._plugin.get_route(request.method, request.path)
-        result = await call_daemon_content_parameter(
+        session = request.session
+        method = request.method
+        path = request.path
+        logger.debug(f"Packet(session={session},method={method},path={path})")
+        route, match_info = self._plugin.get_route(method, path)
+        result = await call_router(
             func=route,
             match_info=match_info,
-            coding=coding,
+            coding=ByteCodingType(request.coding),
             encoding=self._encoding,
             compress_level=self._compress_level,
             args=request.args,

@@ -12,7 +12,7 @@ class SharedMemoryTestInfo(NamedTuple):
 
 
 @contextmanager
-def shared_memory_tester(disable=False):
+def register_shared_memory(disable=False):
     sm: Optional[SharedMemory]
 
     if disable:
@@ -36,7 +36,7 @@ def shared_memory_tester(disable=False):
             sm.unlink()
 
 
-def test_shared_memory(name: str, data: str) -> bool:
+def validate_shared_memory(name: str, data: str) -> bool:
     if name and data:
         try:
             sm = SharedMemory(name=name)

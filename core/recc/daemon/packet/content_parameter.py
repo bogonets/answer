@@ -15,15 +15,15 @@ from inspect import signature, iscoroutinefunction
 from numpy import ndarray
 from collections import deque
 from multiprocessing.shared_memory import SharedMemory
+from recc.daemon.packet.content_helper import has_array, has_shared_memory
 from recc.logging.logging import recc_daemon_logger as logger
 from recc.conversion.boolean import str_to_bool
 from recc.inspect.type_origin import get_type_origin
-from recc.daemon.daemon_content import DaemonContent
 from recc.serialization.numpy import ndarray_to_bytes
 from recc.serialization.byte_coding import encode as byte_encode
 from recc.serialization.byte_coding import decode as byte_decode
 from recc.serialization.byte_coding import ByteCodingType
-from recc.proto.daemon.daemon_api_pb2 import Content
+from recc.proto.daemon.daemon_api_pb2 import Content, ArrayInfo
 
 
 def _is_path_class(obj) -> bool:
@@ -58,7 +58,7 @@ class ResultTuple(NamedTuple):
     kwargs: Dict[str, Content]
 
 
-class DaemonContentParameterMatcher:
+class ContentParameterMatcher:
 
     _args: Deque[Content]
     _kwargs: Dict[str, Content]
@@ -82,7 +82,7 @@ class DaemonContentParameterMatcher:
         self._compress_level = compress_level
         self._signature = signature(func)
         self._args = deque(args)
-        self._kwargs = {k: v for k, v in kwargs.items()}
+        self._kwargs = dict(kwargs)
         self._sm_names = deque(sm_names)
 
     async def call(self) -> ResultTuple:
@@ -151,24 +151,22 @@ class DaemonContentParameterMatcher:
         return None
 
     def _content_to_any(self, content: Content, cls: Optional[Any] = None) -> Any:
-        daemon_content = DaemonContent.from_api(content)
-
-        if daemon_content.is_sm:
-            sm = SharedMemory(name=daemon_content.sm_name)
+        if has_shared_memory(content):
+            sm = SharedMemory(name=content.sm_name)
             try:
-                size = daemon_content.size
+                size = content.size
                 data = bytes(sm.buf[:size])
             finally:
                 sm.close()
         else:
-            data = daemon_content.data
+            data = content.data
 
-        if daemon_content.is_array:
+        if has_array(content):
             return ndarray(
-                shape=daemon_content.shape,
-                dtype=daemon_content.dtype,
+                shape=content.array.shape,
+                dtype=content.array.dtype,
                 buffer=data,
-                strides=daemon_content.strides,
+                strides=content.array.strides,
             )
         else:
             return byte_decode(
@@ -178,7 +176,7 @@ class DaemonContentParameterMatcher:
                 encoding=self._encoding,
             )
 
-    def _object_to_daemon_content(self, obj: Any) -> DaemonContent:
+    def _object_to_content(self, obj: Any) -> Content:
         buffer = byte_encode(
             data=obj,
             coding=self._coding,
@@ -198,9 +196,9 @@ class DaemonContentParameterMatcher:
             data = buffer
             sm_name = None
 
-        return DaemonContent(size=size, data=data, sm_name=sm_name)
+        return Content(size=size, data=data, sm_name=sm_name)
 
-    def _array_to_daemon_content(self, array: ndarray) -> DaemonContent:
+    def _array_to_content(self, array: ndarray) -> Content:
         buffer = ndarray_to_bytes(array)
         size = len(buffer)
 
@@ -216,37 +214,31 @@ class DaemonContentParameterMatcher:
             data = buffer
             sm_name = None
 
-        return DaemonContent(
+        return Content(
             size=size,
             data=data,
             sm_name=sm_name,
-            shape=array.shape,
-            dtype=array.dtype.name,
-            strides=array.strides,
+            array=ArrayInfo(
+                shape=array.shape,
+                dtype=array.dtype.name,
+                strides=array.strides,
+            ),
         )
 
-    def _any_to_daemon_content(self, obj: Any) -> DaemonContent:
+    def _any_to_content(self, obj: Any) -> Content:
         if isinstance(obj, ndarray):
-            return self._array_to_daemon_content(obj)
+            return self._array_to_content(obj)
         else:
-            return self._object_to_daemon_content(obj)
-
-    def _args_to_daemon_contents(self, *args: Any) -> List[DaemonContent]:
-        return [self._any_to_daemon_content(o) for o in args]
-
-    def _kwargs_to_daemon_contents(self, **kwargs: Any) -> Dict[str, DaemonContent]:
-        return {k: self._any_to_daemon_content(o) for k, o in kwargs.items()}
+            return self._object_to_content(obj)
 
     def _args_to_contents(self, *args: Any) -> List[Content]:
-        contents = self._args_to_daemon_contents(*args)
-        return [o.to_api() for o in contents]
+        return [self._any_to_content(o) for o in args]
 
     def _kwargs_to_contents(self, **kwargs: Any) -> Dict[str, Content]:
-        contents = self._kwargs_to_daemon_contents(**kwargs)
-        return {k: o.to_api() for k, o in contents.items()}
+        return {k: self._any_to_content(o) for k, o in kwargs.items()}
 
 
-async def call_daemon_content_parameter(
+async def call_router(
     func,
     match_info: Dict[str, str],
     coding: ByteCodingType,
@@ -256,7 +248,7 @@ async def call_daemon_content_parameter(
     kwargs: Mapping[str, Content],
     sm_names: Iterable[str],
 ):
-    matcher = DaemonContentParameterMatcher(
+    matcher = ContentParameterMatcher(
         func=func,
         match_info=match_info,
         coding=coding,

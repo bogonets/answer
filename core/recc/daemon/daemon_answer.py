@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Iterable, Mapping, Any, List, Dict, Union, TypeVar, Type
+from typing import Any, List, Dict, Union, TypeVar, Type
 from functools import reduce
 from recc.serialization.deserialize import deserialize_default
 
