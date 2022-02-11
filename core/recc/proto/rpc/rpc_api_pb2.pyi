@@ -9,50 +9,50 @@ import google.protobuf.message
 import typing
 import typing_extensions
 
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor = ...
+DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 class Pit(google.protobuf.message.Message):
     """Heartbeat"""
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     DELAY_FIELD_NUMBER: builtins.int
-    delay: builtins.float = ...
+    delay: builtins.float
     def __init__(self,
         *,
-        delay : builtins.float = ...,
+        delay: builtins.float = ...,
         ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["delay",b"delay"]) -> None: ...
 global___Pit = Pit
 
 class Pat(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     OK_FIELD_NUMBER: builtins.int
-    ok: builtins.bool = ...
+    ok: builtins.bool
     def __init__(self,
         *,
-        ok : builtins.bool = ...,
+        ok: builtins.bool = ...,
         ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["ok",b"ok"]) -> None: ...
 global___Pat = Pat
 
 class Ping(google.protobuf.message.Message):
     """Echo"""
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     MSG_FIELD_NUMBER: builtins.int
-    msg: typing.Text = ...
+    msg: typing.Text
     def __init__(self,
         *,
-        msg : typing.Text = ...,
+        msg: typing.Text = ...,
         ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["msg",b"msg"]) -> None: ...
 global___Ping = Ping
 
 class Pong(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     MSG_FIELD_NUMBER: builtins.int
-    msg: typing.Text = ...
+    msg: typing.Text
     def __init__(self,
         *,
-        msg : typing.Text = ...,
+        msg: typing.Text = ...,
         ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["msg",b"msg"]) -> None: ...
 global___Pong = Pong
@@ -61,32 +61,32 @@ class Empty(google.protobuf.message.Message):
     """Common
     empty field.
     """
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     def __init__(self,
         ) -> None: ...
 global___Empty = Empty
 
 class Data(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     DATA_FIELD_NUMBER: builtins.int
-    data: builtins.bytes = ...
+    data: builtins.bytes
     def __init__(self,
         *,
-        data : builtins.bytes = ...,
+        data: builtins.bytes = ...,
         ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["data",b"data"]) -> None: ...
 global___Data = Data
 
 class Result(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     CODE_FIELD_NUMBER: builtins.int
     MSG_FIELD_NUMBER: builtins.int
-    code: builtins.int = ...
-    msg: typing.Text = ...
+    code: builtins.int
+    msg: typing.Text
     def __init__(self,
         *,
-        code : builtins.int = ...,
-        msg : typing.Optional[typing.Text] = ...,
+        code: builtins.int = ...,
+        msg: typing.Optional[typing.Text] = ...,
         ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["_msg",b"_msg","msg",b"msg"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["_msg",b"_msg","code",b"code","msg",b"msg"]) -> None: ...
@@ -94,29 +94,29 @@ class Result(google.protobuf.message.Message):
 global___Result = Result
 
 class Names(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     NAMES_FIELD_NUMBER: builtins.int
     @property
     def names(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[typing.Text]: ...
     def __init__(self,
         *,
-        names : typing.Optional[typing.Iterable[typing.Text]] = ...,
+        names: typing.Optional[typing.Iterable[typing.Text]] = ...,
         ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["names",b"names"]) -> None: ...
 global___Names = Names
 
 class TarFile(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     DATA_FIELD_NUMBER: builtins.int
     FMT_FIELD_NUMBER: builtins.int
-    data: builtins.bytes = ...
-    fmt: typing.Text = ...
+    data: builtins.bytes
+    fmt: typing.Text
     """`format` is a built-in python function."""
 
     def __init__(self,
         *,
-        data : builtins.bytes = ...,
-        fmt : typing.Optional[typing.Text] = ...,
+        data: builtins.bytes = ...,
+        fmt: typing.Optional[typing.Text] = ...,
         ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["_fmt",b"_fmt","fmt",b"fmt"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["_fmt",b"_fmt","data",b"data","fmt",b"fmt"]) -> None: ...
@@ -124,50 +124,50 @@ class TarFile(google.protobuf.message.Message):
 global___TarFile = TarFile
 
 class UploadTemplateQ(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     TAR_FIELD_NUMBER: builtins.int
     @property
     def tar(self) -> global___TarFile: ...
     def __init__(self,
         *,
-        tar : typing.Optional[global___TarFile] = ...,
+        tar: typing.Optional[global___TarFile] = ...,
         ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["tar",b"tar"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["tar",b"tar"]) -> None: ...
 global___UploadTemplateQ = UploadTemplateQ
 
 class UploadTemplateA(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     RESULT_FIELD_NUMBER: builtins.int
     @property
     def result(self) -> global___Result: ...
     def __init__(self,
         *,
-        result : typing.Optional[global___Result] = ...,
+        result: typing.Optional[global___Result] = ...,
         ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["result",b"result"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["result",b"result"]) -> None: ...
 global___UploadTemplateA = UploadTemplateA
 
 class SetTaskBlueprintQ(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     JSON_FIELD_NUMBER: builtins.int
-    json: typing.Text = ...
+    json: typing.Text
     def __init__(self,
         *,
-        json : typing.Text = ...,
+        json: typing.Text = ...,
         ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["json",b"json"]) -> None: ...
 global___SetTaskBlueprintQ = SetTaskBlueprintQ
 
 class SetTaskBlueprintA(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     RESULT_FIELD_NUMBER: builtins.int
     @property
     def result(self) -> global___Result: ...
     def __init__(self,
         *,
-        result : typing.Optional[global___Result] = ...,
+        result: typing.Optional[global___Result] = ...,
         ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["result",b"result"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["result",b"result"]) -> None: ...
@@ -175,72 +175,72 @@ global___SetTaskBlueprintA = SetTaskBlueprintA
 
 class NodePropertyPath(google.protobuf.message.Message):
     """Node Property"""
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     NODE_FIELD_NUMBER: builtins.int
     PROP_FIELD_NUMBER: builtins.int
-    node: typing.Text = ...
-    prop: typing.Text = ...
+    node: typing.Text
+    prop: typing.Text
     def __init__(self,
         *,
-        node : typing.Text = ...,
-        prop : typing.Text = ...,
+        node: typing.Text = ...,
+        prop: typing.Text = ...,
         ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["node",b"node","prop",b"prop"]) -> None: ...
 global___NodePropertyPath = NodePropertyPath
 
 class GetNodePropertyQ(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     PATH_FIELD_NUMBER: builtins.int
     @property
     def path(self) -> global___NodePropertyPath: ...
     def __init__(self,
         *,
-        path : typing.Optional[global___NodePropertyPath] = ...,
+        path: typing.Optional[global___NodePropertyPath] = ...,
         ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["path",b"path"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["path",b"path"]) -> None: ...
 global___GetNodePropertyQ = GetNodePropertyQ
 
 class GetNodePropertyA(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     RESULT_FIELD_NUMBER: builtins.int
     DATA_FIELD_NUMBER: builtins.int
     @property
     def result(self) -> global___Result: ...
-    data: builtins.bytes = ...
+    data: builtins.bytes
     def __init__(self,
         *,
-        result : typing.Optional[global___Result] = ...,
-        data : builtins.bytes = ...,
+        result: typing.Optional[global___Result] = ...,
+        data: builtins.bytes = ...,
         ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["result",b"result"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["data",b"data","result",b"result"]) -> None: ...
 global___GetNodePropertyA = GetNodePropertyA
 
 class SetNodePropertyQ(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     PATH_FIELD_NUMBER: builtins.int
     DATA_FIELD_NUMBER: builtins.int
     @property
     def path(self) -> global___NodePropertyPath: ...
-    data: builtins.bytes = ...
+    data: builtins.bytes
     def __init__(self,
         *,
-        path : typing.Optional[global___NodePropertyPath] = ...,
-        data : builtins.bytes = ...,
+        path: typing.Optional[global___NodePropertyPath] = ...,
+        data: builtins.bytes = ...,
         ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["path",b"path"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["data",b"data","path",b"path"]) -> None: ...
 global___SetNodePropertyQ = SetNodePropertyQ
 
 class SetNodePropertyA(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     RESULT_FIELD_NUMBER: builtins.int
     @property
     def result(self) -> global___Result: ...
     def __init__(self,
         *,
-        result : typing.Optional[global___Result] = ...,
+        result: typing.Optional[global___Result] = ...,
         ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["result",b"result"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["result",b"result"]) -> None: ...
@@ -248,69 +248,69 @@ global___SetNodePropertyA = SetNodePropertyA
 
 class NodeSlotPath(google.protobuf.message.Message):
     """Node Slot"""
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     NODE_FIELD_NUMBER: builtins.int
     SLOT_FIELD_NUMBER: builtins.int
-    node: typing.Text = ...
-    slot: typing.Text = ...
+    node: typing.Text
+    slot: typing.Text
     def __init__(self,
         *,
-        node : typing.Text = ...,
-        slot : typing.Text = ...,
+        node: typing.Text = ...,
+        slot: typing.Text = ...,
         ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["node",b"node","slot",b"slot"]) -> None: ...
 global___NodeSlotPath = NodeSlotPath
 
 class NodeSlotData(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     PATH_FIELD_NUMBER: builtins.int
     DATA_FIELD_NUMBER: builtins.int
     @property
     def path(self) -> global___NodeSlotPath: ...
-    data: builtins.bytes = ...
+    data: builtins.bytes
     def __init__(self,
         *,
-        path : typing.Optional[global___NodeSlotPath] = ...,
-        data : builtins.bytes = ...,
+        path: typing.Optional[global___NodeSlotPath] = ...,
+        data: builtins.bytes = ...,
         ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["path",b"path"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["data",b"data","path",b"path"]) -> None: ...
 global___NodeSlotData = NodeSlotData
 
 class NodeSlotDataRequest(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     PATH_FIELD_NUMBER: builtins.int
     @property
     def path(self) -> global___NodeSlotPath: ...
     def __init__(self,
         *,
-        path : typing.Optional[global___NodeSlotPath] = ...,
+        path: typing.Optional[global___NodeSlotPath] = ...,
         ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["path",b"path"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["path",b"path"]) -> None: ...
 global___NodeSlotDataRequest = NodeSlotDataRequest
 
 class SendSignalQ(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     NAME_FIELD_NUMBER: builtins.int
     INJECT_SLOTS_FIELD_NUMBER: builtins.int
     EXTRACT_SLOTS_FIELD_NUMBER: builtins.int
-    name: typing.Text = ...
+    name: typing.Text
     @property
     def inject_slots(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___NodeSlotData]: ...
     @property
     def extract_slots(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___NodeSlotDataRequest]: ...
     def __init__(self,
         *,
-        name : typing.Text = ...,
-        inject_slots : typing.Optional[typing.Iterable[global___NodeSlotData]] = ...,
-        extract_slots : typing.Optional[typing.Iterable[global___NodeSlotDataRequest]] = ...,
+        name: typing.Text = ...,
+        inject_slots: typing.Optional[typing.Iterable[global___NodeSlotData]] = ...,
+        extract_slots: typing.Optional[typing.Iterable[global___NodeSlotDataRequest]] = ...,
         ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["extract_slots",b"extract_slots","inject_slots",b"inject_slots","name",b"name"]) -> None: ...
 global___SendSignalQ = SendSignalQ
 
 class SendSignalA(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     RESULT_FIELD_NUMBER: builtins.int
     EXTRACTED_SLOTS_FIELD_NUMBER: builtins.int
     @property
@@ -319,8 +319,8 @@ class SendSignalA(google.protobuf.message.Message):
     def extracted_slots(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___NodeSlotData]: ...
     def __init__(self,
         *,
-        result : typing.Optional[global___Result] = ...,
-        extracted_slots : typing.Optional[typing.Iterable[global___NodeSlotData]] = ...,
+        result: typing.Optional[global___Result] = ...,
+        extracted_slots: typing.Optional[typing.Iterable[global___NodeSlotData]] = ...,
         ) -> None: ...
     def HasField(self, field_name: typing_extensions.Literal["result",b"result"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing_extensions.Literal["extracted_slots",b"extracted_slots","result",b"result"]) -> None: ...

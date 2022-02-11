@@ -6,6 +6,7 @@ from numpy import ndarray
 
 assert_on_open = False
 assert_on_close = False
+assert_on_register = False
 assert_main = False
 
 
@@ -17,6 +18,11 @@ async def on_open() -> None:
 async def on_close() -> None:
     global assert_on_close
     assert_on_close = True
+
+
+async def on_register() -> None:
+    global assert_on_register
+    assert_on_register = True
 
 
 async def get_test():

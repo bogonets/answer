@@ -25,24 +25,21 @@ class DaemonCommonTestCase(DaemonTestCase):
 
     async def test_get_test(self):
         result = await self.client.get("/test")
-        self.assertIsInstance(result, bytes)
         self.assertEqual(0, len(result))
 
     async def test_request_test_value_path(self):
         result0 = await self.client.post("/test/sample/path")
-        self.assertEqual(result0, "sample")
+        self.assertEqual(result0[0], "sample")
 
         result1 = await self.client.get("/test/kkk/path")
-        self.assertEqual(result1, "kkk")
+        self.assertEqual(result1[0], "kkk")
 
     async def test_put_test_body(self):
-        body0 = _Test1(0, "aa", {"k": 100}, [1, "Y"], None, [])
-        result0 = await self.client.put("/test/body", body0, cls=_Test1)
-        self.assertIsInstance(result0, _Test1)
-        self.assertEqual(result0, body0)
-
-        result1 = await self.client.put("/test/body", body0)
-        self.assertIsInstance(result1, dict)
+        body = _Test1(0, "aa", {"k": 100}, [1, "Y"], None, [])
+        result = await self.client.put("/test/body", body)
+        data = result.cast(0, _Test1)
+        self.assertIsInstance(data, _Test1)
+        self.assertEqual(data, body)
 
     async def test_get_test_exception(self):
         with self.assertRaises(AioRpcError):
@@ -50,9 +47,10 @@ class DaemonCommonTestCase(DaemonTestCase):
 
     async def test_post_test_numpy(self):
         image = randint(0, 255, size=(1270, 1920, 3), dtype=uint8)
-        result = await self.client.post("/test/numpy", image, cls=ndarray)
-        self.assertIsInstance(result, ndarray)
-        self.assertTrue((result == 0).all())
+        result = await self.client.post("/test/numpy", image)
+        self.assertEqual(1, len(result))
+        self.assertIsInstance(result[0], ndarray)
+        self.assertTrue((result[0] == 0).all())
 
 
 if __name__ == "__main__":

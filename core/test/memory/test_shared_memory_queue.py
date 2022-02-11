@@ -18,7 +18,8 @@ class SharedMemoryQueueTestCase(TestCase):
         self.assertEqual(0, self.smq.size_working())
 
         test0 = b"aaa"
-        name0 = self.smq.write(test0)
+        written0 = self.smq.write(test0)
+        name0 = written0.sm_name
         self.assertTrue(name0)
         self.assertEqual(0, self.smq.size_waiting())
         self.assertEqual(1, self.smq.size_working())
@@ -31,7 +32,8 @@ class SharedMemoryQueueTestCase(TestCase):
         self.assertEqual(0, self.smq.size_working())
 
         test1 = b"kk"
-        name1 = self.smq.write(test1, offset=1)
+        written1 = self.smq.write(test1, offset=1)
+        name1 = written1.sm_name
         self.assertEqual(name1, name0)
         self.assertEqual(0, self.smq.size_waiting())
         self.assertEqual(1, self.smq.size_working())

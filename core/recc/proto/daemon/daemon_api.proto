@@ -4,7 +4,7 @@ package recc.proto.daemon;
 
 service DaemonApi {
     rpc Heartbeat (Pit) returns (Pat) {}
-    rpc Init (InitQ) returns (InitA) {}
+    rpc Register (RegisterQ) returns (RegisterA) {}
     rpc Packet (PacketQ) returns (PacketA) {}
 }
 
@@ -16,44 +16,69 @@ message Pat {
     bool ok = 1;
 }
 
-message InitQ {
-    repeated string args = 1;
-    map<string, string> kwargs = 2;
+enum RegisterCode {
+    Success = 0;
+    NotFoundRegisterFunction = 1;
+}
 
-    map<string, string> configs = 3;
+message RegisterQ {
+    string session = 1;
+    repeated string args = 2;
+    map<string, string> kwargs = 3;
     string test_sm_name = 4;
     string test_sm_pass = 5;
 }
 
-message InitA {
-    int32 code = 1;
+message RegisterA {
+    RegisterCode code = 1;
     bool is_sm = 2;
+    int32 min_sm_size = 3;
+    int32 min_sm_byte = 4;
 }
 
-enum ContentType {
-    Pickle5 = 0;
-    Json = 1;
-    JsonZlib = 2;
-    JsonGzip = 3;
-    JsonLzma = 4;
-    JsonBz2 = 5;
-    Msgpack = 6;
-    MsgpackZlib = 7;
-    MsgpackGzip = 8;
-    MsgpackLzma = 9;
-    MsgpackBz2 = 10;
+enum Coding {
+    Raw = 0;
+    Pickle5 = 1;
+    Json = 2;
+    JsonZlib = 3;
+    JsonGzip = 4;
+    JsonLzma = 5;
+    JsonBz2 = 6;
+    Msgpack = 7;
+    MsgpackZlib = 8;
+    MsgpackGzip = 9;
+    MsgpackLzma = 10;
+    MsgpackBz2 = 11;
+}
+
+message ArrayInfo {
+    repeated int32 shape = 1;
+    string dtype = 2;
+    repeated int32 strides = 3;
+}
+
+message Content {
+    int32 size = 1;
+    bytes data = 2;
+
+    optional string sm_name = 3;
+    optional ArrayInfo array = 4;
 }
 
 message PacketQ {
-    string method = 1;
-    string path = 2;
-    string sm_name = 3;
-    ContentType content_type = 4;
-    int32 content_size = 5;
-    optional bytes content = 6;
+    string session = 1;
+
+    string method = 2;
+    string path = 3;
+    Coding coding = 4;
+
+    repeated Content args = 5;
+    map<string, Content> kwargs = 6;
+
+    repeated string sm_names = 7;
 }
 
 message PacketA {
-    int32 content_size = 1;
-    optional bytes content = 2;
+    repeated Content args = 3;
+    map<string, Content> kwargs = 4;
 }

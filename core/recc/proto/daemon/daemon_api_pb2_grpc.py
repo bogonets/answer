@@ -19,10 +19,10 @@ class DaemonApiStub(object):
                 request_serializer=daemon__api__pb2.Pit.SerializeToString,
                 response_deserializer=daemon__api__pb2.Pat.FromString,
                 )
-        self.Init = channel.unary_unary(
-                '/recc.proto.daemon.DaemonApi/Init',
-                request_serializer=daemon__api__pb2.InitQ.SerializeToString,
-                response_deserializer=daemon__api__pb2.InitA.FromString,
+        self.Register = channel.unary_unary(
+                '/recc.proto.daemon.DaemonApi/Register',
+                request_serializer=daemon__api__pb2.RegisterQ.SerializeToString,
+                response_deserializer=daemon__api__pb2.RegisterA.FromString,
                 )
         self.Packet = channel.unary_unary(
                 '/recc.proto.daemon.DaemonApi/Packet',
@@ -40,7 +40,7 @@ class DaemonApiServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def Init(self, request, context):
+    def Register(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -60,10 +60,10 @@ def add_DaemonApiServicer_to_server(servicer, server):
                     request_deserializer=daemon__api__pb2.Pit.FromString,
                     response_serializer=daemon__api__pb2.Pat.SerializeToString,
             ),
-            'Init': grpc.unary_unary_rpc_method_handler(
-                    servicer.Init,
-                    request_deserializer=daemon__api__pb2.InitQ.FromString,
-                    response_serializer=daemon__api__pb2.InitA.SerializeToString,
+            'Register': grpc.unary_unary_rpc_method_handler(
+                    servicer.Register,
+                    request_deserializer=daemon__api__pb2.RegisterQ.FromString,
+                    response_serializer=daemon__api__pb2.RegisterA.SerializeToString,
             ),
             'Packet': grpc.unary_unary_rpc_method_handler(
                     servicer.Packet,
@@ -98,7 +98,7 @@ class DaemonApi(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def Init(request,
+    def Register(request,
             target,
             options=(),
             channel_credentials=None,
@@ -108,9 +108,9 @@ class DaemonApi(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/recc.proto.daemon.DaemonApi/Init',
-            daemon__api__pb2.InitQ.SerializeToString,
-            daemon__api__pb2.InitA.FromString,
+        return grpc.experimental.unary_unary(request, target, '/recc.proto.daemon.DaemonApi/Register',
+            daemon__api__pb2.RegisterQ.SerializeToString,
+            daemon__api__pb2.RegisterA.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

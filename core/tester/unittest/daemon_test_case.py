@@ -29,15 +29,18 @@ class DaemonTestCase(IsolatedAsyncioTestCase):
         self.assertFalse(self.servicer.plugin.globals["assert_main"])
         self.assertFalse(self.servicer.plugin.globals["assert_on_open"])
         self.assertFalse(self.servicer.plugin.globals["assert_on_close"])
+        self.assertFalse(self.servicer.plugin.globals["assert_on_register"])
         await self.servicer.on_open()
         self.assertFalse(self.servicer.plugin.globals["assert_main"])
         self.assertTrue(self.servicer.plugin.globals["assert_on_open"])
         self.assertFalse(self.servicer.plugin.globals["assert_on_close"])
+        self.assertFalse(self.servicer.plugin.globals["assert_on_register"])
 
         await self.server.start()
         await self.client.open()
         self.assertTrue(self.client.is_open())
-        self.assertEqual(0, await self.client.init())
+        self.assertEqual(0, await self.client.register())
+        self.assertTrue(self.servicer.plugin.globals["assert_on_register"])
 
     async def asyncSetUp(self):
         try:

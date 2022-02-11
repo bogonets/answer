@@ -148,7 +148,7 @@ class Context(
         await self._daemons.open(self._storage.daemon, self.database, self._loop)
         logger.info("Opened daemon-manager")
 
-        await self._daemons.init(vars(self.config))
+        await self._daemons.register()
         logger.info("Init daemon-manager")
 
         await self._plugins.open()

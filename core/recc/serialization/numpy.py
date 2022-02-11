@@ -11,7 +11,12 @@ def _ndarray_to_bytes_by_darwin(array: ndarray) -> bytes:
 
 def _ndarray_to_bytes(array: ndarray) -> bytes:
     if array.flags["C_CONTIGUOUS"]:
-        return array.data
+        data = array.data
+        if isinstance(data, memoryview):
+            return data.tobytes()
+        else:
+            assert isinstance(data, bytes)
+            return data
     else:
         return array.tobytes()
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Deque, Dict, Optional
+from typing import Deque, Dict, Optional, Union, NamedTuple
 from collections import deque
 from multiprocessing.shared_memory import SharedMemory
 
@@ -14,6 +14,16 @@ def _create_shared_memory(buffer_size: int) -> SharedMemory:
 def _destroy_shared_memory(sm: SharedMemory) -> None:
     sm.close()
     sm.unlink()
+
+
+class Written(NamedTuple):
+    sm_name: str
+    offset: int
+    end: int
+
+    @property
+    def size(self) -> int:
+        return self.end - self.offset
 
 
 class SharedMemoryQueue:
@@ -63,12 +73,15 @@ class SharedMemoryQueue:
         self._working[sm.name] = sm
         return sm
 
-    def write(self, data: bytes, offset=0) -> str:
-        buffer_size = offset + len(data)
-        sm = self.secure_worker(buffer_size)
+    def write(self, data: Union[bytes, memoryview], offset=0) -> Written:
+        if isinstance(data, memoryview):
+            return self.write(data.tobytes(), offset)
+
+        assert isinstance(data, bytes)
         end = offset + len(data)
+        sm = self.secure_worker(end)
         sm.buf[offset:end] = data
-        return sm.name
+        return Written(sm.name, offset, end)
 
     def restore(self, name: str) -> None:
         self._waiting.append(self._working.pop(name))
@@ -98,5 +111,27 @@ class SharedMemoryQueue:
         def __exit__(self, exc_type, exc_value, tb):
             self._smq.restore(self._sm.name)
 
-    def rent(self, size: Optional[int] = None) -> RentalManager:
-        return self.RentalManager(self.secure_worker(size), self)
+    def rent(self, buffer_byte: int) -> RentalManager:
+        return self.RentalManager(self.secure_worker(buffer_byte), self)
+
+    class MultiRentalManager:
+
+        __slots__ = ("_sms", "_smq")
+
+        def __init__(self, sms: Dict[str, SharedMemory], smq: "SharedMemoryQueue"):
+            self._sms = sms
+            self._smq = smq
+
+        def __enter__(self) -> Dict[str, SharedMemory]:
+            return self._sms
+
+        def __exit__(self, exc_type, exc_value, tb):
+            for sm in self._sms.values():
+                self._smq.restore(sm.name)
+
+    def multi_rent(self, rental_size: int, buffer_byte: int) -> MultiRentalManager:
+        sms = [self.secure_worker(buffer_byte) for _ in range(rental_size)]
+        return self.MultiRentalManager(
+            sms={sm.name: sm for sm in sms},
+            smq=self,
+        )

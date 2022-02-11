@@ -11,18 +11,18 @@ from recc.typing.annotation import eval_annotations
 COMPILE_MODE_EXEC = "exec"
 COMPILE_FLAGS = get_annotations_compiler_flag()
 
-# Uses: plugin, daemon
 NAME_ON_CREATE = "on_create"
 NAME_ON_DESTROY = "on_destroy"
 NAME_ON_OPEN = "on_open"
 NAME_ON_CLOSE = "on_close"
 
-# Uses: plugin
 NAME_ON_ROUTES = "on_routes"
 NAME_ON_CREATE_GROUP = "on_create_group"
 NAME_ON_DELETE_GROUP = "on_delete_group"
 NAME_ON_CREATE_PROJECT = "on_create_project"
 NAME_ON_DELETE_PROJECT = "on_delete_project"
+
+NAME_ON_REGISTER = "on_register"
 
 PYTHON_PLUGIN_PREFIX = """# -*- coding: utf-8 -*-
 import sys
@@ -150,6 +150,10 @@ class Plugin:
     def exists_close(self) -> bool:
         return NAME_ON_CLOSE in self._global_variables
 
+    @property
+    def exists_register(self) -> bool:
+        return NAME_ON_REGISTER in self._global_variables
+
     # ----------
     # Get Caller
     # ----------
@@ -181,30 +185,33 @@ class Plugin:
     def get_on_close_func(self) -> Any:
         return self._global_variables.get(NAME_ON_CLOSE, None)
 
+    def get_on_register_func(self) -> Any:
+        return self._global_variables.get(NAME_ON_REGISTER, None)
+
     # ------
     # Caller
     # ------
 
     def call_create(self, context: Any, **kwargs) -> None:
-        on_create = self._global_variables.get(NAME_ON_CREATE)
-        assert on_create is not None
-        if iscoroutinefunction(on_create):
+        func = self._global_variables.get(NAME_ON_CREATE)
+        assert func is not None
+        if iscoroutinefunction(func):
             raise RuntimeError(f"`{NAME_ON_CREATE}` is not a coroutine function")
-        on_create(context, **kwargs)
+        func(context, **kwargs)
 
     def call_destroy(self) -> None:
-        on_destroy = self._global_variables.get(NAME_ON_DESTROY)
-        assert on_destroy is not None
-        if iscoroutinefunction(on_destroy):
+        func = self._global_variables.get(NAME_ON_DESTROY)
+        assert func is not None
+        if iscoroutinefunction(func):
             raise RuntimeError(f"`{NAME_ON_DESTROY}` is not a coroutine function")
-        on_destroy()
+        func()
 
     def _call_get_routes(self) -> Iterable[Tuple[str, str, Any]]:
-        on_routes = self._global_variables.get(NAME_ON_ROUTES)
-        assert on_routes is not None
-        if iscoroutinefunction(on_routes):
+        func = self._global_variables.get(NAME_ON_ROUTES)
+        assert func is not None
+        if iscoroutinefunction(func):
             raise RuntimeError(f"`{NAME_ON_ROUTES}` is not a coroutine function")
-        return on_routes()
+        return func()
 
     def update_routes(self, deep_copy=False) -> None:
         routes = list()
@@ -233,50 +240,60 @@ class Plugin:
             return func(*args, **kwargs)
 
     async def call_create_group(self, group: str) -> None:
-        on_create_group = self._global_variables.get(NAME_ON_CREATE_GROUP)
-        assert on_create_group is not None
-        if not iscoroutinefunction(on_create_group):
-            raise RuntimeError(f"'{NAME_ON_CREATE_GROUP}' must be a coroutine function")
-        await on_create_group(group)
+        func = self._global_variables.get(NAME_ON_CREATE_GROUP)
+        assert func is not None
+        if iscoroutinefunction(func):
+            await func(group)
+        else:
+            func(group)
 
     async def call_delete_group(self, group: str) -> None:
-        on_delete_group = self._global_variables.get(NAME_ON_DELETE_GROUP)
-        assert on_delete_group is not None
-        if not iscoroutinefunction(on_delete_group):
-            raise RuntimeError(f"`{NAME_ON_DELETE_GROUP}` is not a coroutine function")
-        await on_delete_group(group)
+        func = self._global_variables.get(NAME_ON_DELETE_GROUP)
+        assert func is not None
+        if iscoroutinefunction(func):
+            await func(group)
+        else:
+            func(group)
 
     async def call_create_project(self, group: str, project: str) -> None:
-        on_create_project = self._global_variables.get(NAME_ON_CREATE_PROJECT)
-        assert on_create_project is not None
-        if not iscoroutinefunction(on_create_project):
-            raise RuntimeError(
-                f"'{NAME_ON_CREATE_PROJECT}' must be a coroutine function"
-            )
-        await on_create_project(group, project)
+        func = self._global_variables.get(NAME_ON_CREATE_PROJECT)
+        assert func is not None
+        if iscoroutinefunction(func):
+            await func(group, project)
+        else:
+            func(group, project)
 
     async def call_delete_project(self, group: str, project: str) -> None:
-        on_delete_project = self._global_variables.get(NAME_ON_DELETE_PROJECT)
-        assert on_delete_project is not None
-        if not iscoroutinefunction(on_delete_project):
-            raise RuntimeError(
-                f"`{NAME_ON_DELETE_PROJECT}` is not a coroutine function"
-            )
-        await on_delete_project(group, project)
+        func = self._global_variables.get(NAME_ON_DELETE_PROJECT)
+        assert func is not None
+        if iscoroutinefunction(func):
+            await func(group, project)
+        else:
+            func(group, project)
 
     async def call_open(self) -> None:
-        on_open = self._global_variables.get(NAME_ON_OPEN)
-        assert on_open is not None
-        if not iscoroutinefunction(on_open):
-            raise RuntimeError(f"'{NAME_ON_OPEN}' must be a coroutine function")
-        await on_open()
+        func = self._global_variables.get(NAME_ON_OPEN)
+        assert func is not None
+        if iscoroutinefunction(func):
+            await func()
+        else:
+            func()
 
     async def call_close(self) -> None:
         on_close = self._global_variables.get(NAME_ON_CLOSE)
         assert on_close is not None
-        if not iscoroutinefunction(on_close):
-            raise RuntimeError(f"'{NAME_ON_CLOSE}' must be a coroutine function")
-        await on_close()
+        if iscoroutinefunction(on_close):
+            await on_close()
+        else:
+            on_close()
+
+    async def call_register(self, *args, **kwargs) -> Any:
+        func = self._global_variables.get(NAME_ON_REGISTER)
+        assert func is not None
+        if iscoroutinefunction(func):
+            return await func(*args, **kwargs)
+        else:
+            return func(*args, **kwargs)
 
     @staticmethod
     def object_to_packet_answer(

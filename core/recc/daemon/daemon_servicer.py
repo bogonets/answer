@@ -3,8 +3,7 @@
 import grpc
 from asyncio import sleep
 from asyncio import run as asyncio_run
-from typing import Optional, Any, List
-from inspect import signature, iscoroutinefunction
+from typing import Optional, Mapping
 from multiprocessing.shared_memory import SharedMemory
 from grpc.aio import ServicerContext
 from recc.aio.connection import try_connection
@@ -12,17 +11,23 @@ from recc.argparse.config.daemon_config import DaemonConfig
 from recc.plugin.plugin import Plugin
 from recc.logging.logging import recc_daemon_logger as logger
 from recc.network.uds import is_uds_family
-from recc.inspect.type_origin import get_type_origin
-from recc.conversion.boolean import str_to_bool
 from recc.serialization.byte import COMPRESS_LEVEL_BEST
-from recc.proto.daemon.daemon_api_pb2 import Pit, Pat, InitQ, InitA, PacketQ, PacketA
+from recc.serialization.byte_coding import ByteCodingType
+from recc.proto.daemon.daemon_api_pb2 import (
+    Pit,
+    Pat,
+    RegisterCode,
+    RegisterQ,
+    RegisterA,
+    PacketQ,
+    PacketA,
+)
 from recc.proto.daemon.daemon_api_pb2_grpc import (
     DaemonApiServicer,
     add_DaemonApiServicer_to_server,
 )
-from recc.daemon.mixin.daemon_packer import DaemonPacker
-from recc.daemon.daemon_content_type import DaemonContentType
 from recc.daemon.daemon_client import heartbeat
+from recc.daemon.daemon_content_parameter import call_daemon_content_parameter
 from recc.init.default import (
     init_logger,
     init_json_driver,
@@ -34,10 +39,9 @@ from recc.variables.rpc import (
     ACCEPTED_UDS_PORT_NUMBER,
     DEFAULT_GRPC_OPTIONS,
     DEFAULT_PICKLE_ENCODING,
+    REGISTER_ANSWER_KEY_MIN_SM_SIZE,
+    REGISTER_ANSWER_KEY_MIN_SM_BYTE,
 )
-
-INIT_CODE_SUCCESS = 0
-INIT_CODE_NOT_FOUND_INIT_FUNCTION = 1
 
 
 def _test_shared_memory(name: str, password: str) -> bool:
@@ -50,34 +54,7 @@ def _test_shared_memory(name: str, password: str) -> bool:
     return False
 
 
-def _is_path_class(obj) -> bool:
-    if not isinstance(obj, type):
-        return False
-    if issubclass(obj, str):
-        return True
-    if issubclass(obj, int):
-        return True
-    if issubclass(obj, float):
-        return True
-    if issubclass(obj, bool):
-        return True
-    return False
-
-
-def _cast_builtin_type_from_string(data: str, cls) -> Any:
-    assert isinstance(cls, type)
-    if issubclass(cls, str):
-        return data
-    elif issubclass(cls, int):
-        return int(data)
-    elif issubclass(cls, float):
-        return float(data)
-    elif issubclass(cls, bool):
-        return str_to_bool(data)
-    return cls(data)  # type: ignore[call-arg]
-
-
-class DaemonServicer(DaemonPacker, DaemonApiServicer):
+class DaemonServicer(DaemonApiServicer):
     def __init__(self, plugin: Plugin):
         self._plugin = plugin
         self._encoding = DEFAULT_PICKLE_ENCODING
@@ -112,85 +89,61 @@ class DaemonServicer(DaemonPacker, DaemonApiServicer):
         await sleep(delay=request.delay)
         return Pat(ok=True)
 
-    async def Init(self, request: InitQ, context: ServicerContext) -> InitA:
-        logger.debug(f"Init(args={request.args},kwargs={request.kwargs})")
-        is_sm = _test_shared_memory(request.test_sm_name, request.test_sm_pass)
-        return InitA(code=INIT_CODE_SUCCESS, is_sm=is_sm)
+    async def Register(self, request: RegisterQ, context: ServicerContext) -> RegisterA:
+        session = request.session
+        args = [a for a in request.args]
+        kwargs = {k: v for k, v in request.kwargs.items()}
+        logger.debug(f"Register(session={session},args={args},kwargs={kwargs})")
 
-    async def _call_route(
-        self,
-        method: str,
-        path: str,
-        content_type: DaemonContentType,
-        content: bytes,
-    ) -> bytes:
-        route, match_info = self._plugin.get_route(method, path)
+        if self._plugin.exists_register:
+            result = await self._plugin.call_register(*args, **kwargs)
+            code = RegisterCode.Success
+        else:
+            result = None
+            code = RegisterCode.NotFoundRegisterFunction
 
-        sig = signature(route)
-        args: List[Any] = list()
+        test_sm_name = request.test_sm_name
+        test_sm_pass = request.test_sm_pass
+        if test_sm_name and test_sm_pass:
+            is_sm = _test_shared_memory(
+                name=request.test_sm_name,
+                password=request.test_sm_pass,
+            )
+        else:
+            is_sm = False
 
-        for key, param in sig.parameters.items():
-            type_origin = get_type_origin(param)
-
-            assert type_origin is not None
-            assert isinstance(type_origin, type)
-
-            # Path
-            if _is_path_class(type_origin) and key in match_info:
-                path_value = match_info[key]
-                try:
-                    path_arg = _cast_builtin_type_from_string(path_value, type_origin)
-                    args.append(path_arg)
-                except ValueError:
-                    logger.debug(f"Type casting error for path parameter: {key}")
-                    args.append(path_value)
+        if is_sm and result is not None:
+            if isinstance(result, Mapping):
+                min_sm_size = result.get(REGISTER_ANSWER_KEY_MIN_SM_SIZE, 0)
+                min_sm_byte = result.get(REGISTER_ANSWER_KEY_MIN_SM_BYTE, 0)
             else:
-                argument = self.decode(
-                    content,
-                    content_type,
-                    type_origin,
-                    encoding=self._encoding,
-                )
-                args.append(argument)
-
-        if iscoroutinefunction(route):
-            result = await route(*args)
+                min_sm_size = getattr(result, REGISTER_ANSWER_KEY_MIN_SM_SIZE, 0)
+                min_sm_byte = getattr(result, REGISTER_ANSWER_KEY_MIN_SM_BYTE, 0)
         else:
-            result = route(*args)
+            min_sm_size = 0
+            min_sm_byte = 0
 
-        if result is not None:
-            return self.encode(result, content_type, level=self._compress_level)
-        else:
-            return bytes()
+        return RegisterA(
+            code=code,
+            is_sm=is_sm,
+            min_sm_size=min_sm_size,
+            min_sm_byte=min_sm_byte,
+        )
 
     async def Packet(self, request: PacketQ, context: ServicerContext) -> PacketA:
-        method = request.method
-        path = request.path
-        sm_name = request.sm_name
-        content_type = DaemonContentType(request.content_type)
-        content_size = request.content_size
-        logger.debug(f"Packet(method={method},path={path},content_size={content_size})")
-
-        sm: Optional[SharedMemory]
-        if sm_name and content_size > 0:
-            sm = SharedMemory(name=sm_name)
-            request_content = bytes(sm.buf[:content_size])
-        else:
-            sm = None
-            request_content = request.content
-
-        result = await self._call_route(method, path, content_type, request_content)
-        result_size = len(result)
-
-        if sm is not None and result and sm.size >= result_size:
-            assert sm_name
-            assert result_size >= 1
-            sm.buf[:result_size] = result
-            response_content = bytes()
-        else:
-            response_content = result
-
-        return PacketA(content_size=result_size, content=response_content)
+        coding = ByteCodingType(request.coding)
+        route, match_info = self._plugin.get_route(request.method, request.path)
+        result = await call_daemon_content_parameter(
+            func=route,
+            match_info=match_info,
+            coding=coding,
+            encoding=self._encoding,
+            compress_level=self._compress_level,
+            args=request.args,
+            kwargs=request.kwargs,
+            sm_names=request.sm_names,
+        )
+        return PacketA(args=result.args, kwargs=result.kwargs)
 
 
 class _AcceptInfo(object):

@@ -1,24 +1,34 @@
 # -*- coding: utf-8 -*-
 
 import grpc
-from typing import Optional, List, Dict, Any
+from typing import Optional, Iterable, Mapping
 from uuid import uuid4
-from multiprocessing.shared_memory import SharedMemory
 from grpc.aio._channel import Channel  # noqa
 from recc.chrono.datetime import today
 from recc.logging.logging import recc_daemon_logger as logger
-from recc.daemon.mixin.daemon_packer import DaemonPacker
-from recc.daemon.daemon_content_type import DaemonContentType
+from recc.serialization.byte_coding import ByteCodingType
+from recc.daemon.daemon_answer import DaemonAnswer
+from recc.daemon.daemon_content import DaemonContent
+from recc.daemon.daemon_content_packer import DaemonContentPacker
+from recc.daemon.daemon_content_unpacker import content_unpack
 from recc.memory.shared_memory_queue import SharedMemoryQueue
+from recc.memory.shared_memory_tester import SharedMemoryTestInfo, shared_memory_tester
 from recc.serialization.byte import COMPRESS_LEVEL_BEST
 from recc.proto.daemon.daemon_api_pb2_grpc import DaemonApiStub
-from recc.proto.daemon.daemon_api_pb2 import Pit, Pat, InitQ, InitA, PacketQ, PacketA
+from recc.proto.daemon.daemon_api_pb2 import (
+    Pit,
+    Pat,
+    RegisterCode,
+    RegisterQ,
+    RegisterA,
+    PacketQ,
+    PacketA,
+)
 from recc.variables.rpc import (
     DEFAULT_GRPC_OPTIONS,
     DEFAULT_HEARTBEAT_TIMEOUT,
     DEFAULT_PICKLE_ENCODING,
 )
-from recc.variables.logging import VERBOSE_LOGGING_LEVEL_3
 
 M_GET = "GET"
 M_HEAD = "HEAD"
@@ -48,8 +58,9 @@ async def heartbeat(
     return response.ok
 
 
-class DaemonClient(DaemonPacker):
+class DaemonClient:
 
+    _session: str
     _channel: Optional[Channel] = None
     _stub: Optional[DaemonApiStub] = None
     _is_sm: Optional[bool] = None
@@ -59,7 +70,9 @@ class DaemonClient(DaemonPacker):
         address: str,
         timeout: Optional[float] = None,
         disable_shared_memory=False,
+        verbose=False,
     ):
+        self._session = uuid4().hex
         self._address = address
         self._options = dict()
         if timeout is not None:
@@ -68,7 +81,11 @@ class DaemonClient(DaemonPacker):
         self._smq = SharedMemoryQueue()
         self._encoding = DEFAULT_PICKLE_ENCODING
         self._compress_level = COMPRESS_LEVEL_BEST
-        self._content_type = DaemonContentType.MsgpackZlib
+        self._coding = ByteCodingType.MsgpackZlib
+        self._min_sm_size = 0
+        self._min_sm_byte = 0
+
+        self.verbose = verbose
 
     def __repr__(self) -> str:
         return f"DaemonClient<{self._address}>"
@@ -106,221 +123,126 @@ class DaemonClient(DaemonPacker):
         assert isinstance(response, Pat)
         return response.ok
 
-    async def init(
-        self,
-        args: Optional[List[str]] = None,
-        kwargs: Optional[Dict[str, str]] = None,
-        configs: Optional[Dict[str, str]] = None,
-    ) -> int:
+    async def register(self, *args: str, **kwargs: str) -> int:
         assert self._stub is not None
 
-        sm: Optional[SharedMemory]
-        if self._disable_shared_memory:
-            test_sm_pass = str()
-            test_sm_pass_bytes = bytes()
-            sm = None
-            test_sm_name = str()
-        else:
-            test_sm_pass = uuid4().hex
-            test_sm_pass_bytes = bytes.fromhex(test_sm_pass)
-            sm = SharedMemory(create=True, size=len(test_sm_pass_bytes))
-            test_sm_name = sm.name
-
-        try:
-            if sm:
-                sm.buf[:] = test_sm_pass_bytes
-            request = InitQ(
-                args=args if args else list(),
-                kwargs=kwargs if kwargs else dict(),
-                configs=configs if configs else dict(),
-                test_sm_name=test_sm_name,
-                test_sm_pass=test_sm_pass,
+        with shared_memory_tester(self._disable_shared_memory) as test:
+            assert isinstance(test, SharedMemoryTestInfo)
+            request = RegisterQ(
+                session=self._session,
+                args=args,
+                kwargs=kwargs,
+                test_sm_name=test.name,
+                test_sm_pass=test.data,
             )
-            response = await self._stub.Init(request, **self._options)
-        finally:
-            if sm:
-                sm.close()
-                sm.unlink()
+            response = await self._stub.Register(request, **self._options)
 
-        assert isinstance(response, InitA)
+        assert isinstance(response, RegisterA)
         self._is_sm = response.is_sm
-        return response.code
+        if response.min_sm_size > self._min_sm_size:
+            self._min_sm_size = response.min_sm_size
+        if response.min_sm_byte > self._min_sm_byte:
+            self._min_sm_byte = response.min_sm_byte
 
-    async def packet(
-        self,
-        content_type: DaemonContentType,
-        method: Optional[str] = None,
-        path: Optional[str] = None,
-        content: Optional[bytes] = None,
-    ) -> bytes:
-        assert self._stub is not None
-
-        if content:
-            if self._is_sm:
-                use_sm = True
-                sm_name = self._smq.write(content)
-                packet_content = bytes()
-                packet_content_size = len(content)
-            else:
-                use_sm = False
-                sm_name = str()
-                packet_content = content
-                packet_content_size = len(content)
+        if response.code == RegisterCode.Success:
+            pass
+        elif response.code == RegisterCode.NotFoundRegisterFunction:
+            logger.warning("Not found register function")
         else:
-            use_sm = False
-            sm_name = str()
-            packet_content = bytes()
-            packet_content_size = 0
-
-        packet = PacketQ(
-            method=method if method else str(),
-            path=path if path else str(),
-            sm_name=sm_name,
-            content_type=int(content_type.value),  # type: ignore[arg-type]
-            content_size=packet_content_size,
-            content=packet_content,
-        )
-
-        try:
-            response = await self._stub.Packet(packet, **self._options)
-            assert isinstance(response, PacketA)
-            response_size = response.content_size
-            if use_sm and not response.content and response_size > 0:
-                assert sm_name
-                return bytes(self._smq.get_working(sm_name).buf[:response_size])
-            else:
-                return response.content
-        finally:
-            if use_sm:
-                assert self._is_sm
-                assert sm_name
-                self._smq.restore(sm_name)
+            logger.error(f"Unknown register code: {response.code}")
+        return response.code
 
     async def request(
         self,
         method: str,
         path: str,
-        data: Optional[Any] = None,
-        cls: Optional[Any] = None,
-        verbose_level=0,
-    ) -> Any:
-        content_type = self._content_type
-        level = self._compress_level
+        args: Optional[Iterable[DaemonContent]] = None,
+        kwargs: Optional[Mapping[str, DaemonContent]] = None,
+    ) -> DaemonAnswer:
+        assert self._stub is not None
+
+        coding = self._coding
         encoding = self._encoding
-        logging = verbose_level >= VERBOSE_LOGGING_LEVEL_3
+        compress_level = self._compress_level
+        min_sm_size = self._min_sm_size
+        min_sm_byte = self._min_sm_byte
 
-        if data is not None:
-            begin = today() if logging else None
-            body = self.encode(data, content_type, level=level)
-            if begin is not None:
-                t = content_type.name
-                e = round((today() - begin).total_seconds(), 4)
-                logger.debug(f"Request data encode (type={t},elapsed={e}s)")
-        else:
-            body = bytes()
-
-        begin = today() if logging else None
-        result = await self.packet(content_type, method, path, body)
-        if begin is not None:
-            e = round((today() - begin).total_seconds(), 4)
-            logger.debug(
-                f"Handshake (send={len(body)}byte,recv={len(result)}byte,elapsed={e}s)"
+        renter = self._smq.multi_rent(min_sm_size, min_sm_byte)
+        with renter as sms:
+            packer = DaemonContentPacker(
+                coding=coding,
+                args=args,
+                kwargs=kwargs,
+                compress_level=compress_level,
+                smq=self._smq,
             )
 
-        if result:
-            begin = today() if logging else None
-            decoded_result = self.decode(result, content_type, cls, encoding=encoding)
-            if begin is not None:
-                t = content_type.name
-                s = len(result)
-                e = round((today() - begin).total_seconds(), 4)
-                logger.debug(
-                    f"Response data decode (type={t},size={s}byte,elapsed={e}s)"
+            packer_begin = today()
+            with packer as contents:
+                if self.verbose:
+                    packer_seconds = (today() - packer_begin).total_seconds()
+                    packer_elapsed = round(packer_seconds, 3)
+                    logger.debug(f"Packer: {packer_elapsed}s")
+
+                packet = PacketQ(
+                    session=self._session,
+                    method=method if method else str(),
+                    path=path if path else str(),
+                    coding=int(coding.value),  # type: ignore[arg-type]
+                    args=contents.args,
+                    kwargs=contents.kwargs,
+                    sm_names=sms.keys(),
                 )
-            return decoded_result
-        else:
+
+                handshake_begin = today()
+                response = await self._stub.Packet(packet, **self._options)
+                if self.verbose:
+                    handshake_seconds = (today() - handshake_begin).total_seconds()
+                    handshake_elapsed = round(handshake_seconds, 3)
+                    logger.debug(f"Handshake: {handshake_elapsed}s")
+
+            assert isinstance(response, PacketA)
+            unpacker_begin = today()
+            result = content_unpack(
+                coding=coding,
+                encoding=encoding,
+                args=response.args,
+                kwargs=response.kwargs,
+                sms=sms,
+            )
+            if self.verbose:
+                unpacker_seconds = (today() - unpacker_begin).total_seconds()
+                unpacker_elapsed = round(unpacker_seconds, 3)
+                logger.debug(f"Unpacker: {unpacker_elapsed}s")
+
             return result
 
-    async def get(
-        self,
-        path: str,
-        data: Optional[Any] = None,
-        cls: Optional[Any] = None,
-        verbose_level=0,
-    ) -> Any:
-        return await self.request(M_GET, path, data, cls, verbose_level)
+    async def get(self, path: str, *args, **kwargs):
+        return await self.request(M_GET, path, args, kwargs)
 
-    async def head(
-        self,
-        path: str,
-        data: Optional[Any] = None,
-        cls: Optional[Any] = None,
-        verbose_level=0,
-    ) -> Any:
-        return await self.request(M_HEAD, path, data, cls, verbose_level)
+    async def head(self, path: str, *args, **kwargs):
+        return await self.request(M_HEAD, path, args, kwargs)
 
-    async def post(
-        self,
-        path: str,
-        data: Optional[Any] = None,
-        cls: Optional[Any] = None,
-        verbose_level=0,
-    ) -> Any:
-        return await self.request(M_POST, path, data, cls, verbose_level)
+    async def post(self, path: str, *args, **kwargs):
+        return await self.request(M_POST, path, args, kwargs)
 
-    async def put(
-        self,
-        path: str,
-        data: Optional[Any] = None,
-        cls: Optional[Any] = None,
-        verbose_level=0,
-    ) -> Any:
-        return await self.request(M_PUT, path, data, cls, verbose_level)
+    async def put(self, path: str, *args, **kwargs):
+        return await self.request(M_PUT, path, args, kwargs)
 
-    async def delete(
-        self,
-        path: str,
-        data: Optional[Any] = None,
-        cls: Optional[Any] = None,
-        verbose_level=0,
-    ) -> Any:
-        return await self.request(M_DELETE, path, data, cls, verbose_level)
+    async def delete(self, path: str, *args, **kwargs):
+        return await self.request(M_DELETE, path, args, kwargs)
 
-    async def connect(
-        self,
-        path: str,
-        data: Optional[Any] = None,
-        cls: Optional[Any] = None,
-        verbose_level=0,
-    ) -> Any:
-        return await self.request(M_CONNECT, path, data, cls, verbose_level)
+    async def connect(self, path: str, *args, **kwargs):
+        return await self.request(M_CONNECT, path, args, kwargs)
 
-    async def options(
-        self,
-        path: str,
-        data: Optional[Any] = None,
-        cls: Optional[Any] = None,
-        verbose_level=0,
-    ) -> Any:
-        return await self.request(M_OPTIONS, path, data, cls, verbose_level)
+    async def options(self, path: str, *args, **kwargs):
+        return await self.request(M_OPTIONS, path, args, kwargs)
 
-    async def trace(
-        self,
-        path: str,
-        data: Optional[Any] = None,
-        cls: Optional[Any] = None,
-        verbose_level=0,
-    ) -> Any:
-        return await self.request(M_TRACE, path, data, cls, verbose_level)
+    async def trace(self, path: str, *args, **kwargs):
+        return await self.request(M_TRACE, path, args, kwargs)
 
-    async def patch(
-        self,
-        path: str,
-        data: Optional[Any] = None,
-        cls: Optional[Any] = None,
-        verbose_level=0,
-    ) -> Any:
-        return await self.request(M_PATCH, path, data, cls, verbose_level)
+    async def patch(self, path: str, *args, **kwargs):
+        return await self.request(M_PATCH, path, args, kwargs)
 
 
 def create_daemon_client(address: str, timeout: Optional[float] = None) -> DaemonClient:

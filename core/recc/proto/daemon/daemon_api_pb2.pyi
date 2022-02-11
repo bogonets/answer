@@ -10,169 +10,257 @@ import google.protobuf.message
 import typing
 import typing_extensions
 
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor = ...
+DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
-class _ContentType:
+class _RegisterCode:
     ValueType = typing.NewType('ValueType', builtins.int)
     V: typing_extensions.TypeAlias = ValueType
-class _ContentTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_ContentType.ValueType], builtins.type):
-    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor = ...
-    Pickle5: ContentType.ValueType = ...  # 0
-    Json: ContentType.ValueType = ...  # 1
-    JsonZlib: ContentType.ValueType = ...  # 2
-    JsonGzip: ContentType.ValueType = ...  # 3
-    JsonLzma: ContentType.ValueType = ...  # 4
-    JsonBz2: ContentType.ValueType = ...  # 5
-    Msgpack: ContentType.ValueType = ...  # 6
-    MsgpackZlib: ContentType.ValueType = ...  # 7
-    MsgpackGzip: ContentType.ValueType = ...  # 8
-    MsgpackLzma: ContentType.ValueType = ...  # 9
-    MsgpackBz2: ContentType.ValueType = ...  # 10
-class ContentType(_ContentType, metaclass=_ContentTypeEnumTypeWrapper):
+class _RegisterCodeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_RegisterCode.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    Success: _RegisterCode.ValueType  # 0
+    NotFoundRegisterFunction: _RegisterCode.ValueType  # 1
+class RegisterCode(_RegisterCode, metaclass=_RegisterCodeEnumTypeWrapper):
     pass
 
-Pickle5: ContentType.ValueType = ...  # 0
-Json: ContentType.ValueType = ...  # 1
-JsonZlib: ContentType.ValueType = ...  # 2
-JsonGzip: ContentType.ValueType = ...  # 3
-JsonLzma: ContentType.ValueType = ...  # 4
-JsonBz2: ContentType.ValueType = ...  # 5
-Msgpack: ContentType.ValueType = ...  # 6
-MsgpackZlib: ContentType.ValueType = ...  # 7
-MsgpackGzip: ContentType.ValueType = ...  # 8
-MsgpackLzma: ContentType.ValueType = ...  # 9
-MsgpackBz2: ContentType.ValueType = ...  # 10
-global___ContentType = ContentType
+Success: RegisterCode.ValueType  # 0
+NotFoundRegisterFunction: RegisterCode.ValueType  # 1
+global___RegisterCode = RegisterCode
+
+
+class _Coding:
+    ValueType = typing.NewType('ValueType', builtins.int)
+    V: typing_extensions.TypeAlias = ValueType
+class _CodingEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_Coding.ValueType], builtins.type):
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    Raw: _Coding.ValueType  # 0
+    Pickle5: _Coding.ValueType  # 1
+    Json: _Coding.ValueType  # 2
+    JsonZlib: _Coding.ValueType  # 3
+    JsonGzip: _Coding.ValueType  # 4
+    JsonLzma: _Coding.ValueType  # 5
+    JsonBz2: _Coding.ValueType  # 6
+    Msgpack: _Coding.ValueType  # 7
+    MsgpackZlib: _Coding.ValueType  # 8
+    MsgpackGzip: _Coding.ValueType  # 9
+    MsgpackLzma: _Coding.ValueType  # 10
+    MsgpackBz2: _Coding.ValueType  # 11
+class Coding(_Coding, metaclass=_CodingEnumTypeWrapper):
+    pass
+
+Raw: Coding.ValueType  # 0
+Pickle5: Coding.ValueType  # 1
+Json: Coding.ValueType  # 2
+JsonZlib: Coding.ValueType  # 3
+JsonGzip: Coding.ValueType  # 4
+JsonLzma: Coding.ValueType  # 5
+JsonBz2: Coding.ValueType  # 6
+Msgpack: Coding.ValueType  # 7
+MsgpackZlib: Coding.ValueType  # 8
+MsgpackGzip: Coding.ValueType  # 9
+MsgpackLzma: Coding.ValueType  # 10
+MsgpackBz2: Coding.ValueType  # 11
+global___Coding = Coding
 
 
 class Pit(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     DELAY_FIELD_NUMBER: builtins.int
-    delay: builtins.float = ...
+    delay: builtins.float
     def __init__(self,
         *,
-        delay : builtins.float = ...,
+        delay: builtins.float = ...,
         ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["delay",b"delay"]) -> None: ...
 global___Pit = Pit
 
 class Pat(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     OK_FIELD_NUMBER: builtins.int
-    ok: builtins.bool = ...
+    ok: builtins.bool
     def __init__(self,
         *,
-        ok : builtins.bool = ...,
+        ok: builtins.bool = ...,
         ) -> None: ...
     def ClearField(self, field_name: typing_extensions.Literal["ok",b"ok"]) -> None: ...
 global___Pat = Pat
 
-class InitQ(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+class RegisterQ(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     class KwargsEntry(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         KEY_FIELD_NUMBER: builtins.int
         VALUE_FIELD_NUMBER: builtins.int
-        key: typing.Text = ...
-        value: typing.Text = ...
+        key: typing.Text
+        value: typing.Text
         def __init__(self,
             *,
-            key : typing.Text = ...,
-            value : typing.Text = ...,
+            key: typing.Text = ...,
+            value: typing.Text = ...,
             ) -> None: ...
         def ClearField(self, field_name: typing_extensions.Literal["key",b"key","value",b"value"]) -> None: ...
 
-    class ConfigsEntry(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
-        KEY_FIELD_NUMBER: builtins.int
-        VALUE_FIELD_NUMBER: builtins.int
-        key: typing.Text = ...
-        value: typing.Text = ...
-        def __init__(self,
-            *,
-            key : typing.Text = ...,
-            value : typing.Text = ...,
-            ) -> None: ...
-        def ClearField(self, field_name: typing_extensions.Literal["key",b"key","value",b"value"]) -> None: ...
-
+    SESSION_FIELD_NUMBER: builtins.int
     ARGS_FIELD_NUMBER: builtins.int
     KWARGS_FIELD_NUMBER: builtins.int
-    CONFIGS_FIELD_NUMBER: builtins.int
     TEST_SM_NAME_FIELD_NUMBER: builtins.int
     TEST_SM_PASS_FIELD_NUMBER: builtins.int
+    session: typing.Text
     @property
     def args(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[typing.Text]: ...
     @property
     def kwargs(self) -> google.protobuf.internal.containers.ScalarMap[typing.Text, typing.Text]: ...
-    @property
-    def configs(self) -> google.protobuf.internal.containers.ScalarMap[typing.Text, typing.Text]: ...
-    test_sm_name: typing.Text = ...
-    test_sm_pass: typing.Text = ...
+    test_sm_name: typing.Text
+    test_sm_pass: typing.Text
     def __init__(self,
         *,
-        args : typing.Optional[typing.Iterable[typing.Text]] = ...,
-        kwargs : typing.Optional[typing.Mapping[typing.Text, typing.Text]] = ...,
-        configs : typing.Optional[typing.Mapping[typing.Text, typing.Text]] = ...,
-        test_sm_name : typing.Text = ...,
-        test_sm_pass : typing.Text = ...,
+        session: typing.Text = ...,
+        args: typing.Optional[typing.Iterable[typing.Text]] = ...,
+        kwargs: typing.Optional[typing.Mapping[typing.Text, typing.Text]] = ...,
+        test_sm_name: typing.Text = ...,
+        test_sm_pass: typing.Text = ...,
         ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["args",b"args","configs",b"configs","kwargs",b"kwargs","test_sm_name",b"test_sm_name","test_sm_pass",b"test_sm_pass"]) -> None: ...
-global___InitQ = InitQ
+    def ClearField(self, field_name: typing_extensions.Literal["args",b"args","kwargs",b"kwargs","session",b"session","test_sm_name",b"test_sm_name","test_sm_pass",b"test_sm_pass"]) -> None: ...
+global___RegisterQ = RegisterQ
 
-class InitA(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+class RegisterA(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     CODE_FIELD_NUMBER: builtins.int
     IS_SM_FIELD_NUMBER: builtins.int
-    code: builtins.int = ...
-    is_sm: builtins.bool = ...
+    MIN_SM_SIZE_FIELD_NUMBER: builtins.int
+    MIN_SM_BYTE_FIELD_NUMBER: builtins.int
+    code: global___RegisterCode.ValueType
+    is_sm: builtins.bool
+    min_sm_size: builtins.int
+    min_sm_byte: builtins.int
     def __init__(self,
         *,
-        code : builtins.int = ...,
-        is_sm : builtins.bool = ...,
+        code: global___RegisterCode.ValueType = ...,
+        is_sm: builtins.bool = ...,
+        min_sm_size: builtins.int = ...,
+        min_sm_byte: builtins.int = ...,
         ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["code",b"code","is_sm",b"is_sm"]) -> None: ...
-global___InitA = InitA
+    def ClearField(self, field_name: typing_extensions.Literal["code",b"code","is_sm",b"is_sm","min_sm_byte",b"min_sm_byte","min_sm_size",b"min_sm_size"]) -> None: ...
+global___RegisterA = RegisterA
+
+class ArrayInfo(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    SHAPE_FIELD_NUMBER: builtins.int
+    DTYPE_FIELD_NUMBER: builtins.int
+    STRIDES_FIELD_NUMBER: builtins.int
+    @property
+    def shape(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
+    dtype: typing.Text
+    @property
+    def strides(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.int]: ...
+    def __init__(self,
+        *,
+        shape: typing.Optional[typing.Iterable[builtins.int]] = ...,
+        dtype: typing.Text = ...,
+        strides: typing.Optional[typing.Iterable[builtins.int]] = ...,
+        ) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["dtype",b"dtype","shape",b"shape","strides",b"strides"]) -> None: ...
+global___ArrayInfo = ArrayInfo
+
+class Content(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    SIZE_FIELD_NUMBER: builtins.int
+    DATA_FIELD_NUMBER: builtins.int
+    SM_NAME_FIELD_NUMBER: builtins.int
+    ARRAY_FIELD_NUMBER: builtins.int
+    size: builtins.int
+    data: builtins.bytes
+    sm_name: typing.Text
+    @property
+    def array(self) -> global___ArrayInfo: ...
+    def __init__(self,
+        *,
+        size: builtins.int = ...,
+        data: builtins.bytes = ...,
+        sm_name: typing.Optional[typing.Text] = ...,
+        array: typing.Optional[global___ArrayInfo] = ...,
+        ) -> None: ...
+    def HasField(self, field_name: typing_extensions.Literal["_array",b"_array","_sm_name",b"_sm_name","array",b"array","sm_name",b"sm_name"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing_extensions.Literal["_array",b"_array","_sm_name",b"_sm_name","array",b"array","data",b"data","size",b"size","sm_name",b"sm_name"]) -> None: ...
+    @typing.overload
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["_array",b"_array"]) -> typing.Optional[typing_extensions.Literal["array"]]: ...
+    @typing.overload
+    def WhichOneof(self, oneof_group: typing_extensions.Literal["_sm_name",b"_sm_name"]) -> typing.Optional[typing_extensions.Literal["sm_name"]]: ...
+global___Content = Content
 
 class PacketQ(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    class KwargsEntry(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+        KEY_FIELD_NUMBER: builtins.int
+        VALUE_FIELD_NUMBER: builtins.int
+        key: typing.Text
+        @property
+        def value(self) -> global___Content: ...
+        def __init__(self,
+            *,
+            key: typing.Text = ...,
+            value: typing.Optional[global___Content] = ...,
+            ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["value",b"value"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["key",b"key","value",b"value"]) -> None: ...
+
+    SESSION_FIELD_NUMBER: builtins.int
     METHOD_FIELD_NUMBER: builtins.int
     PATH_FIELD_NUMBER: builtins.int
-    SM_NAME_FIELD_NUMBER: builtins.int
-    CONTENT_TYPE_FIELD_NUMBER: builtins.int
-    CONTENT_SIZE_FIELD_NUMBER: builtins.int
-    CONTENT_FIELD_NUMBER: builtins.int
-    method: typing.Text = ...
-    path: typing.Text = ...
-    sm_name: typing.Text = ...
-    content_type: global___ContentType.ValueType = ...
-    content_size: builtins.int = ...
-    content: builtins.bytes = ...
+    CODING_FIELD_NUMBER: builtins.int
+    ARGS_FIELD_NUMBER: builtins.int
+    KWARGS_FIELD_NUMBER: builtins.int
+    SM_NAMES_FIELD_NUMBER: builtins.int
+    session: typing.Text
+    method: typing.Text
+    path: typing.Text
+    coding: global___Coding.ValueType
+    @property
+    def args(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Content]: ...
+    @property
+    def kwargs(self) -> google.protobuf.internal.containers.MessageMap[typing.Text, global___Content]: ...
+    @property
+    def sm_names(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[typing.Text]: ...
     def __init__(self,
         *,
-        method : typing.Text = ...,
-        path : typing.Text = ...,
-        sm_name : typing.Text = ...,
-        content_type : global___ContentType.ValueType = ...,
-        content_size : builtins.int = ...,
-        content : typing.Optional[builtins.bytes] = ...,
+        session: typing.Text = ...,
+        method: typing.Text = ...,
+        path: typing.Text = ...,
+        coding: global___Coding.ValueType = ...,
+        args: typing.Optional[typing.Iterable[global___Content]] = ...,
+        kwargs: typing.Optional[typing.Mapping[typing.Text, global___Content]] = ...,
+        sm_names: typing.Optional[typing.Iterable[typing.Text]] = ...,
         ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["_content",b"_content","content",b"content"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["_content",b"_content","content",b"content","content_size",b"content_size","content_type",b"content_type","method",b"method","path",b"path","sm_name",b"sm_name"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["_content",b"_content"]) -> typing.Optional[typing_extensions.Literal["content"]]: ...
+    def ClearField(self, field_name: typing_extensions.Literal["args",b"args","coding",b"coding","kwargs",b"kwargs","method",b"method","path",b"path","session",b"session","sm_names",b"sm_names"]) -> None: ...
 global___PacketQ = PacketQ
 
 class PacketA(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
-    CONTENT_SIZE_FIELD_NUMBER: builtins.int
-    CONTENT_FIELD_NUMBER: builtins.int
-    content_size: builtins.int = ...
-    content: builtins.bytes = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    class KwargsEntry(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+        KEY_FIELD_NUMBER: builtins.int
+        VALUE_FIELD_NUMBER: builtins.int
+        key: typing.Text
+        @property
+        def value(self) -> global___Content: ...
+        def __init__(self,
+            *,
+            key: typing.Text = ...,
+            value: typing.Optional[global___Content] = ...,
+            ) -> None: ...
+        def HasField(self, field_name: typing_extensions.Literal["value",b"value"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["key",b"key","value",b"value"]) -> None: ...
+
+    ARGS_FIELD_NUMBER: builtins.int
+    KWARGS_FIELD_NUMBER: builtins.int
+    @property
+    def args(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Content]: ...
+    @property
+    def kwargs(self) -> google.protobuf.internal.containers.MessageMap[typing.Text, global___Content]: ...
     def __init__(self,
         *,
-        content_size : builtins.int = ...,
-        content : typing.Optional[builtins.bytes] = ...,
+        args: typing.Optional[typing.Iterable[global___Content]] = ...,
+        kwargs: typing.Optional[typing.Mapping[typing.Text, global___Content]] = ...,
         ) -> None: ...
-    def HasField(self, field_name: typing_extensions.Literal["_content",b"_content","content",b"content"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing_extensions.Literal["_content",b"_content","content",b"content","content_size",b"content_size"]) -> None: ...
-    def WhichOneof(self, oneof_group: typing_extensions.Literal["_content",b"_content"]) -> typing.Optional[typing_extensions.Literal["content"]]: ...
+    def ClearField(self, field_name: typing_extensions.Literal["args",b"args","kwargs",b"kwargs"]) -> None: ...
 global___PacketA = PacketA
