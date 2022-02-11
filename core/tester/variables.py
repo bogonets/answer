@@ -36,3 +36,9 @@ GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE = "GRPC Packet performance testing is off"
 # Request data encode (type=Msgpack,elapsed=0.0053s)
 # Handshake (send=6174825byte,recv=125byte,elapsed=0.3139s)
 # Response data decode (type=Msgpack,size=125byte,elapsed=0.0005s)
+
+DAEMON_ARRAY_PERFORMANCE_TEST_SKIP = True
+DAEMON_ARRAY_PERFORMANCE_ITERATION = 10
+DAEMON_ARRAY_PERFORMANCE_SKIP_MESSAGE = "Daemon array performance testing is off"
+# Split  packet Average seconds: 0.0328s (WIN, x7 faster)
+# Merged packet Average seconds: 0.2152s

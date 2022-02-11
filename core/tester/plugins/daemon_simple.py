@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass
 from numpy import ndarray
 
@@ -47,6 +47,12 @@ class _Test1:
     value6: Optional[List[int]] = None
 
 
+@dataclass
+class _Test2:
+    array: ndarray
+    body: _Test1
+
+
 async def put_test_body(body: _Test1):
     return _Test1(
         body.value1,
@@ -67,10 +73,31 @@ async def get_exception():
     raise _TestException()
 
 
-async def post_test_numpy(body: ndarray) -> ndarray:
-    result = body.copy()
+async def post_test_numpy(array: ndarray) -> ndarray:
+    result = array.copy()
     result.fill(0)
     return result
+
+
+@dataclass
+class _Result1:
+    value1: int
+    value2: str
+
+
+async def patch_test_numpy_body(
+    array: ndarray, body: _Test1
+) -> Tuple[ndarray, _Result1]:
+    result = array.copy()
+    result.fill(0)
+    return result, _Result1(body.value1, body.value2)
+
+
+async def patch_test_numpy_body2(body: _Test2) -> Tuple[ndarray, _Result1]:
+    isinstance(body, dict)
+    result = body.array.copy()
+    result.fill(0)
+    return result, _Result1(body.body.value1, body.body.value2)
 
 
 def on_routes():
@@ -81,6 +108,8 @@ def on_routes():
         ("PUT", "/test/body", put_test_body),
         ("GET", "/test/exception", get_exception),
         ("POST", "/test/numpy", post_test_numpy),
+        ("PATCH", "/test/numpy/body", patch_test_numpy_body),
+        ("PATCH", "/test/numpy/body2", patch_test_numpy_body2),
     ]
 
 
