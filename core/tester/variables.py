@@ -40,5 +40,8 @@ GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE = "GRPC Packet performance testing is off"
 DAEMON_ARRAY_PERFORMANCE_TEST_SKIP = True
 DAEMON_ARRAY_PERFORMANCE_ITERATION = 10
 DAEMON_ARRAY_PERFORMANCE_SKIP_MESSAGE = "Daemon array performance testing is off"
-# Split  packet Average seconds: 0.0328s (WIN, x7 faster)
-# Merged packet Average seconds: 0.2152s
+# 1920x1270x3 numpy array and small dictionary packet. Send/Recv (Both)
+# Split packet - Average seconds: 0.0258s (Enable shared-memory)
+# Merge packet - Average seconds: 0.2036s (Enable shared-memory)
+# Split packet - Average seconds: 0.0389s (Disable shared-memory)
+# Merge packet - Average seconds: 0.2188s (Disable shared-memory)

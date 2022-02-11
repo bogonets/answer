@@ -130,6 +130,9 @@ class SharedMemoryQueue:
                 self._smq.restore(sm.name)
 
     def multi_rent(self, rental_size: int, buffer_byte: int) -> MultiRentalManager:
+        if rental_size <= 0 or buffer_byte <= 0:
+            return self.MultiRentalManager(dict(), self)
+
         sms = [self.secure_worker(buffer_byte) for _ in range(rental_size)]
         return self.MultiRentalManager(
             sms={sm.name: sm for sm in sms},

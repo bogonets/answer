@@ -79,7 +79,6 @@ class DaemonClient:
         self._options = dict()
         if timeout is not None:
             self._options["timeout"] = timeout
-        self._disable_shared_memory = disable_shared_memory
         self._smq = SharedMemoryQueue()
         self._encoding = DEFAULT_PICKLE_ENCODING
         self._compress_level = COMPRESS_LEVEL_BEST
@@ -87,6 +86,7 @@ class DaemonClient:
         self._min_sm_size = 0
         self._min_sm_byte = 0
 
+        self.disable_shared_memory = disable_shared_memory
         self.verbose = verbose
 
     def __repr__(self) -> str:
@@ -102,7 +102,8 @@ class DaemonClient:
     def is_open(self) -> bool:
         return self._channel is not None
 
-    def is_possible_shared_memory(self) -> bool:
+    @property
+    def possible_shared_memory(self) -> bool:
         return bool(self._is_sm)
 
     async def open(self) -> None:
@@ -128,7 +129,7 @@ class DaemonClient:
     async def register(self, *args: str, **kwargs: str) -> int:
         assert self._stub is not None
 
-        with register_shared_memory(self._disable_shared_memory) as test:
+        with register_shared_memory(self.disable_shared_memory) as test:
             assert isinstance(test, SharedMemoryTestInfo)
             request = RegisterQ(
                 session=self._session,
@@ -141,6 +142,7 @@ class DaemonClient:
 
         assert isinstance(response, RegisterA)
         self._is_sm = response.is_sm
+
         if response.min_sm_size > self._min_sm_size:
             self._min_sm_size = response.min_sm_size
         if response.min_sm_byte > self._min_sm_byte:
@@ -160,17 +162,26 @@ class DaemonClient:
         coding = self._coding
         encoding = self._encoding
         compress_level = self._compress_level
-        min_sm_size = self._min_sm_size
-        min_sm_byte = self._min_sm_byte
+
+        use_sm = self.possible_shared_memory and not self.disable_shared_memory
+        smq: Optional[SharedMemoryQueue]
+        if use_sm:
+            min_sm_size = self._min_sm_size
+            min_sm_byte = self._min_sm_byte
+            smq = self._smq
+        else:
+            min_sm_size = 0
+            min_sm_byte = 0
+            smq = None
 
         renter = self._smq.multi_rent(min_sm_size, min_sm_byte)
         with renter as sms:
             packer = ContentPacker(
                 coding=coding,
                 compress_level=compress_level,
-                smq=self._smq,
                 args=args,
                 kwargs=kwargs,
+                smq=smq,
             )
 
             packer_begin = today()
@@ -178,7 +189,7 @@ class DaemonClient:
                 if self.verbose:
                     packer_seconds = (today() - packer_begin).total_seconds()
                     packer_elapsed = round(packer_seconds, 3)
-                    logger.debug(f"Packer: {packer_elapsed}s")
+                    logger.debug(f"Packer[sm={use_sm}]: {packer_elapsed}s")
 
                 packet = PacketQ(
                     session=self._session,
@@ -195,7 +206,7 @@ class DaemonClient:
                 if self.verbose:
                     handshake_seconds = (today() - handshake_begin).total_seconds()
                     handshake_elapsed = round(handshake_seconds, 3)
-                    logger.debug(f"Handshake: {handshake_elapsed}s")
+                    logger.debug(f"Handshake[sm={use_sm}]: {handshake_elapsed}s")
 
             assert isinstance(response, PacketA)
             unpacker_begin = today()
@@ -209,7 +220,7 @@ class DaemonClient:
             if self.verbose:
                 unpacker_seconds = (today() - unpacker_begin).total_seconds()
                 unpacker_elapsed = round(unpacker_seconds, 3)
-                logger.debug(f"Unpacker: {unpacker_elapsed}s")
+                logger.debug(f"Unpacker[sm={use_sm}]: {unpacker_elapsed}s")
 
             return result
 

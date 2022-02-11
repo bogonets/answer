@@ -18,18 +18,18 @@ class ContentPacker:
 
     _coding: ByteCodingType
     _compress_level: int
-    _smq: SharedMemoryQueue
     _args: List[Any]
     _kwargs: Dict[str, Any]
+    _smq: Optional[SharedMemoryQueue]
     _written_sm_names: Set[str]
 
     def __init__(
         self,
         coding: ByteCodingType,
         compress_level: int,
-        smq: SharedMemoryQueue,
         args: Optional[Iterable[Any]] = None,
         kwargs: Optional[Mapping[str, Any]] = None,
+        smq: Optional[SharedMemoryQueue] = None,
     ):
         self._coding = coding
         self._compress_level = compress_level
@@ -39,6 +39,8 @@ class ContentPacker:
         self._written_sm_names = set()
 
     def restore(self) -> None:
+        if not self._smq:
+            return
         for name in self._written_sm_names:
             self._smq.restore(name)
         self._written_sm_names.clear()
@@ -50,7 +52,7 @@ class ContentPacker:
             level=self._compress_level,
         )
 
-        if buffer:
+        if self._smq and buffer:
             written = self._smq.write(buffer)
             sm_name = written.sm_name
             self._written_sm_names.add(sm_name)
@@ -71,7 +73,7 @@ class ContentPacker:
         buffer = ndarray_to_bytes(array)
         assert isinstance(buffer, bytes)
 
-        if buffer:
+        if self._smq and buffer:
             written = self._smq.write(buffer)
             sm_name = written.sm_name
             self._written_sm_names.add(sm_name)
