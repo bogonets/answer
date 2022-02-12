@@ -135,6 +135,7 @@ swscaler
 targetduration
 taskname
 testdb
+timestamptz
 tzdata
 uids
 uint
