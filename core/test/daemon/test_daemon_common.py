@@ -96,7 +96,7 @@ class DaemonCommonTestCase(DaemonTestCase):
     async def _call_split_array(
         self, array: ndarray, body: _Test1, iteration: int
     ) -> float:
-        total_seconds = 0
+        total_seconds = 0.0
 
         for _ in range(iteration):
             begin = datetime.now()
@@ -117,7 +117,7 @@ class DaemonCommonTestCase(DaemonTestCase):
     async def _call_merged_array(
         self, array: ndarray, body: _Test1, iteration: int
     ) -> float:
-        total_seconds = 0
+        total_seconds = 0.0
         merged = _Test2(array, body)
 
         for _ in range(iteration):
