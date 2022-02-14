@@ -164,6 +164,7 @@ zoneinfo
 pconfig
 pcontainer
 pdaemon
+pdate
 pdevice
 pevent
 pgroup

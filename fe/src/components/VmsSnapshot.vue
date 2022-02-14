@@ -50,8 +50,8 @@ export default class VmsSnapshot extends Vue {
   @Prop({type: String})
   readonly project!: string;
 
-  @Prop({type: String})
-  readonly file!: string;
+  @Prop({type: Number})
+  readonly event!: number;
 
   @Prop({type: String})
   readonly progressColor!: string;
@@ -83,9 +83,9 @@ export default class VmsSnapshot extends Vue {
     this.loading = true;
     const group = this.group;
     const project = this.project;
-    const file = this.file;
+    const event = this.event;
 
-    this.$api2.getVmsEventsThumbnailsPevent(group, project, file)
+    this.$api2.getVmsEventsThumbnailsPevent(group, project, event.toString())
         .then(item => {
           this.loading = false;
           this.contentType = item.content_type;
@@ -123,16 +123,16 @@ export default class VmsSnapshot extends Vue {
   onClick() {
     const group = this.group;
     const project = this.project;
-    const file = this.file;
+    const event = this.event;
 
-    this.$api2.getVmsEventsSnapshotsPevent(group, project, file)
+    this.$api2.getVmsEventsSnapshotsPevent(group, project, event.toString())
         .then(item => {
           const contentType = item.content_type;
           const encoding = item.encoding;
           const content = item.content;
           const image = new Image();
           image.src = `data:${contentType};${encoding}, ${content}`;
-          image.alt = file;
+          image.alt = event.toString();
           const viewer = new Viewer(image, {
             navbar: false,
             toolbar: {

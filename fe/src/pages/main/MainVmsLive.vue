@@ -61,7 +61,7 @@ ko:
                     v-ripple
                     :group="$route.params.group"
                     :project="$route.params.project"
-                    :file="item.file"
+                    :event="item.event_uid"
                     :width="imageWidth"
                     :height="imageHeight"
                 ></vms-snapshot>

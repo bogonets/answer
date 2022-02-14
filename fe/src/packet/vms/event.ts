@@ -7,7 +7,8 @@ export interface VmsEventA {
     device_uid: number;
     category_id: number;
     event_config_uid: number;
-    file: string;
+    directory: string;
+    filename: string;
     extra?: VmsChannelEvent;
 
     description?: null | string;

@@ -182,7 +182,7 @@ ko:
       </div>
 
       <v-sheet
-          v-if="showInformationPanel && online && channelOpened && value.active"
+          v-if="enableInfoPanel"
           rounded
           class="information-panel"
           transition="slide-x-transition"
@@ -879,8 +879,8 @@ export default class MediaPlayer extends VueBase {
 
       try {
         const meta = JSON.parse(event.data) as VmsChannelMeta;
-        // console.debug("onChannelMessage", meta);
-        // this.renderMetaData(context, canvasWidth, canvasHeight, meta);
+        console.debug("onChannelMessage", meta);
+        this.renderMetaData(context, canvasWidth, canvasHeight, meta);
 
         this.lastEventCode = meta.code;
         this.lastEventDate = createMoment().format('LL, LTS');
@@ -1125,6 +1125,26 @@ export default class MediaPlayer extends VueBase {
     } else {
       return 'mdi-signal-cellular-outline';
     }
+  }
+
+  get enableInfoPanel() {
+    if (!this.showInformationPanel) {
+      return false;
+    }
+    if (!this.online) {
+      return false;
+    }
+    if (!this.channelOpened) {
+      return false;
+    }
+
+    // if (this.value.server_debugging) {
+    //   return true;
+    // } else {
+    //   return this.value.active;
+    // }
+
+    return true;
   }
 
   eventColor(event: VmsChannelEvent) {
