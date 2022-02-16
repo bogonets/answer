@@ -15,7 +15,8 @@ export interface VmsEventA {
 }
 
 export interface VmsFilterEventQ {
-    date: string;
+    time_left: string;
+    time_right: string;
     device_uid?: number;
     category?: string;
 }

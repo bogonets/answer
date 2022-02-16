@@ -504,6 +504,14 @@ export default class MainVmsEventsList extends VueBase {
     }
   }
 
+  get dateStart() {
+    return `${this.date}T00:00:00.000`;
+  }
+
+  get dateLast() {
+    return `${this.date}T23:59:59.999`;
+  }
+
   allowedDates(value: string) {
     return this.eventDates.includes(value);
   }
@@ -555,7 +563,8 @@ export default class MainVmsEventsList extends VueBase {
     const device_uid = this.deviceUid !== ANY_DEVICE_UID ? this.deviceUid : undefined;
     const category = this.category ? this.category : undefined;
     const body = {
-      date: this.date,
+      time_left: this.dateStart,
+      time_right: this.dateLast,
       device_uid: device_uid,
       category: category,
     } as VmsFilterEventQ;

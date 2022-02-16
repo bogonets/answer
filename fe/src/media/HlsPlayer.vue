@@ -6,6 +6,14 @@ en:
     logo_alt: "Answer"
   tooltips:
     latest_event_time: "Latest event time: {0}"
+  vms_channel_meta:
+    filtered: "Completed successfully, but no event occurred"
+    disabled: "Disabled"
+    not_ready_roi: "Not ready ROI"
+    not_ready_filters: "Not ready filters"
+    raise_exception: "Raise exception"
+    unknown_code: "Unknown code: {0}"
+    empty_events: "Empty events"
 
 ko:
   labels:
@@ -14,6 +22,14 @@ ko:
     logo_alt: "Answer"
   tooltips:
     latest_event_time: "마지막 이벤트 발생 시간: {0}"
+  vms_channel_meta:
+    filtered: "성공적으로 완료되었지만 이벤트가 발생하지 않았습니다"
+    disabled: "비활성화 되었습니다"
+    not_ready_roi: "관심영역(ROI)이 준비되지 않았습니다"
+    not_ready_filters: "필터가 준비되지 않았습니다"
+    raise_exception: "예외가 발생되었습니다"
+    unknown_code: "알 수 없는 에러 코드: {0}"
+    empty_events: "감지된 이벤트가 없습니다"
 </i18n>
 
 <template>
@@ -31,21 +47,24 @@ ko:
             transition="slide-x-transition"
             :style="`top: ${getInfoPanelTop(hover)};`"
         >
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon small :color="informationIconColor">
-                {{ informationIcon }}
-              </v-icon>
-              <div v-bind="attrs" v-on="on">
-                <span class="ml-1 text--secondary text-body-2">
-                  {{ informationText }}
+          <div
+              v-for="(event, index) in events"
+              :key="`event-${index}`"
+          >
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <div v-bind="attrs" v-on="on">
+                  <v-icon small :color="eventColor(event)">
+                    {{ eventIcon(event) }}
+                  </v-icon>
+                  <span class="ml-1 text--secondary text-body-2">
+                  {{ eventLabel(event) }}
                 </span>
-              </div>
-            </template>
-            <span>
-              {{ $t('tooltips.latest_event_time', [informationDate]) }}
-            </span>
-          </v-tooltip>
+                </div>
+              </template>
+              <span>{{ eventTooltip(event) }}</span>
+            </v-tooltip>
+          </div>
         </v-sheet>
 
         <div class="hls-placeholder">
@@ -227,12 +246,12 @@ import colors from 'vuetify/lib/util/colors'
 import Hls from 'hls.js';
 import type {HlsConfig, Fragment} from 'hls.js';
 import {
-  ANY_DEVICE_UID,
+  ANY_DEVICE_UID, EVENT_CATEGORY_TO_ICON,
   VMS_CHANNEL_META_CODE_BAD_ARGUMENT,
   VMS_CHANNEL_META_CODE_FILTERED,
   VMS_CHANNEL_META_CODE_NOT_READY_ROI,
   VMS_CHANNEL_META_CODE_OPENED,
-  VMS_CHANNEL_META_CODE_SUCCESS,
+  VMS_CHANNEL_META_CODE_SUCCESS, VmsChannelEvent, VmsChannelEventCode,
   VmsEventA, VmsFilterEventQ,
 } from '@/packet/vms';
 import {todayString} from '@/chrono/date';
@@ -316,8 +335,6 @@ export default class HlsPlayer extends VueBase {
   hls?: Hls;
   hlsUrl = '';
 
-  events = [] as Array<VmsEventA>;
-
   paused = true;
   videoWidth = 0;
   videoHeight = 0;
@@ -346,6 +363,14 @@ export default class HlsPlayer extends VueBase {
 
   recordRanges = [] as Array<RatioRange>;
   eventOffsets = [] as Array<number>;
+
+  loadingEvent = false;
+  eventsBuffer = new Map<number, VmsEventA>();
+  eventsIndexes = [] as Array<number>;
+  eventsDownloadQueue = [] as Array<number>;
+  nextEventIndex?: number = undefined;
+  prevRefreshMilliseconds = 0;
+  events = [] as Array<VmsChannelEvent>;
 
   mounted() {
     this.hlsOptions = {
@@ -546,16 +571,18 @@ export default class HlsPlayer extends VueBase {
       const hls = new Hls(this.hlsOptions);
       hls.on(Hls.Events.MANIFEST_PARSED, this.onManifestParsed);
       hls.on(Hls.Events.FRAG_CHANGED, this.onFragChanged);
+      hls.on(Hls.Events.ERROR, this.onError);
       hls.loadSource(url);
       hls.attachMedia(this.video);
       this.hls = hls;
       this.hlsUrl = url;
     } catch (error) {
-      console.error(error);
+      this.toastError(`Update HLS failure: ${error}`);
     }
   }
 
   onManifestParsed(event, data) {
+    // console.debug(event, data);
     // index of first quality level appearing in Manifest.
     const firstLevel = data.firstLevel;
     if (firstLevel >= data.levels.length) {
@@ -585,6 +612,7 @@ export default class HlsPlayer extends VueBase {
   relurl = '';
 
   onFragChanged(event, data) {
+    // console.debug(event, data);
     this.currentFragment = data.frag;
     if (!this.currentFragment) {
       throw new UndefinedException('Current fragment is undefined or null');
@@ -598,14 +626,13 @@ export default class HlsPlayer extends VueBase {
     this.relurl = this.currentFragment.relurl;
   }
 
-  async setupPrerequisiteDatas() {
-    const eventFilterQuery = {
-      date: this.date,
-      device_uid: this.deviceNumber,
-    } as VmsFilterEventQ;
+  onError(event, data) {
+    console.debug(event, data);
+  }
 
-    const beginDateText = `${this.date}T00:00:00`;
-    const begin = moment(beginDateText).valueOf();
+  async setupPrerequisiteDatas() {
+    const begin = moment(this.dateStart);
+    const beginValue = begin.valueOf();
 
     try {
       const ranges = await this.$api2.getVmsRecordsPdeviceRangesPdate(
@@ -617,8 +644,8 @@ export default class HlsPlayer extends VueBase {
         return {
           startTime: startTime,
           lastTime: lastTime,
-          start: (startTime.valueOf() - begin) / MILLISECONDS_TO_DAY,
-          last: (lastTime.valueOf() - begin) / MILLISECONDS_TO_DAY,
+          start: (startTime.valueOf() - beginValue) / MILLISECONDS_TO_DAY,
+          last: (lastTime.valueOf() - beginValue) / MILLISECONDS_TO_DAY,
         };
       });
       const ratioOfDay = ratioRanges
@@ -633,7 +660,6 @@ export default class HlsPlayer extends VueBase {
           ratio: (x.last - x.start) / ratioOfDay,
         };
       });
-      console.warn(`this.recordRanges: `, this.recordRanges);
 
       const offsets = await this.$api2.getVmsDeviceEventsTimesPdateOffset(
           this.group, this.project, this.deviceText, this.date
@@ -642,10 +668,28 @@ export default class HlsPlayer extends VueBase {
         return (x * ONE_SECOND_TO_MILLISECONDS) / MILLISECONDS_TO_DAY;
       });
       this.cursorPosition = this.eventOffsets[0];
+
+      const begin = moment(`${this.date}T00:00:00`);
+      const offsetMilliseconds = (this.cursorPosition * MILLISECONDS_TO_DAY)
+      const cursorTime = begin.clone().add(offsetMilliseconds, 'milliseconds');
+      const cursorHour = cursorTime.hour()
+
+      const hours = [... Array(24).keys()];
+      this.eventsIndexes = [];
+      this.nextEventIndex = undefined;
+      this.eventsBuffer.clear();
+      this.eventsDownloadQueue = [cursorHour, ... hours.filter(x => x != cursorHour)];
+      console.debug(`Enqueue event hours: ${this.eventsDownloadQueue}`);
     } catch (error) {
+      this.recordRanges = [];
+      this.eventOffsets = [];
+      this.cursorPosition = 0;
+      this.eventsIndexes = [];
+      this.nextEventIndex = undefined;
+      this.eventsBuffer.clear();
+      this.eventsDownloadQueue = [];
       this.toastRequestFailure(error);
     } finally {
-      this.events = [];
       this.loading = false;
     }
   }
@@ -813,6 +857,56 @@ export default class HlsPlayer extends VueBase {
     return 0;
   }
 
+  eventColor(event: VmsChannelEvent) {
+    switch (event.code) {
+      case VmsChannelEventCode.Emit:
+        return this.$vuetify.theme.currentTheme.primary;
+      case VmsChannelEventCode.Skip:
+        return this.$vuetify.theme.currentTheme.secondary;
+      case VmsChannelEventCode.Disabled:
+        return this.$vuetify.theme.currentTheme.secondary;
+      case VmsChannelEventCode.NotReadyRoi:
+        return this.$vuetify.theme.currentTheme.warning;
+      case VmsChannelEventCode.NotReadyFilters:
+        return this.$vuetify.theme.currentTheme.warning;
+      case VmsChannelEventCode.RaiseException:
+        return this.$vuetify.theme.currentTheme.error;
+      default:
+        return this.$vuetify.theme.currentTheme.error;
+    }
+  }
+
+  eventIcon(event: VmsChannelEvent) {
+    return EVENT_CATEGORY_TO_ICON[event.category];
+  }
+
+  eventLabel(event: VmsChannelEvent) {
+    switch (event.code) {
+      case VmsChannelEventCode.Emit:
+        return event.message;
+      case VmsChannelEventCode.Skip:
+        return event.message;
+      case VmsChannelEventCode.Disabled:
+        return this.$t('vms_channel_meta.disabled').toString();
+      case VmsChannelEventCode.NotReadyRoi:
+        return this.$t('vms_channel_meta.not_ready_roi').toString();
+      case VmsChannelEventCode.NotReadyFilters:
+        return this.$t('vms_channel_meta.not_ready_filters').toString();
+      case VmsChannelEventCode.RaiseException:
+        return this.$t('vms_channel_meta.raise_exception').toString();
+      default:
+        return this.$t('vms_channel_meta.unknown_code', [event.code]).toString();
+    }
+  }
+
+  eventTooltip(event: VmsChannelEvent) {
+    if (event.items) {
+      return JSON.stringify(event.items);
+    } else {
+      return this.$t('vms_channel_meta.empty_events').toString();
+    }
+  }
+
   @Emit()
   contextmenu(event) {
     return event;
@@ -836,21 +930,110 @@ export default class HlsPlayer extends VueBase {
     // this.cursorPosition = currentMilliseconds / MILLISECONDS_TO_DAY;
     // console.debug(`onRefresh: cursorPosition=${this.cursorPosition},duration=${this.video.duration},totalDuration=${this.totalDuration}`);
 
+    this.bufferingEvents();
+
     if (this.video.paused) {
       return;
     }
 
-    const currentMilliseconds = this.video.currentTime * ONE_SECOND_TO_MILLISECONDS;
-    const time = this.currentMillisecondsToAbsTime(currentMilliseconds);
+    const videoCurrentMilliseconds = this.video.currentTime * ONE_SECOND_TO_MILLISECONDS;
+    const currentTime = this.currentMillisecondsToAbsTime(videoCurrentMilliseconds);
+    const currentTimeValue = currentTime.valueOf();
+    // console.debug(`onRefresh(currentTime=${currentTime})`);
+
+    if (this.eventsIndexes.length >= 1) {
+      if (typeof this.nextEventIndex === 'undefined') {
+        this.nextEventIndex = this.eventsIndexes.findIndex(x => x > currentTimeValue);
+      }
+
+      if (this.nextEventIndex !== -1) {
+        const nextEventTimeValue = this.eventsIndexes[this.nextEventIndex];
+        if (currentTimeValue >= nextEventTimeValue) {
+          const event = this.eventsBuffer.get(nextEventTimeValue);
+          if (!event) {
+            throw new UndefinedException(`Not found event key: ${nextEventTimeValue}`);
+          }
+
+          // console.debug(`Found event:`, event);
+
+          if (event.extra) {
+            this.events = [event.extra];
+          } else {
+            this.events = [];
+          }
+
+          if (this.nextEventIndex + 1 >= this.eventsIndexes.length) {
+            this.nextEventIndex = -1;  // EOF Events
+          } else {
+            this.nextEventIndex += 1
+          }
+        } else {
+          const leftMilliseconds = nextEventTimeValue - currentTimeValue;
+          const leftSeconds = leftMilliseconds / ONE_SECOND_TO_MILLISECONDS;
+          // console.debug(`Next event left time: ${leftSeconds}s`);
+        }
+      }
+    }
+
+    this.prevRefreshMilliseconds = currentTimeValue;
+
     const begin = moment(`${this.date}T00:00:00`).valueOf();
-    const pos = (time.valueOf() - begin.valueOf()) / MILLISECONDS_TO_DAY;
+    const pos = (currentTime.valueOf() - begin.valueOf()) / MILLISECONDS_TO_DAY;
     console.assert(0 <= pos && pos <= 1);
     this.cursorPosition = pos;
-    console.debug(`onRefresh(pos=${pos},currentTime=${this.video.currentTime})`);
+    // console.debug(`onRefresh(pos=${pos},currentTime=${this.video.currentTime})`);
 
     // const begin = moment(`${this.date}T00:00:00`);
     // const offsetMilliseconds = (pos * MILLISECONDS_TO_DAY)
     // const cursorTime = begin.clone().add(offsetMilliseconds, 'milliseconds');
+  }
+
+  bufferingEvents() {
+    if (this.loadingEvent) {
+      return;
+    } else if (this.eventsDownloadQueue.length >= 1) {
+      this.loadingEvent = true;
+
+      const cursor = this.eventsDownloadQueue.splice(0, 1)
+      console.assert(cursor.length === 1);
+      const hour = cursor[0];
+      const last = this.eventsDownloadQueue.length === 0;
+
+      (async () => {
+        try {
+          await this.onBufferingEvents(this.date, hour, last);
+        } finally {
+          this.loadingEvent = false;
+        }
+      })();
+    }
+  }
+
+  async onBufferingEvents(date: string, hour: number, last=false) {
+    const hourText = hour.toString().padStart(2, '0');
+    // console.debug(`Buffering events: ${date}T${hourText} ...`);
+
+    const body = {
+      time_left: `${date}T${hourText}:00:00.000`,
+      time_right: `${date}T${hourText}:59:59.999`,
+      device_uid: this.deviceNumber,
+    } as VmsFilterEventQ;
+
+    const events = await this.$api2.postVmsEventsFilter(this.group, this.project, body);
+    if (this.date != date) {
+      throw new IllegalStateException('`date` changed while event buffering');
+    }
+
+    for (const e of events) {
+      this.eventsBuffer.set(moment(e.time).valueOf(), e);
+    }
+
+    // console.debug(`Total events size: ${this.eventsBuffer.size}`);
+    this.eventsIndexes = [... this.eventsBuffer.keys()];
+    this.nextEventIndex = undefined;
+    if (last) {
+      console.debug(`Total events: ${this.eventsIndexes.length}`);
+    }
   }
 
   // drawBuffered() {
