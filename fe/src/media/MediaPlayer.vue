@@ -879,7 +879,7 @@ export default class MediaPlayer extends VueBase {
 
       try {
         const meta = JSON.parse(event.data) as VmsChannelMeta;
-        console.debug("onChannelMessage", meta);
+        // console.debug("onChannelMessage", meta);
         this.renderMetaData(context, canvasWidth, canvasHeight, meta);
 
         this.lastEventCode = meta.code;

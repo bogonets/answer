@@ -98,6 +98,7 @@ import {
 import type {EnvironmentA} from '@/packet/environment';
 import type {PreferenceA} from '@/packet/preference';
 import {createEmptyPreference} from '@/packet/preference';
+import {VmsRecordRangeA} from '@/packet/vms/record_range';
 
 const DEFAULT_TIMEOUT_MILLISECONDS = 30 * 1000;
 const STATUS_CODE_ACCESS_TOKEN_ERROR = 461
@@ -1061,9 +1062,25 @@ export default class ApiV2 {
         return this.delete(url);
     }
 
-    // ---------------------------
-    // Plugins/VMS/Devices/Configs
-    // ---------------------------
+    // --------------------------
+    // Plugins/VMS/Devices/Events
+    // --------------------------
+
+    getVmsDeviceEventsTimesPdateOffset(
+        group: string,
+        project: string,
+        device: string,
+        date: string,
+    ) {
+        const prefix = `/plugins/vms/${group}/${project}`;
+        const suffix = `/devices/${device}/events/times/${date}/offset`;
+        const url = prefix + suffix;
+        return this.get<Array<number>>(url);
+    }
+
+    // ----------------------------------
+    // Plugins/VMS/Devices/Events/Configs
+    // ----------------------------------
 
     getVmsDeviceEventsConfigs(
         group: string,
@@ -1382,4 +1399,14 @@ export default class ApiV2 {
         const params = `?start=${start}&last=${last}`;
         return this.baseURL + url + params;
     }
-}
+
+    getVmsRecordsPdeviceRangesPdate(
+        group: string,
+        project: string,
+        device: string,
+        date: string,
+    ) {
+        const url = `/plugins/vms/${group}/${project}/records/${device}/ranges/${date}`;
+        return this.get<Array<VmsRecordRangeA>>(url);
+    }
+};

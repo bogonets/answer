@@ -16,13 +16,25 @@ import {Component, Prop, Ref, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import colors from 'vuetify/lib/util/colors'
 import {ContextException, InvalidRangeException} from '@/exceptions';
+import moment from 'moment';
 
 export const MILLISECONDS_TO_DAY = 24 * 60 * 60 * 1000;
 
 export interface RatioRange {
+  /** Absolute start time. */
+  startTime: moment.Moment;
+
+  /** Absolute last time. */
+  lastTime: moment.Moment;
+
+  /** percentage of the day. (0~1) */
   start: number;
+
+  /** percentage of the day. (0~1) */
   last: number;
-  count: number;
+
+  /** Not a percentage of the day, Percentage of the existing range. */
+  ratio: number;
 }
 
 @Component
@@ -44,7 +56,7 @@ export default class RecordController extends VueBase {
   readonly rulerHeight!: number;
 
   @Prop({type: Number, default: 1.0})
-  readonly rulerWidth!: number;
+  readonly rulerLineWidth!: number;
 
   @Prop({type: String, default: '.75rem Roboto'})
   readonly rulerFontStyle!: string;
@@ -73,8 +85,11 @@ export default class RecordController extends VueBase {
   @Prop({type: Number, default: 4})
   readonly eventHeight!: number;
 
+  @Prop({type: Number, default: 1.0})
+  readonly eventLineWidth!: number;
+
   @Prop({type: Array, default: () => []})
-  readonly eventRanges!: Array<RatioRange>;
+  readonly eventOffsets!: Array<number>;
 
   // -------------------------------
   // [Drawing Order #5] Event Buffer
@@ -104,6 +119,8 @@ export default class RecordController extends VueBase {
   @Ref('record-timeline')
   readonly recordTimelineCanvas!: HTMLCanvasElement;
 
+  backgroundOffscreenCanvas!: HTMLCanvasElement;
+
   mounted() {
     this.updateRecordTimeline();
   }
@@ -128,8 +145,8 @@ export default class RecordController extends VueBase {
     this.updateRecordTimeline();
   }
 
-  @Watch('rulerWidth')
-  watchRulerWidth() {
+  @Watch('rulerLineWidth')
+  watchRulerLineWidth() {
     this.updateRecordTimeline();
   }
 
@@ -158,8 +175,13 @@ export default class RecordController extends VueBase {
     this.updateRecordTimeline();
   }
 
-  @Watch('eventRanges')
-  watchEventRanges() {
+  @Watch('eventLineWidth')
+  watchEventLineWidth() {
+    this.updateRecordTimeline();
+  }
+
+  @Watch('eventOffsets')
+  watchEventOffsets() {
     this.updateRecordTimeline();
   }
 
@@ -170,17 +192,17 @@ export default class RecordController extends VueBase {
 
   @Watch('cursorPosition')
   watchCursorPosition() {
-    this.updateRecordTimeline();
+    this.updateRecordTimelineForCursor();
   }
 
   @Watch('cursorWidth')
   watchCursorWidth() {
-    this.updateRecordTimeline();
+    this.updateRecordTimelineForCursor();
   }
 
   @Watch('cursorColor')
   watchCursorColor() {
-    this.updateRecordTimeline();
+    this.updateRecordTimelineForCursor();
   }
 
   @Watch('disabled')
@@ -207,12 +229,37 @@ export default class RecordController extends VueBase {
     this.updateRecordTimeline();
   }
 
-  updateRecordTimeline(width?: number, height?: number) {
+  updateRecordTimelineForCursor() {
+    this.updateRecordTimeline(undefined, undefined, false);
+  }
+
+  updateRecordTimeline(width?: number, height?: number, refresh=true) {
     const w = width ?? this.recordTimelineCanvas.offsetWidth;
     const h = height ?? this.recordTimelineCanvas.offsetHeight;
 
     this.recordTimelineCanvas.width = w;
     this.recordTimelineCanvas.height = h;
+
+    let updateBackgroundOffscreenCanvas = refresh;
+    if (!this.backgroundOffscreenCanvas) {
+      this.backgroundOffscreenCanvas = document.createElement('canvas');
+      updateBackgroundOffscreenCanvas = true;
+    }
+    if (
+        this.backgroundOffscreenCanvas.width != w
+        || this.backgroundOffscreenCanvas.height != h
+    ) {
+      this.backgroundOffscreenCanvas.width = w;
+      this.backgroundOffscreenCanvas.height = h;
+      updateBackgroundOffscreenCanvas = true;
+    }
+    if (updateBackgroundOffscreenCanvas) {
+      const bgContext = this.backgroundOffscreenCanvas.getContext('2d');
+      if (!bgContext) {
+        throw new ContextException('Unable to get context for 2D canvas');
+      }
+      this.drawBackground(bgContext, w, h);
+    }
 
     const context = this.recordTimelineCanvas.getContext('2d');
     if (!context) {
@@ -220,8 +267,16 @@ export default class RecordController extends VueBase {
     }
 
     context.clearRect(0, 0, w, h);
+    context.drawImage(this.backgroundOffscreenCanvas, 0, 0);
 
     const rulerWidth = w - this.paddingLeft - this.paddingRight;
+    this.drawCursor(context, this.paddingLeft, this.rulerHeight, rulerWidth, h);
+  }
+
+  drawBackground(context: CanvasRenderingContext2D, width: number, height: number) {
+    context.clearRect(0, 0, width, height);
+
+    const rulerWidth = width - this.paddingLeft - this.paddingRight;
     const timelineRulerY = 0;
     this.drawTimelineRuler(
         context,
@@ -274,8 +329,6 @@ export default class RecordController extends VueBase {
     //     rulerWidth,
     //     this.eventBufferHeight,
     // );
-
-    this.drawCursor(context, this.paddingLeft, this.rulerHeight, rulerWidth, h);
   }
 
   get timelineColor() {
@@ -337,7 +390,7 @@ export default class RecordController extends VueBase {
       w: number,
       h: number,
   ) {
-    context.lineWidth = this.rulerWidth;
+    context.lineWidth = this.rulerLineWidth;
     context.strokeStyle = this.timelineColor;
     context.font = this.rulerFontStyle;
     context.textAlign = 'center';
@@ -380,11 +433,14 @@ export default class RecordController extends VueBase {
       w: number,
       h: number,
   ) {
-    context.fillStyle = this.eventColor;
-    for (const range of this.eventRanges) {
-      const left = x + (range.start * w);
-      const right = x + (range.last * w);
-      context.fillRect(left, y, Math.abs(right - left), h);
+    context.lineWidth = this.eventLineWidth;
+    context.strokeStyle = this.eventColor;
+    for (const offset of this.eventOffsets) {
+      const pos = x + (offset * w);
+      context.beginPath();
+      context.moveTo(pos, y);
+      context.lineTo(pos, y + h);
+      context.stroke();
     }
   }
 

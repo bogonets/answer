@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Final
-from datetime import date
+from typing import Final, Tuple
+from datetime import date, datetime
 
 YYYY_MM_DD_TEMPLATE: Final[str] = "YYYY-MM-DD"
 YYYY_MM_DD_TEMPLATE_LEN: Final[int] = len(YYYY_MM_DD_TEMPLATE)
@@ -34,3 +34,25 @@ def parse_yyyy_mm_dd(text: str, separator=DEFAULT_DATE_SEPARATOR) -> date:
         raise ValueError("The `dd` must be a digit")
 
     return date(year=int(yyyy), month=int(mm), day=int(dd))
+
+
+def date_to_datetime_range(d: date) -> Tuple[datetime, datetime]:
+    left = datetime(
+        year=d.year,
+        month=d.month,
+        day=d.day,
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0,
+    )
+    right = datetime(
+        year=d.year,
+        month=d.month,
+        day=d.day,
+        hour=23,
+        minute=59,
+        second=59,
+        microsecond=999999,
+    )
+    return left, right
