@@ -326,15 +326,11 @@ export default class FormVmsEventConfigsOcr extends VueBase {
   loading = false;
   annotationMode = false;
 
-  // model = '';
-  // models = [] as Array<string>;
-  models = ['seven-segment'];
-  model = this.models[0];
+  models = [] as Array<string>;
+  model = ''
 
-  // checkpoint = '';
-  // checkpoints = [] as Array<string>;
-  checkpoints = ['seven_segment_20211028_adam.pth'];
-  checkpoint = this.checkpoints[0];
+  checkpoints = [] as Array<string>;
+  checkpoint = ''
 
   threshold = 0;
 
@@ -362,6 +358,16 @@ export default class FormVmsEventConfigsOcr extends VueBase {
         this.value.threshold, this.minThreshold, this.maxThreshold
     );
     this.filters = _.cloneDeep(this.value.filters);
+
+    // TODO: deprecated
+    const defaultModel = 'seven-segment';
+    const defaultCheckpoint = 'seven_segment_20211028_adam.pth';
+    this.models = [defaultModel];
+    this.checkpoints = [defaultCheckpoint];
+    this.value.model = defaultModel;
+    this.value.checkpoint = defaultCheckpoint;
+    this.model = defaultModel;
+    this.checkpoint = defaultCheckpoint;
 
     this.requestEventOcr();
     this.updateValid();
