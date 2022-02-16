@@ -219,7 +219,7 @@ ko:
       <span class="text--secondary text-overline">23:59:59</span>
     </div>
 
-    <div class="d-flex flex-column">
+    <div v-if="false" class="d-flex flex-column">
       <span>{{ `cursorPos: ${cursorPosition}` }}</span>
       <span>{{ `sn: ${sn}` }}</span>
       <span>{{ `relurl: ${relurl}` }}</span>
@@ -374,6 +374,10 @@ export default class HlsPlayer extends VueBase {
 
   mounted() {
     this.hlsOptions = {
+      debug: false,
+      enableWorker: true,
+      lowLatencyMode: true,
+      backBufferLength: 60 * 1.5,
       xhrSetup: this._xhrSetup,
       licenseXhrSetup: this._licenseXhrSetup,
     } as HlsConfig;
@@ -679,7 +683,8 @@ export default class HlsPlayer extends VueBase {
       this.nextEventIndex = undefined;
       this.eventsBuffer.clear();
       this.eventsDownloadQueue = [cursorHour, ... hours.filter(x => x != cursorHour)];
-      console.debug(`Enqueue event hours: ${this.eventsDownloadQueue}`);
+      this.events = [];
+      // console.debug(`Enqueue event hours: ${this.eventsDownloadQueue}`);
     } catch (error) {
       this.recordRanges = [];
       this.eventOffsets = [];
@@ -688,6 +693,7 @@ export default class HlsPlayer extends VueBase {
       this.nextEventIndex = undefined;
       this.eventsBuffer.clear();
       this.eventsDownloadQueue = [];
+      this.events = [];
       this.toastRequestFailure(error);
     } finally {
       this.loading = false;
@@ -769,6 +775,10 @@ export default class HlsPlayer extends VueBase {
   }
 
   currentMillisecondsToAbsTime(currentMilliseconds: number) {
+    if (this.recordRanges.length === 0) {
+      throw new IllegalStateException('`recordRanges` is not ready');
+    }
+
     let remainMilliseconds = currentMilliseconds;
     let findIndex = 0;
     for (; findIndex < this.recordRanges.length; ++findIndex) {
@@ -932,9 +942,9 @@ export default class HlsPlayer extends VueBase {
 
     this.bufferingEvents();
 
-    if (this.video.paused) {
-      return;
-    }
+    // if (this.video.paused) {
+    //   return;
+    // }
 
     const videoCurrentMilliseconds = this.video.currentTime * ONE_SECOND_TO_MILLISECONDS;
     const currentTime = this.currentMillisecondsToAbsTime(videoCurrentMilliseconds);
@@ -1156,8 +1166,10 @@ export default class HlsPlayer extends VueBase {
     const cursorTime = begin.clone().add(offsetMilliseconds, 'milliseconds');
 
     const currentMilliseconds = this.absTimeToCurrentMilliseconds(cursorTime);
-    this.cursorPosition = pos;
+    // this.cursorPosition = pos;  // [IMPORTANT] Don't change cursorPosition
     this.video.currentTime = currentMilliseconds / ONE_SECOND_TO_MILLISECONDS;
+    this.events = [];
+    this.nextEventIndex = undefined;
     console.debug(`onClickRecordController(pos=${pos},currentTime=${this.video.currentTime})`);
 
     // const videoRatio = this.absTimeToVideoRatio(cursorTime);
