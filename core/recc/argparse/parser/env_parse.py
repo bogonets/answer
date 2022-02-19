@@ -20,27 +20,41 @@ def normalize_config_key(
     return buffer.strip().lower().replace("-", "_")
 
 
+def filter_dict(
+    envs: Dict[str, str],
+    start_prefix: Optional[str] = None,
+    end_suffix: Optional[str] = None,
+) -> Dict[str, str]:
+    if not start_prefix and not end_suffix:
+        return envs
+
+    result = dict()
+    for k, v in envs.items():
+        if start_prefix and not k.startswith(start_prefix):
+            continue
+        if end_suffix and not k.endswith(end_suffix):
+            continue
+        result[k] = v
+    return result
+
+
+def get_filtered_dict(
+    envs: Dict[str, str],
+    start_prefix: Optional[str] = None,
+    end_suffix: Optional[str] = None,
+) -> Dict[str, str]:
+    normalized_envs = dict()
+    for k, v in filter_dict(envs, start_prefix, end_suffix).items():
+        normalized_envs[normalize_config_key(k, start_prefix, end_suffix)] = v
+    return normalized_envs
+
+
 def get_filtered_namespace(
     envs: Dict[str, str],
     start_prefix: Optional[str] = None,
     end_suffix: Optional[str] = None,
 ) -> Namespace:
-    if start_prefix or end_suffix:
-        filtered_envs = dict()
-        for k, v in envs.items():
-            if start_prefix and not k.startswith(start_prefix):
-                continue
-            if end_suffix and not k.endswith(end_suffix):
-                continue
-            filtered_envs[k] = v
-    else:
-        filtered_envs = envs
-
-    normalized_envs = dict()
-    for k, v in filtered_envs.items():
-        normalized_envs[normalize_config_key(k, start_prefix, end_suffix)] = v
-
-    return Namespace(**normalized_envs)
+    return Namespace(**get_filtered_dict(envs, start_prefix, end_suffix))
 
 
 def get_namespace_by_os_envs(
@@ -48,3 +62,16 @@ def get_namespace_by_os_envs(
     end_suffix: Optional[str] = None,
 ) -> Namespace:
     return get_filtered_namespace(get_os_envs_dict(), start_prefix, end_suffix)
+
+
+def get_namespace_by_os_env_files(
+    start_prefix: Optional[str] = None,
+    end_suffix: Optional[str] = None,
+    encoding: Optional[str] = None,
+) -> Namespace:
+    result = Namespace()
+    envs = get_filtered_dict(get_os_envs_dict(), start_prefix, end_suffix)
+    for key, value in envs.items():
+        with open(value, "r", encoding=encoding) as f:
+            setattr(result, key, f.read())
+    return result

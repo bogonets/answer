@@ -20,9 +20,12 @@ from recc.argparse.config.daemon_config import DaemonConfig
 from recc.argparse.config.global_config import GlobalConfig
 from recc.argparse.config_file import read_config_file_safe
 from recc.argparse.argument_parser import ArgumentMessage, create_argument_parser
-from recc.argparse.parser.env_parse import get_namespace_by_os_envs
+from recc.argparse.parser.env_parse import (
+    get_namespace_by_os_envs,
+    get_namespace_by_os_env_files,
+)
 from recc.argparse.injection_values import injection_default_values
-from recc.variables.environment import RECC_ENV_PREFIX
+from recc.variables.environment import RECC_ENV_PREFIX, RECC_ENV_FILE_SUFFIX
 from recc.util.version import version_text
 
 ConfigType = Union[
@@ -180,6 +183,14 @@ def parse_arguments_to_namespace(
     else:
         env_config = get_namespace_by_os_envs(RECC_ENV_PREFIX)
 
+    env_file_config: Optional[Namespace]
+    if ignore_environment:
+        env_file_config = None
+    else:
+        env_file_config = get_namespace_by_os_env_files(
+            RECC_ENV_PREFIX, RECC_ENV_FILE_SUFFIX
+        )
+
     # 3rd: environment config file
     if env_config and hasattr(env_config, "config"):
         joins.append(read_config_file_safe(env_config.config, RECC_DOM_ROOT))
@@ -198,7 +209,9 @@ def parse_arguments_to_namespace(
         # 7th: environment variables
         joins.append(env_config)
 
-    # TODO: 8th (last): environment variables files
+    # 8th (last): environment variable pointing to file
+    if env_file_config:
+        joins.append(env_file_config)
 
     result = Namespace()
     left_join(result, *joins)
