@@ -6,7 +6,7 @@ from recc.util.python_version import PY_37
 
 def all_tasks(loop: asyncio.AbstractEventLoop):
     if PY_37:
-        return getattr(asyncio, "all_tasks")(loop)
+        return getattr(asyncio, "all_tasks")(loop)  # nocov
     else:
         return {t for t in list(asyncio.Task.all_tasks(loop)) if not t.done()}
 

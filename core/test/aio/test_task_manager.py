@@ -91,6 +91,7 @@ class AutoRemoveTaskManagerTestCase(IsolatedAsyncioTestCase):
         key1 = "key1"
         self.assertEqual(0, len(self.tm))
         task1 = self.tm.create_task(key1, _func())
+        self.assertEqual(key1, task1.get_name())
         self.assertEqual(1, len(self.tm))
 
         self.assertEqual(777, await task1)
@@ -104,6 +105,7 @@ class AutoRemoveTaskManagerTestCase(IsolatedAsyncioTestCase):
         key1 = "key1"
         self.assertEqual(0, len(self.tm))
         task1 = self.tm.create_task(key1, _timeout_1s_func(), 0.1)
+        self.assertEqual(key1, task1.get_name())
         self.assertEqual(1, len(self.tm))
 
         with self.assertRaises(TimeoutError):
