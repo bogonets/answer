@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
 
 import os
-from recc.logging.logging import recc_common_logger as logger
-from recc.storage.mixin.storage_base import StorageBaseMixin
-from recc.storage.mixin.storage_template_manager import StorageTemplateManagerMixin
+from typing import Dict, KeysView, ValuesView, List
+from recc.file.directory import prepare_directory
 from recc.storage.sock.sock_path import get_unix_domain_socket_url
+from recc.template.lamda_template import LamdaTemplate
+from recc.template.manager.lamda_template_key import LamdaTemplateKey
+from recc.template.manager.lamda_template_manager import LamdaTemplateManager
 from recc.variables.storage import (
-    WORKSPACE_WORKING_NAME,
-    WORKSPACE_TEMPLATE_NAME,
-    WORKSPACE_VENV_NAME,
-    WORKSPACE_NAMES,
+    TASK_STORAGE_WORKING_NAME,
+    TASK_STORAGE_TEMPLATE_NAME,
+    TASK_STORAGE_VENV_NAME,
 )
 
 
-class TaskWorkspace(
-    StorageBaseMixin,
-    StorageTemplateManagerMixin,
-):
+class TaskWorkspace:
     def __init__(
         self,
         root_dir: str,
@@ -24,35 +22,54 @@ class TaskWorkspace(
         refresh_templates=True,
     ):
         self.root = root_dir
-        self.names = list(WORKSPACE_NAMES)
-        self.user = None
-        self.group = None
+        self.working = os.path.join(self.root, TASK_STORAGE_WORKING_NAME)
+        self.template = os.path.join(self.root, TASK_STORAGE_TEMPLATE_NAME)
+        self.venv = os.path.join(self.root, TASK_STORAGE_VENV_NAME)
 
         if prepare:
-            self.prepare()
+            prepare_directory(self.working)
+            prepare_directory(self.template)
+            prepare_directory(self.venv)
 
-        template_dir = os.path.join(self.root, WORKSPACE_TEMPLATE_NAME)
-        venv_dir = os.path.join(self.root, WORKSPACE_VENV_NAME)
-        self.init_template_manager(template_dir, venv_dir)
+        self._tm = LamdaTemplateManager(self.template, self.venv)
 
         if refresh_templates:
-            self.refresh_templates()
+            self._tm.refresh()
 
-    def get_working_dir(self) -> str:
-        return os.path.join(self.root, WORKSPACE_WORKING_NAME)
+    @property
+    def template_manager(self) -> LamdaTemplateManager:
+        return self._tm
 
-    def get_socket_url(self, task_name: str) -> str:
+    def get_subdirectories(self) -> List[str]:
+        """Returns the subdirectories of the workspace"""
+
+        def _filter(name) -> bool:
+            return os.path.isdir(os.path.join(self.root, name))
+
+        return list(filter(_filter, os.listdir(self.root)))
+
+    def get_unix_domain_socket_url(self, task_name: str) -> str:
         return get_unix_domain_socket_url(self.root, task_name)
 
-    def change_working_directory(self) -> None:
-        working_dir = self.get_working_dir()
-        if not os.path.isdir(working_dir):
-            logger.warning(f"A working directory is not a 'directory': {working_dir}")
-            return
+    def refresh_templates(self) -> None:
+        self._tm.refresh()
 
-        try:
-            os.chdir(self.get_working_dir())
-        except BaseException as e:
-            logger.exception(e)
-        else:
-            logger.info(f"The working directory has changed: {working_dir}")
+    def get_templates(self) -> Dict[LamdaTemplateKey, LamdaTemplate]:
+        assert self._tm is not None
+        return self._tm.templates
+
+    def get_template_keys(self) -> KeysView[LamdaTemplateKey]:
+        assert self._tm is not None
+        return self._tm.keys()
+
+    def get_template_values(self) -> ValuesView[LamdaTemplate]:
+        assert self._tm is not None
+        return self._tm.values()
+
+    def compress_templates(self) -> bytes:
+        assert self._tm is not None
+        return self._tm.storage_compressed
+
+    def decompress_templates(self, data: bytes) -> None:
+        assert self._tm is not None
+        self._tm.decompress_templates(data)

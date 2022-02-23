@@ -110,7 +110,7 @@ class ContextTask(ContextBase):
 
     async def prepare_project_volume(self, group: str, project: str) -> str:
         if self.is_host_mode():
-            return self.local_storage.prepare_project_dir(group, project)
+            return self.local_storage.prepare_project_directory(group, project)
         volume = await self.container.create_task_volume_if_not_exist(group, project)
         return volume.key
 

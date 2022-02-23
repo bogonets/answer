@@ -132,31 +132,3 @@ def directory_or_temp_directory(
         assert _is_dir(candidate, read_only=read_only)
 
     return candidate
-
-
-class StorageBaseMixin:
-
-    root: str
-    names: List[str]
-
-    user: Optional[str] = None
-    group: Optional[str] = None
-
-    def get_subdirectory(self, name: str) -> str:
-        return os.path.join(self.root, name)
-
-    def get_subdirectories(self) -> List[str]:
-        """Returns the subdirectories of the workspace."""
-
-        def _filter(name) -> bool:
-            return os.path.isdir(os.path.join(self.root, name))
-
-        return list(filter(_filter, os.listdir(self.root)))
-
-    def prepare(self) -> None:
-        _change_owner(self.root, self.user, self.group)
-
-        for name in self.names:
-            subdir = os.path.join(self.root, name)
-            _prepare_directory(subdir)
-            _change_owner(subdir, self.user, self.group)

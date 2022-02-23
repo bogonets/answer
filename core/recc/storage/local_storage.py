@@ -1,26 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import List
+from typing import Dict, List
 from pathlib import Path
-from recc.storage.mixin.storage_base import StorageBaseMixin
-from recc.storage.mixin.storage_template_manager import StorageTemplateManagerMixin
-from recc.storage.mixin.storage_workspace_manager import StorageWorkspaceManagerMixin
+from recc.file.directory import prepare_directory
+from recc.template.lamda_template import LamdaTemplate
+from recc.template.manager.lamda_template_key import LamdaTemplateKey
+from recc.template.manager.lamda_template_manager import LamdaTemplateManager
 from recc.variables.storage import (
-    CORE_WORKSPACE_NAME,
-    CORE_TEMPLATE_NAME,
-    CORE_PLUGIN_NAME,
-    CORE_DAEMON_NAME,
-    CORE_CACHE_NAME,
-    CORE_NAMES,
+    LOCAL_STORAGE_WORKSPACE_NAME,
+    LOCAL_STORAGE_TEMPLATE_NAME,
+    LOCAL_STORAGE_PLUGIN_NAME,
+    LOCAL_STORAGE_DAEMON_NAME,
+    LOCAL_STORAGE_CACHE_NAME,
+    LOCAL_STORAGE_VENV_NAME,
 )
 
 
-class LocalStorage(
-    StorageBaseMixin,
-    StorageTemplateManagerMixin,
-    StorageWorkspaceManagerMixin,
-):
+class LocalStorage:
     def __init__(
         self,
         root_dir: str,
@@ -28,36 +25,71 @@ class LocalStorage(
         refresh_templates=True,
     ):
         self.root = root_dir
-        self.names = list(CORE_NAMES)
-        self.user = None
-        self.group = None
+        self.workspace = os.path.join(self.root, LOCAL_STORAGE_WORKSPACE_NAME)
+        self.template = os.path.join(self.root, LOCAL_STORAGE_TEMPLATE_NAME)
+        self.plugin = os.path.join(self.root, LOCAL_STORAGE_PLUGIN_NAME)
+        self.daemon = os.path.join(self.root, LOCAL_STORAGE_DAEMON_NAME)
+        self.cache = os.path.join(self.root, LOCAL_STORAGE_CACHE_NAME)
+        self.venv = os.path.join(self.root, LOCAL_STORAGE_VENV_NAME)
 
         if prepare:
-            self.prepare()
+            prepare_directory(self.workspace)
+            prepare_directory(self.template)
+            prepare_directory(self.plugin)
+            prepare_directory(self.daemon)
+            prepare_directory(self.cache)
+            prepare_directory(self.venv)
 
-        working_dir = os.path.join(self.root, CORE_WORKSPACE_NAME)
-        self.init_workspace_manager(working_dir)
-
-        template_dir = os.path.join(self.root, CORE_TEMPLATE_NAME)
-        self.init_template_manager(template_dir, venv_directory=None)
+        self._tm = LamdaTemplateManager(self.template, venv_directory=None)
 
         if refresh_templates:
-            self.refresh_templates()
+            self._tm.refresh()
 
-        self.plugin = Path(os.path.join(self.root, CORE_PLUGIN_NAME))
-        self.daemon = Path(os.path.join(self.root, CORE_DAEMON_NAME))
-        self.cache = Path(os.path.join(self.root, CORE_CACHE_NAME))
+    @property
+    def template_manager(self) -> LamdaTemplateManager:
+        return self._tm
 
     def find_daemon_dirs(self) -> List[Path]:
         result: List[Path] = list()
-        for file in self.daemon.iterdir():
+        for file in Path(self.daemon).iterdir():
             if file.is_dir():
                 result.append(file)
         return result
 
     def find_plugin_dirs(self) -> List[Path]:
         result: List[Path] = list()
-        for file in self.plugin.iterdir():
+        for file in Path(self.plugin).iterdir():
             if file.is_dir():
                 result.append(file)
         return result
+
+    def prepare_project_directory(self, group: str, project: str) -> str:
+        group_dir = os.path.join(self.workspace, group)
+        prepare_directory(group_dir)
+
+        project_dir = os.path.join(group_dir, project)
+        prepare_directory(project_dir)
+
+        return project_dir
+
+    def get_project_directory(self, group: str, project: str) -> str:
+        return os.path.join(self.workspace, group, project)
+
+    def get_template_directory(self) -> str:
+        return self._tm.root_dir
+
+    def refresh_templates(self) -> None:
+        assert self._tm is not None
+        self._tm.refresh()
+
+    def get_templates(self) -> Dict[LamdaTemplateKey, LamdaTemplate]:
+        assert self._tm is not None
+        return self._tm.templates
+
+    def compress_templates(self) -> bytes:
+        assert self._tm is not None
+        return self._tm.storage_compressed
+
+    def decompress_templates(self, data: bytes) -> None:
+        assert self._tm is not None
+        self._tm.decompress_templates(data)

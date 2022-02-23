@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, Any, List
+from pathlib import Path
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.daemon import Daemon
 from recc.daemon.daemon_runner import DAEMON_SCRIPT_EXTENSION
@@ -51,7 +52,7 @@ class ContextDaemon(ContextBase):
             address,
             prev_requirements_sha256,
             enable,
-            self.local_storage.daemon,
+            Path(self.local_storage.daemon),
             self.loop,
         )
 

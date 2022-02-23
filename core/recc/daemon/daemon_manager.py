@@ -89,7 +89,7 @@ class DaemonManager:
 
     async def open(
         self,
-        plugin_root_directory: Path,
+        plugin_root_directory: str,
         database: DbInterface,
         loop: Optional[AbstractEventLoop] = None,
     ) -> None:
@@ -116,7 +116,7 @@ class DaemonManager:
                 daemon.address,
                 prev_requirements_sha256,
                 enable,
-                plugin_root_directory,
+                Path(plugin_root_directory),
                 loop,
             )
 

@@ -55,7 +55,7 @@ class ContextBase:
         """
         Template Manager property.
         """
-        return self.local_storage.get_template_manager()
+        return self.local_storage.template_manager
 
     @property
     def session_factory(self):

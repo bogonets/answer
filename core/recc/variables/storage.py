@@ -6,38 +6,25 @@ DEFAULT_STORAGE_GLOBAL_DIR = "/var/recc"
 DEFAULT_TEMP_STORAGE_SUFFIX = "recc"
 DEFAULT_TEMP_STORAGE_PREFIX = "storage"
 
-# [CORE] first-depth categories.
+# [LocalStorage] first-depth categories.
 
-CORE_WORKSPACE_NAME = "workspace"
+LOCAL_STORAGE_WORKSPACE_NAME = "workspace"
 """The project's workspace directory.
 
 working/{group}/{project}
 """
 
-CORE_TEMPLATE_NAME = "template"
-CORE_PLUGIN_NAME = "plugin"
-CORE_DAEMON_NAME = "daemon"
-CORE_CACHE_NAME = "cache"
+LOCAL_STORAGE_TEMPLATE_NAME = "template"
+LOCAL_STORAGE_PLUGIN_NAME = "plugin"
+LOCAL_STORAGE_DAEMON_NAME = "daemon"
+LOCAL_STORAGE_CACHE_NAME = "cache"
+LOCAL_STORAGE_VENV_NAME = "venv"
 
-CORE_NAMES = (
-    CORE_WORKSPACE_NAME,
-    CORE_TEMPLATE_NAME,
-    CORE_PLUGIN_NAME,
-    CORE_DAEMON_NAME,
-    CORE_CACHE_NAME,
-)
+# [TaskStorage] first-depth categories.
 
-# [WORKSPACE] first-depth categories.
-
-WORKSPACE_WORKING_NAME = "working"
-WORKSPACE_TEMPLATE_NAME = "template"
-WORKSPACE_VENV_NAME = "venv"
-
-WORKSPACE_NAMES = (
-    WORKSPACE_WORKING_NAME,
-    WORKSPACE_TEMPLATE_NAME,
-    WORKSPACE_VENV_NAME,
-)
+TASK_STORAGE_WORKING_NAME = "working"
+TASK_STORAGE_TEMPLATE_NAME = "template"
+TASK_STORAGE_VENV_NAME = "venv"
 
 STORAGE_SERVICE_TYPE_MINIO = "minio"
 STORAGE_REQUEST_TIMEOUT = 60.0

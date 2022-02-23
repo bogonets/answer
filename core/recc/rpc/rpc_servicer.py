@@ -106,7 +106,7 @@ class RpcServicer(RpcApiServicer):
             return self._config.task_address
 
         if self._config.task_name:
-            return self._workspace.get_socket_url(self._config.task_name)
+            return self._workspace.get_unix_domain_socket_url(self._config.task_name)
 
         return DEFAULT_RPC_ADDRESS
 
@@ -149,9 +149,8 @@ class RpcServicer(RpcApiServicer):
     ) -> SetTaskBlueprintA:
         json_text = request.json
         logger.info(f"SetTaskBlueprint(json={json_text})")
-        template_manager = self._workspace.get_template_manager()
         self._task.clear()
-        self._task.set_blueprint_json(json_text, 1, template_manager)
+        self._task.set_blueprint_json(json_text, 1, self._workspace.template_manager)
         return SetTaskBlueprintA(result=Result(code=0))
 
     async def GetNodeProperty(

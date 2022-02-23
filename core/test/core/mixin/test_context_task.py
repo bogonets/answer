@@ -2,7 +2,7 @@
 
 from unittest import main
 from tester.unittest.context_test_case import ContextTestCase
-from recc.variables.storage import CORE_TEMPLATE_NAME, WORKSPACE_VENV_NAME
+from recc.variables.storage import LOCAL_STORAGE_TEMPLATE_NAME, TASK_STORAGE_VENV_NAME
 
 
 class ContextTaskTestCase(ContextTestCase):
@@ -13,8 +13,8 @@ class ContextTaskTestCase(ContextTestCase):
     async def test_get_workspace_subdir(self):
         names = await self.client.get_workspace_subdir()
         self.assertLessEqual(3, len(names))
-        self.assertIn(CORE_TEMPLATE_NAME, names)
-        self.assertIn(WORKSPACE_VENV_NAME, names)
+        self.assertIn(LOCAL_STORAGE_TEMPLATE_NAME, names)
+        self.assertIn(TASK_STORAGE_VENV_NAME, names)
 
 
 if __name__ == "__main__":

@@ -6,14 +6,14 @@ from unittest import IsolatedAsyncioTestCase
 from recc.daemon.daemon_client import create_daemon_client
 from recc.daemon.daemon_servicer import create_daemon_server
 from recc.variables.rpc import DEFAULT_DAEMON_ADDRESS
-from recc.variables.storage import CORE_DAEMON_NAME
+from recc.variables.storage import LOCAL_STORAGE_DAEMON_NAME
 from tester.plugins.copy_plugin import copy_plugin
 
 
 class DaemonTestCase(IsolatedAsyncioTestCase):
     async def _setup(self):
         self.temp = TemporaryDirectory()
-        self.daemon_dir = os.path.join(self.temp.name, CORE_DAEMON_NAME)
+        self.daemon_dir = os.path.join(self.temp.name, LOCAL_STORAGE_DAEMON_NAME)
         os.mkdir(self.daemon_dir)
         self.daemon_filename = "daemon_simple.py"
         self.daemon_path = copy_plugin(self.daemon_filename, self.daemon_dir)

@@ -19,14 +19,14 @@ class CoreStorageTestCase(IsolatedAsyncioTestCase):
 
         self.assertTrue(os.path.isdir(self.sm.root))
         self.assertTrue(os.path.isdir(self.sm.get_template_directory()))
-        self.assertTrue(os.path.isdir(self.sm.get_workspace_directory()))
+        self.assertTrue(os.path.isdir(self.sm.workspace))
 
         template_dir = self.sm.get_template_directory()
         self.numpy_json_files = copy_builtin_numpy_nodes(template_dir)
         self.assertLess(0, len(self.numpy_json_files))
         self.sm.refresh_templates()
 
-        self.assertTrue(self.sm.plugin.is_dir())
+        self.assertTrue(os.path.isdir(self.sm.plugin))
         plugin_path = get_module_path(plugin_simple)
         plugin_filename = os.path.split(plugin_path)[1]
         plugin_name = os.path.splitext(plugin_filename)[0]

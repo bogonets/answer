@@ -9,13 +9,13 @@ from tester.http.http_app_tester import HttpAppTester
 from tester.plugins.copy_plugin import copy_plugin
 from recc.http.http_utils import v2_plugins_path, v2_plugins_pplugin_path
 from recc.http import http_urls as u
-from recc.variables.storage import CORE_PLUGIN_NAME
+from recc.variables.storage import LOCAL_STORAGE_PLUGIN_NAME
 
 
 class RouterV2PluginsTestCase(IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.temp = TemporaryDirectory()
-        self.plugin_dir = os.path.join(self.temp.name, CORE_PLUGIN_NAME)
+        self.plugin_dir = os.path.join(self.temp.name, LOCAL_STORAGE_PLUGIN_NAME)
         os.mkdir(self.plugin_dir)
         self.plugin_name = "plugin_http_server"
         self.plugin_filename = self.plugin_name + ".py"

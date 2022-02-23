@@ -170,7 +170,7 @@ class Context(
         self._local_storage = LocalStorage(self._config.local_storage)
         logger.info(f"Created storage-manager (root={self._local_storage.root})")
         if self._config.verbose >= VERBOSE_LOGGING_LEVEL_1:
-            logger.info(self._local_storage.get_template_manager().to_details())
+            logger.info(self._local_storage.template_manager.to_details())
 
     def _init_session_factory(self) -> None:
         assert self._signature

@@ -22,7 +22,7 @@ class ContextTestCase(IsolatedAsyncioTestCase):
         self.assertTrue(self.context.is_container_open())
         self.assertTrue(self.context.is_cache_open())
 
-        template_dir = self.context.local_storage.get_template_directory()
+        template_dir = self.context.local_storage.template
         self.numpy_template_jsons = copy_builtin_numpy_nodes(template_dir)
         self.assertLess(0, len(self.numpy_template_jsons))
         self.context.local_storage.refresh_templates()

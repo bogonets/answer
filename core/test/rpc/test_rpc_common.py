@@ -7,7 +7,7 @@ from unittest import main
 from tester.unittest.rpc_test_case import RpcTestCase
 from tester.lamda.numpy_plugins import copy_builtin_numpy_nodes
 from datetime import datetime, timedelta
-from recc.variables.storage import CORE_TEMPLATE_NAME, WORKSPACE_VENV_NAME
+from recc.variables.storage import LOCAL_STORAGE_TEMPLATE_NAME, TASK_STORAGE_VENV_NAME
 from recc.file.remove import remove_recursively
 
 
@@ -76,15 +76,15 @@ class RpcCommonTestCase(RpcTestCase):
     async def test_get_workspace_subdir(self):
         names = await self.client.get_workspace_subdir()
         self.assertLessEqual(3, len(names))
-        self.assertIn(CORE_TEMPLATE_NAME, names)
-        self.assertIn(WORKSPACE_VENV_NAME, names)
+        self.assertIn(LOCAL_STORAGE_TEMPLATE_NAME, names)
+        self.assertIn(TASK_STORAGE_VENV_NAME, names)
 
     async def test_get_template_names(self):
         names = await self.client.get_template_names()
         self.assertLess(0, len(names))
 
     async def test_upload_templates(self):
-        template_dir = self.servicer.workspace.get_template_directory()
+        template_dir = self.servicer.workspace.template
         numpy_template_jsons = copy_builtin_numpy_nodes(template_dir)
         self.assertLess(0, len(numpy_template_jsons))
         self.servicer.workspace.refresh_templates()
