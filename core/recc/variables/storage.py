@@ -17,8 +17,9 @@ working/{group}/{project}
 LOCAL_STORAGE_TEMPLATE_NAME = "template"
 LOCAL_STORAGE_PLUGIN_NAME = "plugin"
 LOCAL_STORAGE_DAEMON_NAME = "daemon"
+LOCAL_STORAGE_DAEMON_VENV_NAME = "daemon.venv"
+LOCAL_STORAGE_DAEMON_WORK_NAME = "daemon.work"
 LOCAL_STORAGE_CACHE_NAME = "cache"
-LOCAL_STORAGE_VENV_NAME = "venv"
 
 # [TaskStorage] first-depth categories.
 

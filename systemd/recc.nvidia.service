@@ -5,7 +5,8 @@ After=\
     network.target \
     local-fs.target \
     docker.service \
-    docker.socket
+    docker.socket \
+    nvidia-persistenced.service
 
 [Service]
 Environment=RECC_VERBOSE=0

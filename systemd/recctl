@@ -2,28 +2,34 @@
 
 SERVICE_NAME=recc.service
 NAMESPACE=recc
-SERVICE_OPT=
+SYSTEMCTL_OPT=()
+JOURNALCTL_OPT=()
 
 USAGE_MESSAGE="
-systemctl for answer service.
+systemctl for recc service.
 
   Usage: $0 [command] [command-args] ...
 
 Available commands:
   help          Print this message.
-  reload        Daemon reload
+  edit          Edit unit file
+  list          List units currently in memory
+  files         List installed unit files
+  daemon-reload Daemon reload
   up            Daemon reload, enable, start
   down          Daemon stop, disable, reload
-  enable        Service enable
-  disable       Service disable
-  reload        Service reload
-  status        Service status
-  start         Service start
-  stop          Service stop
-  restart       Service restart
-  log           Service journal
+  enable        Enable unit file
+  disable       Disable unit file
+  reload        Reload unit
+  status        Show runtime status of unit
+  start         Start (activate) unit
+  stop          Stop (deactivate) unit
+  restart       Start or restart unit
+  kill          Send signal to processes of a unit
+  clean         Clean runtime, cache, state, logs or configuration of unit
+  log           Query the systemd journal
 
-Examples:
+journalctl examples:
   journalctl -b
     Show current Boot
   journalctl -S today
@@ -51,42 +57,57 @@ help|--help|-h)
     echo "$USAGE_MESSAGE"
     exit 0
     ;;
-reload)
-    systemctl $SERVICE_OPT daemon-reload
+edit)
+    "$EDITOR" "/etc/systemd/system/$SERVICE_NAME"
+    ;;
+list)
+    systemctl "${SYSTEMCTL_OPT[@]}" list-units
+    ;;
+files)
+    systemctl "${SYSTEMCTL_OPT[@]}" list-unit-files
+    ;;
+daemon-reload)
+    systemctl "${SYSTEMCTL_OPT[@]}" daemon-reload
     ;;
 up)
-    systemctl $SERVICE_OPT daemon-reload
-    systemctl $SERVICE_OPT enable $SERVICE_NAME
-    systemctl $SERVICE_OPT start $SERVICE_NAME
+    systemctl "${SYSTEMCTL_OPT[@]}" daemon-reload
+    systemctl "${SYSTEMCTL_OPT[@]}" enable $SERVICE_NAME
+    systemctl "${SYSTEMCTL_OPT[@]}" start $SERVICE_NAME
     ;;
 down)
-    systemctl $SERVICE_OPT stop $SERVICE_NAME
-    systemctl $SERVICE_OPT disable $SERVICE_NAME
-    systemctl $SERVICE_OPT daemon-reload
+    systemctl "${SYSTEMCTL_OPT[@]}" stop $SERVICE_NAME
+    systemctl "${SYSTEMCTL_OPT[@]}" disable $SERVICE_NAME
+    systemctl "${SYSTEMCTL_OPT[@]}" daemon-reload
     ;;
 enable)
-    systemctl $SERVICE_OPT enable $SERVICE_NAME "$@"
+    systemctl "${SYSTEMCTL_OPT[@]}" enable $SERVICE_NAME "$@"
     ;;
 disable)
-    systemctl $SERVICE_OPT disable $SERVICE_NAME "$@"
+    systemctl "${SYSTEMCTL_OPT[@]}" disable $SERVICE_NAME "$@"
     ;;
 reload)
-    systemctl $SERVICE_OPT reload $SERVICE_NAME "$@"
+    systemctl "${SYSTEMCTL_OPT[@]}" reload $SERVICE_NAME "$@"
     ;;
 status)
-    systemctl $SERVICE_OPT status $SERVICE_NAME "$@"
+    systemctl "${SYSTEMCTL_OPT[@]}" status $SERVICE_NAME "$@"
     ;;
 start)
-    systemctl $SERVICE_OPT start $SERVICE_NAME "$@"
+    systemctl "${SYSTEMCTL_OPT[@]}" start $SERVICE_NAME "$@"
     ;;
 stop)
-    systemctl $SERVICE_OPT stop $SERVICE_NAME "$@"
+    systemctl "${SYSTEMCTL_OPT[@]}" stop $SERVICE_NAME "$@"
     ;;
 restart)
-    systemctl $SERVICE_OPT restart $SERVICE_NAME "$@"
+    systemctl "${SYSTEMCTL_OPT[@]}" restart $SERVICE_NAME "$@"
+    ;;
+kill)
+    systemctl "${SYSTEMCTL_OPT[@]}" kill $SERVICE_NAME "$@"
+    ;;
+clean)
+    systemctl "${SYSTEMCTL_OPT[@]}" clean $SERVICE_NAME "$@"
     ;;
 log)
-    journalctl $SERVICE_OPT --namespace=$NAMESPACE -u $SERVICE_NAME "$@"
+    journalctl "${JOURNALCTL_OPT[@]}" --namespace=$NAMESPACE -u $SERVICE_NAME "$@"
     ;;
 *)
     echo "Unrecognized argument: $1"

@@ -12,8 +12,9 @@ from recc.variables.storage import (
     LOCAL_STORAGE_TEMPLATE_NAME,
     LOCAL_STORAGE_PLUGIN_NAME,
     LOCAL_STORAGE_DAEMON_NAME,
+    LOCAL_STORAGE_DAEMON_VENV_NAME,
+    LOCAL_STORAGE_DAEMON_WORK_NAME,
     LOCAL_STORAGE_CACHE_NAME,
-    LOCAL_STORAGE_VENV_NAME,
 )
 
 
@@ -29,16 +30,19 @@ class LocalStorage:
         self.template = os.path.join(self.root, LOCAL_STORAGE_TEMPLATE_NAME)
         self.plugin = os.path.join(self.root, LOCAL_STORAGE_PLUGIN_NAME)
         self.daemon = os.path.join(self.root, LOCAL_STORAGE_DAEMON_NAME)
+        self.daemon_venv = os.path.join(self.root, LOCAL_STORAGE_DAEMON_VENV_NAME)
+        self.daemon_work = os.path.join(self.root, LOCAL_STORAGE_DAEMON_WORK_NAME)
         self.cache = os.path.join(self.root, LOCAL_STORAGE_CACHE_NAME)
-        self.venv = os.path.join(self.root, LOCAL_STORAGE_VENV_NAME)
 
         if prepare:
+            prepare_directory(self.root)
             prepare_directory(self.workspace)
             prepare_directory(self.template)
             prepare_directory(self.plugin)
             prepare_directory(self.daemon)
+            prepare_directory(self.daemon_venv)
+            prepare_directory(self.daemon_work)
             prepare_directory(self.cache)
-            prepare_directory(self.venv)
 
         self._tm = LamdaTemplateManager(self.template, venv_directory=None)
 
