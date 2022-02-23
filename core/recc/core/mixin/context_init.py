@@ -19,7 +19,7 @@ from recc.argparse.injection_values import injection_core_default_values
 from recc.container.container_manager import create_container_manager
 from recc.cache.cache import Cache
 from recc.database.database import create_database
-from recc.storage.core_storage import CoreStorage
+from recc.storage.local_storage import LocalStorage
 from recc.task.task_connection_pool import create_task_connection_pool
 from recc.resource.port_manager import PortManager
 from recc.logging.logging import recc_core_logger as logger
@@ -82,7 +82,7 @@ class ContextInit(ContextBase):
         logger.info(f"Signature: {self._signature}")
 
     def _init_storage(self) -> None:
-        self._storage = CoreStorage(self._config.local_storage)
+        self._storage = LocalStorage(self._config.local_storage)
         root_dir = self._storage.get_root_directory()
         logger.info(f"Created storage-manager (root={root_dir})")
         if self._config.verbose >= VERBOSE_LOGGING_LEVEL_1:

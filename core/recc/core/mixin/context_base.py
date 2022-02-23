@@ -3,7 +3,7 @@
 from asyncio import AbstractEventLoop
 from recc.argparse.config.core_config import CoreConfig
 from recc.session.session import SessionPairFactory
-from recc.storage.core_storage import CoreStorage
+from recc.storage.local_storage import LocalStorage
 from recc.container.interfaces.container_interface import ContainerInterface
 from recc.cache.cache import Cache
 from recc.database.interfaces.db_interface import DbInterface
@@ -18,7 +18,7 @@ class ContextBase:
     _loop: AbstractEventLoop
     _config: CoreConfig
     _signature: str
-    _storage: CoreStorage
+    _storage: LocalStorage
     _session_factory: SessionPairFactory
     _container: ContainerInterface
     _container_key: str
