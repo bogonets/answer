@@ -18,7 +18,7 @@ class ContextBase:
     _loop: AbstractEventLoop
     _config: CoreConfig
     _signature: str
-    _storage: LocalStorage
+    _local_storage: LocalStorage
     _session_factory: SessionPairFactory
     _container: ContainerInterface
     _container_key: str
@@ -44,18 +44,18 @@ class ContextBase:
         return self._loop
 
     @property
-    def storage(self):
+    def local_storage(self):
         """
-        Storage Manager property.
+        Local storage manager property.
         """
-        return self._storage
+        return self._local_storage
 
     @property
     def template_manager(self):
         """
         Template Manager property.
         """
-        return self.storage.get_template_manager()
+        return self.local_storage.get_template_manager()
 
     @property
     def session_factory(self):

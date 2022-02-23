@@ -55,6 +55,13 @@ class LocalStorage(
         self.daemon = Path(os.path.join(selected_root_dir, CORE_DAEMON_NAME))
         self.cache = Path(os.path.join(selected_root_dir, CORE_CACHE_NAME))
 
+    def find_daemon_dirs(self) -> List[Path]:
+        result: List[Path] = list()
+        for file in self.daemon.iterdir():
+            if file.is_dir():
+                result.append(file)
+        return result
+
     def find_plugin_dirs(self) -> List[Path]:
         result: List[Path] = list()
         for file in self.plugin.iterdir():
@@ -62,9 +69,3 @@ class LocalStorage(
                 result.append(file)
         return result
 
-    def find_daemon_dirs(self) -> List[Path]:
-        result: List[Path] = list()
-        for file in self.daemon.iterdir():
-            if file.is_dir():
-                result.append(file)
-        return result

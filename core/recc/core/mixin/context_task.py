@@ -110,13 +110,13 @@ class ContextTask(ContextBase):
 
     async def prepare_project_volume(self, group: str, project: str) -> str:
         if self.is_host_mode():
-            return self.storage.prepare_project_dir(group, project)
+            return self.local_storage.prepare_project_dir(group, project)
         volume = await self.container.create_task_volume_if_not_exist(group, project)
         return volume.key
 
     async def prepare_substorage_volume(self, group: str, project: str) -> str:
         if self.is_host_mode():
-            return self.storage.prepare_substorage_dir(group, project)
+            return self.local_storage.prepare_substorage_dir(group, project)
         volume = await self.container.create_task_volume_if_not_exist(group, project)
         return volume.key
 
@@ -149,7 +149,8 @@ class ContextTask(ContextBase):
         wait_retries=DEFAULT_WAIT_TASK_RETRIES,
         verbose_level: Optional[int] = None,
     ) -> RpcClient:
-        if self.is_host_mode() and not os.path.isdir(self.storage.get_root_directory()):
+        local_storage_root = self.local_storage.get_root_directory()
+        if self.is_host_mode() and not os.path.isdir(local_storage_root):
             raise RuntimeError("In Host mode, the storage path must be specified")
 
         if not valid_naming(group):
@@ -448,7 +449,7 @@ class ContextTask(ContextBase):
 
         for task_name, task in graph.tasks.items():
             client = await self.run_task(group_name, project_name, task_name)
-            await client.upload_templates(self.storage.compress_templates())
+            await client.upload_templates(self.local_storage.compress_templates())
             await client.set_task_blueprint(task)
 
         await self.database.update_project_by_uid(project_uid, extra=extra)

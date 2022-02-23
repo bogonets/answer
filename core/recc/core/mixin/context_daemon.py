@@ -9,7 +9,7 @@ from recc.daemon.daemon_runner import DAEMON_SCRIPT_EXTENSION
 class ContextDaemon(ContextBase):
     def get_daemon_plugins(self) -> List[str]:
         result = list()
-        for directory in self.storage.find_daemon_dirs():
+        for directory in self.local_storage.find_daemon_dirs():
             script_path = directory / (directory.name + DAEMON_SCRIPT_EXTENSION)
             if script_path.is_file():
                 result.append(directory.name)
@@ -51,7 +51,7 @@ class ContextDaemon(ContextBase):
             address,
             prev_requirements_sha256,
             enable,
-            self.storage.daemon,
+            self.local_storage.daemon,
             self.loop,
         )
 
