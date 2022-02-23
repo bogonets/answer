@@ -16,9 +16,10 @@ INSERT INTO {TABLE_DAEMON} (
     description,
     extra,
     enable,
-    created_at
+    created_at,
+    updated_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $9
 ) RETURNING uid;
 """
 

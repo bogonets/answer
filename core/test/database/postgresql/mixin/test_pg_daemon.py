@@ -51,8 +51,8 @@ class PgDaemonTestCase(PostgresqlTestCase):
         self.assertFalse(daemon2.enable)
         self.assertEqual(created_at1, daemon1.created_at)
         self.assertEqual(created_at2, daemon2.created_at)
-        self.assertIsNone(daemon1.updated_at)
-        self.assertIsNone(daemon2.updated_at)
+        self.assertEqual(created_at1, daemon1.updated_at)
+        self.assertEqual(created_at2, daemon2.updated_at)
 
         self.assertEqual(uid1, await self.db.select_daemon_uid_by_slug(slug1))
         self.assertEqual(uid2, await self.db.select_daemon_uid_by_slug(slug2))
@@ -73,7 +73,7 @@ class PgDaemonTestCase(PostgresqlTestCase):
         self.assertIsNone(daemon1.extra)
         self.assertFalse(daemon1.enable)
         self.assertEqual(created_at, daemon1.created_at)
-        self.assertIsNone(daemon1.updated_at)
+        self.assertEqual(created_at, daemon1.updated_at)
 
         address = "localhost:9999"
         requirements_sha256 = sha256(b"2").hexdigest()

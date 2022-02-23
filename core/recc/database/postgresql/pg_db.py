@@ -3,6 +3,8 @@
 from typing import Optional
 from functools import reduce
 from overrides import overrides
+from datetime import datetime
+from recc.chrono.datetime import today
 from recc.logging.logging import recc_database_logger as logger
 from recc.database.interfaces.db_interface import DbInterface
 from recc.database.postgresql.mixin._pg_base import PgBase  # noqa
@@ -25,18 +27,17 @@ from recc.database.postgresql.query.indices import CREATE_INDICES, DROP_INDICES
 from recc.database.postgresql.query.views import CREATE_VIEWS, DROP_VIEWS
 from recc.database.postgresql.query.functions import CREATE_FUNCTIONS, DROP_FUNCTIONS
 from recc.database.postgresql.query.info import (
-    INSERT_INFO_DB_VERSION,
-    INSERT_INFO_DB_INIT,
+    INSERT_INFO,
     EXISTS_INFO_BY_KEY,
-    SELECT_INFO_BY_KEY,
+    SELECT_INFO_UPDATED_AT_BY_KEY,
 )
 from recc.database.postgresql.query.role import INSERT_ROLE_DEFAULTS
 from recc.database.postgresql.query.permission import INSERT_PERMISSION_DEFAULTS
 from recc.database.postgresql.query.role_permission import (
     DEFAULT_INSERT_ROLE_PERMISSIONS,
 )
-from recc.database.struct.info import Info
-from recc.variables.database import INFO_KEY_RECC_DB_INIT
+from recc.variables.database import INFO_KEY_RECC_DB_VERSION
+from recc.util.version import database_version
 
 
 def _merge_queries(*args: str) -> str:
@@ -60,12 +61,6 @@ class PgDb(
     PgUser,
     PgWidget,
 ):
-    """PostgreSQL Database class.
-
-    :param kwargs:
-        - timeout: Optional timeout value in seconds.
-    """
-
     def __init__(
         self,
         host: Optional[str] = None,
@@ -115,12 +110,15 @@ class PgDb(
                 create_functions = _merge_queries(*CREATE_FUNCTIONS)
                 await conn.execute(create_functions)
 
-                init_key = INFO_KEY_RECC_DB_INIT
-                is_init = await conn.fetchval(EXISTS_INFO_BY_KEY, init_key)
-                if is_init:
-                    init_record = await conn.fetchrow(SELECT_INFO_BY_KEY, init_key)
-                    init_info = Info(**dict(init_record))
-                    logger.info(f"Already database initialized: {init_info.created_at}")
+                exists_db_version = await conn.fetchval(
+                    EXISTS_INFO_BY_KEY, INFO_KEY_RECC_DB_VERSION
+                )
+                if exists_db_version:
+                    db_version_updated_at = await conn.fetchval(
+                        SELECT_INFO_UPDATED_AT_BY_KEY, INFO_KEY_RECC_DB_VERSION
+                    )
+                    assert isinstance(db_version_updated_at, datetime)
+                    logger.info(f"Already database updated at: {db_version_updated_at}")
                     return
 
                 insert_perms = _merge_queries(*INSERT_PERMISSION_DEFAULTS)
@@ -132,8 +130,9 @@ class PgDb(
                 insert_role_perms = _merge_queries(*DEFAULT_INSERT_ROLE_PERMISSIONS)
                 await conn.execute(insert_role_perms)
 
-                await conn.execute(INSERT_INFO_DB_VERSION)
-                await conn.execute(INSERT_INFO_DB_INIT)
+                await conn.execute(
+                    INSERT_INFO, INFO_KEY_RECC_DB_VERSION, database_version, today()
+                )
                 logger.info("Database initialization complete")
 
     @overrides

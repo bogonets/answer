@@ -49,7 +49,6 @@ FUNC_PREFIX = "recc_"
 FUNC_APPROPRIATE_PERMISSION = f"{FUNC_PREFIX}appropriate_permission"
 
 INFO_KEY_RECC_DB_VERSION = "recc.db.version"
-INFO_KEY_RECC_DB_INIT = "recc.db.init"
 INFO_KEY_RECC_ARGPARSE_CONFIG = "recc.argparse.config"
 INFO_KEY_RECC_UUID = "recc.uuid"
 INFO_KEY_RECC_INSTALL_TIMESTAMP = "recc.install.timestamp"

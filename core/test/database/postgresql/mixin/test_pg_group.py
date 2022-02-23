@@ -39,8 +39,8 @@ class PgGroupTestCase(PostgresqlTestCase):
         self.assertEqual(created_at2, group2.created_at)
         self.assertIsNone(group1.extra)
         self.assertIsNone(group2.extra)
-        self.assertIsNone(group1.updated_at)
-        self.assertIsNone(group2.updated_at)
+        self.assertEqual(created_at1, group1.updated_at)
+        self.assertEqual(created_at2, group2.updated_at)
 
         group1_uid = group1.uid
         group2_uid = group2.uid

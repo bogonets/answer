@@ -1,44 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from recc.variables.database import (
-    TABLE_INFO,
-    VIEW_INFO_DB_VERSION,
-    INFO_KEY_RECC_DB_VERSION,
-    INFO_KEY_RECC_DB_INIT,
-)
-from recc.util.version import database_version
-
-INSERT_INFO_DB_VERSION = f"""
-INSERT INTO {TABLE_INFO} (
-    key,
-    value,
-    created_at
-) VALUES (
-    '{INFO_KEY_RECC_DB_VERSION}',
-    '{database_version}',
-    NOW()
-);
-"""
-
-INSERT_INFO_DB_INIT = f"""
-INSERT INTO {TABLE_INFO} (
-    key,
-    value,
-    created_at
-) VALUES (
-    '{INFO_KEY_RECC_DB_INIT}',
-    'True',
-    NOW()
-);
-"""
+from recc.variables.database import TABLE_INFO, VIEW_INFO_DB_VERSION
 
 INSERT_INFO = f"""
 INSERT INTO {TABLE_INFO} (
     key,
     value,
-    created_at
+    created_at,
+    updated_at
 ) VALUES (
-    $1, $2, $3
+    $1, $2, $3, $3
 );
 """
 
@@ -73,6 +44,12 @@ SELECT EXISTS (
     FROM {TABLE_INFO}
     WHERE key=$1
 );
+"""
+
+SELECT_INFO_UPDATED_AT_BY_KEY = f"""
+SELECT updated_at
+FROM {TABLE_INFO}
+WHERE key=$1;
 """
 
 SELECT_INFO_BY_KEY = f"""
