@@ -77,7 +77,11 @@ class RpcServicer(RpcApiServicer):
         #     set_user(config.user)
 
         self._workspace = TaskWorkspace(workspace_dir)
-        self._workspace.change_working_directory()
+
+        # [IMPORTANT]
+        # Do not change working directory!
+        # If you need to change the working directory, you must do so beforehand.
+        # `self._workspace.change_working_directory()`
 
         self._pickling_protocol_version = 5
         self._unpickling_encoding = "latin1"

@@ -149,7 +149,7 @@ class ContextTask(ContextBase):
         wait_retries=DEFAULT_WAIT_TASK_RETRIES,
         verbose_level: Optional[int] = None,
     ) -> RpcClient:
-        local_storage_root = self.local_storage.get_root_directory()
+        local_storage_root = self.local_storage.root
         if self.is_host_mode() and not os.path.isdir(local_storage_root):
             raise RuntimeError("In Host mode, the storage path must be specified")
 

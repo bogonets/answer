@@ -168,8 +168,7 @@ class Context(
 
     def _init_local_storage(self) -> None:
         self._local_storage = LocalStorage(self._config.local_storage)
-        root_dir = self._local_storage.get_root_directory()
-        logger.info(f"Created storage-manager (root={root_dir})")
+        logger.info(f"Created storage-manager (root={self._local_storage.root})")
         if self._config.verbose >= VERBOSE_LOGGING_LEVEL_1:
             logger.info(self._local_storage.get_template_manager().to_details())
 

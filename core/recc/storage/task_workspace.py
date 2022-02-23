@@ -20,36 +20,29 @@ class TaskWorkspace(
     def __init__(
         self,
         root_dir: str,
-        last_temp_candidate=True,
-        read_only=False,
-        validate=True,
         prepare=True,
         refresh_templates=True,
     ):
-        self.init_storage(
-            root_dir,
-            WORKSPACE_NAMES,
-            last_temp_candidate=last_temp_candidate,
-            read_only=read_only,
-            validate=validate,
-            prepare=prepare,
-        )
+        self.root = root_dir
+        self.names = list(WORKSPACE_NAMES)
+        self.user = None
+        self.group = None
 
-        del root_dir
-        selected_root_dir = self.get_root_directory()
+        if prepare:
+            self.prepare()
 
-        template_dir = os.path.join(selected_root_dir, WORKSPACE_TEMPLATE_NAME)
-        venv_dir = os.path.join(selected_root_dir, WORKSPACE_VENV_NAME)
+        template_dir = os.path.join(self.root, WORKSPACE_TEMPLATE_NAME)
+        venv_dir = os.path.join(self.root, WORKSPACE_VENV_NAME)
         self.init_template_manager(template_dir, venv_dir)
 
         if refresh_templates:
             self.refresh_templates()
 
     def get_working_dir(self) -> str:
-        return os.path.join(self.get_root_directory(), WORKSPACE_WORKING_NAME)
+        return os.path.join(self.root, WORKSPACE_WORKING_NAME)
 
     def get_socket_url(self, task_name: str) -> str:
-        return get_unix_domain_socket_url(self.get_root_directory(), task_name)
+        return get_unix_domain_socket_url(self.root, task_name)
 
     def change_working_directory(self) -> None:
         working_dir = self.get_working_dir()

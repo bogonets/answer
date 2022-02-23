@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 from enum import Enum
 from asyncio import (
     Task,
@@ -10,8 +11,9 @@ from asyncio import (
 )
 from asyncio.subprocess import Process, PIPE
 from asyncio.streams import StreamReader, StreamWriter
-from typing import Optional, Callable
+from typing import Optional, Callable, Mapping
 from functools import reduce
+from recc.system.environ import get_os_envs_dict
 import psutil
 
 ReaderCallable = Callable[[bytes], None]
@@ -45,6 +47,8 @@ class AsyncSubprocess:
         *commands,
         stdout_callback: Optional[ReaderCallable] = None,
         stderr_callback: Optional[ReaderCallable] = None,
+        cwd: Optional[str] = None,
+        env: Optional[Mapping[str, str]] = None,
         writable=False,
         method=SubprocessMethod.Exec,
     ):
@@ -57,6 +61,8 @@ class AsyncSubprocess:
         self._stdout_task: Optional[Task] = None
         self._stderr_task: Optional[Task] = None
         self._method = method
+        self._cwd = cwd if cwd else os.getcwd()
+        self._env = dict(env) if env else get_os_envs_dict()
 
     def is_started(self) -> bool:
         return self._process is not None
@@ -85,12 +91,18 @@ class AsyncSubprocess:
         The `loop` argument is deprecated since Python 3.8
         and scheduled for removal in Python 3.10
         """
+        print("cmd:", self._commands)
+        print("cwd:", self._cwd)
+        print("env:", self._env)
         return await create_subprocess_exec(
             self._commands[0],
             *self._commands[1:],
             stdin=self.stdin_flag,
             stdout=self.stdout_flag,
             stderr=self.stderr_flag,
+            executable=None,
+            cwd=self._cwd,
+            env=self._env,
         )
 
     async def _create_subprocess_shell(self) -> Process:
@@ -102,11 +114,17 @@ class AsyncSubprocess:
         The `loop` argument is deprecated since Python 3.8
         and scheduled for removal in Python 3.10
         """
+        print("cmd:", merged_commands)
+        print("cwd:", self._cwd)
+        print("env:", self._env)
         return await create_subprocess_shell(
             merged_commands,
             stdin=self.stdin_flag,
             stdout=self.stdout_flag,
             stderr=self.stderr_flag,
+            executable=None,
+            cwd=self._cwd,
+            env=self._env,
         )
 
     async def create_subprocess(self) -> Process:
@@ -230,13 +248,19 @@ async def start_async_subprocess(
     *commands,
     stdout_callback: Optional[ReaderCallable] = None,
     stderr_callback: Optional[ReaderCallable] = None,
+    cwd: Optional[str] = None,
+    env: Optional[Mapping[str, str]] = None,
     writable=False,
+    method=SubprocessMethod.Exec,
 ) -> AsyncSubprocess:
     proc = AsyncSubprocess(
         *commands,
         stdout_callback=stdout_callback,
         stderr_callback=stderr_callback,
+        cwd=cwd,
+        env=env,
         writable=writable,
+        method=method,
     )
     await proc.start()
     return proc

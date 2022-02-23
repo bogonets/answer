@@ -24,36 +24,29 @@ class LocalStorage(
     def __init__(
         self,
         root_dir: str,
-        last_temp_candidate=True,
-        read_only=False,
-        validate=True,
         prepare=True,
         refresh_templates=True,
     ):
-        self.init_storage(
-            root_dir=root_dir,
-            subdir_names=CORE_NAMES,
-            last_temp_candidate=last_temp_candidate,
-            read_only=read_only,
-            validate=validate,
-            prepare=prepare,
-        )
+        self.root = root_dir
+        self.names = list(CORE_NAMES)
+        self.user = None
+        self.group = None
 
-        del root_dir
-        selected_root_dir = self.get_root_directory()
+        if prepare:
+            self.prepare()
 
-        working_dir = os.path.join(selected_root_dir, CORE_WORKSPACE_NAME)
+        working_dir = os.path.join(self.root, CORE_WORKSPACE_NAME)
         self.init_workspace_manager(working_dir)
 
-        template_dir = os.path.join(selected_root_dir, CORE_TEMPLATE_NAME)
+        template_dir = os.path.join(self.root, CORE_TEMPLATE_NAME)
         self.init_template_manager(template_dir, venv_directory=None)
 
         if refresh_templates:
             self.refresh_templates()
 
-        self.plugin = Path(os.path.join(selected_root_dir, CORE_PLUGIN_NAME))
-        self.daemon = Path(os.path.join(selected_root_dir, CORE_DAEMON_NAME))
-        self.cache = Path(os.path.join(selected_root_dir, CORE_CACHE_NAME))
+        self.plugin = Path(os.path.join(self.root, CORE_PLUGIN_NAME))
+        self.daemon = Path(os.path.join(self.root, CORE_DAEMON_NAME))
+        self.cache = Path(os.path.join(self.root, CORE_CACHE_NAME))
 
     def find_daemon_dirs(self) -> List[Path]:
         result: List[Path] = list()
@@ -68,4 +61,3 @@ class LocalStorage(
             if file.is_dir():
                 result.append(file)
         return result
-

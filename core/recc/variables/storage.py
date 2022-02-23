@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+DEFAULT_STORAGE_HOME_NAME = ".recc"
+DEFAULT_STORAGE_GLOBAL_DIR = "/var/recc"
+
+DEFAULT_TEMP_STORAGE_SUFFIX = "recc"
+DEFAULT_TEMP_STORAGE_PREFIX = "storage"
+
 # [CORE] first-depth categories.
 
 CORE_WORKSPACE_NAME = "workspace"

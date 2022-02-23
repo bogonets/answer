@@ -17,7 +17,7 @@ class CoreStorageTestCase(IsolatedAsyncioTestCase):
         self.temp_dir = TemporaryDirectory()
         self.sm = LocalStorage(self.temp_dir.name)
 
-        self.assertTrue(os.path.isdir(self.sm.get_root_directory()))
+        self.assertTrue(os.path.isdir(self.sm.root))
         self.assertTrue(os.path.isdir(self.sm.get_template_directory()))
         self.assertTrue(os.path.isdir(self.sm.get_workspace_directory()))
 

@@ -88,10 +88,12 @@ class _Result:
 @skipIf(os.name != "posix", "It only runs on posix")
 class RpcPipeClientTestCase(IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
-        self.temp_dir = TemporaryDirectory()
-        address = "unix://" + os.path.join(self.temp_dir.name, "sock.pip")
+        self.temp = TemporaryDirectory()
+        self.assertTrue(os.path.isdir(self.temp.name))
 
+        address = "unix://" + os.path.join(self.temp.name, "sock.pip")
         config = get_default_task_config()
+        config.task_workspace_dir = self.temp.name
         config.task_address = address
         server_info = create_task_server(config)
         self.server = server_info.server
@@ -104,8 +106,11 @@ class RpcPipeClientTestCase(IsolatedAsyncioTestCase):
     async def asyncTearDown(self):
         await self.client.close()
         await self.server.stop(None)
-        self.temp_dir.cleanup()
         self.assertFalse(self.client.is_open())
+
+        self.assertTrue(os.path.isdir(self.temp.name))
+        self.temp.cleanup()
+        self.assertFalse(os.path.isdir(self.temp.name))
 
     async def test_heartbeat(self):
         self.assertTrue(await self.client.heartbeat(0))

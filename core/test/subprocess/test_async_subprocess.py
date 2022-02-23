@@ -26,7 +26,6 @@ class AsyncSubprocessTestCase(IsolatedAsyncioTestCase):
             "--version",
             stdout_callback=_stdout,
             stderr_callback=_stderr,
-            writable=False,
         )
         version_text = f"{version_info[0]}.{version_info[1]}.{version_info[2]}"
         self.assertEqual(0, await proc.wait())

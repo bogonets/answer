@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from typing import Optional, List, Dict, Tuple
+from typing import Optional, List, Dict, Tuple, Mapping
 from functools import reduce
 from recc.subprocess.async_subprocess import (
+    SubprocessMethod,
     AsyncSubprocess,
     ReaderCallable,
     start_async_subprocess,
@@ -32,15 +33,15 @@ class Package(object):
 class AsyncPythonSubprocess:
     def __init__(
         self,
-        python_executable_path: str,
+        executable: Optional[str] = None,
         pip_timeout: Optional[float] = None,
     ):
-        self._python_executable_path = python_executable_path
+        self._executable = executable if executable else sys.executable
         self._pip_timeout = pip_timeout if pip_timeout else 0.0
 
     @property
     def executable(self):
-        return self._python_executable_path
+        return self._executable
 
     @classmethod
     def create_system(cls, pip_timeout: Optional[float] = None):
@@ -51,17 +52,23 @@ class AsyncPythonSubprocess:
         *subcommands,
         stdout_callback: Optional[ReaderCallable] = None,
         stderr_callback: Optional[ReaderCallable] = None,
+        cwd: Optional[str] = None,
+        env: Optional[Mapping[str, str]] = None,
         writable=False,
+        method=SubprocessMethod.Exec,
     ) -> AsyncSubprocess:
         if not subcommands:
             ValueError("Empty subcommands arguments")
 
-        total_commands = [self._python_executable_path, *subcommands]
+        total_commands = [self._executable, *subcommands]
         proc = await start_async_subprocess(
             *total_commands,
             stdout_callback=stdout_callback,
             stderr_callback=stderr_callback,
+            cwd=cwd,
+            env=env,
             writable=writable,
+            method=method,
         )
         return proc
 
@@ -85,13 +92,19 @@ class AsyncPythonSubprocess:
         *subcommands,
         stdout_callback: Optional[ReaderCallable] = None,
         stderr_callback: Optional[ReaderCallable] = None,
+        cwd: Optional[str] = None,
+        env: Optional[Mapping[str, str]] = None,
         writable=False,
+        method=SubprocessMethod.Exec,
     ) -> AsyncSubprocess:
         return await self.start_python(
             *self.make_pip_subcommands(*subcommands),
             stdout_callback=stdout_callback,
             stderr_callback=stderr_callback,
+            cwd=cwd,
+            env=env,
             writable=writable,
+            method=method,
         )
 
     async def start_python_simply(self, *subcommands) -> Tuple[List[str], List[str]]:

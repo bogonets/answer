@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Optional, List, Union, Iterable
+from typing import Optional, List, Union
 from tempfile import mkdtemp
 from recc.file.directory import (
     prepare_readable_directory,
@@ -13,9 +13,12 @@ from recc.file.path_utils import HOME_DIR
 from recc.file.permission import is_readable_dir, is_writable_dir
 from recc.system.user import change_user
 from recc.system.group import change_group
-
-STORAGE_HOME_DIR = os.path.join(HOME_DIR, ".recc")
-STORAGE_GLOBAL_DIR = "/var/recc"
+from recc.variables.storage import (
+    DEFAULT_STORAGE_HOME_NAME,
+    DEFAULT_STORAGE_GLOBAL_DIR,
+    DEFAULT_TEMP_STORAGE_SUFFIX,
+    DEFAULT_TEMP_STORAGE_PREFIX,
+)
 
 
 def _is_dir(directory: str, read_only=False) -> bool:
@@ -70,7 +73,10 @@ def find_available_storage(
             candidates += [directories]
         elif isinstance(directories, list):
             candidates += directories
-    candidates += [STORAGE_HOME_DIR, STORAGE_GLOBAL_DIR]
+    candidates += [
+        os.path.join(HOME_DIR, DEFAULT_STORAGE_HOME_NAME),
+        DEFAULT_STORAGE_GLOBAL_DIR,
+    ]
 
     for cursor in candidates:
         if cursor:
@@ -81,83 +87,76 @@ def find_available_storage(
     raise FileNotFoundError("Not found storage directory.")
 
 
+def find_available_storage_or_temp_directory(
+    last_temp_candidate=True,
+    read_only=False,
+    validate=True,
+    *,
+    temp_suffix=DEFAULT_TEMP_STORAGE_SUFFIX,
+    temp_prefix=DEFAULT_TEMP_STORAGE_PREFIX,
+) -> str:
+    try:
+        candidate = find_available_storage(read_only=read_only, validate=validate)
+    except FileNotFoundError:
+        if not last_temp_candidate:
+            raise
+        candidate = mkdtemp(suffix=temp_suffix, prefix=temp_prefix)
+
+    if validate:
+        assert _is_dir(candidate, read_only=read_only)
+
+    return candidate
+
+
+def directory_or_temp_directory(
+    directory: str,
+    last_temp_candidate=True,
+    read_only=False,
+    validate=True,
+    *,
+    temp_suffix=DEFAULT_TEMP_STORAGE_SUFFIX,
+    temp_prefix=DEFAULT_TEMP_STORAGE_PREFIX,
+) -> str:
+    try:
+        if validate:
+            _test_directory(directory, read_only=read_only)
+        # Don't use `os.path.abspath` method.
+        # When the core references the task's storage, the path is broken.
+        candidate = directory
+    except:  # noqa
+        if not last_temp_candidate:
+            raise
+        candidate = mkdtemp(suffix=temp_suffix, prefix=temp_prefix)
+
+    if validate:
+        assert _is_dir(candidate, read_only=read_only)
+
+    return candidate
+
+
 class StorageBaseMixin:
 
-    _root_dir: str
-    _names: List[str]
-    _read_only: bool
+    root: str
+    names: List[str]
 
-    def init_storage(
-        self,
-        root_dir: Optional[str] = None,
-        subdir_names: Optional[Iterable[str]] = None,
-        user: Optional[Union[str, int]] = None,
-        group: Optional[Union[str, int]] = None,
-        last_temp_candidate=True,
-        read_only=False,
-        validate=True,
-        prepare=True,
-    ) -> None:
-        """
-        :param root_dir:
-            Root directory.
-        :param subdir_names:
-            List of candidate directories.
-        :param user:
-            User name or id.
-        :param group:
-            Group name or id.
-        :param last_temp_candidate:
-            If no storage is available, a temporary directory is used.
-        :param read_only:
-            Read only flag.
-        :param validate:
-            Run validation.
-        :param prepare:
-            Prepare subdirectories.
-        """
-
-        try:
-            if root_dir:
-                if validate:
-                    _test_directory(root_dir, read_only)
-                # Don't use `os.path.abspath` method.
-                # When the core references the task's storage, the path is broken.
-                candidate = root_dir
-            else:
-                candidate = find_available_storage(
-                    read_only=read_only, validate=validate
-                )
-        except:  # noqa
-            if not last_temp_candidate:
-                raise
-            candidate = mkdtemp(suffix="recc", prefix="storage")
-
-        if validate:
-            assert _is_dir(candidate, read_only)
-
-        self._root_dir = candidate
-        self._names = list(subdir_names) if subdir_names else list()
-        self._read_only = read_only
-
-        if prepare:
-            _change_owner(self._root_dir, user, group)
-
-            for name in self._names:
-                subdir = os.path.join(self._root_dir, name)
-                _prepare_directory(subdir, read_only)
-                _change_owner(subdir, user, group)
-
-    def get_root_directory(self) -> str:
-        return self._root_dir
+    user: Optional[str] = None
+    group: Optional[str] = None
 
     def get_subdirectory(self, name: str) -> str:
-        return os.path.join(self._root_dir, name)
+        return os.path.join(self.root, name)
 
     def get_subdirectories(self) -> List[str]:
         """Returns the subdirectories of the workspace."""
 
         def _filter(name) -> bool:
-            return os.path.isdir(os.path.join(self._root_dir, name))
+            return os.path.isdir(os.path.join(self.root, name))
 
-        return list(filter(_filter, os.listdir(self._root_dir)))
+        return list(filter(_filter, os.listdir(self.root)))
+
+    def prepare(self) -> None:
+        _change_owner(self.root, self.user, self.group)
+
+        for name in self.names:
+            subdir = os.path.join(self.root, name)
+            _prepare_directory(subdir)
+            _change_owner(subdir, self.user, self.group)
