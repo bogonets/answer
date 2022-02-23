@@ -5,12 +5,21 @@ from typing import Dict, Optional
 from asyncio import TimeoutError as AsyncioTimeoutError
 from asyncio import AbstractEventLoop, wait_for
 from recc.logging.logging import recc_daemon_logger as logger
+from recc.aio.task_manager import TaskManager
 from recc.database.interfaces.db_interface import DbInterface
 from recc.daemon.daemon_runner import DaemonRunner
 from recc.daemon.daemon_client import DaemonClient
 
 
-class DaemonManager(Dict[str, DaemonRunner]):
+class DaemonManager:
+
+    _daemons: Dict[str, DaemonRunner]
+    _tasks: TaskManager
+
+    def __init__(self):
+        self._daemons = dict()
+        self._tasks = TaskManager()
+
     def add_new_runner(
         self,
         slug: str,
@@ -19,33 +28,33 @@ class DaemonManager(Dict[str, DaemonRunner]):
         loop: Optional[AbstractEventLoop] = None,
     ) -> None:
         runner = DaemonRunner(Path(directory), address, loop)
-        self.__setitem__(slug, runner)
+        self._daemons[slug] = runner
 
     def is_running(self, slug: str) -> bool:
-        return self.__getitem__(slug).is_running()
+        return self._daemons[slug].is_running()
 
     def status(self, slug: str) -> str:
         try:
-            return self.__getitem__(slug).status
+            return self._daemons[slug].status
         except KeyError:
             return "unregistered"
         except:  # noqa
             return "error"
 
     def exists_requirements(self, slug: str) -> bool:
-        return self.__getitem__(slug).requirements_path.is_file()
+        return self._daemons[slug].requirements_path.is_file()
 
     async def install(
         self, slug: str, prev_requirements_sha256: Optional[str] = None
     ) -> str:
-        item = self.__getitem__(slug)
+        item = self._daemons[slug]
         return await item.install_requirements(prev_requirements_sha256)
 
     async def start(self, slug: str) -> None:
-        await self.__getitem__(slug).open()
+        await self._daemons[slug].open()
 
     async def stop(self, slug: str) -> None:
-        await self.__getitem__(slug).close()
+        await self._daemons[slug].close()
 
     async def update_daemon(
         self,
@@ -117,7 +126,7 @@ class DaemonManager(Dict[str, DaemonRunner]):
                 )
 
     async def close(self) -> None:
-        for key, runner in self.items():
+        for key, runner in self._daemons.items():
             if runner.is_opened():
                 await runner.close()
                 logger.info(f"Closed daemon: {key}")
@@ -130,8 +139,8 @@ class DaemonManager(Dict[str, DaemonRunner]):
         wait_timeout = connection_timeout if connection_timeout else 120.0
         client_timeout = query_timeout if query_timeout else 120.0
 
-        runner_count = self.__len__()
-        for index, runner in enumerate(self.values()):
+        runner_count = len(self._daemons)
+        for index, runner in enumerate(self._daemons.values()):
             address = runner.address_for_client
             client: Optional[DaemonClient] = DaemonClient(address, client_timeout)
 
