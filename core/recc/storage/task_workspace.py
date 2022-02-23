@@ -4,7 +4,7 @@ import os
 from recc.logging.logging import recc_common_logger as logger
 from recc.storage.mixin.storage_base import StorageBaseMixin
 from recc.storage.mixin.storage_template_manager import StorageTemplateManagerMixin
-from recc.storage.sock.sock_path import get_socket_url
+from recc.storage.sock.sock_path import get_unix_domain_socket_url
 from recc.variables.storage import (
     WORKSPACE_WORKING_NAME,
     WORKSPACE_TEMPLATE_NAME,
@@ -49,7 +49,7 @@ class TaskWorkspace(
         return os.path.join(self.get_root_directory(), WORKSPACE_WORKING_NAME)
 
     def get_socket_url(self, task_name: str) -> str:
-        return get_socket_url(self.get_root_directory(), task_name)
+        return get_unix_domain_socket_url(self.get_root_directory(), task_name)
 
     def change_working_directory(self) -> None:
         working_dir = self.get_working_dir()

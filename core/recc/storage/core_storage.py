@@ -3,7 +3,7 @@
 import os
 from typing import List
 from pathlib import Path
-from recc.storage.sock.sock_path import get_socket_url
+from recc.storage.sock.sock_path import get_unix_domain_socket_url
 from recc.storage.mixin.storage_base import StorageBaseMixin
 from recc.storage.mixin.storage_template_manager import StorageTemplateManagerMixin
 from recc.storage.mixin.storage_workspace_manager import StorageWorkspaceManagerMixin
@@ -58,7 +58,7 @@ class CoreStorage(
 
     def get_socket_url(self, group_name: str, project_name: str, task_name: str) -> str:
         prefix = self.get_project_dir(group_name, project_name)
-        return get_socket_url(prefix, task_name)
+        return get_unix_domain_socket_url(prefix, task_name)
 
     def find_plugin_dirs(self) -> List[Path]:
         result: List[Path] = list()

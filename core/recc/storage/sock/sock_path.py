@@ -7,7 +7,7 @@ from recc.variables.rpc import UNIX_URI_PREFIX
 _TASK_SOCKET_URL_PREFIX = f"{UNIX_URI_PREFIX}//"
 
 
-def get_socket_url(directory: str, task_name: str) -> str:
+def get_unix_domain_socket_url(directory: str, task_name: str) -> str:
     """Get a Unix Domain Socket URL for RPC.
 
     .. warning::
