@@ -10,7 +10,7 @@ from recc.argparse.config.task_config import TaskConfig
 from recc.argparse.default_namespace import get_default_task_config
 from recc.argparse.injection_values import injection_task_default_values
 from recc.logging.logging import recc_rpc_logger as logger
-from recc.storage.task_workspace import TaskWorkspace
+from recc.storage.task_storage import TaskStorage
 from recc.system.user import get_user_id
 from recc.system.group import get_group_id
 from recc.rpc.rpc_converter import (
@@ -76,7 +76,7 @@ class RpcServicer(RpcApiServicer):
         # if config.user:
         #     set_user(config.user)
 
-        self._workspace = TaskWorkspace(workspace_dir)
+        self._workspace = TaskStorage(workspace_dir)
 
         # [IMPORTANT]
         # Do not change working directory!
@@ -98,7 +98,7 @@ class RpcServicer(RpcApiServicer):
         return self._config
 
     @property
-    def workspace(self) -> TaskWorkspace:
+    def workspace(self) -> TaskStorage:
         return self._workspace
 
     def get_rpc_address(self) -> str:

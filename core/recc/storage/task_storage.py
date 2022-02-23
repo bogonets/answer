@@ -14,7 +14,7 @@ from recc.variables.storage import (
 )
 
 
-class TaskWorkspace:
+class TaskStorage:
     def __init__(
         self,
         root_dir: str,
