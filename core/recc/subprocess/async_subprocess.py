@@ -91,9 +91,6 @@ class AsyncSubprocess:
         The `loop` argument is deprecated since Python 3.8
         and scheduled for removal in Python 3.10
         """
-        print("cmd:", self._commands)
-        print("cwd:", self._cwd)
-        print("env:", self._env)
         return await create_subprocess_exec(
             self._commands[0],
             *self._commands[1:],
@@ -114,9 +111,6 @@ class AsyncSubprocess:
         The `loop` argument is deprecated since Python 3.8
         and scheduled for removal in Python 3.10
         """
-        print("cmd:", merged_commands)
-        print("cwd:", self._cwd)
-        print("env:", self._env)
         return await create_subprocess_shell(
             merged_commands,
             stdin=self.stdin_flag,
