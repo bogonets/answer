@@ -44,7 +44,7 @@ class PgProjectTestCase(PostgresqlTestCase):
         self.assertIsNone(project1.features)
         self.assertIsNone(project1.extra)
         self.assertEqual(created_at1, project1.created_at)
-        self.assertIsNone(project1.updated_at)
+        self.assertEqual(created_at1, project1.updated_at)
 
         project1_2nd = await self.db.select_project_by_uid(project1.uid)
         self.assertEqual(project1, project1_2nd)

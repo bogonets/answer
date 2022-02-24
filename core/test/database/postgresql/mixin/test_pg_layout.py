@@ -43,8 +43,8 @@ class PgLayoutTestCase(PostgresqlTestCase):
         self.assertIsNone(layout2.extra)
         self.assertEqual(created_at1, layout1.created_at)
         self.assertEqual(created_at2, layout2.created_at)
-        self.assertIsNone(layout1.updated_at)
-        self.assertIsNone(layout2.updated_at)
+        self.assertEqual(created_at1, layout1.updated_at)
+        self.assertEqual(created_at2, layout2.updated_at)
 
         layout1_2nd = await self.db.select_layout_by_uid(layout1.uid)
         layout2_2nd = await self.db.select_layout_by_uid(layout2.uid)

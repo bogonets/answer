@@ -29,8 +29,8 @@ class PgPortTestCase(PostgresqlTestCase):
         self.assertIsNone(port2.extra)
         self.assertEqual(created_at1, port1.created_at)
         self.assertEqual(created_at2, port2.created_at)
-        self.assertIsNone(port1.updated_at)
-        self.assertIsNone(port2.updated_at)
+        self.assertEqual(created_at1, port1.updated_at)
+        self.assertEqual(created_at2, port2.updated_at)
 
     async def test_update_description(self):
         number = 100

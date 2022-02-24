@@ -40,19 +40,16 @@ class PgRoleTestCase(PostgresqlTestCase):
         self.assertIsNone(role2.name)
         self.assertEqual(desc1, role1.description)
         self.assertEqual(desc2, role2.description)
-        self.assertEqual(created_at1, role1.created_at)
-        self.assertEqual(created_at2, role2.created_at)
-
         self.assertFalse(role1.hidden)
-        self.assertFalse(role1.lock)
-
         self.assertFalse(role2.hidden)
+        self.assertFalse(role1.lock)
         self.assertFalse(role2.lock)
-
         self.assertIsNone(role1.extra)
         self.assertIsNone(role2.extra)
-        self.assertIsNone(role1.updated_at)
-        self.assertIsNone(role2.updated_at)
+        self.assertEqual(created_at1, role1.created_at)
+        self.assertEqual(created_at2, role2.created_at)
+        self.assertEqual(created_at1, role1.updated_at)
+        self.assertEqual(created_at2, role2.updated_at)
 
         role1_uid = role1.uid
         role2_uid = role2.uid
@@ -67,7 +64,9 @@ class PgRoleTestCase(PostgresqlTestCase):
         self.assertIsNone(role1.name)
         self.assertIsNone(role1.description)
         self.assertIsNone(role1.extra)
-        self.assertIsNone(role1.updated_at)
+        self.assertIsNotNone(role1.created_at)
+        self.assertIsNotNone(role1.updated_at)
+        self.assertEqual(role1.created_at, role1.updated_at)
 
         updated_slug = "role2"
         updated_desc = "desc2"

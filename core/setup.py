@@ -13,7 +13,7 @@ REQUIREMENTS_DOCS = os.path.join(SOURCE_DIR, "requirements.docs.txt")
 REQUIREMENTS_TEST = os.path.join(SOURCE_DIR, "requirements.test.txt")
 REQUIREMENTS_SETUP = os.path.join(SOURCE_DIR, "requirements.setup.txt")
 
-# Ensure we're in the proper directory whether or not we're being used by pip.
+# Make sure you're in the proper directory, whether you're using pip.
 os.chdir(SOURCE_DIR)
 
 from recc.util.version import normalize_version, version_text  # noqa

@@ -14,7 +14,7 @@ from recc.serialization.interface import SERIALIZE_METHOD_NAME
 from recc.serialization.errors import SerializeError, NotImplementedSerializeError
 from recc.serialization.numpy import numpy_serialize
 from recc.inspect.member import get_public_instance_attributes
-from recc.util.version import version_info
+from recc.util.version import version_tuple
 
 
 def _create_serialize_dict(
@@ -112,4 +112,4 @@ def serialize(version: int, obj: Any) -> Any:
 
 
 def serialize_default(obj: Any) -> Any:
-    return serialize(version_info[0], obj)
+    return serialize(version_tuple[0], obj)

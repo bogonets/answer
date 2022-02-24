@@ -22,7 +22,8 @@ INSERT INTO {TABLE_USER} (
     phone2,
     is_admin,
     extra,
-    created_at
+    created_at,
+    updated_at
 ) VALUES (
     $1,
     $2,
@@ -33,6 +34,7 @@ INSERT INTO {TABLE_USER} (
     $7,
     $8,
     $9,
+    $10,
     $10
 ) RETURNING uid;
 """

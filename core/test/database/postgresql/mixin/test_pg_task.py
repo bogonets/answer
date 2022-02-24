@@ -78,8 +78,8 @@ class PgTaskTestCase(PostgresqlTestCase):
         self.assertIsNone(task2.base_image_name)
         self.assertIsNone(task1.publish_ports)
         self.assertIsNone(task2.publish_ports)
-        self.assertIsNone(task1.updated_at)
-        self.assertIsNone(task2.updated_at)
+        self.assertEqual(created_at1, task1.updated_at)
+        self.assertEqual(created_at2, task2.updated_at)
 
         task1_2nd = await self.db.select_task_by_uid(task1.uid)
         task2_2nd = await self.db.select_task_by_uid(task2.uid)

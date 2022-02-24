@@ -244,7 +244,8 @@ class RouterV2MainTestCase(IsolatedAsyncioTestCase):
         self.assertIsNone(response3_data0.features)
         self.assertIsNone(response3_data0.extra)
         self.assertIsNotNone(response3_data0.created_at)
-        self.assertIsNone(response3_data0.updated_at)
+        self.assertIsNotNone(response3_data0.updated_at)
+        self.assertEqual(response3_data0.created_at, response3_data0.updated_at)
 
         path = v2_main_path(u.projects_pgroup_pproject).format(
             group=project1.group_slug, project=project1.project_slug

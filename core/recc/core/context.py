@@ -2,7 +2,7 @@
 
 from copy import deepcopy
 from asyncio import get_event_loop_policy, set_event_loop
-from typing import Optional
+from typing import Optional, Dict
 from asyncio import AbstractEventLoop
 
 from recc.argparse.config.core_config import CoreConfig
@@ -35,12 +35,7 @@ from recc.init.default import (
     init_yaml_driver,
     init_loop_driver,
 )
-from recc.util.version import (
-    version_text,
-    version_info,
-    database_version,
-    database_info,
-)
+from recc.util.version import version_text, version_tuple, parse_version_tuple
 from recc.variables.crypto import SIGNATURE_SIZE
 from recc.variables.logging import VERBOSE_LOGGING_LEVEL_1
 from recc.variables.database import (
@@ -266,16 +261,8 @@ class Context(
         return version_text
 
     @classmethod
-    def version_info(cls) -> tuple:
-        return version_info
-
-    @classmethod
-    def database_version(cls) -> str:
-        return database_version
-
-    @classmethod
-    def database_info(cls) -> tuple:
-        return database_info
+    def version_tuple(cls) -> tuple:
+        return version_tuple
 
     @staticmethod
     async def _test_recc_subprocess() -> None:
@@ -290,29 +277,61 @@ class Context(
                 f"{e}"
             )
 
+    async def open_database(self) -> None:
+        await self._database.open()
+        logger.info("Opened database")
+
+        db_version: Optional[str]
+        try:
+            db_version = await self._database.select_database_version()
+        except:  # noqa
+            db_version = None
+
+        if db_version:
+            db_version_tuple = parse_version_tuple(db_version)
+            if db_version_tuple > version_tuple:
+                prefix = "You cannot migrate to a smaller version"
+                suffix = f"db({db_version_tuple}) vs current({version_tuple})"
+                message = f"{prefix}: {suffix}"
+                logger.error(message)
+                raise RuntimeError(message)
+            elif db_version_tuple < version_tuple:
+                await self._database.migration(db_version_tuple, version_tuple)
+                logger.info("Created database tables")
+            else:
+                assert db_version_tuple == version_tuple
+                pass
+        else:
+            await self._database.create_tables()
+            logger.info("Created database tables")
+
+        owner_uid = await self._database.select_role_uid_by_slug(ROLE_SLUG_OWNER)
+        if owner_uid != ROLE_UID_OWNER:
+            prefix = f"Owner role ID is not {ROLE_UID_OWNER}"
+            suffix = f"It's actually {owner_uid}"
+            message = f"{prefix}, {suffix}"
+            logger.error(message)
+            raise RuntimeError(message)
+
+    async def get_database_configs(self) -> Dict[str, str]:
+        """
+        Configurations stored in the database.
+        """
+
+        like = CONFIG_PREFIX_RECC_ARGPARSE_CONFIG + "%"
+        infos = await self.get_infos_like(like)
+        return {c.key: c.value for c in infos if c.key and c.value}
+
     async def open(self) -> None:
         await self._test_recc_subprocess()
 
         self.setup_context_config()
         logger.info("Setup context configurations")
 
-        await self._database.open()
-        logger.info("Opened database")
-
-        await self._database.create_tables()
-        logger.info("Create tables (if not exists)")
-
-        owner_uid = await self._database.select_role_uid_by_slug(ROLE_SLUG_OWNER)
-        if owner_uid != ROLE_UID_OWNER:
-            logger.critical(
-                f"Owner role ID is not {ROLE_UID_OWNER}, It's actually {owner_uid}"
-            )
-            raise RuntimeError(f"The owner role ID must be {ROLE_UID_OWNER}")
-
+        await self.open_database()
         assert self._database.is_open()
-        config_infos_prefix = CONFIG_PREFIX_RECC_ARGPARSE_CONFIG
-        config_infos = await self.get_infos_like(config_infos_prefix + "%")
-        database_configs = {c.key: c.value for c in config_infos if c.key and c.value}
+
+        database_configs = await self.get_database_configs()
         await self.restore_configs(database_configs)
         logger.info("Restores the configuration from the database")
 

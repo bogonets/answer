@@ -17,9 +17,10 @@ UPSERT_INFO = f"""
 INSERT INTO {TABLE_INFO} (
     key,
     value,
-    created_at
+    created_at,
+    updated_at
 ) VALUES (
-    $1, $2, $3
+    $1, $2, $3, $3
 ) ON CONFLICT (
     key
 ) DO UPDATE SET
@@ -73,24 +74,3 @@ SELECT_INFO_DB_VERSION = f"""
 SELECT version
 FROM {VIEW_INFO_DB_VERSION};
 """
-
-_SAFE_INSERT_INFO_FORMAT = f"""
-INSERT INTO {TABLE_INFO} (
-    key,
-    value,
-    created_at
-) SELECT
-    '{{key}}',
-    '{{value}}',
-    NOW()
-WHERE
-    NOT EXISTS(
-        SELECT value
-        FROM {TABLE_INFO}
-        WHERE key='{{key}}'
-    );
-"""
-
-
-def get_safe_insert_info_query(key: str, value: str) -> str:
-    return _SAFE_INSERT_INFO_FORMAT.format(key=key, value=value)

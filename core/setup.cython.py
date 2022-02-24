@@ -24,7 +24,7 @@ SOURCE_FILTERS = (
     re.compile(r".*__main__\.py$"),
 )
 
-# Ensure we're in the proper directory whether or not we're being used by pip.
+# Make sure you're in the proper directory, whether you're using pip.
 os.chdir(SOURCE_DIR)
 
 from recc.util.version import normalize_version, version_text  # noqa

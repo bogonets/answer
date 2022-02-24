@@ -38,8 +38,8 @@ class PgWidgetTestCase(PostgresqlTestCase):
         self.assertIsNone(widget2.extra)
         self.assertEqual(created_at1, widget1.created_at)
         self.assertEqual(created_at2, widget2.created_at)
-        self.assertIsNone(widget1.updated_at)
-        self.assertIsNone(widget2.updated_at)
+        self.assertEqual(created_at1, widget1.updated_at)
+        self.assertEqual(created_at2, widget2.updated_at)
 
         widget1_2nd = await self.db.select_widget_by_uid(widget1.uid)
         widget2_2nd = await self.db.select_widget_by_uid(widget2.uid)

@@ -43,7 +43,7 @@ class PgUserTestCase(PostgresqlTestCase):
         self.assertEqual(phone2, user.phone2)
         self.assertEqual(extra, user.extra)
         self.assertEqual(created_at, user.created_at)
-        self.assertIsNone(user.updated_at)
+        self.assertEqual(created_at, user.updated_at)
         self.assertIsNone(user.last_login)
         username2 = await self.db.select_user_username_by_uid(user_uid)
         self.assertEqual(username, username2)

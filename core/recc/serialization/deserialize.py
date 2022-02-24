@@ -34,7 +34,7 @@ from recc.serialization.errors import DeserializeError
 from recc.serialization.numpy import numpy_deserialize
 from recc.inspect.member import get_public_attributes
 from recc.inspect.init_signature import required_init_parameters
-from recc.util.version import version_info
+from recc.util.version import version_tuple
 
 _T = TypeVar("_T")
 _K = TypeVar("_K")
@@ -365,7 +365,7 @@ def deserialize(
 
 
 def deserialize_default(data: Any, cls_or_hint: Any) -> Any:
-    major = version_info[0]
+    major = version_tuple[0]
     origin = get_origin(cls_or_hint)
     if origin is None:
         return deserialize(major, data, cls_or_hint, None)

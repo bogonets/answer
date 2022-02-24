@@ -119,7 +119,8 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
         self.assertIsNone(response3_data0.features)
         self.assertIsNone(response3_data0.extra)
         self.assertIsNotNone(response3_data0.created_at)
-        self.assertIsNone(response3_data0.updated_at)
+        self.assertIsNotNone(response3_data0.updated_at)
+        self.assertEqual(response3_data0.created_at, response3_data0.updated_at)
 
         path = v2_admin_path(u.projects_pgroup_pproject).format(
             group=project1.group_slug, project=project1.project_slug
@@ -175,7 +176,8 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
         self.assertFalse(response2_data0.hidden)
         self.assertFalse(response2_data0.lock)
         self.assertIsNotNone(response2_data0.created_at)
-        self.assertIsNone(response2_data0.updated_at)
+        self.assertIsNotNone(response2_data0.updated_at)
+        self.assertEqual(response2_data0.created_at, response2_data0.updated_at)
         sorted_permissions1 = list(set(permissions1))
         sorted_response2_permissions = list(set(response2_data0.permissions))
         self.assertListEqual(sorted_permissions1, sorted_response2_permissions)
@@ -204,6 +206,7 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
         self.assertFalse(response4_data.lock)
         self.assertIsNotNone(response4_data.created_at)
         self.assertIsNotNone(response4_data.updated_at)
+        self.assertNotEqual(response4_data.created_at, response4_data.updated_at)
         sorted_permissions2 = list(set(permissions2))
         sorted_response4_permissions = list(set(response4_data.permissions))
         self.assertListEqual(sorted_permissions2, sorted_response4_permissions)

@@ -36,8 +36,9 @@ from recc.database.postgresql.query.permission import INSERT_PERMISSION_DEFAULTS
 from recc.database.postgresql.query.role_permission import (
     DEFAULT_INSERT_ROLE_PERMISSIONS,
 )
+from recc.database.postgresql.migration.migration import migration_step
 from recc.variables.database import INFO_KEY_RECC_DB_VERSION
-from recc.util.version import database_version
+from recc.util.version import VersionTuple, version_text
 
 
 def _merge_queries(*args: str) -> str:
@@ -131,7 +132,10 @@ class PgDb(
                 await conn.execute(insert_role_perms)
 
                 await conn.execute(
-                    INSERT_INFO, INFO_KEY_RECC_DB_VERSION, database_version, today()
+                    INSERT_INFO,
+                    INFO_KEY_RECC_DB_VERSION,
+                    version_text,
+                    today(),
                 )
                 logger.info("Database initialization complete")
 
@@ -143,3 +147,7 @@ class PgDb(
         assert isinstance(queries, str)
         await self.execute(queries)
         logger.info("All tables have been successfully dropped")
+
+    @overrides
+    async def migration(self, before: VersionTuple, after: VersionTuple) -> None:
+        await migration_step(self._pool, before, after)
