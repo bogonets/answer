@@ -16,7 +16,7 @@ from recc.database.interfaces.db_role_permission import DbRolePermission
 from recc.database.interfaces.db_task import DbTask
 from recc.database.interfaces.db_user import DbUser
 from recc.database.interfaces.db_widget import DbWidget
-from recc.util.version import VersionTuple
+from recc.util.version import SemanticVersion
 
 
 class DbInterface(
@@ -61,7 +61,7 @@ class DbInterface(
         raise NotImplementedError
 
     @abstractmethod
-    async def migration(self, before: VersionTuple, after: VersionTuple) -> None:
+    async def migration(self, before: SemanticVersion, after: SemanticVersion) -> None:
         raise NotImplementedError
 
 

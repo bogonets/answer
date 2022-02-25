@@ -239,14 +239,13 @@ CREATE TABLE IF NOT EXISTS {TABLE_WIDGET} (
 
 CREATE_TABLE_PORT = f"""
 CREATE TABLE IF NOT EXISTS {TABLE_PORT} (
-    number INTEGER PRIMARY KEY,
+    number INTEGER NOT NULL,
+    sock INTEGER NOT NULL,
+    UNIQUE(number, sock),
 
     ref_uid INTEGER,
     ref_category VARCHAR({PORT_CATEGORY_STR_SIZE}),
     UNIQUE(ref_uid, ref_category),
-
-    description TEXT,
-    extra JSONB,
 
     created_at TIMESTAMPTZ NOT NULL,
     updated_at TIMESTAMPTZ NOT NULL

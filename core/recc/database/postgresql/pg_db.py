@@ -41,7 +41,7 @@ from recc.database.postgresql.query.role_permission import (
 )
 from recc.database.postgresql.migration.migration import migration_step
 from recc.variables.database import INFO_KEY_RECC_DB_VERSION
-from recc.util.version import VersionTuple, version_text
+from recc.util.version import SemanticVersion, version_text
 
 
 def _merge_queries(*args: str) -> str:
@@ -152,5 +152,5 @@ class PgDb(
         logger.info("All tables have been successfully dropped")
 
     @overrides
-    async def migration(self, before: VersionTuple, after: VersionTuple) -> None:
+    async def migration(self, before: SemanticVersion, after: SemanticVersion) -> None:
         await migration_step(self._pool, before, after)

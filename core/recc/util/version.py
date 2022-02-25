@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 # [WARNING] Do not use 3rd-party libraries in this file.
 
-from typing import Tuple, Final
-
-VersionTuple = Tuple[int, int, int]
+from typing import Optional, Final, NamedTuple
 
 
-def parse_semantic_version(ver: str) -> tuple:
+class SemanticVersion(NamedTuple):
+    major: int
+    minor: Optional[int] = None
+    patch: Optional[int] = None
+
+
+def parse_version_numbers(ver: str) -> tuple:
     return tuple([int(d) for d in ver.split("-")[0].split(".")])
 
 
-def parse_version_tuple(ver: str) -> VersionTuple:
-    n = parse_semantic_version(ver)
+def parse_semantic_version(ver: str) -> SemanticVersion:
+    n = parse_version_numbers(ver)
     if len(n) != 3:
         raise ValueError(
             f"The argument `ver` is not in semantic versioning format: '{ver}'"
@@ -34,15 +38,15 @@ def parse_version_tuple(ver: str) -> VersionTuple:
             f"The patch version number must be greater than or equal to 0 (vs {n[2]})"
         )
 
-    return n[0], n[1], n[2]
+    return SemanticVersion(n[0], n[1], n[2])
 
 
 def normalize_version(ver: str) -> str:
     return ver.replace("-", ".")
 
 
-version_text = "2.0.0-dev9"
-version_tuple: Final[VersionTuple] = parse_version_tuple(version_text)
+version_text: Final[str] = "2.0.0-dev9"
+version_tuple: Final[SemanticVersion] = parse_semantic_version(version_text)
 
 assert len(version_tuple) == 3
 assert isinstance(version_tuple[0], int)

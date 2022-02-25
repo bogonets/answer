@@ -2,7 +2,7 @@
 
 import unittest
 from recc.util.version import (
-    parse_semantic_version,
+    parse_version_numbers,
     normalize_version,
     version_text,
     version_tuple,
@@ -15,9 +15,9 @@ class VersionTestCase(unittest.TestCase):
         self.assertLessEqual(2, version_tuple[0])
 
     def test_parse_semantic_version(self):
-        self.assertTupleEqual((1, 2, 3), parse_semantic_version("1.2.3-dev10"))
-        self.assertTupleEqual((0, 0, 0), parse_semantic_version("0.0.0"))
-        self.assertTupleEqual((90, 2, 20), parse_semantic_version("90.02.20"))
+        self.assertTupleEqual((1, 2, 3), parse_version_numbers("1.2.3-dev10"))
+        self.assertTupleEqual((0, 0, 0), parse_version_numbers("0.0.0"))
+        self.assertTupleEqual((90, 2, 20), parse_version_numbers("90.02.20"))
 
     def test_normalize_version(self):
         normalize_version_info = normalize_version(version_text).split(".")

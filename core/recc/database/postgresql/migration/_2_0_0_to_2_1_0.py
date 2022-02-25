@@ -6,7 +6,7 @@ from asyncpg.pool import Pool
 # Do not use the database variables
 # Variable values may change with version upgrades.
 
-_MIGRATION_2_0_0_TO_2_0_1_QUERIES = """
+_MIGRATION_2_0_0_TO_2_1_0_QUERIES = """
 -- Update all `updated_at` column, is `NOT NULL`
 UPDATE recc_daemon  SET updated_at=created_at WHERE updated_at IS NULL;
 UPDATE recc_group   SET updated_at=created_at WHERE updated_at IS NULL;
@@ -36,17 +36,30 @@ UPDATE recc_info SET value='' WHERE value IS NULL;
 ALTER TABLE recc_info ALTER COLUMN value SET NOT NULL;
 ALTER TABLE recc_info ALTER COLUMN value SET DEFAULT '';
 
+-- Alter table: `recc_port`
+ALTER TABLE recc_port DROP COLUMN description;
+ALTER TABLE recc_port DROP COLUMN extra;
+ALTER TABLE recc_port DROP CONSTRAINT recc_port_pkey;  -- remove `PRIMARY KEY`
+ALTER TABLE recc_port ADD COLUMN sock INT4 NOT NULL;
+
+-- Unique constraint `number, sock` in `recc_port` table.
+ALTER TABLE recc_port
+ADD CONSTRAINT recc_port_number_sock_key
+UNIQUE (number, sock);
+
+-- Unique constraint `ref_uid, ref_category` in `recc_port` table.
 ALTER TABLE recc_port
 ADD CONSTRAINT recc_port_ref_uid_ref_category_key
 UNIQUE (ref_uid, ref_category);
 
+-- Update version: `2.0.0` -> `2.1.0`
 UPDATE recc_info
-SET value='2.0.1', updated_at=NOW()
+SET value='2.1.0', updated_at=NOW()
 WHERE key='recc.db.version';
 """
 
 
-async def _2_0_0_to_2_0_1(pool: Pool) -> None:
+async def _2_0_0_to_2_1_0(pool: Pool) -> None:
     async with pool.acquire() as conn:
         async with conn.transaction():
-            await conn.execute(_MIGRATION_2_0_0_TO_2_0_1_QUERIES)
+            await conn.execute(_MIGRATION_2_0_0_TO_2_1_0_QUERIES)

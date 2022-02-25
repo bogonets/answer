@@ -5,7 +5,7 @@ from tempfile import TemporaryDirectory
 from tester.unittest.docker_test_case import DockerTestCase
 from recc.container.struct.container_status import ContainerStatus
 from recc.container.docker.docker_container_manager import DockerContainerManager
-from recc.util.version import version_text, parse_semantic_version
+from recc.util.version import version_text, parse_version_numbers
 
 _WAIT_CONTAINER_TIMEOUT = 10
 
@@ -31,16 +31,16 @@ class DockerContainerManagerTestCase(DockerTestCase):
 
     async def test_version(self):
         docker_version_text = await self.container.version("Version")
-        docker_version = parse_semantic_version(docker_version_text)
+        docker_version = parse_version_numbers(docker_version_text)
         self.assertLessEqual(19, docker_version[0])
 
         api_version_text = await self.container.version("ApiVersion")
-        api_version = parse_semantic_version(api_version_text)
+        api_version = parse_version_numbers(api_version_text)
         self.assertLessEqual(1, api_version[0])
         self.assertLessEqual(40, api_version[1])
 
         min_api_version_text = await self.container.version("MinAPIVersion")
-        min_api_version = parse_semantic_version(min_api_version_text)
+        min_api_version = parse_version_numbers(min_api_version_text)
         self.assertLessEqual(1, min_api_version[0])
         self.assertLessEqual(12, min_api_version[1])
 

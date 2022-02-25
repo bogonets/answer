@@ -35,7 +35,7 @@ from recc.init.default import (
     init_yaml_driver,
     init_loop_driver,
 )
-from recc.util.version import version_text, version_tuple, parse_version_tuple
+from recc.util.version import version_text, version_tuple, parse_semantic_version
 from recc.variables.crypto import SIGNATURE_SIZE
 from recc.variables.logging import VERBOSE_LOGGING_LEVEL_1
 from recc.variables.database import (
@@ -288,7 +288,7 @@ class Context(
             db_version = None
 
         if db_version:
-            db_version_tuple = parse_version_tuple(db_version)
+            db_version_tuple = parse_semantic_version(db_version)
             if db_version_tuple > version_tuple:
                 prefix = "You cannot migrate to a smaller version"
                 suffix = f"db({db_version_tuple}) vs current({version_tuple})"
