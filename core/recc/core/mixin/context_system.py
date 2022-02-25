@@ -2,7 +2,7 @@
 
 from typing import Optional, List
 from recc.core.mixin.context_base import ContextBase
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.packet.environment import EnvironmentA
 from recc.packet.system import SystemOverviewA
 from recc.system.environ import get_os_envs_dict
@@ -20,7 +20,7 @@ class ContextSystem(ContextBase):
         return result
 
     async def get_system_overview(self) -> SystemOverviewA:
-        time = today()
+        time = tznow()
         users = await self.database.select_users_count()
         groups = await self.database.select_groups_count()
         projects = await self.database.select_projects_count()

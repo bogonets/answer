@@ -3,7 +3,7 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.database.struct.layout import Layout
 from recc.database.interfaces.db_layout import DbLayout
 from recc.database.postgresql.mixin._pg_base import PgBase
@@ -31,7 +31,7 @@ class PgLayout(DbLayout, PgBase):
         extra: Optional[Any] = None,
         created_at: Optional[datetime] = None,
     ) -> int:
-        created = created_at if created_at else today()
+        created = created_at if created_at else tznow()
         return await self.column(
             int, INSERT_LAYOUT, project_uid, name, description, extra, created
         )
@@ -43,7 +43,7 @@ class PgLayout(DbLayout, PgBase):
         description: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(UPDATE_LAYOUT_DESCRIPTION_BY_UID, uid, description, updated)
 
     @overrides
@@ -54,7 +54,7 @@ class PgLayout(DbLayout, PgBase):
         description: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(
             UPDATE_LAYOUT_DESCRIPTION_BY_PROJECT_UID_AND_NAME,
             project_uid,
@@ -70,7 +70,7 @@ class PgLayout(DbLayout, PgBase):
         extra: Any,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(UPDATE_LAYOUT_EXTRA_BY_UID, uid, extra, updated)
 
     @overrides
@@ -81,7 +81,7 @@ class PgLayout(DbLayout, PgBase):
         extra: Any,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(
             UPDATE_LAYOUT_EXTRA_BY_PROJECT_UID_AND_NAME,
             project_uid,

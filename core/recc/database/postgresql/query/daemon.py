@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from typing import Any, Optional
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.variables.database import TABLE_DAEMON
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
@@ -81,7 +81,7 @@ def get_update_daemon_query_by_uid(
     enable: Optional[bool] = None,
     updated_at: Optional[datetime] = None,
 ) -> BuildResult:
-    updated = updated_at if updated_at else today()
+    updated = updated_at if updated_at else tznow()
     builder = UpdateBuilder(
         if_none_skip=True,
         plugin=plugin,

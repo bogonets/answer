@@ -3,7 +3,7 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.database.struct.role import Role
 from recc.database.interfaces.db_role import DbRole
 from recc.database.postgresql.mixin._pg_base import PgBase
@@ -33,7 +33,7 @@ class PgRole(DbRole, PgBase):
         lock=False,
         created_at: Optional[datetime] = None,
     ) -> int:
-        created = created_at if created_at else today()
+        created = created_at if created_at else tznow()
         return await self.column(
             int,
             INSERT_ROLE,

@@ -4,7 +4,7 @@ from os import urandom
 from typing import Optional, List, Tuple, Any
 from datetime import timedelta
 from recc.chrono.duration import duration_to_timedelta
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.crypto.password import encrypt_password
 from recc.session.session import Session
 from recc.database.struct.user import PassInfo, User
@@ -124,7 +124,7 @@ class ContextUser(ContextBase):
         await self.database.update_user_last_login_by_uid(user_uid)
         return self.session_factory.create_tokens(
             username,
-            issued_at=today(),
+            issued_at=tznow(),
             access_max_age=self.access_max_age,
             refresh_max_age=self.refresh_max_age,
         )

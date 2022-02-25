@@ -3,5 +3,5 @@
 from datetime import datetime
 
 
-def today() -> datetime:
+def tznow() -> datetime:
     return datetime.now().astimezone()

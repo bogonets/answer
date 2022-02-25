@@ -3,7 +3,7 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 from recc.database.struct.group import Group
 from recc.database.interfaces.db_group import DbGroup
@@ -33,7 +33,7 @@ class PgGroup(DbGroup, PgBase):
         extra: Optional[Any] = None,
         created_at: Optional[datetime] = None,
     ) -> int:
-        created = created_at if created_at else today()
+        created = created_at if created_at else tznow()
         return await self.column(
             int,
             INSERT_GROUP,
@@ -58,7 +58,7 @@ class PgGroup(DbGroup, PgBase):
         extra: Optional[Any] = None,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         query, args = get_update_group_query_by_uid(
             uid=uid,
             slug=slug,

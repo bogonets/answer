@@ -4,7 +4,7 @@ from typing import Optional, List
 from datetime import datetime
 from overrides import overrides
 from asyncpg.exceptions import UniqueViolationError
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.database.struct.info import Info
 from recc.database.interfaces.db_info import DbInfo
 from recc.database.postgresql.mixin._pg_base import PgBase
@@ -30,7 +30,7 @@ class PgInfo(DbInfo, PgBase):
         created_at: Optional[datetime] = None,
     ) -> None:
         try:
-            created = created_at if created_at else today()
+            created = created_at if created_at else tznow()
             await self.execute(INSERT_INFO, key, value, created)
         except UniqueViolationError:
             raise KeyError(f"The `{key}` key already exists")
@@ -42,7 +42,7 @@ class PgInfo(DbInfo, PgBase):
         value: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(UPDATE_INFO_VALUE_BY_KEY, key, value, updated)
 
     @overrides
@@ -52,7 +52,7 @@ class PgInfo(DbInfo, PgBase):
         value: str,
         created_or_updated_at: Optional[datetime] = None,
     ) -> None:
-        created_or_updated = created_or_updated_at if created_or_updated_at else today()
+        created_or_updated = created_or_updated_at if created_or_updated_at else tznow()
         await self.execute(UPSERT_INFO, key, value, created_or_updated)
 
     @overrides

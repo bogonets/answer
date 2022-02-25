@@ -3,7 +3,7 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.database.struct.user import User, PassInfo
 from recc.database.interfaces.db_user import DbUser
 from recc.database.postgresql.mixin._pg_base import PgBase
@@ -49,7 +49,7 @@ class PgUser(DbUser, PgBase):
         extra: Optional[Any] = None,
         created_at: Optional[datetime] = None,
     ) -> int:
-        created = created_at if created_at else today()
+        created = created_at if created_at else tznow()
         return await self.column(
             int,
             INSERT_USER,
@@ -71,7 +71,7 @@ class PgUser(DbUser, PgBase):
         uid: int,
         last_login: Optional[datetime] = None,
     ) -> None:
-        login = last_login if last_login else today()
+        login = last_login if last_login else tznow()
         await self.execute(UPDATE_USER_LAST_LOGIN_BY_UID, uid, login)
 
     @overrides
@@ -82,7 +82,7 @@ class PgUser(DbUser, PgBase):
         salt: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(
             UPDATE_USER_PASSWORD_AND_SALT_BY_UID,
             uid,
@@ -98,7 +98,7 @@ class PgUser(DbUser, PgBase):
         extra: Any,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(UPDATE_USER_EXTRA_BY_UID, uid, extra, updated)
 
     @overrides
@@ -114,7 +114,7 @@ class PgUser(DbUser, PgBase):
         extra: Optional[Any] = None,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         query, args = get_update_user_query_by_uid(
             uid=uid,
             username=username,

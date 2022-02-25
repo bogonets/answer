@@ -4,7 +4,7 @@ import grpc
 from typing import Optional
 from uuid import uuid4
 from grpc.aio._channel import Channel  # noqa
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.logging.logging import recc_daemon_logger as logger
 from recc.serialization.byte_coding import ByteCodingType
 from recc.daemon.daemon_answer import DaemonAnswer
@@ -184,10 +184,10 @@ class DaemonClient:
                 smq=smq,
             )
 
-            packer_begin = today()
+            packer_begin = tznow()
             with packer as contents:
                 if self.verbose:
-                    packer_seconds = (today() - packer_begin).total_seconds()
+                    packer_seconds = (tznow() - packer_begin).total_seconds()
                     packer_elapsed = round(packer_seconds, 3)
                     logger.debug(f"Packer[sm={use_sm}]: {packer_elapsed}s")
 
@@ -201,15 +201,15 @@ class DaemonClient:
                     sm_names=sms.keys(),
                 )
 
-                handshake_begin = today()
+                handshake_begin = tznow()
                 response = await self._stub.Packet(packet, **self._options)
                 if self.verbose:
-                    handshake_seconds = (today() - handshake_begin).total_seconds()
+                    handshake_seconds = (tznow() - handshake_begin).total_seconds()
                     handshake_elapsed = round(handshake_seconds, 3)
                     logger.debug(f"Handshake[sm={use_sm}]: {handshake_elapsed}s")
 
             assert isinstance(response, PacketA)
-            unpacker_begin = today()
+            unpacker_begin = tznow()
             result = content_unpack(
                 coding=coding,
                 encoding=encoding,
@@ -218,7 +218,7 @@ class DaemonClient:
                 sms=sms,
             )
             if self.verbose:
-                unpacker_seconds = (today() - unpacker_begin).total_seconds()
+                unpacker_seconds = (tznow() - unpacker_begin).total_seconds()
                 unpacker_elapsed = round(unpacker_seconds, 3)
                 logger.debug(f"Unpacker[sm={use_sm}]: {unpacker_elapsed}s")
 

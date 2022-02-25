@@ -3,7 +3,7 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 from recc.database.struct.project import Project
 from recc.database.interfaces.db_project import DbProject
@@ -35,7 +35,7 @@ class PgProject(DbProject, PgBase):
         extra: Optional[Any] = None,
         created_at: Optional[datetime] = None,
     ) -> int:
-        created = created_at if created_at else today()
+        created = created_at if created_at else tznow()
         return await self.column(
             int,
             INSERT_PROJECT,
@@ -61,7 +61,7 @@ class PgProject(DbProject, PgBase):
         extra: Optional[Any] = None,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         query, args = get_update_project_query_by_uid(
             uid=uid,
             slug=slug,

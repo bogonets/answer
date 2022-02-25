@@ -3,7 +3,7 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.database.struct.widget import Widget
 from recc.database.interfaces.db_widget import DbWidget
 from recc.database.postgresql.mixin._pg_base import PgBase
@@ -31,7 +31,7 @@ class PgWidget(DbWidget, PgBase):
         extra: Optional[Any] = None,
         created_at: Optional[datetime] = None,
     ) -> int:
-        created = created_at if created_at else today()
+        created = created_at if created_at else tznow()
         return await self.column(
             int,
             INSERT_WIDGET,
@@ -49,7 +49,7 @@ class PgWidget(DbWidget, PgBase):
         description: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(UPDATE_WIDGET_DESCRIPTION_BY_UID, uid, description, updated)
 
     @overrides
@@ -60,7 +60,7 @@ class PgWidget(DbWidget, PgBase):
         description: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(
             UPDATE_WIDGET_DESCRIPTION_BY_LAYOUT_UID_AND_NAME,
             layout_uid,
@@ -76,7 +76,7 @@ class PgWidget(DbWidget, PgBase):
         extra: Any,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(UPDATE_WIDGET_EXTRA_BY_UID, uid, extra, updated)
 
     @overrides
@@ -87,7 +87,7 @@ class PgWidget(DbWidget, PgBase):
         extra: Any,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(
             UPDATE_WIDGET_EXTRA_BY_LAYOUT_UID_AND_NAME,
             layout_uid,

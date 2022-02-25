@@ -18,7 +18,7 @@ from aiohttp.web_exceptions import (
 )
 
 from recc.core.context import Context
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.inspect.type_origin import get_type_origin
 from recc.session.session import Session
 from recc.session.session_ex import SessionEx
@@ -372,7 +372,7 @@ async def parameter_matcher_main(
     bound_instance: Any,
     request: Request,
 ) -> Response:
-    now = today()
+    now = tznow()
 
     # Forwarded
     # X-Forwarded-For
@@ -408,7 +408,7 @@ async def parameter_matcher_main(
 
     status = result.status
     reason = result.reason
-    duration = (today() - now).total_seconds()
+    duration = (tznow() - now).total_seconds()
     response_info = f"{status} {reason} ({duration:.3f}s)"
     logger.info(f"{request_info} -> {response_info}")
 

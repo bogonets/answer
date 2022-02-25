@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from typing import Optional
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.variables.database import TABLE_PORT
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
@@ -43,7 +43,7 @@ def get_update_port_query_by_number(
     ref_category: Optional[str] = None,
     updated_at: Optional[datetime] = None,
 ) -> BuildResult:
-    updated = updated_at if updated_at else today()
+    updated = updated_at if updated_at else tznow()
     builder = UpdateBuilder(
         if_none_skip=True,
         ref_uid=ref_uid,

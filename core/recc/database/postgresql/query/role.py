@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from typing import Any, Optional
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.variables.database import (
     TABLE_ROLE,
     TABLE_GROUP_MEMBER,
@@ -120,7 +120,7 @@ def _insert_role_simply(
     lock=False,
     created_at: Optional[datetime] = None,
 ) -> str:
-    created = created_at if created_at else today()
+    created = created_at if created_at else tznow()
     return _INSERT_ROLE_SIMPLY_FORMAT.format(
         slug=slug,
         name=name if name else slug,
@@ -149,7 +149,7 @@ def get_update_role_query_by_uid(
     lock: Optional[bool] = None,
     updated_at: Optional[datetime] = None,
 ) -> BuildResult:
-    updated = updated_at if updated_at else today()
+    updated = updated_at if updated_at else tznow()
     builder = UpdateBuilder(
         if_none_skip=True,
         slug=slug,

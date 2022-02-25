@@ -139,6 +139,7 @@ taskname
 testdb
 timestamptz
 tzdata
+tznow
 uids
 uint
 ulong

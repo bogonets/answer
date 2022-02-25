@@ -3,7 +3,7 @@
 from typing import Optional, List
 from datetime import datetime
 from overrides import overrides
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.database.struct.port import Port, SockType
 from recc.database.interfaces.db_port import DbPort
 from recc.database.postgresql.mixin._pg_base import PgBase
@@ -26,7 +26,7 @@ class PgPort(DbPort, PgBase):
         ref_category: Optional[str] = None,
         created_at: Optional[datetime] = None,
     ) -> None:
-        created = created_at if created_at else today()
+        created = created_at if created_at else tznow()
         await self.execute(
             INSERT_PORT,
             number,
@@ -45,7 +45,7 @@ class PgPort(DbPort, PgBase):
         ref_category: Optional[str] = None,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         query, args = get_update_port_query_by_number(
             number=number,
             sock=sock.value,

@@ -3,7 +3,7 @@
 from typing import Optional, Any, List
 from datetime import datetime
 from overrides import overrides
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.database.struct.daemon import Daemon
 from recc.database.interfaces.db_daemon import DbDaemon
 from recc.database.postgresql.mixin._pg_base import PgBase
@@ -35,7 +35,7 @@ class PgDaemon(DbDaemon, PgBase):
         enable=False,
         created_at: Optional[datetime] = None,
     ) -> int:
-        created = created_at if created_at else today()
+        created = created_at if created_at else tznow()
         return await self.column(
             int,
             INSERT_DAEMON,
@@ -57,7 +57,7 @@ class PgDaemon(DbDaemon, PgBase):
         requirements_sha256: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(
             UPDATE_DAEMON_REQUIREMENTS_SHA256_BY_UID,
             uid,

@@ -4,7 +4,7 @@ from typing import Optional
 from functools import reduce
 from overrides import overrides
 from datetime import datetime
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.logging.logging import recc_database_logger as logger
 from recc.database.interfaces.db_interface import DbInterface
 from recc.database.postgresql.mixin._pg_base import PgBase  # noqa
@@ -138,7 +138,7 @@ class PgDb(
                     INSERT_INFO,
                     INFO_KEY_RECC_DB_VERSION,
                     version_text,
-                    today(),
+                    tznow(),
                 )
                 logger.info("Database initialization complete")
 

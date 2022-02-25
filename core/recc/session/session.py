@@ -5,7 +5,7 @@ from jwt import encode as jwt_encode
 from jwt import decode as jwt_decode
 from typing import Optional, Tuple
 from datetime import datetime, timedelta
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 
 VERIFY_AUDIENCE_OPTION_KEY = "verify_aud"
 VERIFY_ISSUED_AT_OPTION_KEY = "verify_iat"
@@ -111,7 +111,7 @@ class SessionFactory:
         issued_at: Optional[datetime] = None,
         max_age: Optional[timedelta] = None,
     ) -> Session:
-        issued = issued_at if issued_at else today()
+        issued = issued_at if issued_at else tznow()
         delta = max_age if max_age else timedelta(seconds=self.max_age_seconds)
         return Session(
             issuer=self.issuer,
@@ -176,7 +176,7 @@ class SessionPairFactory:
         access_max_age: Optional[timedelta] = None,
         refresh_max_age: Optional[timedelta] = None,
     ) -> Tuple[Session, Session]:
-        issued = issued_at if issued_at else today()
+        issued = issued_at if issued_at else tznow()
         return (
             self.access.create_session(username, issued, access_max_age),
             self.refresh.create_session(username, issued, refresh_max_age),
@@ -195,7 +195,7 @@ class SessionPairFactory:
         access_max_age: Optional[timedelta] = None,
         refresh_max_age: Optional[timedelta] = None,
     ) -> Tuple[str, str]:
-        issued = issued_at if issued_at else today()
+        issued = issued_at if issued_at else tznow()
         access_session, refresh_session = self.create_sessions(
             username, issued, access_max_age, refresh_max_age
         )

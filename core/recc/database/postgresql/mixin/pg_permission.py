@@ -3,7 +3,7 @@
 from typing import Optional, List
 from datetime import datetime
 from overrides import overrides
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.database.struct.permission import Permission
 from recc.database.interfaces.db_permission import DbPermission
 from recc.database.postgresql.mixin._pg_base import PgBase
@@ -28,7 +28,7 @@ class PgPermission(DbPermission, PgBase):
         slug: str,
         created_at: Optional[datetime] = None,
     ) -> int:
-        created = created_at if created_at else today()
+        created = created_at if created_at else tznow()
         return await self.column(int, INSERT_PERMISSION, slug, created)
 
     @overrides

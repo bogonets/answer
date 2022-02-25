@@ -3,7 +3,7 @@
 from typing import Optional, Any, List, Dict
 from datetime import datetime
 from overrides import overrides
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.database.struct.task import Task
 from recc.database.interfaces.db_task import DbTask
 from recc.database.postgresql.mixin._pg_base import PgBase
@@ -46,7 +46,7 @@ class PgTask(DbTask, PgBase):
         publish_ports: Optional[Dict[str, Any]] = None,
         created_at: Optional[datetime] = None,
     ) -> int:
-        created = created_at if created_at else today()
+        created = created_at if created_at else tznow()
         return await self.column(
             int,
             INSERT_TASK,
@@ -73,7 +73,7 @@ class PgTask(DbTask, PgBase):
         description: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(UPDATE_TASK_DESCRIPTION_BY_UID, uid, description, updated)
 
     @overrides
@@ -84,7 +84,7 @@ class PgTask(DbTask, PgBase):
         description: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(
             UPDATE_TASK_DESCRIPTION_BY_PROJECT_UID_AND_SLUG,
             project_uid,
@@ -100,7 +100,7 @@ class PgTask(DbTask, PgBase):
         extra: Any,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(UPDATE_TASK_EXTRA_BY_UID, uid, extra, updated)
 
     @overrides
@@ -111,7 +111,7 @@ class PgTask(DbTask, PgBase):
         extra: Any,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(
             UPDATE_TASK_EXTRA_BY_PROJECT_UID_AND_SLUG,
             project_uid,
@@ -129,7 +129,7 @@ class PgTask(DbTask, PgBase):
         public_key: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(
             UPDATE_TASK_KEYS_BY_UID,
             uid,
@@ -149,7 +149,7 @@ class PgTask(DbTask, PgBase):
         public_key: str,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         await self.execute(
             UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_SLUG,
             project_uid,
@@ -178,7 +178,7 @@ class PgTask(DbTask, PgBase):
         publish_ports: Optional[Dict[str, Any]] = None,
         updated_at: Optional[datetime] = None,
     ) -> None:
-        updated = updated_at if updated_at else today()
+        updated = updated_at if updated_at else tznow()
         query, args = get_update_task_query_by_uid(
             uid=uid,
             slug=slug,

@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from typing import Any, Dict, Optional
-from recc.chrono.datetime import today
+from recc.chrono.datetime import tznow
 from recc.variables.database import TABLE_GROUP, TABLE_PROJECT, TABLE_TASK
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
@@ -145,7 +145,7 @@ def get_update_task_query_by_uid(
     publish_ports: Optional[Dict[str, Any]] = None,
     updated_at: Optional[datetime] = None,
 ) -> BuildResult:
-    updated = updated_at if updated_at else today()
+    updated = updated_at if updated_at else tznow()
     builder = UpdateBuilder(
         if_none_skip=True,
         slug=slug,
