@@ -23,14 +23,14 @@ V2_0_0_TABLE_DAEMON = "recc_daemon"
 V2_0_0_TABLE_GROUP_MEMBER = "recc_group_member"
 V2_0_0_TABLE_PROJECT_MEMBER = "recc_project_member"
 
-_UPDATE_UPDATED_AT_IS_NOT_NULL = f"""
-UPDATE {{table}}
+_UPDATE_UPDATED_AT_IS_NOT_NULL = """
+UPDATE {table}
 SET updated_at=created_at
 WHERE updated_at IS NULL;
 """
 
-_ALTER_COLUMN_UPDATED_AT_NOT_NULL_FORMAT = f"""
-ALTER TABLE {{table}}
+_ALTER_COLUMN_UPDATED_AT_NOT_NULL_FORMAT = """
+ALTER TABLE {table}
 ALTER COLUMN updated_at SET NOT NULL;
 """
 

@@ -22,10 +22,13 @@ from recc.database.postgresql.mixin.pg_role_permission import PgRolePermission
 from recc.database.postgresql.mixin.pg_task import PgTask
 from recc.database.postgresql.mixin.pg_user import PgUser
 from recc.database.postgresql.mixin.pg_widget import PgWidget
-from recc.database.postgresql.query.tables import CREATE_TABLES, DROP_TABLES
-from recc.database.postgresql.query.indices import CREATE_INDICES, DROP_INDICES
-from recc.database.postgresql.query.views import CREATE_VIEWS, DROP_VIEWS
-from recc.database.postgresql.query.functions import CREATE_FUNCTIONS, DROP_FUNCTIONS
+from recc.database.postgresql.query.create.tables import CREATE_TABLES, DROP_TABLES
+from recc.database.postgresql.query.create.indices import CREATE_INDICES, DROP_INDICES
+from recc.database.postgresql.query.create.views import CREATE_VIEWS, DROP_VIEWS
+from recc.database.postgresql.query.create.functions import (
+    CREATE_FUNCTIONS,
+    DROP_FUNCTIONS,
+)
 from recc.database.postgresql.query.info import (
     INSERT_INFO,
     EXISTS_INFO_BY_KEY,
