@@ -8,7 +8,6 @@ from recc.container.interfaces.container_interface import ContainerInterface
 from recc.cache.cache import Cache
 from recc.database.interfaces.db_interface import DbInterface
 from recc.task.task_connection_pool import TaskConnectionPool
-from recc.resource.port_manager import PortManager
 from recc.plugin.plugin_manager import PluginManager
 from recc.daemon.daemon_manager import DaemonManager
 
@@ -25,7 +24,6 @@ class ContextBase:
     _cache: Cache
     _database: DbInterface
     _tasks: TaskConnectionPool
-    _ports: PortManager
     _plugins: PluginManager
     _daemons: DaemonManager
 
@@ -127,14 +125,6 @@ class ContextBase:
         """
         assert self._tasks is not None
         return self._tasks
-
-    @property
-    def ports(self):
-        """
-        Port Manager.
-        """
-        assert self._ports is not None
-        return self._ports
 
     @property
     def plugins(self):

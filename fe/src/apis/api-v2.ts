@@ -98,7 +98,8 @@ import {
 import type {EnvironmentA} from '@/packet/environment';
 import type {PreferenceA} from '@/packet/preference';
 import {createEmptyPreference} from '@/packet/preference';
-import {VmsRecordRangeA} from '@/packet/vms/record_range';
+import type {VmsRecordRangeA} from '@/packet/vms/record_range';
+import type {PortA, PortRangeA} from '@/packet/port';
 
 const DEFAULT_TIMEOUT_MILLISECONDS = 30 * 1000;
 const STATUS_CODE_ACCESS_TOKEN_ERROR = 461
@@ -796,6 +797,18 @@ export default class ApiV2 {
 
     postAdminDaemonsPdaemonStop(daemon: string) {
         return this.post(`/admin/daemons/${daemon}/stop`);
+    }
+
+    // -----------
+    // Admin/Ports
+    // -----------
+
+    getAdminPorts() {
+        return this.get<Array<PortA>>('/admin/ports');
+    }
+
+    getAdminPortsRange() {
+        return this.get<PortRangeA>('/admin/ports?op=range');
     }
 
     // -----------

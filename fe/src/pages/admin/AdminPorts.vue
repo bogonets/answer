@@ -3,17 +3,49 @@ en:
   labels:
     search: "You can filter by port name."
     add: "Add Port"
+    range: "Port range"
 
 ko:
   labels:
     search: "포트 이름을 필터링할 수 있습니다."
     add: "포트 추가"
+    range: "포트 범위"
 </i18n>
 
 <template>
   <v-container>
     <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
+
+    <v-row class="mt-2">
+      <v-col>
+        <div class="d-inline-flex flex-row align-center">
+          <label-span size="subtitle-1" color="secondary">
+            {{ $t('labels.range') }}
+          </label-span>
+          <v-text-field
+              class="pl-2"
+              disabled
+              dense
+              rounded
+              outlined
+              readonly
+              hide-details
+              v-model="portMinText"
+          ></v-text-field>
+          <span class="mx-2">~</span>
+          <v-text-field
+              disabled
+              dense
+              rounded
+              outlined
+              readonly
+              hide-details
+              v-model="portMaxText"
+          ></v-text-field>
+        </div>
+      </v-col>
+    </v-row>
 
 <!--    <v-data-table-->
 <!--        :value="selected"-->
@@ -114,12 +146,14 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
+import LabelSpan from '@/components/LabelSpan.vue';
 // import type {DaemonA} from '@/packet/daemon';
 // import {getStatusColor} from '@/packet/daemon';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
+    LabelSpan,
   }
 })
 export default class AdminPorts extends VueBase {
@@ -172,8 +206,13 @@ export default class AdminPorts extends VueBase {
   //     value: 'actions',
   //   },
   // ];
-  //
-  // loading = false;
+
+  loading = false;
+  portMin?: number;
+  portMax?: number;
+  portMinText = '';
+  portMaxText = '';
+
   // items = [] as Array<PortA>;
   // selected = [] as Array<PortA>;
   // filter = '';
@@ -181,23 +220,32 @@ export default class AdminPorts extends VueBase {
   // disabledStart = true;
   // disabledStop = true;
 
-  // created() {
-  //   this.updateItems();
-  // }
-  //
-  // updateItems() {
-  //   this.loading = true;
-  //   this.$api2.getAdminDaemons()
-  //       .then(items => {
-  //         this.loading = false;
-  //         this.items = items;
-  //       })
-  //       .catch(error => {
-  //         this.loading = false;
-  //         this.toastRequestFailure(error);
-  //       });
-  // }
-  //
+  created() {
+    this.loading = true;
+    (async () => {
+      await this.setup();
+    })();
+  }
+
+  async setup() {
+    try {
+      const range = await this.$api2.getAdminPortsRange();
+      this.portMin = range.min;
+      this.portMax = range.max;
+      this.portMinText = range.min.toString();
+      this.portMaxText = range.max.toString();
+      console.debug("range: ", this.portMin, this.portMax);
+    } catch (error) {
+      this.portMin = undefined;
+      this.portMax = undefined;
+      this.portMinText = '';
+      this.portMaxText = '';
+      this.toastRequestFailure(error);
+    } finally {
+      this.loading = false;
+    }
+  }
+
   // serverStatusColor(item: DaemonA) {
   //   return getStatusColor(item.status)
   // }

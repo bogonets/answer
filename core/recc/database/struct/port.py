@@ -8,6 +8,7 @@ from socket import SOCK_STREAM, SOCK_DGRAM, SOCK_RAW
 
 
 class SockType(Enum):
+    Unknown = 0
     Stream = 1  # TCP
     Dgram = 2  # UDP
     Raw = 3  # RAW
@@ -18,7 +19,7 @@ assert SockType.Dgram.value == SOCK_DGRAM
 assert SockType.Raw.value == SOCK_RAW
 
 
-@dataclass
+@dataclass(init=False)
 class Port:
 
     number: int

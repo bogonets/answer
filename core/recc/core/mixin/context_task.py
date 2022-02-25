@@ -200,7 +200,8 @@ class ContextTask(ContextBase):
             if rpc_guest_port in ports:
                 raise RuntimeError("`publish_ports` must not contain RPC ports")
 
-            expose_port = self.ports.alloc()
+            # expose_port = self.ports.alloc()  # TODO: Alternative code required
+            expose_port = 0
             ports[rpc_guest_port] = expose_port
 
         try:
@@ -223,7 +224,8 @@ class ContextTask(ContextBase):
             logger.exception(e)
 
             if expose_port is not None:
-                self.ports.free(expose_port)
+                # self.ports.free(expose_port)  # TODO: Alternative code required
+                pass
             raise
 
         try:
@@ -274,7 +276,8 @@ class ContextTask(ContextBase):
             logger.exception(e)
 
             if expose_port is not None:
-                self.ports.free(expose_port)
+                # self.ports.free(expose_port)  # TODO: Alternative code required
+                pass
 
             logs = await self.container.logs_container(container.key)
             assert isinstance(logs, bytes)

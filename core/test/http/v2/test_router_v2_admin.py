@@ -8,11 +8,13 @@ from tester.http.http_app_tester import HttpAppTester
 from recc.http.http_utils import v2_admin_path
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
+from recc.http.http_query_keys import query_builder, v_op_range
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.role import RoleA, CreateRoleQ, UpdateRoleQ
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.system import SystemOverviewA
+from recc.packet.port import PortA, PortRangeA
 from recc.logging.logging import get_root_level
 from recc.variables.database import (
     PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
@@ -299,6 +301,23 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
         self.assertIsInstance(response2.data, ConfigA)
         self.assertEqual(change_log_level, response2.data.value)
         self.assertEqual(expected_log_level, get_root_level())
+
+    async def test_ports(self):
+        path = v2_admin_path(u.ports)
+        response1 = await self.tester.get(path, cls=List[PortA])
+        self.assertEqual(200, response1.status)
+        self.assertIsInstance(response1.data, list)
+
+    async def test_ports_range(self):
+        path = v2_admin_path(u.ports) + query_builder(op=v_op_range)
+        response1 = await self.tester.get(path, cls=PortRangeA)
+        self.assertEqual(200, response1.status)
+        self.assertIsInstance(response1.data, PortRangeA)
+
+        port_min = self.tester.context.config.manage_port_min
+        port_max = self.tester.context.config.manage_port_max
+        self.assertEqual(port_min, response1.data.min)
+        self.assertEqual(port_max, response1.data.max)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Union
+from typing import List, Union, Optional
 from signal import SIGKILL
 from aiohttp import web
 from aiohttp.web_routedef import AbstractRouteDef
@@ -9,12 +9,14 @@ from aiohttp.web_exceptions import HTTPBadRequest
 from recc.core.context import Context
 from recc.session.session_ex import SessionEx
 from recc.http import http_urls as u
+from recc.http import http_query_keys as q
 from recc.http.http_parameter import parameter_matcher
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.container import ContainerOperator, ContainerA, ControlContainersQ
 from recc.packet.daemon import DaemonA, CreateDaemonQ, UpdateDaemonQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.role import RoleA, CreateRoleQ, UpdateRoleQ
+from recc.packet.port import PortRangeA, PortA
 from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
 from recc.packet.plugin import PluginNameA
 from recc.packet.system import SystemOverviewA
@@ -109,6 +111,9 @@ class RouterV2Admin:
             web.delete(u.daemons_pdaemon, self.delete_daemons_pdaemon),
             web.post(u.daemons_pdaemon_start, self.post_daemons_pdaemon_start),
             web.post(u.daemons_pdaemon_stop, self.post_daemons_pdaemon_stop),
+
+            # ports
+            web.get(u.ports, self.get_ports),
         ]
         # fmt: on
 
@@ -530,3 +535,16 @@ class RouterV2Admin:
     @parameter_matcher
     async def post_daemons_pdaemon_stop(self, daemon: str) -> None:
         await self.context.stop_daemon(daemon)
+
+    @parameter_matcher
+    async def get_ports(self, op: Optional[str]) -> Union[List[PortA], PortRangeA]:
+        if not op:
+            return await self.context.get_ports()
+
+        if op == q.v_op_range:
+            return PortRangeA(
+                self.context.config.manage_port_min,
+                self.context.config.manage_port_max,
+            )
+
+        raise ValueError(f"Unknown query: op={op}")

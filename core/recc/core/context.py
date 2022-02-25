@@ -16,7 +16,6 @@ from recc.cache.cache import Cache
 from recc.database.database import create_database
 from recc.storage.local_storage import LocalStorage
 from recc.task.task_connection_pool import create_task_connection_pool
-from recc.resource.port_manager import PortManager
 from recc.plugin.plugin_manager import PluginManager
 from recc.daemon.daemon_manager import DaemonManager
 from recc.session.session import (
@@ -104,7 +103,6 @@ class Context(
         self._init_cache_store()
         self._init_database()
         self._init_task_manager()
-        self._init_port_manager()
         self._init_plugin_manager()
         self._init_daemons()
 
@@ -120,7 +118,6 @@ class Context(
         assert self._cache is not None
         assert self._database is not None
         assert self._tasks is not None
-        assert self._ports is not None
         assert self._plugins is not None
 
     def _init_logger(self) -> None:
@@ -232,12 +229,6 @@ class Context(
     def _init_task_manager(self) -> None:
         self._tasks = create_task_connection_pool()
         logger.info("Created task-manager.")
-
-    def _init_port_manager(self) -> None:
-        min_port = self._config.manage_port_min
-        max_port = self._config.manage_port_max
-        self._ports = PortManager(min_port, max_port)
-        logger.info("Created port-manager.")
 
     def _init_plugin_manager(self) -> None:
         assert self._local_storage
@@ -369,17 +360,7 @@ class Context(
         logger.info("The context has been opened")
 
     async def _after_open(self) -> None:
-        assert len(self.ports.alloc_ports) == 0
-        await self.update_ports_from_database()
-        database_ports = len(self.ports.alloc_ports)
-        logger.info(f"Number of ports allocated from database: {database_ports}")
-
-        await self.update_ports_from_container()
-        container_ports = len(self.ports.alloc_ports) - database_ports
-        logger.info(f"Number of ports allocated from container: {container_ports}")
-
-        if self.config.developer:
-            logger.debug(f"Allocated ports: {list(self.ports.alloc_ports)}")
+        pass
 
     async def _before_close(self) -> None:
         await self._daemons.close()
