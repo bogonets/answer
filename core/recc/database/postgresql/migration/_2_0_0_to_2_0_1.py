@@ -23,84 +23,41 @@ V2_0_0_TABLE_DAEMON = "recc_daemon"
 V2_0_0_TABLE_GROUP_MEMBER = "recc_group_member"
 V2_0_0_TABLE_PROJECT_MEMBER = "recc_project_member"
 
-_MIGRATION_DAEMON_UPDATED_AT = f"""
-UPDATE {V2_0_0_TABLE_DAEMON}
+_UPDATE_UPDATED_AT_IS_NOT_NULL = f"""
+UPDATE {{table}}
 SET updated_at=created_at
 WHERE updated_at IS NULL;
 """
 
-_MIGRATION_GROUP_UPDATED_AT = f"""
-UPDATE {V2_0_0_TABLE_GROUP}
-SET updated_at=created_at
-WHERE updated_at IS NULL;
+_ALTER_COLUMN_UPDATED_AT_NOT_NULL_FORMAT = f"""
+ALTER TABLE {{table}}
+ALTER COLUMN updated_at SET NOT NULL;
 """
 
-_MIGRATION_INFO_UPDATED_AT = f"""
-UPDATE {V2_0_0_TABLE_INFO}
-SET updated_at=created_at
-WHERE updated_at IS NULL;
-"""
-
-_MIGRATION_LAYOUT_UPDATED_AT = f"""
-UPDATE {V2_0_0_TABLE_LAYOUT}
-SET updated_at=created_at
-WHERE updated_at IS NULL;
-"""
-
-_MIGRATION_PORT_UPDATED_AT = f"""
-UPDATE {V2_0_0_TABLE_PORT}
-SET updated_at=created_at
-WHERE updated_at IS NULL;
-"""
-
-_MIGRATION_PROJECT_UPDATED_AT = f"""
-UPDATE {V2_0_0_TABLE_PROJECT}
-SET updated_at=created_at
-WHERE updated_at IS NULL;
-"""
-
-_MIGRATION_ROLE_UPDATED_AT = f"""
-UPDATE {V2_0_0_TABLE_ROLE}
-SET updated_at=created_at
-WHERE updated_at IS NULL;
-"""
-
-_MIGRATION_TASK_UPDATED_AT = f"""
-UPDATE {V2_0_0_TABLE_TASK}
-SET updated_at=created_at
-WHERE updated_at IS NULL;
-"""
-
-_MIGRATION_USER_UPDATED_AT = f"""
-UPDATE {V2_0_0_TABLE_USER}
-SET updated_at=created_at
-WHERE updated_at IS NULL;
-"""
-
-_MIGRATION_WIDGET_UPDATED_AT = f"""
-UPDATE {V2_0_0_TABLE_WIDGET}
-SET updated_at=created_at
-WHERE updated_at IS NULL;
-"""
+_MIGRATION_UPDATED_AT_TABLES = (
+    V2_0_0_TABLE_DAEMON,
+    V2_0_0_TABLE_GROUP,
+    V2_0_0_TABLE_INFO,
+    V2_0_0_TABLE_LAYOUT,
+    V2_0_0_TABLE_PORT,
+    V2_0_0_TABLE_PROJECT,
+    V2_0_0_TABLE_ROLE,
+    V2_0_0_TABLE_TASK,
+    V2_0_0_TABLE_USER,
+    V2_0_0_TABLE_WIDGET,
+)
 
 
 async def _updated_at_is_not_null(conn: Connection) -> None:
     # All `updated_at` is `NOT NULL`
-    updated_at_is_not_null_queries = merge_queries(
-        _MIGRATION_DAEMON_UPDATED_AT,
-        _MIGRATION_GROUP_UPDATED_AT,
-        _MIGRATION_INFO_UPDATED_AT,
-        _MIGRATION_LAYOUT_UPDATED_AT,
-        _MIGRATION_PORT_UPDATED_AT,
-        _MIGRATION_PROJECT_UPDATED_AT,
-        _MIGRATION_ROLE_UPDATED_AT,
-        _MIGRATION_TASK_UPDATED_AT,
-        _MIGRATION_USER_UPDATED_AT,
-        _MIGRATION_WIDGET_UPDATED_AT,
-    )
-    await conn.execute(updated_at_is_not_null_queries)
+    queries = list()
 
-    # TODO: alter table ...
+    for t in _MIGRATION_UPDATED_AT_TABLES:
+        queries.append(_UPDATE_UPDATED_AT_IS_NOT_NULL.format(table=t))
+    for t in _MIGRATION_UPDATED_AT_TABLES:
+        queries.append(_ALTER_COLUMN_UPDATED_AT_NOT_NULL_FORMAT.format(table=t))
+
+    await conn.execute(merge_queries(*queries))
 
 
 _UPDATE_DB_VERSION = f"""
