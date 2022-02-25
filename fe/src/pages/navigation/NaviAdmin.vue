@@ -136,7 +136,7 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item v-show="false" link @click.stop="ports">
+        <v-list-item link @click.stop="ports">
           <v-list-item-icon>
             <v-icon>mdi-connection</v-icon>
           </v-list-item-icon>

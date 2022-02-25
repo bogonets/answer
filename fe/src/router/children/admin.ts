@@ -11,6 +11,7 @@ import AdminOverview from '@/pages/admin/AdminOverview.vue';
 import AdminPermissions from '@/pages/admin/AdminPermissions.vue';
 import AdminPermissionsEdit from '@/pages/admin/AdminPermissionsEdit.vue';
 import AdminPermissionsNew from '@/pages/admin/AdminPermissionsNew.vue';
+import AdminPorts from '@/pages/admin/AdminPorts.vue';
 import AdminProjects from '@/pages/admin/AdminProjects.vue';
 import AdminProjectsEdit from '@/pages/admin/AdminProjectsEdit.vue';
 import AdminProjectsNew from '@/pages/admin/AdminProjectsNew.vue';
@@ -62,6 +63,11 @@ export const adminChildren = [
         path: 'permissions/new',
         component: AdminPermissionsNew,
         name: adminNames.adminPermissionsNew,
+    },
+    {
+        path: 'ports',
+        component: AdminPorts,
+        name: adminNames.adminPorts,
     },
     {
         path: 'projects',
