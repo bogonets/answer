@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, Any, List
-from pathlib import Path
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.daemon import Daemon
 from recc.daemon.daemon_runner import DAEMON_SCRIPT_EXTENSION
@@ -30,7 +29,7 @@ class ContextDaemon(ContextBase):
         if plugin not in self.get_daemon_plugins():
             raise ValueError(f"Not exists plugin: {plugin}")
 
-        uid = await self.database.insert_daemon(
+        return await self.database.insert_daemon(
             plugin=plugin,
             slug=slug,
             name=name,
@@ -40,28 +39,6 @@ class ContextDaemon(ContextBase):
             extra=extra,
             enable=enable,
         )
-
-        if requirements_sha256:
-            prev_requirements_sha256 = requirements_sha256
-        else:
-            prev_requirements_sha256 = str()
-
-        updated_hash = await self.daemons.update_daemon(
-            plugin,
-            slug,
-            address,
-            prev_requirements_sha256,
-            enable,
-            Path(self.local_storage.daemon),
-            self.loop,
-        )
-
-        if prev_requirements_sha256 != updated_hash:
-            await self.database.update_daemon_requirements_sha256_by_uid(
-                uid, updated_hash
-            )
-
-        return uid
 
     async def update_daemon(
         self,

@@ -53,10 +53,10 @@ from recc.variables.database import (
 CREATE_TABLE_INFO = f"""
 CREATE TABLE IF NOT EXISTS {TABLE_INFO} (
     key VARCHAR({INFO_KEY_STR_SIZE}) PRIMARY KEY,
-    value TEXT,
+    value TEXT NOT NULL DEFAULT '',
 
     created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    updated_at TIMESTAMPTZ NOT NULL
 );
 """
 
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS {TABLE_USER} (
     extra JSONB,
 
     created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ NOT NULL,
     last_login TIMESTAMPTZ
 );
 """
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS {TABLE_GROUP} (
     extra JSONB,
 
     created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    updated_at TIMESTAMPTZ NOT NULL
 );
 """
 
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS {TABLE_ROLE} (
     lock BOOLEAN NOT NULL DEFAULT FALSE,
 
     created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    updated_at TIMESTAMPTZ NOT NULL
 );
 """
 
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS {TABLE_PROJECT} (
     extra JSONB,
 
     created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    updated_at TIMESTAMPTZ NOT NULL
 );
 """
 
@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS {TABLE_TASK} (
     publish_ports JSONB,
 
     created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    updated_at TIMESTAMPTZ NOT NULL
 );
 """
 
@@ -203,7 +203,7 @@ CREATE TABLE IF NOT EXISTS {TABLE_LAYOUT} (
     extra JSONB,
 
     created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    updated_at TIMESTAMPTZ NOT NULL
 );
 """
 
@@ -229,7 +229,7 @@ CREATE TABLE IF NOT EXISTS {TABLE_WIDGET} (
     z_order INTEGER,
 
     created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    updated_at TIMESTAMPTZ NOT NULL
 );
 """
 
@@ -243,12 +243,13 @@ CREATE TABLE IF NOT EXISTS {TABLE_PORT} (
 
     ref_uid INTEGER,
     ref_category VARCHAR({PORT_CATEGORY_STR_SIZE}),
+    UNIQUE(ref_uid, ref_category),
 
     description TEXT,
     extra JSONB,
 
     created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    updated_at TIMESTAMPTZ NOT NULL
 );
 """
 
@@ -267,7 +268,7 @@ CREATE TABLE IF NOT EXISTS {TABLE_DAEMON} (
     enable BOOLEAN NOT NULL DEFAULT FALSE,
 
     created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    updated_at TIMESTAMPTZ NOT NULL
 );
 """
 
