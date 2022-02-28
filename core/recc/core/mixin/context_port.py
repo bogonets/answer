@@ -7,7 +7,22 @@ from recc.database.struct.port import Port
 
 class ContextPort(ContextBase):
     async def get_ports(self) -> List[Port]:
-        return await self.database.select_ports()
+        return await self.database.select_port_all()
+
+    async def get_port_numbers(self) -> List[int]:
+        return await self.database.select_port_number_all()
+
+    async def next_available_port_number(self) -> int:
+        unavailable_numbers = set(await self.get_port_numbers())
+        begin = self.config.manage_port_min
+        end = self.config.manage_port_max
+        assert begin < end
+        while begin < end:
+            if begin not in unavailable_numbers:
+                return begin
+            else:
+                begin += 1
+        raise IndexError("No port number available")
 
     # def _alloc_port(self, port: Optional[int]) -> None:
     #     if port is None:

@@ -110,11 +110,3 @@ export interface UpdateDaemonQ {
     extra?: any;
     enable?: boolean;
 }
-
-export function createEmptyDaemonA() {
-    return {
-        plugin: '',
-        slug: '',
-        enable: false,
-    } as DaemonA;
-}

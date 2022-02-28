@@ -145,7 +145,6 @@ import {DAEMON_SLUG_RULES} from '@/rules';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {CAPTION_CLASS} from '@/styles/caption';
 import type {DaemonA} from '@/packet/daemon';
-import {createEmptyDaemonA} from '@/packet/daemon';
 
 @Component({
   components: {
@@ -186,10 +185,10 @@ export default class FormProject extends VueBase {
   @Prop({type: Boolean})
   readonly hideSubmitButton!: boolean;
 
-  @Prop({type: Array, default: []})
+  @Prop({type: Array, default: () => []})
   readonly plugins!: Array<string>;
 
-  @Prop({type: Object, default: createEmptyDaemonA})
+  @Prop({type: Object, default: () => new Object()})
   readonly value!: DaemonA;
 
   @Ref()

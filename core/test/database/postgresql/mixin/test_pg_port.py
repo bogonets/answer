@@ -37,17 +37,23 @@ class PgPortTestCase(PostgresqlTestCase):
         self.assertEqual(created_at1, port1.updated_at)
         self.assertEqual(created_at2, port2.updated_at)
 
-    async def test_delete(self):
+    async def test_select_and_delete(self):
         number1 = 100
         number2 = 200
         sock1 = SockType.Stream
         sock2 = SockType.Dgram
         await self.db.insert_port(number1, sock1)
         await self.db.insert_port(number2, sock2)
-        self.assertEqual(2, len(await self.db.select_ports()))
+        self.assertEqual(2, len(await self.db.select_port_all()))
+
+        numbers = await self.db.select_port_number_all()
+        self.assertEqual(2, len(numbers))
+        self.assertIn(number1, numbers)
+        self.assertIn(number2, numbers)
+
         await self.db.delete_port_by_number_and_sock(number1, sock1)
         await self.db.delete_port_by_number_and_sock(number2, sock2)
-        self.assertEqual(0, len(await self.db.select_ports()))
+        self.assertEqual(0, len(await self.db.select_port_all()))
 
 
 if __name__ == "__main__":

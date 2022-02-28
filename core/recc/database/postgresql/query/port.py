@@ -35,6 +35,11 @@ SELECT *
 FROM {TABLE_PORT};
 """
 
+SELECT_PORT_NUMBER_ALL = f"""
+SELECT number
+FROM {TABLE_PORT};
+"""
+
 
 def get_update_port_query_by_number(
     number: int,
