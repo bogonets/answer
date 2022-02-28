@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Union, Optional
+from typing import List, Union
 from signal import SIGKILL
 from aiohttp import web
 from aiohttp.web_routedef import AbstractRouteDef
@@ -9,7 +9,6 @@ from aiohttp.web_exceptions import HTTPBadRequest
 from recc.core.context import Context
 from recc.session.session_ex import SessionEx
 from recc.http import http_urls as u
-from recc.http import http_query_values as qv
 from recc.http.http_parameter import parameter_matcher
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.container import ContainerOperator, ContainerA, ControlContainersQ
@@ -113,6 +112,7 @@ class RouterV2Admin:
             web.post(u.daemons_pdaemon_stop, self.post_daemons_pdaemon_stop),
 
             # ports
+            web.get(u.port_range, self.get_port_range),
             web.get(u.ports, self.get_ports),
         ]
         # fmt: on
@@ -537,14 +537,12 @@ class RouterV2Admin:
         await self.context.stop_daemon(daemon)
 
     @parameter_matcher
-    async def get_ports(self, op: Optional[str]) -> Union[List[PortA], PortRangeA]:
-        if not op:
-            return await self.context.get_ports()
+    async def get_port_range(self) -> PortRangeA:
+        return PortRangeA(
+            self.context.config.manage_port_min,
+            self.context.config.manage_port_max,
+        )
 
-        if op == qv.op.range:
-            return PortRangeA(
-                self.context.config.manage_port_min,
-                self.context.config.manage_port_max,
-            )
-
-        raise ValueError(f"Unknown query: op={op}")
+    @parameter_matcher
+    async def get_ports(self) -> List[PortA]:
+        return await self.context.get_ports()

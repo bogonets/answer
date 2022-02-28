@@ -192,7 +192,7 @@ export default class AdminPorts extends VueBase {
   async setup() {
     try {
       this.items = await this.$api2.getAdminPorts();
-      const range = await this.$api2.getAdminPortsRange();
+      const range = await this.$api2.getAdminPortRange();
       this.portMin = range.min;
       this.portMax = range.max;
       this.portMinText = range.min.toString();

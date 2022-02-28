@@ -8,8 +8,6 @@ from tester.http.http_app_tester import HttpAppTester
 from recc.http.http_utils import v2_admin_path
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
-from recc.http import http_query_keys as qk
-from recc.http import http_query_values as qv
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.role import RoleA, CreateRoleQ, UpdateRoleQ
@@ -314,7 +312,7 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
         self.assertIsInstance(response1.data, list)
 
     async def test_ports_range(self):
-        path = v2_admin_path(u.ports, {qk.op: qv.op.range})
+        path = v2_admin_path(u.port_range)
         response1 = await self.tester.get(path, cls=PortRangeA)
         self.assertEqual(200, response1.status)
         self.assertIsInstance(response1.data, PortRangeA)

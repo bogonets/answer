@@ -803,12 +803,12 @@ export default class ApiV2 {
     // Admin/Ports
     // -----------
 
-    getAdminPorts() {
-        return this.get<Array<PortA>>('/admin/ports');
+    getAdminPortRange() {
+        return this.get<PortRangeA>('/admin/port/range');
     }
 
-    getAdminPortsRange() {
-        return this.get<PortRangeA>('/admin/ports?op=range');
+    getAdminPorts() {
+        return this.get<Array<PortA>>('/admin/ports');
     }
 
     // -----------
