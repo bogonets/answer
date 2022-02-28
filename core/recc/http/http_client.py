@@ -27,12 +27,12 @@ from recc.http.http_packet import HttpResponse
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.header.bearer_auth import BearerAuth
 from recc.http.http_payload import payload_to_class
-from recc.http.http_utils import v2_public_path
+from recc.http.http_utils import join_urls, v2_public_path
 from recc.http import http_urls as u
 from recc.variables.http import (
     DEFAULT_SCHEME,
     DEFAULT_REQUEST_TIMEOUT_SECONDS,
-    URL_PATH_SEPARATOR,
+    URI_PATH_SEPARATOR,
 )
 
 
@@ -90,9 +90,8 @@ def wait_heartbeat(
     if last_exception:
         raise last_exception
     else:
-        raise TimeoutError(
-            f"Heartbeat timeout. (url={scheme}://{host}:{port},timeout={timeout}s,code={last_code})"  # noqa
-        )
+        params = f"url={scheme}://{host}:{port},timeout={timeout}s,code={last_code}"
+        raise TimeoutError(f"Heartbeat timeout ({params})")
 
 
 def request_version(
@@ -148,7 +147,7 @@ class HttpClient:
 
     @property
     def origin(self) -> str:
-        if self.prefix[-1] == URL_PATH_SEPARATOR:
+        if self.prefix[-1] == URI_PATH_SEPARATOR:
             return f"{self.prefix[0:-1]}"
         else:
             return f"{self.prefix}"
@@ -187,11 +186,11 @@ class HttpClient:
     ) -> HttpResponse:
         if path:
             origin = self.origin
-            assert origin[-1] != URL_PATH_SEPARATOR
-            if path[0] == URL_PATH_SEPARATOR:
+            assert origin[-1] != URI_PATH_SEPARATOR
+            if path[0] == URI_PATH_SEPARATOR:
                 request_url = origin + path
             else:
-                request_url = origin + URL_PATH_SEPARATOR + path
+                request_url = origin + URI_PATH_SEPARATOR + path
         else:
             request_url = self.prefix
 
@@ -349,3 +348,8 @@ class HttpClient:
             raise ValueError("A `password` argument is required.")
         await self.signup_admin(username, password)
         await self.signin(username, password, save_session=save_session)
+
+    @staticmethod
+    def join_urls(*paths: str, **kwargs: str) -> str:
+        path = join_urls(*paths)
+        return path.format(**kwargs) if kwargs else path

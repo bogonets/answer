@@ -7,6 +7,7 @@ from recc.argparse.config.ctrl_config import CtrlConfig
 from recc.http.http_client import HttpClient
 from recc.http.http_utils import v2_admin_path
 from recc.http import http_urls as u
+from recc.http import http_path_keys as p
 from recc.packet.info import InfoA, CreateInfoQ, UpdateInfoQ
 
 
@@ -43,7 +44,7 @@ async def ctrl_main_runner(config: CtrlConfig) -> int:
                     print(f"[{response.status}] {response.reason}")
             elif action == "get":
                 key = config.unrecognized_arguments[3]
-                path = v2_admin_path(u.infos_pkey, key=key)
+                path = v2_admin_path(u.infos_pkey.format_map({p.key: key}))
                 response = await client.get(path, cls=InfoA)
                 exists_info = response.status == HTTPStatus.OK
 
@@ -55,7 +56,7 @@ async def ctrl_main_runner(config: CtrlConfig) -> int:
             elif action == "set":
                 key = config.unrecognized_arguments[3]
                 value = config.unrecognized_arguments[4]
-                path = v2_admin_path(u.infos_pkey, key=key)
+                path = v2_admin_path(u.infos_pkey.format_map({p.key: key}))
                 response = await client.get(path, cls=InfoA)
                 exists_info = response.status == HTTPStatus.OK
                 if exists_info:
@@ -67,7 +68,7 @@ async def ctrl_main_runner(config: CtrlConfig) -> int:
                     )
             elif action == "del":
                 key = config.unrecognized_arguments[3]
-                path = v2_admin_path(u.infos_pkey, key=key)
+                path = v2_admin_path(u.infos_pkey.format_map({p.key: key}))
                 await client.delete(path)
 
     return 0

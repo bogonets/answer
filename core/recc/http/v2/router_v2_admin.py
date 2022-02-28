@@ -9,7 +9,7 @@ from aiohttp.web_exceptions import HTTPBadRequest
 from recc.core.context import Context
 from recc.session.session_ex import SessionEx
 from recc.http import http_urls as u
-from recc.http import http_query_keys as q
+from recc.http import http_query_values as qv
 from recc.http.http_parameter import parameter_matcher
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.container import ContainerOperator, ContainerA, ControlContainersQ
@@ -541,7 +541,7 @@ class RouterV2Admin:
         if not op:
             return await self.context.get_ports()
 
-        if op == q.v_op_range:
+        if op == qv.op.range:
             return PortRangeA(
                 self.context.config.manage_port_min,
                 self.context.config.manage_port_max,

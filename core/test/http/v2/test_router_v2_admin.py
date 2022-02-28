@@ -8,7 +8,8 @@ from tester.http.http_app_tester import HttpAppTester
 from recc.http.http_utils import v2_admin_path
 from recc.http import http_urls as u
 from recc.http import http_path_keys as p
-from recc.http.http_query_keys import query_builder, v_op_range
+from recc.http import http_query_keys as qk
+from recc.http import http_query_values as qv
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
 from recc.packet.role import RoleA, CreateRoleQ, UpdateRoleQ
@@ -69,7 +70,7 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(new_group1.description, group1.description)
         self.assertEqual(new_group1.features, group1.features)
 
-        path = v2_admin_path(u.groups_pgroup.format(**{p.group: new_group1.slug}))
+        path = v2_admin_path(u.groups_pgroup.format_map({p.group: new_group1.slug}))
         response4 = await self.tester.get(path, cls=GroupA)
         self.assertEqual(200, response4.status)
         self.assertIsNotNone(response4.data)
@@ -124,9 +125,13 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
         self.assertIsNotNone(response3_data0.updated_at)
         self.assertEqual(response3_data0.created_at, response3_data0.updated_at)
 
-        path = v2_admin_path(u.projects_pgroup_pproject).format(
-            group=project1.group_slug, project=project1.project_slug
+        path_suffix = u.projects_pgroup_pproject.format_map(
+            {
+                p.group: project1.group_slug,
+                p.project: project1.project_slug,
+            }
         )
+        path = v2_admin_path(path_suffix)
         update = UpdateProjectQ(name="name1")
         response4 = await self.tester.patch(path, data=update)
         self.assertEqual(200, response4.status)
@@ -189,12 +194,12 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
             PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_EDIT,
         ]
         role2_slug = "role2"
-        path1 = v2_admin_path(u.roles_prole).format(role=role1.slug)
+        path1 = v2_admin_path(u.roles_prole.format_map({p.role: role1.slug}))
         update = UpdateRoleQ(slug=role2_slug, permissions=permissions2)
         response3 = await self.tester.patch(path1, data=update)
         self.assertEqual(200, response3.status)
 
-        path2 = v2_admin_path(u.roles_prole).format(role=role2_slug)
+        path2 = v2_admin_path(u.roles_prole.format_map({p.role: role2_slug}))
         response4 = await self.tester.get(path2, cls=RoleA)
         self.assertEqual(200, response4.status)
         response4_data = response4.data
@@ -262,12 +267,12 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
         self.assertEqual("0", verbose.value)
 
         body2 = UpdateConfigValueQ("True")
-        path2 = v2_admin_path(u.configs_pkey.format(key=public_signup_key))
+        path2 = v2_admin_path(u.configs_pkey.format_map({p.key: public_signup_key}))
         response2 = await self.tester.patch(path2, data=body2)
         self.assertEqual(200, response2.status)
 
         body3 = UpdateConfigValueQ("1")
-        path3 = v2_admin_path(u.configs_pkey.format(key=verbose_key))
+        path3 = v2_admin_path(u.configs_pkey.format_map({p.key: verbose_key}))
         response3 = await self.tester.patch(path3, data=body3)
         self.assertEqual(200, response3.status)
 
@@ -292,7 +297,7 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
 
         key = "log_level"
         body = UpdateConfigValueQ(change_log_level)
-        path = v2_admin_path(u.configs_pkey.format(key=key))
+        path = v2_admin_path(u.configs_pkey.format_map({p.key: key}))
         response1 = await self.tester.patch(path, data=body)
         self.assertEqual(200, response1.status)
 
@@ -309,7 +314,7 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
         self.assertIsInstance(response1.data, list)
 
     async def test_ports_range(self):
-        path = v2_admin_path(u.ports) + query_builder(op=v_op_range)
+        path = v2_admin_path(u.ports, {qk.op: qv.op.range})
         response1 = await self.tester.get(path, cls=PortRangeA)
         self.assertEqual(200, response1.status)
         self.assertIsInstance(response1.data, PortRangeA)

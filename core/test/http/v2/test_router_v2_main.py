@@ -67,7 +67,7 @@ class RouterV2MainTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(features1, response2_data0.features)
         self.assertEqual(visibility1, response2_data0.visibility)
 
-        path = v2_main_path(u.groups_pgroup, **{p.group: slug1})
+        path = v2_main_path(u.groups_pgroup.format_map({p.group: slug1}))
         response3 = await self.tester.get(path, cls=GroupA)
         self.assertEqual(200, response3.status)
         self.assertIsNotNone(response3.data)
@@ -107,7 +107,7 @@ class RouterV2MainTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(200, response1.status)
         self.assertIsNone(response1.data)
 
-        path = v2_main_path(u.groups_pgroup, **{p.group: group1_slug})
+        path = v2_main_path(u.groups_pgroup.format_map({p.group: group1_slug}))
         response2 = await self.tester.get(path, cls=GroupA)
         self.assertEqual(200, response2.status)
         self.assertIsNotNone(response2.data)
@@ -142,7 +142,7 @@ class RouterV2MainTestCase(IsolatedAsyncioTestCase):
         response1 = await self.tester.post(v2_main_path(u.groups), data=group1)
         self.assertEqual(200, response1.status)
 
-        path1 = v2_main_path(u.groups_pgroup_members, group=slug1)
+        path1 = v2_main_path(u.groups_pgroup_members.format_map({p.group: slug1}))
         response2 = await self.tester.get(path1, cls=List[MemberA])
         self.assertEqual(200, response2.status)
         response2_data = response2.data
@@ -161,9 +161,13 @@ class RouterV2MainTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(200, response4.status)
         self.assertEqual(2, len(response4.data))
 
-        path2 = v2_main_path(
-            u.groups_pgroup_members_pmember, group=slug1, member=another_username
+        path2_suffix = u.groups_pgroup_members_pmember.format_map(
+            {
+                p.group: slug1,
+                p.member: another_username,
+            }
         )
+        path2 = v2_main_path(path2_suffix)
         response5 = await self.tester.get(path2, cls=MemberA)
         self.assertEqual(200, response5.status)
         response5_data = response5.data
@@ -204,8 +208,10 @@ class RouterV2MainTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(200, response3.status)
         self.assertEqual(200, response4.status)
 
-        path1 = v2_main_path(u.groups_pgroup_projects, group=group1.slug)
-        path2 = v2_main_path(u.groups_pgroup_projects, group=group2.slug)
+        path1_suffix = u.groups_pgroup_projects.format_map({p.group: group1.slug})
+        path1 = v2_main_path(path1_suffix)
+        path2_suffix = u.groups_pgroup_projects.format_map({p.group: group2.slug})
+        path2 = v2_main_path(path2_suffix)
         response5 = await self.tester.get(path1, cls=List[ProjectA])
         response6 = await self.tester.get(path2, cls=List[ProjectA])
         self.assertEqual(200, response5.status)
@@ -247,9 +253,13 @@ class RouterV2MainTestCase(IsolatedAsyncioTestCase):
         self.assertIsNotNone(response3_data0.updated_at)
         self.assertEqual(response3_data0.created_at, response3_data0.updated_at)
 
-        path = v2_main_path(u.projects_pgroup_pproject).format(
-            group=project1.group_slug, project=project1.project_slug
+        path_suffix = u.projects_pgroup_pproject.format_map(
+            {
+                p.group: project1.group_slug,
+                p.project: project1.project_slug,
+            }
         )
+        path = v2_main_path(path_suffix)
         update = UpdateProjectQ(name="name1")
         response4 = await self.tester.patch(path, data=update)
         self.assertEqual(200, response4.status)
@@ -286,11 +296,13 @@ class RouterV2MainTestCase(IsolatedAsyncioTestCase):
         response2 = await self.tester.post(v2_main_path(u.projects), data=project1)
         self.assertEqual(200, response2.status)
 
-        path1 = v2_main_path(
-            u.projects_pgroup_pproject_members,
-            group=project1.group_slug,
-            project=project1.project_slug,
+        path1_suffix = u.projects_pgroup_pproject_members.format_map(
+            {
+                p.group: project1.group_slug,
+                p.project: project1.project_slug,
+            }
         )
+        path1 = v2_main_path(path1_suffix)
         response3 = await self.tester.get(path1, cls=List[MemberA])
         self.assertEqual(200, response3.status)
         response3_data = response3.data
@@ -309,12 +321,14 @@ class RouterV2MainTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(200, response5.status)
         self.assertEqual(2, len(response5.data))
 
-        path2 = v2_main_path(
-            u.projects_pgroup_pproject_members_pmember,
-            group=project1.group_slug,
-            project=project1.project_slug,
-            member=another_username,
+        path2_suffix = u.projects_pgroup_pproject_members_pmember.format_map(
+            {
+                p.group: project1.group_slug,
+                p.project: project1.project_slug,
+                p.member: another_username,
+            }
         )
+        path2 = v2_main_path(path2_suffix)
         response6 = await self.tester.get(path2, cls=MemberA)
         self.assertEqual(200, response6.status)
         response6_data = response6.data
@@ -364,18 +378,20 @@ class RouterV2MainTestCase(IsolatedAsyncioTestCase):
         response2 = await self.tester.post(v2_main_path(u.projects), data=project1)
         self.assertEqual(200, response2.status)
 
-        path1 = v2_main_path(u.roles_pgroup, group=group1.slug)
+        path1 = v2_main_path(u.roles_pgroup.format_map({p.group: group1.slug}))
         response3 = await self.tester.get(path1, cls=RoleA)
         self.assertEqual(200, response3.status)
         response3_data = response3.data
         self.assertIsInstance(response3_data, RoleA)
         self.assertEqual(ROLE_SLUG_OWNER, response3_data.slug)
 
-        path2 = v2_main_path(
-            u.roles_pgroup_pproject,
-            group=project1.group_slug,
-            project=project1.project_slug,
+        path2_suffix = u.roles_pgroup_pproject.format_map(
+            {
+                p.group: project1.group_slug,
+                p.project: project1.project_slug,
+            }
         )
+        path2 = v2_main_path(path2_suffix)
         response4 = await self.tester.get(path2, cls=RoleA)
         self.assertEqual(200, response4.status)
         response4_data = response4.data

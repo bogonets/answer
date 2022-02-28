@@ -41,7 +41,7 @@ class RouterV2DevTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(200, response2.status)
         self.assertIsNone(response2.data)
 
-        path = v2_dev_path(u.infos_pkey.format(**{p.key: info1.key}))
+        path = v2_dev_path(u.infos_pkey.format_map({p.key: info1.key}))
         response3 = await self.tester.get(path)
         self.assertEqual(200, response3.status)
         self.assertIsNotNone(response3.data)
@@ -81,12 +81,12 @@ class RouterV2DevTestCase(IsolatedAsyncioTestCase):
         self.assertEqual("0", verbose.value)
 
         body2 = UpdateConfigValueQ("True")
-        path2 = v2_dev_path(u.configs_pkey.format(key=public_signup_key))
+        path2 = v2_dev_path(u.configs_pkey.format_map({p.key: public_signup_key}))
         response2 = await self.tester.patch(path2, data=body2)
         self.assertEqual(200, response2.status)
 
         body3 = UpdateConfigValueQ("1")
-        path3 = v2_dev_path(u.configs_pkey.format(key=verbose_key))
+        path3 = v2_dev_path(u.configs_pkey.format_map({p.key: verbose_key}))
         response3 = await self.tester.patch(path3, data=body3)
         self.assertEqual(200, response3.status)
 
