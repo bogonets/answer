@@ -1,15 +1,45 @@
 <i18n lang="yaml">
 en:
+  titles:
+    port_range: "Port range"
+  subtitles:
+    port_range: "The range in which the port can be specified."
   labels:
     search: "You can filter by port name."
     add: "Add Port"
-    range: "Port range"
+    port_range: "Port range"
+    port_begin: "Port Begin"
+    port_end: "Port End"
+  msg:
+    loading: "Loading... Please wait"
+    empty: "Not exists allocated port."
+  headers:
+    number: "Number"
+    sock: "Sock Type"
+    ref_uid: " Ref. UID"
+    ref_category: " Ref. Category"
+    actions: "Actions"
 
 ko:
+  titles:
+    port_range: "포트 범위"
+  subtitles:
+    port_range: "포트를 지정할 수 있는 범위"
   labels:
     search: "포트 이름을 필터링할 수 있습니다."
     add: "포트 추가"
-    range: "포트 범위"
+    port_range: "포트 범위"
+    port_begin: "시작 포트 번호"
+    port_end: "종료 포트 번호"
+  msg:
+    loading: "불러오는중 입니다... 잠시만 기다려 주세요."
+    empty: "할당된 포트가 없습니다."
+  headers:
+    number: "포트 번호"
+    sock: "소켓 종류"
+    ref_uid: "UID 참조"
+    ref_category: "분류 참조"
+    actions: "관리"
 </i18n>
 
 <template>
@@ -17,127 +47,71 @@ ko:
     <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
-    <v-row class="mt-2">
-      <v-col>
-        <div class="d-inline-flex flex-row align-center">
-          <label-span size="subtitle-1" color="secondary">
-            {{ $t('labels.range') }}
-          </label-span>
-          <v-text-field
-              class="pl-2"
-              disabled
-              dense
-              rounded
-              outlined
-              readonly
-              hide-details
-              v-model="portMinText"
-          ></v-text-field>
-          <span class="mx-2">~</span>
-          <v-text-field
-              disabled
-              dense
-              rounded
-              outlined
-              readonly
-              hide-details
-              v-model="portMaxText"
-          ></v-text-field>
+    <left-title
+        class="mt-2"
+        x-small
+        no-gutter
+        no-wrap-xs
+        :left-ratio="4"
+        :right-ratio="8"
+        :header="$t('titles.port_range')"
+        :subheader="$t('subtitles.port_range')"
+    >
+      <div class="d-flex flex-row justify-end">
+        <v-text-field
+            class="mr-2"
+            disabled
+            dense
+            rounded
+            outlined
+            readonly
+            hide-details
+            v-model="portMinText"
+            :label="$t('labels.port_begin')"
+        ></v-text-field>
+        <span class="mr-2 text-subtitle-1 text--secondary">~</span>
+        <v-text-field
+            disabled
+            dense
+            rounded
+            outlined
+            readonly
+            hide-details
+            v-model="portMaxText"
+            :label="$t('labels.port_end')"
+        ></v-text-field>
+      </div>
+    </left-title>
+
+    <v-data-table
+        item-key="number"
+        sort-by="number"
+        sort-desc
+        :headers="headers"
+        :items="items"
+        :search="filter"
+        :loading="loading"
+        :loading-text="$t('msg.loading')"
+    >
+      <template v-slot:top>
+        <div>
+          <v-toolbar flat>
+            <v-text-field
+                class="mr-4"
+                v-model="filter"
+                append-icon="mdi-magnify"
+                single-line
+                hide-details
+                :label="$t('labels.search')"
+            ></v-text-field>
+          </v-toolbar>
         </div>
-      </v-col>
-    </v-row>
+      </template>
 
-<!--    <v-data-table-->
-<!--        :value="selected"-->
-<!--        @input="onInputSelected"-->
-<!--        show-select-->
-<!--        item-key="device_uid"-->
-<!--        :headers="headers"-->
-<!--        :items="items"-->
-<!--        :search="filter"-->
-<!--        :loading="loading"-->
-<!--        :loading-text="$t('msg.loading')"-->
-<!--    >-->
-<!--      <template v-slot:top>-->
-<!--        <div>-->
-<!--          <v-toolbar flat>-->
-<!--            <v-text-field-->
-<!--                class="mr-4"-->
-<!--                v-model="filter"-->
-<!--                append-icon="mdi-magnify"-->
-<!--                single-line-->
-<!--                hide-details-->
-<!--                :label="$t('labels.search')"-->
-<!--            ></v-text-field>-->
-
-<!--            <v-btn color="primary" class="align-self-center mr-2" @click="onClickAdd">-->
-<!--              {{ $t('labels.add') }}-->
-<!--            </v-btn>-->
-<!--          </v-toolbar>-->
-<!--        </div>-->
-<!--        <div class="d-flex flex-row">-->
-<!--          <v-btn-->
-<!--              class="ml-2 rounded-xl"-->
-<!--              color="green"-->
-<!--              small-->
-<!--              rounded-->
-<!--              tile-->
-<!--              :disabled="disabledStart"-->
-<!--              @click="onClickStart"-->
-<!--          >-->
-<!--            <v-icon left>mdi-play</v-icon>-->
-<!--            {{ $t('control.start') }}-->
-<!--          </v-btn>-->
-<!--          <v-btn-->
-<!--              class="ml-2 rounded-xl"-->
-<!--              color="red"-->
-<!--              small-->
-<!--              rounded-->
-<!--              tile-->
-<!--              :disabled="disabledStop"-->
-<!--              @click="onClickStop"-->
-<!--          >-->
-<!--            <v-icon left>mdi-stop</v-icon>-->
-<!--            {{ $t('control.stop') }}-->
-<!--          </v-btn>-->
-<!--          <v-btn-->
-<!--              class="ml-2 rounded-xl"-->
-<!--              color="primary"-->
-<!--              small-->
-<!--              outlined-->
-<!--              rounded-->
-<!--              tile-->
-<!--              @click="onClickSync"-->
-<!--          >-->
-<!--            <v-icon left>mdi-sync</v-icon>-->
-<!--            {{ $t('control.sync') }}-->
-<!--          </v-btn>-->
-<!--        </div>-->
-<!--      </template>-->
-
-<!--      <template v-slot:item.enable="{ item }">-->
-<!--        <v-icon v-show="item.enable" small disabled>-->
-<!--          mdi-check-->
-<!--        </v-icon>-->
-<!--      </template>-->
-
-<!--      <template v-slot:item.status="{ item }">-->
-<!--        <v-chip small :color="serverStatusColor(item)">-->
-<!--          {{ item.status }}-->
-<!--        </v-chip>-->
-<!--      </template>-->
-
-
-<!--      <template v-slot:item.actions="{ item }">-->
-<!--        <v-icon small class="mr-2" @click="onClickDevice(item)">-->
-<!--          mdi-pencil-->
-<!--        </v-icon>-->
-<!--      </template>-->
-
-<!--      <template v-slot:no-data>-->
-<!--        {{ $t('msg.empty') }}-->
-<!--      </template>-->
-<!--    </v-data-table>-->
+      <template v-slot:no-data>
+        {{ $t('msg.empty') }}
+      </template>
+    </v-data-table>
 
   </v-container>
 </template>
@@ -146,14 +120,13 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import LabelSpan from '@/components/LabelSpan.vue';
-// import type {DaemonA} from '@/packet/daemon';
-// import {getStatusColor} from '@/packet/daemon';
+import LeftTitle from '@/components/LeftTitle.vue';
+import type {PortA} from '@/packet/port';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
-    LabelSpan,
+    LeftTitle,
   }
 })
 export default class AdminPorts extends VueBase {
@@ -169,56 +142,45 @@ export default class AdminPorts extends VueBase {
     },
   ];
 
-  // private readonly headers = [
-  //   {
-  //     text: this.$t('headers.number'),
-  //     align: 'center',
-  //     filterable: true,
-  //     sortable: true,
-  //     value: 'number',
-  //   },
-  //   {
-  //     text: this.$t('headers.ref_uid'),
-  //     align: 'center',
-  //     filterable: true,
-  //     sortable: true,
-  //     value: 'ref_uid',
-  //   },
-  //   {
-  //     text: this.$t('headers.ref_category'),
-  //     align: 'center',
-  //     filterable: true,
-  //     sortable: true,
-  //     value: 'ref_category',
-  //   },
-  //   {
-  //     text: this.$t('headers.description'),
-  //     align: 'center',
-  //     filterable: true,
-  //     sortable: true,
-  //     value: 'description',
-  //   },
-  //   {
-  //     text: this.$t('headers.actions'),
-  //     align: 'center',
-  //     filterable: false,
-  //     sortable: false,
-  //     value: 'actions',
-  //   },
-  // ];
+  private readonly headers = [
+    {
+      text: this.$t('headers.number'),
+      align: 'center',
+      filterable: true,
+      sortable: true,
+      value: 'number',
+    },
+    {
+      text: this.$t('headers.sock'),
+      align: 'center',
+      filterable: true,
+      sortable: false,
+      value: 'sock',
+    },
+    {
+      text: this.$t('headers.ref_uid'),
+      align: 'center',
+      filterable: true,
+      sortable: false,
+      value: 'ref_uid',
+    },
+    {
+      text: this.$t('headers.ref_category'),
+      align: 'center',
+      filterable: true,
+      sortable: true,
+      value: 'ref_category',
+    },
+  ];
 
   loading = false;
-  portMin?: number;
-  portMax?: number;
+  portMin = 0;
+  portMax = 0;
   portMinText = '';
   portMaxText = '';
 
-  // items = [] as Array<PortA>;
-  // selected = [] as Array<PortA>;
-  // filter = '';
-  //
-  // disabledStart = true;
-  // disabledStop = true;
+  items = [] as Array<PortA>;
+  filter = '';
 
   created() {
     this.loading = true;
@@ -229,15 +191,15 @@ export default class AdminPorts extends VueBase {
 
   async setup() {
     try {
+      this.items = await this.$api2.getAdminPorts();
       const range = await this.$api2.getAdminPortsRange();
       this.portMin = range.min;
       this.portMax = range.max;
       this.portMinText = range.min.toString();
       this.portMaxText = range.max.toString();
-      console.debug("range: ", this.portMin, this.portMax);
     } catch (error) {
-      this.portMin = undefined;
-      this.portMax = undefined;
+      this.portMin = 0;
+      this.portMax = 0;
       this.portMinText = '';
       this.portMaxText = '';
       this.toastRequestFailure(error);
@@ -245,68 +207,5 @@ export default class AdminPorts extends VueBase {
       this.loading = false;
     }
   }
-
-  // serverStatusColor(item: DaemonA) {
-  //   return getStatusColor(item.status)
-  // }
-  //
-  // onInputSelected(value) {
-  //   this.selected = value;
-  //   if (this.selected.length == 0) {
-  //     this.disabledStart = true;
-  //     this.disabledStop = true;
-  //   } else {
-  //     this.disabledStart = false;
-  //     this.disabledStop = false;
-  //   }
-  // }
-  //
-  // onClickAdd() {
-  //   this.moveToAdminDaemonsNew();
-  // }
-  //
-  // onClickStart() {
-  //   (async () => {
-  //     await this.startSelected();
-  //   })();
-  // }
-  //
-  // onClickStop() {
-  //   (async () => {
-  //     await this.stopSelected();
-  //   })();
-  // }
-  //
-  // async startSelected() {
-  //   try {
-  //     for (const item of this.selected) {
-  //       await this.$api2.postAdminDaemonsPdaemonStart(item.slug);
-  //     }
-  //     this.toastRequestSuccess();
-  //     this.updateItems();
-  //   } catch (error) {
-  //     this.toastRequestFailure(error);
-  //   }
-  // }
-  //
-  // async stopSelected() {
-  //   try {
-  //     for (const item of this.selected) {
-  //       await this.$api2.postAdminDaemonsPdaemonStop(item.slug);
-  //     }
-  //     this.toastRequestSuccess();
-  //     this.updateItems();
-  //   } catch (error) {
-  //     this.toastRequestFailure(error);
-  //   }
-  // }
-  //
-  // onClickSync() {
-  //   this.updateItems();
-  // }
-  //
-  // onClickDevice(item: DaemonA) {
-  //   this.moveToAdminDaemonsEdit(item.slug);
-  // }
 }
 </script>
