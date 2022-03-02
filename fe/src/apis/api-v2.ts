@@ -807,6 +807,10 @@ export default class ApiV2 {
         return this.get<PortRangeA>('/admin/port/range');
     }
 
+    getAdminPortNext() {
+        return this.get<number>('/admin/port/next');
+    }
+
     getAdminPorts() {
         return this.get<Array<PortA>>('/admin/ports');
     }

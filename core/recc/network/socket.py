@@ -51,3 +51,16 @@ def bind_socket(
         if sock is not None:
             sock.close()
         return None
+
+
+def test_bind(bind: str, port: int) -> bool:
+    sock: Optional[socket] = None
+    try:
+        sock = bind_socket(bind, port)
+    except:  # noqa
+        return False
+    else:
+        return True
+    finally:
+        if sock is not None:
+            sock.close()

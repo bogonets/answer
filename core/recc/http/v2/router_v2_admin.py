@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Union
+from typing import List, Union, Optional
 from signal import SIGKILL
 from aiohttp import web
 from aiohttp.web_routedef import AbstractRouteDef
@@ -113,6 +113,7 @@ class RouterV2Admin:
 
             # ports
             web.get(u.port_range, self.get_port_range),
+            web.get(u.port_next, self.get_port_next),
             web.get(u.ports, self.get_ports),
         ]
         # fmt: on
@@ -542,6 +543,10 @@ class RouterV2Admin:
             self.context.config.manage_port_min,
             self.context.config.manage_port_max,
         )
+
+    @parameter_matcher
+    async def get_port_next(self) -> int:
+        return await self.context.next_available_port_number()
 
     @parameter_matcher
     async def get_ports(self) -> List[PortA]:

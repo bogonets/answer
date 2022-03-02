@@ -23,6 +23,7 @@ v1 = "/v1"
 v2 = "/v2"
 
 # Depth 3rd ~.
+address = "/address"
 admin = "/admin"
 already = "/already"
 configs = "/configs"
@@ -39,6 +40,7 @@ init = "/init"
 main = "/main"
 members = "/members"
 names = "/names"
+next_ = "/next"  # Shadows built-in name `range`
 oem = "/oem"
 overview = "/overview"
 password = "/password"
@@ -122,6 +124,7 @@ infos_pkey = infos + pkey
 permissions_pgroup = permissions + pgroup
 permissions_pgroup_pproject = permissions_pgroup + pproject
 plugin_names = plugin + names
+port_next = port + next_
 port_range = port + range_
 pplugin_ptail = pplugin + ptail
 projects_pgroup_pproject = projects + pgroup + pproject

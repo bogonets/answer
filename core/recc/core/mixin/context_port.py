@@ -47,4 +47,3 @@ class ContextPort(ContextBase):
     #         for guest, hosts in container.ports.items():
     #             for host in hosts:
     #                 self._alloc_port(host.port)
-    pass
