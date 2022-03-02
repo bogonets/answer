@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Union, Optional
+from typing import List, Union
 from signal import SIGKILL
 from aiohttp import web
 from aiohttp.web_routedef import AbstractRouteDef

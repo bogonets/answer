@@ -10,7 +10,7 @@ from recc.aio.connection import try_connection
 from recc.argparse.config.daemon_config import DaemonConfig
 from recc.plugin.plugin import Plugin
 from recc.logging.logging import recc_daemon_logger as logger
-from recc.network.uds import is_uds_family
+from recc.uri.uds import is_uds_family
 from recc.serialization.byte import COMPRESS_LEVEL_BEST
 from recc.serialization.byte_coding import ByteCodingType
 from recc.proto.daemon.daemon_api_pb2 import (

@@ -15,7 +15,7 @@ from recc.init.default import (
 )
 from recc.logging.logging import recc_rpc_logger as logger
 from recc.proto.rpc.rpc_api_pb2_grpc import add_RpcApiServicer_to_server
-from recc.network.uds import is_uds_family
+from recc.uri.uds import is_uds_family
 from recc.rpc.rpc_client import heartbeat
 from recc.rpc.rpc_servicer import RpcServicer
 from recc.variables.rpc import DEFAULT_GRPC_OPTIONS, ACCEPTED_UDS_PORT_NUMBER
