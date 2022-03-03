@@ -3,10 +3,13 @@
 from typing import NamedTuple, Optional, Tuple, List, Union
 from socket import AF_INET, AF_INET6
 from enum import Enum
+from io import StringIO
+from functools import reduce
 from recc.uri.host_port import (
     parse_ipv4_or_domain_port,
     parse_ipv6_port,
     parse_host_port,
+    OPENING_PORT,
     OPENING_IPV6,
     CLOSING_IPV6,
 )
@@ -25,14 +28,14 @@ NOT_FOUND_INDEX = -1
 
 SCHEME_DNS = "dns:"
 SCHEME_UNIX = "unix:"
-SCHEME_UNIX2 = SCHEME_UNIX + "//"
+SCHEME_UNIX_ABSOLUTE = SCHEME_UNIX + "//"
 SCHEME_UNIX_ABSTRACT = "unix-abstract:"
 SCHEME_IPV4 = "ipv4:"
 SCHEME_IPV6 = "ipv6:"
 
 SCHEME_DNS_LEN = len(SCHEME_DNS)
 SCHEME_UNIX_LEN = len(SCHEME_UNIX)
-SCHEME_UNIX2_LEN = len(SCHEME_UNIX2)
+SCHEME_UNIX_ABSOLUTE_LEN = len(SCHEME_UNIX_ABSOLUTE)
 SCHEME_UNIX_ABSTRACT_LEN = len(SCHEME_UNIX_ABSTRACT)
 SCHEME_IPV4_LEN = len(SCHEME_IPV4)
 SCHEME_IPV6_LEN = len(SCHEME_IPV6)
@@ -90,6 +93,25 @@ class RpcDnsAddress(NamedTuple):
         host_port = self.authority_tuple
         return host_port[1] if host_port is not None else None
 
+    def encode(self) -> str:
+        buffer = StringIO()
+        buffer.write(SCHEME_DNS)
+        if self.authority:
+            buffer.write(OPENING_AUTHORITY)
+            buffer.write(self.authority)
+            buffer.write(CLOSING_AUTHORITY)
+        buffer.write(self.host)
+        if self.port is not None:
+            buffer.write(OPENING_PORT)
+            buffer.write(str(self.port))
+        return buffer.getvalue()
+
+    def __str__(self) -> str:
+        return self.encode()
+
+    def __repr__(self) -> str:
+        return self.encode()
+
 
 def _parse_rpc_dns_address(address: str) -> RpcDnsAddress:
     assert get_rpc_scheme_type(address) == RpcSchemeType.Dns
@@ -134,17 +156,26 @@ class RpcUnixAddress(NamedTuple):
 
     path: str
 
+    def encode(self) -> str:
+        return SCHEME_UNIX + self.path
+
+    def __str__(self) -> str:
+        return self.encode()
+
+    def __repr__(self) -> str:
+        return self.encode()
+
 
 def _parse_rpc_unix_address(address: str) -> RpcUnixAddress:
     assert get_rpc_scheme_type(address) == RpcSchemeType.Unix
 
     # [IMPORTANT]
     # Do not change the order of if-else statements.
-    if address.startswith(SCHEME_UNIX2):
-        absolute_path = address[SCHEME_UNIX2_LEN:]
+    if address.startswith(SCHEME_UNIX_ABSOLUTE):
+        absolute_path = address[SCHEME_UNIX_ABSOLUTE_LEN:]
         if absolute_path[0] != "/":
             raise ValueError(
-                f"If you use the `{SCHEME_UNIX2}` prefix,"
+                f"If you use the `{SCHEME_UNIX_ABSOLUTE}` prefix,"
                 f"the path must be absolute: {address}"
             )
         return RpcUnixAddress(absolute_path)
@@ -167,6 +198,15 @@ class RpcUnixAbstractAddress(NamedTuple):
 
     abstract_path: str
 
+    def encode(self) -> str:
+        return SCHEME_UNIX_ABSTRACT + self.abstract_path
+
+    def __str__(self) -> str:
+        return self.encode()
+
+    def __repr__(self) -> str:
+        return self.encode()
+
 
 def _parse_rpc_unix_abstract_address(address: str) -> RpcUnixAbstractAddress:
     assert get_rpc_scheme_type(address) == RpcSchemeType.UnixAbstract
@@ -183,6 +223,25 @@ class Address(NamedTuple):
     address: str
     port: Optional[int]
 
+    def encode(self) -> str:
+        if self.port is not None:
+            return f"{self.address}{OPENING_PORT}{self.port}"
+        else:
+            return self.address
+
+    def __str__(self) -> str:
+        return self.encode()
+
+    def __repr__(self) -> str:
+        return self.encode()
+
+
+ADDRESS_SEPARATOR = ","
+
+
+def encode_addresses(*args: Address) -> str:
+    return reduce(lambda x, y: f"{x}{ADDRESS_SEPARATOR}{y}", [a.encode() for a in args])
+
 
 class RpcIpv4Addresses(NamedTuple):
     """
@@ -190,6 +249,15 @@ class RpcIpv4Addresses(NamedTuple):
     """
 
     addresses: List[Address]
+
+    def encode(self) -> str:
+        return SCHEME_IPV4 + encode_addresses(*self.addresses)
+
+    def __str__(self) -> str:
+        return self.encode()
+
+    def __repr__(self) -> str:
+        return self.encode()
 
 
 class RpcIpv6Addresses(NamedTuple):
@@ -199,9 +267,17 @@ class RpcIpv6Addresses(NamedTuple):
 
     addresses: List[Address]
 
+    def encode(self) -> str:
+        return SCHEME_IPV6 + encode_addresses(*self.addresses)
+
+    def __str__(self) -> str:
+        return self.encode()
+
+    def __repr__(self) -> str:
+        return self.encode()
+
 
 assert RpcIpv4Addresses != RpcIpv6Addresses, "They must be of different types"
-ADDRESS_SEPARATOR = ","
 
 
 def _parse_rpc_ipv4_addresses(address: str) -> RpcIpv4Addresses:
@@ -279,3 +355,212 @@ def parse_rpc_address(address: str) -> Tuple[RpcSchemeType, UnionRpcAddress]:
         return RpcSchemeType.Ipv6, _parse_rpc_ipv6_addresses(address)
     else:
         assert False, "Inaccessible section"
+
+
+class RpcAddress:
+    def __init__(self, scheme: RpcSchemeType, rpc_address: UnionRpcAddress):
+        self.scheme = scheme
+        self.rpc_address = rpc_address
+
+    @property
+    def is_dns(self) -> bool:
+        return self.scheme == RpcSchemeType.Dns
+
+    @property
+    def is_unix(self) -> bool:
+        return self.scheme == RpcSchemeType.Unix
+
+    @property
+    def is_unix_abstract(self) -> bool:
+        return self.scheme == RpcSchemeType.UnixAbstract
+
+    @property
+    def is_ipv4(self) -> bool:
+        return self.scheme == RpcSchemeType.Ipv4
+
+    @property
+    def is_ipv6(self) -> bool:
+        return self.scheme == RpcSchemeType.Ipv6
+
+    @property
+    def has_dns_authority(self) -> bool:
+        if not self.is_dns:
+            return False
+        assert isinstance(self.rpc_address, RpcDnsAddress)
+        return self.rpc_address.authority is not None
+
+    @property
+    def has_dns_host(self) -> bool:
+        if not self.is_dns:
+            return False
+        assert isinstance(self.rpc_address, RpcDnsAddress)
+        return bool(self.rpc_address.host)
+
+    @property
+    def has_dns_port(self) -> bool:
+        if not self.is_dns:
+            return False
+        assert isinstance(self.rpc_address, RpcDnsAddress)
+        return self.rpc_address.port is not None
+
+    @property
+    def has_unix_path(self) -> bool:
+        if not self.is_unix:
+            return False
+        assert isinstance(self.rpc_address, RpcUnixAddress)
+        return bool(self.rpc_address.path)
+
+    @property
+    def has_unix_abstract_path(self) -> bool:
+        if not self.is_unix_abstract:
+            return False
+        assert isinstance(self.rpc_address, RpcUnixAbstractAddress)
+        return bool(self.rpc_address.abstract_path)
+
+    @property
+    def has_ipv4_addresses(self) -> bool:
+        if not self.is_ipv4:
+            return False
+        assert isinstance(self.rpc_address, RpcIpv4Addresses)
+        return bool(self.rpc_address.addresses)
+
+    @property
+    def has_ipv6_addresses(self) -> bool:
+        if not self.is_ipv6:
+            return False
+        assert isinstance(self.rpc_address, RpcIpv6Addresses)
+        return bool(self.rpc_address.addresses)
+
+    @property
+    def has_ip_addresses(self) -> bool:
+        if self.is_ipv4:
+            assert isinstance(self.rpc_address, RpcIpv4Addresses)
+            return bool(self.rpc_address.addresses)
+        elif self.is_ipv6:
+            assert isinstance(self.rpc_address, RpcIpv6Addresses)
+            return bool(self.rpc_address.addresses)
+        else:
+            return False
+
+    @property
+    def has_any_port(self) -> bool:
+        if self.is_dns:
+            assert isinstance(self.rpc_address, RpcDnsAddress)
+            return self.rpc_address.port is not None
+        elif self.is_ipv4:
+            assert isinstance(self.rpc_address, RpcIpv4Addresses)
+            for ipv4 in self.rpc_address.addresses:
+                if ipv4.port is not None:
+                    return True
+        elif self.is_ipv6:
+            assert isinstance(self.rpc_address, RpcIpv6Addresses)
+            for ipv6 in self.rpc_address.addresses:
+                if ipv6.port is not None:
+                    return True
+        return False
+
+    @property
+    def all_ports(self) -> List[int]:
+        if self.is_dns:
+            assert isinstance(self.rpc_address, RpcDnsAddress)
+            if self.rpc_address.port is not None:
+                return [self.rpc_address.port]
+        elif self.is_ipv4:
+            assert isinstance(self.rpc_address, RpcIpv4Addresses)
+            return [a.port for a in self.rpc_address.addresses if a.port is not None]
+        elif self.is_ipv6:
+            assert isinstance(self.rpc_address, RpcIpv6Addresses)
+            return [a.port for a in self.rpc_address.addresses if a.port is not None]
+        return list()
+
+    @property
+    def as_dns(self) -> RpcDnsAddress:
+        if not self.is_dns:
+            raise TypeError("Only DNS schemes are supported")
+        assert isinstance(self.rpc_address, RpcDnsAddress)
+        return self.rpc_address
+
+    @property
+    def as_unix(self) -> RpcUnixAddress:
+        if not self.is_unix:
+            raise TypeError("Only Unix schemes are supported")
+        assert isinstance(self.rpc_address, RpcUnixAddress)
+        return self.rpc_address
+
+    @property
+    def as_unix_abstract(self) -> RpcUnixAbstractAddress:
+        if not self.is_unix_abstract:
+            raise TypeError("Only Unix Abstract schemes are supported")
+        assert isinstance(self.rpc_address, RpcUnixAbstractAddress)
+        return self.rpc_address
+
+    @property
+    def as_ipv4(self) -> RpcIpv4Addresses:
+        if not self.is_ipv4:
+            raise TypeError("Only IPv4 schemes are supported")
+        assert isinstance(self.rpc_address, RpcIpv4Addresses)
+        return self.rpc_address
+
+    @property
+    def as_ipv6(self) -> RpcIpv6Addresses:
+        if not self.is_ipv6:
+            raise TypeError("Only IPv6 schemes are supported")
+        assert isinstance(self.rpc_address, RpcIpv6Addresses)
+        return self.rpc_address
+
+    @property
+    def authority(self) -> Optional[str]:
+        return self.as_dns.authority
+
+    @property
+    def authority_tuple(self) -> Optional[Tuple[str, Optional[int]]]:
+        return self.as_dns.authority_tuple
+
+    @property
+    def authority_host(self) -> Optional[str]:
+        return self.as_dns.authority_host
+
+    @property
+    def authority_port(self) -> Optional[int]:
+        return self.as_dns.authority_port
+
+    @property
+    def host(self) -> str:
+        return self.as_dns.host
+
+    @property
+    def port(self) -> Optional[int]:
+        return self.as_dns.port
+
+    @property
+    def path(self) -> str:
+        return self.as_unix.path
+
+    @property
+    def abstract_path(self) -> str:
+        return self.as_unix_abstract.abstract_path
+
+    @property
+    def addresses(self) -> List[Address]:
+        if self.is_ipv4:
+            assert isinstance(self.rpc_address, RpcIpv4Addresses)
+            return self.rpc_address.addresses
+        elif self.is_ipv6:
+            assert isinstance(self.rpc_address, RpcIpv6Addresses)
+            return self.rpc_address.addresses
+        else:
+            raise TypeError("Only IPv4 or IPv6 schemes are supported")
+
+    def encode(self) -> str:
+        return self.rpc_address.encode()
+
+    def __str__(self) -> str:
+        return self.encode()
+
+    def __repr__(self) -> str:
+        return self.encode()
+
+
+def parse_rpc_address_as_class(address: str) -> RpcAddress:
+    scheme, rpc_address = parse_rpc_address(address)
+    return RpcAddress(scheme, rpc_address)

@@ -58,7 +58,7 @@ BEGIN
         SELECT permission_uid
         FROM {TABLE_ROLE_PERMISSION}
         WHERE role_uid=r_uid
-   );
+    );
 END;
 $function$;
 """

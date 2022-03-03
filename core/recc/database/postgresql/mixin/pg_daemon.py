@@ -33,17 +33,18 @@ class PgDaemon(DbDaemon, PgBase):
         created_at: Optional[datetime] = None,
     ) -> int:
         created = created_at if created_at else tznow()
-        return await self.column(
-            int,
-            INSERT_DAEMON,
-            plugin,
-            slug,
-            name,
-            address,
-            description,
-            enable,
-            created,
-        )
+        async with self.conn() as conn:
+            async with conn.transaction():
+                return await conn.fetchval(
+                    INSERT_DAEMON,
+                    plugin,
+                    slug,
+                    name,
+                    address,
+                    description,
+                    enable,
+                    created,
+                )
 
     @overrides
     async def update_daemon_by_uid(
