@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List
+from typing import Optional, List
 from datetime import datetime
 from overrides import overrides
 from recc.chrono.datetime import tznow
@@ -9,7 +9,6 @@ from recc.database.interfaces.db_daemon import DbDaemon
 from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.daemon import (
     INSERT_DAEMON,
-    UPDATE_DAEMON_REQUIREMENTS_SHA256_BY_UID,
     DELETE_DAEMON_BY_UID,
     DELETE_DAEMON_BY_SLUG,
     SELECT_DAEMON_BY_UID,
@@ -29,9 +28,7 @@ class PgDaemon(DbDaemon, PgBase):
         slug: str,
         name: Optional[str] = None,
         address: Optional[str] = None,
-        requirements_sha256: Optional[str] = None,
         description: Optional[str] = None,
-        extra: Optional[Any] = None,
         enable=False,
         created_at: Optional[datetime] = None,
     ) -> int:
@@ -43,26 +40,9 @@ class PgDaemon(DbDaemon, PgBase):
             slug,
             name,
             address,
-            requirements_sha256,
             description,
-            extra,
             enable,
             created,
-        )
-
-    @overrides
-    async def update_daemon_requirements_sha256_by_uid(
-        self,
-        uid: int,
-        requirements_sha256: str,
-        updated_at: Optional[datetime] = None,
-    ) -> None:
-        updated = updated_at if updated_at else tznow()
-        await self.execute(
-            UPDATE_DAEMON_REQUIREMENTS_SHA256_BY_UID,
-            uid,
-            requirements_sha256,
-            updated,
         )
 
     @overrides
@@ -73,9 +53,7 @@ class PgDaemon(DbDaemon, PgBase):
         slug: Optional[str] = None,
         name: Optional[str] = None,
         address: Optional[str] = None,
-        requirements_sha256: Optional[str] = None,
         description: Optional[str] = None,
-        extra: Optional[Any] = None,
         enable: Optional[bool] = None,
         updated_at: Optional[datetime] = None,
     ) -> None:
@@ -85,9 +63,7 @@ class PgDaemon(DbDaemon, PgBase):
             slug=slug,
             name=name,
             address=address,
-            requirements_sha256=requirements_sha256,
             description=description,
-            extra=extra,
             enable=enable,
             updated_at=updated_at,
         )

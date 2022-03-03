@@ -52,6 +52,10 @@ ALTER TABLE recc_port
 ADD CONSTRAINT recc_port_ref_uid_ref_category_key
 UNIQUE (ref_uid, ref_category);
 
+-- Alter table: `recc_daemon`
+ALTER TABLE recc_daemon DROP COLUMN requirements_sha256;
+ALTER TABLE recc_daemon DROP COLUMN extra;
+
 -- Update version: `2.0.0` -> `2.1.0`
 UPDATE recc_info
 SET value='2.1.0', updated_at=NOW()

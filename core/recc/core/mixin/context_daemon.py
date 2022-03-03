@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List
+from typing import Optional, List
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.daemon import Daemon
 from recc.daemon.daemon_runner import DAEMON_SCRIPT_EXTENSION
@@ -21,9 +21,7 @@ class ContextDaemon(ContextBase):
         slug: str,
         name: Optional[str] = None,
         address: Optional[str] = None,
-        requirements_sha256: Optional[str] = None,
         description: Optional[str] = None,
-        extra: Optional[Any] = None,
         enable=False,
     ) -> int:
         if plugin not in self.get_daemon_plugins():
@@ -34,9 +32,7 @@ class ContextDaemon(ContextBase):
             slug=slug,
             name=name,
             address=address,
-            requirements_sha256=requirements_sha256,
             description=description,
-            extra=extra,
             enable=enable,
         )
 
@@ -47,9 +43,7 @@ class ContextDaemon(ContextBase):
         slug: Optional[str] = None,
         name: Optional[str] = None,
         address: Optional[str] = None,
-        requirements_sha256: Optional[str] = None,
         description: Optional[str] = None,
-        extra: Optional[Any] = None,
         enable: Optional[bool] = None,
     ) -> None:
         await self.database.update_daemon_by_uid(
@@ -58,9 +52,7 @@ class ContextDaemon(ContextBase):
             slug=slug,
             name=name,
             address=address,
-            requirements_sha256=requirements_sha256,
             description=description,
-            extra=extra,
             enable=enable,
         )
 

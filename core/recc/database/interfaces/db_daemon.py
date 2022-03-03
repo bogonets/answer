@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Optional, List
+from typing import Optional, List
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from recc.database.struct.daemon import Daemon
@@ -18,18 +18,10 @@ class DbDaemon(metaclass=ABCMeta):
         slug: str,
         name: Optional[str] = None,
         address: Optional[str] = None,
-        requirements_sha256: Optional[str] = None,
         description: Optional[str] = None,
-        extra: Optional[Any] = None,
         enable=False,
         created_at: Optional[datetime] = None,
     ) -> int:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def update_daemon_requirements_sha256_by_uid(
-        self, uid: int, requirements_sha256: str
-    ) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -40,9 +32,7 @@ class DbDaemon(metaclass=ABCMeta):
         slug: Optional[str] = None,
         name: Optional[str] = None,
         address: Optional[str] = None,
-        requirements_sha256: Optional[str] = None,
         description: Optional[str] = None,
-        extra: Optional[Any] = None,
         enable: Optional[bool] = None,
         updated_at: Optional[datetime] = None,
     ) -> None:

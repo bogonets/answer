@@ -350,8 +350,12 @@ class Context(
         await self._tasks.open()
         logger.info("Opened task-manager")
 
-        await self._daemons.open(self._local_storage.daemon, self.database, self._loop)
-        logger.info("Opened daemon-manager")
+        # await self._daemons.open(
+        #     self._local_storage.daemon,
+        #     self.database,
+        #     self._loop,
+        # )
+        # logger.info("Opened daemon-manager")
 
         await self._plugins.open()
         logger.info("Opened plugin-manager")
@@ -363,8 +367,8 @@ class Context(
         pass
 
     async def _before_close(self) -> None:
-        await self._daemons.close()
-        logger.info("Daemon-manager de-initialization is complete")
+        # await self._daemons.close()
+        # logger.info("Daemon-manager de-initialization is complete")
 
         if self.container.is_open() and self.is_guest_mode():
             await self.disconnect_global_network()

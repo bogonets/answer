@@ -90,7 +90,6 @@ export default class AdminDaemonsNew extends VueBase {
       name: event.name,
       address: event.address,
       description: event.description,
-      extra: event.extra,
       enable: event.enable,
     } as CreateDaemonQ;
 

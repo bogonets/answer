@@ -494,9 +494,7 @@ class RouterV2Admin:
             slug=body.slug,
             name=body.name,
             address=body.address,
-            requirements_sha256=None,
             description=body.description,
-            extra=body.extra,
             enable=body.enable,
         )
 
@@ -519,9 +517,7 @@ class RouterV2Admin:
             slug=body.slug,
             name=body.name,
             address=body.address,
-            requirements_sha256=None,
             description=body.description,
-            extra=body.extra,
             enable=body.enable,
         )
 
