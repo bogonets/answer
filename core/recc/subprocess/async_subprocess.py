@@ -11,8 +11,9 @@ from asyncio import (
 )
 from asyncio.subprocess import Process, PIPE
 from asyncio.streams import StreamReader, StreamWriter
-from typing import Optional, Callable, Mapping
+from typing import Optional, Callable, Mapping, Tuple
 from functools import reduce
+from io import BytesIO
 from recc.system.environ import get_os_envs_dict
 import psutil
 
@@ -258,3 +259,32 @@ async def start_async_subprocess(
     )
     await proc.start()
     return proc
+
+
+async def start_async_subprocess_simply(
+    *commands,
+    cwd: Optional[str] = None,
+    env: Optional[Mapping[str, str]] = None,
+    writable=False,
+    method=SubprocessMethod.Exec,
+) -> Tuple[int, bytes, bytes]:
+    stdout = BytesIO()
+    stderr = BytesIO()
+
+    def _stdout_callback(data: bytes) -> None:
+        stdout.write(data)
+
+    def _stderr_callback(data: bytes) -> None:
+        stderr.write(data)
+
+    proc = await start_async_subprocess(
+        *commands,
+        stdout_callback=_stdout_callback,
+        stderr_callback=_stderr_callback,
+        cwd=cwd,
+        env=env,
+        writable=writable,
+        method=method,
+    )
+    exit_code = await proc.wait()
+    return exit_code, stdout.getvalue(), stderr.getvalue()

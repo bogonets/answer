@@ -58,8 +58,10 @@ hdcp
 healthcheck
 hiddens
 hmac
+ibmnpu
 imread
 imwrite
+inforom
 infos
 intl
 iomgr
@@ -85,6 +87,7 @@ mems
 metatags
 mountpoint
 mset
+multigpu
 muxing
 mypies
 nanum
@@ -148,6 +151,7 @@ unicast
 unprocessable
 username
 uvloop
+vbios
 vender
 webrtcurls
 websocket
