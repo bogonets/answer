@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
 from datetime import datetime
 from dataclasses import dataclass
 
@@ -10,9 +9,9 @@ class Daemon:
     uid: int
     plugin: str
     slug: str
-    name: Optional[str] = None
-    address: Optional[str] = None
-    description: Optional[str] = None
-    enable: Optional[bool] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
+    name: str
+    address: str
+    description: str
+    enable: bool
+    created_at: datetime
+    updated_at: datetime

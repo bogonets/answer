@@ -7,6 +7,10 @@ from recc.chrono.datetime import tznow
 from recc.database.struct.permission import Permission
 from recc.database.interfaces.db_permission import DbPermission
 from recc.database.postgresql.mixin._pg_base import PgBase
+from recc.database.postgresql.query.create.functions.appropriate_permission import (
+    get_select_appropriate_permission_by_user_and_group,
+    get_select_appropriate_permission_by_user_and_group_and_project,
+)
 from recc.database.postgresql.query.permission import (
     INSERT_PERMISSION,
     DELETE_PERMISSION_BY_UID,
@@ -16,8 +20,6 @@ from recc.database.postgresql.query.permission import (
     SELECT_PERMISSION_BY_UID,
     SELECT_PERMISSION_ALL,
     SELECT_PERMISSION_BY_ROLE_UID,
-    SELECT_APPROPRIATE_PERMISSION_BY_USER_AND_GROUP,
-    SELECT_APPROPRIATE_PERMISSION_BY_USER_AND_GROUP_AND_PROJECT,
 )
 
 
@@ -63,21 +65,14 @@ class PgPermission(DbPermission, PgBase):
     async def select_appropriate_permission_by_user_and_group(
         self, user_uid: int, group_uid: int
     ) -> List[Permission]:
-        return await self.rows(
-            Permission,
-            SELECT_APPROPRIATE_PERMISSION_BY_USER_AND_GROUP,
-            user_uid,
-            group_uid,
-        )
+        query = get_select_appropriate_permission_by_user_and_group(user_uid, group_uid)
+        return await self.rows(Permission, query)
 
     @overrides
     async def select_appropriate_permission_by_user_and_group_and_project(
         self, user_uid: int, group_uid: int, project_uid: int
     ) -> List[Permission]:
-        return await self.rows(
-            Permission,
-            SELECT_APPROPRIATE_PERMISSION_BY_USER_AND_GROUP_AND_PROJECT,
-            user_uid,
-            group_uid,
-            project_uid,
+        query = get_select_appropriate_permission_by_user_and_group_and_project(
+            user_uid, group_uid, project_uid
         )
+        return await self.rows(Permission, query)

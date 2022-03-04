@@ -47,14 +47,18 @@ ALTER TABLE recc_port
 ADD CONSTRAINT recc_port_number_sock_key
 UNIQUE (number, sock);
 
--- Unique constraint `ref_uid, ref_category` in `recc_port` table.
-ALTER TABLE recc_port
-ADD CONSTRAINT recc_port_ref_uid_ref_category_key
-UNIQUE (ref_uid, ref_category);
-
 -- Alter table: `recc_daemon`
 ALTER TABLE recc_daemon DROP COLUMN requirements_sha256;
 ALTER TABLE recc_daemon DROP COLUMN extra;
+UPDATE recc_daemon SET name='' WHERE name IS NULL;
+ALTER TABLE recc_daemon ALTER COLUMN name SET NOT NULL;
+ALTER TABLE recc_daemon ALTER COLUMN name SET DEFAULT '';
+UPDATE recc_daemon SET address='' WHERE address IS NULL;
+ALTER TABLE recc_daemon ALTER COLUMN address SET NOT NULL;
+ALTER TABLE recc_daemon ALTER COLUMN address SET DEFAULT '';
+UPDATE recc_daemon SET description='' WHERE description IS NULL;
+ALTER TABLE recc_daemon ALTER COLUMN description SET NOT NULL;
+ALTER TABLE recc_daemon ALTER COLUMN description SET DEFAULT '';
 
 -- Update version: `2.0.0` -> `2.1.0`
 UPDATE recc_info

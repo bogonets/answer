@@ -63,10 +63,33 @@ END;
 $function$;
 """
 
-CREATE_FUNCTIONS = (CREATE_FUNC_APPROPRIATE_PERMISSION,)
-
 DROP_FUNC_APPROPRIATE_PERMISSION = f"""
 DROP FUNCTION IF EXISTS {FUNC_APPROPRIATE_PERMISSION};
 """
 
-DROP_FUNCTIONS = (DROP_FUNC_APPROPRIATE_PERMISSION,)
+_SELECT_APPROPRIATE_PERMISSION_BY_USER_AND_GROUP_FORMAT = f"""
+SELECT * FROM {FUNC_APPROPRIATE_PERMISSION}({{u_uid}}, {{g_uid}});
+"""
+
+_SELECT_APPROPRIATE_PERMISSION_BY_USER_AND_GROUP_AND_PROJECT_FORMAT = f"""
+SELECT * FROM {FUNC_APPROPRIATE_PERMISSION}({{u_uid}}, {{g_uid}}, {{p_uid}});
+"""
+
+
+def get_select_appropriate_permission_by_user_and_group(
+    user_uid: int, group_uid: int
+) -> str:
+    return _SELECT_APPROPRIATE_PERMISSION_BY_USER_AND_GROUP_FORMAT.format(
+        u_uid=user_uid,
+        g_uid=group_uid,
+    )
+
+
+def get_select_appropriate_permission_by_user_and_group_and_project(
+    user_uid: int, group_uid: int, project_uid: int
+) -> str:
+    return _SELECT_APPROPRIATE_PERMISSION_BY_USER_AND_GROUP_AND_PROJECT_FORMAT.format(
+        u_uid=user_uid,
+        g_uid=group_uid,
+        p_uid=project_uid,
+    )

@@ -46,5 +46,11 @@ class DbPort(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    async def select_port_by_ref_uid_and_ref_category(
+        self, ref_uid: int, ref_category: str
+    ) -> List[Port]:
+        raise NotImplementedError
+
+    @abstractmethod
     async def select_port_number_all(self) -> List[int]:
         raise NotImplementedError

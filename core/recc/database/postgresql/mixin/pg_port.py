@@ -12,6 +12,7 @@ from recc.database.postgresql.query.port import (
     DELETE_PORT_BY_NUMBER_AND_SOCK,
     SELECT_PORT_BY_NUMBER,
     SELECT_PORT_ALL,
+    SELECT_PORT_BY_REF_UID_AND_REF_CATEGORY,
     SELECT_PORT_NUMBER_ALL,
     get_update_port_query_by_number,
 )
@@ -67,6 +68,17 @@ class PgPort(DbPort, PgBase):
     @overrides
     async def select_port_all(self) -> List[Port]:
         return await self.rows(Port, SELECT_PORT_ALL)
+
+    @overrides
+    async def select_port_by_ref_uid_and_ref_category(
+        self, ref_uid: int, ref_category: str
+    ) -> List[Port]:
+        return await self.rows(
+            Port,
+            SELECT_PORT_BY_REF_UID_AND_REF_CATEGORY,
+            ref_uid,
+            ref_category,
+        )
 
     @overrides
     async def select_port_number_all(self) -> List[int]:

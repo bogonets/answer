@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import Optional
 from recc.chrono.datetime import tznow
-from recc.variables.database import TABLE_DAEMON
+from recc.variables.database import TABLE_DAEMON, FUNC_ADD_DAEMON_AND_PORT
 from recc.database.query_builder import UpdateBuilder, BuildResult
 
 INSERT_DAEMON = f"""
@@ -19,6 +19,10 @@ INSERT INTO {TABLE_DAEMON} (
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $7
 ) RETURNING uid;
+"""
+
+INSERT_DAEMON_AND_PORT = f"""
+SELECT {FUNC_ADD_DAEMON_AND_PORT}()
 """
 
 DELETE_DAEMON_BY_UID = f"""
