@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
+from unittest import IsolatedAsyncioTestCase, main, skipIf
 from tester.samples.read_samples import read_sample
-from recc.nvidia.nvidia_smi import parse_nvidia_smi_query
+from recc.packet.nvidia import NvidiaSmiLog
+from recc.nvidia.nvidia_smi import (
+    parse_nvidia_smi_query,
+    exists_nvidia_smi_executable,
+    nvidia_smi_query,
+)
 
 
-class NvidiaSmiTestCase(TestCase):
+class NvidiaSmiTestCase(IsolatedAsyncioTestCase):
     def test_parse_nvidia_smi_query(self):
         xml = read_sample("nvidia_smi_470.57.02_query.xml")
         log = parse_nvidia_smi_query(xml)
@@ -131,6 +136,11 @@ class NvidiaSmiTestCase(TestCase):
         self.assertEqual("/usr/lib/xorg/Xorg", gpu1.processes[0].process_name)
         self.assertEqual("4 MiB", gpu1.processes[0].used_memory)
         # fmt: on
+
+    @skipIf(not exists_nvidia_smi_executable(), "Not found nvidia-smi executable")
+    async def test_nvidia_smi_query(self):
+        log = await nvidia_smi_query()
+        self.assertIsInstance(log, NvidiaSmiLog)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ from typing import Optional, List
 from io import StringIO
 from xml.etree.ElementTree import parse as _xml_parse
 from xml.etree.ElementTree import Element
+from shutil import which
 from recc.packet.nvidia import (
     ClocksThrottleReasons,
     MemoryUsage,
@@ -15,6 +16,11 @@ from recc.packet.nvidia import (
     NvidiaSmiLog,
 )
 from recc.subprocess.async_subprocess import start_async_subprocess_simply
+from recc.variables.nvidia import (
+    NVIDIA_SMI_EXECUTABLE_NAME,
+    NVIDIA_SMI_QUERY_FLAG,
+    NVIDIA_SMI_XML_FORMAT_FLAG,
+)
 
 
 def _t(e: Optional[Element]) -> Optional[str]:
@@ -22,7 +28,7 @@ def _t(e: Optional[Element]) -> Optional[str]:
 
 
 def parse_element_to_clocks_throttle_reasons(
-    e: Optional[Element]
+    e: Optional[Element],
 ) -> Optional[ClocksThrottleReasons]:
     if e is None:
         return None
@@ -206,15 +212,31 @@ def parse_nvidia_smi_query(xml: str) -> NvidiaSmiLog:
     )
 
 
-async def nvidia_smi_query() -> NvidiaSmiLog:
+def find_nvidia_smi_executable() -> str:
+    path = which(NVIDIA_SMI_EXECUTABLE_NAME)
+    if path is not None:
+        return path
+    raise FileNotFoundError(f"Not found `{NVIDIA_SMI_EXECUTABLE_NAME}` executable")
+
+
+def exists_nvidia_smi_executable() -> bool:
+    try:
+        return bool(find_nvidia_smi_executable())
+    except FileNotFoundError:
+        return False
+
+
+async def nvidia_smi_query(encoding="utf-8") -> NvidiaSmiLog:
+    nvidia_smi = find_nvidia_smi_executable()
+
     code, stdout, stderr = await start_async_subprocess_simply(
-        "nvidia-smi", "--query", "--xml-format"
+        nvidia_smi, NVIDIA_SMI_QUERY_FLAG, NVIDIA_SMI_XML_FORMAT_FLAG
     )
 
     if code != 0:
-        stdout_msg = stdout.decode(encoding="utf-8")
-        stderr_msg = stderr.decode(encoding="utf-8")
+        stdout_msg = stdout.decode(encoding=encoding)
+        stderr_msg = stderr.decode(encoding=encoding)
         params = f"code={code},stdout='{stdout_msg}',stderr='{stderr_msg}'"
         raise RuntimeError(f"nvidia-smi query failed ({params})")
 
-    return parse_nvidia_smi_query(stdout.decode(encoding="utf-8"))
+    return parse_nvidia_smi_query(stdout.decode(encoding=encoding))
