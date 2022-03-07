@@ -11,6 +11,10 @@ import MainVmsDevices from '@/pages/main/MainVmsDevices.vue';
 import MainVmsDevicesDiscovery from '@/pages/main/MainVmsDevicesDiscovery.vue';
 import MainVmsDevicesDiscoveryEpr from '@/pages/main/MainVmsDevicesDiscoveryEpr.vue';
 import MainVmsDevicesEdit from '@/pages/main/MainVmsDevicesEdit.vue';
+import MainVmsDevicesEditInfo from '@/pages/main/MainVmsDevicesEditInfo.vue';
+import MainVmsDevicesEditLive from '@/pages/main/MainVmsDevicesEditLive.vue';
+import MainVmsDevicesEditRecord from '@/pages/main/MainVmsDevicesEditRecord.vue';
+import MainVmsDevicesEditEvents from '@/pages/main/MainVmsDevicesEditEvents.vue';
 import MainVmsDevicesEditEventConfigsEdit from '@/pages/main/MainVmsDevicesEditEventConfigsEdit.vue';
 import MainVmsDevicesEditEventConfigsNew from '@/pages/main/MainVmsDevicesEditEventConfigsNew.vue';
 import MainVmsDevicesNew from '@/pages/main/MainVmsDevicesNew.vue';
@@ -24,6 +28,8 @@ import MainVmsUserConfigs from '@/pages/main/MainVmsUserConfigs.vue';
 
 // External
 import mainAirjoyChildren from '@/router/children/external/airjoy/main';
+import RootGroups from "@/pages/RootGroups.vue";
+import rootNames from "@/router/names/root";
 
 export const mainChildren = [
     {
@@ -84,7 +90,28 @@ export const mainChildren = [
     {
         path: ':group/:project/vms/devices/edit/:device',
         component: MainVmsDevicesEdit,
-        name: mainNames.mainVmsDevicesEdit,
+        children: [
+            {
+                path: 'info',
+                component: MainVmsDevicesEditInfo,
+                name: mainNames.mainVmsDevicesEditInfo,
+            },
+            {
+                path: 'live',
+                component: MainVmsDevicesEditLive,
+                name: mainNames.mainVmsDevicesEditLive,
+            },
+            {
+                path: 'record',
+                component: MainVmsDevicesEditRecord,
+                name: mainNames.mainVmsDevicesEditRecord,
+            },
+            {
+                path: 'events',
+                component: MainVmsDevicesEditEvents,
+                name: mainNames.mainVmsDevicesEditEvents,
+            },
+        ]
     },
     {
         path: ':group/:project/vms/devices/edit/:device/event/configs/edit/:config',

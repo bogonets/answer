@@ -388,7 +388,7 @@ export default class MainVmsDevices extends VueBase {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     const device = item.device_uid.toString();
-    this.moveToMainVmsDevicesEdit(group, project, device);
+    this.moveToMainVmsDevicesEditInfo(group, project, device);
   }
 }
 </script>

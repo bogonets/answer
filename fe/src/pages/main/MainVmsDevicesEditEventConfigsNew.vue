@@ -67,7 +67,7 @@ export default class MainVmsDevicesEditEventConfigsNew extends VueBase {
     {
       text: this.$route.params.device,
       disabled: false,
-      href: () => this.moveToMainVmsDevicesEditEventConfigs(),
+      href: () => this.moveToMainVmsDevicesEditEvents(),
     },
     {
       text: this.$t('new'),
@@ -150,7 +150,7 @@ export default class MainVmsDevicesEditEventConfigsNew extends VueBase {
         .then(() => {
           this.loadingSubmit = false;
           this.toastRequestSuccess();
-          this.moveToMainVmsDevicesEditEventConfigs();
+          this.moveToMainVmsDevicesEditEvents();
         })
         .catch(error => {
           this.loadingSubmit = false;

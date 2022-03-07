@@ -166,7 +166,7 @@ export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
     {
       text: this.$route.params.device,
       disabled: false,
-      href: () => this.moveToMainVmsDevicesEditEventConfigs(),
+      href: () => this.moveToMainVmsDevicesEditEvents(),
     },
     {
       text: this.$route.params.config,
@@ -276,7 +276,7 @@ export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
     //     .then(() => {
     //       this.loadingSubmit = false;
     //       this.toastRequestSuccess();
-    //       this.moveToMainVmsDevicesEditEventConfigs();
+    //       this.moveToMainVmsDevicesEditEvents();
     //     })
     //     .catch(error => {
     //       this.loadingSubmit = false;
@@ -304,7 +304,7 @@ export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
           this.loadingDelete = false;
           this.showDeleteDialog = false;
           this.toastRequestSuccess();
-          this.moveToMainVmsDevicesEditEventConfigs();
+          this.moveToMainVmsDevicesEditEvents();
         })
         .catch(error => {
           this.loadingDelete = false;

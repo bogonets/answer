@@ -435,7 +435,7 @@ export default class MainVmsLive extends VueBase {
     if (typeof uid === 'undefined') {
       return;
     }
-    this.moveToMainVmsDevicesEdit(group, project, uid.toString());
+    this.moveToMainVmsDevicesEditInfo(group, project, uid.toString());
   }
 
   onClickFoldNavigation() {

@@ -65,24 +65,40 @@ export default class RouterMain extends mixins(RouterMainAirjoy) {
         this._moveToMainSubpage(mainNames.mainVmsDevicesDiscovery, group, project);
     }
 
-    moveToMainVmsDevicesEdit(
-        group?: string, project?: string, device?: string, tab?: string,
-    ) {
+    moveToMainVmsDevicesEditInfo(group?: string, project?: string, device?: string) {
         const params = {
             group: group || this.$route.params.group,
             project: project || this.$route.params.project,
             device: device || this.$route.params.device,
-            tab: tab || this.$route.params.tab,
         };
-        this.moveTo(mainNames.mainVmsDevicesEdit, params);
+        this.moveTo(mainNames.mainVmsDevicesEditInfo, params);
     }
 
-    moveToMainVmsDevicesEditEventConfigs(
-        group?: string, project?: string, device?: string
-    ) {
-        const eventConfigTabIndex = 3;
-        const tab = eventConfigTabIndex.toString();
-        this.moveToMainVmsDevicesEdit(group, project, device, tab);
+    moveToMainVmsDevicesEditLive(group?: string, project?: string, device?: string) {
+        const params = {
+            group: group || this.$route.params.group,
+            project: project || this.$route.params.project,
+            device: device || this.$route.params.device,
+        };
+        this.moveTo(mainNames.mainVmsDevicesEditLive, params);
+    }
+
+    moveToMainVmsDevicesEditRecord(group?: string, project?: string, device?: string) {
+        const params = {
+            group: group || this.$route.params.group,
+            project: project || this.$route.params.project,
+            device: device || this.$route.params.device,
+        };
+        this.moveTo(mainNames.mainVmsDevicesEditRecord, params);
+    }
+
+    moveToMainVmsDevicesEditEvents(group?: string, project?: string, device?: string) {
+        const params = {
+            group: group || this.$route.params.group,
+            project: project || this.$route.params.project,
+            device: device || this.$route.params.device,
+        };
+        this.moveTo(mainNames.mainVmsDevicesEditEvents, params);
     }
 
     moveToMainVmsDevicesEditEventConfigsEdit(
