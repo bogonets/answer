@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Final, Tuple
+from typing import Tuple
 from datetime import date, datetime
-
-YYYY_MM_DD_TEMPLATE: Final[str] = "YYYY-MM-DD"
-YYYY_MM_DD_TEMPLATE_LEN: Final[int] = len(YYYY_MM_DD_TEMPLATE)
-DEFAULT_DATE_SEPARATOR: Final[str] = "-"
+from recc.variables.chrono import YYYY_MM_DD_TEMPLATE_LEN, DEFAULT_DATE_SEPARATOR
 
 
 def parse_yyyy_mm_dd(text: str, separator=DEFAULT_DATE_SEPARATOR) -> date:
@@ -14,9 +11,8 @@ def parse_yyyy_mm_dd(text: str, separator=DEFAULT_DATE_SEPARATOR) -> date:
     """
 
     if len(text) != YYYY_MM_DD_TEMPLATE_LEN:
-        raise ValueError(
-            f"The `text` argument must be {YYYY_MM_DD_TEMPLATE_LEN} characters long"
-        )
+        _len = YYYY_MM_DD_TEMPLATE_LEN
+        raise ValueError(f"The `text` argument must be {_len} characters long: {text}")
     if text[4] != separator:
         raise ValueError(f"The separator must be `{separator}`")
     if text[7] != separator:
