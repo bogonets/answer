@@ -108,6 +108,7 @@ class RouterV2Admin:
             web.get(u.daemons_pdaemon, self.get_daemons_pdaemon),
             web.patch(u.daemons_pdaemon, self.patch_daemons_pdaemon),
             web.delete(u.daemons_pdaemon, self.delete_daemons_pdaemon),
+            web.post(u.daemons_pdaemon_environment, self.post_daemons_pdaemon_environment),  # noqa
             web.post(u.daemons_pdaemon_start, self.post_daemons_pdaemon_start),
             web.post(u.daemons_pdaemon_stop, self.post_daemons_pdaemon_stop),
 
@@ -524,6 +525,10 @@ class RouterV2Admin:
     @parameter_matcher
     async def delete_daemons_pdaemon(self, daemon: str) -> None:
         await self.context.delete_daemon_by_slug(daemon)
+
+    @parameter_matcher
+    async def post_daemons_pdaemon_environment(self, daemon: str) -> None:
+        raise NotImplementedError
 
     @parameter_matcher
     async def post_daemons_pdaemon_start(self, daemon: str) -> None:
