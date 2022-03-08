@@ -482,9 +482,8 @@ class RouterV2Admin:
         for daemon in daemons:
             if not daemon.slug:
                 raise RuntimeError("The `slug` of the daemon must exist.")
-            answer = daemon_to_answer(daemon)
-            answer.status = self.context.status(daemon.slug)
-            answer.exit_code = None
+            state = self.context.get_daemon_state(daemon.slug)
+            answer = daemon_to_answer(daemon, state, None)
             result.append(answer)
         return result
 
@@ -504,10 +503,8 @@ class RouterV2Admin:
         db_daemon = await self.context.get_daemon_by_slug(daemon)
         if not db_daemon.slug:
             raise RuntimeError("The `slug` of the daemon must exist.")
-        answer = daemon_to_answer(db_daemon)
-        answer.status = self.context.status(db_daemon.slug)
-        answer.exit_code = None
-        return answer
+        state = self.context.get_daemon_state(db_daemon.slug)
+        return daemon_to_answer(db_daemon, state, None)
 
     @parameter_matcher
     async def patch_daemons_pdaemon(self, daemon: str, body: UpdateDaemonQ) -> None:

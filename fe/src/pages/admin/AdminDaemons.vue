@@ -9,7 +9,7 @@ en:
     name: "Name"
     address: "Address"
     enable: "Enable"
-    status: "Status"
+    state: "Status"
     actions: "Actions"
   msg:
     loading: "Loading... Please wait"
@@ -29,7 +29,7 @@ ko:
     name: "이름"
     address: "주소"
     enable: "활성화"
-    status: "상태"
+    state: "상태"
     actions: "관리"
   msg:
     loading: "불러오는중 입니다... 잠시만 기다려 주세요."
@@ -119,12 +119,11 @@ ko:
         </v-icon>
       </template>
 
-      <template v-slot:item.status="{ item }">
-        <v-chip small :color="serverStatusColor(item)">
-          {{ item.status }}
+      <template v-slot:item.state="{ item }">
+        <v-chip small :color="stateColor(item)">
+          {{ stateName(item) }}
         </v-chip>
       </template>
-
 
       <template v-slot:item.actions="{ item }">
         <v-icon small class="mr-2" @click="onClickDevice(item)">
@@ -145,7 +144,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import type {DaemonA} from '@/packet/daemon';
-import {getStatusColor} from '@/packet/daemon';
+import {getStateName, getStateColor} from '@/packet/daemon';
 
 @Component({
   components: {
@@ -202,11 +201,11 @@ export default class AdminDaemons extends VueBase {
       value: 'enable',
     },
     {
-      text: this.$t('headers.status'),
+      text: this.$t('headers.state'),
       align: 'center',
       filterable: false,
       sortable: true,
-      value: 'status',
+      value: 'state',
     },
     {
       text: this.$t('headers.actions'),
@@ -242,8 +241,12 @@ export default class AdminDaemons extends VueBase {
         });
   }
 
-  serverStatusColor(item: DaemonA) {
-    return getStatusColor(item.status)
+  stateName(item: DaemonA) {
+    return getStateName(item.state);
+  }
+
+  stateColor(item: DaemonA) {
+    return getStateColor(item.state);
   }
 
   onInputSelected(value) {

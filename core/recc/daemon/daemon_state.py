@@ -5,24 +5,25 @@ from enum import Enum
 
 class DaemonState(Enum):
     Unknown = 0
-    EnvNotFound = 1
-    EnvCreating = 2
-    Down = 3
+    Unregistered = 1
+    EnvNotFound = 2
+    EnvCreating = 3
+    Down = 4
 
-    Running = 4
-    Sleeping = 5
-    DiskSleep = 6
-    Stopped = 7
-    TracingStop = 8
-    Zombie = 9
-    Dead = 10
-    WakeKill = 11
-    Waking = 12
-    Idle = 13
-    Locked = 14
-    Waiting = 15
-    Suspended = 16
-    Parked = 17
+    Running = 5
+    Sleeping = 6
+    DiskSleep = 7
+    Stopped = 8
+    TracingStop = 9
+    Zombie = 10
+    Dead = 11
+    WakeKill = 12
+    Waking = 13
+    Idle = 14
+    Locked = 15
+    Waiting = 16
+    Suspended = 17
+    Parked = 18
 
     @classmethod
     def from_process_status(cls, status: str):

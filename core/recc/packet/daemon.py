@@ -3,20 +3,21 @@
 from typing import Optional
 from datetime import datetime
 from dataclasses import dataclass
+from recc.daemon.daemon_state import DaemonState
 
 
 @dataclass
 class DaemonA:
     plugin: str
     slug: str
-    name: Optional[str] = None
-    address: Optional[str] = None
-    description: Optional[str] = None
-    enable: bool = False
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
+    name: str
+    address: str
+    description: str
+    enable: bool
+    created_at: datetime
+    updated_at: datetime
 
-    status: Optional[str] = None
+    state: DaemonState
     exit_code: Optional[int] = None
 
 

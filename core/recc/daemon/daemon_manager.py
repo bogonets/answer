@@ -5,6 +5,7 @@ from typing import Dict, Optional
 from asyncio import AbstractEventLoop
 from recc.aio.task_manager import TaskManager
 from recc.daemon.daemon_runner import DaemonRunner
+from recc.daemon.daemon_state import DaemonState
 
 
 class DaemonManager:
@@ -29,13 +30,13 @@ class DaemonManager:
     def is_running(self, slug: str) -> bool:
         return self._daemons[slug].is_running()
 
-    def status(self, slug: str) -> str:
+    def get_state(self, slug: str) -> DaemonState:
         try:
-            return self._daemons[slug].status
+            return DaemonState.from_process_status(self._daemons[slug].status)
         except KeyError:
-            return "unregistered"
+            return DaemonState.Unregistered
         except:  # noqa
-            return "error"
+            return DaemonState.Unknown
 
     # def exists_requirements(self, slug: str) -> bool:
     #     return self._daemons[slug].requirements_path.is_file()

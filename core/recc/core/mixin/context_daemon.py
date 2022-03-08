@@ -4,6 +4,7 @@ from typing import Optional, List
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.daemon import Daemon
 from recc.daemon.daemon_runner import DAEMON_SCRIPT_EXTENSION
+from recc.daemon.daemon_state import DaemonState
 
 
 class ContextDaemon(ContextBase):
@@ -77,11 +78,8 @@ class ContextDaemon(ContextBase):
     async def get_daemons(self) -> List[Daemon]:
         return await self.database.select_daemons()
 
-    def is_running(self, slug: str) -> bool:
-        return self.daemons.is_running(slug)
-
-    def status(self, slug: str) -> str:
-        return self.daemons.status(slug)
+    def get_daemon_state(self, slug: str) -> DaemonState:
+        return self.daemons.get_state(slug)
 
     async def start_daemon(self, slug: str) -> None:
         await self.daemons.start(slug)

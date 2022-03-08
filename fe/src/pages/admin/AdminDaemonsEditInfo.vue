@@ -9,7 +9,6 @@ en:
   labels:
     created_at: "Created At"
     updated_at: "Updated At"
-    requirements_sha256: "Req/SHA256"
     status: "Status"
     exit_code: "Exit code"
     delete: "Delete a daemon"
@@ -33,7 +32,6 @@ ko:
   labels:
     created_at: "데몬 생성일"
     updated_at: "데몬 갱신일"
-    requirements_sha256: "Req/SHA256"
     status: "상태"
     exit_code: "종료 코드"
     delete: "데몬 제거"
@@ -85,14 +83,10 @@ ko:
               <td>{{ updatedAt }}</td>
             </tr>
             <tr>
-              <td>{{ $t('labels.requirements_sha256') }}</td>
-              <td>{{ original.requirements_sha256 }}</td>
-            </tr>
-            <tr>
               <td>{{ $t('labels.status') }}</td>
               <td>
-                <v-chip small :color="serverStatusColor(original.status)">
-                  {{ original.status }}
+                <v-chip small :color="stateColor(original)">
+                  {{ stateName(original) }}
                 </v-chip>
               </td>
             </tr>
@@ -194,7 +188,12 @@ import FormDaemon from '@/components/FormDaemon.vue';
 import type {DaemonA, UpdateDaemonQ} from '@/packet/daemon';
 import {iso8601ToLocal} from '@/chrono/iso8601';
 import * as _ from 'lodash';
-import {getStatusColor, isStatusRunning} from '@/packet/daemon';
+import {
+  DaemonState,
+  getStateColor,
+  getStateName,
+  isStateRunning
+} from '@/packet/daemon';
 
 @Component({
   components: {
@@ -241,8 +240,12 @@ export default class AdminDaemonsEditInfo extends VueBase {
     }
   }
 
-  serverStatusColor(status?: string) {
-    return getStatusColor(status)
+  stateName(item: DaemonA) {
+    return getStateName(item.state);
+  }
+
+  stateColor(item: DaemonA) {
+    return getStateColor(item.state);
   }
 
   get createdAt() {
