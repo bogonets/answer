@@ -12,7 +12,6 @@ export const mainNames = {
     mainVmsDevices: 'mainVmsDevices',
     mainVmsDevicesDiscovery: 'mainVmsDevicesDiscovery',
     mainVmsDevicesDiscoveryEpr: 'mainVmsDevicesDiscoveryEpr',
-    mainVmsDevicesEdit: 'mainVmsDevicesEdit',
     mainVmsDevicesEditInfo: 'mainVmsDevicesEditInfo',
     mainVmsDevicesEditLive: 'mainVmsDevicesEditLive',
     mainVmsDevicesEditRecord: 'mainVmsDevicesEditRecord',

@@ -3,6 +3,9 @@ import AdminConfigs from '@/pages/admin/AdminConfigs.vue';
 import AdminContainers from '@/pages/admin/AdminContainers.vue';
 import AdminDaemons from '@/pages/admin/AdminDaemons.vue';
 import AdminDaemonsEdit from '@/pages/admin/AdminDaemonsEdit.vue';
+import AdminDaemonsEditInfo from '@/pages/admin/AdminDaemonsEditInfo.vue';
+import AdminDaemonsEditEnv from '@/pages/admin/AdminDaemonsEditEnv.vue';
+import AdminDaemonsEditLog from '@/pages/admin/AdminDaemonsEditLog.vue';
 import AdminDaemonsNew from '@/pages/admin/AdminDaemonsNew.vue';
 import AdminGroups from '@/pages/admin/AdminGroups.vue';
 import AdminGroupsEdit from '@/pages/admin/AdminGroupsEdit.vue';
@@ -117,7 +120,23 @@ export const adminChildren = [
     {
         path: 'daemons/edit/:daemon',
         component: AdminDaemonsEdit,
-        name: adminNames.adminDaemonsEdit,
+        children: [
+            {
+                path: 'info',
+                component: AdminDaemonsEditInfo,
+                name: adminNames.adminDaemonsEditInfo,
+            },
+            {
+                path: 'env',
+                component: AdminDaemonsEditEnv,
+                name: adminNames.adminDaemonsEditEnv,
+            },
+            {
+                path: 'log',
+                component: AdminDaemonsEditLog,
+                name: adminNames.adminDaemonsEditLog,
+            },
+        ],
     },
     {
         path: 'daemons/new',

@@ -302,7 +302,7 @@ export default class AdminDaemons extends VueBase {
   }
 
   onClickDevice(item: DaemonA) {
-    this.moveToAdminDaemonsEdit(item.slug);
+    this.moveToAdminDaemonsEditInfo(item.slug);
   }
 }
 </script>
