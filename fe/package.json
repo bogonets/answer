@@ -53,8 +53,8 @@
   },
   "devDependencies": {
     "@intlify/vue-i18n-loader": "^1.0.0",
-    "@mdi/font": "^5.9.55",
-    "@mdi/js": "^5.9.55",
+    "@mdi/font": "^6.5.95",
+    "@mdi/js": "^6.5.95",
     "@types/jest": "^24.0.19",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
