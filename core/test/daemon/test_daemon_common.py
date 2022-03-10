@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Dict, List, Any, Optional
 from grpc.aio import AioRpcError
 from dataclasses import dataclass
-from tester.unittest.daemon_test_case import DaemonTestCase
+from tester.unittest.daemon_server_test_case import DaemonServerTestCase
 from tester.variables import (
     DAEMON_ARRAY_PERFORMANCE_TEST_SKIP,
     DAEMON_ARRAY_PERFORMANCE_ITERATION,
@@ -41,7 +41,7 @@ PERFORMANCE_TEST_ARRAY = randint(0, 255, size=(1270, 1920, 3), dtype=uint8)
 PERFORMANCE_TEST_BODY = _Test1(0, "aa", {"k": 100}, [1, "Y"], None, [])
 
 
-class DaemonCommonTestCase(DaemonTestCase):
+class DaemonCommonTestCase(DaemonServerTestCase):
     async def test_heartbeat(self):
         self.assertTrue(await self.client.heartbeat(0))
 

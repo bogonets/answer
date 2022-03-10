@@ -1,24 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import os
-from tempfile import TemporaryDirectory
-from unittest import IsolatedAsyncioTestCase
 from recc.daemon.daemon_client import create_daemon_client
 from recc.daemon.daemon_servicer import create_daemon_server
 from recc.variables.rpc import DEFAULT_DAEMON_ADDRESS
-from recc.variables.storage import LOCAL_STORAGE_DAEMON_NAME
-from tester.plugins.copy_plugin import copy_plugin
+from tester.unittest.daemon_file_test_case import DaemonFileTestCase
 
 
-class DaemonTestCase(IsolatedAsyncioTestCase):
-    async def _setup(self):
-        self.temp = TemporaryDirectory()
-        self.daemon_dir = os.path.join(self.temp.name, LOCAL_STORAGE_DAEMON_NAME)
-        os.mkdir(self.daemon_dir)
-        self.daemon_filename = "daemon_simple.py"
-        self.daemon_path = copy_plugin(self.daemon_filename, self.daemon_dir)
-        self.assertTrue(os.path.isfile(self.daemon_path))
-
+class DaemonServerTestCase(DaemonFileTestCase):
+    async def _start_server(self):
         accept_info = create_daemon_server(DEFAULT_DAEMON_ADDRESS, self.daemon_path)
         self.servicer = accept_info.servicer
         self.server = accept_info.server
@@ -42,14 +31,7 @@ class DaemonTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(0, await self.client.register())
         self.assertTrue(self.servicer.plugin.globals["assert_on_register"])
 
-    async def asyncSetUp(self):
-        try:
-            await self._setup()
-        except:  # noqa
-            await self._teardown()
-            raise
-
-    async def _teardown(self):
+    async def _stop_server(self):
         self.assertFalse(self.servicer.plugin.globals["assert_main"])
         self.assertTrue(self.servicer.plugin.globals["assert_on_open"])
         self.assertFalse(self.servicer.plugin.globals["assert_on_close"])
@@ -62,5 +44,12 @@ class DaemonTestCase(IsolatedAsyncioTestCase):
         await self.server.stop(None)
         self.assertFalse(self.client.is_open())
 
+    async def asyncSetUp(self):
+        try:
+            await self._start_server()
+        except:  # noqa
+            await self._stop_server()
+            raise
+
     async def asyncTearDown(self):
-        await self._teardown()
+        await self._stop_server()
