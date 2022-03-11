@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+from unittest import TestCase, main
 from recc.database.query_builder import UpdateBuilder
 
 
-class UpdateBuilderTestCase(unittest.TestCase):
+class UpdateBuilderTestCase(TestCase):
     def test_build(self):
         email = "test@localhost"
         index = 100
@@ -31,4 +31,4 @@ class UpdateBuilderTestCase(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

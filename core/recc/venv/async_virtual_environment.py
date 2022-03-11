@@ -99,11 +99,15 @@ class AsyncVirtualEnvironment:
     def site_packages_dir(self) -> str:
         return self._context.site_packages_dir
 
+    @property
+    def exists(self) -> bool:
+        return os.path.exists(self.env_exe)
+
     def _create(self) -> None:
         self._venv.create(self._root_directory)
 
     def _create_if_not_exists(self) -> None:
-        if not os.path.exists(self.env_exe):
+        if not self.exists:
             self._venv.create(self._root_directory)
 
     def _clear(self) -> None:
@@ -153,7 +157,7 @@ class AsyncVirtualEnvironment:
             self._create_configuration()
 
     async def create_if_not_exists(self) -> None:
-        if not os.path.exists(self.env_exe):
+        if not self.exists:
             await self.create()
 
     def create_python_subprocess(self) -> AsyncPythonSubprocess:

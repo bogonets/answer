@@ -217,6 +217,7 @@ class AsyncSubprocess:
     def get_pid(self) -> int:
         return self.process.pid
 
+    # noinspection PyTypeChecker
     @property
     def status(self) -> str:
         return psutil.Process(self.process.pid).status()

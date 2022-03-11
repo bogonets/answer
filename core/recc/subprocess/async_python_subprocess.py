@@ -107,7 +107,13 @@ class AsyncPythonSubprocess:
             method=method,
         )
 
-    async def start_python_simply(self, *subcommands) -> Tuple[List[str], List[str]]:
+    async def start_python_simply(
+        self,
+        *subcommands,
+        cwd: Optional[str] = None,
+        env: Optional[Mapping[str, str]] = None,
+        method=SubprocessMethod.Exec,
+    ) -> Tuple[List[str], List[str]]:
         stdout_lines: List[str] = list()
         stderr_lines: List[str] = list()
 
@@ -125,7 +131,10 @@ class AsyncPythonSubprocess:
             *subcommands,
             stdout_callback=_stdout_callback,
             stderr_callback=_stderr_callback,
+            cwd=cwd,
+            env=env,
             writable=False,
+            method=method,
         )
         exit_code = await proc.wait()
 
@@ -137,7 +146,7 @@ class AsyncPythonSubprocess:
             if stderr_lines:
                 stderr_text = reduce(lambda x, y: f"{x} {y}", stderr_lines)
                 params_msg += f",stderr={stderr_text}"
-            error_msg = f"pip {subcommands[0]} error: {params_msg}"
+            error_msg = f"python {subcommands[0]} error: {params_msg}"
             raise RuntimeError(error_msg)
 
         return stdout_lines, stderr_lines
@@ -151,6 +160,7 @@ class AsyncPythonSubprocess:
             "ensurepip",
             "--upgrade",
             "--default-pip",
+            env=dict(),
         )
 
     async def recc_version(self) -> str:

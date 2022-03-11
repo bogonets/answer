@@ -2,10 +2,13 @@
 
 from sys import version_info
 from tempfile import TemporaryDirectory
-from unittest import IsolatedAsyncioTestCase, main
+from unittest import IsolatedAsyncioTestCase, main, skipIf
 from recc.venv.async_virtual_environment import AsyncVirtualEnvironment
+from recc.file.permission import is_executable_file
+from recc.debugging.trace import is_debugging_mode
 
 
+@skipIf(is_debugging_mode(), "It does not work normally in debugging mode.")
 class VirtualEnvironmentTestCase(IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.temp_dir = TemporaryDirectory()
@@ -34,6 +37,10 @@ class VirtualEnvironmentTestCase(IsolatedAsyncioTestCase):
         python = self.venv.create_python_subprocess()
         version = await python.version_tuple()
         self.assertEqual(version_info[:3], version)
+
+    async def test_executables(self):
+        self.assertTrue(is_executable_file(self.venv.env_exe))
+        self.assertTrue(is_executable_file(self.venv.pip_exe))
 
 
 if __name__ == "__main__":
