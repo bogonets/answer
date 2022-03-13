@@ -261,6 +261,8 @@ def _deserialize_any(
         # Deduced by class.
 
         if not is_none(cls) and cls is not Any:
+            # [IMPORTANT]
+            # Do not change if-else order (Reason: `issubclass(bool, int) == True`)
             if issubclass(cls, bytes):
                 return bytes(data)
             elif issubclass(cls, bytearray):

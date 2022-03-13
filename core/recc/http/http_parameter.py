@@ -45,35 +45,11 @@ _INTERNAL_SERVER_ERROR = HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 def _is_serializable_instance(obj: Any) -> bool:
-    if isinstance(obj, dict):
-        return True
-    if isinstance(obj, str):
-        return True
-    if isinstance(obj, int):
-        return True
-    if isinstance(obj, list):
-        return True
-    if isinstance(obj, float):
-        return True
-    if isinstance(obj, bool):
-        return True
-    return False
+    return isinstance(obj, (dict, str, int, list, float, bool))
 
 
 def _is_serializable_class(obj: type) -> bool:
-    if issubclass(obj, dict):
-        return True
-    if issubclass(obj, str):
-        return True
-    if issubclass(obj, int):
-        return True
-    if issubclass(obj, list):
-        return True
-    if issubclass(obj, float):
-        return True
-    if issubclass(obj, bool):
-        return True
-    return False
+    return issubclass(obj, (dict, str, int, list, float, bool))
 
 
 def is_subclass_safe(obj, cls) -> bool:
@@ -85,27 +61,21 @@ def is_subclass_safe(obj, cls) -> bool:
 def is_path_class(obj) -> bool:
     if not isinstance(obj, type):
         return False
-    if issubclass(obj, str):
-        return True
-    if issubclass(obj, int):
-        return True
-    if issubclass(obj, float):
-        return True
-    if issubclass(obj, bool):
-        return True
-    return False
+    return issubclass(obj, (str, int, float, bool))
 
 
 def cast_builtin_type_from_string(data: str, cls) -> Any:
     assert isinstance(cls, type)
+    # [IMPORTANT]
+    # Do not change if-else order (Reason: `issubclass(bool, int) == True`)
     if issubclass(cls, str):
         return data
+    elif issubclass(cls, bool):
+        return str_to_bool(data)
     elif issubclass(cls, int):
         return int(data)
     elif issubclass(cls, float):
         return float(data)
-    elif issubclass(cls, bool):
-        return str_to_bool(data)
     return cls(data)  # type: ignore[call-arg]
 
 
