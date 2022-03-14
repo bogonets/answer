@@ -42,3 +42,14 @@ def get_namespace_by_cfg_path(
     parser = ConfigParser()
     parser.read(cfg_path, encoding=encoding)
     return get_namespace_by_parser(parser, section)
+
+
+def write_cfg_file(namespace: Namespace, section: str, cfg_path: str) -> None:
+    parser = ConfigParser()
+    parser[section] = dict()
+    for key, value in vars(namespace).items():
+        if value is None:
+            continue
+        parser.set(section, key, str(value))
+    with open(cfg_path, "w") as f:
+        parser.write(f)
