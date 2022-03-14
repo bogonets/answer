@@ -112,7 +112,6 @@ def cast_config_type(namespace: Namespace) -> ConfigType:
 
 def parse_arguments_to_namespace(
     *cmdline: Any,
-    namespace: Optional[Namespace] = None,
     ignore_sys_argv=False,
     ignore_environment=False,
     ignore_default_paths=False,
@@ -127,7 +126,12 @@ def parse_arguments_to_namespace(
 
     # 1st: command-line arguments
     parser, helps, usages = create_argument_parser()
-    cmd_config, unrecognized_args = parser.parse_known_args(args, namespace)
+
+    # [IMPORTANT]
+    # Do not use `namespace` parameter.
+    # In the process of merging in the order `env -> cfg -> cmd`,
+    # the `--verbose` option is `counted`, not `merge`.
+    cmd_config, unrecognized_args = parser.parse_known_args(args, namespace=None)
 
     assert hasattr(cmd_config, COMMAND_ARGUMENT_KEY)
     assert hasattr(cmd_config, HELP_ARGUMENT_KEY)
@@ -224,14 +228,12 @@ def parse_arguments_to_namespace(
 
 def parse_arguments_to_config(
     *cmdline: Any,
-    namespace: Optional[Namespace] = None,
     ignore_sys_argv=False,
     ignore_environment=False,
     ignore_default_paths=False,
 ) -> ConfigType:
     result = parse_arguments_to_namespace(
         *cmdline,
-        namespace=namespace,
         ignore_sys_argv=ignore_sys_argv,
         ignore_environment=ignore_environment,
         ignore_default_paths=ignore_default_paths,
