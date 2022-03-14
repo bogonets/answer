@@ -63,7 +63,7 @@ class AsyncSubprocess:
         self._stderr_task: Optional[Task] = None
         self._method = method
         self._cwd = cwd if cwd else os.getcwd()
-        self._env = dict(env) if env else get_os_envs_dict()
+        self._env = dict(env) if env is not None else get_os_envs_dict()
 
     def is_started(self) -> bool:
         return self._process is not None

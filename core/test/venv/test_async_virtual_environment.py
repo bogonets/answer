@@ -8,7 +8,7 @@ from recc.filesystem.permission import is_executable_file
 from recc.debugging.trace import is_debugging_mode
 
 
-@skipIf(is_debugging_mode(), "It does not work normally in debugging mode.")
+@skipIf(is_debugging_mode(), "It does not work normally in debugging mode")
 class VirtualEnvironmentTestCase(IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.temp_dir = TemporaryDirectory()

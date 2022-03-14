@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import os
 import sys
 from typing import Optional, List, Dict, Tuple, Mapping
 from functools import reduce
+from dataclasses import dataclass
 from recc.subprocess.async_subprocess import (
     SubprocessMethod,
     AsyncSubprocess,
@@ -30,18 +32,41 @@ class Package(object):
         return f"Package<name={self.name},version={self.version}>"
 
 
+@dataclass
+class PackageInfo:
+    name: str
+    version: str
+    summary: str
+    homepage: str
+    author: str
+    author_email: str
+    license: str
+    location: str
+    requires: List[str]
+    required_by: List[str]
+
+
 class AsyncPythonSubprocess:
     def __init__(
         self,
         executable: Optional[str] = None,
         pip_timeout: Optional[float] = None,
+        env: Optional[Mapping[str, str]] = None,
+        method=SubprocessMethod.Exec,
     ):
         self._executable = executable if executable else sys.executable
         self._pip_timeout = pip_timeout if pip_timeout else 0.0
 
+        self.env = dict(env) if env is not None else dict()
+        self.method = method
+
     @property
-    def executable(self):
+    def executable(self) -> str:
         return self._executable
+
+    @property
+    def executable_dir(self) -> str:
+        return os.path.dirname(self._executable)
 
     @classmethod
     def create_system(cls, pip_timeout: Optional[float] = None):
@@ -107,13 +132,7 @@ class AsyncPythonSubprocess:
             method=method,
         )
 
-    async def start_python_simply(
-        self,
-        *subcommands,
-        cwd: Optional[str] = None,
-        env: Optional[Mapping[str, str]] = None,
-        method=SubprocessMethod.Exec,
-    ) -> Tuple[List[str], List[str]]:
+    async def start_python_simply(self, *subcommands) -> Tuple[List[str], List[str]]:
         stdout_lines: List[str] = list()
         stderr_lines: List[str] = list()
 
@@ -131,10 +150,10 @@ class AsyncPythonSubprocess:
             *subcommands,
             stdout_callback=_stdout_callback,
             stderr_callback=_stderr_callback,
-            cwd=cwd,
-            env=env,
+            cwd=None,
+            env=self.env,
             writable=False,
-            method=method,
+            method=self.method,
         )
         exit_code = await proc.wait()
 
@@ -160,7 +179,6 @@ class AsyncPythonSubprocess:
             "ensurepip",
             "--upgrade",
             "--default-pip",
-            env=dict(),
         )
 
     async def recc_version(self) -> str:
@@ -232,7 +250,7 @@ class AsyncPythonSubprocess:
         packages = global_json_decoder(json_text)
         return [Package(p["name"], p["version"]) for p in packages]
 
-    async def show(self, package) -> Dict[str, str]:
+    async def show(self, package: str) -> Dict[str, str]:
         stdout_lines, _ = await self.start_pip_simply("show", package)
         result = dict()
         for header_line in stdout_lines:
@@ -243,3 +261,41 @@ class AsyncPythonSubprocess:
             val = items[1].strip()
             result[key] = val
         return result
+
+    async def show_as_info(self, package: str) -> PackageInfo:
+        info = await self.show(package)
+
+        def _split_packages(text: str) -> List[str]:
+            return list(
+                filter(
+                    lambda x: bool(x),
+                    map(
+                        lambda x: x.strip(),
+                        text.split(","),
+                    ),
+                )
+            )
+
+        name = info.get("Name", "").strip()
+        version = info.get("Version", "").strip()
+        summary = info.get("Summary", "").strip()
+        homepage = info.get("Home-page", "").strip()
+        author = info.get("Author", "").strip()
+        author_email = info.get("Author-email", "").strip()
+        license_ = info.get("License", "").strip()  # Shadows built-in name 'license'
+        location = info.get("Location", "").strip()
+        requires = _split_packages(info.get("Requires", ""))
+        required_by = _split_packages(info.get("Required-by", ""))
+
+        return PackageInfo(
+            name,
+            version,
+            summary,
+            homepage,
+            author,
+            author_email,
+            license_,
+            location,
+            requires,
+            required_by,
+        )
