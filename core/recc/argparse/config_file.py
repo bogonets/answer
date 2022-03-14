@@ -6,7 +6,7 @@ from argparse import Namespace
 from recc.argparse.parser.cfg_parse import get_namespace_by_cfg_path
 from recc.argparse.parser.json_parse import get_namespace_by_json_path
 from recc.argparse.parser.yaml_parse import get_namespace_by_yaml_path
-from recc.file.permission import is_readable_file
+from recc.filesystem.permission import is_readable_file
 
 CFG_EXTENSIONS = ("cfg", "ini")
 JSON_EXTENSIONS = ("json",)

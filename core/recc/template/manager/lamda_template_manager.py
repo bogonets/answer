@@ -8,7 +8,7 @@ from tarfile import open as tar_open
 from tarfile import TarInfo
 from typing import List, Dict, Optional, Iterable, KeysView, ValuesView
 from recc.package.package_utils import get_module_directory
-from recc.file.permission import is_readable_dir
+from recc.filesystem.permission import is_readable_dir
 from recc.serialization.json import deserialize_json_file
 from recc.template.lamda_template import LamdaTemplate, RuntimeInformation
 from recc.template.manager.lamda_template_position import LamdaTemplatePosition

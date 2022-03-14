@@ -7,7 +7,7 @@ from recc.argparse.config.global_config import (
     XML_DRIVER_XMLTODICT,
     YAML_DRIVER_PYYAML,
 )
-from recc.file.permission import is_readable_file
+from recc.filesystem.permission import is_readable_file
 from recc.logging.logging import recc_common_logger as logger
 from recc.logging.logging import (
     set_basic_config,

@@ -5,7 +5,7 @@ from unittest import main, skipIf
 from tester.unittest.daemon_server_test_case import DaemonFileTestCase
 from recc.daemon.daemon_client import create_daemon_client
 from recc.daemon.daemon_runner import DaemonRunner2
-from recc.file.permission import is_executable_file
+from recc.filesystem.permission import is_executable_file
 from recc.debugging.trace import is_debugging_mode
 from recc.variables.rpc import DEFAULT_DAEMON_PORT, DEFAULT_DAEMON_ADDRESS
 from recc.variables.storage import (

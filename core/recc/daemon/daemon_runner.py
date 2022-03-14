@@ -23,7 +23,11 @@ from recc.argparse.config.daemon_config import (
     ARG_DAEMON_FILE,
     ARG_DAEMON_PACKAGES_DIR,
 )
-from recc.file.permission import is_readable_file, is_readable_dir, is_writable_dir
+from recc.filesystem.permission import (
+    is_readable_file,
+    is_readable_dir,
+    is_writable_dir,
+)
 from recc.daemon.daemon_state import DaemonState
 
 

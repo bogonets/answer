@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-import tempfile
-import unittest
-from recc.file.permission import (
+from tempfile import mkstemp, mkdtemp
+from unittest import TestCase, main
+from recc.filesystem.permission import (
     change_readable,
     change_writable,
     change_executable,
@@ -20,16 +20,16 @@ from recc.file.permission import (
 
 
 def _create_temp_file() -> str:
-    fd, name = tempfile.mkstemp()
+    fd, name = mkstemp()
     os.close(fd)
     return name
 
 
 def _create_temp_dir() -> str:
-    return tempfile.mkdtemp()
+    return mkdtemp()
 
 
-class PermissionTestCase(unittest.TestCase):
+class PermissionTestCase(TestCase):
     def test_readable_file(self):
         path = _create_temp_file()
         change_readable(path)
@@ -104,4 +104,4 @@ class PermissionTestCase(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

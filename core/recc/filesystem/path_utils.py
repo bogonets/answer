@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import os
-import tempfile
+from tempfile import gettempdir
+from functools import lru_cache
 
 
-def _get_home_dir() -> str:
+@lru_cache
+def get_home_dir() -> str:
     try:
         # Python 3.5+
         from pathlib import Path
@@ -14,5 +16,5 @@ def _get_home_dir() -> str:
         return os.path.expanduser("~")
 
 
-HOME_DIR = _get_home_dir()
-TEMP_DIR = tempfile.gettempdir()
+HOME_DIR = get_home_dir()
+TEMP_DIR = gettempdir()

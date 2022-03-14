@@ -4,7 +4,7 @@ from sys import version_info
 from tempfile import TemporaryDirectory
 from unittest import IsolatedAsyncioTestCase, main, skipIf
 from recc.venv.async_virtual_environment import AsyncVirtualEnvironment
-from recc.file.permission import is_executable_file
+from recc.filesystem.permission import is_executable_file
 from recc.debugging.trace import is_debugging_mode
 
 

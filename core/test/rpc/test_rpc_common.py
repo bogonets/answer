@@ -8,7 +8,7 @@ from tester.unittest.rpc_test_case import RpcTestCase
 from tester.lamda.numpy_plugins import copy_builtin_numpy_nodes
 from datetime import datetime, timedelta
 from recc.variables.storage import LOCAL_STORAGE_TEMPLATE_NAME, TASK_STORAGE_VENV_NAME
-from recc.file.remove import remove_recursively
+from recc.filesystem.remove import remove_recursively
 
 
 class RpcCommonTestCase(RpcTestCase):

@@ -2,7 +2,7 @@
 
 import os
 from typing import Dict, KeysView, ValuesView, List
-from recc.file.directory import prepare_directory
+from recc.filesystem.directory import prepare_directory
 from recc.storage.sock.sock_path import get_unix_domain_socket_url
 from recc.template.lamda_template import LamdaTemplate
 from recc.template.manager.lamda_template_key import LamdaTemplateKey
