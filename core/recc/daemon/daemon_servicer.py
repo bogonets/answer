@@ -188,28 +188,34 @@ def create_daemon_server(
         return _AcceptInfo(servicer, server, accepted_port_number)
 
 
-async def wait_connectable(address: str) -> bool:
-    def _try_cb(i: int, max_attempts: int) -> None:
-        assert 0 <= i <= max_attempts
-        attempts_msg = f"{i+1}/{max_attempts}"
+async def wait_connectable(
+    address: str,
+    delay: Optional[float] = None,
+    max_attempts: Optional[int] = None,
+) -> bool:
+    def _try_cb(i: int, m: int) -> None:
+        assert 0 <= i <= m
+        attempts_msg = f"{i+1}/{m}"
         logger.debug(f"wait_connectable() -> Try connection ({attempts_msg}) ...")
 
-    def _retry_cb(i: int, max_attempts: int) -> None:
-        assert 0 <= i <= max_attempts
-        attempts_msg = f"{i+1}/{max_attempts}"
+    def _retry_cb(i: int, m: int) -> None:
+        assert 0 <= i <= m
+        attempts_msg = f"{i+1}/{m}"
         logger.debug(f"wait_connectable() -> Retry connection ({attempts_msg}) ...")
 
-    def _success_cb(i: int, max_attempts: int) -> None:
-        assert 0 <= i <= max_attempts
+    def _success_cb(i: int, m: int) -> None:
+        assert 0 <= i <= m
         logger.info("wait_connectable() -> Self connection successful !!")
 
-    def _failure_cb(i: int, max_attempts: int) -> None:
-        assert 0 <= i <= max_attempts
+    def _failure_cb(i: int, m: int) -> None:
+        assert 0 <= i <= m
         logger.debug("wait_connectable() -> Self connection failure.")
 
     logger.info(f"Try connection address: {address}")
     return await try_connection(
-        lambda: heartbeat(address),
+        predictor=lambda: heartbeat(address),
+        delay=delay,
+        max_attempts=max_attempts,
         try_cb=_try_cb,
         retry_cb=_retry_cb,
         success_cb=_success_cb,

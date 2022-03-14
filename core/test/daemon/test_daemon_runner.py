@@ -4,7 +4,8 @@ import os
 from unittest import main, skipIf
 from tester.unittest.daemon_server_test_case import DaemonFileTestCase
 from recc.daemon.daemon_client import create_daemon_client
-from recc.daemon.daemon_runner import DaemonRunner2
+from recc.daemon.daemon_runner import StandardDaemonRunnerCallbacks, DaemonRunner2
+from recc.daemon.daemon_servicer import wait_connectable
 from recc.filesystem.permission import is_executable_file
 from recc.debugging.trace import is_debugging_mode
 from recc.variables.rpc import DEFAULT_DAEMON_PORT, DEFAULT_DAEMON_ADDRESS
@@ -32,6 +33,7 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
             self.daemon_path,
             self.venv_dir,
             self.work_dir,
+            callbacks=StandardDaemonRunnerCallbacks(),
         )
 
     def tearDown(self):
@@ -43,24 +45,18 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
         self.assertTrue(self.runner.exists)
         self.assertTrue(is_executable_file(self.runner.python_executable))
         self.assertTrue(is_executable_file(self.runner.pip_executable))
-        # await self.runner.open(self.server_address)
+        await self.runner.open(self.server_address)
+        self.assertTrue(await wait_connectable(self.client_address))
 
-        # accept_info = create_daemon_server(DEFAULT_DAEMON_ADDRESS, self.daemon_path)
-        # self.servicer = accept_info.servicer
-        # self.server = accept_info.server
-        # self.port = accept_info.accepted_port_number
-        # self.address = f"localhost:{self.port}"
-
-        # await self.client.open()
-        # self.assertTrue(self.client.is_open())
-        # self.assertEqual(0, await self.client.register())
+        await self.client.open()
+        self.assertTrue(self.client.is_open())
+        self.assertEqual(0, await self.client.register())
 
     async def _stop_server(self):
-        # if self.client.is_open():
-        #     await self.client.close()
-        # await self.runner.close()
-        # self.assertFalse(self.client.is_open())
-        pass
+        if self.client.is_open():
+            await self.client.close()
+        self.assertFalse(self.client.is_open())
+        await self.runner.close()
 
     async def asyncSetUp(self):
         try:
@@ -72,15 +68,9 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
     async def asyncTearDown(self):
         await self._stop_server()
 
-    # async def test_heartbeat(self):
-    #     self.assertTrue(await self.client.heartbeat(0))
-    #
-    # async def test_get_test(self):
-    #     result = await self.client.get("/test")
-    #     self.assertEqual(0, len(result))
-
     async def test_default(self):
-        pass
+        self.assertTrue(await self.client.heartbeat(0))
+        self.assertEqual(0, len(await self.client.get("/test")))
 
 
 if __name__ == "__main__":

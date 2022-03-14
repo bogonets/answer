@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
+from abc import ABCMeta, abstractmethod
 from typing import Optional
 from pathlib import Path
+from functools import partial
 from asyncio import (
     AbstractEventLoop,
     get_event_loop,
@@ -12,6 +15,7 @@ from asyncio import (
     shield,
     get_running_loop,
 )
+from overrides import overrides
 from recc.logging.logging import recc_daemon_logger as logger
 from recc.subprocess.async_subprocess import AsyncSubprocess
 from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
@@ -182,6 +186,26 @@ class DaemonRunner:
         self.process = None
 
 
+class DaemonRunnerCallbacks(metaclass=ABCMeta):
+    @abstractmethod
+    async def on_stdout(self, data: bytes) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def on_stderr(self, data: bytes) -> None:
+        raise NotImplementedError
+
+
+class StandardDaemonRunnerCallbacks(DaemonRunnerCallbacks):
+    @overrides
+    async def on_stdout(self, data: bytes) -> None:
+        sys.stdout.write(str(data, encoding="utf-8"))
+
+    @overrides
+    async def on_stderr(self, data: bytes) -> None:
+        sys.stderr.write(str(data, encoding="utf-8"))
+
+
 class DaemonRunner2:
     def __init__(
         self,
@@ -191,6 +215,7 @@ class DaemonRunner2:
         venv_dir: str,
         system_site_packages=False,
         pip_timeout: Optional[float] = None,
+        callbacks: Optional[DaemonRunnerCallbacks] = None,
     ) -> None:
         assert os.path.isdir(plugin_dir)
         assert is_readable_dir(plugin_dir)
@@ -216,6 +241,8 @@ class DaemonRunner2:
         self._creator_task: Optional[Task] = None
         self._daemon_process: Optional[AsyncSubprocess] = None
         self._pip_process: Optional[AsyncSubprocess] = None
+
+        self._callbacks = callbacks
 
     @staticmethod
     async def _timeout_wrapper(coro, timeout: Optional[float] = None) -> None:
@@ -304,19 +331,26 @@ class DaemonRunner2:
 
         return DaemonState.from_process_status(self._daemon_process.status)
 
-    def _stdout_callback(self, data: bytes) -> None:
-        pass
+    def _stdout_callback(self, loop: AbstractEventLoop, data: bytes) -> None:
+        if self._callbacks is None:
+            return
+        run_coroutine_threadsafe(self._callbacks.on_stdout(data), loop)
 
-    def _stderr_callback(self, data: bytes) -> None:
-        pass
+    def _stderr_callback(self, loop: AbstractEventLoop, data: bytes) -> None:
+        if self._callbacks is None:
+            return
+        run_coroutine_threadsafe(self._callbacks.on_stderr(data), loop)
 
     async def open(self, address: str) -> None:
         if self._daemon_process is not None:
             pid = self._daemon_process.get_pid()
             raise RuntimeError(f"Already process (pid={pid})")
 
-        # [WARNING] Do not use the `self.venv.create_python_subprocess()`
-        python_for_daemon = self._venv.create_python_subprocess()
+        # [IMPORTANT]
+        # Do not use the `self._venv.create_python_subprocess()`
+        # After running the already installed daemon-server of `recc`,
+        # the daemon plugin is executed.
+        python_for_daemon = AsyncPythonSubprocess.create_system()
 
         subcommands = [
             "-m",
@@ -331,10 +365,11 @@ class DaemonRunner2:
             self._venv.site_packages_dir,
         ]
 
+        current_running_loop = get_running_loop()
         self._daemon_process = await python_for_daemon.start_python(
             *subcommands,
-            stdout_callback=self._stdout_callback,
-            stderr_callback=self._stderr_callback,
+            stdout_callback=partial(self._stdout_callback, current_running_loop),
+            stderr_callback=partial(self._stderr_callback, current_running_loop),
             cwd=self._work_dir,
             writable=False,
         )
