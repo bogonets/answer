@@ -2,9 +2,11 @@
 
 import os
 from unittest import main, skipIf
+from numpy.random import randint
+from numpy import ndarray, uint8
 from tester.unittest.daemon_server_test_case import DaemonFileTestCase
 from recc.daemon.daemon_client import create_daemon_client
-from recc.daemon.daemon_runner import StandardDaemonRunnerCallbacks, DaemonRunner2
+from recc.daemon.daemon_runner import StandardDaemonRunnerCallbacks, DaemonRunner
 from recc.daemon.daemon_servicer import wait_connectable
 from recc.daemon.daemon_state import DaemonState
 from recc.filesystem.permission import is_executable_file
@@ -30,7 +32,7 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
         self.port = DEFAULT_DAEMON_PORT
         self.client_address = f"localhost:{self.port}"
         self.client = create_daemon_client(self.client_address)
-        self.runner = DaemonRunner2(
+        self.runner = DaemonRunner(
             self.daemon_dir,
             self.daemon_path,
             self.venv_dir,
@@ -83,6 +85,14 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
         self.assertTrue(await self.client.heartbeat(0))
         self.assertEqual(0, len(await self.client.get("/test")))
 
+    async def test_requirements(self):
+        files = self.runner.find_requirements()
+        names = {
+            os.path.basename(self.requirements1_path),
+            os.path.basename(self.requirements2_path),
+        }
+        self.assertSetEqual(names, set(files))
+
     async def test_default_pip(self):
         packages = await self.runner.list_pip()
         package_names = set(map(lambda x: x.name, packages))
@@ -90,6 +100,13 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
 
         pip_info = await self.runner.show_pip("pip")
         self.assertEqual("pip", pip_info.name)
+
+    async def test_post_test_numpy(self):
+        array = randint(0, 255, size=(1270, 1920, 3), dtype=uint8)
+        result = await self.client.post("/test/numpy", array)
+        self.assertEqual(1, len(result))
+        self.assertIsInstance(result[0], ndarray)
+        self.assertTrue((result[0] == 0).all())
 
     @skipIf(
         not accessible_network("https://pypi.org/"),

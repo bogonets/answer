@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pathlib import Path
-from typing import Dict, Optional
-from asyncio import AbstractEventLoop
+from typing import Dict
 from recc.aio.task_manager import TaskManager
 from recc.daemon.daemon_runner import DaemonRunner
 from recc.daemon.daemon_state import DaemonState
@@ -17,22 +15,22 @@ class DaemonManager:
         self._daemons = dict()
         self._tasks = TaskManager()
 
-    def add_new_runner(
-        self,
-        slug: str,
-        address: str,
-        directory: Path,
-        loop: Optional[AbstractEventLoop] = None,
-    ) -> None:
-        runner = DaemonRunner(Path(directory), address, loop)
-        self._daemons[slug] = runner
+    # def add_new_runner(
+    #     self,
+    #     slug: str,
+    #     address: str,
+    #     directory: Path,
+    #     loop: Optional[AbstractEventLoop] = None,
+    # ) -> None:
+    #     runner = DaemonRunner(Path(directory), address, loop)
+    #     self._daemons[slug] = runner
 
     def is_running(self, slug: str) -> bool:
-        return self._daemons[slug].is_running()
+        return self._daemons[slug].is_daemon_running()
 
     def get_state(self, slug: str) -> DaemonState:
         try:
-            return DaemonState.from_process_status(self._daemons[slug].status)
+            return self._daemons[slug].state
         except KeyError:
             return DaemonState.Unregistered
         except:  # noqa
@@ -48,10 +46,12 @@ class DaemonManager:
     #     return await item.install_requirements(prev_requirements_sha256)
 
     async def start(self, slug: str) -> None:
-        await self._daemons[slug].open()
+        # await self._daemons[slug].start_daemon()
+        pass
 
     async def stop(self, slug: str) -> None:
-        await self._daemons[slug].close()
+        # await self._daemons[slug].close()
+        pass
 
     # async def update_daemon(
     #     self,

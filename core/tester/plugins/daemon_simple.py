@@ -3,6 +3,13 @@
 from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass
 from numpy import ndarray
+#
+# from recc.util.version import version_text
+# print(version_text)
+# import os
+# print(os.environ["PYTHONPATH"])
+# import sys
+# print(sys.path)
 
 assert_on_open = False
 assert_on_close = False
