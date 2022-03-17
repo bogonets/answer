@@ -53,12 +53,8 @@ class Route:
         return self.dynamic_resource._match(normalize_path)  # noqa
 
 
-def get_python_plugin_directory(path: str) -> str:
-    return os.path.split(path)[0]
-
-
 def get_python_plugin_name(path: str) -> str:
-    name = str(os.path.split(path)[1])
+    name = os.path.basename(path)
     if name.endswith(".py"):
         return name[:-3]
     else:
@@ -94,7 +90,8 @@ class Plugin:
         self,
         path: str,
         site_packages_dir: Optional[str] = None,
-        remove_sys_paths: Optional[Iterable[str]] = None,
+        *,
+        skip_exec_plugin=False,
     ):
         global_variables: Dict[str, Any] = dict()
         _import_sys_module(
@@ -105,19 +102,11 @@ class Plugin:
         )
         assert global_variables["sys"] is not None
 
-        if remove_sys_paths:
-            sys_path = global_variables["sys"]["path"]
-            assert isinstance(sys_path, list)
-            for p in remove_sys_paths:
-                try:
-                    sys_path.remove(p)
-                except ValueError:
-                    pass
-
-        exec_python_plugin(path, global_variables, global_variables)
+        if not skip_exec_plugin:
+            exec_python_plugin(path, global_variables, global_variables)
 
         self._path = path
-        self._directory = get_python_plugin_directory(path)
+        self._directory = os.path.dirname(path)
         self._name = get_python_plugin_name(path)
         self._global_variables = global_variables
         self._routes: List[Route] = list()
