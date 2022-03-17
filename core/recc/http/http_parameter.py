@@ -17,6 +17,7 @@ from aiohttp.web_exceptions import (
     HTTPUnauthorized,
 )
 
+from recc.conversion.to_any import string_to_any
 from recc.core.context import Context
 from recc.chrono.datetime import tznow
 from recc.inspect.type_origin import get_type_origin
@@ -37,7 +38,6 @@ from recc.http.http_status import (
 )
 from recc.http import http_cache_keys as c
 from recc.http import http_path_keys as p
-from recc.conversion.boolean import str_to_bool
 from recc.variables.http import DEBUGGING_BODY_MSG_MAX_SIZE, VERY_VERBOSE_DEBUGGING
 from recc.variables.annotation import ANNOTATION_PERMISSIONS, ANNOTATION_DOMAIN, Domain
 
@@ -62,21 +62,6 @@ def is_path_class(obj) -> bool:
     if not isinstance(obj, type):
         return False
     return issubclass(obj, (str, int, float, bool))
-
-
-def cast_builtin_type_from_string(data: str, cls) -> Any:
-    assert isinstance(cls, type)
-    # [IMPORTANT]
-    # Do not change if-else order (Reason: `issubclass(bool, int) == True`)
-    if issubclass(cls, str):
-        return data
-    elif issubclass(cls, bool):
-        return str_to_bool(data)
-    elif issubclass(cls, int):
-        return int(data)
-    elif issubclass(cls, float):
-        return float(data)
-    return cls(data)  # type: ignore[call-arg]
 
 
 class HttpParameterMatcher:
@@ -235,7 +220,7 @@ class HttpParameterMatcher:
         else:
             optional_parameter = None
 
-        # param.kind
+        # TODO: param.kind
         #  - POSITIONAL_ONLY
         #  - POSITIONAL_OR_KEYWORD
         #  - VAR_POSITIONAL
@@ -293,7 +278,7 @@ class HttpParameterMatcher:
         if is_path_class(type_origin) and key in self.request.match_info:
             path_value = self.request.match_info[key]
             try:
-                path_arg = cast_builtin_type_from_string(path_value, type_origin)
+                path_arg = string_to_any(path_value, type_origin)
                 return path_arg
             except ValueError:
                 logger.debug(f"Type casting error for path parameter: {key}")
@@ -304,9 +289,7 @@ class HttpParameterMatcher:
             if key in self.request.rel_url.query:
                 query_value = self.request.rel_url.query[key]
                 try:
-                    query_arg = cast_builtin_type_from_string(
-                        query_value, optional_parameter
-                    )
+                    query_arg = string_to_any(query_value, optional_parameter)
                     return query_arg
                 except ValueError:
                     logger.debug(f"Type casting error for query parameter: {key}")

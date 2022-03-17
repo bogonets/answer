@@ -3,7 +3,7 @@
 import grpc
 from asyncio import sleep
 from asyncio import run as asyncio_run
-from typing import Optional, Mapping
+from typing import Optional, Mapping, List
 from multiprocessing.shared_memory import SharedMemory
 from grpc.aio import ServicerContext
 from recc.aio.connection import try_connection
@@ -167,9 +167,11 @@ class _AcceptInfo(object):
 def create_daemon_server(
     address: str,
     daemon_file: str,
-    daemon_packages_dir: Optional[str] = None,
+    daemon_packages_dir: Optional[List[str]] = None,
 ) -> _AcceptInfo:
-    servicer = DaemonServicer(Plugin(daemon_file, daemon_packages_dir))
+    packages_dir = daemon_packages_dir[0] if daemon_packages_dir else None
+    daemon_plugin = Plugin(daemon_file, packages_dir)
+    servicer = DaemonServicer(daemon_plugin)
     logger.info(f"Daemon servicer address: {address}")
 
     server = grpc.aio.server(options=DEFAULT_GRPC_OPTIONS)
@@ -224,11 +226,11 @@ async def wait_connectable(
 
 
 async def run_daemon_server(config: DaemonConfig, wait_connect=True) -> None:
-    logger.info(f"Start the daemon server: {config.daemon_file}")
+    logger.info(f"Start the daemon server: {config.daemon_script}")
 
     accept_info = create_daemon_server(
         config.daemon_address,
-        config.daemon_file,
+        config.daemon_script,
         config.daemon_packages_dir,
     )
     servicer = accept_info.servicer
@@ -254,7 +256,7 @@ async def run_daemon_server(config: DaemonConfig, wait_connect=True) -> None:
         await server.stop(0)
     finally:
         await servicer.on_close()
-        logger.info(f"Daemon server done: {config.daemon_file}")
+        logger.info(f"Daemon server done: {config.daemon_script}")
 
 
 def run_daemon_until_complete(config: DaemonConfig) -> int:

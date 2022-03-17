@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from typing import List
 from recc.argparse.config.global_config import create_usage, GlobalConfig
 from recc.argparse.argument import Argument
 from recc.argparse.command import Command
@@ -15,8 +16,8 @@ ARG_DAEMON_ADDRESS = Argument(
     metavar="address",
     help="Daemon server bind address.",
 )
-ARG_DAEMON_FILE = Argument(
-    key="--daemon-file",
+ARG_DAEMON_SCRIPT = Argument(
+    key="--daemon-script",
     last_injection_value="",
     cls=str,
     metavar="file",
@@ -24,15 +25,17 @@ ARG_DAEMON_FILE = Argument(
 )
 ARG_DAEMON_PACKAGES_DIR = Argument(
     key="--daemon-packages-dir",
-    last_injection_value="",
-    cls=str,
+    last_injection_value=list(),
+    cls=List[str],
+    delimiter=":",
     metavar="dir",
-    help="site-packages directory.",
+    action="append",
+    help="Original site-packages directory.",
 )
 
 DAEMON_ARGS = (
     ARG_DAEMON_ADDRESS,
-    ARG_DAEMON_FILE,
+    ARG_DAEMON_SCRIPT,
     ARG_DAEMON_PACKAGES_DIR,
 )
 
@@ -40,5 +43,5 @@ DAEMON_ARGS = (
 class DaemonConfig(GlobalConfig):
 
     daemon_address: str
-    daemon_file: str
-    daemon_packages_dir: str
+    daemon_script: str
+    daemon_packages_dir: List[str]

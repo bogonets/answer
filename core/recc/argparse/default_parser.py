@@ -2,9 +2,9 @@
 
 import os
 import sys
-import pathlib
 from argparse import Namespace
 from typing import Optional, Any, Union, List
+from functools import lru_cache
 from recc.argparse.command import (
     COMMAND_ARGUMENT_KEY,
     HELP_ARGUMENT_KEY,
@@ -18,13 +18,19 @@ from recc.argparse.config.ctrl_config import CtrlConfig
 from recc.argparse.config.task_config import TaskConfig
 from recc.argparse.config.daemon_config import DaemonConfig
 from recc.argparse.config.global_config import GlobalConfig
-from recc.argparse.config_file import read_config_file_safe
+from recc.argparse.config_file import read_config_file_if_readable
 from recc.argparse.argument_parser import ArgumentMessage, create_argument_parser
 from recc.argparse.parser.env_parse import (
     get_namespace_by_os_envs,
     get_namespace_by_os_env_files,
 )
 from recc.argparse.injection_values import injection_default_values
+from recc.filesystem.path_utils import get_home_dir
+from recc.variables.argparse import (
+    DEFAULT_CONFIG_FILENAME,
+    GLOBAL_CONFIG_PATH,
+    RECC_DOM_ROOT,
+)
 from recc.variables.environment import RECC_ENV_PREFIX, RECC_ENV_FILE_SUFFIX
 from recc.util.version import version_text
 
@@ -37,12 +43,15 @@ ConfigType = Union[
     DaemonConfig,
 ]
 
-CONFIG_FILENAME = "recc.cfg"
-WORKING_CONFIG_PATH = os.path.join(os.getcwd(), CONFIG_FILENAME)
-HOME_CONFIG_PATH = os.path.join(pathlib.Path.home(), "." + CONFIG_FILENAME)
-GLOBAL_CONFIG_PATH = os.path.join("/etc", CONFIG_FILENAME)
 
-RECC_DOM_ROOT = "recc"
+@lru_cache
+def get_working_config_path() -> str:
+    return os.path.join(os.getcwd(), DEFAULT_CONFIG_FILENAME)
+
+
+@lru_cache
+def get_home_config_path() -> str:
+    return os.path.join(get_home_dir(), "." + DEFAULT_CONFIG_FILENAME)
 
 
 def left_join(left: Namespace, *namespaces: Optional[Namespace]) -> Namespace:
@@ -71,29 +80,6 @@ def get_command(obj: Namespace) -> Optional[Command]:
         return Command.unknown
 
 
-# def get_command_line_namespace(
-#     *cmdline: Any,
-#     namespace: Optional[Namespace] = None,
-#     ignore_sys_argv=False,
-# ) -> Namespace:
-#     global_namespace, command_args = get_global_namespace_and_command_args(
-#         *cmdline, namespace=namespace, ignore_sys_argv=ignore_sys_argv
-#     )
-#
-#     cmd = get_command(global_namespace)
-#     if cmd == Command.core:
-#         return get_core_namespace(*command_args, namespace=global_namespace)
-#     elif cmd == Command.ctrl:
-#         return get_ctrl_namespace(*command_args, namespace=global_namespace)
-#     elif cmd == Command.task:
-#         return get_task_namespace(*command_args, namespace=global_namespace)
-#     elif cmd == Command.daemon:
-#         return get_daemon_namespace(*command_args, namespace=global_namespace)
-#
-#     assert cmd == Command.unknown
-#     return global_namespace
-
-
 def cast_config_type(namespace: Namespace) -> ConfigType:
     cmd = get_command(namespace)
 
@@ -115,6 +101,7 @@ def parse_arguments_to_namespace(
     ignore_sys_argv=False,
     ignore_environment=False,
     ignore_default_paths=False,
+    dom_root=RECC_DOM_ROOT,
 ) -> Namespace:
     if ignore_sys_argv:
         sys_argv = list()
@@ -179,7 +166,7 @@ def parse_arguments_to_namespace(
 
     # 2nd: command-line config file
     if hasattr(cmd_config, "config"):
-        joins.append(read_config_file_safe(cmd_config.config, RECC_DOM_ROOT))
+        joins.append(read_config_file_if_readable(cmd_config.config, dom_root))
 
     env_config: Optional[Namespace]
     if ignore_environment:
@@ -197,17 +184,17 @@ def parse_arguments_to_namespace(
 
     # 3rd: environment config file
     if env_config and hasattr(env_config, "config"):
-        joins.append(read_config_file_safe(env_config.config, RECC_DOM_ROOT))
+        joins.append(read_config_file_if_readable(env_config.config, dom_root))
 
     if not ignore_default_paths:
         # 4th: global config file
-        joins.append(read_config_file_safe(GLOBAL_CONFIG_PATH, RECC_DOM_ROOT))
+        joins.append(read_config_file_if_readable(GLOBAL_CONFIG_PATH, dom_root))
 
         # 5th: home config file
-        joins.append(read_config_file_safe(HOME_CONFIG_PATH, RECC_DOM_ROOT))
+        joins.append(read_config_file_if_readable(get_home_config_path(), dom_root))
 
         # 6th: working config file
-        joins.append(read_config_file_safe(WORKING_CONFIG_PATH, RECC_DOM_ROOT))
+        joins.append(read_config_file_if_readable(get_working_config_path(), dom_root))
 
     if env_config:
         # 7th: environment variables

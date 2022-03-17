@@ -10,29 +10,12 @@ from recc.argparse.config.global_config import GLOBAL_ARGS
 from recc.argparse.command import Command, COMMAND_ARGUMENT_KEY
 
 
-def injection_value_by_arg(namespace: Namespace, arg: Argument) -> Namespace:
-    key = arg.normalize_key
-    namespace_value = getattr(namespace, key, None)
-    inference_type = arg.cls
-
-    if namespace_value is None:
-        default_value = arg.last_injection_value
-        if default_value is not None:
-            assert isinstance(default_value, inference_type)
-        setattr(namespace, key, default_value)
-    else:
-        if not isinstance(namespace_value, inference_type):
-            setattr(namespace, key, inference_type(namespace_value))
-
-    return namespace
-
-
 def injection_values_by_args(
     namespace: Namespace,
     *args: Argument,
 ) -> Namespace:
     for arg in args:
-        injection_value_by_arg(namespace, arg)
+        arg.inject_to_namespace(namespace)
     return namespace
 
 
@@ -46,10 +29,10 @@ def cast_values_by_args_if_exists(
             continue
 
         val = getattr(namespace, key)
-        if isinstance(val, arg.cls):
+        if isinstance(val, arg.cls_origin):
             continue
 
-        setattr(namespace, key, arg.cls(val))
+        setattr(namespace, key, arg.cast(val))
 
     return namespace
 

@@ -16,7 +16,7 @@ FALSE_LOWERS = [
 ]
 
 
-def str_to_bool(value: str) -> bool:
+def string_to_boolean(value: str) -> bool:
     v = value.lower()
     if v in TRUE_LOWERS:
         return True

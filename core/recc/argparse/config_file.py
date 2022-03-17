@@ -30,12 +30,12 @@ def read_config_file(
     *subsection_path: str,
     encoding="utf-8",
 ) -> Namespace:
-    return read_config_file_with_extension(
+    return read_config_file_by_extension(
         path, get_extension(path), *subsection_path, encoding=encoding
     )
 
 
-def read_config_file_with_extension(
+def read_config_file_by_extension(
     path: str,
     extension: str,
     *subsection_path: str,
@@ -72,7 +72,10 @@ def read_config_file_with_extension(
     raise RuntimeError(f"Unsupported file extension: {extension}")
 
 
-def read_config_file_safe(path: str, *subsection_path: str) -> Optional[Namespace]:
+def read_config_file_if_readable(
+    path: str,
+    *subsection_path: str,
+) -> Optional[Namespace]:
     if not path:
         return None
     try:
@@ -80,5 +83,6 @@ def read_config_file_safe(path: str, *subsection_path: str) -> Optional[Namespac
             return read_config_file(path, *subsection_path)
         else:
             return None
-    except:  # noqa
+    except BaseException as e:  # noqa
+        print(e)
         return None

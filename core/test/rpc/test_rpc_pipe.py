@@ -7,7 +7,7 @@ from datetime import datetime
 from dataclasses import dataclass
 from tempfile import TemporaryDirectory
 from unittest import IsolatedAsyncioTestCase, main, skipIf
-from recc.argparse.default_namespace import get_default_task_config
+from recc.argparse.default_config import get_default_task_config
 from recc.rpc.rpc_client import create_rpc_client
 from recc.task.task_server import create_task_server
 from recc.serialization.byte import (

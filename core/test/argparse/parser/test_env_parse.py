@@ -18,6 +18,7 @@ RECC_HTTP_BIND = "RECC_HTTP_BIND"
 RECC_HTTP_PORT = "RECC_HTTP_PORT"
 RECC_VERBOSE = "RECC_VERBOSE"
 RECC_DEVELOPER = "RECC_DEVELOPER"
+RECC_DAEMON_PACKAGES_DIR = "RECC_DAEMON_PACKAGES_DIR"
 
 TEST_CONFIG = "env.conf"
 TEST_HTTP_HOST = "unknown.host"
@@ -25,6 +26,7 @@ TEST_HTTP_BIND = "local"
 TEST_HTTP_PORT = "8888"
 TEST_VERBOSE = "2"
 TEST_DEVELOPER = "true"
+TEST_DAEMON_PACKAGES_DIR = "/package/dir/1:/package/dir/2"
 
 
 class EnvParseApiTestCase(TestCase):
@@ -98,6 +100,9 @@ class EnvParseTestCase(TestCase):
         self.original_http_port = exchange_env(RECC_HTTP_PORT, TEST_HTTP_PORT)
         self.original_verbose = exchange_env(RECC_VERBOSE, TEST_VERBOSE)
         self.original_developer = exchange_env(RECC_DEVELOPER, TEST_DEVELOPER)
+        self.original_daemon_packages_dir = exchange_env(
+            RECC_DAEMON_PACKAGES_DIR, TEST_DAEMON_PACKAGES_DIR
+        )
 
         self.assertEqual(TEST_CONFIG, get_env(RECC_CONFIG))
         self.assertEqual(self.http_host_file, get_env(RECC_HTTP_HOST_FILE))
@@ -105,6 +110,7 @@ class EnvParseTestCase(TestCase):
         self.assertEqual(TEST_HTTP_PORT, get_env(RECC_HTTP_PORT))
         self.assertEqual(TEST_VERBOSE, get_env(RECC_VERBOSE))
         self.assertEqual(TEST_DEVELOPER, get_env(RECC_DEVELOPER))
+        self.assertEqual(TEST_DAEMON_PACKAGES_DIR, get_env(RECC_DAEMON_PACKAGES_DIR))
 
     def tearDown(self):
         if os.path.isfile(self.http_host_file):
@@ -116,6 +122,7 @@ class EnvParseTestCase(TestCase):
         self.assertEqual(TEST_HTTP_PORT, get_env(RECC_HTTP_PORT))
         self.assertEqual(TEST_VERBOSE, get_env(RECC_VERBOSE))
         self.assertEqual(TEST_DEVELOPER, get_env(RECC_DEVELOPER))
+        self.assertEqual(TEST_DAEMON_PACKAGES_DIR, get_env(RECC_DAEMON_PACKAGES_DIR))
 
         exchange_env(RECC_CONFIG, self.original_config)
         exchange_env(RECC_HTTP_HOST_FILE, self.original_http_host_file)
@@ -123,6 +130,7 @@ class EnvParseTestCase(TestCase):
         exchange_env(RECC_HTTP_PORT, self.original_http_port)
         exchange_env(RECC_VERBOSE, self.original_verbose)
         exchange_env(RECC_DEVELOPER, self.original_developer)
+        exchange_env(RECC_DAEMON_PACKAGES_DIR, self.original_daemon_packages_dir)
 
     def test_get_init_params_by_os_envs(self):
         config = get_namespace_by_os_envs(RECC_ENV_PREFIX)
@@ -130,6 +138,7 @@ class EnvParseTestCase(TestCase):
         self.assertEqual(TEST_HTTP_PORT, config.http_port)
         self.assertEqual(TEST_VERBOSE, config.verbose)
         self.assertEqual(TEST_DEVELOPER, config.developer)
+        self.assertEqual(TEST_DAEMON_PACKAGES_DIR, config.daemon_packages_dir)
 
     def test_get_namespace_by_os_env_files(self):
         config = get_namespace_by_os_env_files(RECC_ENV_PREFIX, RECC_ENV_FILE_SUFFIX)

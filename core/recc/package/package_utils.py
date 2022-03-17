@@ -3,7 +3,7 @@
 import os
 from pkgutil import iter_modules, ModuleInfo
 from typing import List
-from functools import reduce
+from functools import reduce, lru_cache
 from importlib import import_module
 
 
@@ -33,6 +33,15 @@ def get_module_directory(module) -> str:
         return os.path.dirname(module_file)
 
     raise RuntimeError(f"The '{module.__name__}' module path is unknown")
+
+
+def get_module_directory_by_import_path(import_path: str) -> str:
+    return get_module_directory(import_module(import_path))
+
+
+@lru_cache
+def get_recc_module_directory() -> str:
+    return get_module_directory_by_import_path("recc")
 
 
 def merge_import_path(*modules) -> str:

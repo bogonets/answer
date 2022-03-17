@@ -29,7 +29,7 @@ from recc.argparse.config.global_config import ARG_LOG_SIMPLY
 from recc.argparse.command import Command
 from recc.argparse.config.daemon_config import (
     ARG_DAEMON_ADDRESS,
-    ARG_DAEMON_FILE,
+    ARG_DAEMON_SCRIPT,
     ARG_DAEMON_PACKAGES_DIR,
 )
 from recc.filesystem.permission import (
@@ -314,7 +314,7 @@ class DaemonRunner:
             Command.daemon.name,
             ARG_DAEMON_ADDRESS.long_key,
             address,
-            ARG_DAEMON_FILE.long_key,
+            ARG_DAEMON_SCRIPT.long_key,
             self._plugin_script_path,
             ARG_DAEMON_PACKAGES_DIR.long_key,
             self._venv.site_packages_dir,

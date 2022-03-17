@@ -13,7 +13,11 @@ TEST_JSON_BODY = f"""{{
     "recc": {{
         "http_bind": "{TEST_HTTP_BIND}",
         "http_port": {TEST_HTTP_PORT},
-        "verbose": {TEST_VERBOSE}
+        "verbose": {TEST_VERBOSE},
+        "daemon_packages_dir": [
+            "/package/dir/1",
+            "/package/dir/2"
+        ]
     }}
 }}"""
 
@@ -34,6 +38,11 @@ class JsonParseTestCase(TestCase):
         self.assertEqual(TEST_HTTP_BIND, config.http_bind)
         self.assertEqual(TEST_HTTP_PORT, config.http_port)
         self.assertEqual(TEST_VERBOSE, config.verbose)
+
+        self.assertIsInstance(config.daemon_packages_dir, list)
+        self.assertEqual(2, len(config.daemon_packages_dir))
+        self.assertEqual("/package/dir/1", config.daemon_packages_dir[0])
+        self.assertEqual("/package/dir/2", config.daemon_packages_dir[1])
 
 
 if __name__ == "__main__":

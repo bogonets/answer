@@ -2,7 +2,7 @@
 
 from unittest import TestCase, main
 from recc.argparse.argument_parser import ArgumentMessage
-from recc.argparse.config.task_config import TaskConfig
+from recc.argparse.config.task_config import TaskConfig, ARG_TASK_ADDRESS
 from recc.argparse.default_parser import parse_arguments_to_config
 from recc.argparse.command import Command
 
@@ -24,7 +24,7 @@ class TaskConfigTestCase(TestCase):
     def test_default(self):
         task_address = "192.168.0.2"
         config = parse_arguments_to_config(
-            Command.task.name, "--task-address", task_address
+            Command.task.name, ARG_TASK_ADDRESS.long_key, task_address
         )
         self.assertIsInstance(config, TaskConfig)
         self.assertEqual(config.command, Command.task.name)

@@ -17,7 +17,7 @@ from collections import deque
 from multiprocessing.shared_memory import SharedMemory
 from recc.daemon.packet.content_helper import has_array, has_shared_memory
 from recc.logging.logging import recc_daemon_logger as logger
-from recc.conversion.boolean import str_to_bool
+from recc.conversion.to_boolean import string_to_boolean
 from recc.inspect.type_origin import get_type_origin
 from recc.serialization.numpy import ndarray_to_bytes
 from recc.serialization.byte_coding import encode as byte_encode
@@ -49,7 +49,7 @@ def _cast_builtin_type_from_string(data: str, cls) -> Any:
     elif issubclass(cls, float):
         return float(data)
     elif issubclass(cls, bool):
-        return str_to_bool(data)
+        return string_to_boolean(data)
     return cls(data)  # type: ignore[call-arg]
 
 

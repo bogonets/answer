@@ -2,6 +2,7 @@
 
 from typing import Tuple, Dict
 from argparse import ArgumentParser, RawTextHelpFormatter
+from overrides import overrides
 from recc.argparse.command import (
     COMMAND_ARGUMENT_KEY,
     HELP_ARGUMENT_KEY,
@@ -53,6 +54,7 @@ class ArgumentMessage(Exception):
 
 
 class _ArgumentParser(ArgumentParser):
+    @overrides
     def error(self, message):
         raise ArgumentMessage(message)
 

@@ -2,7 +2,8 @@
 
 from unittest import TestCase, main
 from recc.argparse.argument_parser import ArgumentMessage
-from recc.argparse.config.core_config import CoreConfig
+from recc.argparse.config.global_config import ARG_CONFIG
+from recc.argparse.config.core_config import CoreConfig, ARG_HTTP_BIND, ARG_HTTP_PORT
 from recc.argparse.default_parser import parse_arguments_to_config
 from recc.argparse.command import Command
 
@@ -28,7 +29,7 @@ class CoreConfigTestCase(TestCase):
     def test_default(self):
         bind_address = "192.168.0.1"
         config = parse_arguments_to_config(
-            Command.core.name, "--http-bind", bind_address
+            Command.core.name, ARG_HTTP_BIND.long_key, bind_address
         )
         self.assertIsInstance(config, CoreConfig)
         self.assertEqual(config.command, Command.core.name)
@@ -39,12 +40,12 @@ class CoreConfigTestCase(TestCase):
         http_bind = "192.168.0.1"
         http_port = 300
         config = parse_arguments_to_config(
-            "--config",
+            ARG_CONFIG.long_key,
             config_path,
             Command.core.name,
-            "--http-bind",
+            ARG_HTTP_BIND.long_key,
             http_bind,
-            "--http-port",
+            ARG_HTTP_PORT.long_key,
             http_port,
         )
         self.assertIsInstance(config, CoreConfig)

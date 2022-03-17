@@ -9,7 +9,7 @@ from recc.argparse.config.core_config import CoreConfig
 from recc.crypto.signature import generate_signature
 from recc.logging.logging import recc_core_logger as logger
 from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
-from recc.argparse.default_namespace import get_default_core_config
+from recc.argparse.default_config import get_default_core_config
 from recc.argparse.injection_values import injection_core_default_values
 from recc.container.container_manager import create_container_manager
 from recc.cache.cache import Cache

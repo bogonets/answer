@@ -1,55 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Any, Dict, Union, Optional, Mapping, Type
+from typing import List, Any, Dict, Union, Optional, Mapping, Type, get_origin, get_args
 from re import compile as re_compile
-
+from argparse import Namespace
 from recc.argparse.shortcut import Shortcut
+from recc.variables.environment import RECC_ENV_PREFIX, RECC_ENV_FILE_SUFFIX
 
 ValueType = Optional[Union[str, int, float, bool]]
 MapType = Mapping[str, Any]
 
-
-# def merge_choices(choices: Collection[Any]) -> str:
-#     it = iter(choices)
-#     result: str
-#     first = next(it)
-#     if isinstance(first, str):
-#         result = f"'{first}'"
-#     else:
-#         result = str(first)
-#     for element in it:
-#         if isinstance(element, str):
-#             result += f", '{element}'"
-#         else:
-#             result += f", {element}"
-#     return result
-#
-#
-# def make_help(
-#     text: str,
-#     default_value: Optional[Any] = None,
-#     choices: Optional[Collection[Any]] = None,
-# ) -> str:
-#     default_text: Optional[str] = None
-#     if default_value is not None:
-#         if isinstance(default_value, str):
-#             default_text = f"'{default_value}'"
-#         else:
-#             default_text = str(default_value)
-#
-#     if choices and len(choices) >= 2:
-#         choose_text = merge_choices(choices)
-#         if default_text is not None:
-#             return f"{text} (Choose from {choose_text}; default: {default_text})"
-#         else:
-#             return f"{text} (Choose from {choose_text})"
-#
-#     if default_text is not None:
-#         return f"{text} (default: {default_text})"
-#     return text
-
 KEY_NAME_REGEX = re_compile(r"^[0-9A-Za-z_\-]*$")
 NORMALIZE_REGEX = re_compile(r"^[0-9a-z_]*$")
+RECC_ENV_PREFIX_LOWER = RECC_ENV_PREFIX.lower()
+RECC_ENV_FILE_SUFFIX_LOWER = RECC_ENV_FILE_SUFFIX.lower()
 
 
 def valid_key_name(key: str) -> None:
@@ -63,13 +26,21 @@ def valid_key_name(key: str) -> None:
 
 
 def valid_normalize_name(key: str) -> None:
-    if NORMALIZE_REGEX.match(key):
-        return
-
-    msg1 = "Invalid normalize key name."
-    msg2 = f"A valid regular expression is `{NORMALIZE_REGEX.pattern}`"
-    msg3 = f"The verified key name is `{key}`."
-    raise KeyError(f"{msg1} {msg2} {msg3}")
+    if key.startswith(RECC_ENV_PREFIX_LOWER):
+        raise KeyError(
+            f"Using the prefix `{RECC_ENV_PREFIX_LOWER}`"
+            "will cause problems when reading environment variables"
+        )
+    if key.endswith(RECC_ENV_FILE_SUFFIX_LOWER):
+        raise KeyError(
+            f"Using the suffix `{RECC_ENV_FILE_SUFFIX_LOWER}`"
+            "will cause problems when reading environment variables"
+        )
+    if not NORMALIZE_REGEX.match(key):
+        msg1 = "Invalid normalize key name."
+        msg2 = f"A valid regular expression is `{NORMALIZE_REGEX.pattern}`"
+        msg3 = f"The verified key name is `{key}`."
+        raise KeyError(f"{msg1} {msg2} {msg3}")
 
 
 def remove_start_with_dash(key: str) -> str:
@@ -86,7 +57,8 @@ class Argument:
         *,
         key: str,
         last_injection_value: Any,
-        cls: Type,
+        cls: Any,
+        delimiter: Optional[str] = None,
         shortcut: Optional[Shortcut] = None,
         **kwargs,
     ):
@@ -103,8 +75,22 @@ class Argument:
         assert last_injection_value is not None
         self._last_injection_value = last_injection_value
 
-        assert isinstance(cls, type)
+        cls_origin = get_origin(cls)
+        if cls_origin is None:
+            assert isinstance(cls, type)
+            if delimiter is not None:
+                raise ValueError("Do not use `delimiter` arguments")
+        else:
+            assert isinstance(cls_origin, type)
+            if delimiter is None:
+                raise ValueError("Must use the `delimiter` arguments")
+            if cls_origin != list:
+                raise TypeError(
+                    f"The Generic class only supports the List type (Actually `{cls}`)"
+                )
+
         self._cls = cls
+        self._delimiter = delimiter
 
         if "dest" in kwargs:
             normalize_key = kwargs["dest"]
@@ -141,9 +127,52 @@ class Argument:
         return self._last_injection_value
 
     @property
-    def cls(self) -> Type:
+    def cls(self) -> Any:
         return self._cls
+
+    @property
+    def cls_origin(self) -> Type:
+        origin = get_origin(self._cls)
+        if origin is None:
+            assert isinstance(self._cls, type)
+            return self._cls
+        else:
+            assert isinstance(origin, type)
+            return origin
 
     @property
     def kwargs(self) -> Dict[str, Any]:
         return self._kwargs
+
+    def cast(self, data: Any) -> Any:
+        origin = get_origin(self._cls)
+        if origin is None:
+            if isinstance(data, self._cls):
+                return data
+            else:
+                return self._cls(data)
+
+        assert origin == list, "The Generic class only supports the List type"
+        cls_args = get_args(self._cls)
+        assert len(cls_args) == 1
+        cls_arg0_type = cls_args[0]
+        assert isinstance(cls_arg0_type, type)
+
+        if isinstance(data, list):
+            return [cls_arg0_type(d) for d in data]
+        elif isinstance(data, str):
+            assert self._delimiter is not None
+            return [cls_arg0_type(d) for d in data.split(self._delimiter)]
+        else:
+            return [cls_arg0_type(data)]
+
+    def inject_to_namespace(self, namespace: Namespace) -> Namespace:
+        key = self.normalize_key
+        value = getattr(namespace, key, None)
+
+        if value is None:
+            setattr(namespace, key, self.last_injection_value)
+        elif not isinstance(value, self.cls_origin):
+            setattr(namespace, key, self.cast(value))
+
+        return namespace

@@ -65,18 +65,24 @@ def get_python_plugin_name(path: str) -> str:
         return name
 
 
-def exec_python_plugin(
-    path: str,
+def _import_sys_module(
     global_variables: Dict[str, Any],
     local_variables: Dict[str, Any],
+    plugin_dir: str,
     site_packages_dir: Optional[str] = None,
 ) -> None:
     prefix = PYTHON_PLUGIN_PREFIX.format(
         site_packages_dir=site_packages_dir if site_packages_dir else str(),
-        plugin_dir=os.path.split(path)[0],
+        plugin_dir=plugin_dir,
     )
     exec(prefix, global_variables, local_variables)
 
+
+def exec_python_plugin(
+    path: str,
+    global_variables: Dict[str, Any],
+    local_variables: Dict[str, Any],
+) -> None:
     with open(path, "r") as f:
         source = f.read()
     ast = compile(source, path, COMPILE_MODE_EXEC, COMPILE_FLAGS)
@@ -84,9 +90,31 @@ def exec_python_plugin(
 
 
 class Plugin:
-    def __init__(self, path: str, site_packages_dir: Optional[str] = None):
+    def __init__(
+        self,
+        path: str,
+        site_packages_dir: Optional[str] = None,
+        remove_sys_paths: Optional[Iterable[str]] = None,
+    ):
         global_variables: Dict[str, Any] = dict()
-        exec_python_plugin(path, global_variables, global_variables, site_packages_dir)
+        _import_sys_module(
+            global_variables,
+            global_variables,
+            os.path.dirname(path),
+            site_packages_dir,
+        )
+        assert global_variables["sys"] is not None
+
+        if remove_sys_paths:
+            sys_path = global_variables["sys"]["path"]
+            assert isinstance(sys_path, list)
+            for p in remove_sys_paths:
+                try:
+                    sys_path.remove(p)
+                except ValueError:
+                    pass
+
+        exec_python_plugin(path, global_variables, global_variables)
 
         self._path = path
         self._directory = get_python_plugin_directory(path)

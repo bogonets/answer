@@ -7,7 +7,7 @@ from copy import deepcopy
 from typing import Any, Optional, Union
 from grpc.aio import ServicerContext
 from recc.argparse.config.task_config import TaskConfig
-from recc.argparse.default_namespace import get_default_task_config
+from recc.argparse.default_config import get_default_task_config
 from recc.argparse.injection_values import injection_task_default_values
 from recc.logging.logging import recc_rpc_logger as logger
 from recc.storage.task_storage import TaskStorage
