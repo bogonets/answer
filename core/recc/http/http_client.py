@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import re
 
 import requests
 from http import HTTPStatus
 from time import time
 from typing import Optional, Tuple, TypeVar, Any, Dict, Type
+from re import match
 from urllib.parse import urlparse
 from multidict import CIMultiDict
 from aiohttp import ClientSession, ClientTimeout
@@ -109,8 +111,9 @@ def request_version(
     )
 
 
-def has_scheme(address: str) -> bool:
-    return bool(urlparse(address).scheme)
+def has_http_scheme(address: str) -> bool:
+    # [WARNING] The urn style is not supported.
+    return match(r"^http(s)?://.*", address) is not None
 
 
 _T = TypeVar("_T")
@@ -124,7 +127,7 @@ class HttpClient:
         timeout: Optional[float] = None,
         scheme: Optional[str] = None,
     ):
-        if has_scheme(address):
+        if has_http_scheme(address):
             if scheme is not None:
                 raise ValueError(
                     "The `schema` argument cannot be used"

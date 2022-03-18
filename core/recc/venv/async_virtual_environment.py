@@ -6,6 +6,7 @@ from types import SimpleNamespace
 from typing import Optional
 from venv import EnvBuilder
 from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
+from recc.venv.venv_context_changer import VenvContextChanger
 
 
 def _get_site_packages_dir(env_dir) -> str:
@@ -162,3 +163,11 @@ class AsyncVirtualEnvironment:
 
     def create_python_subprocess(self) -> AsyncPythonSubprocess:
         return AsyncPythonSubprocess(self.env_exe, self._pip_timeout)
+
+    def create_context_changer(self):
+        return VenvContextChanger(
+            env_dir=self.env_dir,
+            env_exe=self.env_exe,
+            bin_path=self.bin_path,
+            site_packages_dir=self.site_packages_dir,
+        )

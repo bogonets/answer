@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+from unittest import main
 from tempfile import TemporaryDirectory
 from tester.unittest.docker_test_case import DockerTestCase
 from recc.container.struct.container_status import ContainerStatus
@@ -150,4 +150,4 @@ class DockerContainerManagerTestCase(DockerTestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

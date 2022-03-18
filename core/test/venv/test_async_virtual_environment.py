@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sys import version_info
+import sys
 from tempfile import TemporaryDirectory
 from unittest import IsolatedAsyncioTestCase, main, skipIf
 from recc.venv.async_virtual_environment import AsyncVirtualEnvironment
@@ -17,6 +17,21 @@ class VirtualEnvironmentTestCase(IsolatedAsyncioTestCase):
 
     async def asyncTearDown(self):
         self.temp_dir.cleanup()
+
+    async def test_print(self):
+        print("context", self.venv.context)
+        print("bin_name", self.venv.bin_name)
+        print("bin_path", self.venv.bin_path)
+        print("env_dir", self.venv.env_dir)
+        print("env_exe", self.venv.env_exe)
+        print("env_name", self.venv.env_name)
+        print("executable", self.venv.executable)
+        print("inc_path", self.venv.inc_path)
+        print("prompt", self.venv.prompt)
+        print("python_dir", self.venv.python_dir)
+        print("python_exe", self.venv.python_exe)
+        print("pip_exe", self.venv.pip_exe)
+        print("site_packages_dir", self.venv.site_packages_dir)
 
     async def test_default(self):
         self.assertTrue(self.venv.context)
@@ -36,11 +51,37 @@ class VirtualEnvironmentTestCase(IsolatedAsyncioTestCase):
     async def test_version_tuple(self):
         python = self.venv.create_python_subprocess()
         version = await python.version_tuple()
-        self.assertEqual(version_info[:3], version)
+        self.assertEqual(sys.version_info[:3], version)
 
     async def test_executables(self):
         self.assertTrue(is_executable_file(self.venv.env_exe))
         self.assertTrue(is_executable_file(self.venv.pip_exe))
+
+    async def test_context_changer(self):
+        original_executable = sys.executable
+
+        with self.venv.create_context_changer():
+            venv_executable = sys.executable
+            try:
+                import numpy  # noqa
+            except ImportError:
+                exists_numpy = False
+            else:
+                exists_numpy = True
+
+            from dataclasses import dataclass
+
+            # Data class tests where errors are often found.
+            @dataclass
+            class _TestDataclass:
+                data: str
+
+            test_data_class = _TestDataclass("kk")
+
+        self.assertNotEqual(venv_executable, original_executable)
+        self.assertEqual(sys.executable, original_executable)
+        self.assertFalse(exists_numpy)
+        self.assertEqual("kk", test_data_class.data)
 
 
 if __name__ == "__main__":

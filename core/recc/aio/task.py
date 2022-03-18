@@ -8,7 +8,8 @@ def all_tasks(loop: asyncio.AbstractEventLoop):
     if PY_37:
         return getattr(asyncio, "all_tasks")(loop)  # nocov
     else:
-        return {t for t in list(asyncio.Task.all_tasks(loop)) if not t.done()}
+        tasks = asyncio.Task.all_tasks(loop)  # type: ignore[attr-defined]
+        return {t for t in list(tasks) if not t.done()}
 
 
 def cancel_tasks(loop: asyncio.AbstractEventLoop, *tasks) -> None:
