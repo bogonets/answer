@@ -9,13 +9,6 @@ DAEMON_USAGE = create_usage(Command.daemon)
 DAEMON_DESCRIPTION = "Daemon process"
 DAEMON_EPILOG = ""
 
-ARG_DAEMON_VENV_DIR = Argument(
-    key="--daemon-venv-dir",
-    last_injection_value="",
-    cls=str,
-    metavar="dir",
-    help="The daemon's venv directory.",
-)
 ARG_DAEMON_ADDRESS = Argument(
     key="--daemon-address",
     last_injection_value="",
@@ -39,18 +32,25 @@ ARG_DAEMON_PACKAGES_DIR = Argument(
     action="append",
     help="Additional packages directory.",
 )
+ARG_DAEMON_VENV_DIR = Argument(
+    key="--daemon-venv-dir",
+    last_injection_value="",
+    cls=str,
+    metavar="dir",
+    help="The daemon's venv directory.",
+)
 
 DAEMON_ARGS = (
-    ARG_DAEMON_VENV_DIR,
     ARG_DAEMON_ADDRESS,
     ARG_DAEMON_SCRIPT,
     ARG_DAEMON_PACKAGES_DIR,
+    ARG_DAEMON_VENV_DIR,
 )
 
 
 class DaemonConfig(GlobalConfig):
 
-    daemon_venv_dir: str
     daemon_address: str
     daemon_script: str
     daemon_packages_dir: List[str]
+    daemon_venv_dir: str

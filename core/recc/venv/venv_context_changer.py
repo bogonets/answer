@@ -3,7 +3,11 @@
 import os
 import sys
 import site
+from abc import abstractmethod
 from typing import List, Optional
+from overrides import overrides
+
+real_prefix = "real_prefix"
 
 X = sys.version_info[0]
 Y = sys.version_info[1]
@@ -17,10 +21,44 @@ LIB_PYTHON_LIB_DYNLOAD = f"{sys.base_prefix}/{sys.platlibdir}/python{X_Y}/lib-dy
 PATH = "PATH"
 VIRTUAL_ENV = "VIRTUAL_ENV"
 
-real_prefix = "real_prefix"
+
+class ContextChanger:
+    @abstractmethod
+    def open(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def close(self) -> None:
+        raise NotImplementedError
+
+    def __enter__(self):
+        self.open()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+
+    async def __aenter__(self):
+        raise RuntimeError(
+            "Accessing the sys package while the event loop is running causes problems"
+        )
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        raise RuntimeError(
+            "Accessing the sys package while the event loop is running causes problems"
+        )
 
 
-class VenvContextChanger:
+class FakeContextChanger(ContextChanger):
+    @overrides
+    def open(self) -> None:
+        pass
+
+    @overrides
+    def close(self) -> None:
+        pass
+
+
+class VenvContextChanger(ContextChanger):
     """
     References:
         - https://docs.python.org/3/library/sys.html
@@ -48,7 +86,8 @@ class VenvContextChanger:
         self.bin_path = bin_path
         self.site_packages_dir = site_packages_dir
 
-    def open(self):
+    @overrides
+    def open(self) -> None:
         self._sys_prefix = sys.prefix
         self._sys_exec_prefix = sys.exec_prefix
         self._sys_executable = sys.executable
@@ -82,7 +121,8 @@ class VenvContextChanger:
         else:
             os.environ.pop(key)
 
-    def close(self):
+    @overrides
+    def close(self) -> None:
         sys.prefix = self._sys_prefix
         sys.exec_prefix = self._sys_exec_prefix
         sys.executable = self._sys_executable
@@ -96,9 +136,3 @@ class VenvContextChanger:
 
         self._restore_env(PATH, self._env_path)
         self._restore_env(VIRTUAL_ENV, self._env_virtual_env)
-
-    def __enter__(self):
-        self.open()
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
