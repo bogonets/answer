@@ -7,7 +7,7 @@ CONTAINER_TYPE_KUBERNETES = "kubernetes"
 DOCKER_SOCK_LOCAL_BASE_URL = "unix://var/run/docker.sock"
 
 BASE_IMAGE_NAME = "python"
-BASE_IMAGE_TAG = "3.8.9"
+BASE_IMAGE_TAG = "3.9.11"
 BASE_IMAGE_FULLNAME = f"{BASE_IMAGE_NAME}:{BASE_IMAGE_TAG}"
 
 TASK_IMAGE_NAME = "recc-task-image"
