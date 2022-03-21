@@ -22,7 +22,7 @@ from recc.variables.labels import (
     RECC_IMAGE_MODULE_SHA256_KEY,
     RECC_IMAGE_REQUIREMENTS_SHA256_KEY,
 )
-from recc.package.requirement_utils import RECC_REQUIREMENTS_MAIN_ARG
+from recc.package.requirements_utils import RECC_REQUIREMENTS_MAIN_ARG
 from recc.util.version import version_text
 import recc as recc_module
 
