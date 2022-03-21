@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import os
 from typing import Optional
 from io import BytesIO
-from hashlib import sha256
 from tarfile import open as tar_open
-from recc.archive.tar_archive import compress_tar, file_info
+from recc.archive.tar_archive import file_info
+from recc.package.recc_package import (
+    RECC_MODULE_TAR_BYTES,
+    RECC_MODULE_TAR_BYTES_SHA256,
+    RECC_REQUIREMENTS_MAIN_SHA256,
+)
 from recc.variables.container import (
     BASE_IMAGE_FULLNAME,
     GUEST_GROUP_NAME,
@@ -24,18 +27,6 @@ from recc.variables.labels import (
 )
 from recc.package.requirements_utils import RECC_REQUIREMENTS_MAIN_ARG
 from recc.util.version import version_text
-import recc as recc_module
-
-RECC_MODULE_NAME = recc_module.__name__
-RECC_MODULE_INIT_PATH = os.path.abspath(recc_module.__file__)
-RECC_MODULE_DIR = os.path.dirname(RECC_MODULE_INIT_PATH)
-RECC_MODULE_TAR_BYTES = compress_tar(
-    RECC_MODULE_DIR, archive_name=RECC_MODULE_NAME, recursive=True
-)
-RECC_MODULE_TAR_BYTES_SHA256 = sha256(RECC_MODULE_TAR_BYTES).hexdigest()
-RECC_REQUIREMENTS_MAIN_SHA256 = sha256(
-    bytes(RECC_REQUIREMENTS_MAIN_ARG, encoding="utf-8")
-).hexdigest()
 
 TASK_INIT_DOCKERFILE_TEMPLATE = f"""
 FROM {{base_image}}

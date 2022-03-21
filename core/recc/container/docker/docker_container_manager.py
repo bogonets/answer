@@ -23,10 +23,10 @@ from recc.container.struct.container_info import ContainerInfo
 from recc.container.struct.volume_info import VolumeInfo
 from recc.container.struct.network_info import NetworkInfo
 from recc.container.struct.image_info import ImageInfo
-from recc.container.docker.task_init import (
+from recc.container.docker.task_init import get_compressed_task_dockerfile_tar
+from recc.package.recc_package import (
     RECC_MODULE_TAR_BYTES_SHA256,
     RECC_REQUIREMENTS_MAIN_SHA256,
-    get_compressed_task_dockerfile_tar,
 )
 from recc.variables.container import (
     BUILD_CONTEXT_BUILD_PATH,
