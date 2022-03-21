@@ -15,6 +15,7 @@ from recc.variables.storage import (
     LOCAL_STORAGE_DAEMON_VENV_NAME,
     LOCAL_STORAGE_DAEMON_WORK_NAME,
     LOCAL_STORAGE_CACHE_NAME,
+    LOCAL_STORAGE_PIP_DOWNLOAD_NAME,
 )
 
 
@@ -33,6 +34,7 @@ class LocalStorage:
         self.daemon_venv = os.path.join(self.root, LOCAL_STORAGE_DAEMON_VENV_NAME)
         self.daemon_work = os.path.join(self.root, LOCAL_STORAGE_DAEMON_WORK_NAME)
         self.cache = os.path.join(self.root, LOCAL_STORAGE_CACHE_NAME)
+        self.pip_download = os.path.join(self.root, LOCAL_STORAGE_PIP_DOWNLOAD_NAME)
 
         if prepare:
             prepare_directory(self.root)
@@ -43,6 +45,7 @@ class LocalStorage:
             prepare_directory(self.daemon_venv)
             prepare_directory(self.daemon_work)
             prepare_directory(self.cache)
+            prepare_directory(self.pip_download)
 
         self._tm = LamdaTemplateManager(self.template, venv_directory=None)
 

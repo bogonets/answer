@@ -3,7 +3,7 @@
 CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
 STORAGE_DIR=$CORE_DIR/storage
-PIP_CACHE_DIR=$STORAGE_DIR/pip.cache
+PIP_CACHE_DIR=$STORAGE_DIR/pip.download
 
 USAGE="
 Usage: $0 [options]

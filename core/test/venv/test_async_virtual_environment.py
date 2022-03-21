@@ -9,7 +9,7 @@ from recc.debugging.trace import is_debugging_mode
 
 
 @skipIf(is_debugging_mode(), "It does not work normally in debugging mode")
-class VirtualEnvironmentTestCase(IsolatedAsyncioTestCase):
+class AsyncVirtualEnvironmentTestCase(IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.temp_dir = TemporaryDirectory()
         self.venv = AsyncVirtualEnvironment(self.temp_dir.name)
@@ -82,6 +82,17 @@ class VirtualEnvironmentTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(sys.executable, original_executable)
         self.assertFalse(exists_numpy)
         self.assertEqual("kk", test_data_class.data)
+
+    async def test_no_recc_module(self):
+        python = self.venv.create_python_subprocess()
+        with self.assertRaises(RuntimeError):
+            await python.show_as_info("recc")
+
+    async def test_pip_list(self):
+        python = self.venv.create_python_subprocess()
+        packages = await python.list()
+        package_names = set(map(lambda x: x.name, packages))
+        self.assertSetEqual({"pip", "setuptools"}, package_names)
 
 
 if __name__ == "__main__":
