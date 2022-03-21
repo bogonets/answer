@@ -1,39 +1,21 @@
 # -*- coding: utf-8 -*-
 
-import os
 from tempfile import TemporaryDirectory
-from unittest import IsolatedAsyncioTestCase, main, skipIf
+from unittest import IsolatedAsyncioTestCase, main
+from tester.source.storage import get_pip_download_dir
+from tester.pydevd.detect_pydevd import get_isolate_ensure_pip_flag
 from recc.venv.async_recc_virtual_environment import AsyncReccVirtualEnvironment
-from recc.debugging.trace import is_debugging_mode
-from recc.package.requirements_utils import (
-    _RECC_PACKAGE_DIR,  # noqa
-)
 from recc.util.version import version_text
-
-_RECC_DIR = os.path.dirname(_RECC_PACKAGE_DIR)
-_CORE_DIR = os.path.dirname(_RECC_DIR)
-_PIP_DOWNLOAD_DIR = os.path.join(_CORE_DIR, "storage", "pip.download")
-_EXISTS_PIP_DOWNLOAD_DIR = os.path.isdir(_PIP_DOWNLOAD_DIR)
-_ENABLE_DEBUGGING_MODE = is_debugging_mode()
-
-if not _EXISTS_PIP_DOWNLOAD_DIR:
-    _SKIP_IP = True
-    _SKIP_MSG = "If the PIP download directory does not exist, it will not be tested"
-elif _ENABLE_DEBUGGING_MODE:
-    _SKIP_IP = True
-    _SKIP_MSG = "It does not work normally in debugging mode"
-else:
-    _SKIP_IP = False
-    _SKIP_MSG = ""
+from recc.package.requirements_utils import _RECC_PACKAGE_DIR  # noqa
 
 
-@skipIf(_SKIP_IP, _SKIP_MSG)
 class AsyncReccVirtualEnvironmentTestCase(IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.temp_dir = TemporaryDirectory()
         self.venv = AsyncReccVirtualEnvironment(
             self.temp_dir.name,
-            pip_download_dir=_PIP_DOWNLOAD_DIR,
+            pip_download_dir=get_pip_download_dir(),
+            isolate_ensure_pip=get_isolate_ensure_pip_flag(),
         )
         await self.venv.create_if_not_exists()
 
@@ -42,11 +24,18 @@ class AsyncReccVirtualEnvironmentTestCase(IsolatedAsyncioTestCase):
 
     async def test_recc_module(self):
         python = self.venv.create_python_subprocess()
+        result = await python.start_python_simply("-m", "recc", "--version")
+        self.assertTrue(version_text, result[0])
+
+    async def test_recc_code(self):
+        python = self.venv.create_python_subprocess()
         version_text_code = "from recc.util.version import version_text;"
         version_text_code += "print(version_text)"
         result = await python.start_python_simply("-c", version_text_code)
         self.assertTrue(version_text, result[0])
 
+    async def test_recc_pip(self):
+        python = self.venv.create_python_subprocess()
         with self.assertRaises(RuntimeError):
             await python.show("recc")
 

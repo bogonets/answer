@@ -24,9 +24,12 @@ class AsyncVirtualEnvironment:
         root_directory: str,
         system_site_packages=False,
         pip_timeout: Optional[float] = None,
+        *,
+        isolate_ensure_pip=True,
     ):
         self._root_directory = root_directory
         self._pip_timeout = pip_timeout if pip_timeout else 0.0
+        self._isolate_ensure_pip = isolate_ensure_pip
         self._venv = EnvBuilder(
             system_site_packages=system_site_packages,
             clear=False,
@@ -137,7 +140,9 @@ class AsyncVirtualEnvironment:
         self._venv.install_scripts(self._context, path)
 
     async def _setup_pip(self) -> None:
-        await AsyncPythonSubprocess(self.env_exe).ensure_pip()
+        await AsyncPythonSubprocess(self.env_exe).ensure_pip(
+            isolate=self._isolate_ensure_pip
+        )
 
     async def create(self) -> None:
         # See issue 24875. We need system_site_packages to be False

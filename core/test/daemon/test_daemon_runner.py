@@ -5,12 +5,13 @@ from unittest import main, skipIf
 from numpy.random import randint
 from numpy import ndarray, uint8
 from tester.unittest.daemon_server_test_case import DaemonFileTestCase
+from tester.source.storage import get_pip_download_dir
+from tester.pydevd.detect_pydevd import get_isolate_ensure_pip_flag
 from recc.daemon.daemon_client import create_daemon_client
 from recc.daemon.daemon_runner import StandardDaemonRunnerCallbacks, DaemonRunner
 from recc.daemon.daemon_servicer import wait_connectable
 from recc.daemon.daemon_state import DaemonState
 from recc.filesystem.permission import is_executable_file
-from recc.debugging.trace import is_debugging_mode
 from recc.network.access import accessible_network
 from recc.variables.rpc import DEFAULT_DAEMON_PORT, DEFAULT_DAEMON_ADDRESS
 from recc.variables.storage import (
@@ -19,7 +20,6 @@ from recc.variables.storage import (
 )
 
 
-@skipIf(is_debugging_mode(), "It does not work normally in debugging mode")
 class DaemonRunnerTestCase(DaemonFileTestCase):
     def setUp(self):
         super().setUp()
@@ -37,7 +37,9 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
             self.daemon_path,
             self.venv_dir,
             self.work_dir,
+            pip_download_dir=get_pip_download_dir(),
             callbacks=StandardDaemonRunnerCallbacks(),
+            isolate_ensure_pip=get_isolate_ensure_pip_flag(),
         )
 
     def tearDown(self):
@@ -45,7 +47,7 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
 
     async def _start_server(self):
         self.assertEqual(DaemonState.EnvNotFound, self.runner.state)
-        await self.runner.create_venv(16.0)
+        await self.runner.create_venv(32.0)
         self.assertEqual(DaemonState.EnvCreating, self.runner.state)
         await self.runner.join_venv_task()
         self.assertIsNone(self.runner._venv_task)
@@ -66,7 +68,7 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
         if self.client.is_open():
             await self.client.close()
         self.assertFalse(self.client.is_open())
-        await self.runner.interrupt_daemon()
+        await self.runner.kill_daemon()
         await self.runner.join_daemon_task()
         self.assertIsNone(self.runner._daemon_task)
         self.assertIsNone(self.runner._daemon_process)
@@ -94,12 +96,13 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
         self.assertSetEqual(names, set(files))
 
     async def test_default_pip(self):
+        show_package_name = "aiohttp"
         packages = await self.runner.list_pip()
         package_names = set(map(lambda x: x.name, packages))
-        self.assertSetEqual({"pip", "setuptools"}, package_names)
+        self.assertIn(show_package_name, package_names)
 
-        pip_info = await self.runner.show_pip("pip")
-        self.assertEqual("pip", pip_info.name)
+        pip_info = await self.runner.show_pip(show_package_name)
+        self.assertEqual(show_package_name, pip_info.name)
 
     async def test_post_test_numpy(self):
         array = randint(0, 255, size=(1270, 1920, 3), dtype=uint8)
@@ -113,13 +116,14 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
         "You should be able to access the pypi.org site",
     )
     async def test_pip_install(self):
+        install_package_name = "black"
         packages = await self.runner.list_pip()
         package_names = set(map(lambda x: x.name, packages))
-        self.assertNotIn("numpy", package_names)
+        self.assertNotIn(install_package_name, package_names)
 
         self.assertIsNone(self.runner._pip_task)
         self.assertIsNone(self.runner._pip_process)
-        await self.runner.install_pip("numpy")
+        await self.runner.install_pip(install_package_name)
         self.assertIsNotNone(self.runner._pip_task)
         self.assertIsNotNone(self.runner._pip_process)
         await self.runner.join_pip_task()
@@ -128,7 +132,7 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
 
         packages = await self.runner.list_pip()
         package_names = set(map(lambda x: x.name, packages))
-        self.assertIn("numpy", package_names)
+        self.assertIn(install_package_name, package_names)
 
 
 if __name__ == "__main__":

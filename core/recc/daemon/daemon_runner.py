@@ -19,12 +19,8 @@ from asyncio import (
 )
 from overrides import overrides
 from recc.subprocess.async_subprocess import AsyncSubprocess
-from recc.subprocess.async_python_subprocess import (
-    Package,
-    PackageInfo,
-    AsyncPythonSubprocess,
-)
-from recc.venv.async_virtual_environment import AsyncVirtualEnvironment
+from recc.subprocess.async_python_subprocess import Package, PackageInfo
+from recc.venv.async_recc_virtual_environment import AsyncReccVirtualEnvironment
 from recc.argparse.config.global_config import ARG_LOG_SIMPLY
 from recc.argparse.command import Command
 from recc.argparse.config.daemon_config import (
@@ -125,7 +121,10 @@ class DaemonRunner:
         venv_dir: str,
         system_site_packages=False,
         pip_timeout: Optional[float] = None,
+        pip_download_dir: Optional[str] = None,
         callbacks: Optional[DaemonRunnerCallbacks] = None,
+        *,
+        isolate_ensure_pip=True,
     ) -> None:
         assert os.path.isdir(plugin_dir)
         assert is_readable_dir(plugin_dir)
@@ -142,10 +141,12 @@ class DaemonRunner:
         self._plugin_dir = plugin_dir
         self._plugin_script_path = plugin_script_path
         self._work_dir = work_dir
-        self._venv = AsyncVirtualEnvironment(
+        self._venv = AsyncReccVirtualEnvironment(
             root_directory=venv_dir,
             system_site_packages=system_site_packages,
             pip_timeout=pip_timeout,
+            pip_download_dir=pip_download_dir,
+            isolate_ensure_pip=isolate_ensure_pip,
         )
 
         self._venv_task: Optional[Task] = None
@@ -301,12 +302,6 @@ class DaemonRunner:
             pid = self._daemon_process.get_pid()
             raise RuntimeError(f"Already daemon process (pid={pid})")
 
-        # [IMPORTANT]
-        # Do not use the `self._venv.create_python_subprocess()`
-        # After running the already installed daemon-server of `recc`,
-        # the daemon plugin is executed.
-        python_for_daemon = AsyncPythonSubprocess.create_system()
-
         subcommands = [
             "-m",
             "recc",
@@ -321,7 +316,8 @@ class DaemonRunner:
         ]
 
         running_loop = loop if loop else get_running_loop()
-        self._daemon_process = await python_for_daemon.start_python(
+        python = self._venv.create_python_subprocess()
+        self._daemon_process = await python.start_python(
             *subcommands,
             stdout_callback=partial(self._stdout_callback, running_loop),
             stderr_callback=partial(self._stderr_callback, running_loop),
@@ -351,6 +347,12 @@ class DaemonRunner:
         run_coroutine_threadsafe(self._callbacks.on_daemon_done(exit_code), loop)
 
     async def interrupt_daemon(self) -> None:
+        """
+        .. warning::
+            I have code that intercepts the interrupt internally.
+            So you should use ``self.kill_daemon()`` instead.
+        """
+
         if self._daemon_process is None:
             raise RuntimeError("Not exists daemon process")
         self._daemon_process.send_signal(SIGINT)

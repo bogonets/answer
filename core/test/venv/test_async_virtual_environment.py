@@ -2,36 +2,23 @@
 
 import sys
 from tempfile import TemporaryDirectory
-from unittest import IsolatedAsyncioTestCase, main, skipIf
+from unittest import IsolatedAsyncioTestCase, main
+from tester.pydevd.detect_pydevd import get_isolate_ensure_pip_flag
 from recc.venv.async_virtual_environment import AsyncVirtualEnvironment
 from recc.filesystem.permission import is_executable_file
-from recc.debugging.trace import is_debugging_mode
 
 
-@skipIf(is_debugging_mode(), "It does not work normally in debugging mode")
 class AsyncVirtualEnvironmentTestCase(IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.temp_dir = TemporaryDirectory()
-        self.venv = AsyncVirtualEnvironment(self.temp_dir.name)
+        self.venv = AsyncVirtualEnvironment(
+            self.temp_dir.name,
+            isolate_ensure_pip=get_isolate_ensure_pip_flag(),
+        )
         await self.venv.create_if_not_exists()
 
     async def asyncTearDown(self):
         self.temp_dir.cleanup()
-
-    async def test_print(self):
-        print("context", self.venv.context)
-        print("bin_name", self.venv.bin_name)
-        print("bin_path", self.venv.bin_path)
-        print("env_dir", self.venv.env_dir)
-        print("env_exe", self.venv.env_exe)
-        print("env_name", self.venv.env_name)
-        print("executable", self.venv.executable)
-        print("inc_path", self.venv.inc_path)
-        print("prompt", self.venv.prompt)
-        print("python_dir", self.venv.python_dir)
-        print("python_exe", self.venv.python_exe)
-        print("pip_exe", self.venv.pip_exe)
-        print("site_packages_dir", self.venv.site_packages_dir)
 
     async def test_default(self):
         self.assertTrue(self.venv.context)
@@ -47,6 +34,20 @@ class AsyncVirtualEnvironmentTestCase(IsolatedAsyncioTestCase):
         self.assertTrue(self.venv.python_exe)
         self.assertTrue(self.venv.pip_exe)
         self.assertTrue(self.venv.site_packages_dir)
+
+        print("context", self.venv.context)
+        print("bin_name", self.venv.bin_name)
+        print("bin_path", self.venv.bin_path)
+        print("env_dir", self.venv.env_dir)
+        print("env_exe", self.venv.env_exe)
+        print("env_name", self.venv.env_name)
+        print("executable", self.venv.executable)
+        print("inc_path", self.venv.inc_path)
+        print("prompt", self.venv.prompt)
+        print("python_dir", self.venv.python_dir)
+        print("python_exe", self.venv.python_exe)
+        print("pip_exe", self.venv.pip_exe)
+        print("site_packages_dir", self.venv.site_packages_dir)
 
     async def test_version_tuple(self):
         python = self.venv.create_python_subprocess()

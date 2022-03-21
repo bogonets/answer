@@ -18,8 +18,15 @@ class AsyncReccVirtualEnvironment(AsyncVirtualEnvironment):
         pip_timeout: Optional[float] = None,
         recc_dir_name=DEFAULT_VENV_RECC_LOCAL_DIR_NAME,
         pip_download_dir: Optional[str] = None,
+        *,
+        isolate_ensure_pip=True,
     ):
-        super().__init__(root_directory, system_site_packages, pip_timeout)
+        super().__init__(
+            root_directory=root_directory,
+            system_site_packages=system_site_packages,
+            pip_timeout=pip_timeout,
+            isolate_ensure_pip=isolate_ensure_pip,
+        )
         self._recc_dir_name = recc_dir_name
         self._recc_dir = os.path.join(self.site_packages_dir, self._recc_dir_name)
         self._recc_pth_path = os.path.join(self.site_packages_dir, "recc.pth")

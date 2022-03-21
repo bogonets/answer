@@ -173,9 +173,18 @@ class AsyncPythonSubprocess:
     async def start_pip_simply(self, *subcommands) -> Tuple[List[str], List[str]]:
         return await self.start_python_simply(*self.make_pip_subcommands(*subcommands))
 
-    async def ensure_pip(self) -> Tuple[List[str], List[str]]:
+    async def ensure_pip(self, isolate=True) -> Tuple[List[str], List[str]]:
+        """
+        Run ``ensure_pip`` module.
+
+        :param isolate:
+            If pydevd is connected, the ``python -Im ensure_pip`` command does not work
+            properly. In this case, it is temporarily resolved by using the ``isolate``
+            flag as ``False``. If possible, use only for debugging and testing purposes.
+        """
+
         return await self.start_python_simply(
-            "-Im",
+            "-Im" if isolate else "-m",
             "ensurepip",
             "--upgrade",
             "--default-pip",
