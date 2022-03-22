@@ -3,7 +3,7 @@
 import os
 import shutil
 from typing import List
-from recc.filesystem.directory import prepare_directory
+from recc.filesystem.permission import prepare_directory
 from recc.package.package_utils import get_module_directory
 from recc.lamda_builtin import numpy as builtin_numpy
 

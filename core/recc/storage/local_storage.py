@@ -3,7 +3,7 @@
 import os
 from typing import Dict, List
 from pathlib import Path
-from recc.filesystem.directory import prepare_directory
+from recc.filesystem.permission import prepare_directory
 from recc.template.lamda_template import LamdaTemplate
 from recc.template.manager.lamda_template_key import LamdaTemplateKey
 from recc.template.manager.lamda_template_manager import LamdaTemplateManager

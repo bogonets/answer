@@ -244,7 +244,12 @@ class Context(
         logger.info(f"Created plugin-manager: {plugin_names}")
 
     def _init_daemons(self) -> None:
-        self._daemons = DaemonManager()
+        assert self._local_storage
+        self._daemons = DaemonManager(
+            daemon_work_root_dir=self._local_storage.daemon_work,
+            daemon_venv_root_dir=self._local_storage.daemon_venv,
+            pip_download_dir=self._local_storage.pip_download,
+        )
         logger.info("Created daemon-manager")
 
     @classmethod

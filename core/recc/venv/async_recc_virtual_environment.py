@@ -6,7 +6,7 @@ from overrides import overrides
 from recc.venv.async_virtual_environment import AsyncVirtualEnvironment
 from recc.package.recc_package import extract_recc_module
 from recc.package.requirements_utils import RECC_REQUIREMENTS_MAIN
-from recc.filesystem.directory import test_directory
+from recc.filesystem.permission import test_directory
 from recc.variables.venv import DEFAULT_VENV_RECC_LOCAL_DIR_NAME
 
 
