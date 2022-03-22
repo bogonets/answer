@@ -207,7 +207,7 @@ class DaemonRunner:
     async def join_pip_task(self, timeout: Optional[float] = None) -> None:
         await self._join_task(self._pip_task, timeout)
 
-    async def create_venv(
+    def create_venv(
         self,
         timeout: Optional[float] = None,
         loop: Optional[AbstractEventLoop] = None,
@@ -346,7 +346,7 @@ class DaemonRunner:
 
         run_coroutine_threadsafe(self._callbacks.on_daemon_done(exit_code), loop)
 
-    async def interrupt_daemon(self) -> None:
+    def interrupt_daemon(self) -> None:
         """
         .. warning::
             I have code that intercepts the interrupt internally.
@@ -357,7 +357,7 @@ class DaemonRunner:
             raise RuntimeError("Not exists daemon process")
         self._daemon_process.send_signal(SIGINT)
 
-    async def kill_daemon(self) -> None:
+    def kill_daemon(self) -> None:
         if self._daemon_process is None:
             raise RuntimeError("Not exists daemon process")
         self._daemon_process.kill()
@@ -433,10 +433,15 @@ class DaemonRunner:
 
         run_coroutine_threadsafe(self._callbacks.on_pip_install_done(exit_code), loop)
 
-    async def interrupt_pip(self) -> None:
+    def interrupt_pip(self) -> None:
         if self._pip_process is None:
             raise RuntimeError("Not exists pip process")
         self._pip_process.send_signal(SIGINT)
+
+    def kill_pip(self) -> None:
+        if self._pip_process is None:
+            raise RuntimeError("Not exists pip process")
+        self._pip_process.kill()
 
     async def close(
         self,

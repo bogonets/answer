@@ -533,7 +533,7 @@ class RouterV2Admin:
 
     @parameter_matcher
     async def post_daemons_pdaemon_stop(self, daemon: str) -> None:
-        await self.context.stop_daemon(daemon)
+        self.context.kill_daemon(daemon)
 
     @parameter_matcher
     async def get_port_range(self) -> PortRangeA:

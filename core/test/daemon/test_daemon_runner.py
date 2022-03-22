@@ -47,7 +47,7 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
 
     async def _start_server(self):
         self.assertEqual(DaemonState.EnvNotFound, self.runner.state)
-        await self.runner.create_venv(32.0)
+        self.runner.create_venv(32.0)
         self.assertEqual(DaemonState.EnvCreating, self.runner.state)
         await self.runner.join_venv_task()
         self.assertIsNone(self.runner._venv_task)
@@ -68,7 +68,7 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
         if self.client.is_open():
             await self.client.close()
         self.assertFalse(self.client.is_open())
-        await self.runner.kill_daemon()
+        self.runner.kill_daemon()
         await self.runner.join_daemon_task()
         self.assertIsNone(self.runner._daemon_task)
         self.assertIsNone(self.runner._daemon_process)

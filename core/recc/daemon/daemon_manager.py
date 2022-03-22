@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict
-from recc.aio.task_manager import TaskManager
+from typing import Dict, Optional
+from asyncio import AbstractEventLoop
 from recc.daemon.daemon_runner import DaemonRunner
 from recc.daemon.daemon_state import DaemonState
 
@@ -9,24 +9,9 @@ from recc.daemon.daemon_state import DaemonState
 class DaemonManager:
 
     _daemons: Dict[str, DaemonRunner]
-    _tasks: TaskManager
 
     def __init__(self):
         self._daemons = dict()
-        self._tasks = TaskManager()
-
-    # def add_new_runner(
-    #     self,
-    #     slug: str,
-    #     address: str,
-    #     directory: Path,
-    #     loop: Optional[AbstractEventLoop] = None,
-    # ) -> None:
-    #     runner = DaemonRunner(Path(directory), address, loop)
-    #     self._daemons[slug] = runner
-
-    def is_running(self, slug: str) -> bool:
-        return self._daemons[slug].is_daemon_running()
 
     def get_state(self, slug: str) -> DaemonState:
         try:
@@ -36,22 +21,19 @@ class DaemonManager:
         except:  # noqa
             return DaemonState.Unknown
 
-    # def exists_requirements(self, slug: str) -> bool:
-    #     return self._daemons[slug].requirements_path.is_file()
+    async def start_daemon(
+        self,
+        slug: str,
+        address: str,
+        loop: Optional[AbstractEventLoop] = None,
+    ) -> None:
+        await self._daemons[slug].start_daemon(address, loop)
 
-    # async def install(
-    #     self, slug: str, prev_requirements_sha256: Optional[str] = None
-    # ) -> str:
-    #     item = self._daemons[slug]
-    #     return await item.install_requirements(prev_requirements_sha256)
+    def interrupt_daemon(self, slug: str) -> None:
+        self._daemons[slug].interrupt_daemon()
 
-    async def start(self, slug: str) -> None:
-        # await self._daemons[slug].start_daemon()
-        pass
-
-    async def stop(self, slug: str) -> None:
-        # await self._daemons[slug].close()
-        pass
+    def kill_daemon(self, slug: str) -> None:
+        self._daemons[slug].kill_daemon()
 
     # async def update_daemon(
     #     self,
