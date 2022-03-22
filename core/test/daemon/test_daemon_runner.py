@@ -35,8 +35,8 @@ class DaemonRunnerTestCase(DaemonFileTestCase):
         self.runner = DaemonRunner(
             self.daemon_dir,
             self.daemon_path,
-            self.venv_dir,
             self.work_dir,
+            self.venv_dir,
             pip_download_dir=get_pip_download_dir(),
             callbacks=StandardDaemonRunnerCallbacks(),
             isolate_ensure_pip=get_isolate_ensure_pip_flag(),

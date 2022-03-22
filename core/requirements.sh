@@ -12,14 +12,14 @@ Available options are:
   -h, --help       Print this message.
   -d, --download   First 'pip download', then 'pip install'
   -i, --install    Only 'pip install'
-  --no-upgrade     Disable upgrading the 'requirement.main.txt' file of the package.
+  -u, --upgrade    Upgrade the 'requirement.main.txt' file of the package.
   -v, --verbose    Be more verbose/talkative during the operation.
   --               Stop handling options.
 "
 
 DOWNLOAD_FLAG=0
 INSTALL_FLAG=0
-NO_UPGRADE_FLAG=0
+UPGRADE_FLAG=0
 VERBOSE_FLAG=0
 
 trap 'cancel_installation' INT
@@ -80,8 +80,8 @@ while [[ -n $1 ]]; do
         INSTALL_FLAG=1
         shift
         ;;
-    -no-upgrade)
-        NO_UPGRADE_FLAG=1
+    -u|--upgrade)
+        UPGRADE_FLAG=1
         shift
         ;;
     -v|--verbose)
@@ -135,12 +135,17 @@ function upgrade
         "$CORE_DIR/recc/package/requirements.main.txt"
 }
 
+if [[ $DOWNLOAD_FLAG -ne 0 && $INSTALL_FLAG -ne 0 ]]; then
+    print_error "The download and install flags cannot coexist."
+    exit 1
+fi
+
 if [[ $DOWNLOAD_FLAG -ne 0 ]]; then
     download_and_install
 elif [[ $INSTALL_FLAG -ne 0 ]]; then
     install
 fi
 
-if [[ $NO_UPGRADE_FLAG -eq 0 ]]; then
+if [[ $UPGRADE_FLAG -ne 0 ]]; then
     upgrade
 fi
