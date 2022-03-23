@@ -329,56 +329,58 @@ export default class NaviMain extends VueBase {
     const name = this.$route.name;
     if (name === mainNames.mainDashboard) {
       this.index = 0;
-    } else if (name === mainNames.mainLayouts) {
+    } else if (name === mainNames.mainKanban) {
       this.index = 1;
-    } else if (name === mainNames.mainFiles) {
+    } else if (name === mainNames.mainLayouts) {
       this.index = 2;
-    } else if (name === mainNames.mainTables) {
+    } else if (name === mainNames.mainFiles) {
       this.index = 3;
-    } else if (name === mainNames.mainTasks) {
+    } else if (name === mainNames.mainTables) {
       this.index = 4;
-    } else if (name === mainNames.mainVisualProgramming) {
+    } else if (name === mainNames.mainTasks) {
       this.index = 5;
+    } else if (name === mainNames.mainVisualProgramming) {
+      this.index = 6;
 
     } else if (name === mainNames.mainVmsLive) {
-      this.index = 6;
+      this.index = 7;
     } else if (name === mainNames.mainVmsDevices) {
-      this.index = 7;
+      this.index = 8;
     } else if (name === mainNames.mainVmsDevicesDiscovery) {
-      this.index = 7;
+      this.index = 8;
     } else if (name === mainNames.mainVmsDevicesDiscoveryEpr) {
-      this.index = 7;
+      this.index = 8;
     } else if (name === mainNames.mainVmsDevicesEditInfo) {
-      this.index = 7;
+      this.index = 8;
     } else if (name === mainNames.mainVmsDevicesEditLive) {
-      this.index = 7;
+      this.index = 8;
     } else if (name === mainNames.mainVmsDevicesEditRecord) {
-      this.index = 7;
+      this.index = 8;
     } else if (name === mainNames.mainVmsDevicesEditEvents) {
-      this.index = 7;
+      this.index = 8;
     } else if (name === mainNames.mainVmsDevicesEditEventConfigsEdit) {
-      this.index = 7;
+      this.index = 8;
     } else if (name === mainNames.mainVmsDevicesEditEventConfigsNew) {
-      this.index = 7;
+      this.index = 8;
     } else if (name === mainNames.mainVmsDevicesNew) {
-      this.index = 7;
+      this.index = 8;
     } else if (name === mainNames.mainVmsLayouts) {
-      this.index = 8;
-    } else if (name === mainNames.mainVmsLayoutsEdit) {
-      this.index = 8;
-    } else if (name === mainNames.mainVmsLayoutsNew) {
-      this.index = 8;
-    } else if (name === mainNames.mainVmsEventsCalendar) {
       this.index = 9;
-    } else if (name === mainNames.mainVmsEventsList) {
+    } else if (name === mainNames.mainVmsLayoutsEdit) {
+      this.index = 9;
+    } else if (name === mainNames.mainVmsLayoutsNew) {
+      this.index = 9;
+    } else if (name === mainNames.mainVmsEventsCalendar) {
       this.index = 10;
-    } else if (name === mainNames.mainVmsUserConfigs) {
+    } else if (name === mainNames.mainVmsEventsList) {
       this.index = 11;
+    } else if (name === mainNames.mainVmsUserConfigs) {
+      this.index = 12;
 
     } else if (name === mainNames.mainMembers) {
-      this.index = 12;
-    } else if (name === mainNames.mainSettings) {
       this.index = 13;
+    } else if (name === mainNames.mainSettings) {
+      this.index = 14;
 
     } else {
       this.index = -1;
