@@ -46,7 +46,7 @@ RE_CONSTRAINTS = re_compile(r"constraints.*\.txt")
 
 class DaemonRunnerCallbacks(metaclass=ABCMeta):
     @abstractmethod
-    async def on_created_venv(self, root: str) -> None:
+    async def on_created_venv(self, result: bool, root: str) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -76,7 +76,7 @@ class DaemonRunnerCallbacks(metaclass=ABCMeta):
 
 class StandardDaemonRunnerCallbacks(DaemonRunnerCallbacks):
     @overrides
-    async def on_created_venv(self, root: str) -> None:
+    async def on_created_venv(self, result: bool, root: str) -> None:
         sys.stdout.write(f"The virtual environment has been created: '{root}'\n")
 
     @overrides
@@ -226,7 +226,9 @@ class DaemonRunner:
         self._venv_task = None
         if self._callbacks is None:
             return
-        run_coroutine_threadsafe(self._callbacks.on_created_venv(self.venv_dir), loop)
+        run_coroutine_threadsafe(
+            self._callbacks.on_created_venv(self.exists, self.venv_dir), loop
+        )
 
     @property
     def plugin_dir(self):

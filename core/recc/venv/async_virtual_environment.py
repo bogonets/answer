@@ -5,6 +5,7 @@ import os
 from types import SimpleNamespace
 from typing import Optional
 from venv import EnvBuilder
+from shutil import rmtree
 from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
 from recc.venv.venv_context_changer import VenvContextChanger
 
@@ -49,6 +50,11 @@ class AsyncVirtualEnvironment:
 
     @property
     def root(self) -> str:
+        """
+        The original venv root directory.
+
+        Preserves the original value passed to the constructor argument.
+        """
         return self._root_directory
 
     @property
@@ -65,6 +71,9 @@ class AsyncVirtualEnvironment:
 
     @property
     def env_dir(self) -> str:
+        """
+        Absolute path to the venv root directory.
+        """
         return self.context.env_dir
 
     @property
@@ -162,9 +171,16 @@ class AsyncVirtualEnvironment:
             self._venv.system_site_packages = True
             self._create_configuration()
 
-    async def create_if_not_exists(self) -> None:
+    async def create_if_not_exists(self, remove_if_raised=True) -> None:
         if not self.exists:
-            await self.create()
+            try:
+                await self.create()
+            except BaseException as e:
+                if remove_if_raised:
+                    rmtree(self.env_dir, ignore_errors=True)
+                raise RuntimeError(
+                    f"Failed to create virtual environment: '{self.env_dir}'"
+                ) from e
 
     def create_python_subprocess(self) -> AsyncPythonSubprocess:
         return AsyncPythonSubprocess(self.env_exe, self._pip_timeout)

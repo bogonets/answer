@@ -4,6 +4,8 @@ import os
 from typing import Dict, Optional
 from asyncio import AbstractEventLoop
 from overrides import overrides
+from logging import getLogger, INFO, WARNING
+from recc.logging.logging import LOGGER_NAME_DAEMON_RPC
 from recc.daemon.daemon_runner import DaemonRunnerCallbacks, DaemonRunner
 from recc.daemon.daemon_state import DaemonState
 from recc.filesystem.permission import (
@@ -15,38 +17,57 @@ from recc.filesystem.permission import (
 
 
 class _RunnerCallback(DaemonRunnerCallbacks):
-    def __init__(self, work_dir: str, slug: str, logging=True):
+    def __init__(
+        self,
+        work_dir: str,
+        slug: str,
+        encoding="utf-8",
+        stdout_level=INFO,
+        stderr_level=WARNING,
+    ):
         self._work_dir = work_dir
         self._slug = slug
-        self._logging = logging
+        self._logger = getLogger(LOGGER_NAME_DAEMON_RPC + "." + slug)
+        self._encoding = encoding
+        self._stdout_level = stdout_level
+        self._stderr_level = stderr_level
 
     @overrides
-    async def on_created_venv(self, root: str) -> None:
-        pass
+    async def on_created_venv(self, result: bool, root: str) -> None:
+        if result:
+            self._logger.info(f"Created a virtual environment: '{root}'")
+        else:
+            self._logger.error(f"Failed to create virtual environment: '{root}'")
 
     @overrides
     async def on_stdout(self, data: bytes) -> None:
-        pass
+        self._logger.log(self._stdout_level, str(data, encoding=self._encoding))
 
     @overrides
     async def on_stderr(self, data: bytes) -> None:
-        pass
+        self._logger.log(self._stderr_level, str(data, encoding=self._encoding))
 
     @overrides
     async def on_daemon_done(self, exit_code: int) -> None:
-        pass
+        if exit_code == 0:
+            self._logger.info("The daemon exited normally")
+        else:
+            self._logger.warning(f"The daemon exited abnormally: {exit_code}")
 
     @overrides
     async def on_pip_install_stdout(self, data: bytes) -> None:
-        pass
+        self._logger.log(self._stdout_level, str(data, encoding=self._encoding))
 
     @overrides
     async def on_pip_install_stderr(self, data: bytes) -> None:
-        pass
+        self._logger.log(self._stderr_level, str(data, encoding=self._encoding))
 
     @overrides
     async def on_pip_install_done(self, exit_code: int) -> None:
-        pass
+        if exit_code == 0:
+            self._logger.info("The pip exited normally")
+        else:
+            self._logger.warning(f"The pip exited abnormally: {exit_code}")
 
 
 class DaemonManager:
@@ -56,7 +77,6 @@ class DaemonManager:
         daemon_venv_root_dir: str,
         pip_download_dir: str,
         pip_timeout: Optional[float] = None,
-        logging=True,
         *,
         isolate_ensure_pip=True,
     ):
@@ -67,7 +87,6 @@ class DaemonManager:
         self._daemon_venv_root_dir = daemon_venv_root_dir
         self._pip_download_dir = pip_download_dir
         self._pip_timeout = pip_timeout
-        self._logging = logging
         self._isolate_ensure_pip = isolate_ensure_pip
         self._daemons: Dict[str, DaemonRunner] = dict()
 
@@ -105,7 +124,7 @@ class DaemonManager:
             system_site_packages=False,
             pip_timeout=self._pip_timeout,
             pip_download_dir=self._pip_download_dir,
-            callbacks=_RunnerCallback(work_dir, slug, self._logging),
+            callbacks=_RunnerCallback(work_dir, slug),
             isolate_ensure_pip=self._isolate_ensure_pip,
         )
 
@@ -122,6 +141,9 @@ class DaemonManager:
 
     def kill_daemon(self, slug: str) -> None:
         self._daemons[slug].kill_daemon()
+
+    async def close(self):
+        pass
 
     # async def update_daemon(
     #     self,
