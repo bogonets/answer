@@ -11,7 +11,7 @@ ko:
     <breadcrumb-main name="Kanban"></breadcrumb-main>
     <v-divider></v-divider>
 
-    <div class="d-flex flex-row">
+    <div ref="mirrorContainer" class="d-flex flex-row">
       <div ref="bar1" style="width: 200px; height: 400px;">
         <v-card
             class="mx-auto"
@@ -101,6 +101,9 @@ import createDragula, {Drake} from 'dragula';
 })
 export default class MainKanban extends VueBase {
   @Ref()
+  mirrorContainer!: HTMLDivElement;
+
+  @Ref()
   bar1!: HTMLDivElement;
 
   @Ref()
@@ -111,7 +114,13 @@ export default class MainKanban extends VueBase {
   dragula!: Drake;
 
   mounted() {
-    this.dragula = createDragula([this.bar1, this.bar2]);
+    this.dragula = createDragula([this.bar1, this.bar2], {
+      mirrorContainer: this.mirrorContainer,
+    });
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import '~dragula/dist/dragula.css';
+</style>
