@@ -1,6 +1,7 @@
 import mainNames from '@/router/names/main';
 import MainDashboard from '@/pages/main/MainDashboard.vue';
 import MainFiles from '@/pages/main/MainFiles.vue';
+import MainKanban from '@/pages/main/MainKanban.vue';
 import MainLayouts from '@/pages/main/MainLayouts.vue';
 import MainMembers from '@/pages/main/MainMembers.vue';
 import MainSettings from '@/pages/main/MainSettings.vue';
@@ -36,6 +37,11 @@ export const mainChildren = [
         path: ':group/:project/dashboard',
         component: MainDashboard,
         name: mainNames.mainDashboard,
+    },
+    {
+        path: ':group/:project/kanban',
+        component: MainKanban,
+        name: mainNames.mainKanban,
     },
     {
         path: ':group/:project/files',

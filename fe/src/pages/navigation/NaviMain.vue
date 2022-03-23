@@ -1,6 +1,7 @@
 <i18n lang="yaml">
 en:
   dashboard: "Dashboard"
+  kanban: "Kanban"
   layouts: "Layouts"
   files: "Files"
   tables: "Tables"
@@ -18,6 +19,7 @@ en:
 
 ko:
   dashboard: "대시보드"
+  kanban: "간반보드"
   layouts: "레이아웃"
   files: "파일"
   tables: "테이블"
@@ -75,6 +77,18 @@ ko:
             </v-list-item-icon>
             <v-list-item-title>
               {{ $t('dashboard') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
+              link
+              @click.stop="kanban"
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-view-week-outline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('kanban') }}
             </v-list-item-title>
           </v-list-item>
 
@@ -406,6 +420,13 @@ export default class NaviMain extends VueBase {
   dashboard() {
     if (!this.noDefault) {
       this.moveToMainDashboard();
+    }
+  }
+
+  @Emit('click:kanban')
+  kanban() {
+    if (!this.noDefault) {
+      this.moveToMainKanban();
     }
   }
 
