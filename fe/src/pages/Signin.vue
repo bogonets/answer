@@ -345,7 +345,6 @@ export default class Signin extends VueBase {
     // Changes only public local settings.
     this.$localStore.origin = origin;
 
-    this.$api.setUrl(origin);
     this.$api2.origin = origin;
 
     this.testInit();

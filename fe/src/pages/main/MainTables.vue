@@ -66,9 +66,6 @@ ko:
     </v-toolbar>
     <v-divider></v-divider>
 
-<!--    <grid-view>-->
-<!--    </grid-view>-->
-
     <view-port class="d-flex flex-row align-center justify-center">
       <div class="d-flex flex-column align-center justify-center">
         <v-icon x-large>mdi-table</v-icon>
@@ -84,7 +81,6 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import GridView from '@/components/DynamicTable/GridView.vue';
 import ViewPort from '@/components/ViewPort.vue';
 
 const NAVIGATION_DENSE_HEIGHT = 48;
@@ -93,7 +89,6 @@ const VIEW_PORT_MARGIN_TOP = (NAVIGATION_DENSE_HEIGHT * 2) + DIVIDER_HEIGHT;
 
 @Component({
   components: {
-    GridView,
     ViewPort,
   }
 })

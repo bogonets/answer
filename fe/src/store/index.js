@@ -16,19 +16,3 @@ export const sessionStore = new Vuex.Store({
   strict: ENABLE_STRICT,
   plugins: [vuexSessionStorage.plugin],
 });
-
-export const templateStore = new Vuex.Store({
-  state: {
-    lambdaTemplates: {},
-  },
-  getters: {
-    getLambdaTemplates: function(state) {
-      return state.lambdaTemplates;
-    },
-  },
-  mutations: {
-    setLambdaTemplates(state, templates) {
-      state.lambdaTemplates = templates;
-    },
-  },
-});

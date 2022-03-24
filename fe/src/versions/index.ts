@@ -1,6 +1,6 @@
 import VueInterface from 'vue';
 import Vuetify from 'vuetify';
-import {PluginObject} from "vue/types/plugin";
+import {PluginObject} from 'vue/types/plugin';
 import Package from '@/../package.json';
 
 const VUE_VERSION = VueInterface.version;

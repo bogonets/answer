@@ -6,7 +6,6 @@ import type {PreferenceA} from '@/packet/preference';
 function loadApiOriginFromLocalStorage(vue: Vue) {
     const api = vue.$localStore.origin;
     console.debug(`Load api origin: ${api}`);
-    vue.$api.setUrl(api);
     vue.$api2.origin = api;
 }
 

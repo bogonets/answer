@@ -93,7 +93,6 @@ ko:
           </v-list-item>
 
           <v-list-item
-              v-show="false"
               link
               @click.stop="layouts"
           >
@@ -106,7 +105,6 @@ ko:
           </v-list-item>
 
           <v-list-item
-              v-show="false"
               link
               @click.stop="files"
           >
@@ -119,7 +117,6 @@ ko:
           </v-list-item>
 
           <v-list-item
-              v-show="false"
               link
               @click.stop="tables"
           >
@@ -145,7 +142,6 @@ ko:
           </v-list-item>
 
           <v-list-item
-              v-show="false"
               link
               @click.stop="visualProgramming"
           >
