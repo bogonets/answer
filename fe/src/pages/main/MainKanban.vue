@@ -86,6 +86,9 @@ ko:
               <v-btn small icon>
                 <v-icon small>mdi-plus</v-icon>
               </v-btn>
+              <v-btn small icon>
+                <v-icon small>mdi-cog</v-icon>
+              </v-btn>
             </div>
             <v-divider></v-divider>
 
@@ -101,19 +104,68 @@ ko:
                     class="kanban-card"
                     outlined
                     :loading="card.loading"
+                    :disabled="card.lock"
                 >
-                  <v-card-text>{{ card.name }}</v-card-text>
-                  <v-card-subtitle>Subtitle</v-card-subtitle>
+                  <v-card-title v-if="card.title">
+                    {{ card.title }}
+                  </v-card-title>
+                  <v-card-subtitle v-if="card.subtitle">
+                    {{ card.subtitle }}
+                  </v-card-subtitle>
 
                   <v-card-text>
-                    Author:
-                    <v-chip small color="primary">
-                      <v-icon size="24" left>mdi-account-circle</v-icon>
-                      John Leider
-                    </v-chip>
-                  </v-card-text>
-                  <v-card-actions>
+                    <div
+                        v-for="(propType, propTypeIndex) in cardPropTypes"
+                        :key="`task-${task.id}-card-${card.id}-prop-${propTypeIndex}`"
+                    >
+                      <div
+                          v-if="propType.key in card.props"
+                          class="flex flex-row"
+                      >
+                        <v-icon small>{{ getPropertyTypeIcon(propType.type) }}</v-icon>
+                        <span class="ml-1 text-overline">{{ propType.key }}</span>
+                      </div>
 
+                      <div v-if="propType.type === 'array:account'">
+                        <v-chip
+                            v-for="account in card.props[propType.key]"
+                            :key="`task-${task.id}-card-${card.id}-prop-${propTypeIndex}-${account}`"
+                            small
+                            class="mr-1"
+                        >
+                          <v-icon size="24" left>mdi-account-circle</v-icon>
+                          {{ account }}
+                        </v-chip>
+                      </div>
+                      <div v-else-if="propType.type === 'array:category'">
+                        <v-chip
+                            v-for="category in card.props[propType.key]"
+                            :key="`task-${task.id}-card-${card.id}-prop-${propTypeIndex}-${category}`"
+                            small
+                            class="mr-1"
+                            :color="propType.format[category].color"
+                        >
+                          {{ propType.format[category].name }}
+                        </v-chip>
+                      </div>
+                      <div v-else-if="propType.type === 'text'">
+                        <span class="ml-1 text-body-2 text--secondary font-weight-bold">
+                          {{ card.props[propType.key] }}
+                        </span>
+                      </div>
+                    </div>
+                  </v-card-text>
+
+                  <v-card-actions>
+                    <v-chip small>
+                      <v-icon size="24" left>mdi-account-circle</v-icon>
+                      {{ card.author }}
+                    </v-chip>
+                    <v-spacer></v-spacer>
+                    <v-btn text small rounded color="secondary">
+                      <v-icon small class="mr-1">mdi-comment-text-outline</v-icon>
+                      {{ card.comments }}
+                    </v-btn>
                   </v-card-actions>
 
                 </v-card>
@@ -152,81 +204,145 @@ export default class MainKanban extends VueBase {
   loading = false;
 
   dragula!: Drake;
+  cardPropTypes = [
+    {
+      key: 'title',
+      type: 'title',
+    },
+    {
+      key: 'content',
+      type: 'subtitle',
+    },
+    {
+      key: 'workers',
+      type: 'array:account',
+    },
+    {
+      key: 'tags',
+      type: 'array:category',
+      format: [
+        {
+          name: 'A부품 라인',
+          color: 'green',
+        },
+        {
+          name: '최우선',
+          color: 'deep-orange',
+        },
+        {
+          name: 'B부품 라인',
+          color: 'purple',
+        },
+        {
+          name: '신규',
+          color: 'yellow',
+        },
+      ],
+    },
+    {
+      key: 'directory',
+      type: 'text',
+    },
+  ];
+
   tasks = [
     {
       id: 0,
-      name: "first",
+      name: '데이터 취득',
       cards: [
         {
           id: 0,
-          name: "card0",
           loading: false,
-        },
-        {
-          id: 1,
-          name: "card1",
-          loading: true,
-        },
-        {
-          id: 4,
-          name: "card4",
-          loading: true,
-        },
-        {
-          id: 5,
-          name: "card5",
-          loading: false,
-        },
-        {
-          id: 6,
-          name: "card6",
-          loading: false,
-        },
-        {
-          id: 7,
-          name: "card7",
-          loading: false,
+          comments: 10,
+          author: '존시나',
+          title: '2022/1분기 모델 훈련',
+          subtitle: '1,2월 데이터 총 100건',
+          lock: false,
+          props: {
+            workers: ['피카츄', '라이츄'],
+            tags: [0, 1],
+            directory: '/work/2022-03-31',
+          },
         },
       ],
     },
     {
       id: 1,
-      name: "second",
+      name: '라벨링',
       cards: [
         {
           id: 2,
-          name: "card2",
           loading: false,
+          comments: 999,
+          author: '헐크 호건',
+          title: '2021/4분기 모델 훈련',
+          subtitle: 'Fake 데이터 10건 포함',
+          lock: false,
+          props: {
+            workers: ['파이리'],
+            tags: [2],
+            directory: '/work/2021-12-30',
+          },
         },
         {
           id: 3,
-          name: "card3",
-          loading: false,
+          loading: true,
+          comments: 0,
+          author: 'The Rock',
+          title: '긴급 데이터 훈련',
+          subtitle: '새로운 부품 추가로 인한 새로운 클래스 추가',
+          lock: false,
+          props: {
+            workers: ['꼬북이', '또도가스', '잉어킹', '이상해씨'],
+            tags: [2, 3, 1],
+            directory: '/work/2021-06-12-hotfix',
+          },
         },
       ],
     },
     {
       id: 2,
-      name: "third",
+      name: '모델 학습',
       cards: [
         {
           id: 8,
-          name: "card8",
+          loading: true,
+          comments: 0,
+          author: '핫산',
+          title: '2021/3분기 모델 훈련',
+          subtitle: '오늘의 포켓몬은 뭘까요',
+          lock: false,
+          props: {
+            workers: ["피죤투"],
+            tags: [0],
+            directory: '/work/2021-08-02',
+          },
+        },
+      ],
+    },
+    {
+      id: 3,
+      name: '완료',
+      cards: [
+        {
+          id: 8,
           loading: false,
+          comments: 1,
+          author: '볼드모트',
+          title: '2021/신규 모델 추가',
+          subtitle: '런어웨이가즈아',
+          lock: true,
+          props: {
+            workers: ['장작의왕', '빛바랜자', '야수'],
+            tags: [3],
+            directory: '/new/model2',
+          },
         },
       ],
     },
   ];
 
   mounted() {
-    console.dir(this.kanbanTaskResponsive);
-    const el = this.kanbanTaskResponsive[0].$el;
-    const c = el.getElementsByClassName('kanban-task--responsive-content');
-    console.dir(c[0]);
-    // this.dragula = createDragula([this.bar1, this.bar2], {
-    //   mirrorContainer: this.kanbanBoard,
-    // });
-
     this.dragula = createDragula({
       mirrorContainer: this.kanbanBoard,
     });
@@ -234,6 +350,25 @@ export default class MainKanban extends VueBase {
       const c = t.$el.getElementsByClassName('kanban-task--responsive-content')[0];
       this.dragula.containers.push(c);
     })
+  }
+
+  getPropertyTypeIcon(typeName: string) {
+    switch (typeName) {
+      case 'title':
+        return 'mdi-format-title';
+      case 'subtitle':
+        return 'mdi-format-text';
+      case 'text':
+        return 'mdi-format-text';
+      case 'array:text':
+        return 'mdi-format-text';
+      case 'array:account':
+        return 'mdi-account';
+      case 'array:category':
+        return 'mdi-tag';
+      default:
+        return '';
+    }
   }
 
   onClickTables() {
