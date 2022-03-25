@@ -63,21 +63,11 @@ export default class GroupProjects extends VueBase {
         });
   }
 
-  /**
-   * @deprecated
-   */
-  private legacySelectProject(projectSlug) {
-    const group = this.$route.params.group;
-    const projectName = `${group}@${projectSlug}`;
-    this.$store.commit('project/setSelectProject', {name: projectName});
-  }
-
   onClickNew() {
     this.moveToGroupProjectsNew();
   }
 
   onClickRow(item: ProjectA) {
-    this.legacySelectProject(item.project_slug);
     this.moveToMain(item.group_slug, item.project_slug);
   }
 }

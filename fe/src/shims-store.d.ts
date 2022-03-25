@@ -1,5 +1,5 @@
-import {LocalStore} from '@/store/LocalStore';
-import {SessionStore} from '@/store/SessionStore';
+import {LocalStore} from '@/store/localStore';
+import {SessionStore} from '@/store/sessionStore';
 
 declare module 'vue/types/vue' {
   interface Vue {

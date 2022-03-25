@@ -1,4 +1,4 @@
-import ApiV2 from "@/apis/api-v2";
+import ApiV2 from '@/apis/api-v2';
 
 declare module 'vue/types/vue' {
   interface Vue {

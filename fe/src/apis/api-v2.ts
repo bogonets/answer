@@ -1,7 +1,7 @@
 import Vue from 'vue';
 
 import {Store} from 'vuex';
-import {LocalStore} from '@/store/LocalStore';
+import {LocalStore} from '@/store/localStore';
 
 import router from '@/router';
 import rootNames from '@/router/names/root';
@@ -135,19 +135,11 @@ function moveTo(name: string) {
 function clearSession() {
     const localStore = Vue.prototype.$localStore as LocalStore;
     localStore.clearSession();
-
-    const sessionStore = Vue.prototype.$store as Store<any>;
-    sessionStore.commit('user/logout');
 }
 
 function renewalAccessToken(access: string) {
     const localStore = Vue.prototype.$localStore as LocalStore;
     localStore.access = access;
-
-    const sessionStore = Vue.prototype.$store as Store<any>;
-    sessionStore.commit('user/renewalAccessToken', {
-        accessToken: access,
-    });
 }
 
 export interface ApiV2Options {

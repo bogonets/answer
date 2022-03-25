@@ -48,21 +48,6 @@ function getUserExtraFromLocalStorage(vue: Vue) {
     } as UserExtraA;
 }
 
-function initApiV1Session(
-    vue: Vue,
-    access: string,
-    refresh: string,
-    user: UserA,
-) {
-    vue.$store.commit('user/login', {
-        accessToken: access,
-        refreshToken: refresh,
-        id: user.username || '',
-        email: user.email || '',
-        phone: user.phone1 || '',
-    });
-}
-
 function initApiV2Session(
     vue: Vue,
     access: string,
@@ -91,7 +76,6 @@ function loadSessionFromLocalStorage(vue: Vue) {
         console.assert(!!preference);
         console.info(`Already session information: ${user.username}`)
 
-        initApiV1Session(vue, access, refresh, user);
         initApiV2Session(vue, access, refresh, user, preference);
 
         if (user.extra) {
@@ -132,7 +116,6 @@ function saveSessionToLocalStorage(vue: Vue, signin: SigninA) {
 }
 
 function clearSessionInLocalStorage(vue: Vue) {
-    vue.$store.commit('user/logout');
     vue.$localStore.clearSession();
     vue.$api2.clearDefaultSession();
 }
