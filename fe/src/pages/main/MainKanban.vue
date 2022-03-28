@@ -104,7 +104,7 @@ ko:
                     class="kanban-card"
                     outlined
                     :loading="card.loading"
-                    :disabled="card.lock"
+                    :disabled="card.disabled"
                 >
                   <v-card-title v-if="card.title">
                     {{ card.title }}
@@ -153,6 +153,11 @@ ko:
                           {{ card.props[propType.key] }}
                         </span>
                       </div>
+                      <div v-else-if="['link', 'directory'].includes(propType.type)">
+                        <a class="ml-1 text-decoration-underline font-weight-medium">
+                          {{ card.props[propType.key] }}
+                        </a>
+                      </div>
                     </div>
                   </v-card-text>
 
@@ -162,9 +167,13 @@ ko:
                       {{ card.author }}
                     </v-chip>
                     <v-spacer></v-spacer>
+
                     <v-btn text small rounded color="secondary">
                       <v-icon small class="mr-1">mdi-comment-text-outline</v-icon>
                       {{ card.comments }}
+                    </v-btn>
+                    <v-btn icon small color="secondary">
+                      <v-icon size="18">mdi-open-in-app</v-icon>
                     </v-btn>
                   </v-card-actions>
 
@@ -241,7 +250,7 @@ export default class MainKanban extends VueBase {
     },
     {
       key: 'directory',
-      type: 'text',
+      type: 'directory',
     },
   ];
 
@@ -257,7 +266,7 @@ export default class MainKanban extends VueBase {
           author: '존시나',
           title: '2022/1분기 모델 훈련',
           subtitle: '1,2월 데이터 총 100건',
-          lock: false,
+          disabled: false,
           props: {
             workers: ['피카츄', '라이츄'],
             tags: [0, 1],
@@ -277,7 +286,7 @@ export default class MainKanban extends VueBase {
           author: '헐크 호건',
           title: '2021/4분기 모델 훈련',
           subtitle: 'Fake 데이터 10건 포함',
-          lock: false,
+          disabled: false,
           props: {
             workers: ['파이리'],
             tags: [2],
@@ -291,7 +300,7 @@ export default class MainKanban extends VueBase {
           author: 'The Rock',
           title: '긴급 데이터 훈련',
           subtitle: '새로운 부품 추가로 인한 새로운 클래스 추가',
-          lock: false,
+          disabled: false,
           props: {
             workers: ['꼬북이', '또도가스', '잉어킹', '이상해씨'],
             tags: [2, 3, 1],
@@ -311,7 +320,7 @@ export default class MainKanban extends VueBase {
           author: '핫산',
           title: '2021/3분기 모델 훈련',
           subtitle: '오늘의 포켓몬은 뭘까요',
-          lock: false,
+          disabled: false,
           props: {
             workers: ["피죤투"],
             tags: [0],
@@ -331,7 +340,7 @@ export default class MainKanban extends VueBase {
           author: '볼드모트',
           title: '2021/신규 모델 추가',
           subtitle: '런어웨이가즈아',
-          lock: true,
+          disabled: true,
           props: {
             workers: ['장작의왕', '빛바랜자', '야수'],
             tags: [3],
@@ -360,6 +369,10 @@ export default class MainKanban extends VueBase {
         return 'mdi-format-text';
       case 'text':
         return 'mdi-format-text';
+      case 'link':
+        return 'mdi-link-variant';
+      case 'directory':
+        return 'mdi-folder';
       case 'array:text':
         return 'mdi-format-text';
       case 'array:account':
@@ -479,6 +492,7 @@ $gap-size: 8px;
       margin-right: $gap-size;
 
       min-width: 320px;
+      max-width: 320px;
       min-height: 100px;
 
       display: flex;
