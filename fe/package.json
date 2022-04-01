@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.8.2",
+    "@toast-ui/vue-grid": "^4.21.0",
     "@types/fontfaceobserver": "^2.1.0",
     "@types/lodash": "^4.14.172",
     "ansi_up": "^4.0.4",
