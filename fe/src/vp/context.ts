@@ -12,16 +12,19 @@ import {
   DisplayObject,
   IPoint,
 } from 'pixi.js';
+import TextInput from 'pixi-text-input/PIXI.TextInput.js';
 
 export enum LambdaType {
   Signal,
   Function,
   Export,
+  Data,
 }
 
 export const LAMBDA_TYPE_LOWER_SIGNAL = 'signal';
 export const LAMBDA_TYPE_LOWER_FUNCTION = 'function';
 export const LAMBDA_TYPE_LOWER_EXPORT = 'export';
+export const LAMBDA_TYPE_LOWER_DATA = 'data';
 
 export interface Property {
   type: string;
@@ -65,6 +68,8 @@ export function normalizeLambdaType(type: LambdaType | string | number): LambdaT
       return LambdaType.Function;
     } else if (lowerType === LAMBDA_TYPE_LOWER_EXPORT) {
       return LambdaType.Export;
+    } else if (lowerType === LAMBDA_TYPE_LOWER_DATA) {
+      return LambdaType.Data;
     } else {
       throw new IllegalArgumentException(`Unknown lambda type: '${type}'`);
     }
@@ -77,6 +82,8 @@ export function normalizeLambdaType(type: LambdaType | string | number): LambdaT
       return LambdaType.Function;
     case LambdaType.Export:
       return LambdaType.Export;
+    case LambdaType.Data:
+      return LambdaType.Data;
     default:
       throw new IllegalArgumentException(`Unknown lambda type: ${type}`);
   }
@@ -96,6 +103,7 @@ export interface GraphOptions extends IApplicationOptions {
   iconCodeSignal?: number;
   iconCodeFunction?: number;
   iconCodeExport?: number;
+  iconCodeData?: number;
   iconCodeUnknown?: number;
 
   iconCodeFlowUnlink?: number;
@@ -223,6 +231,7 @@ const FONT_FAMILY_MATERIAL_DESIGN_ICONS = 'Material Design Icons';
 const MDI_PULSE = 0xF0430;
 const MDI_FUNCTION = 0xF0295;
 const MDI_EXPORT = 0xF0207;
+const MDI_FILE_OUTLINE = 0xF0224;
 const MDI_HELP = 0xF02D6;
 
 const MDI_ARROW_RIGHT_BOLD = 0xF0734;
@@ -243,6 +252,7 @@ const DEFAULT_FONT_FAMILY = 'NanumSquareRoundBold';
 const DEFAULT_ICON_SIGNAL = 'S'.codePointAt(0) as number;
 const DEFAULT_ICON_FUNCTION = 'F'.codePointAt(0) as number;
 const DEFAULT_ICON_EXPORT = 'E'.codePointAt(0) as number;
+const DEFAULT_ICON_DATA = 'D'.codePointAt(0) as number;
 const DEFAULT_ICON_UNKNOWN = '?'.codePointAt(0) as number;
 const DEFAULT_LINE_WIDTH = 1;
 const DEFAULT_LINE_COLOR = 0x10120f;
@@ -263,6 +273,7 @@ export function createDefaultGraphOptions(options?: GraphOptions) {
     iconCodeSignal: MDI_PULSE,
     iconCodeFunction: MDI_FUNCTION,
     iconCodeExport: MDI_EXPORT,
+    iconCodeData: MDI_FILE_OUTLINE,
     iconCodeUnknown: MDI_HELP,
     iconCodeFlowUnlink: MDI_ARROW_RIGHT_BOLD_OUTLINE,
     iconCodeFlowLink: MDI_ARROW_RIGHT_BOLD,
@@ -387,6 +398,8 @@ export class Context {
           return this.options.iconCodeFunction || DEFAULT_ICON_FUNCTION;
         case LambdaType.Export:
           return this.options.iconCodeExport || DEFAULT_ICON_EXPORT;
+        case LambdaType.Data:
+          return this.options.iconCodeData || DEFAULT_ICON_DATA;
         default:
           return this.options.iconCodeUnknown || DEFAULT_ICON_UNKNOWN;
       }
@@ -464,6 +477,12 @@ export class Context {
     title.y = icon.y + (icon.height / 2.0);
     children.push(title);
 
+    const slotIconStyle = new TextStyle({
+      fontFamily: this.options.iconFontFamily,
+      fontSize: this.options.iconFontSize,
+      fill: this.options.iconFillColor,
+    });
+
     // Properties
     const propHeight = 24;
     const propHeightHalf = propHeight / 2;
@@ -479,33 +498,63 @@ export class Context {
       const prop = lambda.props[i];
 
       if (prop.type === 'flow_input') {
-        const icon = new Text(String.fromCodePoint(flowUnlink), iconStyle);
+        const icon = new Text(String.fromCodePoint(flowUnlink), slotIconStyle);
         icon.x = iconPadding + (icon.width / 2);
         icon.y = propOffsetY + (leftLine * propHeight);
         icon.anchor.set(0.5, 0.5);
         children.push(icon);
         container.slots[prop.name] = {x: icon.x, y: icon.y} as IPoint;
+
+        const att = new Text(prop.name, textStyle);
+        att.x = icon.x + (icon.width / 2) + padding;
+        att.y = icon.y;
+        att.anchor.y = 0.5;
+        children.push(att);
+
       } else if (prop.type === 'flow_output') {
-        const icon = new Text(String.fromCodePoint(flowLink), iconStyle);
+        const icon = new Text(String.fromCodePoint(flowLink), slotIconStyle);
         icon.x = width - (icon.width / 2);
         icon.y = propOffsetY + (rightLine * propHeight);
         icon.anchor.set(0.5, 0.5);
         children.push(icon);
         container.slots[prop.name] = {x: icon.x, y: icon.y} as IPoint;
+
+        const att = new Text(prop.name, textStyle);
+        att.x = icon.x - (icon.width / 2) - padding;
+        att.y = icon.y;
+        att.anchor.x = 1;
+        att.anchor.y = 0.5;
+        children.push(att);
+
       } else if (prop.type === 'data_input') {
-        const icon = new Text(String.fromCodePoint(dataUnlink), iconStyle);
+        const icon = new Text(String.fromCodePoint(dataUnlink), slotIconStyle);
         icon.x = iconPadding + (icon.width / 2);
         icon.y = propOffsetY + (leftLine * propHeight);
         icon.anchor.set(0.5, 0.5);
         children.push(icon);
         container.slots[prop.name] = {x: icon.x, y: icon.y} as IPoint;
+
+        const att = new Text(prop.name, textStyle);
+        att.x = icon.x + (icon.width / 2) + padding;
+        att.y = icon.y;
+        att.anchor.y = 0.5;
+        children.push(att);
+
       } else if (prop.type === 'data_output') {
-        const icon = new Text(String.fromCodePoint(dataLink), iconStyle);
+        const icon = new Text(String.fromCodePoint(dataLink), slotIconStyle);
         icon.x = width - (icon.width / 2);
         icon.y = propOffsetY + (rightLine * propHeight);
         icon.anchor.set(0.5, 0.5);
         children.push(icon);
         container.slots[prop.name] = {x: icon.x, y: icon.y} as IPoint;
+
+        const att = new Text(prop.name, textStyle);
+        att.x = icon.x - (icon.width / 2) - padding;
+        att.y = icon.y;
+        att.anchor.x = 1;
+        att.anchor.y = 0.5;
+        children.push(att);
+
       } else if (prop.type === 'button') {
         const button = new Graphics();
         button.lineStyle(1, 0xFFFFFF);
@@ -524,6 +573,31 @@ export class Context {
         buttonText.x = x + (w / 2);
         buttonText.y = y + (h / 2);
         children.push(buttonText);
+
+      } else if (prop.type === 'text_input') {
+        const input = new TextInput({
+          input: {
+            fontFamily: this.options.textFontFamily,
+            fontSize: '53px',
+            fill: this.options.textFillColor,
+
+            padding: '12px',
+            width: '500px',
+            color: '#26272E'
+          },
+          box: {
+            default: {fill: 0xE8E9F3, rounded: 12, stroke: {color: 0xCBCEE0, width: 3}},
+            focused: {fill: 0xE1E3EE, rounded: 12, stroke: {color: 0xABAFC6, width: 3}},
+            disabled: {fill: 0xDBDBDB, rounded: 12}
+          }
+        });
+
+        const buttonPadding = padding * 2;
+        input.x = buttonPadding;
+        input.y = propOffsetY + (maxLine * propHeight) - propHeightHalf + buttonPadding;
+        input.width = width - (buttonPadding * 2);
+        input.height = propHeight - (buttonPadding * 2);
+        children.push(input);
       }
 
       // Calculate next line
@@ -533,7 +607,7 @@ export class Context {
       } else if (['flow_output', 'data_output'].includes(prop.type)) {
         rightLine++;
         maxLine = Math.max(leftLine, rightLine);
-      } else if (prop.type === 'button') {
+      } else if (['button', 'text_input'].includes(prop.type)) {
         maxLine++;
         leftLine = maxLine;
         rightLine = maxLine;

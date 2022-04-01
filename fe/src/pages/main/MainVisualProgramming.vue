@@ -87,8 +87,8 @@ export default class MainVisualProgramming extends VueBase {
         template: 'button',
         x1: 50,
         y1: 40,
-        x2: 150,
-        y2: 140,
+        x2: 180,
+        y2: 115,
         props: [
           {
             type: 'flow_output',
@@ -99,7 +99,7 @@ export default class MainVisualProgramming extends VueBase {
           {
             type: 'button',
             name: 'btn',
-            value: 'Click Me!',
+            value: 'Start Training!',
             mime: 'vp/button',
           },
         ],
@@ -107,10 +107,10 @@ export default class MainVisualProgramming extends VueBase {
       ml0: {
         type: 'function',
         template: 'ml',
-        x1: 200,
-        y1: 240,
-        x2: 300,
-        y2: 340,
+        x1: 250,
+        y1: 150,
+        x2: 420,
+        y2: 280,
         props: [
           {
             type: 'flow_input',
@@ -126,7 +126,13 @@ export default class MainVisualProgramming extends VueBase {
           },
           {
             type: 'data_input',
-            name: 'dataset',
+            name: 'training_set',
+            value: '',
+            mime: '',
+          },
+          {
+            type: 'data_input',
+            name: 'validation_set',
             value: '',
             mime: '',
           },
@@ -144,14 +150,89 @@ export default class MainVisualProgramming extends VueBase {
           },
         ],
       },
-      2: {
+      files0: {
+        type: 'data',
+        template: 'files',
+        x1: 80,
+        y1: 160,
+        x2: 180,
+        y2: 235,
+        props: [
+          {
+            type: 'text_input',
+            name: 'path',
+            value: '',
+            mime: '',
+          },
+          {
+            type: 'data_output',
+            name: 'files',
+            value: '',
+            mime: '',
+          },
+        ],
+      },
+      files1: {
+        type: 'data',
+        template: 'files',
+        x1: 80,
+        y1: 260,
+        x2: 180,
+        y2: 335,
+        props: [
+          {
+            type: 'text_input',
+            name: 'path',
+            value: '',
+            mime: '',
+          },
+          {
+            type: 'data_output',
+            name: 'files',
+            value: '',
+            mime: '',
+          },
+        ],
+      },
+      sendmail2: {
         type: 'export',
-        template: 'send_mail',
-        x1: 250,
-        y1: 360,
-        x2: 350,
-        y2: 460,
-        props: [],
+        template: 'sendmail',
+        x1: 550,
+        y1: 260,
+        x2: 660,
+        y2: 410,
+        props: [
+          {
+            type: 'flow_input',
+            name: 'in',
+            value: '',
+            mime: '',
+          },
+          {
+            type: 'data_input',
+            name: 'title',
+            value: '',
+            mime: '',
+          },
+          {
+            type: 'data_input',
+            name: 'mail',
+            value: '',
+            mime: '',
+          },
+          {
+            type: 'data_input',
+            name: 'content',
+            value: '',
+            mime: '',
+          },
+          {
+            type: 'data_input',
+            name: 'attach',
+            value: '',
+            mime: '',
+          },
+        ],
       },
     },
     templates: {},
@@ -165,7 +246,37 @@ export default class MainVisualProgramming extends VueBase {
           lambda: 'ml0',
           prop: 'in',
         },
-      }
+      },
+      {
+        from: {
+          lambda: 'ml0',
+          prop: 'out',
+        },
+        to: {
+          lambda: 'sendmail2',
+          prop: 'in',
+        },
+      },
+      {
+        from: {
+          lambda: 'files0',
+          prop: 'files',
+        },
+        to: {
+          lambda: 'ml0',
+          prop: 'training_set',
+        },
+      },
+      {
+        from: {
+          lambda: 'files1',
+          prop: 'files',
+        },
+        to: {
+          lambda: 'ml0',
+          prop: 'validation_set',
+        },
+      },
     ],
   } as Graph;
 
