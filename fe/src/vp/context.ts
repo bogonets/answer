@@ -582,7 +582,7 @@ export class Context {
             fill: this.options.textFillColor,
 
             padding: '12px',
-            width: '500px',
+            // width: '500px',
             color: '#26272E'
           },
           box: {
@@ -597,6 +597,8 @@ export class Context {
         input.y = propOffsetY + (maxLine * propHeight) - propHeightHalf + buttonPadding;
         input.width = width - (buttonPadding * 2);
         input.height = propHeight - (buttonPadding * 2);
+        input.placeholder = 'Enter your path ...';
+        input.text = prop.value;
         children.push(input);
       }
 

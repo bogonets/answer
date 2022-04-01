@@ -155,13 +155,13 @@ export default class MainVisualProgramming extends VueBase {
         template: 'files',
         x1: 80,
         y1: 160,
-        x2: 180,
+        x2: 200,
         y2: 235,
         props: [
           {
             type: 'text_input',
             name: 'path',
-            value: '',
+            value: '/work/2022-03-31/train',
             mime: '',
           },
           {
@@ -177,13 +177,13 @@ export default class MainVisualProgramming extends VueBase {
         template: 'files',
         x1: 80,
         y1: 260,
-        x2: 180,
+        x2: 200,
         y2: 335,
         props: [
           {
             type: 'text_input',
             name: 'path',
-            value: '',
+            value: '/work/2022-03-31/valid',
             mime: '',
           },
           {
@@ -194,13 +194,75 @@ export default class MainVisualProgramming extends VueBase {
           },
         ],
       },
+      checkmodel0: {
+        type: 'function',
+        template: 'checkmodel',
+        x1: 450,
+        y1: 260,
+        x2: 580,
+        y2: 410,
+        props: [
+          {
+            type: 'flow_input',
+            name: 'in',
+            value: '',
+            mime: '',
+          },
+          {
+            type: 'flow_output',
+            name: 'ok',
+            value: '',
+            mime: '',
+          },
+          {
+            type: 'flow_output',
+            name: 'error',
+            value: '',
+            mime: '',
+          },
+          {
+            type: 'data_input',
+            name: 'model',
+            value: '',
+            mime: '',
+          },
+          {
+            type: 'data_output',
+            name: 'message',
+            value: '',
+            mime: '',
+          },
+        ],
+      },
+      files2: {
+        type: 'data',
+        template: 'files',
+        x1: 450,
+        y1: 110,
+        x2: 560,
+        y2: 190,
+        props: [
+          {
+            type: 'text_input',
+            name: 'path',
+            value: 'user@example.com',
+            mime: '',
+          },
+          {
+            type: 'data_output',
+            name: 'mail',
+            value: '',
+            mime: '',
+          },
+        ],
+      },
       sendmail2: {
         type: 'export',
         template: 'sendmail',
-        x1: 550,
-        y1: 260,
-        x2: 660,
-        y2: 410,
+        x1: 650,
+        y1: 60,
+        x2: 760,
+        y2: 210,
         props: [
           {
             type: 'flow_input',
@@ -249,16 +311,6 @@ export default class MainVisualProgramming extends VueBase {
       },
       {
         from: {
-          lambda: 'ml0',
-          prop: 'out',
-        },
-        to: {
-          lambda: 'sendmail2',
-          prop: 'in',
-        },
-      },
-      {
-        from: {
           lambda: 'files0',
           prop: 'files',
         },
@@ -275,6 +327,56 @@ export default class MainVisualProgramming extends VueBase {
         to: {
           lambda: 'ml0',
           prop: 'validation_set',
+        },
+      },
+      {
+        from: {
+          lambda: 'ml0',
+          prop: 'out',
+        },
+        to: {
+          lambda: 'checkmodel0',
+          prop: 'in',
+        },
+      },
+      {
+        from: {
+          lambda: 'ml0',
+          prop: 'model',
+        },
+        to: {
+          lambda: 'checkmodel0',
+          prop: 'model',
+        },
+      },
+      {
+        from: {
+          lambda: 'checkmodel0',
+          prop: 'ok',
+        },
+        to: {
+          lambda: 'sendmail2',
+          prop: 'in',
+        },
+      },
+      {
+        from: {
+          lambda: 'checkmodel0',
+          prop: 'message',
+        },
+        to: {
+          lambda: 'sendmail2',
+          prop: 'content',
+        },
+      },
+      {
+        from: {
+          lambda: 'files2',
+          prop: 'mail',
+        },
+        to: {
+          lambda: 'sendmail2',
+          prop: 'mail',
         },
       },
     ],
