@@ -21,6 +21,9 @@ Vue.use(Vuex);
 Vue.use(VueLocalStore);
 Vue.use(VueSessionStore);
 
+import ResizeObserverDirective from '@/directives/ResizeObserver';
+Vue.directive('resize-observer', ResizeObserverDirective);
+
 import {LocalStore} from '@/store/localStore';
 import {publicPath} from '@/../vue.config';
 import i18n from '@/translations';
