@@ -54,11 +54,16 @@ ko:
     <v-divider></v-divider>
 
     <view-port>
-      <canvas
-          ref="vp-canvas"
-          class="vp-canvas"
-          @contextmenu="onContextMenu"
-      ></canvas>
+      <div
+          ref="vp-canvas--wrapper"
+          class="vp-canvas--wrapper"
+      >
+        <canvas
+            ref="vp-canvas"
+            class="vp-canvas"
+            @contextmenu="onContextMenu"
+        ></canvas>
+      </div>
     </view-port>
   </div>
 </template>
@@ -75,6 +80,9 @@ import {Context, GraphOptions, Graph} from '@/vp/context';
   }
 })
 export default class MainVisualProgramming extends VueBase {
+  @Ref('vp-canvas--wrapper')
+  vpCanvasWrapper!: HTMLDivElement;
+
   @Ref('vp-canvas')
   vpCanvas!: HTMLCanvasElement;
 
@@ -385,6 +393,7 @@ export default class MainVisualProgramming extends VueBase {
   mounted() {
     const options = {
       view: this.vpCanvas,
+      resizeTo: this.vpCanvasWrapper,
     } as GraphOptions;
     this.context = new Context(this.graph, options);
   }
@@ -416,8 +425,13 @@ export default class MainVisualProgramming extends VueBase {
 </script>
 
 <style lang="scss" scoped>
-.vp-canvas {
-  //width: 100%;
-  //height: 100%;
+.vp-canvas--wrapper {
+  min-width: 100%;
+  min-height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+
+  .vp-canvas {
+  }
 }
 </style>
