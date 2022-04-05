@@ -1,3 +1,9 @@
+export class AssertionException extends Error {
+  constructor(message?: string) {
+    super(message);
+  }
+}
+
 export class EmptyException extends Error {
   constructor(message?: string) {
     super(message);

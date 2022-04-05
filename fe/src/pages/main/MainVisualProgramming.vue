@@ -54,15 +54,8 @@ ko:
     <v-divider></v-divider>
 
     <view-port>
-      <div
-          ref="vp-canvas--wrapper"
-          class="vp-canvas--wrapper"
-      >
-        <canvas
-            ref="vp-canvas"
-            class="vp-canvas"
-            @contextmenu="onContextMenu"
-        ></canvas>
+      <div ref="vp-canvas--wrapper" class="vp-canvas--wrapper">
+        <canvas ref="vp-canvas" class="vp-canvas" @contextmenu="onContextMenu"></canvas>
       </div>
     </view-port>
   </div>
@@ -77,7 +70,7 @@ import {Context, GraphOptions, Graph} from '@/vp/context';
 @Component({
   components: {
     ViewPort,
-  }
+  },
 })
 export default class MainVisualProgramming extends VueBase {
   @Ref('vp-canvas--wrapper')
@@ -408,18 +401,23 @@ export default class MainVisualProgramming extends VueBase {
   }
 
   onClickTree() {
+    // EMPTY.
   }
 
   onClickAddLambda() {
+    // EMPTY.
   }
 
   onClickProperties() {
+    // EMPTY.
   }
 
   onClickMore() {
+    // EMPTY.
   }
 
   onClickConsole() {
+    // EMPTY.
   }
 }
 </script>

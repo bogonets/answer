@@ -4,9 +4,8 @@ import AppBarTitle from '@/components/AppBarTitle.vue';
 
 
 describe('AppBarTitle.vue', () => {
-
-  const localVue = createLocalVue()
-  let vuetify
+  const localVue = createLocalVue();
+  let vuetify;
 
   beforeEach(() => {
     vuetify = new Vuetify()

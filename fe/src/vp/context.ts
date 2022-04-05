@@ -1,18 +1,16 @@
 import FontFaceObserver from 'fontfaceobserver';
-import {IllegalArgumentException, UndefinedException} from '@/exceptions';
+import {IllegalArgumentException} from '@/exceptions';
 import {
   Application,
-  IApplicationOptions,
-  Container,
+  DisplayObject,
   Graphics,
+  IApplicationOptions,
+  IPoint,
   Text,
   TextStyle,
-  InteractionEvent,
-  InteractionData,
-  DisplayObject,
-  IPoint,
 } from 'pixi.js';
 import TextInput from 'pixi-text-input/PIXI.TextInput.js';
+import {DraggingContainer} from '@/pixi/draggingContainer';
 
 export enum LambdaType {
   Signal,
@@ -138,83 +136,6 @@ async function waitFontLoad(family: string, timeout: number) {
     .catch(() => {
       console.debug(`waitFontLoad.catch('${family}')`);
     });
-}
-
-export class DraggingContainer extends Container {
-
-  dragAlpha: number;
-  dragAlphaPrev: number;
-  dragCursorOffsetX: number;
-  dragCursorOffsetY: number;
-  dragEventData?: InteractionData;
-
-  constructor(dragAlpha?: number) {
-    super();
-    this.dragAlpha = dragAlpha ?? DEFAULT_DRAGGING_ALPHA;
-    this.dragAlphaPrev = 0;
-    this.dragCursorOffsetX = 0;
-    this.dragCursorOffsetY = 0;
-    this.dragEventData = undefined;
-  }
-
-  get dragging() {
-    return !!this.dragEventData;
-  }
-
-  get dragData() {
-    if (!this.dragEventData) {
-      throw new UndefinedException('Did not start dragging');
-    }
-    return this.dragEventData;
-  }
-
-  onDragStart(event: InteractionEvent) {
-    this.dragAlphaPrev = this.alpha;
-    this.dragEventData = event.data;
-    const begin = event.data.getLocalPosition(this.parent);
-    this.dragCursorOffsetX = begin.x - this.x;
-    this.dragCursorOffsetY = begin.y - this.y;
-    this.alpha = this.dragAlpha;
-  }
-
-  onDragMove(_: InteractionEvent) {
-    if (this.dragging) {
-      const pos = this.dragData.getLocalPosition(this.parent);
-      this.x = pos.x - this.dragCursorOffsetX;
-      this.y = pos.y - this.dragCursorOffsetY;
-    }
-  }
-
-  onDragEnd(_: InteractionEvent) {
-    if (this.dragging) {
-      this.alpha = this.dragAlphaPrev;
-      this.dragAlphaPrev = 0;
-      this.dragCursorOffsetX = 0;
-      this.dragCursorOffsetY = 0;
-      this.dragEventData = undefined;
-    }
-  }
-
-  registerDragging() {
-    this.on('pointerdown', this.onDragStart);
-    this.on('pointermove', this.onDragMove);
-    this.on('pointerup', this.onDragEnd);
-    this.on('pointerupoutside', this.onDragEnd);
-  }
-
-  registerDraggingOnlyMouse() {
-    this.on('mousedown', this.onDragStart);
-    this.on('mousemove', this.onDragMove);
-    this.on('mouseup', this.onDragEnd);
-    this.on('mouseupoutside', this.onDragEnd);
-  }
-
-  registerDraggingOnlyTouch() {
-    this.on('touchstart', this.onDragStart);
-    this.on('touchmove', this.onDragMove);
-    this.on('touchend', this.onDragEnd);
-    this.on('touchendoutside', this.onDragEnd);
-  }
 }
 
 export class LambdaContainer extends DraggingContainer {
