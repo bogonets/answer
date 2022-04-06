@@ -1,0 +1,13 @@
+{
+  "name": "@bogonets/recc-api",
+  "version": "1.0.0",
+  "description": "Frontend API for the recc core",
+  "main": "index.ts",
+  "repository": "https://github.com/bogonets/answer",
+  "author": "zer0",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "typescript": "^4.6.3"
+  }
+}
