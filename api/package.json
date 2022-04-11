@@ -94,5 +94,16 @@
     "htmlWhitespaceSensitivity": "ignore",
     "vueIndentScriptAndStyle": false,
     "endOfLine": "lf"
+  },
+  "dependencies": {
+    "@types/crypto-js": "^4.1.1",
+    "axios": "^0.26.1",
+    "crypto-js": "^4.1.1"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "moduleNameMapper": {
+      "@/(.*)$": "<rootDir>/src/$1"
+    }
   }
 }

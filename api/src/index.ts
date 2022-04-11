@@ -1,5 +1,3 @@
-export default class ReccApi {
-  encryptPassword(password: string): string {
-    return password;
-  }
-}
+import ReccApi from '@/reccApi2';
+
+export default ReccApi;
