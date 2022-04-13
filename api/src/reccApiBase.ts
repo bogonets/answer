@@ -1,9 +1,9 @@
 import AxiosLib, {AxiosInstance, AxiosRequestConfig, AxiosError} from 'axios';
 import {sha256hex} from '@/crypto';
-import {UserA, SigninA, RefreshTokenA} from '@/packet/user';
 import {newUserA} from '@/packet/user';
-import {PreferenceA} from '@/packet/preference';
 import {newPreference} from '@/packet/preference';
+import type {PreferenceA} from '@/packet/preference';
+import type {UserA, SigninA, RefreshTokenA} from '@/packet/user';
 
 const DEFAULT_TIMEOUT_MILLISECONDS = 30 * 1000;
 const STATUS_CODE_ACCESS_TOKEN_ERROR = 461;
@@ -37,7 +37,7 @@ export interface ReccApiOptions {
   onUninitializedService?: () => void;
 }
 
-export class ReccApi {
+export class ReccApiBase {
   originAddress: string;
   validateStatus: Array<number>;
   apiVersion: number;
@@ -49,7 +49,7 @@ export class ReccApi {
   onUninitializedService?: () => void;
 
   session: SigninA;
-  api: AxiosInstance;
+  axios: AxiosInstance;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   refreshSubscribers = [] as Array<(access: string) => any>;
@@ -72,7 +72,7 @@ export class ReccApi {
     this.onRenewalAccessToken = options?.onRenewalAccessToken;
     this.onUninitializedService = options?.onUninitializedService;
 
-    this.api = AxiosLib.create({
+    this.axios = AxiosLib.create({
       baseURL: originToBaseUrl(origin, version),
       timeout: timeout,
       headers: {Accept: accept},
@@ -80,18 +80,14 @@ export class ReccApi {
         return VALIDATE_STATUS.includes(status);
       },
     });
-    this.api.interceptors.response.use(
-      response => {
-        return response;
-      },
-      error => {
-        return this.onResponseRejected(error);
-      },
+    this.axios.interceptors.response.use(
+      response => response,
+      error => this.onResponseRejected(error),
     );
   }
 
   get baseURL() {
-    return this.api.defaults.baseURL;
+    return this.axios.defaults.baseURL;
   }
 
   get origin() {
@@ -100,7 +96,7 @@ export class ReccApi {
 
   set origin(origin: string) {
     this.originAddress = origin;
-    this.api.defaults.baseURL = originToBaseUrl(this.originAddress, this.apiVersion);
+    this.axios.defaults.baseURL = originToBaseUrl(this.originAddress, this.apiVersion);
   }
 
   get version() {
@@ -109,32 +105,32 @@ export class ReccApi {
 
   set version(version: number) {
     this.apiVersion = version;
-    this.api.defaults.baseURL = originToBaseUrl(this.originAddress, this.apiVersion);
+    this.axios.defaults.baseURL = originToBaseUrl(this.originAddress, this.apiVersion);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   get<T = any>(url: string, config?: AxiosRequestConfig) {
-    return this.api.get<T>(url, config).then(res => {
+    return this.axios.get<T>(url, config).then(res => {
       return res.data;
     });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   post<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.api.post<T>(url, data, config).then(res => {
+    return this.axios.post<T>(url, data, config).then(res => {
       return res.data;
     });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.api.patch<T>(url, data, config).then(res => {
+    return this.axios.patch<T>(url, data, config).then(res => {
       return res.data;
     });
   }
 
   delete(url: string, config?: AxiosRequestConfig) {
-    return this.api.delete(url, config);
+    return this.axios.delete(url, config);
   }
 
   async onResponseRejected(error: AxiosError) {
@@ -158,7 +154,7 @@ export class ReccApi {
         // clearSession();
         // moveTo(rootNames.init);
       }
-      return Promise.reject('Uninitialized service');
+      return Promise.reject(new Error('Uninitialized service'));
     }
 
     if (status === STATUS_CODE_ACCESS_TOKEN_ERROR) {
@@ -169,7 +165,7 @@ export class ReccApi {
           this.refreshSubscribers.push((access?: string) => {
             if (access) {
               originalConfig.headers.Authorization = `Bearer ${access}`;
-              resolve(this.api(originalConfig));
+              resolve(this.axios(originalConfig));
             } else {
               reject(new Error('Refresh token error'));
             }
@@ -186,7 +182,7 @@ export class ReccApi {
           if (this.logging) {
             console.debug('Refreshing access token ...');
           }
-          const refreshTokenResult = await this.api.post<RefreshTokenA>(
+          const refreshTokenResult = await this.axios.post<RefreshTokenA>(
             PATH_TOKEN_REFRESH,
             undefined,
             refreshTokenConfig,
@@ -209,9 +205,11 @@ export class ReccApi {
           subscribers.map(cb => cb(access));
 
           // Retry the failed request.
-          return this.api(originalConfig);
+          return this.axios(originalConfig);
         } catch (error) {
-          console.error(`Refresh token error: ${error}`);
+          if (this.logging) {
+            console.error(`Refresh token error: ${error}`);
+          }
 
           this.refreshing = false;
           const subscribers = this.refreshSubscribers;
@@ -236,7 +234,7 @@ export class ReccApi {
     this.session.refresh = '';
     this.session.user = newUserA();
     this.session.preference = newPreference();
-    delete this.api.defaults.headers.common[HEADER_AUTHORIZATION];
+    delete this.axios.defaults.headers.common[HEADER_AUTHORIZATION];
   }
 
   setDefaultSession(
@@ -249,12 +247,12 @@ export class ReccApi {
     this.session.refresh = refresh;
     this.session.user = user;
     this.session.preference = preference;
-    this.api.defaults.headers.common[HEADER_AUTHORIZATION] = `Bearer ${access}`;
+    this.axios.defaults.headers.common[HEADER_AUTHORIZATION] = `Bearer ${access}`;
   }
 
   setDefaultAccessToken(access: string) {
     this.session.access = access;
-    this.api.defaults.headers.common[HEADER_AUTHORIZATION] = `Bearer ${access}`;
+    this.axios.defaults.headers.common[HEADER_AUTHORIZATION] = `Bearer ${access}`;
   }
 
   static encryptPassword(password: string): string {
@@ -262,13 +260,4 @@ export class ReccApi {
   }
 }
 
-// Static methods
-// private static _globalInstance?: ReccApi;
-// static get globalInstance(): ReccApi {
-//   if (!ReccApi._globalInstance) {
-//     ReccApi._globalInstance = new ReccApi();
-//   }
-//   return ReccApi._globalInstance as ReccApi;
-// }
-
-export default ReccApi;
+export default ReccApiBase;
