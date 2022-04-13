@@ -1,8 +1,5 @@
 import {AxiosResponse, AxiosRequestConfig, AxiosBasicCredentials} from 'axios';
 import {ReccApiBase} from '@/reccApiBase';
-import {sha256hex} from '@/crypto';
-import {newUserA} from '@/packet/user';
-import {newPreference} from '@/packet/preference';
 import type {SigninA, SignupQ} from '@/packet/user';
 
 export class ReccApiPublic extends ReccApiBase {
@@ -29,7 +26,7 @@ export class ReccApiPublic extends ReccApiBase {
   postSignin(username: string, password: string, updateDefaultAuth = true) {
     const auth = {
       username: username,
-      password: sha256hex(password),
+      password: ReccApiBase.encryptPassword(password),
     } as AxiosBasicCredentials;
 
     const config = {
@@ -43,9 +40,7 @@ export class ReccApiPublic extends ReccApiBase {
         const access = result.access;
         const refresh = result.refresh;
         if (updateDefaultAuth) {
-          const user = result.user || newUserA();
-          const preference = result.preference || newPreference();
-          this.setDefaultSession(access, refresh, user, preference);
+          this.setTokens(access, refresh);
         }
         return result;
       });
