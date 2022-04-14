@@ -2,7 +2,11 @@
   "name": "@recc/api",
   "version": "2.0.0-dev9",
   "description": "My webpack project",
-  "main": "index.js",
+  "main": "./dist/main.js",
+  "files": [
+    "dist",
+    "src"
+  ],
   "repository": "https://github.com/bogonets/answer",
   "author": "zer0",
   "license": "MIT",
@@ -13,7 +17,8 @@
     "build:prod": "webpack --mode=production --node-env=production",
     "watch": "webpack --watch",
     "lint": "eslint . --ext .jsx,.js,.tsx,.ts",
-    "test": "jest"
+    "test": "jest",
+    "tsc": "tsc"
   },
   "dependencies": {
     "axios": "^0.26.1",

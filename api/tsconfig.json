@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
     "noImplicitAny": true,
     "skipLibCheck": true,
     "module": "esnext",
@@ -8,6 +11,7 @@
     "allowJs": true,
     "moduleResolution": "node",
     "baseUrl": ".",
+    "outDir": "dist",
     "paths": {
       "@/*": ["src/*"]
     }

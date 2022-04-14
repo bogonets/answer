@@ -16,7 +16,7 @@ const config = {
     path: distDir,
     filename: '[name].js',
     libraryTarget: 'umd',
-    library: 'recc-api',
+    library: 'ReccApi',
   },
   plugins: [new ESLintPlugin({extensions})],
   module: {
