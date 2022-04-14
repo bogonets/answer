@@ -1,6 +1,6 @@
 {
-  "name": "my-webpack-project",
-  "version": "1.0.0",
+  "name": "@recc/api",
+  "version": "2.0.0-dev9",
   "description": "My webpack project",
   "main": "index.js",
   "repository": "https://github.com/bogonets/answer",
