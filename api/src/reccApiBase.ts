@@ -49,9 +49,11 @@ export class ReccApiBase {
   onRefreshTokenError?: () => void;
   onRenewalAccessToken?: (accessToken: string) => void;
   onUninitializedService?: () => void;
+  onRegisterRefreshSubscribers?: (config: AxiosRequestConfig) => void;
+  onUnregisterRefreshSubscribers?: (config: AxiosRequestConfig) => void;
 
-  accessToken: string;
-  refreshToken: string;
+  accessToken = '';
+  refreshToken = '';
   axios: AxiosInstance;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,8 +75,8 @@ export class ReccApiBase {
     this.onRefreshTokenError = options?.onRefreshTokenError;
     this.onRenewalAccessToken = options?.onRenewalAccessToken;
     this.onUninitializedService = options?.onUninitializedService;
-    this.accessToken = '';
-    this.refreshToken = '';
+    this.onRegisterRefreshSubscribers = undefined;
+    this.onUnregisterRefreshSubscribers = undefined;
 
     this.axios = AxiosLib.create({
       baseURL: originToBaseUrl(origin, version),
@@ -110,6 +112,10 @@ export class ReccApiBase {
     if (!error.response) {
       throw new Error('Undefined response object');
     }
+
+    // [IMPORTANT]
+    // When requesting a refresh-token,
+    // it should not be handled by the main interceptor logic.
     if (error.config.headers[HEADER_RECC_REFRESH_TOKEN]) {
       return Promise.reject(error);
     }
@@ -129,7 +135,13 @@ export class ReccApiBase {
       const originalConfig = error.config;
       if (this.refreshing) {
         return new Promise((resolve, reject) => {
+          if (this.onRegisterRefreshSubscribers) {
+            this.onRegisterRefreshSubscribers(originalConfig);
+          }
           this.refreshSubscribers.push((access?: string) => {
+            if (this.onUnregisterRefreshSubscribers) {
+              this.onUnregisterRefreshSubscribers(originalConfig);
+            }
             if (access) {
               originalConfig.headers[HEADER_AUTHORIZATION] = `Bearer ${access}`;
               resolve(this.axios(originalConfig));
