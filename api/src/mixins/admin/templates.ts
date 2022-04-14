@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {TemplateA} from '@/packet/template';
+import {ReccApiBase} from '../../reccApiBase';
+import type {TemplateA} from '../../packet/template';
 
 export class ReccApiAdminTemplates extends ReccApiBase {
   getAdminTemplates() {

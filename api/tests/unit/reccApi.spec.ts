@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import ReccApi from '@/reccApi';
+import ReccApi from '../../src/reccApi';
 
 describe('reccApi', () => {
   let mock!: MockAdapter;

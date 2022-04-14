@@ -1,4 +1,4 @@
-import {ReccApiBase} from '@/reccApiBase';
+import {ReccApiBase} from '../../reccApiBase';
 
 export class ReccApiMainPermissions extends ReccApiBase {
   getMainPermissions() {

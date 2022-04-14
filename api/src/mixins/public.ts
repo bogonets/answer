@@ -1,6 +1,6 @@
 import {AxiosResponse, AxiosRequestConfig, AxiosBasicCredentials} from 'axios';
-import {ReccApiBase} from '@/reccApiBase';
-import type {SigninA, SignupQ} from '@/packet/user';
+import {ReccApiBase} from '../reccApiBase';
+import type {SigninA, SignupQ} from '../packet/user';
 
 export class ReccApiPublic extends ReccApiBase {
   getPublicHeartbeat() {

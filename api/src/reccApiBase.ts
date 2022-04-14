@@ -5,9 +5,9 @@ import type {
   AxiosError,
   AxiosRequestHeaders,
 } from 'axios';
-import {sha256hex} from '@/crypto';
-import type {RefreshTokenA} from '@/packet/user';
-import {UninitializedServiceError, RefreshTokenError} from '@/error';
+import {sha256hex} from './crypto';
+import type {RefreshTokenA} from './packet/user';
+import {UninitializedServiceError, RefreshTokenError} from './error';
 
 export const DEFAULT_TIMEOUT_MILLISECONDS = 30 * 1000;
 export const STATUS_CODE_UNAUTHORIZED = 401;
@@ -109,8 +109,11 @@ export class ReccApiBase {
   }
 
   private async onResponseRejected(error: AxiosError) {
+    if (typeof error === 'undefined') {
+      throw new Error('Undefined error object');
+    }
     if (!error.response) {
-      throw new Error('Undefined response object');
+      throw new Error('Undefined error.response object');
     }
 
     // [IMPORTANT]

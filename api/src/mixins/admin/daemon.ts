@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {DaemonA, CreateDaemonQ, UpdateDaemonQ} from '@/packet/daemon';
+import {ReccApiBase} from '../../reccApiBase';
+import type {DaemonA, CreateDaemonQ, UpdateDaemonQ} from '../../packet/daemon';
 
 export class ReccApiAdminDaemon extends ReccApiBase {
   getAdminDaemonPlugins() {

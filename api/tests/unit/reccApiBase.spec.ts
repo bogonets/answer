@@ -3,9 +3,9 @@ import ReccApiBase, {
   STATUS_CODE_UNAUTHORIZED,
   STATUS_CODE_UNINITIALIZED_SERVICE,
   PATH_TOKEN_REFRESH,
-} from '@/reccApiBase';
-import type {RefreshTokenA} from '@/packet/user';
-import {UninitializedServiceError, RefreshTokenError} from '@/error';
+} from '../../src/reccApiBase';
+import type {RefreshTokenA} from '../../src/packet/user';
+import {UninitializedServiceError, RefreshTokenError} from '../../src/error';
 import {AxiosRequestConfig} from 'axios';
 
 describe('reccApiBase', () => {

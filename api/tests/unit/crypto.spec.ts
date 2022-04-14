@@ -1,4 +1,4 @@
-import {sha256hex} from '@/crypto';
+import {sha256hex} from '../../src/crypto';
 
 describe('crypto', () => {
   test('sha256hex', () => {

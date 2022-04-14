@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {RoleA} from '@/packet/role';
+import {ReccApiBase} from '../../reccApiBase';
+import type {RoleA} from '../../packet/role';
 
 export class ReccApiMainRoles extends ReccApiBase {
   getMainRoles() {

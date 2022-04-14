@@ -1,50 +1,38 @@
 {
   "name": "@recc/api",
-  "version": "2.0.0-dev9",
-  "description": "My webpack project",
-  "main": "./dist/main.js",
-  "files": [
-    "dist",
-    "src"
-  ],
+  "version": "2.0.0-dev9-2",
+  "description": "Frontend API for the recc core",
   "repository": "https://github.com/bogonets/answer",
   "author": "zer0",
   "license": "MIT",
-  "private": true,
+  "private": false,
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "webpack --mode=production --node-env=production",
-    "build:dev": "webpack --mode=development",
-    "build:prod": "webpack --mode=production --node-env=production",
-    "watch": "webpack --watch",
+    "build": "tsc",
+    "style": "prettier --check .",
     "lint": "eslint . --ext .jsx,.js,.tsx,.ts",
-    "test": "jest",
-    "tsc": "tsc"
+    "test": "jest"
   },
   "dependencies": {
     "axios": "^0.26.1",
     "crypto-js": "^4.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.9",
-    "@babel/preset-env": "^7.16.11",
-    "@babel/preset-typescript": "^7.16.7",
     "@types/crypto-js": "^4.1.1",
     "@types/jest": "^27.4.1",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
     "axios-mock-adapter": "^1.20.0",
-    "babel-jest": "^27.5.1",
-    "babel-loader": "^8.2.4",
     "eslint": "^8.12.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "eslint-webpack-plugin": "^3.1.1",
     "jest": "^27.5.1",
     "prettier": "^2.6.2",
     "ts-jest": "^27.1.4",
-    "typescript": "^4.6.3",
-    "webpack": "^5.72.0",
-    "webpack-cli": "^4.9.2"
+    "typescript": "^4.6.3"
   },
   "eslintConfig": {
     "root": true,
@@ -111,9 +99,6 @@
   },
   "jest": {
     "preset": "ts-jest",
-    "testEnvironment": "jsdom",
-    "moduleNameMapper": {
-      "@/(.*)$": "<rootDir>/src/$1"
-    }
+    "testEnvironment": "jsdom"
   }
 }

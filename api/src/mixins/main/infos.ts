@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {InfoA} from '@/packet/info';
+import {ReccApiBase} from '../../reccApiBase';
+import type {InfoA} from '../../packet/info';
 
 export class ReccApiMainInfos extends ReccApiBase {
   getMainInfosOem() {

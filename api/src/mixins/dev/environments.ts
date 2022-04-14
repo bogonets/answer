@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {EnvironmentA} from '@/packet/environment';
+import {ReccApiBase} from '../../reccApiBase';
+import type {EnvironmentA} from '../../packet/environment';
 
 export class ReccApiDevEnvironments extends ReccApiBase {
   getDevEnvironments() {

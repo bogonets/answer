@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {SystemOverviewA} from '@/packet/system';
+import {ReccApiBase} from '../../reccApiBase';
+import type {SystemOverviewA} from '../../packet/system';
 
 export class ReccApiAdminSystem extends ReccApiBase {
   getAdminSystemOverview() {

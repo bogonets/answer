@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {PluginNameA} from '@/packet/plugin';
+import {ReccApiBase} from '../../reccApiBase';
+import type {PluginNameA} from '../../packet/plugin';
 
 export class ReccApiAdminPlugin extends ReccApiBase {
   getAdminPluginNames() {

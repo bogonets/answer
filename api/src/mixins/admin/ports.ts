@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {PortA, PortRangeA} from '@/packet/port';
+import {ReccApiBase} from '../../reccApiBase';
+import type {PortA, PortRangeA} from '../../packet/port';
 
 export class ReccApiAdminPorts extends ReccApiBase {
   getAdminPortRange() {

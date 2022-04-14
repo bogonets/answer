@@ -1,11 +1,11 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
+import {ReccApiBase} from '../../reccApiBase';
+import type {MemberA, CreateMemberQ, UpdateMemberQ} from '../../packet/member';
 import type {
   ProjectA,
   CreateProjectQ,
   UpdateProjectQ,
   ProjectOverviewA,
-} from '@/packet/project';
+} from '../../packet/project';
 
 export class ReccApiMainProjects extends ReccApiBase {
   // -------------

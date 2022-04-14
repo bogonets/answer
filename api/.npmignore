@@ -1,6 +1,5 @@
 # npm ignore file.
 
 node_modules/
-tests/
 .DS_Store
 .git*

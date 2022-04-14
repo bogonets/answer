@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {UserA, UpdateUserQ, SignupQ} from '@/packet/user';
+import {ReccApiBase} from '../../reccApiBase';
+import type {UserA, UpdateUserQ, SignupQ} from '../../packet/user';
 
 export class ReccApiAdminUsers extends ReccApiBase {
   getAdminUsers() {

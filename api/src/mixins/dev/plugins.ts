@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {PluginA} from '@/packet/plugin';
+import {ReccApiBase} from '../../reccApiBase';
+import type {PluginA} from '../../packet/plugin';
 
 export class ReccApiDevPlugins extends ReccApiBase {
   getDevPlugins() {

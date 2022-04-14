@@ -1,7 +1,7 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {GroupA, CreateGroupQ, UpdateGroupQ} from '@/packet/group';
-import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
-import type {ProjectA} from '@/packet/project';
+import {ReccApiBase} from '../../reccApiBase';
+import type {GroupA, CreateGroupQ, UpdateGroupQ} from '../../packet/group';
+import type {MemberA, CreateMemberQ, UpdateMemberQ} from '../../packet/member';
+import type {ProjectA} from '../../packet/project';
 
 export class ReccApiMainGroups extends ReccApiBase {
   // -----------

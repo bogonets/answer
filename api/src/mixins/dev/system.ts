@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {VersionsA} from '@/packet/system';
+import {ReccApiBase} from '../../reccApiBase';
+import type {VersionsA} from '../../packet/system';
 
 export class ReccApiDevSystem extends ReccApiBase {
   getDevSystemVersions() {

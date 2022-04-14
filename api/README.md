@@ -1,6 +1,6 @@
 # @recc/api
 
-Restructured Engine for the Cyclops Cloud - Frontend API
+Frontend API for the recc core
 
 ## License
 

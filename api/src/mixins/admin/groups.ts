@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {GroupA, CreateGroupQ, UpdateGroupQ} from '@/packet/group';
+import {ReccApiBase} from '../../reccApiBase';
+import type {GroupA, CreateGroupQ, UpdateGroupQ} from '../../packet/group';
 
 export class ReccApiAdminGroups extends ReccApiBase {
   getAdminGroups() {

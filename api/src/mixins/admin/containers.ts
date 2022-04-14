@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {ContainerA, ControlContainersQ} from '@/packet/container';
+import {ReccApiBase} from '../../reccApiBase';
+import type {ContainerA, ControlContainersQ} from '../../packet/container';
 
 export class ReccApiAdminContainers extends ReccApiBase {
   getAdminContainers() {

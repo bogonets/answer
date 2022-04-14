@@ -1,5 +1,5 @@
-import type {PreferenceA} from '@/packet/preference';
-import {newPreference} from '@/packet/preference';
+import type {PreferenceA} from './preference';
+import {newPreference} from './preference';
 
 export interface UserExtraA {
   dark?: boolean;

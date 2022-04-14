@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {ConfigA, UpdateConfigValueQ} from '@/packet/config';
+import {ReccApiBase} from '../../reccApiBase';
+import type {ConfigA, UpdateConfigValueQ} from '../../packet/config';
 
 export class ReccApiDevConfigs extends ReccApiBase {
   getDevConfigs() {

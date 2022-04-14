@@ -1,5 +1,5 @@
-import {ReccApiBase} from '@/reccApiBase';
-import type {ProjectA, CreateProjectQ, UpdateProjectQ} from '@/packet/project';
+import {ReccApiBase} from '../../reccApiBase';
+import type {ProjectA, CreateProjectQ, UpdateProjectQ} from '../../packet/project';
 
 export class ReccApiAdminProjects extends ReccApiBase {
   getAdminProjects() {
