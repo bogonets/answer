@@ -17,10 +17,13 @@ describe('reccApi', () => {
       expect(ReccApi.global).toStrictEqual(ReccApi.global);
     });
 
-    test('Default', async () => {
-      const rootUri = `${ReccApi.global.base}/`;
-      mock.onGet(rootUri).reply(200);
-      await expect(ReccApi.global.get('/')).resolves.toBeUndefined();
+    test('getPublicHeartbeat', async () => {
+      const heartbeatPath = '/public/heartbeat';
+      const heartbeatUri = `${ReccApi.global.base}${heartbeatPath}`;
+      mock.onGet(heartbeatUri).reply(200);
+      await expect(ReccApi.global.getPublicHeartbeat()).resolves.toBeUndefined();
+      expect(mock.history.get.length).toEqual(1);
+      expect(mock.history.get[0].url).toEqual(heartbeatPath);
     });
   });
 });
