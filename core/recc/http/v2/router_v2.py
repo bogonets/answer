@@ -5,8 +5,9 @@ from aiohttp.hdrs import METH_OPTIONS
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 from aiohttp.web_exceptions import (
-    HTTPNotFound,
+    HTTPUnauthorized,
     HTTPForbidden,
+    HTTPNotFound,
     HTTPServiceUnavailable,
 )
 from recc.logging.logging import recc_http_logger as logger
@@ -19,10 +20,7 @@ from recc.http.v2.router_v2_self import RouterV2Self
 from recc.http.v2.router_v2_main import RouterV2Main
 from recc.http.v2.router_v2_plugins import RouterV2Plugins
 from recc.http.http_session import assign_session
-from recc.http.http_errors import (
-    HTTPReccAccessTokenError,
-    HTTPReccUninitializedService,
-)
+from recc.http.http_errors import HTTPReccUninitializedService
 from recc.http import http_urls as u
 from recc.http import http_cache_keys as c
 
@@ -95,7 +93,7 @@ class RouterV2:
             await assign_session(self.context, request)
         except BaseException as e:
             logger.exception(e)
-            raise HTTPReccAccessTokenError
+            raise HTTPUnauthorized
 
     @staticmethod
     def has_admin_privileges(request: Request) -> bool:
