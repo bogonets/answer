@@ -11,18 +11,13 @@ _WAIT_CONTAINER_TIMEOUT = 10
 
 
 class DockerContainerManagerTestCase(DockerTestCase):
-    async def setUp(self):
-        self.container = DockerContainerManager()
-        await self.container.open()
-        self.assertTrue(self.container.is_open())
+    async def asyncSetUp(self):
+        await super().asyncSetUp()
         if not await self.container.exist_default_task_images(False):
             print("Create default task image ...")
             await self.container.create_default_task_images()
             print("Create done.")
         self.assertTrue(await self.container.exist_default_task_images(False))
-
-    async def tearDown(self):
-        await self.container.close()
 
     async def test_inside_container(self):
         result = DockerContainerManager.inside_container()

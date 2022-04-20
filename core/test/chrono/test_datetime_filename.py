@@ -6,7 +6,7 @@ from recc.chrono.datetime_filename import parse_dirname_and_filename
 
 
 class DatetimeFilenameTestCase(TestCase):
-    async def test_parse_dirname_and_filename(self):
+    def test_parse_dirname_and_filename(self):
         time = datetime(
             year=1919, month=3, day=1, hour=23, minute=9, second=1, microsecond=123456
         )
