@@ -71,4 +71,5 @@ class HttpWWW:
         if os.path.isfile(file):
             return FileResponse(file)
 
+        # SPA(Single Page Application) reads only one page (file).
         return FileResponse(os.path.join(http_root, "index.html"))

@@ -72,6 +72,7 @@ usernames = "/usernames"
 users = "/users"
 version = "/version"
 versions = "/versions"
+www = "/www"
 
 
 def _param_path(key: str, pattern: Optional[str] = None) -> str:
@@ -126,6 +127,7 @@ infos_pkey = infos + pkey
 permissions_pgroup = permissions + pgroup
 permissions_pgroup_pproject = permissions_pgroup + pproject
 plugin_names = plugin + names
+plugins_pplugin_www_ptail = plugins + pplugin + www + ptail
 port_next = port + next_
 port_range = port + range_
 pplugin_ptail = pplugin + ptail

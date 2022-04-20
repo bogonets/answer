@@ -8,6 +8,12 @@ from recc.http import http_urls as u
 from recc.http import http_path_keys as p
 
 
+def strip_prefix_slash(path: str) -> str:
+    assert len(u.root) == 1
+    assert path
+    return path[1:] if path[0] == u.root else path
+
+
 def join_urls(*paths: str) -> str:
     assert paths
 

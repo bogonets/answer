@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 from asyncio import Task, CancelledError
 from socket import socket
 from typing import Optional, List
@@ -10,8 +11,10 @@ from aiohttp.web import GracefulExit
 from aiohttp.web import _run_app  # noqa
 from aiohttp.web_log import AccessLogger
 from aiohttp.web_request import Request
-from aiohttp.web_response import Response
+from aiohttp.web_response import StreamResponse, Response
 from aiohttp.web_routedef import AbstractRouteDef
+from aiohttp.web_exceptions import HTTPNotFound
+from aiohttp.web_fileresponse import FileResponse
 
 from recc.core.context import Context
 from recc.aio.task import all_tasks, cancel_tasks
@@ -21,11 +24,14 @@ from recc.http.http_cors import create_cors
 from recc.http.v1.router_v1 import RouterV1
 from recc.http.v2.router_v2 import RouterV2
 from recc.http.http_www import HttpWWW
+from recc.http.http_utils import strip_prefix_slash
 from recc.http import http_urls as u
+from recc.http import http_path_keys as p
 from recc.logging.logging import recc_http_logger as logger
 from recc.util.version import version_text
 from recc.util.python_version import PY_36
 from recc.variables.http import DEFAULT_CLIENT_MAX_SIZE
+from recc.variables.plugin import STATIC_WEB_FILES_DIRECTORY_NAME, STATIC_WEB_INDEX_HTML
 
 
 class HttpApp:
@@ -109,7 +115,25 @@ class HttpApp:
         return [
             web.get(u.api_heartbeat, self.on_heartbeat),
             web.get(u.api_version, self.on_version),
+            web.get(u.plugins_pplugin_www_ptail, self.get_plugins_pplugin_www_ptail),
         ]
+
+    async def get_plugins_pplugin_www_ptail(self, request: Request) -> StreamResponse:
+        plugin = request.match_info[p.plugin]
+        tail = request.match_info[p.tail]
+        module = self.context.plugins.get(plugin, None)
+        if module is None:
+            raise HTTPNotFound(reason=f"Not found `{plugin}` plugin")
+
+        path = strip_prefix_slash(tail) if tail else STATIC_WEB_INDEX_HTML
+        www = os.path.join(module.directory, STATIC_WEB_FILES_DIRECTORY_NAME)
+        file = os.path.join(www, path)
+
+        if os.path.isfile(file):
+            return FileResponse(file)
+
+        # SPA(Single Page Application) reads only one page (file).
+        return FileResponse(os.path.join(www, STATIC_WEB_INDEX_HTML))
 
     def _print(self, *args, **kwargs) -> None:
         if not self._context.config.suppress_print:
