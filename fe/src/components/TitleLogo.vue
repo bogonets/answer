@@ -5,12 +5,12 @@
         {{ titleText }}
       </span>
       <v-img
-          v-else
-          src="@/assets/logo/answer-logo.svg"
-          contain
-          :alt="titleText"
-          :max-width="maxWidth"
-          :max-height="maxHeight"
+        v-else
+        src="@/assets/logo/answer-logo.svg"
+        contain
+        :alt="titleText"
+        :max-width="maxWidth"
+        :max-height="maxHeight"
       ></v-img>
     </v-row>
   </v-container>
@@ -27,7 +27,6 @@ const DEFAULT_MAX_HEIGHT = 160;
 
 @Component
 export default class TitleLogo extends Vue {
-
   @Prop({type: Boolean, default: DEFAULT_TEXT_MODE})
   readonly isTextMode!: boolean;
 

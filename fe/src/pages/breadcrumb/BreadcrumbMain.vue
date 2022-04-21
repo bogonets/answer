@@ -1,7 +1,5 @@
 <template>
-  <toolbar-breadcrumbs
-      :items="items"
-  ></toolbar-breadcrumbs>
+  <toolbar-breadcrumbs :items="items"></toolbar-breadcrumbs>
 </template>
 
 <script lang="ts">
@@ -12,7 +10,7 @@ import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 @Component({
   components: {
     ToolbarBreadcrumbs,
-  }
+  },
 })
 export default class BreadcrumbMain extends VueBase {
   @Prop({type: String, default: ''})

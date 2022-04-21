@@ -4,16 +4,15 @@
     <v-divider></v-divider>
 
     <form-project-edit
-        :value="project"
-        :loading-submit="loadingSubmit"
-        :loading-delete="loadingDelete"
-        :show-delete-dialog="showDeleteDialog"
-        @ok="onClickOk"
-        @delete:show="onClickDelete"
-        @delete:cancel="onClickDeleteCancel"
-        @delete:ok="onClickDeleteOk"
+      :value="project"
+      :loading-submit="loadingSubmit"
+      :loading-delete="loadingDelete"
+      :show-delete-dialog="showDeleteDialog"
+      @ok="onClickOk"
+      @delete:show="onClickDelete"
+      @delete:cancel="onClickDeleteCancel"
+      @delete:ok="onClickDeleteOk"
     ></form-project-edit>
-
   </v-container>
 </template>
 
@@ -22,13 +21,13 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import {ProjectA, UpdateProjectQ} from '@/packet/project';
-import FormProjectEdit from "@/components/FormProjectEdit.vue";
+import FormProjectEdit from '@/components/FormProjectEdit.vue';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
     FormProjectEdit,
-  }
+  },
 })
 export default class AdminProjectsEdit extends VueBase {
   private readonly navigationItems = [
@@ -59,35 +58,37 @@ export default class AdminProjectsEdit extends VueBase {
   }
 
   requestProject() {
-    this.$api2.getAdminProjectsPgroupPproject(
+    this.$api2
+      .getAdminProjectsPgroupPproject(
         this.$route.params.group,
         this.$route.params.project,
-    )
-        .then(item => {
-          this.project = item;
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-          this.moveToBack();
-        });
+      )
+      .then(item => {
+        this.project = item;
+      })
+      .catch(error => {
+        this.toastRequestFailure(error);
+        this.moveToBack();
+      });
   }
 
   onClickOk(event: UpdateProjectQ) {
     this.loadingSubmit = true;
-    this.$api2.patchAdminProjectsPgroupPproject(
+    this.$api2
+      .patchAdminProjectsPgroupPproject(
         this.$route.params.group,
         this.$route.params.project,
         event,
-    )
-        .then(() => {
-          this.loadingSubmit = false;
-          this.toastRequestSuccess();
-          this.requestProject();
-        })
-        .catch(error => {
-          this.loadingSubmit = false;
-          this.toastRequestFailure(error);
-        });
+      )
+      .then(() => {
+        this.loadingSubmit = false;
+        this.toastRequestSuccess();
+        this.requestProject();
+      })
+      .catch(error => {
+        this.loadingSubmit = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickDelete() {
@@ -100,21 +101,22 @@ export default class AdminProjectsEdit extends VueBase {
 
   onClickDeleteOk() {
     this.loadingDelete = true;
-    this.$api2.deleteAdminProjectsPgroupProject(
+    this.$api2
+      .deleteAdminProjectsPgroupProject(
         this.$route.params.group,
         this.$route.params.project,
-    )
-        .then(() => {
-          this.loadingDelete = false;
-          this.showDeleteDialog = false;
-          this.toastRequestSuccess();
-          this.moveToAdminProjects();
-        })
-        .catch(error => {
-          this.loadingDelete = false;
-          this.showDeleteDialog = false;
-          this.toastRequestFailure(error);
-        });
+      )
+      .then(() => {
+        this.loadingDelete = false;
+        this.showDeleteDialog = false;
+        this.toastRequestSuccess();
+        this.moveToAdminProjects();
+      })
+      .catch(error => {
+        this.loadingDelete = false;
+        this.showDeleteDialog = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

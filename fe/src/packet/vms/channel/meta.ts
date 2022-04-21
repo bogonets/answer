@@ -7,12 +7,12 @@ export const VMS_CHANNEL_META_CODE_BAD_ARGUMENT = -1;
 export const VMS_CHANNEL_META_CODE_NOT_READY_ROI = -2;
 
 export enum VmsChannelMetaCode {
-    Success = 0,
-    ChannelOpened = 1,
-    Unknown = -1,
+  Success = 0,
+  ChannelOpened = 1,
+  Unknown = -1,
 }
 
 export interface VmsChannelMeta {
-    code: VmsChannelMetaCode;
-    events: Array<VmsChannelEvent>;
+  code: VmsChannelMetaCode;
+  events: Array<VmsChannelEvent>;
 }

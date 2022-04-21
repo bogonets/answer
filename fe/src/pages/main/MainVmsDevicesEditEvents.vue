@@ -1,30 +1,30 @@
 <i18n lang="yaml">
 en:
   labels:
-    delete: "Delete a config"
+    delete: 'Delete a config'
   msg:
-    delete_confirm: "Are you sure? Are you really removing this config?"
-  cancel: "Cancel"
-  delete: "Delete"
+    delete_confirm: 'Are you sure? Are you really removing this config?'
+  cancel: 'Cancel'
+  delete: 'Delete'
 
 ko:
   labels:
-    delete: "설정 제거"
+    delete: '설정 제거'
   msg:
-    delete_confirm: "이 설정을 정말 제거합니까?"
-  cancel: "취소"
-  delete: "제거"
+    delete_confirm: '이 설정을 정말 제거합니까?'
+  cancel: '취소'
+  delete: '제거'
 </i18n>
 
 <template>
   <div>
     <table-vms-event-configs
-        :items="items"
-        :loading="loading"
-        @click:new="onClickEventConfigNew"
-        @click:active="onClickEventConfigItemActive"
-        @click:edit="onClickEventConfigEdit"
-        @click:delete="onClickEventConfigDelete"
+      :items="items"
+      :loading="loading"
+      @click:new="onClickEventConfigNew"
+      @click:active="onClickEventConfigItemActive"
+      @click:edit="onClickEventConfigEdit"
+      @click:delete="onClickEventConfigDelete"
     ></table-vms-event-configs>
 
     <!-- Delete dialog. -->
@@ -43,9 +43,9 @@ ko:
             {{ $t('cancel') }}
           </v-btn>
           <v-btn
-              color="error"
-              :loading="loadingDelete"
-              @click="onClickEventConfigDeleteOk"
+            color="error"
+            :loading="loadingDelete"
+            @click="onClickEventConfigDeleteOk"
           >
             {{ $t('delete') }}
           </v-btn>
@@ -64,7 +64,7 @@ import type {VmsEventConfigA, VmsUpdateEventConfigQ} from '@/packet/vms';
 @Component({
   components: {
     TableVmsEventConfigs,
-  }
+  },
 })
 export default class MainVmsDevicesEditEvents extends VueBase {
   loading = false;
@@ -84,15 +84,16 @@ export default class MainVmsDevicesEditEvents extends VueBase {
     const device = this.$route.params.device;
 
     this.loading = true;
-    this.$api2.getVmsDeviceEventsConfigs(group, project, device)
-        .then(items => {
-          this.loading = false;
-          this.items = items;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getVmsDeviceEventsConfigs(group, project, device)
+      .then(items => {
+        this.loading = false;
+        this.items = items;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickEventConfigNew() {
@@ -111,14 +112,15 @@ export default class MainVmsDevicesEditEvents extends VueBase {
     const body = {
       enable: updateEnableFlag,
     } as VmsUpdateEventConfigQ;
-    this.$api2.patchVmsDeviceEventsConfigsPconfig(group, project, device, config, body)
-        .then(() => {
-          item.enable = updateEnableFlag;
-          this.toastRequestSuccess();
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .patchVmsDeviceEventsConfigsPconfig(group, project, device, config, body)
+      .then(() => {
+        item.enable = updateEnableFlag;
+        this.toastRequestSuccess();
+      })
+      .catch(error => {
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickEventConfigEdit(item: VmsEventConfigA) {
@@ -145,17 +147,18 @@ export default class MainVmsDevicesEditEvents extends VueBase {
     const config = this.eventConfigCandidate.toString();
 
     this.loadingDelete = true;
-    this.$api2.deleteVmsDeviceEventsConfigsPconfig(group, project, device, config)
-        .then(() => {
-          this.showDeleteDialog = false;
-          this.loadingDelete = false;
-          this.toastRequestSuccess();
-          this.requestEventConfigs();
-        })
-        .catch(error => {
-          this.loadingDelete = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .deleteVmsDeviceEventsConfigsPconfig(group, project, device, config)
+      .then(() => {
+        this.showDeleteDialog = false;
+        this.loadingDelete = false;
+        this.toastRequestSuccess();
+        this.requestEventConfigs();
+      })
+      .catch(error => {
+        this.loadingDelete = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

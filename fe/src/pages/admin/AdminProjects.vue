@@ -4,13 +4,12 @@
     <v-divider></v-divider>
 
     <table-projects
-        :loading="loading"
-        :items="items"
-        @click:new="onClickNew"
-        @click:edit="onClickEdit"
-        @click:move="onClickMove"
+      :loading="loading"
+      :items="items"
+      @click:new="onClickNew"
+      @click:edit="onClickEdit"
+      @click:move="onClickMove"
     ></table-projects>
-
   </v-container>
 </template>
 
@@ -25,7 +24,7 @@ import {ProjectA} from '@/packet/project';
   components: {
     ToolbarBreadcrumbs,
     TableProjects,
-  }
+  },
 })
 export default class AdminProjects extends VueBase {
   private readonly navigationItems = [
@@ -44,20 +43,21 @@ export default class AdminProjects extends VueBase {
   items = [] as Array<ProjectA>;
 
   created() {
-    this.requestProjects()
+    this.requestProjects();
   }
 
   requestProjects() {
     this.loading = true;
-    this.$api2.getAdminProjects()
-        .then(items => {
-          this.loading = false;
-          this.items = items;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAdminProjects()
+      .then(items => {
+        this.loading = false;
+        this.items = items;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickNew() {

@@ -4,27 +4,27 @@ import devNames from '@/router/names/dev';
 
 @Component
 export default class RouterDev extends Router {
-    moveToDev() {
-        this.moveToDevOverview();
-    }
+  moveToDev() {
+    this.moveToDevOverview();
+  }
 
-    moveToDevConfigs() {
-        this.moveTo(devNames.devConfigs);
-    }
+  moveToDevConfigs() {
+    this.moveTo(devNames.devConfigs);
+  }
 
-    moveToDevEnvs() {
-        this.moveTo(devNames.devEnvs);
-    }
+  moveToDevEnvs() {
+    this.moveTo(devNames.devEnvs);
+  }
 
-    moveToDevInfos() {
-        this.moveTo(devNames.devInfos);
-    }
+  moveToDevInfos() {
+    this.moveTo(devNames.devInfos);
+  }
 
-    moveToDevOverview() {
-        this.moveTo(devNames.devOverview);
-    }
+  moveToDevOverview() {
+    this.moveTo(devNames.devOverview);
+  }
 
-    moveToDevPlugins() {
-        this.moveTo(devNames.devPlugins);
-    }
+  moveToDevPlugins() {
+    this.moveTo(devNames.devPlugins);
+  }
 }

@@ -17,8 +17,7 @@ export default class CardButton extends Vue {
   }
 
   @Emit()
-  click() {
-  }
+  click() {}
 }
 </script>
 

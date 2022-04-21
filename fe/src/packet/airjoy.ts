@@ -78,333 +78,333 @@ export const CHART_SCALE_Y_MAX_VOC = 3;
 export const DEFAULT_CHART_COLOR = '#00AAAAFF';
 
 export function calcHumidity(value: number) {
-    return (value / 10.0);
+  return value / 10.0;
 }
 
 export function calcHumidityText(value: number) {
-    return calcHumidity(value).toFixed(1);
+  return calcHumidity(value).toFixed(1);
 }
 
 export function calcTemperature(value: number) {
-    const result = (value - 500.0) / 10.0;
-    if (result >= 0) {
-        return result;
-    } else {
-        return 0;
-    }
+  const result = (value - 500.0) / 10.0;
+  if (result >= 0) {
+    return result;
+  } else {
+    return 0;
+  }
 }
 
 export function calcFilterLifeMinutes(value: number) {
-    return value * 10;
+  return value * 10;
 }
 
 export function calcFilterLifeDays(value: number) {
-    const minutes = calcFilterLifeMinutes(value);
-    return Math.ceil(minutes / MINUTES_IN_DAY);
+  const minutes = calcFilterLifeMinutes(value);
+  return Math.ceil(minutes / MINUTES_IN_DAY);
 }
 
 export function validRange(value: number, min?: number, max?: number) {
-    if (typeof min !== 'undefined') {
-        if (value <= min) {
-            return false;
-        }
+  if (typeof min !== 'undefined') {
+    if (value <= min) {
+      return false;
     }
-    if (typeof max !== 'undefined') {
-        if (value >= max) {
-            return false;
-        }
+  }
+  if (typeof max !== 'undefined') {
+    if (value >= max) {
+      return false;
     }
-    return true;
+  }
+  return true;
 }
 
 export function validPm10(value: number) {
-    return validRange(value, VALID_PM10_MIN, VALID_PM10_MAX);
+  return validRange(value, VALID_PM10_MIN, VALID_PM10_MAX);
 }
 
 export function validPm2_5(value: number) {
-    return validRange(value, VALID_PM2_5_MIN, VALID_PM2_5_MAX);
+  return validRange(value, VALID_PM2_5_MIN, VALID_PM2_5_MAX);
 }
 
 export function validCo2(value: number) {
-    return validRange(value, VALID_CO2_MIN, VALID_CO2_MAX);
+  return validRange(value, VALID_CO2_MIN, VALID_CO2_MAX);
 }
 
 export function validHumidity(value: number) {
-    return validRange(value, VALID_HUMIDITY_MIN, VALID_HUMIDITY_MAX);
+  return validRange(value, VALID_HUMIDITY_MIN, VALID_HUMIDITY_MAX);
 }
 
 export function validTemperature(value: number) {
-    return validRange(value, VALID_TEMPERATURE_MIN, VALID_TEMPERATURE_MAX);
+  return validRange(value, VALID_TEMPERATURE_MIN, VALID_TEMPERATURE_MAX);
 }
 
 export function categoryIndexByName(name: string) {
-    if (name === CATEGORY_PM10) {
-        return INDEX_PM10;
-    } else if (name === CATEGORY_PM2_5) {
-        return INDEX_PM2_5;
-    } else if (name === CATEGORY_CO2) {
-        return INDEX_CO2;
-    } else if (name === CATEGORY_HUMIDITY) {
-        return INDEX_HUMIDITY;
-    } else if (name === CATEGORY_TEMPERATURE) {
-        return INDEX_TEMPERATURE;
-    } else if (name === CATEGORY_VOC) {
-        return INDEX_VOC;
-    } else {
-        return INDEX_UNKNOWN;
-    }
+  if (name === CATEGORY_PM10) {
+    return INDEX_PM10;
+  } else if (name === CATEGORY_PM2_5) {
+    return INDEX_PM2_5;
+  } else if (name === CATEGORY_CO2) {
+    return INDEX_CO2;
+  } else if (name === CATEGORY_HUMIDITY) {
+    return INDEX_HUMIDITY;
+  } else if (name === CATEGORY_TEMPERATURE) {
+    return INDEX_TEMPERATURE;
+  } else if (name === CATEGORY_VOC) {
+    return INDEX_VOC;
+  } else {
+    return INDEX_UNKNOWN;
+  }
 }
 
 export function categoryNameByIndex(index: number) {
-    switch (index) {
-        case INDEX_PM10:
-            return CATEGORY_PM10;
-        case INDEX_PM2_5:
-            return CATEGORY_PM2_5;
-        case INDEX_CO2:
-            return CATEGORY_CO2;
-        case INDEX_HUMIDITY:
-            return CATEGORY_HUMIDITY;
-        case INDEX_TEMPERATURE:
-            return CATEGORY_TEMPERATURE;
-        case INDEX_VOC:
-            return CATEGORY_VOC;
-        default:
-            return CATEGORY_UNKNOWN;
-    }
+  switch (index) {
+    case INDEX_PM10:
+      return CATEGORY_PM10;
+    case INDEX_PM2_5:
+      return CATEGORY_PM2_5;
+    case INDEX_CO2:
+      return CATEGORY_CO2;
+    case INDEX_HUMIDITY:
+      return CATEGORY_HUMIDITY;
+    case INDEX_TEMPERATURE:
+      return CATEGORY_TEMPERATURE;
+    case INDEX_VOC:
+      return CATEGORY_VOC;
+    default:
+      return CATEGORY_UNKNOWN;
+  }
 }
 
 export const PRINTABLE_CATEGORY_NAME = {
-    'ko': {
-        'pm10': '미세먼지',
-        'pm2_5': '초미세먼지',
-        'co2': '이산화탄소',
-        'humidity': '습도',
-        'temperature': '온도',
-        'voc': 'VOC',
-    },
-    'en': {
-        'pm10': 'PM10',
-        'pm2_5': 'PM2.5',
-        'co2': 'CO2',
-        'humidity': 'Humidity',
-        'temperature': 'Temperature',
-        'voc': 'VOC',
-    },
+  ko: {
+    pm10: '미세먼지',
+    pm2_5: '초미세먼지',
+    co2: '이산화탄소',
+    humidity: '습도',
+    temperature: '온도',
+    voc: 'VOC',
+  },
+  en: {
+    pm10: 'PM10',
+    pm2_5: 'PM2.5',
+    co2: 'CO2',
+    humidity: 'Humidity',
+    temperature: 'Temperature',
+    voc: 'VOC',
+  },
 };
 
 export function getChartScaleYMax(index: number) {
-    switch (index) {
-        case INDEX_PM10:
-            return CHART_SCALE_Y_MAX_PM10;
-        case INDEX_PM2_5:
-            return CHART_SCALE_Y_MAX_PM2_5;
-        case INDEX_CO2:
-            return CHART_SCALE_Y_MAX_CO2;
-        case INDEX_HUMIDITY:
-            return CHART_SCALE_Y_MAX_HUMIDITY;
-        case INDEX_TEMPERATURE:
-            return CHART_SCALE_Y_MAX_TEMPERATURE;
-        case INDEX_VOC:
-            return CHART_SCALE_Y_MAX_VOC;
-        default:
-            return undefined;
-    }
+  switch (index) {
+    case INDEX_PM10:
+      return CHART_SCALE_Y_MAX_PM10;
+    case INDEX_PM2_5:
+      return CHART_SCALE_Y_MAX_PM2_5;
+    case INDEX_CO2:
+      return CHART_SCALE_Y_MAX_CO2;
+    case INDEX_HUMIDITY:
+      return CHART_SCALE_Y_MAX_HUMIDITY;
+    case INDEX_TEMPERATURE:
+      return CHART_SCALE_Y_MAX_TEMPERATURE;
+    case INDEX_VOC:
+      return CHART_SCALE_Y_MAX_VOC;
+    default:
+      return undefined;
+  }
 }
 
 export function printableCategoryNameByIndex(index: number, lang: string) {
-    switch (index) {
-        case INDEX_PM10:
-            return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_PM10];
-        case INDEX_PM2_5:
-            return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_PM2_5];
-        case INDEX_CO2:
-            return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_CO2];
-        case INDEX_HUMIDITY:
-            return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_HUMIDITY];
-        case INDEX_TEMPERATURE:
-            return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_TEMPERATURE];
-        case INDEX_VOC:
-            return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_VOC];
-        default:
-            return CATEGORY_UNKNOWN;
-    }
+  switch (index) {
+    case INDEX_PM10:
+      return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_PM10];
+    case INDEX_PM2_5:
+      return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_PM2_5];
+    case INDEX_CO2:
+      return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_CO2];
+    case INDEX_HUMIDITY:
+      return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_HUMIDITY];
+    case INDEX_TEMPERATURE:
+      return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_TEMPERATURE];
+    case INDEX_VOC:
+      return PRINTABLE_CATEGORY_NAME[lang][CATEGORY_VOC];
+    default:
+      return CATEGORY_UNKNOWN;
+  }
 }
 
 export function printableCategoryIndexByName(name: string, lang: string) {
-    if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_PM10]) {
-        return INDEX_PM10;
-    } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_PM2_5]) {
-        return INDEX_PM2_5;
-    } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_CO2]) {
-        return INDEX_CO2;
-    } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_HUMIDITY]) {
-        return INDEX_HUMIDITY;
-    } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_TEMPERATURE]) {
-        return INDEX_TEMPERATURE;
-    } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_VOC]) {
-        return INDEX_VOC;
-    } else {
-        return INDEX_UNKNOWN;
-    }
+  if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_PM10]) {
+    return INDEX_PM10;
+  } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_PM2_5]) {
+    return INDEX_PM2_5;
+  } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_CO2]) {
+    return INDEX_CO2;
+  } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_HUMIDITY]) {
+    return INDEX_HUMIDITY;
+  } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_TEMPERATURE]) {
+    return INDEX_TEMPERATURE;
+  } else if (name === PRINTABLE_CATEGORY_NAME[lang][CATEGORY_VOC]) {
+    return INDEX_VOC;
+  } else {
+    return INDEX_UNKNOWN;
+  }
 }
 
 export function printableCategoryNames(lang: string) {
-    return [
-        printableCategoryNameByIndex(INDEX_PM10, lang),
-        printableCategoryNameByIndex(INDEX_PM2_5, lang),
-        printableCategoryNameByIndex(INDEX_CO2, lang),
-        printableCategoryNameByIndex(INDEX_HUMIDITY, lang),
-        printableCategoryNameByIndex(INDEX_TEMPERATURE, lang),
-        printableCategoryNameByIndex(INDEX_VOC, lang),
-    ];
+  return [
+    printableCategoryNameByIndex(INDEX_PM10, lang),
+    printableCategoryNameByIndex(INDEX_PM2_5, lang),
+    printableCategoryNameByIndex(INDEX_CO2, lang),
+    printableCategoryNameByIndex(INDEX_HUMIDITY, lang),
+    printableCategoryNameByIndex(INDEX_TEMPERATURE, lang),
+    printableCategoryNameByIndex(INDEX_VOC, lang),
+  ];
 }
 
 export interface AirjoySensorA {
-    name: string;
-    time: string;
-    uid: number;
-    pm10: number;
-    pm2_5: number;
-    co2: number;
-    humidity: number;
-    temperature: number;
-    voc: number;
+  name: string;
+  time: string;
+  uid: number;
+  pm10: number;
+  pm2_5: number;
+  co2: number;
+  humidity: number;
+  temperature: number;
+  voc: number;
 }
 
 export interface AirjoyDeviceA {
-    name: string;
-    description: string;
-    chart_color: string;
-    online: boolean;
+  name: string;
+  description: string;
+  chart_color: string;
+  online: boolean;
 
-    service_count: number;
-    service_last_time?: string;
+  service_count: number;
+  service_last_time?: string;
 
-    time: string;
-    fw_ver: number;
-    uid: number;
-    pm10: number;
-    pm2_5: number;
-    co2: number;
-    humidity: number;
-    temperature: number;
-    voc: number;
-    mode: number;
-    power_state: number;
-    fan_control: number;
-    lock: number;
-    filter: number;
-    filter_life: number;
-    uv_led: number;
-    time_reservation: number;
-    sleep_mode: number;
+  time: string;
+  fw_ver: number;
+  uid: number;
+  pm10: number;
+  pm2_5: number;
+  co2: number;
+  humidity: number;
+  temperature: number;
+  voc: number;
+  mode: number;
+  power_state: number;
+  fan_control: number;
+  lock: number;
+  filter: number;
+  filter_life: number;
+  uv_led: number;
+  time_reservation: number;
+  sleep_mode: number;
 }
 
 export interface AirjoyCreateDeviceQ {
-    name: string;
-    uid: number;
-    description: string;
-    chart_color: string;
+  name: string;
+  uid: number;
+  description: string;
+  chart_color: string;
 }
 
 export interface AirjoyUpdateDeviceQ {
-    name?: string;
-    description?: string;
-    chart_color?: string;
+  name?: string;
+  description?: string;
+  chart_color?: string;
 }
 
 export interface AirjoyControlQ {
-    uid: number;
-    mode?: number;
-    power_state?: number;
-    fan_control?: number;
-    lock?: number;
-    filter_reset?: number;
-    sleep_mode?: number;
-    time_reservation?: number;
+  uid: number;
+  mode?: number;
+  power_state?: number;
+  fan_control?: number;
+  lock?: number;
+  filter_reset?: number;
+  sleep_mode?: number;
+  time_reservation?: number;
 }
 
 export interface AirjoyChartA {
-    begin: string;
-    end: string;
+  begin: string;
+  end: string;
 
-    avg_pm10: number;
-    avg_pm2_5: number;
-    avg_co2: number;
-    avg_humidity: number;
-    avg_temperature: number;
-    avg_voc: number;
+  avg_pm10: number;
+  avg_pm2_5: number;
+  avg_co2: number;
+  avg_humidity: number;
+  avg_temperature: number;
+  avg_voc: number;
 
-    min_pm10: number;
-    min_pm2_5: number;
-    min_co2: number;
-    min_humidity: number;
-    min_temperature: number;
-    min_voc: number;
+  min_pm10: number;
+  min_pm2_5: number;
+  min_co2: number;
+  min_humidity: number;
+  min_temperature: number;
+  min_voc: number;
 
-    max_pm10: number;
-    max_pm2_5: number;
-    max_co2: number;
-    max_humidity: number;
-    max_temperature: number;
-    max_voc: number;
+  max_pm10: number;
+  max_pm2_5: number;
+  max_co2: number;
+  max_humidity: number;
+  max_temperature: number;
+  max_voc: number;
 
-    n: number;
+  n: number;
 }
 
 export interface AirjoyServiceA {
-    airjoy_uid: number;
-    airjoy_name: string;
+  airjoy_uid: number;
+  airjoy_name: string;
 
-    service_uid: number;
-    time: string;
-    author: string;
-    description: string;
+  service_uid: number;
+  time: string;
+  author: string;
+  description: string;
 
-    created_at: string;
-    updated_at: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface AirjoyCreateServiceQ {
-    author: string;
-    description: string;
-    time: string;
+  author: string;
+  description: string;
+  time: string;
 }
 
 export interface AirjoyUpdateServiceQ {
-    author: string;
-    description: string;
-    time: string;
+  author: string;
+  description: string;
+  time: string;
 }
 
 export function createEmptyAirjoyDeviceA() {
-    return {
-        name: '',
-        description: '',
-        chart_color: '',
-        online: false,
+  return {
+    name: '',
+    description: '',
+    chart_color: '',
+    online: false,
 
-        service_count: 0,
-        service_last_time: '',
+    service_count: 0,
+    service_last_time: '',
 
-        time: '',
-        fw_ver: 0,
-        uid: 0,
-        pm10: 0,
-        pm2_5: 0,
-        co2: 0,
-        humidity: 0,
-        temperature: 0,
-        voc: 0,
-        mode: 0,
-        power_state: 0,
-        fan_control: 0,
-        lock: 0,
-        filter: 0,
-        filter_life: 0,
-        uv_led: 0,
-        time_reservation: 0,
-        sleep_mode: 0,
-    } as AirjoyDeviceA;
+    time: '',
+    fw_ver: 0,
+    uid: 0,
+    pm10: 0,
+    pm2_5: 0,
+    co2: 0,
+    humidity: 0,
+    temperature: 0,
+    voc: 0,
+    mode: 0,
+    power_state: 0,
+    fan_control: 0,
+    lock: 0,
+    filter: 0,
+    filter_life: 0,
+    uv_led: 0,
+    time_reservation: 0,
+    sleep_mode: 0,
+  } as AirjoyDeviceA;
 }

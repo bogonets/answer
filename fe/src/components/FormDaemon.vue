@@ -1,100 +1,99 @@
 <i18n lang="yaml">
 en:
   labels:
-    plugin: "Plugin"
-    slug: "Slug"
-    name: "Name"
-    address: "Bind address"
-    description: "Description"
-    enable: "Enable"
+    plugin: 'Plugin'
+    slug: 'Slug'
+    name: 'Name'
+    address: 'Bind address'
+    description: 'Description'
+    enable: 'Enable'
   hints:
-    plugin: "The name of the plugin to use for the daemon."
-    slug: "Daemon slug to be used in the URL."
-    name: "The name of the daemon as it is displayed on the screen."
-    scheme: "Scheme"
-    host: "Host"
-    path: "Path"
-    abstract_path: "Abstract path"
-    address: "Address"
-    port: "Port number"
-    description: "A specific description of the daemon."
-    enable: "If enabled, it will run automatically on restart."
+    plugin: 'The name of the plugin to use for the daemon.'
+    slug: 'Daemon slug to be used in the URL.'
+    name: 'The name of the daemon as it is displayed on the screen.'
+    scheme: 'Scheme'
+    host: 'Host'
+    path: 'Path'
+    abstract_path: 'Abstract path'
+    address: 'Address'
+    port: 'Port number'
+    description: 'A specific description of the daemon.'
+    enable: 'If enabled, it will run automatically on restart.'
   schemes:
-    dns: "DNS"
-    unix: "Unix"
-    unix_abstract: "Unix abstract"
-    manually: "Manually"
-  cancel: "Cancel"
-  submit: "Submit"
+    dns: 'DNS'
+    unix: 'Unix'
+    unix_abstract: 'Unix abstract'
+    manually: 'Manually'
+  cancel: 'Cancel'
+  submit: 'Submit'
 
 ko:
   labels:
-    plugin: "플러그인"
-    slug: "슬러그"
-    name: "이름"
-    address: "바인드 주소"
-    description: "설명"
-    enable: "활성화"
+    plugin: '플러그인'
+    slug: '슬러그'
+    name: '이름'
+    address: '바인드 주소'
+    description: '설명'
+    enable: '활성화'
   hints:
-    plugin: "데몬에 사용할 플러그인 이름."
-    slug: "URL 경로에 사용될 데몬 슬러그."
-    name: "화면에 출력되는 데몬명."
-    scheme: "스키마"
-    host: "호스트"
-    path: "경로"
-    abstract_path: "추상 경로"
-    address: "주소"
-    port: "포트 번호"
-    description: "데몬의 구체적인 설명."
-    enable: "활성화하면 다시 시작할 때 자동으로 실행됩니다."
+    plugin: '데몬에 사용할 플러그인 이름.'
+    slug: 'URL 경로에 사용될 데몬 슬러그.'
+    name: '화면에 출력되는 데몬명.'
+    scheme: '스키마'
+    host: '호스트'
+    path: '경로'
+    abstract_path: '추상 경로'
+    address: '주소'
+    port: '포트 번호'
+    description: '데몬의 구체적인 설명.'
+    enable: '활성화하면 다시 시작할 때 자동으로 실행됩니다.'
   schemes:
-    dns: "DNS"
-    unix: "Unix"
-    unix_abstract: "Unix abstract"
-    manually: "수동 입력"
-  cancel: "취소"
-  submit: "제출"
+    dns: 'DNS'
+    unix: 'Unix'
+    unix_abstract: 'Unix abstract'
+    manually: '수동 입력'
+  cancel: '취소'
+  submit: '제출'
 </i18n>
 
 <template>
   <v-form ref="form" v-model="valid">
-
     <p :class="subtitleClass">{{ $t('labels.plugin') }}</p>
     <v-select
-        dense
-        menu-props="auto"
-        :items="plugins"
-        :value="value.plugin"
-        @change="inputPlugin"
-        :rules="rulesPlugin"
-        :loading="loadingPlugin"
-        :disabled="disablePlugin"
-        :filled="disablePlugin"
-        :persistent-hint="!disablePlugin"
-        :hide-details="disablePlugin"
-        :hint="$t('hints.plugin')"
+      dense
+      menu-props="auto"
+      :items="plugins"
+      :value="value.plugin"
+      @change="inputPlugin"
+      :rules="rulesPlugin"
+      :loading="loadingPlugin"
+      :disabled="disablePlugin"
+      :filled="disablePlugin"
+      :persistent-hint="!disablePlugin"
+      :hide-details="disablePlugin"
+      :hint="$t('hints.plugin')"
     ></v-select>
 
     <p :class="subtitleClass">{{ $t('labels.slug') }}</p>
     <v-text-field
-        dense
-        :rules="rulesSlug"
-        :value="value.slug"
-        @input="inputSlug"
-        :disabled="disableSlug"
-        :filled="disableSlug"
-        :persistent-hint="!disableSlug"
-        :hide-details="disableSlug"
-        :hint="$t('hints.slug')"
+      dense
+      :rules="rulesSlug"
+      :value="value.slug"
+      @input="inputSlug"
+      :disabled="disableSlug"
+      :filled="disableSlug"
+      :persistent-hint="!disableSlug"
+      :hide-details="disableSlug"
+      :hint="$t('hints.slug')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.name') }}</p>
     <v-text-field
-        dense
-        persistent-hint
-        :value="value.name"
-        @input="inputName"
-        :hint="$t('hints.name')"
+      dense
+      persistent-hint
+      :value="value.name"
+      @input="inputName"
+      :hint="$t('hints.name')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.address') }}</p>
@@ -102,75 +101,75 @@ ko:
       <v-row no-gutters>
         <v-col cols="4">
           <v-select
-              class="mr-2"
-              :items="schemes"
-              item-text="text"
-              item-value="value"
-              dense
-              persistent-hint
-              v-model="scheme"
-              @change="onChangeScheme"
-              :hint="$t('hints.scheme')"
+            class="mr-2"
+            :items="schemes"
+            item-text="text"
+            item-value="value"
+            dense
+            persistent-hint
+            v-model="scheme"
+            @change="onChangeScheme"
+            :hint="$t('hints.scheme')"
           ></v-select>
         </v-col>
 
         <v-col v-if="isDnsScheme" cols="5">
           <v-combobox
-              class="mr-2"
-              dense
-              persistent-hint
-              clearable
-              :value="dnsHost"
-              @input="inputDnsHost"
-              :hint="$t('hints.host')"
-              :items="dnsHostItems"
+            class="mr-2"
+            dense
+            persistent-hint
+            clearable
+            :value="dnsHost"
+            @input="inputDnsHost"
+            :hint="$t('hints.host')"
+            :items="dnsHostItems"
           ></v-combobox>
         </v-col>
         <v-col v-if="isDnsScheme" cols="3">
           <v-text-field
-              dense
-              persistent-hint
-              type="number"
-              :loading="dnsPortLoading"
-              :disabled="dnsPortLoading"
-              :value="dnsPort"
-              @input="inputDnsPort"
-              :hint="$t('hints.port')"
-              append-icon="mdi-refresh"
-              @click:append="onClickRefreshPort"
+            dense
+            persistent-hint
+            type="number"
+            :loading="dnsPortLoading"
+            :disabled="dnsPortLoading"
+            :value="dnsPort"
+            @input="inputDnsPort"
+            :hint="$t('hints.port')"
+            append-icon="mdi-refresh"
+            @click:append="onClickRefreshPort"
           ></v-text-field>
         </v-col>
 
         <v-col v-if="isUnixScheme" cols="8">
           <v-text-field
-              dense
-              persistent-hint
-              clearable
-              :value="unixPath"
-              @input="inputUnixPath"
-              :hint="$t('hints.path')"
+            dense
+            persistent-hint
+            clearable
+            :value="unixPath"
+            @input="inputUnixPath"
+            :hint="$t('hints.path')"
           ></v-text-field>
         </v-col>
 
         <v-col v-if="isUnixAbstractScheme" cols="8">
           <v-text-field
-              dense
-              persistent-hint
-              clearable
-              :value="unixAbstractPath"
-              @input="inputUnixAbstractPath"
-              :hint="$t('hints.abstract_path')"
+            dense
+            persistent-hint
+            clearable
+            :value="unixAbstractPath"
+            @input="inputUnixAbstractPath"
+            :hint="$t('hints.abstract_path')"
           ></v-text-field>
         </v-col>
 
         <v-col v-if="isManuallyScheme" cols="8">
           <v-text-field
-              dense
-              persistent-hint
-              clearable
-              :value="manuallyAddress"
-              @input="inputManuallyAddress"
-              :hint="$t('hints.address')"
+            dense
+            persistent-hint
+            clearable
+            :value="manuallyAddress"
+            @input="inputManuallyAddress"
+            :hint="$t('hints.address')"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -178,12 +177,12 @@ ko:
 
     <p :class="subtitleClass">{{ $t('labels.description') }}</p>
     <v-textarea
-        dense
-        auto-grow
-        persistent-hint
-        :value="value.description"
-        @input="inputDescription"
-        :hint="$t('hints.description')"
+      dense
+      auto-grow
+      persistent-hint
+      :value="value.description"
+      @input="inputDescription"
+      :hint="$t('hints.description')"
     ></v-textarea>
 
     <v-row class="mt-2" no-gutters>
@@ -193,35 +192,25 @@ ko:
       </div>
       <v-spacer></v-spacer>
       <div>
-        <v-switch
-            inset
-            :value="value.enable"
-            @change="changeEnable"
-        ></v-switch>
+        <v-switch inset :value="value.enable" @change="changeEnable"></v-switch>
       </div>
     </v-row>
 
     <v-row v-if="!hideButtons" class="mt-2" no-gutters>
       <v-spacer></v-spacer>
-      <v-btn
-          v-if="!hideCancelButton"
-          class="mr-4"
-          color="second"
-          @click="cancel"
-      >
+      <v-btn v-if="!hideCancelButton" class="mr-4" color="second" @click="cancel">
         {{ $t('cancel') }}
       </v-btn>
       <v-btn
-          v-if="!hideSubmitButton"
-          color="primary"
-          :loading="loadingSubmit"
-          :disabled="disableSubmit"
-          @click="onSubmit"
+        v-if="!hideSubmitButton"
+        color="primary"
+        :loading="loadingSubmit"
+        :disabled="disableSubmit"
+        @click="onSubmit"
       >
         {{ $t('submit') }}
       </v-btn>
     </v-row>
-
   </v-form>
 </template>
 
@@ -235,12 +224,12 @@ import {DAEMON_SLUG_RULES} from '@/rules';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {CAPTION_CLASS} from '@/styles/caption';
 import type {DaemonA} from '@/packet/daemon';
-import {InaccessibleAreaException} from "@/exceptions";
+import {InaccessibleAreaException} from '@/exceptions';
 
 @Component({
   components: {
     RadioVisibility,
-  }
+  },
 })
 export default class FormProject extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
@@ -270,7 +259,7 @@ export default class FormProject extends VueBase {
     {
       text: this.$t('schemes.manually'),
       value: this.schemeManually,
-    }
+    },
   ];
 
   readonly dnsHostItems = ['localhost', '127.0.0.1', '[::1]', '0.0.0.0', '[::]'];
@@ -329,8 +318,8 @@ export default class FormProject extends VueBase {
       // Do not change the 'if-else' order.
       if (newVal.address.startsWith(this.schemeDns)) {
         this.scheme = this.schemeDns;
-        const suffix = newVal.address.substr(this.schemeDns.length)
-        const colonIndex = suffix.indexOf(':')
+        const suffix = newVal.address.substr(this.schemeDns.length);
+        const colonIndex = suffix.indexOf(':');
         if (colonIndex === -1) {
           this.dnsHost = suffix;
         } else {
@@ -339,10 +328,10 @@ export default class FormProject extends VueBase {
         }
       } else if (newVal.address.startsWith(this.schemeUnixAbstract)) {
         this.scheme = this.schemeUnixAbstract;
-        this.unixAbstractPath = newVal.address.substr(this.schemeUnixAbstract.length)
+        this.unixAbstractPath = newVal.address.substr(this.schemeUnixAbstract.length);
       } else if (newVal.address.startsWith(this.schemeUnix)) {
         this.scheme = this.schemeUnix;
-        this.unixPath = newVal.address.substr(this.schemeUnix.length)
+        this.unixPath = newVal.address.substr(this.schemeUnix.length);
       } else {
         this.scheme = this.schemeManually;
         this.manuallyAddress = newVal.address;
@@ -468,17 +457,18 @@ export default class FormProject extends VueBase {
 
   onClickRefreshPort() {
     this.dnsPortLoading = true;
-    this.$api2.getAdminPortNext()
-        .then(portNumber => {
-          this.dnsPort = portNumber;
-          this.value.address = this.dnsAddress;
-          this.input();
-          this.dnsPortLoading = false;
-        })
-        .catch(error => {
-          this.dnsPortLoading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAdminPortNext()
+      .then(portNumber => {
+        this.dnsPort = portNumber;
+        this.value.address = this.dnsAddress;
+        this.input();
+        this.dnsPortLoading = false;
+      })
+      .catch(error => {
+        this.dnsPortLoading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   formValidate() {

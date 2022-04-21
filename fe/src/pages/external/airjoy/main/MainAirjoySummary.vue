@@ -9,17 +9,16 @@
     </div>
     <div class="control-panel">
       <v-select
-          dark
-          dense
-          rounded
-          flat
-          outlined
-          hide-details
-          :items="items"
-          :value="items[index]"
-          @change="onChangeTheme"
-      >
-      </v-select>
+        dark
+        dense
+        rounded
+        flat
+        outlined
+        hide-details
+        :items="items"
+        :value="items[index]"
+        @change="onChangeTheme"
+      ></v-select>
     </div>
   </view-port>
 </template>
@@ -32,7 +31,7 @@ import ViewPort from '@/components/ViewPort.vue';
 @Component({
   components: {
     ViewPort,
-  }
+  },
 })
 export default class MainAirjoySummary extends VueBase {
   items = ['Good', 'Normal', 'Warning', 'Danger'];
@@ -56,13 +55,14 @@ export default class MainAirjoySummary extends VueBase {
   created() {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    this.$api2.getAirjoyLive(group, project)
-        .then(items => {
-          this.toastRequestSuccess();
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAirjoyLive(group, project)
+      .then(items => {
+        this.toastRequestSuccess();
+      })
+      .catch(error => {
+        this.toastRequestFailure(error);
+      });
   }
 
   onChangeTheme(item: string) {
@@ -110,15 +110,15 @@ $animation-duration: 15s;
 
 @mixin gradient-background($color-name) {
   background: repeating-linear-gradient(
-          $gradient-angle,
-          map-deep-get($colors, $color-name, 'lighten-5'),
-          map-deep-get($colors, $color-name, 'lighten-4'),
-          map-deep-get($colors, $color-name, 'lighten-3'),
-          map-deep-get($colors, $color-name, 'lighten-2'),
-          map-deep-get($colors, $color-name, 'lighten-1'),
-          map-deep-get($colors, $color-name, 'darken-1'),
-          map-deep-get($colors, $color-name, 'darken-2'),
-          map-deep-get($colors, $color-name, 'darken-3'),
+    $gradient-angle,
+    map-deep-get($colors, $color-name, 'lighten-5'),
+    map-deep-get($colors, $color-name, 'lighten-4'),
+    map-deep-get($colors, $color-name, 'lighten-3'),
+    map-deep-get($colors, $color-name, 'lighten-2'),
+    map-deep-get($colors, $color-name, 'lighten-1'),
+    map-deep-get($colors, $color-name, 'darken-1'),
+    map-deep-get($colors, $color-name, 'darken-2'),
+    map-deep-get($colors, $color-name, 'darken-3')
   );
   background-size: $background-width $background-height;
   animation: background-position-gradient $animation-duration ease infinite;

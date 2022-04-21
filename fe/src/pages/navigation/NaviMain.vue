@@ -1,52 +1,51 @@
 <i18n lang="yaml">
 en:
-  dashboard: "Dashboard"
-  kanban: "Kanban"
-  layouts: "Layouts"
-  files: "Files"
-  tables: "Tables"
-  tasks: "Tasks"
-  vp: "Visual Programming"
+  dashboard: 'Dashboard'
+  kanban: 'Kanban'
+  layouts: 'Layouts'
+  files: 'Files'
+  tables: 'Tables'
+  tasks: 'Tasks'
+  vp: 'Visual Programming'
   vms:
-    live: "Live"
-    devices: "Devices"
-    layouts: "Layouts"
-    events_calendar: "Events Calendar"
-    events_list: "Events List"
-    user_configs: "User Configs"
-  members: "Members"
-  settings: "Settings"
+    live: 'Live'
+    devices: 'Devices'
+    layouts: 'Layouts'
+    events_calendar: 'Events Calendar'
+    events_list: 'Events List'
+    user_configs: 'User Configs'
+  members: 'Members'
+  settings: 'Settings'
 
 ko:
-  dashboard: "대시보드"
-  kanban: "간반보드"
-  layouts: "레이아웃"
-  files: "파일"
-  tables: "테이블"
-  tasks: "태스크"
-  vp: "시각 프로그래밍"
+  dashboard: '대시보드'
+  kanban: '간반보드'
+  layouts: '레이아웃'
+  files: '파일'
+  tables: '테이블'
+  tasks: '태스크'
+  vp: '시각 프로그래밍'
   vms:
-    live: "실시간"
-    devices: "장치 목록"
-    layouts: "레이아웃"
-    events_calendar: "이벤트 달력"
-    events_list: "이벤트 목록"
-    user_configs: "개인 설정"
-  members: "회원 관리"
-  settings: "프로젝트 설정"
+    live: '실시간'
+    devices: '장치 목록'
+    layouts: '레이아웃'
+    events_calendar: '이벤트 달력'
+    events_list: '이벤트 목록'
+    user_configs: '개인 설정'
+  members: '회원 관리'
+  settings: '프로젝트 설정'
 </i18n>
 
 <template>
   <v-navigation-drawer
-      app
-      clipped
-      permanent
-      stateless
-      touchless
-      :mini-variant.sync="mini"
+    app
+    clipped
+    permanent
+    stateless
+    touchless
+    :mini-variant.sync="mini"
   >
     <v-list nav dense>
-
       <v-list-item link @click.stop="onClickFoldNavigation">
         <v-list-item-icon>
           <v-avatar color="info" size="24">{{ projectAvatar }}</v-avatar>
@@ -59,19 +58,11 @@ ko:
         </v-btn>
       </v-list-item>
 
-      <v-list-item-group
-          mandatory
-          color="primary"
-          :value="index"
-          @change="input"
-      >
+      <v-list-item-group mandatory color="primary" :value="index" @change="input">
         <div>
           <v-divider></v-divider>
 
-          <v-list-item
-              link
-              @click.stop="dashboard"
-          >
+          <v-list-item link @click.stop="dashboard">
             <v-list-item-icon>
               <v-icon>mdi-gauge</v-icon>
             </v-list-item-icon>
@@ -80,10 +71,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item
-              link
-              @click.stop="kanban"
-          >
+          <v-list-item link @click.stop="kanban">
             <v-list-item-icon>
               <v-icon>mdi-view-week-outline</v-icon>
             </v-list-item-icon>
@@ -92,10 +80,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item
-              link
-              @click.stop="layouts"
-          >
+          <v-list-item link @click.stop="layouts">
             <v-list-item-icon>
               <v-icon>mdi-view-dashboard</v-icon>
             </v-list-item-icon>
@@ -104,10 +89,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item
-              link
-              @click.stop="files"
-          >
+          <v-list-item link @click.stop="files">
             <v-list-item-icon>
               <v-icon>mdi-folder</v-icon>
             </v-list-item-icon>
@@ -116,10 +98,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item
-              link
-              @click.stop="tables"
-          >
+          <v-list-item link @click.stop="tables">
             <v-list-item-icon>
               <v-icon>mdi-table-multiple</v-icon>
             </v-list-item-icon>
@@ -128,11 +107,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item
-              v-show="false"
-              link
-              @click.stop="tasks"
-          >
+          <v-list-item v-show="false" link @click.stop="tasks">
             <v-list-item-icon>
               <v-icon>mdi-format-list-checks</v-icon>
             </v-list-item-icon>
@@ -141,10 +116,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item
-              link
-              @click.stop="visualProgramming"
-          >
+          <v-list-item link @click.stop="visualProgramming">
             <v-list-item-icon>
               <v-icon>mdi-lambda</v-icon>
             </v-list-item-icon>
@@ -166,7 +138,11 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasPermissionVmsDeviceView()" link @click.stop="vmsDevices">
+          <v-list-item
+            v-show="hasPermissionVmsDeviceView()"
+            link
+            @click.stop="vmsDevices"
+          >
             <v-list-item-icon>
               <v-icon>mdi-cctv</v-icon>
             </v-list-item-icon>
@@ -175,7 +151,11 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasPermissionVmsLiveEdit()" link @click.stop="vmsLayouts">
+          <v-list-item
+            v-show="hasPermissionVmsLiveEdit()"
+            link
+            @click.stop="vmsLayouts"
+          >
             <v-list-item-icon>
               <v-icon>mdi-view-dashboard</v-icon>
             </v-list-item-icon>
@@ -184,7 +164,11 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasPermissionVmsEventView()" link @click.stop="vmsEventsCalendar">
+          <v-list-item
+            v-show="hasPermissionVmsEventView()"
+            link
+            @click.stop="vmsEventsCalendar"
+          >
             <v-list-item-icon>
               <v-icon>mdi-calendar</v-icon>
             </v-list-item-icon>
@@ -193,7 +177,11 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="hasPermissionVmsEventView()" link @click.stop="vmsEventsList">
+          <v-list-item
+            v-show="hasPermissionVmsEventView()"
+            link
+            @click.stop="vmsEventsList"
+          >
             <v-list-item-icon>
               <v-icon>mdi-view-list</v-icon>
             </v-list-item-icon>
@@ -213,14 +201,10 @@ ko:
         </div>
 
         <v-divider
-            v-if="hasPermissionMemberView() || hasPermissionSettingView()"
+          v-if="hasPermissionMemberView() || hasPermissionSettingView()"
         ></v-divider>
 
-        <v-list-item
-            v-show="hasPermissionMemberView()"
-            link
-            @click.stop="members"
-        >
+        <v-list-item v-show="hasPermissionMemberView()" link @click.stop="members">
           <v-list-item-icon>
             <v-icon>mdi-account-group</v-icon>
           </v-list-item-icon>
@@ -229,11 +213,7 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item
-            v-show="hasPermissionSettingView()"
-            link
-            @click.stop="settings"
-        >
+        <v-list-item v-show="hasPermissionSettingView()" link @click.stop="settings">
           <v-list-item-icon>
             <v-icon>mdi-cog-outline</v-icon>
           </v-list-item-icon>
@@ -241,13 +221,12 @@ ko:
             {{ $t('settings') }}
           </v-list-item-title>
         </v-list-item>
-
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {ProjectA} from '@/packet/project';
@@ -287,7 +266,7 @@ export default class NaviMain extends VueBase {
   }
 
   get features() {
-    return this.project?.features || [] as Array<string>;
+    return this.project?.features || ([] as Array<string>);
   }
 
   get isVms() {
@@ -333,7 +312,6 @@ export default class NaviMain extends VueBase {
       this.index = 5;
     } else if (name === mainNames.mainVisualProgramming) {
       this.index = 6;
-
     } else if (name === mainNames.mainVmsLive) {
       this.index = 7;
     } else if (name === mainNames.mainVmsDevices) {
@@ -368,12 +346,10 @@ export default class NaviMain extends VueBase {
       this.index = 11;
     } else if (name === mainNames.mainVmsUserConfigs) {
       this.index = 12;
-
     } else if (name === mainNames.mainMembers) {
       this.index = 13;
     } else if (name === mainNames.mainSettings) {
       this.index = 14;
-
     } else {
       this.index = -1;
     }

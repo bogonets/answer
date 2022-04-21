@@ -1,43 +1,41 @@
 <i18n lang="yaml">
 en:
-  username: "Username"
-  password: "Password"
-  signin: "Sign in"
-  signup: "Sign up"
-  forgot_password: "Forgot password"
+  username: 'Username'
+  password: 'Password'
+  signin: 'Sign in'
+  signup: 'Sign up'
+  forgot_password: 'Forgot password'
   msg:
-    connecting_api: "Connecting to API server..."
-    unreachable_api: "Unreachable API server."
-    uninitialized_api: "A reachable but uninitialized API."
-    connected_api: "API connection successful."
-    required_field: "Required field"
-    more_than_4char: "It must be at least 4 characters long."
-    invalid_fields: "Invalid ID or password."
+    connecting_api: 'Connecting to API server...'
+    unreachable_api: 'Unreachable API server.'
+    uninitialized_api: 'A reachable but uninitialized API.'
+    connected_api: 'API connection successful.'
+    required_field: 'Required field'
+    more_than_4char: 'It must be at least 4 characters long.'
+    invalid_fields: 'Invalid ID or password.'
 
 ko:
-  username: "계정명"
-  password: "비밀번호"
-  signin: "로그인"
-  signup: "회원 가입"
-  forgot_password: "비밀번호 찾기"
+  username: '계정명'
+  password: '비밀번호'
+  signin: '로그인'
+  signup: '회원 가입'
+  forgot_password: '비밀번호 찾기'
   msg:
-    connecting_api: "API 서버 연결중 ..."
-    unreachable_api: "API 서버 연결에 실패하였습니다."
-    uninitialized_api: "API 서버가 연결되었지만, 초기화되지 않았습니다."
-    connected_api: "API 연결 설공."
-    required_field: "공백을 허용하지 않습니다."
-    more_than_4char: "4자 이상이여야 합니다."
-    invalid_fields: "계정이름 또는 비밀번호가 잘못되었습니다."
+    connecting_api: 'API 서버 연결중 ...'
+    unreachable_api: 'API 서버 연결에 실패하였습니다.'
+    uninitialized_api: 'API 서버가 연결되었지만, 초기화되지 않았습니다.'
+    connected_api: 'API 연결 설공.'
+    required_field: '공백을 허용하지 않습니다.'
+    more_than_4char: '4자 이상이여야 합니다.'
+    invalid_fields: '계정이름 또는 비밀번호가 잘못되었습니다.'
 </i18n>
 
 <template>
   <v-main>
-
     <!-- The card in the center of the screen. -->
     <v-container fluid class="fill-height">
       <v-row align="center" justify="center">
         <v-col class="max-content-width">
-
           <!-- Main Content -->
           <v-card elevation="8">
             <v-card-title class="pt-8">
@@ -46,10 +44,10 @@ ko:
 
             <v-expand-transition>
               <v-row
-                  v-if="isErrorMessage"
-                  class="d-block mt-8 mb-4 mx-4"
-                  align="center"
-                  justify="center"
+                v-if="isErrorMessage"
+                class="d-block mt-8 mb-4 mx-4"
+                align="center"
+                justify="center"
               >
                 <v-alert dense outlined type="error">{{ errorMessage }}</v-alert>
               </v-row>
@@ -58,9 +56,9 @@ ko:
             <v-fade-transition hide-on-leave>
               <v-card-text v-if="!isReady">
                 <linear-loading
-                    :progress-color="progressColor"
-                    :progress-indeterminate="isConnecting"
-                    :loading-text="loadingText"
+                  :progress-color="progressColor"
+                  :progress-indeterminate="isConnecting"
+                  :loading-text="loadingText"
                 ></linear-loading>
               </v-card-text>
             </v-fade-transition>
@@ -69,21 +67,21 @@ ko:
               <v-card-text v-if="isReady">
                 <v-form>
                   <v-text-field
-                      autofocus
-                      type="text"
-                      ref="usernameField"
-                      v-model="currentUsername"
-                      :rules="ruleRequired"
-                      :label="usernameFieldLabel"
+                    autofocus
+                    type="text"
+                    ref="usernameField"
+                    v-model="currentUsername"
+                    :rules="ruleRequired"
+                    :label="usernameFieldLabel"
                   ></v-text-field>
                   <v-text-field
-                      type="password"
-                      autocomplete="off"
-                      ref="passwordField"
-                      v-model="currentPassword"
-                      :rules="ruleRequired"
-                      :label="passwordFieldLabel"
-                      @keypress.enter.stop="signin"
+                    type="password"
+                    autocomplete="off"
+                    ref="passwordField"
+                    v-model="currentPassword"
+                    :rules="ruleRequired"
+                    :label="passwordFieldLabel"
+                    @keypress.enter.stop="signin"
                   ></v-text-field>
                 </v-form>
               </v-card-text>
@@ -93,11 +91,11 @@ ko:
               <v-list>
                 <v-list-item>
                   <v-btn
-                      rounded
-                      block
-                      color="primary"
-                      :loading="loading"
-                      @click="signin"
+                    rounded
+                    block
+                    color="primary"
+                    :loading="loading"
+                    @click="signin"
                   >
                     {{ $t('signin') }}
                   </v-btn>
@@ -112,8 +110,8 @@ ko:
                     </a>
                     <span class="mx-3"></span>
                     <a
-                        class="text-overline text--disabled text-decoration-line-through"
-                        @click="onClickForgetPassword"
+                      class="text-overline text--disabled text-decoration-line-through"
+                      @click="onClickForgetPassword"
                     >
                       {{ $t('forgot_password') }}
                     </a>
@@ -123,18 +121,16 @@ ko:
               </v-list>
             </v-card-actions>
           </v-card>
-
         </v-col>
       </v-row>
     </v-container>
 
     <buttons-config-public
-        class="config-buttons-position ma-0 pa-0"
-        @change-dark="onChangeDark"
-        @change-lang="onChangeLang"
-        @change-origin="onChangeOrigin"
+      class="config-buttons-position ma-0 pa-0"
+      @change-dark="onChangeDark"
+      @change-lang="onChangeLang"
+      @change-origin="onChangeOrigin"
     ></buttons-config-public>
-
   </v-main>
 </template>
 
@@ -164,7 +160,7 @@ enum LoginPageState {
     ButtonsConfigPublic,
     LinearLoading,
     TitleLogo,
-  }
+  },
 })
 export default class Signin extends VueBase {
   private readonly waitMoment = WAIT_MOMENT_MILLISECONDS;
@@ -222,13 +218,13 @@ export default class Signin extends VueBase {
   get loadingText(): string {
     switch (this.currentState) {
       case LoginPageState.Connecting:
-        return this.$t('msg.connecting_api').toString()
+        return this.$t('msg.connecting_api').toString();
       case LoginPageState.Unreachable:
-        return this.$t('msg.unreachable_api').toString()
+        return this.$t('msg.unreachable_api').toString();
       case LoginPageState.Uninitialized:
-        return this.$t('msg.uninitialized_api').toString()
+        return this.$t('msg.uninitialized_api').toString();
       case LoginPageState.ReadyForWait:
-        return this.$t('msg.connected_api').toString()
+        return this.$t('msg.connected_api').toString();
       case LoginPageState.Ready:
         return '';
       default:
@@ -256,21 +252,22 @@ export default class Signin extends VueBase {
   testInit() {
     this.updateState(LoginPageState.Connecting);
 
-    this.$api2.getPublicStateAlready()
-        .then(result => {
-          if (result) {
-            this.updateState(LoginPageState.ReadyForWait);
-            setTimeout(() => {
-              this.updateState(LoginPageState.Ready);
-            }, this.waitMoment);
-          } else {
-            this.moveToInit();
-          }
-        })
-        .catch(error => {
-          this.updateState(LoginPageState.Unreachable);
-          console.error(error);
-        });
+    this.$api2
+      .getPublicStateAlready()
+      .then(result => {
+        if (result) {
+          this.updateState(LoginPageState.ReadyForWait);
+          setTimeout(() => {
+            this.updateState(LoginPageState.Ready);
+          }, this.waitMoment);
+        } else {
+          this.moveToInit();
+        }
+      })
+      .catch(error => {
+        this.updateState(LoginPageState.Unreachable);
+        console.error(error);
+      });
   }
 
   updateState(state: LoginPageState): void {
@@ -356,18 +353,19 @@ export default class Signin extends VueBase {
     }
 
     this.loading = true;
-    this.$api2.postSignin(this.currentUsername, this.currentPassword)
-        .then(item => {
-          this.loading = false;
-          this.errorMessage = '';
-          onSigninEvent(this, item);
-          this.moveToRoot();
-        })
-        .catch(error => {
-          this.loading = false;
-          this.errorMessage = this.$t('msg.invalid_fields').toString();
-          console.error(error);
-        });
+    this.$api2
+      .postSignin(this.currentUsername, this.currentPassword)
+      .then(item => {
+        this.loading = false;
+        this.errorMessage = '';
+        onSigninEvent(this, item);
+        this.moveToRoot();
+      })
+      .catch(error => {
+        this.loading = false;
+        this.errorMessage = this.$t('msg.invalid_fields').toString();
+        console.error(error);
+      });
   }
 
   onClickSignup() {

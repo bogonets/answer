@@ -1,39 +1,39 @@
 <i18n lang="yaml">
 en:
   header:
-    basic: "Edit user"
-    detail: "Detail"
+    basic: 'Edit user'
+    detail: 'Detail'
   subheader:
     basic: "You can edit the user's basic properties."
-    detail: "Detailed information about this account."
+    detail: 'Detailed information about this account.'
   label:
-    created_at: "Created At"
-    updated_at: "Updated At"
-    last_login: "Last signin"
-    secession: "Secession User"
+    created_at: 'Created At'
+    updated_at: 'Updated At'
+    last_login: 'Last signin'
+    secession: 'Secession User'
   hint:
-    secession: "Please be careful! It cannot be recovered."
-  secession_confirm: "Are you sure? Are you sure you want to secession?"
-  cancel: "Cancel"
-  secession: "Secession"
+    secession: 'Please be careful! It cannot be recovered.'
+  secession_confirm: 'Are you sure? Are you sure you want to secession?'
+  cancel: 'Cancel'
+  secession: 'Secession'
 
 ko:
   header:
-    basic: "사용자 편집"
-    detail: "상세 정보"
+    basic: '사용자 편집'
+    detail: '상세 정보'
   subheader:
-    basic: "사용자의 기본 속성을 편집할 수 있습니다."
-    detail: "이 계정에 대한 자세한 정보입니다."
+    basic: '사용자의 기본 속성을 편집할 수 있습니다.'
+    detail: '이 계정에 대한 자세한 정보입니다.'
   label:
-    created_at: "계정 생성일"
-    updated_at: "계정 갱신일"
-    last_login: "마지막 로그인"
-    secession: "사용자 탈퇴"
+    created_at: '계정 생성일'
+    updated_at: '계정 갱신일'
+    last_login: '마지막 로그인'
+    secession: '사용자 탈퇴'
   hint:
-    secession: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
-  secession_confirm: "정말로 탈퇴합니까?"
-  cancel: "취소"
-  secession: "탈퇴"
+    secession: '주의하세요! 이 명령은 되돌릴 수 없습니다!'
+  secession_confirm: '정말로 탈퇴합니까?'
+  cancel: '취소'
+  secession: '탈퇴'
 </i18n>
 
 <template>
@@ -41,36 +41,30 @@ ko:
     <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
-    <left-title
-        :header="$t('header.basic')"
-        :subheader="$t('subheader.basic')"
-    >
+    <left-title :header="$t('header.basic')" :subheader="$t('subheader.basic')">
       <form-user
-          disable-username
-          disable-access
-          hide-password
-          hide-cancel-button
-          hide-access
-          :disable-submit-button="!modified"
-          :value="current"
-          @input="onInputCurrent"
-          :loading="showSubmitLoading"
-          @ok="onClickOk"
+        disable-username
+        disable-access
+        hide-password
+        hide-cancel-button
+        hide-access
+        :disable-submit-button="!modified"
+        :value="current"
+        @input="onInputCurrent"
+        :loading="showSubmitLoading"
+        @ok="onClickOk"
       ></form-user>
     </left-title>
 
-    <left-title
-        :header="$t('header.detail')"
-        :subheader="$t('subheader.detail')"
-    >
+    <left-title :header="$t('header.detail')" :subheader="$t('subheader.detail')">
       <v-card outlined>
         <v-data-table
-            hide-default-header
-            hide-default-footer
-            :headers="detailHeaders"
-            :items="detailItems"
-            item-key="name"
-            class="elevation-1"
+          hide-default-header
+          hide-default-footer
+          :headers="detailHeaders"
+          :items="detailItems"
+          item-key="name"
+          class="elevation-1"
         ></v-data-table>
       </v-card>
     </left-title>
@@ -114,7 +108,6 @@ ko:
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </v-container>
 </template>
 
@@ -132,7 +125,7 @@ import {iso8601ToLocal} from '@/chrono/iso8601';
     ToolbarBreadcrumbs,
     LeftTitle,
     FormUser,
-  }
+  },
 })
 export default class SelfProfile extends VueBase {
   private readonly navigationItems = [
@@ -176,14 +169,15 @@ export default class SelfProfile extends VueBase {
   }
 
   requestUser() {
-    this.$api2.getSelf()
-        .then(body => {
-          this.updateUser(body);
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-          // this.moveToBack();
-        });
+    this.$api2
+      .getSelf()
+      .then(body => {
+        this.updateUser(body);
+      })
+      .catch(error => {
+        this.toastRequestFailure(error);
+        // this.moveToBack();
+      });
   }
 
   updateUser(user: UserA) {
@@ -237,16 +231,17 @@ export default class SelfProfile extends VueBase {
     } as UpdateUserQ;
 
     this.showSubmitLoading = true;
-    this.$api2.patchSelf(body)
-        .then(() => {
-          this.showSubmitLoading = false;
-          this.toastRequestSuccess();
-          this.requestUser();
-        })
-        .catch(error => {
-          this.showSubmitLoading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .patchSelf(body)
+      .then(() => {
+        this.showSubmitLoading = false;
+        this.toastRequestSuccess();
+        this.requestUser();
+      })
+      .catch(error => {
+        this.showSubmitLoading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   // ------
@@ -263,18 +258,19 @@ export default class SelfProfile extends VueBase {
 
   onClickDeleteOk() {
     this.loadingSecession = true;
-    this.$api2.deleteSelf()
-        .then(() => {
-          this.loadingSecession = false;
-          this.showSecessionDialog = false;
-          this.toastRequestSuccess();
-          this.$localStore.clearSession();
-          this.moveToSignin();
-        })
-        .catch(error => {
-          this.loadingSecession = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .deleteSelf()
+      .then(() => {
+        this.loadingSecession = false;
+        this.showSecessionDialog = false;
+        this.toastRequestSuccess();
+        this.$localStore.clearSession();
+        this.moveToSignin();
+      })
+      .catch(error => {
+        this.loadingSecession = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

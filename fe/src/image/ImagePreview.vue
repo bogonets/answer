@@ -1,24 +1,24 @@
 <template>
   <div>
     <div
-        v-if="loading"
-        class="d-flex flex-row align-center justify-center"
-        :style="progressStyle"
+      v-if="loading"
+      class="d-flex flex-row align-center justify-center"
+      :style="progressStyle"
     >
       <v-progress-circular
-          indeterminate
-          :color="progressCircularColor"
+        indeterminate
+        :color="progressCircularColor"
       ></v-progress-circular>
     </div>
     <!-- a block container is required -->
     <div v-else>
       <img
-          ref="image"
-          :src="src"
-          :alt="alt"
-          :width="width"
-          :height="height"
-          :style="imgStyle"
+        ref="image"
+        :src="src"
+        :alt="alt"
+        :width="width"
+        :height="height"
+        :style="imgStyle"
       />
     </div>
   </div>
@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import {Vue, Component, Prop, Ref, Watch} from 'vue-property-decorator';
-import colors from 'vuetify/lib/util/colors'
+import colors from 'vuetify/lib/util/colors';
 import Viewer from 'viewerjs';
 import 'viewerjs/dist/viewer.css';
 
@@ -140,8 +140,8 @@ export default class ImagePreview extends Vue {
 
   get progressStyle() {
     return {
-      'width': this.width,
-      'height': this.height,
+      width: this.width,
+      height: this.height,
       'min-width': this.minWidth,
       'min-height': this.minHeight,
       'max-width': this.maxWidth,

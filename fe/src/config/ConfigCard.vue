@@ -1,27 +1,27 @@
 <i18n lang="yaml">
 en:
   title:
-    new: "New Config"
-    edit: "Edit Config"
+    new: 'New Config'
+    edit: 'Edit Config'
   subtitle:
-    new: "Create a new configuration"
-    edit: "Modify an existing configuration"
-  key: "Key"
-  value: "Value"
-  cancel: "Cancel"
-  submit: "Submit"
+    new: 'Create a new configuration'
+    edit: 'Modify an existing configuration'
+  key: 'Key'
+  value: 'Value'
+  cancel: 'Cancel'
+  submit: 'Submit'
 
 ko:
   title:
-    new: "새로운 구성"
-    edit: "구성 편집"
+    new: '새로운 구성'
+    edit: '구성 편집'
   subtitle:
-    new: "새로운 구성을 생성합니다"
-    edit: "기존 구성을 수정합니다"
-  key: "열쇠 (Key)"
-  value: "값 (Value)"
-  cancel: "취소"
-  submit: "제출"
+    new: '새로운 구성을 생성합니다'
+    edit: '기존 구성을 수정합니다'
+  key: '열쇠 (Key)'
+  value: '값 (Value)'
+  cancel: '취소'
+  submit: '제출'
 </i18n>
 
 <template>
@@ -31,43 +31,39 @@ ko:
 
     <v-divider></v-divider>
 
-    <v-form
-        ref="form"
-        v-model="valid"
-        lazy-validation
-    >
+    <v-form ref="form" v-model="valid" lazy-validation>
       <v-container>
         <v-list flat>
           <v-list-item>
             <v-text-field
-                class="mb-4"
-                dense
-                outlined
-                type="text"
-                autocomplete="off"
-                hide-details
-                :value="currentKey"
-                @input="updateKey"
-                :filled="disableKey"
-                :disabled="disableKey"
-                :rules="keyRules"
-                :label="$t('key')"
-                @keydown.esc.stop="cancel"
+              class="mb-4"
+              dense
+              outlined
+              type="text"
+              autocomplete="off"
+              hide-details
+              :value="currentKey"
+              @input="updateKey"
+              :filled="disableKey"
+              :disabled="disableKey"
+              :rules="keyRules"
+              :label="$t('key')"
+              @keydown.esc.stop="cancel"
             ></v-text-field>
           </v-list-item>
 
           <v-list-item>
             <v-text-field
-                dense
-                outlined
-                hide-details
-                type="text"
-                autocomplete="off"
-                :value="currentValue"
-                @input="updateValue"
-                :label="$t('value')"
-                @keydown.esc.stop="cancel"
-                @keydown.enter.stop="submit"
+              dense
+              outlined
+              hide-details
+              type="text"
+              autocomplete="off"
+              :value="currentValue"
+              @input="updateValue"
+              :label="$t('value')"
+              @keydown.esc.stop="cancel"
+              @keydown.enter.stop="submit"
             ></v-text-field>
           </v-list-item>
         </v-list>
@@ -77,19 +73,15 @@ ko:
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn
-            color="second"
-            class="mr-1"
-            @click="cancel"
-        >
+        <v-btn color="second" class="mr-1" @click="cancel">
           {{ $t('cancel') }}
         </v-btn>
 
         <v-btn
-            color="primary"
-            :loading="loadingSubmit"
-            :disabled="!enableSubmit"
-            @click="submit"
+          color="primary"
+          :loading="loadingSubmit"
+          :disabled="!enableSubmit"
+          @click="submit"
         >
           {{ $t('ok') }}
         </v-btn>
@@ -237,8 +229,7 @@ export default class ConfigCard extends VueBase {
   }
 
   @Emit()
-  cancel() {
-  }
+  cancel() {}
 
   @Emit()
   ok() {

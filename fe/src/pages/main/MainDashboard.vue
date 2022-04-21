@@ -1,17 +1,17 @@
 <i18n lang="yaml">
 en:
-  dashboard: "Dashboard"
-  layouts: "Layout: {0}"
-  tables: "Tables: {0}"
-  tasks: "Tasks: {0}"
-  members: "Members: {0}"
+  dashboard: 'Dashboard'
+  layouts: 'Layout: {0}'
+  tables: 'Tables: {0}'
+  tasks: 'Tasks: {0}'
+  members: 'Members: {0}'
 
 ko:
-  dashboard: "대시보드"
-  layouts: "레이아웃: {0}"
-  tables: "테이블: {0}"
-  tasks: "태스크: {0}"
-  members: "회원: {0}"
+  dashboard: '대시보드'
+  layouts: '레이아웃: {0}'
+  tables: '테이블: {0}'
+  tasks: '태스크: {0}'
+  members: '회원: {0}'
 </i18n>
 
 <template>
@@ -70,7 +70,6 @@ ko:
         </card-button>
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -85,10 +84,9 @@ import type {ProjectOverviewA} from '@/packet/project';
   components: {
     BreadcrumbMain,
     CardButton,
-  }
+  },
 })
 export default class MainDashboard extends VueBase {
-
   loading = false;
   item = {} as ProjectOverviewA;
 
@@ -108,15 +106,16 @@ export default class MainDashboard extends VueBase {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     this.loading = true;
-    this.$api2.getMainProjectsPgroupPprojectOverview(group, project)
-        .then(item => {
-          this.loading = false;
-          this.item = item;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        })
+    this.$api2
+      .getMainProjectsPgroupPprojectOverview(group, project)
+      .then(item => {
+        this.loading = false;
+        this.item = item;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickLayouts() {
@@ -127,8 +126,7 @@ export default class MainDashboard extends VueBase {
     this.moveToMainTables();
   }
 
-  onClickTasks() {
-  }
+  onClickTasks() {}
 
   onClickMembers() {
     this.moveToMainMembers();

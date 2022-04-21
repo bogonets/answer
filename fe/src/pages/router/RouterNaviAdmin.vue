@@ -1,10 +1,8 @@
 <template>
   <div class="router-navi-admin">
-    <navi-admin>
-    </navi-admin>
+    <navi-admin></navi-admin>
 
-    <router-view>
-    </router-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -18,10 +16,9 @@ import NaviAdmin from '@/pages/navigation/NaviAdmin.vue';
   components: {
     BarMain,
     NaviAdmin,
-  }
+  },
 })
-export default class RouterNaviAdmin extends VueBase {
-}
+export default class RouterNaviAdmin extends VueBase {}
 </script>
 
 <style lang="scss" scoped>

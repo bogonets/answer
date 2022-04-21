@@ -1,21 +1,21 @@
 <i18n lang="yaml">
 en:
-  devices: "Devices"
-  edit: "Edit"
+  devices: 'Devices'
+  edit: 'Edit'
   tab:
-    info: "Information"
-    live: "Live"
-    record: "Record"
-    events: "Events"
+    info: 'Information'
+    live: 'Live'
+    record: 'Record'
+    events: 'Events'
 
 ko:
-  devices: "Devices"
-  edit: "Edit"
+  devices: 'Devices'
+  edit: 'Edit'
   tab:
-    info: "정보"
-    live: "실시간"
-    record: "녹화"
-    events: "이벤트"
+    info: '정보'
+    live: '실시간'
+    record: '녹화'
+    events: '이벤트'
 </i18n>
 
 <template>
@@ -31,9 +31,7 @@ ko:
     </v-tabs>
     <v-divider></v-divider>
 
-    <router-view>
-    </router-view>
-
+    <router-view></router-view>
   </v-container>
 </template>
 
@@ -45,7 +43,7 @@ import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 @Component({
   components: {
     ToolbarBreadcrumbs,
-  }
+  },
 })
 export default class MainVmsDevicesEdit extends VueBase {
   readonly breadcrumbs = [

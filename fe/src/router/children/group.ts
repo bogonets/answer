@@ -5,26 +5,26 @@ import GroupMembers from '@/pages/group/GroupMembers.vue';
 import GroupSettings from '@/pages/group/GroupSettings.vue';
 
 export const groupChildren = [
-    {
-        path: ':group/members',
-        component: GroupMembers,
-        name: groupNames.groupMembers,
-    },
-    {
-        path: ':group/projects',
-        component: GroupProjects,
-        name: groupNames.groupProjects,
-    },
-    {
-        path: ':group/projects/new',
-        component: GroupProjectsNew,
-        name: groupNames.groupProjectsNew,
-    },
-    {
-        path: ':group/settings',
-        component: GroupSettings,
-        name: groupNames.groupSettings,
-    },
+  {
+    path: ':group/members',
+    component: GroupMembers,
+    name: groupNames.groupMembers,
+  },
+  {
+    path: ':group/projects',
+    component: GroupProjects,
+    name: groupNames.groupProjects,
+  },
+  {
+    path: ':group/projects/new',
+    component: GroupProjectsNew,
+    name: groupNames.groupProjectsNew,
+  },
+  {
+    path: ':group/settings',
+    component: GroupSettings,
+    name: groupNames.groupSettings,
+  },
 ];
 
 export default groupChildren;

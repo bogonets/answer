@@ -1,43 +1,43 @@
 <i18n lang="yaml">
 en:
-  devices: "Devices"
-  new: "New"
+  devices: 'Devices'
+  new: 'New'
   labels:
-    name: "Name"
-    stream_address: "Stream Address"
-    server_address: "Server Address"
-    username: "Username"
-    password: "Password"
-    stream: "Stream"
-    protocol: "Protocol"
-    test: "Connection Test"
-    save: "Save"
+    name: 'Name'
+    stream_address: 'Stream Address'
+    server_address: 'Server Address'
+    username: 'Username'
+    password: 'Password'
+    stream: 'Stream'
+    protocol: 'Protocol'
+    test: 'Connection Test'
+    save: 'Save'
   hints:
-    name: "The device name to display on the screen."
-    stream_address: "Media streaming address."
-    server_address: "Internal server address for media streaming."
-    username: "Please enter the ID."
-    password: "Please enter the password."
+    name: 'The device name to display on the screen.'
+    stream_address: 'Media streaming address.'
+    server_address: 'Internal server address for media streaming.'
+    username: 'Please enter the ID.'
+    password: 'Please enter the password.'
 
 ko:
-  devices: "Devices"
-  new: "New"
+  devices: 'Devices'
+  new: 'New'
   labels:
-    name: "이름"
-    stream_address: "스트림 주소"
-    server_address: "내부 서버 주소"
-    username: "사용자명"
-    password: "비밀번호"
-    stream: "스트림"
-    protocol: "프로토콜"
-    test: "연결 확인"
-    save: "저장"
+    name: '이름'
+    stream_address: '스트림 주소'
+    server_address: '내부 서버 주소'
+    username: '사용자명'
+    password: '비밀번호'
+    stream: '스트림'
+    protocol: '프로토콜'
+    test: '연결 확인'
+    save: '저장'
   hints:
-    name: "화면에 표시할 장치 이름 입니다."
-    stream_address: "미디어 스트리밍 주소 입니다."
-    server_address: "미디어 스트리밍을 위한 내부 서버 주소 입니다."
-    username: "아이디를 입력해 주세요."
-    password: "비밀번호를 입력해 주세요."
+    name: '화면에 표시할 장치 이름 입니다.'
+    stream_address: '미디어 스트리밍 주소 입니다.'
+    server_address: '미디어 스트리밍을 위한 내부 서버 주소 입니다.'
+    username: '아이디를 입력해 주세요.'
+    password: '비밀번호를 입력해 주세요.'
 </i18n>
 
 <template>
@@ -47,71 +47,71 @@ ko:
 
     <p :class="subtitleClass">{{ $t('labels.name') }}</p>
     <v-text-field
-        dense
-        persistent-hint
-        type="text"
-        autocomplete="off"
-        v-model="name"
-        :hint="$t('hints.name')"
+      dense
+      persistent-hint
+      type="text"
+      autocomplete="off"
+      v-model="name"
+      :hint="$t('hints.name')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.stream_address') }}</p>
     <v-text-field
-        dense
-        persistent-hint
-        type="text"
-        autocomplete="off"
-        v-model="stream_address"
-        :hint="$t('hints.stream_address')"
+      dense
+      persistent-hint
+      type="text"
+      autocomplete="off"
+      v-model="stream_address"
+      :hint="$t('hints.stream_address')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.server_address') }}</p>
     <v-text-field
-        dense
-        persistent-hint
-        type="text"
-        autocomplete="off"
-        v-model="server_address"
-        :hint="$t('hints.server_address')"
+      dense
+      persistent-hint
+      type="text"
+      autocomplete="off"
+      v-model="server_address"
+      :hint="$t('hints.server_address')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.username') }}</p>
     <v-text-field
-        dense
-        persistent-hint
-        type="text"
-        autocomplete="off"
-        v-model="username"
-        :hint="$t('hints.username')"
+      dense
+      persistent-hint
+      type="text"
+      autocomplete="off"
+      v-model="username"
+      :hint="$t('hints.username')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.password') }}</p>
     <v-text-field
-        dense
-        persistent-hint
-        type="password"
-        autocomplete="off"
-        v-model="password"
-        :hint="$t('hints.password')"
+      dense
+      persistent-hint
+      type="password"
+      autocomplete="off"
+      v-model="password"
+      :hint="$t('hints.password')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.stream') }}</p>
     <v-radio-group class="mt-2" row hide-details v-model="stream">
       <v-radio
-          v-for="stream in streamTypes"
-          :key="stream"
-          :label="stream"
-          :value="stream"
+        v-for="stream in streamTypes"
+        :key="stream"
+        :label="stream"
+        :value="stream"
       ></v-radio>
     </v-radio-group>
 
     <p :class="subtitleClass">{{ $t('labels.protocol') }}</p>
     <v-radio-group class="mt-2" row hide-details v-model="protocol">
       <v-radio
-          v-for="proto in protocols"
-          :key="proto"
-          :label="proto"
-          :value="proto"
+        v-for="proto in protocols"
+        :key="proto"
+        :label="proto"
+        :value="proto"
       ></v-radio>
     </v-radio-group>
 
@@ -121,16 +121,15 @@ ko:
         {{ $t('labels.test') }}
       </v-btn>
       <v-btn
-          class="ml-2"
-          color="primary"
-          :disabled="loading"
-          :loading="loading"
-          @click="onClickSubmit"
+        class="ml-2"
+        color="primary"
+        :disabled="loading"
+        :loading="loading"
+        @click="onClickSubmit"
       >
         {{ $t('labels.save') }}
       </v-btn>
     </v-row>
-
   </v-container>
 </template>
 
@@ -153,7 +152,7 @@ const ITEMS_PER_PAGE = 15;
 @Component({
   components: {
     ToolbarBreadcrumbs,
-  }
+  },
 })
 export default class MainVmsDevicesNew extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
@@ -193,8 +192,7 @@ export default class MainVmsDevicesNew extends VueBase {
   stream = STREAM_TYPE_RTP_UNICAST;
   protocol = PROTOCOL_TCP;
 
-  onClickTest() {
-  }
+  onClickTest() {}
 
   onClickSubmit() {
     const body = {
@@ -216,16 +214,17 @@ export default class MainVmsDevicesNew extends VueBase {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     this.loading = true;
-    this.$api2.postVmsDevices(group, project, body)
-        .then(() => {
-          this.loading = false;
-          this.toastRequestSuccess();
-          this.moveToBack();
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .postVmsDevices(group, project, body)
+      .then(() => {
+        this.loading = false;
+        this.toastRequestSuccess();
+        this.moveToBack();
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

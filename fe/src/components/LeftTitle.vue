@@ -2,36 +2,32 @@
   <v-container>
     <v-row>
       <v-col
-          :class="leftClass"
-          :cols="leftXsRatio"
-          :sm="leftRatio"
-          :md="leftRatio"
-          :lg="leftRatio"
-          :xl="leftRatio"
+        :class="leftClass"
+        :cols="leftXsRatio"
+        :sm="leftRatio"
+        :md="leftRatio"
+        :lg="leftRatio"
+        :xl="leftRatio"
       >
-        <div
-            v-if="header"
-            class="text--primary text-h6"
-            :class="headerClass"
-        >
+        <div v-if="header" class="text--primary text-h6" :class="headerClass">
           {{ header }}
         </div>
         <div
-            v-if="subheader"
-            class="text--secondary text-subtitle-2"
-            :class="subheaderClass"
+          v-if="subheader"
+          class="text--secondary text-subtitle-2"
+          :class="subheaderClass"
         >
           {{ subheader }}
         </div>
       </v-col>
 
       <v-col
-          :class="rightClass"
-          :cols="rightXsRatio"
-          :sm="rightRatio"
-          :md="rightRatio"
-          :lg="rightRatio"
-          :xl="rightRatio"
+        :class="rightClass"
+        :cols="rightXsRatio"
+        :sm="rightRatio"
+        :md="rightRatio"
+        :lg="rightRatio"
+        :xl="rightRatio"
       >
         <slot></slot>
       </v-col>

@@ -19,105 +19,104 @@ const PERMISSION_PERMISSIONS = 'permission/permissions';
 const VMS_WSD = 'vms/wsd';
 
 export interface SessionStoreOptions {
-    key?: string;
-    strict?: boolean;
-    silent?: boolean;
+  key?: string;
+  strict?: boolean;
+  silent?: boolean;
 }
 
 export class SessionStore {
+  private persist: VuexPersist<any>;
+  private store: Store<any>;
+  private defaultCommitOptions: CommitOptions;
 
-    private persist: VuexPersist<any>;
-    private store: Store<any>;
-    private defaultCommitOptions: CommitOptions;
+  constructor(options?: SessionStoreOptions) {
+    const key = options && options.key ? options.key : DEFAULT_PERSIST_KEY;
+    const strict = options && options.strict ? options.strict : DEFAULT_STRICT;
 
-    constructor(options?: SessionStoreOptions) {
-        const key = (options && options.key) ? options.key : DEFAULT_PERSIST_KEY;
-        const strict = (options && options.strict) ? options.strict : DEFAULT_STRICT;
+    this.persist = new VuexPersist({
+      key: key,
+      storage: window.sessionStorage,
+    });
 
-        this.persist = new VuexPersist({
-            key: key,
-            storage: window.sessionStorage,
-        });
+    this.store = new Store({
+      modules: {
+        permission,
+        vms,
+      },
+      strict: strict,
+      plugins: [this.persist.plugin],
+    });
 
-        this.store = new Store({
-            modules: {
-                permission,
-                vms,
-            },
-            strict: strict,
-            plugins: [this.persist.plugin],
-        });
+    this.defaultCommitOptions = {
+      root: false,
+    } as CommitOptions;
+  }
 
-        this.defaultCommitOptions = {
-            root: false,
-        } as CommitOptions;
-    }
+  setDefaultCommitOptions(options: CommitOptions) {
+    this.defaultCommitOptions = options;
+  }
 
-    setDefaultCommitOptions(options: CommitOptions) {
-        this.defaultCommitOptions = options;
-    }
+  private getter(key: string) {
+    return this.store.getters[key];
+  }
 
-    private getter(key: string) {
-        return this.store.getters[key];
-    }
+  private setter(key: string, val: any) {
+    return this.store.commit(key, val, this.defaultCommitOptions);
+  }
 
-    private setter(key: string, val: any) {
-        return this.store.commit(key, val, this.defaultCommitOptions)
-    }
+  private clear(key: string) {
+    return this.setter(key, undefined);
+  }
 
-    private clear(key: string) {
-        return this.setter(key, undefined);
-    }
+  clearPermissionGroup() {
+    this.clear(PERMISSION_GROUP);
+  }
 
-    clearPermissionGroup() {
-        this.clear(PERMISSION_GROUP);
-    }
+  get permissionGroup() {
+    return this.getter(PERMISSION_GROUP) as string;
+  }
 
-    get permissionGroup() {
-        return this.getter(PERMISSION_GROUP) as string;
-    }
+  set permissionGroup(val: string) {
+    this.setter(PERMISSION_GROUP, val);
+  }
 
-    set permissionGroup(val: string) {
-        this.setter(PERMISSION_GROUP, val);
-    }
+  clearPermissionProject() {
+    this.clear(PERMISSION_PROJECT);
+  }
 
-    clearPermissionProject() {
-        this.clear(PERMISSION_PROJECT);
-    }
+  get permissionProject() {
+    return this.getter(PERMISSION_PROJECT) as string;
+  }
 
-    get permissionProject() {
-        return this.getter(PERMISSION_PROJECT) as string;
-    }
+  set permissionProject(val: string) {
+    this.setter(PERMISSION_PROJECT, val);
+  }
 
-    set permissionProject(val: string) {
-        this.setter(PERMISSION_PROJECT, val);
-    }
+  get permissionPermissions() {
+    return this.getter(PERMISSION_PERMISSIONS) as Array<string>;
+  }
 
-    get permissionPermissions() {
-        return this.getter(PERMISSION_PERMISSIONS) as Array<string>;
-    }
+  set permissionPermissions(val: Array<string>) {
+    this.setter(PERMISSION_PERMISSIONS, val);
+  }
 
-    set permissionPermissions(val: Array<string>) {
-        this.setter(PERMISSION_PERMISSIONS, val);
-    }
+  // ---
+  // VMS
+  // ---
 
-    // ---
-    // VMS
-    // ---
+  get vmsWds() {
+    return this.getter(VMS_WSD) as Array<VmsDiscoveredDeviceA>;
+  }
 
-    get vmsWds() {
-        return this.getter(VMS_WSD) as Array<VmsDiscoveredDeviceA>;
-    }
-
-    set vmsWds(val: Array<VmsDiscoveredDeviceA>) {
-        this.setter(VMS_WSD, val);
-    }
+  set vmsWds(val: Array<VmsDiscoveredDeviceA>) {
+    this.setter(VMS_WSD, val);
+  }
 }
 
 class SessionStorePlugin implements PluginObject<any> {
-    install(Vue: typeof VueInterface, options?: any): void {
-        Vue.prototype.$sessionStore = new SessionStore(options);
-    }
+  install(Vue: typeof VueInterface, options?: any): void {
+    Vue.prototype.$sessionStore = new SessionStore(options);
+  }
 }
 
 const VueSessionStore = new SessionStorePlugin();

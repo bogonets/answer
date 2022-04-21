@@ -1,39 +1,38 @@
 <i18n lang="yaml">
 en:
-  unknown_user: "Unknown"
-  user_setting: "Account setting"
-  admin_setting: "Admin setting"
-  development_tools: "DevTools"
-  about_answer: "About Answer"
-  signout: "Sign out"
+  unknown_user: 'Unknown'
+  user_setting: 'Account setting'
+  admin_setting: 'Admin setting'
+  development_tools: 'DevTools'
+  about_answer: 'About Answer'
+  signout: 'Sign out'
 
 ko:
-  unknown_user: "알수없음"
-  user_setting: "개인 설정"
-  admin_setting: "관리자 설정"
-  development_tools: "개발 도구"
-  about_answer: "엔서에 대해"
-  signout: "로그아웃"
+  unknown_user: '알수없음'
+  user_setting: '개인 설정'
+  admin_setting: '관리자 설정'
+  development_tools: '개발 도구'
+  about_answer: '엔서에 대해'
+  signout: '로그아웃'
 </i18n>
 
 <template>
   <v-menu
-      left
-      bottom
-      offset-y
-      :z-index="menuZIndex"
-      open-on-click
-      transition="slide-y-transition"
-      :close-on-content-click="true"
+    left
+    bottom
+    offset-y
+    :z-index="menuZIndex"
+    open-on-click
+    transition="slide-y-transition"
+    :close-on-content-click="true"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template v-slot:activator="{on, attrs}">
       <v-btn icon v-bind="attrs" v-on="on">
         <v-icon>mdi-account-circle</v-icon>
       </v-btn>
     </template>
 
     <v-list dense>
-
       <v-list-item>
         <v-list-item-avatar>
           <v-avatar color="accent" size="24">{{ usernameAvatar }}</v-avatar>
@@ -64,8 +63,8 @@ ko:
       </v-list-item>
 
       <v-list-item
-          v-if="hasAdminPermission && isDeveloperMode"
-          @click="onClickDevelopmentTools"
+        v-if="hasAdminPermission && isDeveloperMode"
+        @click="onClickDevelopmentTools"
       >
         <v-list-item-icon>
           <v-icon>mdi-dev-to</v-icon>

@@ -1,19 +1,17 @@
 <i18n lang="yaml">
 en:
-  projects: "Projects"
-  groups: "Groups"
+  projects: 'Projects'
+  groups: 'Groups'
 
 ko:
-  projects: "Projects"
-  groups: "Groups"
+  projects: 'Projects'
+  groups: 'Groups'
 </i18n>
 
 <template>
   <v-app-bar class="app-bar" app dense fixed clipped-left clipped-right>
-
     <v-btn plain small @click="onClickLogo">
-      <title-logo-small>
-      </title-logo-small>
+      <title-logo-small></title-logo-small>
     </v-btn>
 
     <v-btn plain small text color="primary" @click="onClickGroups">
@@ -30,9 +28,7 @@ ko:
       <v-icon>mdi-bell</v-icon>
     </v-btn>
 
-    <menu-account>
-    </menu-account>
-
+    <menu-account></menu-account>
   </v-app-bar>
 </template>
 
@@ -43,15 +39,13 @@ import MenuAccount from '@/components/MenuAccount.vue';
 import TitleLogoSmall from '@/components/TitleLogoSmall.vue';
 import {OEM_AIRJOY} from '@/packet/preference';
 
-const NO_ALARM_OEMS = [
-    OEM_AIRJOY,
-];
+const NO_ALARM_OEMS = [OEM_AIRJOY];
 
 @Component({
   components: {
     TitleLogoSmall,
     MenuAccount,
-  }
+  },
 })
 export default class BarMain extends VueBase {
   get showAlarm() {

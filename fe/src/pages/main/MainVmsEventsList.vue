@@ -1,65 +1,65 @@
 <i18n lang="yaml">
 en:
-  events: "Events"
+  events: 'Events'
   labels:
-    device_uid: "Device UID"
-    category: "Event Category"
-    toady: "Today"
-    search: "Search"
-    description: "Description"
-    new_description: "Add new description"
+    device_uid: 'Device UID'
+    category: 'Event Category'
+    toady: 'Today'
+    search: 'Search'
+    description: 'Description'
+    new_description: 'Add new description'
   period:
-    date: "Date"
+    date: 'Date'
   category:
-    all: "All"
-    color: "Color"
-    detection: "Detection"
-    matching: "Matching"
-    ocr: "OCR"
+    all: 'All'
+    color: 'Color'
+    detection: 'Detection'
+    matching: 'Matching'
+    ocr: 'OCR'
   hints:
-    description: "A detailed description of the event"
+    description: 'A detailed description of the event'
   title:
-    tag: "Edit Event"
+    tag: 'Edit Event'
   subtitle:
-    tag: "View or edit specific information about an event"
-  all_devices: "All Devices"
-  unknown_device: "[Unknown Device]"
-  no_name_device: "[No name Device]"
-  empty_extra: "[Emtpy]"
-  close: "Close"
-  cancel: "Cancel"
-  submit: "Submit"
+    tag: 'View or edit specific information about an event'
+  all_devices: 'All Devices'
+  unknown_device: '[Unknown Device]'
+  no_name_device: '[No name Device]'
+  empty_extra: '[Emtpy]'
+  close: 'Close'
+  cancel: 'Cancel'
+  submit: 'Submit'
 
 ko:
-  events: "Events"
+  events: 'Events'
   labels:
-    device_uid: "장치 UID"
-    category: "이벤트 종류"
-    toady: "오늘"
-    search: "검색"
-    description: "상세 설명"
-    new_description: "새로운 설명 추가"
+    device_uid: '장치 UID'
+    category: '이벤트 종류'
+    toady: '오늘'
+    search: '검색'
+    description: '상세 설명'
+    new_description: '새로운 설명 추가'
   period:
-    date: "날짜"
+    date: '날짜'
   category:
-    all: "전체"
-    color: "색상 비교"
-    detection: "객체 탐지"
-    matching: "영상 비교"
-    ocr: "문자 인식"
+    all: '전체'
+    color: '색상 비교'
+    detection: '객체 탐지'
+    matching: '영상 비교'
+    ocr: '문자 인식'
   hints:
-    description: "이벤트에 대한 상세한 설명입니다"
+    description: '이벤트에 대한 상세한 설명입니다'
   title:
-    tag: "이벤트 편집"
+    tag: '이벤트 편집'
   subtitle:
-    tag: "이벤트의 구체적인 정보를 열람하거나 편집합니다"
-  all_devices: "전체 장치"
-  unknown_device: "[알 수 없는 장치]"
-  no_name_device: "[이름 없는 장치]"
-  empty_extra: "[비어있습니다]"
-  close: "닫기"
-  cancel: "취소"
-  submit: "제출"
+    tag: '이벤트의 구체적인 정보를 열람하거나 편집합니다'
+  all_devices: '전체 장치'
+  unknown_device: '[알 수 없는 장치]'
+  no_name_device: '[이름 없는 장치]'
+  empty_extra: '[비어있습니다]'
+  close: '닫기'
+  cancel: '취소'
+  submit: '제출'
 </i18n>
 
 <template>
@@ -70,36 +70,36 @@ ko:
     <v-row class="mt-4">
       <v-col class="pb-0" cols="12">
         <v-select
-            dense
-            outlined
-            hide-details
-            v-model="deviceUid"
-            :items="eventDeviceUids"
-            return-object
-            :label="$t('labels.device_uid')"
+          dense
+          outlined
+          hide-details
+          v-model="deviceUid"
+          :items="eventDeviceUids"
+          return-object
+          :label="$t('labels.device_uid')"
         >
-          <template v-slot:item="{ item }">
+          <template v-slot:item="{item}">
             {{ deviceName(item) }}
             <v-chip
-                v-if="item !== anyDeviceUid"
-                class="ml-2"
-                small
-                outlined
-                color="primary"
+              v-if="item !== anyDeviceUid"
+              class="ml-2"
+              small
+              outlined
+              color="primary"
             >
               <v-icon left>mdi-identifier</v-icon>
               {{ item }}
             </v-chip>
           </template>
 
-          <template v-slot:selection="{ item }">
+          <template v-slot:selection="{item}">
             {{ deviceName(item) }}
             <v-chip
-                v-if="item !== anyDeviceUid"
-                class="ml-2"
-                small
-                outlined
-                color="primary"
+              v-if="item !== anyDeviceUid"
+              class="ml-2"
+              small
+              outlined
+              color="primary"
             >
               <v-icon left>mdi-identifier</v-icon>
               {{ item }}
@@ -112,23 +112,23 @@ ko:
     <v-row class="mt-4">
       <v-col class="pb-0" cols="12">
         <v-select
-            dense
-            outlined
-            hide-details
-            v-model="category"
-            :items="categories"
-            item-text="text"
-            item-value="value"
-            :label="$t('labels.category')"
+          dense
+          outlined
+          hide-details
+          v-model="category"
+          :items="categories"
+          item-text="text"
+          item-value="value"
+          :label="$t('labels.category')"
         >
-          <template v-slot:item="{ item }">
+          <template v-slot:item="{item}">
             <v-icon class="mr-2">{{ item.icon }}</v-icon>
             <span :class="subtitleClass">
               {{ item.text }}
             </span>
           </template>
 
-          <template v-slot:selection="{ item }">
+          <template v-slot:selection="{item}">
             <v-icon class="mr-2">{{ item.icon }}</v-icon>
             <span :class="subtitleClass">
               {{ item.text }}
@@ -141,38 +141,36 @@ ko:
     <v-row class="mt-4">
       <v-col cols="12" sm="7">
         <div class="d-inline-flex flex-row align-center text-center">
-          <v-icon v-if="$vuetify.breakpoint.mdAndUp" class="mr-2">
-            mdi-calendar
-          </v-icon>
+          <v-icon v-if="$vuetify.breakpoint.mdAndUp" class="mr-2">mdi-calendar</v-icon>
           <v-menu
-              offset-y
-              transition="scale-transition"
-              min-width="auto"
-              v-model="showDateMenu"
-              :nudge-right="datePickerSize"
-              :close-on-content-click="false"
+            offset-y
+            transition="scale-transition"
+            min-width="auto"
+            v-model="showDateMenu"
+            :nudge-right="datePickerSize"
+            :close-on-content-click="false"
           >
-            <template v-slot:activator="{ on, attrs }">
+            <template v-slot:activator="{on, attrs}">
               <v-text-field
-                  dense
-                  rounded
-                  outlined
-                  readonly
-                  hide-details
-                  v-model="date"
-                  :label="$t('period.date')"
-                  v-bind="attrs"
-                  v-on="on"
+                dense
+                rounded
+                outlined
+                readonly
+                hide-details
+                v-model="date"
+                :label="$t('period.date')"
+                v-bind="attrs"
+                v-on="on"
               ></v-text-field>
             </template>
             <v-date-picker
-                no-title
-                scrollable
-                v-model="date"
-                :min="begin"
-                :max="end"
-                :allowed-dates="allowedDates"
-                @input="onInputDate"
+              no-title
+              scrollable
+              v-model="date"
+              :min="begin"
+              :max="end"
+              :allowed-dates="allowedDates"
+              @input="onInputDate"
             ></v-date-picker>
           </v-menu>
 
@@ -194,13 +192,13 @@ ko:
     <div ref="events-scroll-placeholder"></div>
 
     <v-virtual-scroll
-        v-resize="onResize"
-        :bench="benched"
-        :items="events"
-        :height="eventsHeight"
-        :item-height="itemHeight"
+      v-resize="onResize"
+      :bench="benched"
+      :items="events"
+      :height="eventsHeight"
+      :item-height="itemHeight"
     >
-      <template v-slot:default="{ item }">
+      <template v-slot:default="{item}">
         <v-list-item :key="item.event_uid">
           <v-list-item-action>
             <v-btn fab small depressed color="primary">
@@ -231,13 +229,13 @@ ko:
             </span>
 
             <v-btn
-                v-if="!existsDescription(item)"
-                color="secondary"
-                rounded
-                outlined
-                depressed
-                small
-                @click="onClickTag(item)"
+              v-if="!existsDescription(item)"
+              color="secondary"
+              rounded
+              outlined
+              depressed
+              small
+              @click="onClickTag(item)"
             >
               {{ $t('labels.new_description') }}
             </v-btn>
@@ -251,13 +249,13 @@ ko:
 
           <div class="event-reference">
             <vms-snapshot
-                thumbnail
-                v-ripple
-                :group="$route.params.group"
-                :project="$route.params.project"
-                :event="item.event_uid"
-                :width="imageWidth"
-                :height="imageHeight"
+              thumbnail
+              v-ripple
+              :group="$route.params.group"
+              :project="$route.params.project"
+              :event="item.event_uid"
+              :width="imageWidth"
+              :height="imageHeight"
             ></vms-snapshot>
           </div>
         </v-list-item>
@@ -267,11 +265,11 @@ ko:
 
     <!-- TAG Dialog -->
     <v-dialog
-        v-model="showTagDialog"
-        persistent
-        no-click-animation
-        :max-width="widthDialog"
-        @keydown.esc.stop="onClickTagCancel"
+      v-model="showTagDialog"
+      persistent
+      no-click-animation
+      :max-width="widthDialog"
+      @keydown.esc.stop="onClickTagCancel"
     >
       <v-card>
         <v-card-title class="mb-1">{{ $t('title.tag') }}</v-card-title>
@@ -279,13 +277,13 @@ ko:
         <v-divider></v-divider>
         <v-container>
           <v-textarea
-              dense
-              outlined
-              persistent-hint
-              :value="currentDescription"
-              @input="onInputDescription"
-              :label="$t('labels.description')"
-              :hint="$t('hints.description')"
+            dense
+            outlined
+            persistent-hint
+            :value="currentDescription"
+            @input="onInputDescription"
+            :label="$t('labels.description')"
+            :hint="$t('hints.description')"
           ></v-textarea>
         </v-container>
         <v-divider></v-divider>
@@ -295,10 +293,10 @@ ko:
             {{ $t('cancel') }}
           </v-btn>
           <v-btn
-              :disabled="!modified"
-              :loading="submitTagLoading"
-              color="primary"
-              @click="onClickTagSubmit"
+            :disabled="!modified"
+            :loading="submitTagLoading"
+            color="primary"
+            @click="onClickTagSubmit"
           >
             {{ $t('submit') }}
           </v-btn>
@@ -350,7 +348,7 @@ interface Snapshot {
   components: {
     ToolbarBreadcrumbs,
     VmsSnapshot,
-  }
+  },
 })
 export default class MainVmsEventsList extends VueBase {
   readonly anyDeviceUid = ANY_DEVICE_UID;
@@ -403,7 +401,8 @@ export default class MainVmsEventsList extends VueBase {
     },
     {
       icon: 'mdi-ocr',
-      text: this.$t('category.ocr'), value: EVENT_CATEGORY_NAME_OCR,
+      text: this.$t('category.ocr'),
+      value: EVENT_CATEGORY_NAME_OCR,
     },
   ];
 
@@ -569,15 +568,16 @@ export default class MainVmsEventsList extends VueBase {
       category: category,
     } as VmsFilterEventQ;
     this.search = true;
-    this.$api2.postVmsEventsFilter(group, project, body)
-        .then(items => {
-          this.search = false;
-          this.events = items;
-        })
-        .catch(error => {
-          this.search = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .postVmsEventsFilter(group, project, body)
+      .then(items => {
+        this.search = false;
+        this.events = items;
+      })
+      .catch(error => {
+        this.search = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickTag(item: VmsEventA) {
@@ -590,7 +590,7 @@ export default class MainVmsEventsList extends VueBase {
 
   onInputDescription(event: string) {
     this.currentDescription = event;
-    return this.modified = this.currentDescription !== this.originalDescription;
+    return (this.modified = this.currentDescription !== this.originalDescription);
   }
 
   onClickTagCancel() {
@@ -611,21 +611,22 @@ export default class MainVmsEventsList extends VueBase {
     console.dir(body);
 
     this.submitTagLoading = true;
-    this.$api2.postVmsEventsTags(group, project, body)
-        .then(() => {
-          if (this.currentEvent) {
-            this.currentEvent.description = this.currentDescription;
-          }
-          this.originalDescription = this.currentDescription;
-          this.modified = false;
-          this.submitTagLoading = false;
-          this.showTagDialog = false;
-          this.toastRequestSuccess();
-        })
-        .catch(error => {
-          this.submitTagLoading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .postVmsEventsTags(group, project, body)
+      .then(() => {
+        if (this.currentEvent) {
+          this.currentEvent.description = this.currentDescription;
+        }
+        this.originalDescription = this.currentDescription;
+        this.modified = false;
+        this.submitTagLoading = false;
+        this.showTagDialog = false;
+        this.toastRequestSuccess();
+      })
+      .catch(error => {
+        this.submitTagLoading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   requestUpdateTag(tag: string) {
@@ -636,21 +637,22 @@ export default class MainVmsEventsList extends VueBase {
     } as VmsUpdateEventTagQ;
 
     this.submitTagLoading = true;
-    this.$api2.patchVmsEventsTagsPtag(group, project, tag, body)
-        .then(() => {
-          if (this.currentEvent) {
-            this.currentEvent.description = this.currentDescription;
-          }
-          this.originalDescription = this.currentDescription;
-          this.modified = false;
-          this.submitTagLoading = false;
-          this.showTagDialog = false;
-          this.toastRequestSuccess();
-        })
-        .catch(error => {
-          this.submitTagLoading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .patchVmsEventsTagsPtag(group, project, tag, body)
+      .then(() => {
+        if (this.currentEvent) {
+          this.currentEvent.description = this.currentDescription;
+        }
+        this.originalDescription = this.currentDescription;
+        this.modified = false;
+        this.submitTagLoading = false;
+        this.showTagDialog = false;
+        this.toastRequestSuccess();
+      })
+      .catch(error => {
+        this.submitTagLoading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickTagSubmit() {
@@ -661,15 +663,15 @@ export default class MainVmsEventsList extends VueBase {
     if (this.existsDescription(this.currentEvent)) {
       this.requestUpdateTag(this.currentEvent.event_uid.toString());
     } else {
-      console.log(`onClickTagSubmit -> ${this.currentEvent.event_uid}`)
+      console.log(`onClickTagSubmit -> ${this.currentEvent.event_uid}`);
       this.requestCreateTag(this.currentEvent.event_uid);
     }
   }
 
   onResize() {
-    const size = { x: window.innerWidth, y: window.innerHeight };
+    const size = {x: window.innerWidth, y: window.innerHeight};
     const rect = this.eventsScrollPlaceholder.getBoundingClientRect();
-    this.eventsHeight = Math.abs(size.y - rect.y - (CONTAINER_BOTTOM_MARGIN * 2));
+    this.eventsHeight = Math.abs(size.y - rect.y - CONTAINER_BOTTOM_MARGIN * 2);
   }
 }
 </script>

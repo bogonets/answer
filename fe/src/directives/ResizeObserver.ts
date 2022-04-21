@@ -31,6 +31,6 @@ function unbind(el: ResizeObserverElement) {
 export const ResizeObserverDirective = {
   inserted,
   unbind,
-}
+};
 
 export default ResizeObserverDirective;

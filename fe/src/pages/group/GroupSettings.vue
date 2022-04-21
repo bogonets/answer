@@ -4,19 +4,18 @@
     <v-divider></v-divider>
 
     <form-group-edit
-        hide-features
-        hide-visibility
-        :value="group"
-        :loading-submit="loadingSubmit"
-        :loading-delete="loadingDelete"
-        :show-delete="hasPermissionDelete()"
-        :show-delete-dialog="showDeleteDialog"
-        @ok="onClickOk"
-        @delete:show="onClickDelete"
-        @delete:cancel="onClickDeleteCancel"
-        @delete:ok="onClickDeleteOk"
+      hide-features
+      hide-visibility
+      :value="group"
+      :loading-submit="loadingSubmit"
+      :loading-delete="loadingDelete"
+      :show-delete="hasPermissionDelete()"
+      :show-delete-dialog="showDeleteDialog"
+      @ok="onClickOk"
+      @delete:show="onClickDelete"
+      @delete:cancel="onClickDeleteCancel"
+      @delete:ok="onClickDeleteOk"
     ></form-group-edit>
-
   </v-container>
 </template>
 
@@ -31,7 +30,7 @@ import {GroupA, UpdateGroupQ} from '@/packet/group';
   components: {
     ToolbarBreadcrumbs,
     FormGroupEdit,
-  }
+  },
 })
 export default class GroupSettings extends VueBase {
   readonly breadcrumbs = [
@@ -57,28 +56,30 @@ export default class GroupSettings extends VueBase {
   }
 
   requestGroup() {
-    this.$api2.getMainGroupsPgroup(this.$route.params.group)
-        .then(item => {
-          this.group = item;
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-          this.moveToBack();
-        });
+    this.$api2
+      .getMainGroupsPgroup(this.$route.params.group)
+      .then(item => {
+        this.group = item;
+      })
+      .catch(error => {
+        this.toastRequestFailure(error);
+        this.moveToBack();
+      });
   }
 
   onClickOk(event: UpdateGroupQ) {
     this.loadingSubmit = true;
-    this.$api2.patchMainGroupsPgroup(this.$route.params.group, event)
-        .then(() => {
-          this.loadingSubmit = false;
-          this.toastRequestSuccess();
-          this.requestGroup();
-        })
-        .catch(error => {
-          this.loadingSubmit = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .patchMainGroupsPgroup(this.$route.params.group, event)
+      .then(() => {
+        this.loadingSubmit = false;
+        this.toastRequestSuccess();
+        this.requestGroup();
+      })
+      .catch(error => {
+        this.loadingSubmit = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickDelete() {
@@ -91,18 +92,19 @@ export default class GroupSettings extends VueBase {
 
   onClickDeleteOk() {
     this.loadingDelete = true;
-    this.$api2.deleteMainGroupsGroup(this.$route.params.group)
-        .then(() => {
-          this.loadingDelete = false;
-          this.showDeleteDialog = false;
-          this.toastRequestSuccess();
-          this.moveToRootGroups();
-        })
-        .catch(error => {
-          this.loadingDelete = false;
-          this.showDeleteDialog = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .deleteMainGroupsGroup(this.$route.params.group)
+      .then(() => {
+        this.loadingDelete = false;
+        this.showDeleteDialog = false;
+        this.toastRequestSuccess();
+        this.moveToRootGroups();
+      })
+      .catch(error => {
+        this.loadingDelete = false;
+        this.showDeleteDialog = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

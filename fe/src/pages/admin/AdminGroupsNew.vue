@@ -4,11 +4,10 @@
     <v-divider></v-divider>
 
     <form-group-new
-        request-type="admin"
-        @cancel="onClickCancel"
-        @request:success="onRequestSuccess"
+      request-type="admin"
+      @cancel="onClickCancel"
+      @request:success="onRequestSuccess"
     ></form-group-new>
-
   </v-container>
 </template>
 
@@ -22,7 +21,7 @@ import FormGroupNew from '@/components/FormGroupNew.vue';
   components: {
     ToolbarBreadcrumbs,
     FormGroupNew,
-  }
+  },
 })
 export default class AdminGroupsNew extends VueBase {
   private readonly navigationItems = [

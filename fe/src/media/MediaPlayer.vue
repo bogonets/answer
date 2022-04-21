@@ -1,101 +1,101 @@
 <i18n lang="yaml">
 en:
   status:
-    loading: "Loading"
-    ice_new: "ICE new"
-    ice_gathering: "ICE gathering"
-    ice_complete: "ICE complete"
-    ice_unknown: "ICE unknown error"
-    sdp_exchange: "Exchanging SDP ..."
-    online: "Online"
-    negotiation_failed: "Negotiation failed"
-    disconnected: "Disconnected"
-    server_error: "Server status error: {0}"
-    invalid: "Settings are required"
-    unknown: "Unknown status"
+    loading: 'Loading'
+    ice_new: 'ICE new'
+    ice_gathering: 'ICE gathering'
+    ice_complete: 'ICE complete'
+    ice_unknown: 'ICE unknown error'
+    sdp_exchange: 'Exchanging SDP ...'
+    online: 'Online'
+    negotiation_failed: 'Negotiation failed'
+    disconnected: 'Disconnected'
+    server_error: 'Server status error: {0}'
+    invalid: 'Settings are required'
+    unknown: 'Unknown status'
   labels:
-    reconnect: "Reconnect"
-    active: "Active"
-    fullscreen: "Fullscreen"
-    debugging: "Debugging"
-    information: "Information"
+    reconnect: 'Reconnect'
+    active: 'Active'
+    fullscreen: 'Fullscreen'
+    debugging: 'Debugging'
+    information: 'Information'
   hints:
-    logo_alt: "Answer"
+    logo_alt: 'Answer'
   tooltips:
-    channel_opened: "A channel between server and client has been opened"
-    debugging_mode: "Debugging mode is enabled"
-    enable_event_detection: "Event detection is enabled"
-    disable_event_detection: "Event detection is disabled"
-    latest_event_time: "Latest event time: {0}"
+    channel_opened: 'A channel between server and client has been opened'
+    debugging_mode: 'Debugging mode is enabled'
+    enable_event_detection: 'Event detection is enabled'
+    disable_event_detection: 'Event detection is disabled'
+    latest_event_time: 'Latest event time: {0}'
   vms_channel_meta:
-    filtered: "Completed successfully, but no event occurred"
-    disabled: "Disabled"
-    not_ready_roi: "Not ready ROI"
-    not_ready_filters: "Not ready filters"
-    raise_exception: "Raise exception"
-    unknown_code: "Unknown code: {0}"
-    empty_events: "Empty events"
+    filtered: 'Completed successfully, but no event occurred'
+    disabled: 'Disabled'
+    not_ready_roi: 'Not ready ROI'
+    not_ready_filters: 'Not ready filters'
+    raise_exception: 'Raise exception'
+    unknown_code: 'Unknown code: {0}'
+    empty_events: 'Empty events'
 
 ko:
   status:
-    loading: "로딩 중 ..."
-    ice_new: "ICE 피어 연결 생성됨"
-    ice_gathering: "ICE 후보 수집 중..."
-    ice_complete: "ICE 후보 수집 완료"
-    ice_unknown: "알 수 없는 ICE 상태"
-    sdp_exchange: "SDP 교환 중..."
-    online: "온라인"
-    negotiation_failed: "Negotiation failed"
-    disconnected: "서버와 연결이 끊어졌습니다"
-    server_error: "서버가 비정상 상태 입니다: {0}"
-    invalid: "설정이 필요합니다"
-    unknown: "알 수 없는 상태"
+    loading: '로딩 중 ...'
+    ice_new: 'ICE 피어 연결 생성됨'
+    ice_gathering: 'ICE 후보 수집 중...'
+    ice_complete: 'ICE 후보 수집 완료'
+    ice_unknown: '알 수 없는 ICE 상태'
+    sdp_exchange: 'SDP 교환 중...'
+    online: '온라인'
+    negotiation_failed: 'Negotiation failed'
+    disconnected: '서버와 연결이 끊어졌습니다'
+    server_error: '서버가 비정상 상태 입니다: {0}'
+    invalid: '설정이 필요합니다'
+    unknown: '알 수 없는 상태'
   labels:
-    reconnect: "재접속"
-    active: "이벤트 감지"
-    fullscreen: "전체 화면"
-    debugging: "디버깅"
-    information: "정보"
+    reconnect: '재접속'
+    active: '이벤트 감지'
+    fullscreen: '전체 화면'
+    debugging: '디버깅'
+    information: '정보'
   hints:
-    logo_alt: "Answer"
+    logo_alt: 'Answer'
   tooltips:
-    channel_opened: "서버와 클라이언트 사이의 채널이 열렸습니다"
-    debugging_mode: "디버깅 모드가 활성화 되었습니다"
-    enable_event_detection: "이벤트 감지 중 입니다"
-    disable_event_detection: "이벤트 감지가 비활성화 되었습니다"
-    latest_event_time: "마지막 이벤트 발생 시간: {0}"
+    channel_opened: '서버와 클라이언트 사이의 채널이 열렸습니다'
+    debugging_mode: '디버깅 모드가 활성화 되었습니다'
+    enable_event_detection: '이벤트 감지 중 입니다'
+    disable_event_detection: '이벤트 감지가 비활성화 되었습니다'
+    latest_event_time: '마지막 이벤트 발생 시간: {0}'
   vms_channel_meta:
-    filtered: "성공적으로 완료되었지만 이벤트가 발생하지 않았습니다"
-    disabled: "비활성화 되었습니다"
-    not_ready_roi: "관심영역(ROI)이 준비되지 않았습니다"
-    not_ready_filters: "필터가 준비되지 않았습니다"
-    raise_exception: "예외가 발생되었습니다"
-    unknown_code: "알 수 없는 에러 코드: {0}"
-    empty_events: "감지된 이벤트가 없습니다"
+    filtered: '성공적으로 완료되었지만 이벤트가 발생하지 않았습니다'
+    disabled: '비활성화 되었습니다'
+    not_ready_roi: '관심영역(ROI)이 준비되지 않았습니다'
+    not_ready_filters: '필터가 준비되지 않았습니다'
+    raise_exception: '예외가 발생되었습니다'
+    unknown_code: '알 수 없는 에러 코드: {0}'
+    empty_events: '감지된 이벤트가 없습니다'
 </i18n>
 
 <template>
-  <v-hover v-slot="{ hover }">
+  <v-hover v-slot="{hover}">
     <div
-        class="media-player"
-        ref="media-player"
-        @contextmenu="contextmenu"
-        :style="mediaPlayerStyle"
+      class="media-player"
+      ref="media-player"
+      @contextmenu="contextmenu"
+      :style="mediaPlayerStyle"
     >
       <div
-          class="status-bar"
-          v-if="!hideStatusBar"
-          v-show="showStatusBar(hover)"
-          :style="statusBarStyle"
+        class="status-bar"
+        v-if="!hideStatusBar"
+        v-show="showStatusBar(hover)"
+        :style="statusBarStyle"
       >
         <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot:activator="{on, attrs}">
             <v-icon
-                class="mr-1"
-                small
-                :color="statusIconColor"
-                v-bind="attrs"
-                v-on="on"
+              class="mr-1"
+              small
+              :color="statusIconColor"
+              v-bind="attrs"
+              v-on="on"
             >
               {{ statusIcon }}
             </v-icon>
@@ -107,10 +107,10 @@ ko:
 
         <v-spacer></v-spacer>
         <v-progress-circular
-            v-if="loading || loadingByStatusCode"
-            size="14"
-            width="2"
-            indeterminate
+          v-if="loading || loadingByStatusCode"
+          size="14"
+          width="2"
+          indeterminate
         ></v-progress-circular>
 
         <div v-if="online">
@@ -119,42 +119,22 @@ ko:
           <v-icon v-if="false" class="ml-1" small color="red">mdi-record</v-icon>
 
           <v-tooltip v-if="lastEventDate" bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                  class="ml-1"
-                  small
-                  v-bind="attrs"
-                  v-on="on"
-              >
-                mdi-update
-              </v-icon>
+            <template v-slot:activator="{on, attrs}">
+              <v-icon class="ml-1" small v-bind="attrs" v-on="on">mdi-update</v-icon>
             </template>
             <span>{{ $t('tooltips.latest_event_time', [lastEventDate]) }}</span>
           </v-tooltip>
 
           <v-tooltip v-if="channelOpened" bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                  class="ml-1"
-                  small
-                  v-bind="attrs"
-                  v-on="on"
-              >
-                mdi-broadcast
-              </v-icon>
+            <template v-slot:activator="{on, attrs}">
+              <v-icon class="ml-1" small v-bind="attrs" v-on="on">mdi-broadcast</v-icon>
             </template>
             <span>{{ $t('tooltips.channel_opened') }}</span>
           </v-tooltip>
 
           <v-tooltip v-if="value.server_debugging" bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                  class="ml-1"
-                  color="warning"
-                  small
-                  v-bind="attrs"
-                  v-on="on"
-              >
+            <template v-slot:activator="{on, attrs}">
+              <v-icon class="ml-1" color="warning" small v-bind="attrs" v-on="on">
                 mdi-bug
               </v-icon>
             </template>
@@ -162,13 +142,13 @@ ko:
           </v-tooltip>
 
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template v-slot:activator="{on, attrs}">
               <v-icon
-                  class="ml-1"
-                  small
-                  :color="activeIconColor"
-                  v-bind="attrs"
-                  v-on="on"
+                class="ml-1"
+                small
+                :color="activeIconColor"
+                v-bind="attrs"
+                v-on="on"
               >
                 {{ activeIcon }}
               </v-icon>
@@ -182,18 +162,15 @@ ko:
       </div>
 
       <v-sheet
-          v-if="enableInfoPanel"
-          rounded
-          class="information-panel"
-          transition="slide-x-transition"
-          :style="`top: ${getInfoPanelTop(hover)};`"
+        v-if="enableInfoPanel"
+        rounded
+        class="information-panel"
+        transition="slide-x-transition"
+        :style="`top: ${getInfoPanelTop(hover)};`"
       >
-        <div
-            v-for="(event, index) in events"
-            :key="`event-${index}`"
-        >
+        <div v-for="(event, index) in events" :key="`event-${index}`">
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template v-slot:activator="{on, attrs}">
               <div v-bind="attrs" v-on="on">
                 <v-icon small :color="eventColor(event)">
                   {{ eventIcon(event) }}
@@ -209,85 +186,77 @@ ko:
       </v-sheet>
 
       <div
-          class="media-placeholder"
-          @mousedown="onMouseDownMediaContent"
-          @mousemove="onMouseMoveMediaContent"
-          @mouseup="onMouseUpMediaContent"
+        class="media-placeholder"
+        @mousedown="onMouseDownMediaContent"
+        @mousemove="onMouseMoveMediaContent"
+        @mouseup="onMouseUpMediaContent"
       >
         <canvas
-            v-show="!hideCanvasUser"
-            class="canvas-user"
-            ref="canvas-user"
-            :width="videoWidth"
-            :height="videoHeight"
+          v-show="!hideCanvasUser"
+          class="canvas-user"
+          ref="canvas-user"
+          :width="videoWidth"
+          :height="videoHeight"
         ></canvas>
         <canvas
-            v-show="!hideCanvasMeta"
-            class="canvas-meta"
-            ref="canvas-meta"
-            :width="videoWidth"
-            :height="videoHeight"
+          v-show="!hideCanvasMeta"
+          class="canvas-meta"
+          ref="canvas-meta"
+          :width="videoWidth"
+          :height="videoHeight"
         ></canvas>
 
         <video
-            v-show="online"
-            class="video-player"
-            ref="rtc-video"
-            autoplay
-            muted
-            playsinline
-            preload="auto"
-            @pause="onPause"
-            @play="onPlay"
-            @resize="onResize"
+          v-show="online"
+          class="video-player"
+          ref="rtc-video"
+          autoplay
+          muted
+          playsinline
+          preload="auto"
+          @pause="onPause"
+          @play="onPlay"
+          @resize="onResize"
         ></video>
 
         <!-- Canvas for real-time snapshots -->
         <canvas
-            v-show="online"
-            class="canvas-snap"
-            ref="canvas-snap"
-            :width="videoWidth"
-            :height="videoHeight"
+          v-show="online"
+          class="canvas-snap"
+          ref="canvas-snap"
+          :width="videoWidth"
+          :height="videoHeight"
         ></canvas>
       </div>
 
       <div v-show="!online" class="brand-logo-container">
         <img
-            class="brand-logo"
-            src="@/assets/logo/answer-logo-notext.svg"
-            :alt="$t('hints.logo_alt')"
+          class="brand-logo"
+          src="@/assets/logo/answer-logo-notext.svg"
+          :alt="$t('hints.logo_alt')"
         />
       </div>
 
       <div
-          v-if="online && !hideController"
-          class="controller"
-          v-show="showController(hover)"
+        v-if="online && !hideController"
+        class="controller"
+        v-show="showController(hover)"
       >
         <v-btn icon @click="onClickPlay">
           <v-icon>{{ playButtonIcon }}</v-icon>
         </v-btn>
-        <v-progress-linear
-            rounded
-            :color="progressLineColor"
-        ></v-progress-linear>
+        <v-progress-linear rounded :color="progressLineColor"></v-progress-linear>
 
         <v-menu
-            top
-            left
-            offset-y
-            transition="slide-x-reverse-transition"
-            :close-on-content-click="false"
-            v-model="showMoreMenu"
+          top
+          left
+          offset-y
+          transition="slide-x-reverse-transition"
+          :close-on-content-click="false"
+          v-model="showMoreMenu"
         >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-                icon
-                @click="onClickMore"
-                v-bind="attrs"
-                v-on="on"
-            >
+          <template v-slot:activator="{on, attrs}">
+            <v-btn icon @click="onClickMore" v-bind="attrs" v-on="on">
               <v-icon>mdi-dots-horizontal</v-icon>
             </v-btn>
           </template>
@@ -311,10 +280,10 @@ ko:
               </v-list-item-content>
               <v-list-item-action>
                 <v-switch
-                    dense
-                    :disabled="disableActiveButton"
-                    v-model="activeSwitch"
-                    @change="onChangeActive"
+                  dense
+                  :disabled="disableActiveButton"
+                  v-model="activeSwitch"
+                  @change="onChangeActive"
                 ></v-switch>
               </v-list-item-action>
             </v-list-item>
@@ -328,10 +297,10 @@ ko:
               </v-list-item-content>
               <v-list-item-action>
                 <v-switch
-                    dense
-                    :disabled="disableDebugButton"
-                    v-model="debugSwitch"
-                    @change="onChangeDebugging"
+                  dense
+                  :disabled="disableDebugButton"
+                  v-model="debugSwitch"
+                  @change="onChangeDebugging"
                 ></v-switch>
               </v-list-item-action>
             </v-list-item>
@@ -345,9 +314,9 @@ ko:
               </v-list-item-content>
               <v-list-item-action>
                 <v-switch
-                    dense
-                    :disabled="disableInfoButton"
-                    v-model="showInformationPanel"
+                  dense
+                  :disabled="disableInfoButton"
+                  v-model="showInformationPanel"
                 ></v-switch>
               </v-list-item-action>
             </v-list-item>
@@ -370,7 +339,7 @@ ko:
 <script lang="ts">
 import {Component, Prop, Ref, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import colors from 'vuetify/lib/util/colors'
+import colors from 'vuetify/lib/util/colors';
 import {
   TRANSCEIVER_KIND_VIDEO,
   TRANSCEIVER_KIND_AUDIO,
@@ -693,13 +662,14 @@ export default class MediaPlayer extends VueBase {
       const project = this.project;
       const device = this.deviceText;
       const peer = this.peer_id.toString();
-      this.$api2.deleteVmsDeviceRtcJsep(group, project, device, peer)
-          .then(() => {
-            // EMPTY.
-          })
-          .catch(error => {
-            this.toastRequestFailure(error);
-          });
+      this.$api2
+        .deleteVmsDeviceRtcJsep(group, project, device, peer)
+        .then(() => {
+          // EMPTY.
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+        });
       this.peer_id = undefined;
     }
 
@@ -845,7 +815,7 @@ export default class MediaPlayer extends VueBase {
       code: code,
     } as VmsChannelMetaConsume;
 
-    this.channel.send(JSON.stringify(body))
+    this.channel.send(JSON.stringify(body));
   }
 
   sendChannelResponseSuccessful() {
@@ -896,7 +866,7 @@ export default class MediaPlayer extends VueBase {
           case VmsChannelMetaCode.Unknown:
             this.events = [];
             throw new IllegalStateException(
-                'An unknown error occurred in the `VmsChannelMeta` packet'
+              'An unknown error occurred in the `VmsChannelMeta` packet',
             );
           default:
             throw new InaccessibleAreaException();
@@ -914,10 +884,10 @@ export default class MediaPlayer extends VueBase {
   }
 
   renderMetaData(
-      context: CanvasRenderingContext2D,
-      canvasWidth: number,
-      canvasHeight: number,
-      content: VmsChannelMeta,
+    context: CanvasRenderingContext2D,
+    canvasWidth: number,
+    canvasHeight: number,
+    content: VmsChannelMeta,
   ) {
     //   const x1 = canvasWidth * obj.x1;
     //   const y1 = canvasHeight * obj.y1;
@@ -947,7 +917,7 @@ export default class MediaPlayer extends VueBase {
     return new Promise(resolve => {
       this.statusCode = gatheringStatus(pc.iceGatheringState);
       if (pc.iceGatheringState === 'complete') {
-        return resolve();  // DONE !!
+        return resolve(); // DONE !!
       }
 
       const stateChangeCallback = () => {
@@ -955,7 +925,7 @@ export default class MediaPlayer extends VueBase {
         if (pc.iceGatheringState === 'complete') {
           pc.removeEventListener('icegatheringstatechange', stateChangeCallback);
           this.statusCode = Status.IceComplete;
-          return resolve();  // DONE !!
+          return resolve(); // DONE !!
         }
       };
 
@@ -1251,17 +1221,18 @@ export default class MediaPlayer extends VueBase {
       active: updateActiveFlag,
     } as VmsUpdateDeviceQ;
 
-    this.$api2.patchVmsDevice(group, project, device, body)
-        .then(() => {
-          this.$set(this.value, 'active', updateActiveFlag)
-          this.input();
+    this.$api2
+      .patchVmsDevice(group, project, device, body)
+      .then(() => {
+        this.$set(this.value, 'active', updateActiveFlag);
+        this.input();
 
-          this.disableActiveButton = false;
-        })
-        .catch(error => {
-          this.disableActiveButton = false;
-          console.error(error);
-        });
+        this.disableActiveButton = false;
+      })
+      .catch(error => {
+        this.disableActiveButton = false;
+        console.error(error);
+      });
   }
 
   onChangeDebugging() {
@@ -1272,7 +1243,7 @@ export default class MediaPlayer extends VueBase {
 
     const updateDebugFlag = !this.value.server_debugging;
     const thenCallback = () => {
-      this.$set(this.value, 'server_debugging', updateDebugFlag)
+      this.$set(this.value, 'server_debugging', updateDebugFlag);
       this.input();
 
       this.disableDebugButton = false;
@@ -1283,11 +1254,15 @@ export default class MediaPlayer extends VueBase {
     };
 
     if (updateDebugFlag) {
-      this.$api2.postVmsDeviceProcessDebugStart(group, project, device)
-          .then(thenCallback).catch(catchCallback);
+      this.$api2
+        .postVmsDeviceProcessDebugStart(group, project, device)
+        .then(thenCallback)
+        .catch(catchCallback);
     } else {
-      this.$api2.postVmsDeviceProcessDebugStop(group, project, device)
-          .then(thenCallback).catch(catchCallback);
+      this.$api2
+        .postVmsDeviceProcessDebugStop(group, project, device)
+        .then(thenCallback)
+        .catch(catchCallback);
     }
   }
 
@@ -1462,10 +1437,10 @@ export default class MediaPlayer extends VueBase {
         this.roi(this.roiLeft, this.roiRight, this.roiTop, this.roiBottom);
       } else {
         this.roi(
-            this.roiLeft / width,
-            this.roiRight / width,
-            this.roiTop / height,
-            this.roiBottom / height,
+          this.roiLeft / width,
+          this.roiRight / width,
+          this.roiTop / height,
+          this.roiBottom / height,
         );
       }
     }
@@ -1505,13 +1480,13 @@ export default class MediaPlayer extends VueBase {
     const context = this.canvasSnap.getContext('2d');
     const width = this.canvasSnap.width;
     if (!context) {
-      throw new Error('Not exists 2d context from user\'s canvas.');
+      throw new Error("Not exists 2d context from user's canvas.");
     }
 
     const image = this.snapshotAsImageData(true);
     const pixels = image.data;
 
-    const i = (x + (y * width)) * 4;
+    const i = (x + y * width) * 4;
     const r = pixels[i];
     const g = pixels[i + 1];
     const b = pixels[i + 2];

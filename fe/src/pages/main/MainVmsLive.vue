@@ -1,35 +1,35 @@
 <i18n lang="yaml">
 en:
   menu:
-    events: "Events"
-    setting: "Setting"
+    events: 'Events'
+    setting: 'Setting'
   msg:
-    new_events: "{0} events have been added."
-  unknown_device: "[Unknown Device]"
-  no_name_device: "[No name Device]"
-  close: "Close"
+    new_events: '{0} events have been added.'
+  unknown_device: '[Unknown Device]'
+  no_name_device: '[No name Device]'
+  close: 'Close'
 
 ko:
   menu:
-    events: "이벤트"
-    setting: "설정"
+    events: '이벤트'
+    setting: '설정'
   msg:
-    new_events: "{0}개의 이벤트가 추가되었습니다."
-  unknown_device: "[알 수 없는 장치]"
-  no_name_device: "[이름 없는 장치]"
-  close: "닫기"
+    new_events: '{0}개의 이벤트가 추가되었습니다.'
+  unknown_device: '[알 수 없는 장치]'
+  no_name_device: '[이름 없는 장치]'
+  close: '닫기'
 </i18n>
 
 <template>
   <div>
     <v-navigation-drawer
-        right
-        app
-        clipped
-        permanent
-        stateless
-        touchless
-        :mini-variant.sync="mini"
+      right
+      app
+      clipped
+      permanent
+      stateless
+      touchless
+      :mini-variant.sync="mini"
     >
       <v-list nav dense>
         <v-list-item link @click.stop="onClickFoldNavigation">
@@ -47,23 +47,23 @@ ko:
 
         <div ref="events-scroll-placeholder"></div>
         <v-virtual-scroll
-            v-resize="onResize"
-            :bench="benched"
-            :items="events"
-            :height="eventsHeight"
-            :item-height="itemHeight"
+          v-resize="onResize"
+          :bench="benched"
+          :items="events"
+          :height="eventsHeight"
+          :item-height="itemHeight"
         >
-          <template v-slot:default="{ item }">
+          <template v-slot:default="{item}">
             <v-list-item class="ma-0" :key="item.event_uid">
               <div class="event-reference">
                 <vms-snapshot
-                    thumbnail
-                    v-ripple
-                    :group="$route.params.group"
-                    :project="$route.params.project"
-                    :event="item.event_uid"
-                    :width="imageWidth"
-                    :height="imageHeight"
+                  thumbnail
+                  v-ripple
+                  :group="$route.params.group"
+                  :project="$route.params.project"
+                  :event="item.event_uid"
+                  :width="imageWidth"
+                  :height="imageHeight"
                 ></vms-snapshot>
               </div>
 
@@ -80,37 +80,35 @@ ko:
                   </span>
                 </div>
               </div>
-
             </v-list-item>
             <v-divider></v-divider>
           </template>
         </v-virtual-scroll>
-
       </v-list>
     </v-navigation-drawer>
 
     <view-port class="d-flex flex-column fill-height">
       <div class="d-flex flex-wrap screen-group">
         <media-player
-            v-for="n in maxCards"
-            :key="`${n}-${loading}`"
-            :style="cardStyle(n)"
-            :group="$route.params.group"
-            :project="$route.params.project"
-            :device="getDeviceUid(n)"
-            :loading="loading"
-            :value="getDevice(n)"
-            @contextmenu="onShowContextMenu(n, $event)"
+          v-for="n in maxCards"
+          :key="`${n}-${loading}`"
+          :style="cardStyle(n)"
+          :group="$route.params.group"
+          :project="$route.params.project"
+          :device="getDeviceUid(n)"
+          :loading="loading"
+          :value="getDevice(n)"
+          @contextmenu="onShowContextMenu(n, $event)"
         ></media-player>
       </div>
 
       <v-menu
-          v-model="showContextMenu"
-          :position-x="contextMenuPositionX"
-          :position-y="contextMenuPositionY"
-          absolute
-          offset-y
-          z-index="100"
+        v-model="showContextMenu"
+        :position-x="contextMenuPositionX"
+        :position-y="contextMenuPositionY"
+        absolute
+        offset-y
+        z-index="100"
       >
         <v-list dense>
           <v-list-item @click="onClickEdit">
@@ -119,7 +117,6 @@ ko:
         </v-list>
       </v-menu>
     </view-port>
-
   </div>
 </template>
 
@@ -158,7 +155,7 @@ const EVENT_BOTTOM_MARGIN = 8;
     MediaPlayer,
     ViewPort,
     VmsSnapshot,
-  }
+  },
 })
 export default class MainVmsLive extends VueBase {
   readonly benched = 1;
@@ -250,7 +247,7 @@ export default class MainVmsLive extends VueBase {
     }
 
     this.beepPlaying = true;
-    this.beepCounter = Math.ceil(this.vmsBeepDuration / this.vmsBeepInterval)
+    this.beepCounter = Math.ceil(this.vmsBeepDuration / this.vmsBeepInterval);
     this.playAlertSound();
     this.beepCounter--;
     console.debug(`Current beep count: ${this.beepCounter}`);
@@ -300,18 +297,19 @@ export default class MainVmsLive extends VueBase {
       const body = {
         max: this.eventTotalSize,
       } as VmsLatestEventQ;
-      this.$api2.postVmsEventsLatest(group, project, body)
-          .then(items => {
-            this.events = items;
-            if (items.length >= 1) {
-              this.lastEventTime = items[0].time;
-            } else {
-              this.lastEventTime = moment().tz(moment.tz.guess()).format();
-            }
-          })
-          .catch(error => {
-            this.toastRequestFailure(error);
-          });
+      this.$api2
+        .postVmsEventsLatest(group, project, body)
+        .then(items => {
+          this.events = items;
+          if (items.length >= 1) {
+            this.lastEventTime = items[0].time;
+          } else {
+            this.lastEventTime = moment().tz(moment.tz.guess()).format();
+          }
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+        });
 
       this.intervalHandle = window.setInterval(() => {
         this.requestEvents();
@@ -330,23 +328,24 @@ export default class MainVmsLive extends VueBase {
       time: this.lastEventTime,
       max: this.eventTotalSize,
     } as VmsNewsEventQ;
-    this.$api2.postVmsEventsNews(group, project, body)
-        .then(items => {
-          if (items.length >= 1) {
-            this.lastEventTime = items[0].time;
-            this.events = [...items, ...this.events];
-            if (this.events.length > this.eventTotalSize) {
-              this.events.splice(this.eventTotalSize);
-            }
-            if (this.vmsPopup) {
-              this.toastInfo(this.$t('msg.new_events', [items.length]));
-            }
-            this.doBeep();
+    this.$api2
+      .postVmsEventsNews(group, project, body)
+      .then(items => {
+        if (items.length >= 1) {
+          this.lastEventTime = items[0].time;
+          this.events = [...items, ...this.events];
+          if (this.events.length > this.eventTotalSize) {
+            this.events.splice(this.eventTotalSize);
           }
-        })
-        .catch(error => {
-          // this.toastRequestFailure(error);
-        });
+          if (this.vmsPopup) {
+            this.toastInfo(this.$t('msg.new_events', [items.length]));
+          }
+          this.doBeep();
+        }
+      })
+      .catch(error => {
+        // this.toastRequestFailure(error);
+      });
   }
 
   cardStyle(cardNumber: number) {
@@ -383,10 +382,10 @@ export default class MainVmsLive extends VueBase {
   }
 
   getScorePercentage(extra: any) {
-    if (!extra.hasOwnProperty("score")) {
+    if (!extra.hasOwnProperty('score')) {
       return undefined;
     }
-    return Math.ceil(extra["score"] * 100);
+    return Math.ceil(extra['score'] * 100);
   }
 
   eventDeviceName(value: number) {
@@ -424,7 +423,7 @@ export default class MainVmsLive extends VueBase {
     this.contextMenuPositionY = event.clientY;
     this.$nextTick(() => {
       this.showContextMenu = true;
-    })
+    });
   }
 
   onClickEdit() {
@@ -443,7 +442,7 @@ export default class MainVmsLive extends VueBase {
   }
 
   onResize() {
-    const size = { x: window.innerWidth, y: window.innerHeight };
+    const size = {x: window.innerWidth, y: window.innerHeight};
     const rect = this.eventsScrollPlaceholder.getBoundingClientRect();
     this.eventsHeight = Math.abs(size.y - rect.y - EVENT_BOTTOM_MARGIN);
   }

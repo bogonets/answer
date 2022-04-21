@@ -1,5 +1,5 @@
 export const adminAirjoyNames = {
-    adminAirjoyDevices: 'adminAirjoyDevices',
+  adminAirjoyDevices: 'adminAirjoyDevices',
 };
 
 export default adminAirjoyNames;

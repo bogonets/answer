@@ -1,44 +1,44 @@
 <template>
   <div class="fan-button-group">
     <v-btn
-        class="fan-button-group--left fan-button-group--select"
-        elevation="0"
-        tile
-        :color="colorWeak"
-        :x-small="xSmall"
-        :small="small"
-        :large="large"
-        :x-large="xLarge"
-        :outlined="outlined"
-        @click.stop="fanWeak"
+      class="fan-button-group--left fan-button-group--select"
+      elevation="0"
+      tile
+      :color="colorWeak"
+      :x-small="xSmall"
+      :small="small"
+      :large="large"
+      :x-large="xLarge"
+      :outlined="outlined"
+      @click.stop="fanWeak"
     >
       <v-icon>mdi-fan-speed-1</v-icon>
     </v-btn>
     <v-btn
-        class="fan-button-group--center"
-        elevation="0"
-        tile
-        :color="colorMedium"
-        :x-small="xSmall"
-        :small="small"
-        :large="large"
-        :x-large="xLarge"
-        :outlined="outlined"
-        @click.stop="fanMedium"
+      class="fan-button-group--center"
+      elevation="0"
+      tile
+      :color="colorMedium"
+      :x-small="xSmall"
+      :small="small"
+      :large="large"
+      :x-large="xLarge"
+      :outlined="outlined"
+      @click.stop="fanMedium"
     >
       <v-icon>mdi-fan-speed-2</v-icon>
     </v-btn>
     <v-btn
-        class="fan-button-group--right"
-        elevation="0"
-        tile
-        :color="colorHigh"
-        :x-small="xSmall"
-        :small="small"
-        :large="large"
-        :x-large="xLarge"
-        :outlined="outlined"
-        @click.stop="fanHigh"
+      class="fan-button-group--right"
+      elevation="0"
+      tile
+      :color="colorHigh"
+      :x-small="xSmall"
+      :small="small"
+      :large="large"
+      :x-large="xLarge"
+      :outlined="outlined"
+      @click.stop="fanHigh"
     >
       <v-icon>mdi-fan-speed-3</v-icon>
     </v-btn>
@@ -100,16 +100,13 @@ export default class AirjoyFanSpeedGroup extends VueBase {
   }
 
   @Emit('click:fan-weak')
-  fanWeak() {
-  }
+  fanWeak() {}
 
   @Emit('click:fan-medium')
-  fanMedium() {
-  }
+  fanMedium() {}
 
   @Emit('click:fan-high')
-  fanHigh() {
-  }
+  fanHigh() {}
 }
 </script>
 

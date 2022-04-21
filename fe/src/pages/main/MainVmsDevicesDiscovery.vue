@@ -1,55 +1,55 @@
 <i18n lang="yaml">
 en:
-  devices: "Devices"
-  discovery: "Discovery"
+  devices: 'Devices'
+  discovery: 'Discovery'
   headers:
-    epr: "EndPoint Reference (EPR)"
-    address: "Address"
-    actions: "Actions"
+    epr: 'EndPoint Reference (EPR)'
+    address: 'Address'
+    actions: 'Actions'
   msg:
-    loading: "Loading... Please wait"
-    empty: "Empty Devices"
-    left_time: "About {0} seconds remaining"
-    after_while: "After a while it will be done."
+    loading: 'Loading... Please wait'
+    empty: 'Empty Devices'
+    left_time: 'About {0} seconds remaining'
+    after_while: 'After a while it will be done.'
   labels:
-    timeout: "Timeout"
-    session: "Session"
-    ip_ver: "IP Version"
-    submit: "Discovery"
-    exploring: "Exploring"
-    cancel: "Cancel"
+    timeout: 'Timeout'
+    session: 'Session'
+    ip_ver: 'IP Version'
+    submit: 'Discovery'
+    exploring: 'Exploring'
+    cancel: 'Cancel'
   hints:
-    timeout: "Device discovery timeout (Seconds)"
-    session: "A key value to maintain the session."
+    timeout: 'Device discovery timeout (Seconds)'
+    session: 'A key value to maintain the session.'
   ip_ver:
-    ipv4: "IPv4"
-    ipv6: "IPv6"
+    ipv4: 'IPv4'
+    ipv6: 'IPv6'
 
 ko:
-  devices: "Devices"
-  discovery: "Discovery"
+  devices: 'Devices'
+  discovery: 'Discovery'
   headers:
-    epr: "엔드포인트 참조 (EPR)"
-    address: "주소"
-    actions: "관리"
+    epr: '엔드포인트 참조 (EPR)'
+    address: '주소'
+    actions: '관리'
   msg:
-    loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-    empty: "장치가 존재하지 않습니다."
-    left_time: "남은 시간 약 {0}초"
-    after_while: "잠시 후 완료됩니다."
+    loading: '불러오는중 입니다... 잠시만 기다려 주세요.'
+    empty: '장치가 존재하지 않습니다.'
+    left_time: '남은 시간 약 {0}초'
+    after_while: '잠시 후 완료됩니다.'
   labels:
-    timeout: "검색 시간"
-    session: "세션"
-    ip_ver: "IP 버전"
-    submit: "탐색"
-    exploring: "탐색중 입니다"
-    cancel: "취소"
+    timeout: '검색 시간'
+    session: '세션'
+    ip_ver: 'IP 버전'
+    submit: '탐색'
+    exploring: '탐색중 입니다'
+    cancel: '취소'
   hints:
-    timeout: "장치 검색 제한시간 (초)"
-    session: "세션을 유지하기 위한 키 값입니다."
+    timeout: '장치 검색 제한시간 (초)'
+    session: '세션을 유지하기 위한 키 값입니다.'
   ip_ver:
-    ipv4: "IPv4"
-    ipv6: "IPv6"
+    ipv4: 'IPv4'
+    ipv6: 'IPv6'
 </i18n>
 
 <template>
@@ -59,34 +59,28 @@ ko:
 
     <p :class="subtitleClass">{{ $t('labels.timeout') }}</p>
     <v-text-field
-        dense
-        persistent-hint
-        type="number"
-        :disabled="discovering"
-        v-model="timeoutSeconds"
-        :hint="$t('hints.timeout')"
+      dense
+      persistent-hint
+      type="number"
+      :disabled="discovering"
+      v-model="timeoutSeconds"
+      :hint="$t('hints.timeout')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.session') }}</p>
     <v-text-field
-        append-outer-icon="mdi-refresh"
-        dense
-        persistent-hint
-        type="text"
-        :disabled="discovering"
-        v-model="session"
-        :hint="$t('hints.session')"
-        @click:append-outer="onClickSessionRefresh"
+      append-outer-icon="mdi-refresh"
+      dense
+      persistent-hint
+      type="text"
+      :disabled="discovering"
+      v-model="session"
+      :hint="$t('hints.session')"
+      @click:append-outer="onClickSessionRefresh"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.ip_ver') }}</p>
-    <v-radio-group
-        class="mt-2"
-        row
-        hide-details
-        :disabled="discovering"
-        v-model="ipv6"
-    >
+    <v-radio-group class="mt-2" row hide-details :disabled="discovering" v-model="ipv6">
       <v-radio :label="$t('ip_ver.ipv4')" :value="false"></v-radio>
       <v-radio :label="$t('ip_ver.ipv6')" :value="true"></v-radio>
     </v-radio-group>
@@ -94,10 +88,11 @@ ko:
     <v-row class="mt-4 mb-2" no-gutters>
       <v-spacer></v-spacer>
       <v-btn
-          color="primary"
-          :disabled="discovering"
-          :loading="discovering"
-          @click="onClickDiscovery">
+        color="primary"
+        :disabled="discovering"
+        :loading="discovering"
+        @click="onClickDiscovery"
+      >
         {{ $t('labels.submit') }}
       </v-btn>
     </v-row>
@@ -105,16 +100,14 @@ ko:
     <v-divider></v-divider>
 
     <v-data-table
-        :items-per-page="itemsPerPage"
-        :headers="headers"
-        :items="items"
-        :loading="loading"
-        :loading-text="$t('msg.loading')"
+      :items-per-page="itemsPerPage"
+      :headers="headers"
+      :items="items"
+      :loading="loading"
+      :loading-text="$t('msg.loading')"
     >
-      <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="onClickDevice(item)">
-          mdi-exit-to-app
-        </v-icon>
+      <template v-slot:item.actions="{item}">
+        <v-icon small class="mr-2" @click="onClickDevice(item)">mdi-exit-to-app</v-icon>
       </template>
 
       <template v-slot:no-data>
@@ -124,16 +117,15 @@ ko:
 
     <v-dialog v-model="discovering" max-width="320">
       <v-card>
-        <div class="d-flex flex-column align-center justify-center text-h6 text--secondary pa-2 orange">
+        <div
+          class="d-flex flex-column align-center justify-center text-h6 text--secondary pa-2 orange"
+        >
           {{ $t('labels.exploring') }}
         </div>
         <v-divider></v-divider>
 
         <div class="d-flex flex-column align-center justify-center mt-4">
-          <v-progress-circular
-              indeterminate
-              color="primary"
-          ></v-progress-circular>
+          <v-progress-circular indeterminate color="primary"></v-progress-circular>
           <span class="text-subtitle-2 text--secondary mt-4">
             {{ exploringLabel }}
           </span>
@@ -146,7 +138,6 @@ ko:
         </div>
       </v-card>
     </v-dialog>
-
   </v-container>
 </template>
 
@@ -173,7 +164,7 @@ const DEFAULT_TIMEOUT_SECONDS = 3;
 @Component({
   components: {
     ToolbarBreadcrumbs,
-  }
+  },
 })
 export default class MainVmsDevicesDiscovery extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
@@ -287,22 +278,23 @@ export default class MainVmsDevicesDiscovery extends VueBase {
       session: this.session,
     } as VmsDiscoveredHeartbeatQ;
 
-    this.$api2.postVmsDiscoveryHeartbeat(group, project, body)
-        .then(item => {
-          if (item.done) {
-            if (item.devices) {
-              this.items = item.devices;
-            } else {
-              this.items = [] as Array<VmsDiscoveredDeviceA>;
-            }
-            this.$sessionStore.vmsWds = this.items;
-            this.stopHeartbeat();
+    this.$api2
+      .postVmsDiscoveryHeartbeat(group, project, body)
+      .then(item => {
+        if (item.done) {
+          if (item.devices) {
+            this.items = item.devices;
+          } else {
+            this.items = [] as Array<VmsDiscoveredDeviceA>;
           }
-        })
-        .catch(error => {
+          this.$sessionStore.vmsWds = this.items;
           this.stopHeartbeat();
-          this.toastRequestFailure(error);
-        });
+        }
+      })
+      .catch(error => {
+        this.stopHeartbeat();
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickSessionRefresh() {
@@ -319,17 +311,18 @@ export default class MainVmsDevicesDiscovery extends VueBase {
     } as VmsDiscoveryQ;
 
     this.loading = true;
-    this.$api2.postVmsDiscovery(group, project, body)
-        .then(() => {
-          this.loading = false;
-          this.discovering = true;
-          this.beginTime = Date.now();
-          this.startHeartbeat();
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .postVmsDiscovery(group, project, body)
+      .then(() => {
+        this.loading = false;
+        this.discovering = true;
+        this.beginTime = Date.now();
+        this.startHeartbeat();
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickCancel() {

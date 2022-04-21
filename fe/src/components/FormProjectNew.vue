@@ -1,32 +1,29 @@
 <i18n lang="yaml">
 en:
-  header: "New project"
+  header: 'New project'
   subheader: >
     A project is where you house your files, manage tasks, and do graph-based programming.
 
 ko:
-  header: "새로운 프로젝트"
+  header: '새로운 프로젝트'
   subheader: >
     프로젝트는 파일을 보관하고, 작업을 관리하고, 그래프 기반 프로그래밍을 수행하는 곳입니다.
 </i18n>
 
 <template>
-  <left-title
-      :header="$t('header')"
-      :subheader="$t('subheader')"
-  >
+  <left-title :header="$t('header')" :subheader="$t('subheader')">
     <form-project
-        hide-origin-prefix
-        hide-cancel-button
-        :hide-features="hideFeatures"
-        :hide-visibility="hideVisibility"
-        :loading-groups="loadingGroups"
-        :loading-submit="loadingSubmit"
-        :disable-group="disableGroup"
-        :group-items="groupItems"
-        :feature-items="featureItems"
-        :init-group="initGroup"
-        @ok="ok"
+      hide-origin-prefix
+      hide-cancel-button
+      :hide-features="hideFeatures"
+      :hide-visibility="hideVisibility"
+      :loading-groups="loadingGroups"
+      :loading-submit="loadingSubmit"
+      :disable-group="disableGroup"
+      :group-items="groupItems"
+      :feature-items="featureItems"
+      :init-group="initGroup"
+      @ok="ok"
     ></form-project>
   </left-title>
 </template>
@@ -34,7 +31,7 @@ ko:
 <script lang="ts">
 import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import LeftTitle from "@/components/LeftTitle.vue";
+import LeftTitle from '@/components/LeftTitle.vue';
 import FormProject, {ProjectItem} from '@/components/FormProject.vue';
 import {CreateProjectQ} from '@/packet/project';
 
@@ -42,7 +39,7 @@ import {CreateProjectQ} from '@/packet/project';
   components: {
     LeftTitle,
     FormProject,
-  }
+  },
 })
 export default class FormProjectNew extends VueBase {
   @Prop({type: Boolean})

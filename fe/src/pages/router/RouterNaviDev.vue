@@ -1,10 +1,8 @@
 <template>
   <div class="router-navi-dev">
-    <navi-dev>
-    </navi-dev>
+    <navi-dev></navi-dev>
 
-    <router-view>
-    </router-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -18,10 +16,9 @@ import NaviDev from '@/pages/navigation/NaviDev.vue';
   components: {
     BarMain,
     NaviDev,
-  }
+  },
 })
-export default class RouterNaviDev extends VueBase {
-}
+export default class RouterNaviDev extends VueBase {}
 </script>
 
 <style lang="scss" scoped>

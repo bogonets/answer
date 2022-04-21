@@ -1,47 +1,47 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  devices: "Devices"
-  chart: "Chart"
+  groups: 'Groups'
+  devices: 'Devices'
+  chart: 'Chart'
   period:
-    start: "Start date"
-    end: "End date"
+    start: 'Start date'
+    end: 'End date'
   labels:
-    device: "Please select a device ID to output as a chart"
-    category: "Please select a category to output as a chart"
+    device: 'Please select a device ID to output as a chart'
+    category: 'Please select a category to output as a chart'
   msg:
-    empty_device: "Empty device"
-    empty_category: "Empty category"
-    no_chart: "No device or category selected"
+    empty_device: 'Empty device'
+    empty_category: 'Empty category'
+    no_chart: 'No device or category selected'
   range:
-    d90: "90Days"
-    d30: "30Days"
-    d7: "1Week"
-    d1: "Today"
+    d90: '90Days'
+    d30: '30Days'
+    d7: '1Week'
+    d1: 'Today'
   tooltip:
-    download_csv: "Download CSV file"
+    download_csv: 'Download CSV file'
 
 ko:
-  groups: "Groups"
-  devices: "Devices"
-  chart: "Chart"
+  groups: 'Groups'
+  devices: 'Devices'
+  chart: 'Chart'
   period:
-    start: "시작일"
-    end: "종료일"
+    start: '시작일'
+    end: '종료일'
   labels:
-    device: "차트로 출력할 장치 ID를 선택하세요"
-    category: "차트로 출력할 카테고리를 선택하세요"
+    device: '차트로 출력할 장치 ID를 선택하세요'
+    category: '차트로 출력할 카테고리를 선택하세요'
   msg:
-    empty_device: "Empty device"
-    empty_category: "Empty category"
-    no_chart: "장치 또는 카테고리가 선택되지 않았습니다"
+    empty_device: 'Empty device'
+    empty_category: 'Empty category'
+    no_chart: '장치 또는 카테고리가 선택되지 않았습니다'
   range:
-    d90: "90일"
-    d30: "30일"
-    d7: "일주"
-    d1: "오늘"
+    d90: '90일'
+    d30: '30일'
+    d7: '일주'
+    d1: '오늘'
   tooltip:
-    download_csv: "CSV 파일 다운로드"
+    download_csv: 'CSV 파일 다운로드'
 </i18n>
 
 <template>
@@ -52,20 +52,20 @@ ko:
     <v-row class="mt-4">
       <v-col class="pb-0" cols="12">
         <v-select
-            dense
-            rounded
-            outlined
-            hide-details
-            v-model="device"
-            :loading="loadingDevices"
-            :items="devices"
-            :label="$t('labels.device')"
-            item-text="name"
-            item-value="uid"
-            return-object
-            @change="onChangeDevice"
+          dense
+          rounded
+          outlined
+          hide-details
+          v-model="device"
+          :loading="loadingDevices"
+          :items="devices"
+          :label="$t('labels.device')"
+          item-text="name"
+          item-value="uid"
+          return-object
+          @change="onChangeDevice"
         >
-          <template v-slot:item="{ item }">
+          <template v-slot:item="{item}">
             {{ item.name }}
             <v-chip class="ml-2" x-small outlined color="primary">
               <v-icon left>mdi-identifier</v-icon>
@@ -73,7 +73,7 @@ ko:
             </v-chip>
           </template>
 
-          <template v-slot:selection="{ item }">
+          <template v-slot:selection="{item}">
             {{ item.name }}
             <v-chip class="ml-2" x-small outlined color="primary">
               <v-icon left>mdi-identifier</v-icon>
@@ -87,14 +87,14 @@ ko:
     <v-row class="mt-4">
       <v-col class="pb-0" cols="12">
         <v-select
-            dense
-            rounded
-            outlined
-            hide-details
-            v-model="category"
-            :items="categories"
-            :label="$t('labels.category')"
-            @change="onChangeCategory"
+          dense
+          rounded
+          outlined
+          hide-details
+          v-model="category"
+          :items="categories"
+          :label="$t('labels.category')"
+          @change="onChangeCategory"
         ></v-select>
       </v-col>
     </v-row>
@@ -102,67 +102,62 @@ ko:
     <v-row class="mt-4">
       <v-col cols="12" sm="7">
         <div class="d-inline-flex flex-row align-center text-center">
-          <v-icon
-              v-if="$vuetify.breakpoint.mdAndUp"
-              class="mr-2"
-          >
-            mdi-calendar
-          </v-icon>
+          <v-icon v-if="$vuetify.breakpoint.mdAndUp" class="mr-2">mdi-calendar</v-icon>
           <v-menu
-              offset-y
-              transition="scale-transition"
-              min-width="auto"
-              v-model="showPeriodStartMenu"
-              :nudge-right="datePickerSize"
-              :close-on-content-click="false"
+            offset-y
+            transition="scale-transition"
+            min-width="auto"
+            v-model="showPeriodStartMenu"
+            :nudge-right="datePickerSize"
+            :close-on-content-click="false"
           >
-            <template v-slot:activator="{ on, attrs }">
+            <template v-slot:activator="{on, attrs}">
               <v-text-field
-                  dense
-                  rounded
-                  outlined
-                  readonly
-                  hide-details
-                  v-model="periodStart"
-                  :label="$t('period.start')"
-                  v-bind="attrs"
-                  v-on="on"
+                dense
+                rounded
+                outlined
+                readonly
+                hide-details
+                v-model="periodStart"
+                :label="$t('period.start')"
+                v-bind="attrs"
+                v-on="on"
               ></v-text-field>
             </template>
             <v-date-picker
-                v-model="periodStart"
-                no-title
-                scrollable
-                @input="onInputPeriodStart"
+              v-model="periodStart"
+              no-title
+              scrollable
+              @input="onInputPeriodStart"
             ></v-date-picker>
           </v-menu>
           <span class="mx-2">~</span>
           <v-menu
-              offset-y
-              transition="scale-transition"
-              min-width="auto"
-              v-model="showPeriodEndMenu"
-              :nudge-right="datePickerSize"
-              :close-on-content-click="false"
+            offset-y
+            transition="scale-transition"
+            min-width="auto"
+            v-model="showPeriodEndMenu"
+            :nudge-right="datePickerSize"
+            :close-on-content-click="false"
           >
-            <template v-slot:activator="{ on, attrs }">
+            <template v-slot:activator="{on, attrs}">
               <v-text-field
-                  dense
-                  rounded
-                  outlined
-                  readonly
-                  hide-details
-                  v-model="periodEnd"
-                  :label="$t('period.end')"
-                  v-bind="attrs"
-                  v-on="on"
+                dense
+                rounded
+                outlined
+                readonly
+                hide-details
+                v-model="periodEnd"
+                :label="$t('period.end')"
+                v-bind="attrs"
+                v-on="on"
               ></v-text-field>
             </template>
             <v-date-picker
-                v-model="periodEnd"
-                no-title
-                scrollable
-                @input="onInputPeriodEnd"
+              v-model="periodEnd"
+              no-title
+              scrollable
+              @input="onInputPeriodEnd"
             ></v-date-picker>
           </v-menu>
         </div>
@@ -170,10 +165,7 @@ ko:
 
       <v-col class="d-flex flex-row align-center" cols="12" sm="5">
         <v-spacer></v-spacer>
-        <v-btn-toggle
-            dense
-            v-model="rangeIndex"
-        >
+        <v-btn-toggle dense v-model="rangeIndex">
           <v-btn @click="onClickRange90d">
             {{ $t('range.d90') }}
           </v-btn>
@@ -192,9 +184,7 @@ ko:
 
     <v-card class="my-4 py-4">
       <div v-if="noChart" class="d-flex flex-column align-center">
-        <v-icon x-large>
-          mdi-chart-bar
-        </v-icon>
+        <v-icon x-large>mdi-chart-bar</v-icon>
         <div class="text--secondary text-subtitle-1 text-center">
           {{ $t('msg.no_chart') }}
         </div>
@@ -202,17 +192,17 @@ ko:
       <div v-else class="d-flex flex-column">
         <div class="d-flex flex-row justify-end">
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template v-slot:activator="{on, attrs}">
               <v-btn
-                  class="mr-4"
-                  elevation="4"
-                  fab
-                  absolute
-                  small
-                  icon
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="onClickDownloadCsv"
+                class="mr-4"
+                elevation="4"
+                fab
+                absolute
+                small
+                icon
+                v-bind="attrs"
+                v-on="on"
+                @click="onClickDownloadCsv"
               >
                 <v-icon>mdi-file-delimited</v-icon>
               </v-btn>
@@ -222,14 +212,13 @@ ko:
         </div>
 
         <chart
-            class="pa-2"
-            type="bar"
-            :chart-data="chartData"
-            :options="chartOptions"
+          class="pa-2"
+          type="bar"
+          :chart-data="chartData"
+          :options="chartOptions"
         ></chart>
       </div>
     </v-card>
-
   </v-container>
 </template>
 
@@ -238,11 +227,7 @@ import {Component, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import Chart from '@/chart/Chart.vue';
-import {
-  createMoment,
-  dateToString,
-  todayString,
-} from '@/chrono/date';
+import {createMoment, dateToString, todayString} from '@/chrono/date';
 import {download} from '@/utils/download';
 import type {AirjoyChartA, AirjoyDeviceA} from '@/packet/airjoy';
 import {
@@ -326,7 +311,7 @@ function isFloating(value) {
   components: {
     Chart,
     ToolbarBreadcrumbs,
-  }
+  },
 })
 export default class MainAirjoyChart extends VueBase {
   private readonly breadcrumbs = [
@@ -376,9 +361,9 @@ export default class MainAirjoyChart extends VueBase {
             if (!isFloating(value)) {
               return value;
             }
-          }
+          },
         },
-      }
+      },
     },
   };
 
@@ -436,21 +421,22 @@ export default class MainAirjoyChart extends VueBase {
     this.loadingDevices = true;
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    this.$api2.getAirjoyDevices(group, project)
-        .then(items => {
-          this.loadingDevices = false;
-          this.devices = items;
-          if (typeof this.selectedAirjoyUid !== 'undefined') {
-            this.device = this.devices.find(i => i.uid === this.selectedAirjoyUid);
-          } else {
-            this.device = undefined;
-          }
-          this.updateChart();
-        })
-        .catch(error => {
-          this.loadingDevices = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAirjoyDevices(group, project)
+      .then(items => {
+        this.loadingDevices = false;
+        this.devices = items;
+        if (typeof this.selectedAirjoyUid !== 'undefined') {
+          this.device = this.devices.find(i => i.uid === this.selectedAirjoyUid);
+        } else {
+          this.device = undefined;
+        }
+        this.updateChart();
+      })
+      .catch(error => {
+        this.loadingDevices = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   getStartMoment() {
@@ -473,18 +459,19 @@ export default class MainAirjoyChart extends VueBase {
     const end = this.getEndMoment().format();
     const categoryIndex = this.getCurrentCategoryIndex();
 
-    this.$api2.getAirjoyChart(group, project, device, begin, end)
-        .then(items => {
-          const unixTimeToChart = {};
-          for (const item of items) {
-            unixTimeToChart[createMoment(item.begin).unix()] = item;
-          }
-          this.items = unixTimeToChart;
-          this.updateSeries(categoryIndex);
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAirjoyChart(group, project, device, begin, end)
+      .then(items => {
+        const unixTimeToChart = {};
+        for (const item of items) {
+          unixTimeToChart[createMoment(item.begin).unix()] = item;
+        }
+        this.items = unixTimeToChart;
+        this.updateSeries(categoryIndex);
+      })
+      .catch(error => {
+        this.toastRequestFailure(error);
+      });
   }
 
   updateSeries(categoryIndex: number) {
@@ -504,10 +491,10 @@ export default class MainAirjoyChart extends VueBase {
     const cursor = this.getStartMoment();
     for (let i = 0; i <= totalIteration; ++i) {
       if (isOneDay) {
-        const hourLabel = cursor.format("HH");
+        const hourLabel = cursor.format('HH');
         labels.push(hourLabel);
       } else {
-        const dayLabel = cursor.format("MM/DD");
+        const dayLabel = cursor.format('MM/DD');
         labels.push(dayLabel);
       }
 
@@ -637,15 +624,16 @@ export default class MainAirjoyChart extends VueBase {
     const begin = this.getStartMoment().format();
     const end = this.getEndMoment().format();
 
-    this.$api2.getAirjoyChartCsv(group, project, device, begin, end)
-        .then(data => {
-          const filename = `chart-${this.periodStart}_${this.periodEnd}.csv`;
-          const mime = 'text/csv';
-          download(data, filename, mime);
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAirjoyChartCsv(group, project, device, begin, end)
+      .then(data => {
+        const filename = `chart-${this.periodStart}_${this.periodEnd}.csv`;
+        const mime = 'text/csv';
+        download(data, filename, mime);
+      })
+      .catch(error => {
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

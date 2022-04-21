@@ -1,11 +1,11 @@
 export interface ContainerA {
-    key: string;
-    name: string;
-    status: string;
-    image: string;
-    created: string;
-    labels: object;
-    ports: object;
+  key: string;
+  name: string;
+  status: string;
+  image: string;
+  created: string;
+  labels: object;
+  ports: object;
 }
 
 export const STATUS_CREATED = 'Created';
@@ -17,10 +17,10 @@ export const STATUS_EXITED = 'Exited';
 export const STATUS_DEAD = 'Dead';
 
 export interface ControlContainersQ {
-    keys: Array<string>;
-    operator: string;
-    signal?: string;
-    force?: boolean;
+  keys: Array<string>;
+  operator: string;
+  signal?: string;
+  force?: boolean;
 }
 
 export const CONTROL_OPERATOR_START = 'Start';

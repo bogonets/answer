@@ -1,33 +1,33 @@
 <i18n lang="yaml">
 en:
-  refresh: "Refresh"
+  refresh: 'Refresh'
   position:
-    builtin: "Builtin"
-    package: "Package"
-    storage: "Storage"
+    builtin: 'Builtin'
+    package: 'Package'
+    storage: 'Storage'
   headers:
-    position: "Position"
-    category: "Category"
-    name: "Name"
-    actions: "Actions"
-  search: "You can filter by category or name."
-  loading: "Loading... Please wait"
-  empty: "Empty Lamdas"
+    position: 'Position'
+    category: 'Category'
+    name: 'Name'
+    actions: 'Actions'
+  search: 'You can filter by category or name.'
+  loading: 'Loading... Please wait'
+  empty: 'Empty Lamdas'
 
 ko:
-  refresh: "갱신"
+  refresh: '갱신'
   position:
-    builtin: "내장"
-    package: "패키지"
-    storage: "저장소"
+    builtin: '내장'
+    package: '패키지'
+    storage: '저장소'
   headers:
-    position: "위치"
-    category: "범주"
-    name: "이름"
-    actions: "관리"
-  search: "범주 또는 이름을 필터링할 수 있습니다."
-  loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-  empty: "람다가 존재하지 않습니다."
+    position: '위치'
+    category: '범주'
+    name: '이름'
+    actions: '관리'
+  search: '범주 또는 이름을 필터링할 수 있습니다.'
+  loading: '불러오는중 입니다... 잠시만 기다려 주세요.'
+  empty: '람다가 존재하지 않습니다.'
 </i18n>
 
 <template>
@@ -42,42 +42,35 @@ ko:
 
       <v-spacer></v-spacer>
       <v-btn color="primary" class="align-self-center mr-2" @click="onClickRefresh">
-        <v-icon left>
-          mdi-refresh
-        </v-icon>
+        <v-icon left>mdi-refresh</v-icon>
         {{ $t('refresh') }}
       </v-btn>
     </v-tabs>
     <v-divider></v-divider>
 
     <v-data-table
-        :items-per-page="itemsPerPage"
-        :headers="headers"
-        :items="currentItems"
-        :search="filter"
-        :loading="loading"
-        :loading-text="$t('loading')"
+      :items-per-page="itemsPerPage"
+      :headers="headers"
+      :items="currentItems"
+      :search="filter"
+      :loading="loading"
+      :loading-text="$t('loading')"
     >
       <template v-slot:top>
         <v-toolbar flat>
           <v-text-field
-              class="mr-4"
-              v-model="filter"
-              append-icon="mdi-magnify"
-              :label="$t('search')"
-              single-line
-              hide-details
+            class="mr-4"
+            v-model="filter"
+            append-icon="mdi-magnify"
+            :label="$t('search')"
+            single-line
+            hide-details
           ></v-text-field>
         </v-toolbar>
       </template>
 
-      <template v-slot:item.actions="{ item }">
-        <v-icon
-            small
-            disabled
-            class="mr-2"
-            @click="onClickEditConfig(item)"
-        >
+      <template v-slot:item.actions="{item}">
+        <v-icon small disabled class="mr-2" @click="onClickEditConfig(item)">
           mdi-pencil
         </v-icon>
       </template>
@@ -86,7 +79,6 @@ ko:
         {{ $t('empty') }}
       </template>
     </v-data-table>
-
   </v-container>
 </template>
 
@@ -105,7 +97,7 @@ const STORAGE_TAB_INDEX = 2;
 @Component({
   components: {
     ToolbarBreadcrumbs,
-  }
+  },
 })
 export default class AdminTemplates extends VueBase {
   private readonly itemsPerPage = ITEMS_PER_PAGE;
@@ -156,7 +148,7 @@ export default class AdminTemplates extends VueBase {
 
   @Watch('tabIndex')
   onChangeTab(value: number) {
-    this.updateCurrentLamdas(value)
+    this.updateCurrentLamdas(value);
   }
 
   mounted() {
@@ -165,16 +157,17 @@ export default class AdminTemplates extends VueBase {
 
   updateLamdas() {
     this.loading = true;
-    this.$api2.getAdminTemplates()
-        .then(lamdas => {
-          this.totalItems = lamdas;
-          this.loading = false;
-          this.updateCurrentLamdasWithTabIndex();
-        })
-        .catch(error => {
-          console.error(error);
-          this.loading = false;
-        });
+    this.$api2
+      .getAdminTemplates()
+      .then(lamdas => {
+        this.totalItems = lamdas;
+        this.loading = false;
+        this.updateCurrentLamdasWithTabIndex();
+      })
+      .catch(error => {
+        console.error(error);
+        this.loading = false;
+      });
   }
 
   isPositionIndex(index: number) {
@@ -190,7 +183,7 @@ export default class AdminTemplates extends VueBase {
 
   updateCurrentLamdas(position: number) {
     if (!this.isPositionIndex(position)) {
-      throw Error(`Unknown tab index: ${position}`)
+      throw Error(`Unknown tab index: ${position}`);
     }
     this.currentItems = _.filter(this.totalItems, o => {
       return o.position == position;

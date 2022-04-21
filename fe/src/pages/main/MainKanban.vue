@@ -1,67 +1,55 @@
 <i18n lang="yaml">
 en:
   tools:
-    tables: "Tables"
-    kanbans: "Kanban"
-    filter: "Filter"
-    sort: "Sort"
-    hide: "Hide Fields"
+    tables: 'Tables'
+    kanbans: 'Kanban'
+    filter: 'Filter'
+    sort: 'Sort'
+    hide: 'Hide Fields'
   msg:
-    empty: "Empty Tables"
+    empty: 'Empty Tables'
 
 ko:
   tools:
-    tables: "테이블"
-    kanbans: "간반"
-    filter: "필터"
-    sort: "정렬"
-    hide: "숨김"
+    tables: '테이블'
+    kanbans: '간반'
+    filter: '필터'
+    sort: '정렬'
+    hide: '숨김'
   msg:
-    empty: "테이블이 존재하지 않습니다."
+    empty: '테이블이 존재하지 않습니다.'
 </i18n>
 
 <template>
   <div class="kanban-main">
     <v-toolbar dense flat>
       <v-btn plain small @click="onClickTables">
-        <v-icon left>
-          mdi-table
-        </v-icon>
+        <v-icon left>mdi-table</v-icon>
         {{ $t('tools.tables') }}
       </v-btn>
 
       <v-btn plain small @click="onClickKanbans">
-        <v-icon left>
-          mdi-view-week-outline
-        </v-icon>
+        <v-icon left>mdi-view-week-outline</v-icon>
         {{ $t('tools.kanbans') }}
       </v-btn>
 
       <v-btn plain small @click="onClickFilter">
-        <v-icon left>
-          mdi-filter
-        </v-icon>
+        <v-icon left>mdi-filter</v-icon>
         {{ $t('tools.filter') }}
       </v-btn>
 
       <v-btn plain small @click="onClickSort">
-        <v-icon left>
-          mdi-sort
-        </v-icon>
+        <v-icon left>mdi-sort</v-icon>
         {{ $t('tools.sort') }}
       </v-btn>
 
       <v-btn plain small @click="onClickHide">
-        <v-icon left>
-          mdi-eye-off
-        </v-icon>
+        <v-icon left>mdi-eye-off</v-icon>
         {{ $t('tools.hide') }}
       </v-btn>
 
       <v-btn icon plain small @click="onClickMore">
-        <v-icon>
-          mdi-dots-horizontal
-        </v-icon>
+        <v-icon>mdi-dots-horizontal</v-icon>
       </v-btn>
     </v-toolbar>
     <v-divider></v-divider>
@@ -69,14 +57,10 @@ ko:
     <view-port>
       <div ref="kanban-board" class="kanban-board">
         <v-responsive
-            class="kanban-board--responsive"
-            content-class="kanban-board--responsive-content"
+          class="kanban-board--responsive"
+          content-class="kanban-board--responsive-content"
         >
-          <div
-              v-for="task in tasks"
-              :key="`task-${task.id}`"
-              class="kanban-task"
-          >
+          <div v-for="task in tasks" :key="`task-${task.id}`" class="kanban-task">
             <div class="kanban-task--header">
               <v-icon small class="mx-1">mdi-chevron-right</v-icon>
               <span class="text-subtitle-1 text--secondary font-weight-bold">
@@ -94,17 +78,17 @@ ko:
 
             <div class="kanban-task--body">
               <v-responsive
-                  ref="kanban-task--responsive"
-                  class="kanban-task--responsive"
-                  content-class="kanban-task--responsive-content"
+                ref="kanban-task--responsive"
+                class="kanban-task--responsive"
+                content-class="kanban-task--responsive-content"
               >
                 <v-card
-                    v-for="card in task.cards"
-                    :key="`task-${task.id}-card-${card.id}`"
-                    class="kanban-card"
-                    outlined
-                    :loading="card.loading"
-                    :disabled="card.disabled"
+                  v-for="card in task.cards"
+                  :key="`task-${task.id}-card-${card.id}`"
+                  class="kanban-card"
+                  outlined
+                  :loading="card.loading"
+                  :disabled="card.disabled"
                 >
                   <v-card-title v-if="card.title">
                     {{ card.title }}
@@ -115,23 +99,20 @@ ko:
 
                   <v-card-text>
                     <div
-                        v-for="(propType, propTypeIndex) in cardPropTypes"
-                        :key="`task-${task.id}-card-${card.id}-prop-${propTypeIndex}`"
+                      v-for="(propType, propTypeIndex) in cardPropTypes"
+                      :key="`task-${task.id}-card-${card.id}-prop-${propTypeIndex}`"
                     >
-                      <div
-                          v-if="propType.key in card.props"
-                          class="flex flex-row"
-                      >
+                      <div v-if="propType.key in card.props" class="flex flex-row">
                         <v-icon small>{{ getPropertyTypeIcon(propType.type) }}</v-icon>
                         <span class="ml-1 text-overline">{{ propType.key }}</span>
                       </div>
 
                       <div v-if="propType.type === 'array:account'">
                         <v-chip
-                            v-for="account in card.props[propType.key]"
-                            :key="`task-${task.id}-card-${card.id}-prop-${propTypeIndex}-${account}`"
-                            small
-                            class="mr-1"
+                          v-for="account in card.props[propType.key]"
+                          :key="`task-${task.id}-card-${card.id}-prop-${propTypeIndex}-${account}`"
+                          small
+                          class="mr-1"
                         >
                           <v-icon size="24" left>mdi-account-circle</v-icon>
                           {{ account }}
@@ -139,11 +120,11 @@ ko:
                       </div>
                       <div v-else-if="propType.type === 'array:category'">
                         <v-chip
-                            v-for="category in card.props[propType.key]"
-                            :key="`task-${task.id}-card-${card.id}-prop-${propTypeIndex}-${category}`"
-                            small
-                            class="mr-1"
-                            :color="propType.format[category].color"
+                          v-for="category in card.props[propType.key]"
+                          :key="`task-${task.id}-card-${card.id}-prop-${propTypeIndex}-${category}`"
+                          small
+                          class="mr-1"
+                          :color="propType.format[category].color"
                         >
                           {{ propType.format[category].name }}
                         </v-chip>
@@ -176,7 +157,6 @@ ko:
                       <v-icon size="18">mdi-open-in-app</v-icon>
                     </v-btn>
                   </v-card-actions>
-
                 </v-card>
               </v-responsive>
             </div>
@@ -201,7 +181,7 @@ import createDragula, {Drake} from 'dragula';
 @Component({
   components: {
     ViewPort,
-  }
+  },
 })
 export default class MainKanban extends VueBase {
   @Ref('kanban-board')
@@ -322,7 +302,7 @@ export default class MainKanban extends VueBase {
           subtitle: '오늘의 포켓몬은 뭘까요',
           disabled: false,
           props: {
-            workers: ["피죤투"],
+            workers: ['피죤투'],
             tags: [0],
             directory: '/work/2021-08-02',
           },
@@ -358,7 +338,7 @@ export default class MainKanban extends VueBase {
     this.kanbanTaskResponsive.map(t => {
       const c = t.$el.getElementsByClassName('kanban-task--responsive-content')[0];
       this.dragula.containers.push(c);
-    })
+    });
   }
 
   getPropertyTypeIcon(typeName: string) {
@@ -384,23 +364,17 @@ export default class MainKanban extends VueBase {
     }
   }
 
-  onClickTables() {
-  }
+  onClickTables() {}
 
-  onClickKanbans() {
-  }
+  onClickKanbans() {}
 
-  onClickFilter() {
-  }
+  onClickFilter() {}
 
-  onClickSort() {
-  }
+  onClickSort() {}
 
-  onClickHide() {
-  }
+  onClickHide() {}
 
-  onClickMore() {
-  }
+  onClickMore() {}
 }
 </script>
 

@@ -1,18 +1,16 @@
 <i18n lang="yaml">
 en:
-  header: "Translations"
+  header: 'Translations'
 
 ko:
-  header: "언어선택"
+  header: '언어선택'
 </i18n>
 
 <template>
   <v-menu open-on-hover transition="slide-y-transition" :offset-y="true">
     <template v-slot:activator="{on, attrs}">
       <v-btn icon small v-bind="attrs" v-on="on">
-        <v-icon small aria-hidden="false">
-          mdi-translate
-        </v-icon>
+        <v-icon small aria-hidden="false">mdi-translate</v-icon>
       </v-btn>
     </template>
 

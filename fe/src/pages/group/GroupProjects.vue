@@ -4,15 +4,14 @@
     <v-divider></v-divider>
 
     <table-projects
-        hide-action-edit
-        hide-action-move
-        clickable-row
-        :loading="loading"
-        :items="items"
-        @click:new="onClickNew"
-        @click:row="onClickRow"
+      hide-action-edit
+      hide-action-move
+      clickable-row
+      :loading="loading"
+      :items="items"
+      @click:new="onClickNew"
+      @click:row="onClickRow"
     ></table-projects>
-
   </v-container>
 </template>
 
@@ -20,14 +19,14 @@
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import TableProjects from "@/components/TableProjects.vue";
-import {ProjectA} from "@/packet/project";
+import TableProjects from '@/components/TableProjects.vue';
+import {ProjectA} from '@/packet/project';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
     TableProjects,
-  }
+  },
 })
 export default class GroupProjects extends VueBase {
   readonly breadcrumbs = [
@@ -46,21 +45,22 @@ export default class GroupProjects extends VueBase {
   items = [] as Array<ProjectA>;
 
   created() {
-    this.requestProjects()
+    this.requestProjects();
   }
 
   requestProjects() {
     const group = this.$route.params.group;
     this.loading = true;
-    this.$api2.getMainGroupsPgroupProjects(group)
-        .then(items => {
-          this.loading = false;
-          this.items = items;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getMainGroupsPgroupProjects(group)
+      .then(items => {
+        this.loading = false;
+        this.items = items;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickNew() {

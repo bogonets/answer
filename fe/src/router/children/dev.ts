@@ -6,31 +6,31 @@ import DevOverview from '@/pages/dev/DevOverview.vue';
 import DevPlugins from '@/pages/dev/DevPlugins.vue';
 
 export const devChildren = [
-    {
-        path: 'configs',
-        component: DevConfigs,
-        name: devNames.devConfigs,
-    },
-    {
-        path: 'envs',
-        component: DevEnvs,
-        name: devNames.devEnvs,
-    },
-    {
-        path: 'infos',
-        component: DevInfos,
-        name: devNames.devInfos,
-    },
-    {
-        path: 'overview',
-        component: DevOverview,
-        name: devNames.devOverview,
-    },
-    {
-        path: 'plugins',
-        component: DevPlugins,
-        name: devNames.devPlugins,
-    },
+  {
+    path: 'configs',
+    component: DevConfigs,
+    name: devNames.devConfigs,
+  },
+  {
+    path: 'envs',
+    component: DevEnvs,
+    name: devNames.devEnvs,
+  },
+  {
+    path: 'infos',
+    component: DevInfos,
+    name: devNames.devInfos,
+  },
+  {
+    path: 'overview',
+    component: DevOverview,
+    name: devNames.devOverview,
+  },
+  {
+    path: 'plugins',
+    component: DevPlugins,
+    name: devNames.devPlugins,
+  },
 ];
 
 export default devChildren;

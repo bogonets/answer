@@ -1,88 +1,87 @@
 <i18n lang="yaml">
 en:
   label:
-    slug: "Slug"
-    name: "Name"
-    description: "Description"
-    features: "Features"
-    visibility: "Visibility level"
+    slug: 'Slug'
+    name: 'Name'
+    description: 'Description'
+    features: 'Features'
+    visibility: 'Visibility level'
   hint:
-    slug: "Group slug to be used in the URL."
-    name: "The name of the group as it is displayed on the screen."
-    description: "A specific description of the group."
-    features: "A list of features to apply to the group."
-    visibility: "Who will be able to see this group?"
-  no_matching: "No results matching \"{search}\". Press {key} to create a new one."
-  cancel: "Cancel"
-  submit: "Submit"
+    slug: 'Group slug to be used in the URL.'
+    name: 'The name of the group as it is displayed on the screen.'
+    description: 'A specific description of the group.'
+    features: 'A list of features to apply to the group.'
+    visibility: 'Who will be able to see this group?'
+  no_matching: 'No results matching "{search}". Press {key} to create a new one.'
+  cancel: 'Cancel'
+  submit: 'Submit'
 
 ko:
   label:
-    slug: "슬러그"
-    name: "이름"
-    description: "설명"
-    features: "기능"
-    visibility: "가시성 수준"
+    slug: '슬러그'
+    name: '이름'
+    description: '설명'
+    features: '기능'
+    visibility: '가시성 수준'
   hint:
-    slug: "URL 경로에 사용될 그룹 슬러그."
-    name: "화면에 출력되는 그룹명."
-    description: "그룹의 구체적인 설명."
-    features: "그룹에 적용할 기능 목록 입니다."
-    visibility: "누가 이 그룹을 볼 수 있나요?"
-  no_matching: "\"{search}\" 와 일치하는 결과가 없습니다. {key} 키를 눌러 추가할 수 있습니다."
-  cancel: "취소"
-  submit: "제출"
+    slug: 'URL 경로에 사용될 그룹 슬러그.'
+    name: '화면에 출력되는 그룹명.'
+    description: '그룹의 구체적인 설명.'
+    features: '그룹에 적용할 기능 목록 입니다.'
+    visibility: '누가 이 그룹을 볼 수 있나요?'
+  no_matching: '"{search}" 와 일치하는 결과가 없습니다. {key} 키를 눌러 추가할 수 있습니다.'
+  cancel: '취소'
+  submit: '제출'
 </i18n>
 
 <template>
   <v-form ref="form" v-model="valid">
-
     <p :class="subtitleClass">{{ $t('label.slug') }}</p>
     <v-text-field
-        dense
-        :value="value.slug"
-        @input="inputSlug"
-        :rules="rules.slug"
-        :disabled="disableSlug"
-        :filled="disableSlug"
-        :persistent-hint="!disableSlug"
-        :hide-details="disableSlug"
-        :prefix="slugPrefix"
-        :hint="$t('hint.slug')"
+      dense
+      :value="value.slug"
+      @input="inputSlug"
+      :rules="rules.slug"
+      :disabled="disableSlug"
+      :filled="disableSlug"
+      :persistent-hint="!disableSlug"
+      :hide-details="disableSlug"
+      :prefix="slugPrefix"
+      :hint="$t('hint.slug')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('label.name') }}</p>
     <v-text-field
-        dense
-        persistent-hint
-        :value="value.name"
-        @input="inputName"
-        :hint="$t('hint.name')"
+      dense
+      persistent-hint
+      :value="value.name"
+      @input="inputName"
+      :hint="$t('hint.name')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('label.description') }}</p>
     <v-textarea
-        dense
-        auto-grow
-        persistent-hint
-        :value="value.description"
-        @input="inputDescription"
-        :hint="$t('hint.description')"
+      dense
+      auto-grow
+      persistent-hint
+      :value="value.description"
+      @input="inputDescription"
+      :hint="$t('hint.description')"
     ></v-textarea>
 
     <p v-if="!hideFeatures" :class="subtitleClass">{{ $t('label.features') }}</p>
     <v-combobox
-        v-if="!hideFeatures"
-        dense
-        hide-selected
-        multiple
-        small-chips
-        persistent-hint
-        :value="value.features"
-        @input="inputFeatures"
-        :items="featureItems"
-        :hint="$t('hint.features')"
-        :search-input.sync="searchFeature"
+      v-if="!hideFeatures"
+      dense
+      hide-selected
+      multiple
+      small-chips
+      persistent-hint
+      :value="value.features"
+      @input="inputFeatures"
+      :items="featureItems"
+      :hint="$t('hint.features')"
+      :search-input.sync="searchFeature"
     >
       <template v-slot:no-data>
         <p>
@@ -98,47 +97,34 @@ ko:
       </template>
     </v-combobox>
 
-    <p
-        v-if="!hideVisibility"
-        :class="subtitleClass"
-        class="mb-1"
-    >
+    <p v-if="!hideVisibility" :class="subtitleClass" class="mb-1">
       {{ $t('label.visibility') }}
     </p>
-    <p
-        v-if="!hideVisibility"
-        class="text-caption text--secondary mb-1"
-    >
+    <p v-if="!hideVisibility" class="text-caption text--secondary mb-1">
       {{ $t('hint.visibility') }}
     </p>
     <radio-visibility
-        v-if="!hideVisibility"
-        class="mt-0"
-        :value="value.visibility"
-        @input="inputVisibility"
+      v-if="!hideVisibility"
+      class="mt-0"
+      :value="value.visibility"
+      @input="inputVisibility"
     ></radio-visibility>
 
     <v-row v-if="!hideButtons" class="mt-2" no-gutters>
       <v-spacer></v-spacer>
-      <v-btn
-          v-if="!hideCancelButton"
-          class="mr-4"
-          color="second"
-          @click="cancel"
-      >
+      <v-btn v-if="!hideCancelButton" class="mr-4" color="second" @click="cancel">
         {{ $t('cancel') }}
       </v-btn>
       <v-btn
-          v-if="!hideSubmitButton"
-          color="primary"
-          :loading="loading"
-          :disabled="disableSubmit"
-          @click="onSubmit"
+        v-if="!hideSubmitButton"
+        color="primary"
+        :loading="loading"
+        :disabled="disableSubmit"
+        @click="onSubmit"
       >
         {{ $t('submit') }}
       </v-btn>
     </v-row>
-
   </v-form>
 </template>
 
@@ -170,7 +156,7 @@ export class GroupItem {
 @Component({
   components: {
     RadioVisibility,
-  }
+  },
 })
 export default class FormGroup extends VueBase {
   private readonly subtitleClass = SUBTITLE_CLASS;
@@ -252,7 +238,7 @@ export default class FormGroup extends VueBase {
       return undefined;
     }
     const origin = window.location.origin;
-    return origin + (origin[origin.length-1] === '/' ? '' : '/')
+    return origin + (origin[origin.length - 1] === '/' ? '' : '/');
   }
 
   get disableSubmit(): boolean {

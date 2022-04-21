@@ -11,7 +11,8 @@
 <script lang="ts">
 import {Vue, Component, Prop} from 'vue-property-decorator';
 
-type SizeType = 'h1'
+type SizeType =
+  | 'h1'
   | 'h2'
   | 'h3'
   | 'h4'
@@ -37,28 +38,30 @@ type TransformType = 'lowercase' | 'uppercase' | 'capitalize';
 
 type RtlAlignmentType = 'start' | 'end';
 
-type ColorType = string
-    | 'primary'
-    | 'secondary'
-    | 'accent'
-    | 'error'
-    | 'info'
-    | 'success'
-    | 'warning';
+type ColorType =
+  | string
+  | 'primary'
+  | 'secondary'
+  | 'accent'
+  | 'error'
+  | 'info'
+  | 'success'
+  | 'warning';
 
-type BrightnessType = 'lighten-1'
-    | 'lighten-2'
-    | 'lighten-3'
-    | 'lighten-4'
-    | 'lighten-5'
-    | 'darken-1'
-    | 'darken-2'
-    | 'darken-3'
-    | 'darken-4'
-    | 'accent-1'
-    | 'accent-2'
-    | 'accent-3'
-    | 'accent-4';
+type BrightnessType =
+  | 'lighten-1'
+  | 'lighten-2'
+  | 'lighten-3'
+  | 'lighten-4'
+  | 'lighten-5'
+  | 'darken-1'
+  | 'darken-2'
+  | 'darken-3'
+  | 'darken-4'
+  | 'accent-1'
+  | 'accent-2'
+  | 'accent-3'
+  | 'accent-4';
 
 @Component
 export default class LabelSpan extends Vue {
@@ -94,7 +97,7 @@ export default class LabelSpan extends Vue {
   readonly truncate!: boolean;
 
   @Prop({default: ''})
-  readonly rtlAlignment!: RtlAlignmentType
+  readonly rtlAlignment!: RtlAlignmentType;
 
   @Prop({default: ''})
   readonly color!: ColorType;
@@ -174,7 +177,7 @@ export default class LabelSpan extends Vue {
 
   get noWrapClassName() {
     if (this.noWrap) {
-      return 'text-no-wrap'
+      return 'text-no-wrap';
     } else {
       return '';
     }
@@ -182,7 +185,7 @@ export default class LabelSpan extends Vue {
 
   get truncateClassName() {
     if (this.truncate) {
-      return 'text-truncate'
+      return 'text-truncate';
     } else {
       return '';
     }
@@ -230,22 +233,24 @@ export default class LabelSpan extends Vue {
 
   get classes() {
     return [
-        this.sizeClassName,
-        this.weightClassName,
-        this.italicClassName,
-        this.justifyClassName,
-        this.alignClassName,
-        this.decorationClassName,
-        this.opacityClassName,
-        this.transformClassName,
-        this.noWrapClassName,
-        this.truncateClassName,
-        this.rtlAlignmentClassName,
-        this.colorClassName,
-        this.brightnessClassName,
-        this.backgroundColorClassName,
-        this.backgroundBrightnessClassName,
-    ].filter(x => !!x).join(' ');
+      this.sizeClassName,
+      this.weightClassName,
+      this.italicClassName,
+      this.justifyClassName,
+      this.alignClassName,
+      this.decorationClassName,
+      this.opacityClassName,
+      this.transformClassName,
+      this.noWrapClassName,
+      this.truncateClassName,
+      this.rtlAlignmentClassName,
+      this.colorClassName,
+      this.brightnessClassName,
+      this.backgroundColorClassName,
+      this.backgroundBrightnessClassName,
+    ]
+      .filter(x => !!x)
+      .join(' ');
   }
 
   get colorStyle() {
@@ -276,5 +281,5 @@ export default class LabelSpan extends Vue {
     }
     return style;
   }
-};
+}
 </script>

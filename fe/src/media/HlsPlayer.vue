@@ -1,65 +1,58 @@
 <i18n lang="yaml">
 en:
   labels:
-    today: "Today"
+    today: 'Today'
   hints:
-    logo_alt: "Answer"
+    logo_alt: 'Answer'
   tooltips:
-    latest_event_time: "Latest event time: {0}"
+    latest_event_time: 'Latest event time: {0}'
   vms_channel_meta:
-    filtered: "Completed successfully, but no event occurred"
-    disabled: "Disabled"
-    not_ready_roi: "Not ready ROI"
-    not_ready_filters: "Not ready filters"
-    raise_exception: "Raise exception"
-    unknown_code: "Unknown code: {0}"
-    empty_events: "Empty events"
+    filtered: 'Completed successfully, but no event occurred'
+    disabled: 'Disabled'
+    not_ready_roi: 'Not ready ROI'
+    not_ready_filters: 'Not ready filters'
+    raise_exception: 'Raise exception'
+    unknown_code: 'Unknown code: {0}'
+    empty_events: 'Empty events'
 
 ko:
   labels:
-    today: "오늘"
+    today: '오늘'
   hints:
-    logo_alt: "Answer"
+    logo_alt: 'Answer'
   tooltips:
-    latest_event_time: "마지막 이벤트 발생 시간: {0}"
+    latest_event_time: '마지막 이벤트 발생 시간: {0}'
   vms_channel_meta:
-    filtered: "성공적으로 완료되었지만 이벤트가 발생하지 않았습니다"
-    disabled: "비활성화 되었습니다"
-    not_ready_roi: "관심영역(ROI)이 준비되지 않았습니다"
-    not_ready_filters: "필터가 준비되지 않았습니다"
-    raise_exception: "예외가 발생되었습니다"
-    unknown_code: "알 수 없는 에러 코드: {0}"
-    empty_events: "감지된 이벤트가 없습니다"
+    filtered: '성공적으로 완료되었지만 이벤트가 발생하지 않았습니다'
+    disabled: '비활성화 되었습니다'
+    not_ready_roi: '관심영역(ROI)이 준비되지 않았습니다'
+    not_ready_filters: '필터가 준비되지 않았습니다'
+    raise_exception: '예외가 발생되었습니다'
+    unknown_code: '알 수 없는 에러 코드: {0}'
+    empty_events: '감지된 이벤트가 없습니다'
 </i18n>
 
 <template>
   <div class="d-flex flex-column">
-    <v-hover v-slot="{ hover }">
-      <div
-          class="hls-player"
-          @contextmenu="contextmenu"
-          :style="hlsPlayerStyle"
-      >
+    <v-hover v-slot="{hover}">
+      <div class="hls-player" @contextmenu="contextmenu" :style="hlsPlayerStyle">
         <v-sheet
-            v-if="showInformationPanel && hlsUrl"
-            rounded
-            class="information-panel"
-            transition="slide-x-transition"
-            :style="`top: ${getInfoPanelTop(hover)};`"
+          v-if="showInformationPanel && hlsUrl"
+          rounded
+          class="information-panel"
+          transition="slide-x-transition"
+          :style="`top: ${getInfoPanelTop(hover)};`"
         >
-          <div
-              v-for="(event, index) in events"
-              :key="`event-${index}`"
-          >
+          <div v-for="(event, index) in events" :key="`event-${index}`">
             <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
+              <template v-slot:activator="{on, attrs}">
                 <div v-bind="attrs" v-on="on">
                   <v-icon small :color="eventColor(event)">
                     {{ eventIcon(event) }}
                   </v-icon>
                   <span class="ml-1 text--secondary text-body-2">
-                  {{ eventLabel(event) }}
-                </span>
+                    {{ eventLabel(event) }}
+                  </span>
                 </div>
               </template>
               <span>{{ eventTooltip(event) }}</span>
@@ -69,38 +62,38 @@ ko:
 
         <div class="hls-placeholder">
           <canvas
-              v-show="!hideCanvasUser"
-              class="canvas-user"
-              ref="canvas-user"
-              :width="videoWidth"
-              :height="videoHeight"
+            v-show="!hideCanvasUser"
+            class="canvas-user"
+            ref="canvas-user"
+            :width="videoWidth"
+            :height="videoHeight"
           ></canvas>
           <canvas
-              v-show="!hideCanvasMeta"
-              class="canvas-meta"
-              ref="canvas-meta"
-              :width="videoWidth"
-              :height="videoHeight"
+            v-show="!hideCanvasMeta"
+            class="canvas-meta"
+            ref="canvas-meta"
+            :width="videoWidth"
+            :height="videoHeight"
           ></canvas>
 
           <video
-              v-show="hlsUrl"
-              class="video"
-              ref="video"
-              muted
-              playsinline
-              preload="auto"
-              @pause="onPause"
-              @play="onPlay"
-              @resize="onResize"
+            v-show="hlsUrl"
+            class="video"
+            ref="video"
+            muted
+            playsinline
+            preload="auto"
+            @pause="onPause"
+            @play="onPlay"
+            @resize="onResize"
           ></video>
         </div>
 
         <div v-show="!hlsUrl" class="brand-logo-container">
           <img
-              class="brand-logo"
-              src="@/assets/logo/answer-logo-notext.svg"
-              :alt="$t('hints.logo_alt')"
+            class="brand-logo"
+            src="@/assets/logo/answer-logo-notext.svg"
+            :alt="$t('hints.logo_alt')"
           />
         </div>
       </div>
@@ -109,42 +102,38 @@ ko:
     <div class="hls-controllers">
       <div class="hls-controller-left">
         <v-menu
-            offset-y
-            transition="scale-transition"
-            min-width="auto"
-            v-model="showDateMenu"
-            :disabled="loading"
-            :nudge-right="datePickerSize"
-            :close-on-content-click="false"
+          offset-y
+          transition="scale-transition"
+          min-width="auto"
+          v-model="showDateMenu"
+          :disabled="loading"
+          :nudge-right="datePickerSize"
+          :close-on-content-click="false"
         >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-                icon
-                v-bind="attrs"
-                v-on="on"
-            >
+          <template v-slot:activator="{on, attrs}">
+            <v-btn icon v-bind="attrs" v-on="on">
               <v-icon>mdi-calendar</v-icon>
             </v-btn>
           </template>
           <v-date-picker
-              no-title
-              scrollable
-              v-model="date"
-              :min="begin"
-              :max="end"
-              :disabled="loading"
-              :allowed-dates="allowedDates"
-              @change="onChangeDate"
+            no-title
+            scrollable
+            v-model="date"
+            :min="begin"
+            :max="end"
+            :disabled="loading"
+            :allowed-dates="allowedDates"
+            @change="onChangeDate"
           ></v-date-picker>
         </v-menu>
         <span class="mr-2 text--secondary text-caption">{{ date }}</span>
         <v-btn
-            color="secondary"
-            outlined
-            rounded
-            x-small
-            :disabled="loading"
-            @click="onClickToday"
+          color="secondary"
+          outlined
+          rounded
+          x-small
+          :disabled="loading"
+          @click="onClickToday"
         >
           {{ $t('labels.today') }}
         </v-btn>
@@ -152,65 +141,64 @@ ko:
 
       <div class="hls-controller-center">
         <v-btn
-            class="mr-2"
-            icon
-            outlined
-            small
-            :disabled="disabled || disablePrevious || loading"
-            @click="onClickFirst"
+          class="mr-2"
+          icon
+          outlined
+          small
+          :disabled="disabled || disablePrevious || loading"
+          @click="onClickFirst"
         >
           <v-icon small>mdi-skip-backward</v-icon>
         </v-btn>
         <v-btn
-            class="mr-2"
-            icon
-            outlined
-            :disabled="disabled || disablePrevious || loading"
-            @click="onClickPrevious"
+          class="mr-2"
+          icon
+          outlined
+          :disabled="disabled || disablePrevious || loading"
+          @click="onClickPrevious"
         >
           <v-icon>mdi-skip-previous</v-icon>
         </v-btn>
         <v-btn
-            class="mr-2"
-            icon
-            large
-            outlined
-            :disabled="disabled"
-            @click="onClickPlay"
+          class="mr-2"
+          icon
+          large
+          outlined
+          :disabled="disabled"
+          @click="onClickPlay"
         >
           <v-icon large>{{ playIcon }}</v-icon>
         </v-btn>
         <v-btn
-            class="mr-2"
-            icon
-            outlined
-            :disabled="disabled || disableNext || loading"
-            @click="onClickNext"
+          class="mr-2"
+          icon
+          outlined
+          :disabled="disabled || disableNext || loading"
+          @click="onClickNext"
         >
           <v-icon>mdi-skip-next</v-icon>
         </v-btn>
         <v-btn
-            icon
-            outlined
-            small
-            :disabled="disabled || disableNext || loading"
-            @click="onClickLast"
+          icon
+          outlined
+          small
+          :disabled="disabled || disableNext || loading"
+          @click="onClickLast"
         >
           <v-icon small>mdi-skip-forward</v-icon>
         </v-btn>
       </div>
 
-      <div class="hls-controller-right">
-      </div>
+      <div class="hls-controller-right"></div>
     </div>
 
     <record-controller
-        class="mt-2"
-        :disabled="disabled"
-        :record-ranges="recordRanges"
-        :event-offsets="eventOffsets"
-        :cursor-position="cursorPosition"
-        @click="onClickRecordController"
+      class="mt-2"
+      :disabled="disabled"
+      :record-ranges="recordRanges"
+      :event-offsets="eventOffsets"
+      :cursor-position="cursorPosition"
+      @click="onClickRecordController"
     ></record-controller>
 
     <div class="d-flex flex-row">
@@ -240,19 +228,23 @@ import {
   InaccessibleAreaException,
   InvalidRangeException,
   UndefinedException,
-  UnsupportedException
+  UnsupportedException,
 } from '@/exceptions';
-import colors from 'vuetify/lib/util/colors'
+import colors from 'vuetify/lib/util/colors';
 import Hls from 'hls.js';
 import type {HlsConfig, Fragment} from 'hls.js';
 import {
-  ANY_DEVICE_UID, EVENT_CATEGORY_TO_ICON,
+  ANY_DEVICE_UID,
+  EVENT_CATEGORY_TO_ICON,
   VMS_CHANNEL_META_CODE_BAD_ARGUMENT,
   VMS_CHANNEL_META_CODE_FILTERED,
   VMS_CHANNEL_META_CODE_NOT_READY_ROI,
   VMS_CHANNEL_META_CODE_OPENED,
-  VMS_CHANNEL_META_CODE_SUCCESS, VmsChannelEvent, VmsChannelEventCode,
-  VmsEventA, VmsFilterEventQ,
+  VMS_CHANNEL_META_CODE_SUCCESS,
+  VmsChannelEvent,
+  VmsChannelEventCode,
+  VmsEventA,
+  VmsFilterEventQ,
 } from '@/packet/vms';
 import {todayString} from '@/chrono/date';
 import moment from 'moment';
@@ -388,18 +380,19 @@ export default class HlsPlayer extends VueBase {
       this.date = todayString();
     }
 
-    this.$api2.getVmsRecordsPdeviceDates(this.group, this.project, this.deviceText)
-        .then(items => {
-          this.recordDates = items;
-          if (items) {
-            this.begin = items[0];
-            this.end = items[items.length - 1];
-            this.updateHls(this.date);
-          }
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getVmsRecordsPdeviceDates(this.group, this.project, this.deviceText)
+      .then(items => {
+        this.recordDates = items;
+        if (items) {
+          this.begin = items[0];
+          this.end = items[items.length - 1];
+          this.updateHls(this.date);
+        }
+      })
+      .catch(error => {
+        this.toastRequestFailure(error);
+      });
 
     this.refreshIntervalHandle = window.setInterval(() => {
       this.onRefresh();
@@ -478,7 +471,7 @@ export default class HlsPlayer extends VueBase {
 
   get informationIconColor() {
     switch (this.informationCode) {
-      case VMS_CHANNEL_META_CODE_SUCCESS:  // TODO: Replace to enum.
+      case VMS_CHANNEL_META_CODE_SUCCESS: // TODO: Replace to enum.
         return this.$vuetify.theme.currentTheme.secondary;
       case VMS_CHANNEL_META_CODE_OPENED:
         return this.$vuetify.theme.currentTheme.secondary;
@@ -495,7 +488,7 @@ export default class HlsPlayer extends VueBase {
 
   get informationIcon() {
     switch (this.informationCode) {
-      case VMS_CHANNEL_META_CODE_SUCCESS:  // TODO: Replace to enum.
+      case VMS_CHANNEL_META_CODE_SUCCESS: // TODO: Replace to enum.
         return 'mdi-chat-processing-outline';
       case VMS_CHANNEL_META_CODE_OPENED:
         return 'mdi-chat-outline';
@@ -549,7 +542,7 @@ export default class HlsPlayer extends VueBase {
     if (index === -1) {
       return true;
     }
-    return index === (this.recordDates.length - 1);
+    return index === this.recordDates.length - 1;
   }
 
   updateHls(date: string) {
@@ -569,7 +562,11 @@ export default class HlsPlayer extends VueBase {
 
     try {
       const url = this.$api2.urlVmsRecordsPdevicePlaylistMaster(
-          this.group, this.project, this.deviceText, this.dateStart, this.dateLast
+        this.group,
+        this.project,
+        this.deviceText,
+        this.dateStart,
+        this.dateLast,
       );
 
       const hls = new Hls(this.hlsOptions);
@@ -640,7 +637,10 @@ export default class HlsPlayer extends VueBase {
 
     try {
       const ranges = await this.$api2.getVmsRecordsPdeviceRangesPdate(
-          this.group, this.project, this.deviceText, this.date
+        this.group,
+        this.project,
+        this.deviceText,
+        this.date,
       );
       const ratioRanges = ranges.map(x => {
         const startTime = moment(x.start);
@@ -653,8 +653,8 @@ export default class HlsPlayer extends VueBase {
         };
       });
       const ratioOfDay = ratioRanges
-          .map(x => (x.last - x.start))
-          .reduce((total, x) => (total + x));
+        .map(x => x.last - x.start)
+        .reduce((total, x) => total + x);
       this.recordRanges = ratioRanges.map(x => {
         return {
           startTime: x.startTime,
@@ -666,23 +666,26 @@ export default class HlsPlayer extends VueBase {
       });
 
       const offsets = await this.$api2.getVmsDeviceEventsTimesPdateOffset(
-          this.group, this.project, this.deviceText, this.date
-      )
+        this.group,
+        this.project,
+        this.deviceText,
+        this.date,
+      );
       this.eventOffsets = offsets.map(x => {
         return (x * ONE_SECOND_TO_MILLISECONDS) / MILLISECONDS_TO_DAY;
       });
       this.cursorPosition = this.eventOffsets[0];
 
       const begin = moment(`${this.date}T00:00:00`);
-      const offsetMilliseconds = (this.cursorPosition * MILLISECONDS_TO_DAY)
+      const offsetMilliseconds = this.cursorPosition * MILLISECONDS_TO_DAY;
       const cursorTime = begin.clone().add(offsetMilliseconds, 'milliseconds');
-      const cursorHour = cursorTime.hour()
+      const cursorHour = cursorTime.hour();
 
-      const hours = [... Array(24).keys()];
+      const hours = [...Array(24).keys()];
       this.eventsIndexes = [];
       this.nextEventIndex = undefined;
       this.eventsBuffer.clear();
-      this.eventsDownloadQueue = [cursorHour, ... hours.filter(x => x != cursorHour)];
+      this.eventsDownloadQueue = [cursorHour, ...hours.filter(x => x != cursorHour)];
       this.events = [];
       // console.debug(`Enqueue event hours: ${this.eventsDownloadQueue}`);
     } catch (error) {
@@ -757,7 +760,7 @@ export default class HlsPlayer extends VueBase {
       const startValue = range.startTime.valueOf();
       const lastValue = range.lastTime.valueOf();
       console.assert(lastValue >= startValue);
-      totalMilliseconds += (lastValue - startValue);
+      totalMilliseconds += lastValue - startValue;
     }
 
     const timeValue = time.valueOf();
@@ -797,7 +800,7 @@ export default class HlsPlayer extends VueBase {
     const range = this.recordRanges[findIndex];
     const start = range.startTime;
     const result = start.clone();
-    result.add(remainMilliseconds, 'milliseconds')
+    result.add(remainMilliseconds, 'milliseconds');
     return result;
   }
 
@@ -820,7 +823,7 @@ export default class HlsPlayer extends VueBase {
     } else {
       console.assert(startValue <= timeValue && timeValue <= lastValue);
       const timeRatio = (timeValue - startValue) / (lastValue - startValue);
-      return totalRatio + (timeRatio * range.ratio);
+      return totalRatio + timeRatio * range.ratio;
     }
   }
 
@@ -849,7 +852,7 @@ export default class HlsPlayer extends VueBase {
     const offsetMilliseconds = rangeDuration * timeRatio;
 
     const result = start.clone();
-    result.add(offsetMilliseconds, 'milliseconds')
+    result.add(offsetMilliseconds, 'milliseconds');
     return result;
   }
 
@@ -946,7 +949,8 @@ export default class HlsPlayer extends VueBase {
     //   return;
     // }
 
-    const videoCurrentMilliseconds = this.video.currentTime * ONE_SECOND_TO_MILLISECONDS;
+    const videoCurrentMilliseconds =
+      this.video.currentTime * ONE_SECOND_TO_MILLISECONDS;
     const currentTime = this.currentMillisecondsToAbsTime(videoCurrentMilliseconds);
     const currentTimeValue = currentTime.valueOf();
     // console.debug(`onRefresh(currentTime=${currentTime})`);
@@ -973,9 +977,9 @@ export default class HlsPlayer extends VueBase {
           }
 
           if (this.nextEventIndex + 1 >= this.eventsIndexes.length) {
-            this.nextEventIndex = -1;  // EOF Events
+            this.nextEventIndex = -1; // EOF Events
           } else {
-            this.nextEventIndex += 1
+            this.nextEventIndex += 1;
           }
         } else {
           const leftMilliseconds = nextEventTimeValue - currentTimeValue;
@@ -1004,7 +1008,7 @@ export default class HlsPlayer extends VueBase {
     } else if (this.eventsDownloadQueue.length >= 1) {
       this.loadingEvent = true;
 
-      const cursor = this.eventsDownloadQueue.splice(0, 1)
+      const cursor = this.eventsDownloadQueue.splice(0, 1);
       console.assert(cursor.length === 1);
       const hour = cursor[0];
       const last = this.eventsDownloadQueue.length === 0;
@@ -1019,7 +1023,7 @@ export default class HlsPlayer extends VueBase {
     }
   }
 
-  async onBufferingEvents(date: string, hour: number, last=false) {
+  async onBufferingEvents(date: string, hour: number, last = false) {
     const hourText = hour.toString().padStart(2, '0');
     // console.debug(`Buffering events: ${date}T${hourText} ...`);
 
@@ -1039,7 +1043,7 @@ export default class HlsPlayer extends VueBase {
     }
 
     // console.debug(`Total events size: ${this.eventsBuffer.size}`);
-    this.eventsIndexes = [... this.eventsBuffer.keys()];
+    this.eventsIndexes = [...this.eventsBuffer.keys()];
     this.nextEventIndex = undefined;
     if (last) {
       console.debug(`Total events: ${this.eventsIndexes.length}`);
@@ -1162,7 +1166,7 @@ export default class HlsPlayer extends VueBase {
     console.assert(0 <= pos && pos <= 1);
 
     const begin = moment(`${this.date}T00:00:00`);
-    const offsetMilliseconds = (pos * MILLISECONDS_TO_DAY)
+    const offsetMilliseconds = pos * MILLISECONDS_TO_DAY;
     const cursorTime = begin.clone().add(offsetMilliseconds, 'milliseconds');
 
     const currentMilliseconds = this.absTimeToCurrentMilliseconds(cursorTime);
@@ -1170,7 +1174,9 @@ export default class HlsPlayer extends VueBase {
     this.video.currentTime = currentMilliseconds / ONE_SECOND_TO_MILLISECONDS;
     this.events = [];
     this.nextEventIndex = undefined;
-    console.debug(`onClickRecordController(pos=${pos},currentTime=${this.video.currentTime})`);
+    console.debug(
+      `onClickRecordController(pos=${pos},currentTime=${this.video.currentTime})`,
+    );
 
     // const videoRatio = this.absTimeToVideoRatio(cursorTime);
     // this.cursorPosition = pos;

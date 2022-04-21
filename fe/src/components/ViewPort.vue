@@ -59,8 +59,8 @@ export default class ViewPort extends Vue {
 
   get contentStyle() {
     return {
-      'height': `${this.contentHeight}px`,
-      'max-height': `${this.contentHeight}px`
+      height: `${this.contentHeight}px`,
+      'max-height': `${this.contentHeight}px`,
     };
   }
 
@@ -69,7 +69,7 @@ export default class ViewPort extends Vue {
 
     this.$nextTick(() => {
       this.onResize();
-    })
+    });
   }
 
   beforeDestroy() {

@@ -4,7 +4,7 @@ import adminAirjoyNames from '@/router/names/external/airjoy/admin';
 
 @Component
 export default class RouterAdminAirjoy extends Router {
-    moveToAdminAirjoyDevices() {
-        this.moveTo(adminAirjoyNames.adminAirjoyDevices);
-    }
+  moveToAdminAirjoyDevices() {
+    this.moveTo(adminAirjoyNames.adminAirjoyDevices);
+  }
 }

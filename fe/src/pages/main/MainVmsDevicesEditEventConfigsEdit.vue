@@ -1,45 +1,45 @@
 <i18n lang="yaml">
 en:
-  devices: "Devices"
+  devices: 'Devices'
   headers:
-    detail: "Detail"
+    detail: 'Detail'
   subheaders:
-    detail: "Detailed information about this config."
+    detail: 'Detailed information about this config.'
   labels:
-    created_at: "Created At"
-    updated_at: "Updated At"
-    delete: "Delete a config"
+    created_at: 'Created At'
+    updated_at: 'Updated At'
+    delete: 'Delete a config'
   hints:
-    delete: "Please be careful! It cannot be recovered."
+    delete: 'Please be careful! It cannot be recovered.'
   msg:
-    enable_debugging: "Enable Device Debugging Mode"
-    disable_debugging: "Disable Device Debugging Mode"
-    failed_start_debugging: "Failed to switch device debugging mode."
-    failed_stop_debugging: "Failed to stop device debugging mode."
-    delete_confirm: "Are you sure? Are you really removing this config?"
-  cancel: "Cancel"
-  delete: "Delete"
+    enable_debugging: 'Enable Device Debugging Mode'
+    disable_debugging: 'Disable Device Debugging Mode'
+    failed_start_debugging: 'Failed to switch device debugging mode.'
+    failed_stop_debugging: 'Failed to stop device debugging mode.'
+    delete_confirm: 'Are you sure? Are you really removing this config?'
+  cancel: 'Cancel'
+  delete: 'Delete'
 
 ko:
-  devices: "Devices"
+  devices: 'Devices'
   headers:
-    detail: "상세 정보"
+    detail: '상세 정보'
   subheaders:
-    detail: "이 설정에 대한 자세한 정보입니다."
+    detail: '이 설정에 대한 자세한 정보입니다.'
   labels:
-    created_at: "설정 생성일"
-    updated_at: "설정 갱신일"
-    delete: "설정 제거"
+    created_at: '설정 생성일'
+    updated_at: '설정 갱신일'
+    delete: '설정 제거'
   hints:
-    delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
+    delete: '주의하세요! 이 명령은 되돌릴 수 없습니다!'
   msg:
-    enable_debugging: "장치 디버깅 모드를 활성화 했습니다."
-    disable_debugging: "장치 디버깅 모드를 비활성화 했습니다."
-    failed_start_debugging: "장치 디버깅 모드 전환에 실패하였습니다."
-    failed_stop_debugging: "장치 디버깅 모드 중단에 실패하였습니다."
-    delete_confirm: "이 설정을 정말 제거합니까?"
-  cancel: "취소"
-  delete: "제거"
+    enable_debugging: '장치 디버깅 모드를 활성화 했습니다.'
+    disable_debugging: '장치 디버깅 모드를 비활성화 했습니다.'
+    failed_start_debugging: '장치 디버깅 모드 전환에 실패하였습니다.'
+    failed_stop_debugging: '장치 디버깅 모드 중단에 실패하였습니다.'
+    delete_confirm: '이 설정을 정말 제거합니까?'
+  cancel: '취소'
+  delete: '제거'
 </i18n>
 
 <template>
@@ -48,44 +48,36 @@ ko:
     <v-divider></v-divider>
 
     <form-vms-event-config
-        disable-category
-        :loading-submit="loadingSubmit"
-        :disable-submit-button="!modified"
-        :device="device"
-        :value="current"
-        @input="onInputCurrent"
-        @cancel="onClickCancel"
-        @ok="onClickOk"
+      disable-category
+      :loading-submit="loadingSubmit"
+      :disable-submit-button="!modified"
+      :device="device"
+      :value="current"
+      @input="onInputCurrent"
+      @cancel="onClickCancel"
+      @ok="onClickOk"
     ></form-vms-event-config>
 
-    <left-title
-        :header="$t('headers.detail')"
-        :subheader="$t('subheaders.detail')"
-    >
+    <left-title :header="$t('headers.detail')" :subheader="$t('subheaders.detail')">
       <v-card outlined>
         <v-simple-table class="elevation-1">
           <template v-slot:default>
             <tbody>
-            <tr>
-              <td>{{ $t('labels.created_at') }}</td>
-              <td>{{ createdAt }}</td>
-            </tr>
-            <tr>
-              <td>{{ $t('labels.updated_at') }}</td>
-              <td>{{ updatedAt }}</td>
-            </tr>
+              <tr>
+                <td>{{ $t('labels.created_at') }}</td>
+                <td>{{ createdAt }}</td>
+              </tr>
+              <tr>
+                <td>{{ $t('labels.updated_at') }}</td>
+                <td>{{ updatedAt }}</td>
+              </tr>
             </tbody>
           </template>
         </v-simple-table>
       </v-card>
     </left-title>
 
-    <v-alert
-        outlined
-        prominent
-        class="ma-4"
-        type="error"
-    >
+    <v-alert outlined prominent class="ma-4" type="error">
       <v-row align="center" class="pl-4">
         <v-col>
           <v-row>
@@ -124,7 +116,6 @@ ko:
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </v-container>
 </template>
 
@@ -135,16 +126,16 @@ import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import FormVmsEventConfig from '@/components/FormVmsEventConfig.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import type {VmsEventConfigA} from '@/packet/vms';
-import {iso8601ToLocal} from "@/chrono/iso8601";
+import {iso8601ToLocal} from '@/chrono/iso8601';
 import * as _ from 'lodash';
-import {VmsDeviceA} from "@/packet/vms";
+import {VmsDeviceA} from '@/packet/vms';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
     FormVmsEventConfig,
     LeftTitle,
-  }
+  },
 })
 export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
   readonly breadcrumbs = [
@@ -217,7 +208,10 @@ export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
 
       this.device = await this.$api2.getVmsDevice(group, project, device);
       this.original = await this.$api2.getVmsDeviceEventsConfigsPconfig(
-          group, project, device, config
+        group,
+        project,
+        device,
+        config,
       );
       this.current = _.cloneDeep(this.original);
       this.modified = false;
@@ -232,13 +226,14 @@ export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
     const group = this.currentGroup;
     const project = this.currentProject;
     const device = this.currentDevice;
-    this.$api2.postVmsDeviceProcessDebugStop(group, project, device)
-        .then(() => {
-          this.toastSuccess(this.$t('msg.disable_debugging'));
-        })
-        .catch(() => {
-          this.toastWarning(this.$t('msg.failed_stop_debugging'));
-        });
+    this.$api2
+      .postVmsDeviceProcessDebugStop(group, project, device)
+      .then(() => {
+        this.toastSuccess(this.$t('msg.disable_debugging'));
+      })
+      .catch(() => {
+        this.toastWarning(this.$t('msg.failed_stop_debugging'));
+      });
   }
 
   get createdAt() {
@@ -299,17 +294,18 @@ export default class MainVmsDevicesEditEventConfigsEdit extends VueBase {
     const config = this.$route.params.config;
 
     this.loadingDelete = true;
-    this.$api2.deleteVmsDeviceEventsConfigsPconfig(group, project, device, config)
-        .then(() => {
-          this.loadingDelete = false;
-          this.showDeleteDialog = false;
-          this.toastRequestSuccess();
-          this.moveToMainVmsDevicesEditEvents();
-        })
-        .catch(error => {
-          this.loadingDelete = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .deleteVmsDeviceEventsConfigsPconfig(group, project, device, config)
+      .then(() => {
+        this.loadingDelete = false;
+        this.showDeleteDialog = false;
+        this.toastRequestSuccess();
+        this.moveToMainVmsDevicesEditEvents();
+      })
+      .catch(error => {
+        this.loadingDelete = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

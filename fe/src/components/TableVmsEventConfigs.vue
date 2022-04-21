@@ -1,78 +1,78 @@
 <i18n lang="yaml">
 en:
   labels:
-    new: "Add Event"
-    delete: "Delete a Event"
-    search: "You can filter by name"
+    new: 'Add Event'
+    delete: 'Delete a Event'
+    search: 'You can filter by name'
   headers:
-    enable: "Enable"
-    category: "Category"
-    name: "Name"
-    modified: "Modified at"
-    actions: "Actions"
+    enable: 'Enable'
+    category: 'Category'
+    name: 'Name'
+    modified: 'Modified at'
+    actions: 'Actions'
   category:
-    color: "Color"
-    detection: "Detection"
-    matching: "Matching"
-    ocr: "OCR"
-    unknown: "Unknown"
+    color: 'Color'
+    detection: 'Detection'
+    matching: 'Matching'
+    ocr: 'OCR'
+    unknown: 'Unknown'
   msg:
-    loading: "Loading... Please wait"
-    empty: "Empty Events"
-    delete_confirm: "Are you really removing this event?"
-  cancel: "Cancel"
-  submit: "Submit"
-  delete: "Delete"
+    loading: 'Loading... Please wait'
+    empty: 'Empty Events'
+    delete_confirm: 'Are you really removing this event?'
+  cancel: 'Cancel'
+  submit: 'Submit'
+  delete: 'Delete'
 
 ko:
   labels:
-    new: "이벤트 추가"
-    delete: "이벤트 제거"
-    search: "이름을 필터링할 수 있습니다"
+    new: '이벤트 추가'
+    delete: '이벤트 제거'
+    search: '이름을 필터링할 수 있습니다'
   headers:
-    enable: "활성화"
-    category: "종류"
-    name: "이름"
-    modified: "수정일"
-    actions: "관리"
+    enable: '활성화'
+    category: '종류'
+    name: '이름'
+    modified: '수정일'
+    actions: '관리'
   category:
-    color: "색상 비교"
-    detection: "객체 탐지"
-    matching: "영상 비교"
-    ocr: "문자 인식"
-    unknown: "알 수 없음"
+    color: '색상 비교'
+    detection: '객체 탐지'
+    matching: '영상 비교'
+    ocr: '문자 인식'
+    unknown: '알 수 없음'
   msg:
-    loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-    empty: "이벤트가 존재하지 않습니다."
-    delete_confirm: "이 이벤트를 정말 제거합니까?"
-  cancel: "취소"
-  submit: "제출"
-  delete: "제거"
+    loading: '불러오는중 입니다... 잠시만 기다려 주세요.'
+    empty: '이벤트가 존재하지 않습니다.'
+    delete_confirm: '이 이벤트를 정말 제거합니까?'
+  cancel: '취소'
+  submit: '제출'
+  delete: '제거'
 </i18n>
 
 <template>
   <v-data-table
-      sort-desc
-      sort-by="name"
-      :class="dataTableClass"
-      :items-per-page="itemsPerPage"
-      :headers="headers"
-      :items="items"
-      :search="filter"
-      :loading="loading"
-      :loading-text="$t('msg.loading')"
-      @click:row="onClickRow"
+    sort-desc
+    sort-by="name"
+    :class="dataTableClass"
+    :items-per-page="itemsPerPage"
+    :headers="headers"
+    :items="items"
+    :search="filter"
+    :loading="loading"
+    :loading-text="$t('msg.loading')"
+    @click:row="onClickRow"
   >
     <template v-if="!hideTopBar" v-slot:top>
       <v-toolbar flat>
         <v-text-field
-            v-if="!hideFilterInput"
-            class="mr-4"
-            v-model="filter"
-            append-icon="mdi-magnify"
-            single-line
-            hide-details
-            :label="$t('labels.search')"
+          v-if="!hideFilterInput"
+          class="mr-4"
+          v-model="filter"
+          append-icon="mdi-magnify"
+          single-line
+          hide-details
+          :label="$t('labels.search')"
         ></v-text-field>
         <v-btn v-if="!hideNewItemButton" color="primary" @click="clickNew">
           {{ $t('labels.new') }}
@@ -80,33 +80,32 @@ ko:
       </v-toolbar>
     </template>
 
-    <template v-slot:item.enable="{ item }">
+    <template v-slot:item.enable="{item}">
       <v-btn icon @click="clickActive(item)">
         <v-icon>{{ enableIcon(item) }}</v-icon>
       </v-btn>
     </template>
 
-    <template v-slot:item.category="{ item }">
+    <template v-slot:item.category="{item}">
       <v-chip>
         <v-icon left>{{ categoryIcon(item) }}</v-icon>
         {{ categoryText(item) }}
       </v-chip>
     </template>
 
-    <template v-slot:item.modified="{ item }">
+    <template v-slot:item.modified="{item}">
       {{ modifiedDate(item) }}
     </template>
 
-    <template v-if="!hideActions" v-slot:item.actions="{ item }">
-      <v-icon v-if="!hideActionEdit" small @click="clickEdit(item)">
-        mdi-pencil
-      </v-icon>
+    <template v-if="!hideActions" v-slot:item.actions="{item}">
+      <v-icon v-if="!hideActionEdit" small @click="clickEdit(item)">mdi-pencil</v-icon>
       <v-icon
-          v-if="!hideActionDelete"
-          class="ml-2"
-          color="error"
-          small
-          @click="clickDelete(item)">
+        v-if="!hideActionDelete"
+        class="ml-2"
+        color="error"
+        small
+        @click="clickDelete(item)"
+      >
         mdi-delete
       </v-icon>
     </template>

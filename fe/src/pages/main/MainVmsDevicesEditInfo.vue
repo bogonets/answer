@@ -1,17 +1,17 @@
 <template>
   <form-vms-device
-      hide-cancel-button
-      :disabled="loading"
-      :disable-submit-button="!modified"
-      :loading-submit="loadingSubmit"
-      :show-delete-dialog="showDeleteDialog"
-      :loading-delete="loadingDelete"
-      :value="current"
-      @input="onUpdateCurrent"
-      @ok="onClickOk"
-      @delete:show="onClickDelete"
-      @delete:cancel="onClickDeleteCancel"
-      @delete:ok="onClickDeleteOk"
+    hide-cancel-button
+    :disabled="loading"
+    :disable-submit-button="!modified"
+    :loading-submit="loadingSubmit"
+    :show-delete-dialog="showDeleteDialog"
+    :loading-delete="loadingDelete"
+    :value="current"
+    @input="onUpdateCurrent"
+    @ok="onClickOk"
+    @delete:show="onClickDelete"
+    @delete:cancel="onClickDeleteCancel"
+    @delete:ok="onClickDeleteOk"
   ></form-vms-device>
 </template>
 
@@ -19,16 +19,13 @@
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import FormVmsDevice from '@/components/FormVmsDevice.vue';
-import type {
-  VmsDeviceA,
-  VmsUpdateDeviceQ,
-} from '@/packet/vms';
+import type {VmsDeviceA, VmsUpdateDeviceQ} from '@/packet/vms';
 import * as _ from 'lodash';
 
 @Component({
   components: {
     FormVmsDevice,
-  }
+  },
 })
 export default class MainVmsDevicesEditInfo extends VueBase {
   loading = false;
@@ -73,17 +70,18 @@ export default class MainVmsDevicesEditInfo extends VueBase {
     const project = this.$route.params.project;
     const device = this.$route.params.device;
     this.loading = true;
-    this.$api2.getVmsDevice(group, project, device)
-        .then(item => {
-          this.original = _.cloneDeep(item);
-          this.current = _.cloneDeep(item);
-          this.loading = false;
-          this.modified = false;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getVmsDevice(group, project, device)
+      .then(item => {
+        this.original = _.cloneDeep(item);
+        this.current = _.cloneDeep(item);
+        this.loading = false;
+        this.modified = false;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onUpdateCurrent(value: VmsDeviceA) {
@@ -112,16 +110,17 @@ export default class MainVmsDevicesEditInfo extends VueBase {
     const project = this.$route.params.project;
     const device = this.$route.params.device;
     this.loadingSubmit = true;
-    this.$api2.patchVmsDevice(group, project, device, body)
-        .then(() => {
-          this.loadingSubmit = true;
-          this.toastRequestSuccess();
-          this.requestDevice();
-        })
-        .catch(error => {
-          this.loadingSubmit = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .patchVmsDevice(group, project, device, body)
+      .then(() => {
+        this.loadingSubmit = true;
+        this.toastRequestSuccess();
+        this.requestDevice();
+      })
+      .catch(error => {
+        this.loadingSubmit = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickDelete() {
@@ -137,17 +136,18 @@ export default class MainVmsDevicesEditInfo extends VueBase {
     const project = this.$route.params.project;
     const device = this.$route.params.device;
     this.loadingDelete = true;
-    this.$api2.deleteVmsDevice(group, project, device)
-        .then(() => {
-          this.loadingDelete = false;
-          this.showDeleteDialog = false;
-          this.toastRequestSuccess();
-          this.moveToMainVmsDevices();
-        })
-        .catch(error => {
-          this.loadingDelete = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .deleteVmsDevice(group, project, device)
+      .then(() => {
+        this.loadingDelete = false;
+        this.showDeleteDialog = false;
+        this.toastRequestSuccess();
+        this.moveToMainVmsDevices();
+      })
+      .catch(error => {
+        this.loadingDelete = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

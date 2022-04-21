@@ -4,12 +4,11 @@
     <v-divider></v-divider>
 
     <form-group-new
-        hide-features
-        hide-visibility
-        request-type="self"
-        @request:success="onRequestSuccess"
+      hide-features
+      hide-visibility
+      request-type="self"
+      @request:success="onRequestSuccess"
     ></form-group-new>
-
   </v-container>
 </template>
 
@@ -23,7 +22,7 @@ import FormGroupNew from '@/components/FormGroupNew.vue';
   components: {
     ToolbarBreadcrumbs,
     FormGroupNew,
-  }
+  },
 })
 export default class RootGroupsNew extends VueBase {
   private readonly navigationItems = [

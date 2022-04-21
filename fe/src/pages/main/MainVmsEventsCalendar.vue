@@ -1,19 +1,19 @@
 <i18n lang="yaml">
 en:
-  calendar: "Calendar"
-  first_event_day: "First Event Day"
-  today: "Today"
-  month: "{1}Month {0}Year"
-  event: "Event"
-  empty: "There are no registered events."
+  calendar: 'Calendar'
+  first_event_day: 'First Event Day'
+  today: 'Today'
+  month: '{1}Month {0}Year'
+  event: 'Event'
+  empty: 'There are no registered events.'
 
 ko:
-  calendar: "Calendar"
-  first_event_day: "처음"
-  today: "오늘"
-  month: "{0}년 {1}월"
-  event: "이벤트"
-  empty: "등록된 이벤트가 없습니다."
+  calendar: 'Calendar'
+  first_event_day: '처음'
+  today: '오늘'
+  month: '{0}년 {1}월'
+  event: '이벤트'
+  empty: '등록된 이벤트가 없습니다.'
 </i18n>
 
 <template>
@@ -22,71 +22,41 @@ ko:
     <v-divider></v-divider>
 
     <v-toolbar flat>
-      <v-btn
-          outlined
-          rounded
-          class="mr-4"
-          color="grey darken-2"
-          @click="onClickFirst"
-      >
+      <v-btn outlined rounded class="mr-4" color="grey darken-2" @click="onClickFirst">
         {{ $t('first_event_day') }}
       </v-btn>
 
-      <v-btn
-          outlined
-          rounded
-          class="mr-4"
-          color="grey darken-2"
-          @click="onClickToday"
-      >
+      <v-btn outlined rounded class="mr-4" color="grey darken-2" @click="onClickToday">
         {{ $t('today') }}
       </v-btn>
 
-      <v-btn
-          fab
-          text
-          small
-          color="grey darken-2"
-          @click="onClickPrev"
-      >
-        <v-icon small>
-          mdi-chevron-left
-        </v-icon>
+      <v-btn fab text small color="grey darken-2" @click="onClickPrev">
+        <v-icon small>mdi-chevron-left</v-icon>
       </v-btn>
 
       <span class="text--primary text-h5 font-weight-bold">
         {{ $t('month', [focusYear, focusMonth]) }}
       </span>
 
-      <v-btn
-          fab
-          text
-          small
-          color="grey darken-2"
-          @click="onClickNext"
-      >
-        <v-icon small>
-          mdi-chevron-right
-        </v-icon>
+      <v-btn fab text small color="grey darken-2" @click="onClickNext">
+        <v-icon small>mdi-chevron-right</v-icon>
       </v-btn>
-
     </v-toolbar>
 
     <v-calendar
-        ref="calendar"
-        class="events-calendar"
-        v-model="focusDay"
-        type="month"
-        color="primary"
-        :weekdays="[0, 1, 2, 3, 4, 5, 6]"
-        :events="calendarEvents"
-        event-overlap-mode="stack"
-        event-overlap-threshold="30"
-        :event-color="eventColor"
-        @change="onChangeEvents"
-        @click:event="onClickEvent"
+      ref="calendar"
+      class="events-calendar"
+      v-model="focusDay"
+      type="month"
+      color="primary"
+      :weekdays="[0, 1, 2, 3, 4, 5, 6]"
+      :events="calendarEvents"
+      event-overlap-mode="stack"
+      event-overlap-threshold="30"
+      :event-color="eventColor"
+      @change="onChangeEvents"
+      @click:event="onClickEvent"
     ></v-calendar>
-
   </v-container>
 </template>
 
@@ -100,7 +70,7 @@ import {todayString, dateToString} from '@/chrono/date';
 @Component({
   components: {
     ToolbarBreadcrumbs,
-  }
+  },
 })
 export default class MainVmsEventsCalendar extends VueBase {
   readonly breadcrumbs = [
@@ -137,29 +107,30 @@ export default class MainVmsEventsCalendar extends VueBase {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     this.loading = true;
-    this.$api2.getVmsEventsDates(group, project)
-        .then(items => {
-          this.loading = false;
-          this.events = items;
-          const focus = this.focusDay.split("-");
-          const focusYear = Number.parseInt(focus[0]);
-          const focusMonth = Number.parseInt(focus[1]) - 1;
-          const begin = new Date(focusYear, focusMonth, 1);
-          const end = new Date(focusYear, focusMonth + 1, 0);
-          this.updateCalendarEvents(begin, end);
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getVmsEventsDates(group, project)
+      .then(items => {
+        this.loading = false;
+        this.events = items;
+        const focus = this.focusDay.split('-');
+        const focusYear = Number.parseInt(focus[0]);
+        const focusMonth = Number.parseInt(focus[1]) - 1;
+        const begin = new Date(focusYear, focusMonth, 1);
+        const end = new Date(focusYear, focusMonth + 1, 0);
+        this.updateCalendarEvents(begin, end);
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   get focusYear() {
-    return this.focusDay.split("-")[0];
+    return this.focusDay.split('-')[0];
   }
 
   get focusMonth() {
-    return this.focusDay.split("-")[1];
+    return this.focusDay.split('-')[1];
   }
 
   eventColor(event: any) {
@@ -170,7 +141,7 @@ export default class MainVmsEventsCalendar extends VueBase {
     }
   }
 
-  onChangeEvents({ start, end }) {
+  onChangeEvents({start, end}) {
     const min = new Date(`${start.date}T00:00:00`);
     const max = new Date(`${end.date}T23:59:59`);
     this.updateCalendarEvents(min, max);
@@ -197,7 +168,7 @@ export default class MainVmsEventsCalendar extends VueBase {
     this.calendarEvents = result;
   }
 
-  onClickEvent({ event }) {
+  onClickEvent({event}) {
     console.assert(typeof event.start !== 'undefined');
     const begin = event.start as Date;
     const date = dateToString(begin);

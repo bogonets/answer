@@ -18,21 +18,13 @@ export * from '@/packet/vms/rtc';
 
 export const STREAM_TYPE_RTP_UNICAST = 'RTP-Unicast';
 export const STREAM_TYPE_RTP_MULTICAST = 'RTP-Multicast';
-export const STREAM_TYPES = [
-    STREAM_TYPE_RTP_UNICAST,
-    STREAM_TYPE_RTP_MULTICAST,
-];
+export const STREAM_TYPES = [STREAM_TYPE_RTP_UNICAST, STREAM_TYPE_RTP_MULTICAST];
 
 export const PROTOCOL_UDP = 'UDP';
 export const PROTOCOL_TCP = 'TCP';
 export const PROTOCOL_RTSP = 'RTSP';
 export const PROTOCOL_HTTP = 'HTTP';
-export const PROTOCOLS = [
-    PROTOCOL_UDP,
-    PROTOCOL_TCP,
-    PROTOCOL_RTSP,
-    PROTOCOL_HTTP,
-];
+export const PROTOCOLS = [PROTOCOL_UDP, PROTOCOL_TCP, PROTOCOL_RTSP, PROTOCOL_HTTP];
 
 export const SECOND_IN_MILLISECONDS = 1000;
 export const MINUTE_IN_MILLISECONDS = 60 * SECOND_IN_MILLISECONDS;

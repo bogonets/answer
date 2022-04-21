@@ -1,47 +1,47 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  layouts: "VMS Layouts"
-  edit: "Edit"
+  groups: 'Groups'
+  layouts: 'VMS Layouts'
+  edit: 'Edit'
   labels:
-    name: "Name"
-    description: "Description"
-    index: "Layout Index"
-    device_uid: "Device UID"
-    submit: "Submit"
-    delete: "Delete a layout"
+    name: 'Name'
+    description: 'Description'
+    index: 'Layout Index'
+    device_uid: 'Device UID'
+    submit: 'Submit'
+    delete: 'Delete a layout'
   hints:
-    name: "The device name to display on the screen."
-    description: "Detail description."
-    index: "The order of the layout."
-    device_uid: "Device UID"
-    delete: "Please be careful! It cannot be recovered."
+    name: 'The device name to display on the screen.'
+    description: 'Detail description.'
+    index: 'The order of the layout.'
+    device_uid: 'Device UID'
+    delete: 'Please be careful! It cannot be recovered.'
   msg:
-    delete_confirm: "Are you sure? Are you really removing this layout?"
-  cancel: "Cancel"
-  delete: "Delete"
+    delete_confirm: 'Are you sure? Are you really removing this layout?'
+  cancel: 'Cancel'
+  delete: 'Delete'
 
 ko:
-  groups: "Groups"
-  layouts: "VMS Layouts"
-  edit: "Edit"
+  groups: 'Groups'
+  layouts: 'VMS Layouts'
+  edit: 'Edit'
   labels:
-    name: "이름"
-    description: "상세 정보"
-    index: "배치 순서"
-    device_uid: "Device UID"
-    submit: "제출"
-    delete: "레이아웃 제거"
+    name: '이름'
+    description: '상세 정보'
+    index: '배치 순서'
+    device_uid: 'Device UID'
+    submit: '제출'
+    delete: '레이아웃 제거'
   hints:
-    name: "화면에 표시할 장치 이름 입니다."
-    description: "상세한 정보 입니다."
-    index: "레이아웃이 배치되는 순서입니다."
-    device_uid: "Device UID"
-    delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
+    name: '화면에 표시할 장치 이름 입니다.'
+    description: '상세한 정보 입니다.'
+    index: '레이아웃이 배치되는 순서입니다.'
+    device_uid: 'Device UID'
+    delete: '주의하세요! 이 명령은 되돌릴 수 없습니다!'
   msg:
-    delete_confirm: "이 레이아웃을 정말 제거합니까?"
-  cancel: "취소"
-  delete: "제거"
+    delete_confirm: '이 레이아웃을 정말 제거합니까?'
+  cancel: '취소'
+  delete: '제거'
 </i18n>
 
 <template>
@@ -51,53 +51,53 @@ ko:
 
     <p :class="subtitleClass">{{ $t('labels.name') }}</p>
     <v-text-field
-        dense
-        persistent-hint
-        type="text"
-        autocomplete="off"
-        :disabled="loading"
-        :value="current.name"
-        @input="onInputName"
-        :hint="$t('hints.name')"
+      dense
+      persistent-hint
+      type="text"
+      autocomplete="off"
+      :disabled="loading"
+      :value="current.name"
+      @input="onInputName"
+      :hint="$t('hints.name')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.description') }}</p>
     <v-text-field
-        dense
-        persistent-hint
-        type="text"
-        autocomplete="off"
-        :disabled="loading"
-        :value="current.description"
-        @input="onInputDescription"
-        :hint="$t('hints.description')"
+      dense
+      persistent-hint
+      type="text"
+      autocomplete="off"
+      :disabled="loading"
+      :value="current.description"
+      @input="onInputDescription"
+      :hint="$t('hints.description')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.index') }}</p>
     <v-text-field
-        dense
-        persistent-hint
-        type="number"
-        autocomplete="off"
-        :disabled="loading"
-        :value="current.index"
-        @input="onInputIndex"
-        :hint="$t('hints.index')"
+      dense
+      persistent-hint
+      type="number"
+      autocomplete="off"
+      :disabled="loading"
+      :value="current.index"
+      @input="onInputIndex"
+      :hint="$t('hints.index')"
     ></v-text-field>
 
     <p :class="subtitleClass">{{ $t('labels.device_uid') }}</p>
     <v-select
-        dense
-        outlined
-        :disabled="loading"
-        :value="device"
-        @input="onInputDevice"
-        :items="devices"
-        item-text="name"
-        item-value="device_uid"
-        return-object
+      dense
+      outlined
+      :disabled="loading"
+      :value="device"
+      @input="onInputDevice"
+      :items="devices"
+      item-text="name"
+      item-value="device_uid"
+      return-object
     >
-      <template v-slot:item="{ item }">
+      <template v-slot:item="{item}">
         {{ item.name }}
         <v-chip class="ml-2" x-small outlined color="primary">
           <v-icon left>mdi-identifier</v-icon>
@@ -105,7 +105,7 @@ ko:
         </v-chip>
       </template>
 
-      <template v-slot:selection="{ item }">
+      <template v-slot:selection="{item}">
         {{ item.name }}
         <v-chip class="ml-2" x-small outlined color="primary">
           <v-icon left>mdi-identifier</v-icon>
@@ -117,11 +117,11 @@ ko:
     <v-row class="mt-4 mb-2" no-gutters>
       <v-spacer></v-spacer>
       <v-btn
-          class="ml-2"
-          color="primary"
-          :disabled="!modified"
-          :loading="loading"
-          @click="onClickSubmit"
+        class="ml-2"
+        color="primary"
+        :disabled="!modified"
+        :loading="loading"
+        @click="onClickSubmit"
       >
         {{ $t('labels.submit') }}
       </v-btn>
@@ -180,7 +180,7 @@ import * as _ from 'lodash';
 @Component({
   components: {
     ToolbarBreadcrumbs,
-  }
+  },
 })
 export default class MainVmsLayoutsEdit extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
@@ -267,7 +267,7 @@ export default class MainVmsLayoutsEdit extends VueBase {
 
   updateModified() {
     this.modified = !_.isEqual(this.original, this.current);
-    console.log(`updateModified() -> ${this.modified}`)
+    console.log(`updateModified() -> ${this.modified}`);
   }
 
   onInputName(value: string) {
@@ -305,17 +305,18 @@ export default class MainVmsLayoutsEdit extends VueBase {
     const project = this.$route.params.project;
     const layout = this.$route.params.layout;
     this.loading = true;
-    this.$api2.patchVmsLayout(group, project, layout, body)
-        .then(() => {
-          this.loading = false;
-          this.toastRequestSuccess();
-          this.original = _.cloneDeep(this.current);
-          this.modified = false;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .patchVmsLayout(group, project, layout, body)
+      .then(() => {
+        this.loading = false;
+        this.toastRequestSuccess();
+        this.original = _.cloneDeep(this.current);
+        this.modified = false;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickDelete() {
@@ -331,17 +332,18 @@ export default class MainVmsLayoutsEdit extends VueBase {
     const project = this.$route.params.project;
     const layout = this.$route.params.layout;
     this.loadingDelete = true;
-    this.$api2.deleteVmsLayout(group, project, layout)
-        .then(() => {
-          this.loadingDelete = false;
-          this.showDeleteDialog = false;
-          this.toastRequestSuccess();
-          this.moveToMainVmsLayouts();
-        })
-        .catch(error => {
-          this.loadingDelete = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .deleteVmsLayout(group, project, layout)
+      .then(() => {
+        this.loadingDelete = false;
+        this.showDeleteDialog = false;
+        this.toastRequestSuccess();
+        this.moveToMainVmsLayouts();
+      })
+      .catch(error => {
+        this.loadingDelete = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

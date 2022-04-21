@@ -1,40 +1,40 @@
 <i18n lang="yaml">
 en:
-  cancel: "Cancel"
-  off: "Off"
-  one: "1h"
-  two: "2h"
-  four: "4h"
-  eight: "8h"
-  unknown: "Timer/Unknown"
+  cancel: 'Cancel'
+  off: 'Off'
+  one: '1h'
+  two: '2h'
+  four: '4h'
+  eight: '8h'
+  unknown: 'Timer/Unknown'
 
 ko:
-  cancel: "예약을 취소합니다"
-  off: "예약이 설정되어 있지 않습니다"
-  one: "1시간"
-  two: "2시간"
-  four: "4시간"
-  eight: "8시간"
-  unknown: "알 수 없는 예약 시간 입니다"
+  cancel: '예약을 취소합니다'
+  off: '예약이 설정되어 있지 않습니다'
+  one: '1시간'
+  two: '2시간'
+  four: '4시간'
+  eight: '8시간'
+  unknown: '알 수 없는 예약 시간 입니다'
 </i18n>
 
 <template>
   <div class="timer-button-group">
     <v-tooltip bottom>
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{on, attrs}">
         <v-btn
-            class="timer-button-group--left timer-button-group--select"
-            elevation="0"
-            tile
-            :color="colorOff"
-            :x-small="xSmall"
-            :small="small"
-            :large="large"
-            :x-large="xLarge"
-            :outlined="outlined"
-            v-bind="attrs"
-            v-on="on"
-            @click.stop="timerOff"
+          class="timer-button-group--left timer-button-group--select"
+          elevation="0"
+          tile
+          :color="colorOff"
+          :x-small="xSmall"
+          :small="small"
+          :large="large"
+          :x-large="xLarge"
+          :outlined="outlined"
+          v-bind="attrs"
+          v-on="on"
+          @click.stop="timerOff"
         >
           <v-icon>mdi-timer-off-outline</v-icon>
         </v-btn>
@@ -43,20 +43,20 @@ ko:
     </v-tooltip>
 
     <v-tooltip bottom>
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{on, attrs}">
         <v-btn
-            class="timer-button-group--center"
-            elevation="0"
-            tile
-            :color="colorOne"
-            :x-small="xSmall"
-            :small="small"
-            :large="large"
-            :x-large="xLarge"
-            :outlined="outlined"
-            v-bind="attrs"
-            v-on="on"
-            @click.stop="timerOne"
+          class="timer-button-group--center"
+          elevation="0"
+          tile
+          :color="colorOne"
+          :x-small="xSmall"
+          :small="small"
+          :large="large"
+          :x-large="xLarge"
+          :outlined="outlined"
+          v-bind="attrs"
+          v-on="on"
+          @click.stop="timerOne"
         >
           <v-icon>mdi-clock-time-one-outline</v-icon>
         </v-btn>
@@ -65,20 +65,20 @@ ko:
     </v-tooltip>
 
     <v-tooltip bottom>
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{on, attrs}">
         <v-btn
-            class="timer-button-group--center"
-            elevation="0"
-            tile
-            :color="colorTwo"
-            :x-small="xSmall"
-            :small="small"
-            :large="large"
-            :x-large="xLarge"
-            :outlined="outlined"
-            v-bind="attrs"
-            v-on="on"
-            @click.stop="timerTwo"
+          class="timer-button-group--center"
+          elevation="0"
+          tile
+          :color="colorTwo"
+          :x-small="xSmall"
+          :small="small"
+          :large="large"
+          :x-large="xLarge"
+          :outlined="outlined"
+          v-bind="attrs"
+          v-on="on"
+          @click.stop="timerTwo"
         >
           <v-icon>mdi-clock-time-two-outline</v-icon>
         </v-btn>
@@ -87,20 +87,20 @@ ko:
     </v-tooltip>
 
     <v-tooltip bottom>
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{on, attrs}">
         <v-btn
-            class="timer-button-group--center"
-            elevation="0"
-            tile
-            :color="colorFour"
-            :x-small="xSmall"
-            :small="small"
-            :large="large"
-            :x-large="xLarge"
-            :outlined="outlined"
-            v-bind="attrs"
-            v-on="on"
-            @click.stop="timerFour"
+          class="timer-button-group--center"
+          elevation="0"
+          tile
+          :color="colorFour"
+          :x-small="xSmall"
+          :small="small"
+          :large="large"
+          :x-large="xLarge"
+          :outlined="outlined"
+          v-bind="attrs"
+          v-on="on"
+          @click.stop="timerFour"
         >
           <v-icon>mdi-clock-time-four-outline</v-icon>
         </v-btn>
@@ -109,20 +109,20 @@ ko:
     </v-tooltip>
 
     <v-tooltip bottom>
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{on, attrs}">
         <v-btn
-            class="timer-button-group--right"
-            elevation="0"
-            tile
-            :color="colorEight"
-            :x-small="xSmall"
-            :small="small"
-            :large="large"
-            :x-large="xLarge"
-            :outlined="outlined"
-            v-bind="attrs"
-            v-on="on"
-            @click.stop="timerEight"
+          class="timer-button-group--right"
+          elevation="0"
+          tile
+          :color="colorEight"
+          :x-small="xSmall"
+          :small="small"
+          :large="large"
+          :x-large="xLarge"
+          :outlined="outlined"
+          v-bind="attrs"
+          v-on="on"
+          @click.stop="timerEight"
         >
           <v-icon>mdi-clock-time-eight-outline</v-icon>
         </v-btn>
@@ -203,24 +203,19 @@ export default class AirjoyTimerGroup extends VueBase {
   }
 
   @Emit('click:timer-off')
-  timerOff() {
-  }
+  timerOff() {}
 
   @Emit('click:timer-one')
-  timerOne() {
-  }
+  timerOne() {}
 
   @Emit('click:timer-two')
-  timerTwo() {
-  }
+  timerTwo() {}
 
   @Emit('click:timer-four')
-  timerFour() {
-  }
+  timerFour() {}
 
   @Emit('click:timer-eight')
-  timerEight() {
-  }
+  timerEight() {}
 }
 </script>
 

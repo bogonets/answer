@@ -1,45 +1,45 @@
 <i18n lang="yaml">
 en:
-  settings: "Settings"
+  settings: 'Settings'
   headers:
-    common: "Common Settings"
-    visual: "Visual Settings"
-    sound: "Sound Settings"
+    common: 'Common Settings'
+    visual: 'Visual Settings'
+    sound: 'Sound Settings'
   labels:
-    popup: "Enable Popup"
-    beep: "Enable Beep"
-    beep_interval: "Beep interval"
-    beep_duration: "Beep duration"
-    refresh_interval: "Refresh interval"
+    popup: 'Enable Popup'
+    beep: 'Enable Beep'
+    beep_interval: 'Beep interval'
+    beep_duration: 'Beep duration'
+    refresh_interval: 'Refresh interval'
   hints:
-    popup: "When an event occurs, a popup is output."
-    beep: "When an event occurs, an alarm sound is played."
-    beep_interval: "A cycle of repeated beeps. It is in seconds."
-    beep_duration: "Total time for the beep to repeat. It is in seconds."
-    refresh_interval: "You can set the update interval in seconds."
+    popup: 'When an event occurs, a popup is output.'
+    beep: 'When an event occurs, an alarm sound is played.'
+    beep_interval: 'A cycle of repeated beeps. It is in seconds.'
+    beep_duration: 'Total time for the beep to repeat. It is in seconds.'
+    refresh_interval: 'You can set the update interval in seconds.'
   suffix:
-    seconds: "Seconds"
+    seconds: 'Seconds'
 
 ko:
-  settings: "Settings"
+  settings: 'Settings'
   headers:
-    common: "일반 설정"
-    visual: "시각 설정"
-    sound: "소리 설정"
+    common: '일반 설정'
+    visual: '시각 설정'
+    sound: '소리 설정'
   labels:
-    popup: "팝업 활성화"
-    beep: "비프음 활성화"
-    beep_interval: "비프음 간격"
-    beep_duration: "비프음 재생 시간"
-    refresh_interval: "갱신 주기"
+    popup: '팝업 활성화'
+    beep: '비프음 활성화'
+    beep_interval: '비프음 간격'
+    beep_duration: '비프음 재생 시간'
+    refresh_interval: '갱신 주기'
   hints:
-    popup: "이벤트가 발생하면 팝업이 출력됩니다."
-    beep: "이벤트가 발생되면 알람음이 재생됩니다."
-    beep_interval: "비프음이 반복되는 주기. 초 단위 입니다."
-    beep_duration: "비프음이 반복되는 총 시간. 초 단위 입니다."
-    refresh_interval: "갱신 주기를 초 단위로 설정할 수 있습니다."
+    popup: '이벤트가 발생하면 팝업이 출력됩니다.'
+    beep: '이벤트가 발생되면 알람음이 재생됩니다.'
+    beep_interval: '비프음이 반복되는 주기. 초 단위 입니다.'
+    beep_duration: '비프음이 반복되는 총 시간. 초 단위 입니다.'
+    refresh_interval: '갱신 주기를 초 단위로 설정할 수 있습니다.'
   suffix:
-    seconds: "초"
+    seconds: '초'
 </i18n>
 
 <template>
@@ -50,23 +50,23 @@ ko:
     <v-subheader>{{ $t('headers.common') }}</v-subheader>
 
     <left-title
-        x-small
-        no-gutter
-        :left-ratio="8"
-        :right-ratio="4"
-        :header="$t('labels.refresh_interval')"
-        :subheader="$t('hints.refresh_interval')"
+      x-small
+      no-gutter
+      :left-ratio="8"
+      :right-ratio="4"
+      :header="$t('labels.refresh_interval')"
+      :subheader="$t('hints.refresh_interval')"
     >
       <div class="d-flex flex-row justify-end">
         <v-combobox
-            dense
-            outlined
-            hide-details
-            :disabled="loading"
-            :items="refreshIntervals"
-            :value="vmsRefreshInterval"
-            @change="onChangeRefreshInterval"
-            :suffix="$t('suffix.seconds')"
+          dense
+          outlined
+          hide-details
+          :disabled="loading"
+          :items="refreshIntervals"
+          :value="vmsRefreshInterval"
+          @change="onChangeRefreshInterval"
+          :suffix="$t('suffix.seconds')"
         ></v-combobox>
       </div>
     </left-title>
@@ -75,20 +75,20 @@ ko:
     <v-subheader>{{ $t('headers.visual') }}</v-subheader>
 
     <left-title
-        x-small
-        no-gutter
-        :left-ratio="8"
-        :right-ratio="4"
-        :header="$t('labels.popup')"
-        :subheader="$t('hints.popup')"
+      x-small
+      no-gutter
+      :left-ratio="8"
+      :right-ratio="4"
+      :header="$t('labels.popup')"
+      :subheader="$t('hints.popup')"
     >
       <div class="d-flex flex-row justify-end">
         <v-switch
-            inset
-            hide-details
-            :disabled="loading"
-            v-model="vmsPopup"
-            @change="onChangePopup"
+          inset
+          hide-details
+          :disabled="loading"
+          v-model="vmsPopup"
+          @change="onChangePopup"
         ></v-switch>
       </div>
     </left-title>
@@ -97,68 +97,67 @@ ko:
     <v-subheader>{{ $t('headers.sound') }}</v-subheader>
 
     <left-title
-        x-small
-        no-gutter
-        :left-ratio="8"
-        :right-ratio="4"
-        :header="$t('labels.beep')"
-        :subheader="$t('hints.beep')"
+      x-small
+      no-gutter
+      :left-ratio="8"
+      :right-ratio="4"
+      :header="$t('labels.beep')"
+      :subheader="$t('hints.beep')"
     >
       <div class="d-flex flex-row justify-end">
         <v-switch
-            inset
-            hide-details
-            :disabled="loading"
-            v-model="vmsBeep"
-            @change="onChangeBeep"
+          inset
+          hide-details
+          :disabled="loading"
+          v-model="vmsBeep"
+          @change="onChangeBeep"
         ></v-switch>
       </div>
     </left-title>
 
     <left-title
-        x-small
-        no-gutter
-        :left-ratio="8"
-        :right-ratio="4"
-        :header="$t('labels.beep_interval')"
-        :subheader="$t('hints.beep_interval')"
+      x-small
+      no-gutter
+      :left-ratio="8"
+      :right-ratio="4"
+      :header="$t('labels.beep_interval')"
+      :subheader="$t('hints.beep_interval')"
     >
       <div class="d-flex flex-row justify-end">
         <v-combobox
-            dense
-            outlined
-            hide-details
-            :disabled="loading"
-            :items="beepIntervals"
-            :value="vmsBeepInterval"
-            @change="onChangeBeepInterval"
-            :suffix="$t('suffix.seconds')"
+          dense
+          outlined
+          hide-details
+          :disabled="loading"
+          :items="beepIntervals"
+          :value="vmsBeepInterval"
+          @change="onChangeBeepInterval"
+          :suffix="$t('suffix.seconds')"
         ></v-combobox>
       </div>
     </left-title>
 
     <left-title
-        x-small
-        no-gutter
-        :left-ratio="8"
-        :right-ratio="4"
-        :header="$t('labels.beep_duration')"
-        :subheader="$t('hints.beep_duration')"
+      x-small
+      no-gutter
+      :left-ratio="8"
+      :right-ratio="4"
+      :header="$t('labels.beep_duration')"
+      :subheader="$t('hints.beep_duration')"
     >
       <div class="d-flex flex-row justify-end">
         <v-combobox
-            dense
-            outlined
-            hide-details
-            :disabled="loading"
-            :items="durations"
-            :value="vmsBeepDuration"
-            @change="onChangeBeepDuration"
-            :suffix="$t('suffix.seconds')"
+          dense
+          outlined
+          hide-details
+          :disabled="loading"
+          :items="durations"
+          :value="vmsBeepDuration"
+          @change="onChangeBeepDuration"
+          :suffix="$t('suffix.seconds')"
         ></v-combobox>
       </div>
     </left-title>
-
   </v-container>
 </template>
 
@@ -174,13 +173,13 @@ import {
   USER_CONFIG_BEEP,
   USER_CONFIG_BEEP_INTERVAL,
   USER_CONFIG_BEEP_DURATION,
-} from "@/packet/vms";
+} from '@/packet/vms';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
     LeftTitle,
-  }
+  },
 })
 export default class MainVmsUserConfigs extends VueBase {
   readonly subtitleClass = SUBTITLE_CLASS;
@@ -201,27 +200,11 @@ export default class MainVmsUserConfigs extends VueBase {
     },
   ];
 
-  readonly refreshIntervals = [
-    '1',
-    '2',
-    '4',
-    '10',
-    '30',
-    '60',
-  ];
+  readonly refreshIntervals = ['1', '2', '4', '10', '30', '60'];
 
-  readonly beepIntervals = [
-    '2',
-    '5',
-  ];
+  readonly beepIntervals = ['2', '5'];
 
-  readonly durations = [
-    '2',
-    '4',
-    '6',
-    '8',
-    '10',
-  ];
+  readonly durations = ['2', '4', '6', '8', '10'];
 
   loading = false;
 
@@ -310,19 +293,20 @@ export default class MainVmsUserConfigs extends VueBase {
 
   saveUserExtra(showToast = true) {
     this.loading = true;
-    this.$api2.patchSelfExtra(this.$localStore.userExtra)
-        .then(() => {
-          this.loading = false;
-          if (showToast) {
-            this.toastRequestSuccess();
-          }
-        })
-        .catch(error => {
-          this.loading = false;
-          if (showToast) {
-            this.toastRequestFailure(error);
-          }
-        });
+    this.$api2
+      .patchSelfExtra(this.$localStore.userExtra)
+      .then(() => {
+        this.loading = false;
+        if (showToast) {
+          this.toastRequestSuccess();
+        }
+      })
+      .catch(error => {
+        this.loading = false;
+        if (showToast) {
+          this.toastRequestFailure(error);
+        }
+      });
   }
 }
 </script>

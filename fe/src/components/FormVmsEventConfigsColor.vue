@@ -1,11 +1,11 @@
 <i18n lang="yaml">
 en:
   labels:
-    threshold: "Threshold"
-    operator: "Operator"
-    emit_condition: "Emit Condition"
-    true: "True"
-    false: "False"
+    threshold: 'Threshold'
+    operator: 'Operator'
+    emit_condition: 'Emit Condition'
+    true: 'True'
+    false: 'False'
   hints:
     threshold: >
       The higher the threshold value,
@@ -17,66 +17,60 @@ en:
       An event is emitted when the result
       of the comparison operation becomes {condition}.
   tools:
-    pipette: "Pipette"
-    clear: "Clear selection"
-    selection: "Selection"
+    pipette: 'Pipette'
+    clear: 'Clear selection'
+    selection: 'Selection'
 
 ko:
   labels:
-    threshold: "임계점"
-    operator: "비교 연산자"
-    emit_condition: "방출 조건"
-    true: "참"
-    false: "거짓"
+    threshold: '임계점'
+    operator: '비교 연산자'
+    emit_condition: '방출 조건'
+    true: '참'
+    false: '거짓'
   hints:
-    threshold: "임계점 값이 클 수록, 색상과 정확히 일치해야 합니다."
-    operator: "비교 연산 결과가 {0}이 되면 이벤트가 발생됩니다."
-    emit_condition: "비교 연산 결과가 {condition}이 되면 이벤트가 방출됩니다."
+    threshold: '임계점 값이 클 수록, 색상과 정확히 일치해야 합니다.'
+    operator: '비교 연산 결과가 {0}이 되면 이벤트가 발생됩니다.'
+    emit_condition: '비교 연산 결과가 {condition}이 되면 이벤트가 방출됩니다.'
   tools:
-    pipette: "스포이드"
-    clear: "영역 해제"
-    selection: "영역 선택"
+    pipette: '스포이드'
+    clear: '영역 해제'
+    selection: '영역 선택'
 </i18n>
 
 <template>
   <v-container fluid>
     <v-row>
-      <v-col
-          cols="12"
-          sm="12"
-          md="4"
-          lg="3"
-          xl="2"
-      >
+      <v-col cols="12" sm="12" md="4" lg="3" xl="2">
         <v-color-picker
-            elevation="1"
-            v-model="color"
-            @change="onChangeColor"
-            dot-size="14"
-            mode="rgba"
+          elevation="1"
+          v-model="color"
+          @change="onChangeColor"
+          dot-size="14"
+          mode="rgba"
         ></v-color-picker>
         <v-slider
-            class="mt-2"
-            persistent-hint
-            thumb-label
-            :min="minThreshold"
-            :max="maxThreshold"
-            :label="$t('labels.threshold')"
-            :hint="$t('hints.threshold')"
-            v-model="threshold"
-            @change="onChangeThreshold"
+          class="mt-2"
+          persistent-hint
+          thumb-label
+          :min="minThreshold"
+          :max="maxThreshold"
+          :label="$t('labels.threshold')"
+          :hint="$t('hints.threshold')"
+          v-model="threshold"
+          @change="onChangeThreshold"
         ></v-slider>
 
         <!-- Not available -->
         <v-select
-            v-if="showOperator"
-            class="mt-2"
-            dense
-            persistent-hint
-            :items="operators"
-            :hint="$t('hints.operator', [emitConditionText])"
-            v-model="operator"
-            @change="onChangeOperator"
+          v-if="showOperator"
+          class="mt-2"
+          dense
+          persistent-hint
+          :items="operators"
+          :hint="$t('hints.operator', [emitConditionText])"
+          v-model="operator"
+          @change="onChangeOperator"
         ></v-select>
 
         <div class="d-flex flex-column mt-2">
@@ -86,18 +80,18 @@ ko:
             </span>
             <v-spacer></v-spacer>
             <v-switch
-                class="mt-0"
-                dense
-                inset
-                v-model="emit"
-                @change="onChangeEmit"
-                hide-details
+              class="mt-0"
+              dense
+              inset
+              v-model="emit"
+              @change="onChangeEmit"
+              hide-details
             ></v-switch>
           </div>
           <i18n
-              class="text-caption text--secondary mt-1"
-              path="hints.emit_condition"
-              tag="span"
+            class="text-caption text--secondary mt-1"
+            path="hints.emit_condition"
+            tag="span"
           >
             <template #condition>
               <strong :class="emitConditionClass">{{ emitConditionText }}</strong>
@@ -106,34 +100,28 @@ ko:
         </div>
       </v-col>
 
-      <v-col
-          cols="12"
-          sm="12"
-          md="8"
-          lg="9"
-          xl="10"
-      >
+      <v-col cols="12" sm="12" md="8" lg="9" xl="10">
         <media-player
-            ref="media-player"
-            hover-system-bar
-            hide-controller
-            :group="$route.params.group"
-            :project="$route.params.project"
-            :device="$route.params.device"
-            :use-color-picker="pipetteMode"
-            :value="device"
-            :event-config="value"
-            @pipette="onPipette"
-            :use-annotation-tools="annotationMode"
-            @roi="onRoi"
+          ref="media-player"
+          hover-system-bar
+          hide-controller
+          :group="$route.params.group"
+          :project="$route.params.project"
+          :device="$route.params.device"
+          :use-color-picker="pipetteMode"
+          :value="device"
+          :event-config="value"
+          @pipette="onPipette"
+          :use-annotation-tools="annotationMode"
+          @roi="onRoi"
         ></media-player>
         <div class="mt-2 d-flex justify-end">
           <v-btn
-              small
-              rounded
-              class="mr-2"
-              :color="pipetteButtonColor"
-              @click="onClickPipette"
+            small
+            rounded
+            class="mr-2"
+            :color="pipetteButtonColor"
+            @click="onClickPipette"
           >
             <v-icon left>mdi-eyedropper-variant</v-icon>
             {{ $t('tools.pipette') }}
@@ -142,12 +130,7 @@ ko:
             <v-icon left>mdi-close</v-icon>
             {{ $t('tools.clear') }}
           </v-btn>
-          <v-btn
-              small
-              rounded
-              :color="selectionButtonColor"
-              @click="onClickSelection"
-          >
+          <v-btn small rounded :color="selectionButtonColor" @click="onClickSelection">
             <v-icon left>mdi-selection-drag</v-icon>
             {{ $t('tools.selection') }}
           </v-btn>
@@ -161,24 +144,18 @@ ko:
 import {Component, Ref, Emit, Prop} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import MediaPlayer from '@/media/MediaPlayer.vue';
-import {
-  EVENT_CONFIG_OPERATOR_DEFAULT,
-  EVENT_CONFIG_OPERATORS,
-} from '@/packet/vms';
-import type {
-  VmsEventConfigColorQ,
-  VmsDeviceA,
-} from '@/packet/vms';
+import {EVENT_CONFIG_OPERATOR_DEFAULT, EVENT_CONFIG_OPERATORS} from '@/packet/vms';
+import type {VmsEventConfigColorQ, VmsDeviceA} from '@/packet/vms';
 import {rgbToHex, hexToRgb} from '@/color';
 import {valueToRatio, ratioToValue} from '@/math/ratio';
 
 @Component({
   components: {
     MediaPlayer,
-  }
+  },
 })
 export default class FormVmsEventConfigsColor extends VueBase {
-  readonly operators = EVENT_CONFIG_OPERATORS
+  readonly operators = EVENT_CONFIG_OPERATORS;
 
   @Prop({type: Boolean, default: false})
   readonly showOperator!: boolean;
@@ -215,7 +192,9 @@ export default class FormVmsEventConfigsColor extends VueBase {
 
   mounted() {
     const defaultThreshold = valueToRatio(
-        this.defaultThreshold, this.minThreshold, this.maxThreshold
+      this.defaultThreshold,
+      this.minThreshold,
+      this.maxThreshold,
     );
 
     this.value.red = this.value.red ?? 0;
@@ -232,7 +211,9 @@ export default class FormVmsEventConfigsColor extends VueBase {
     this.color = rgbToHex(this.value.red, this.value.green, this.value.blue);
     this.operator = this.value.operator;
     this.threshold = ratioToValue(
-        this.value.threshold, this.minThreshold, this.maxThreshold
+      this.value.threshold,
+      this.minThreshold,
+      this.maxThreshold,
     );
     this.emit = this.value.emit_condition;
 
@@ -278,25 +259,33 @@ export default class FormVmsEventConfigsColor extends VueBase {
     const device = this.$route.params.device;
 
     this.loading = true;
-    this.$api2.postVmsDeviceProcessDebugEventColor(group, project ,device, this.value)
-        .then(() => {
-          this.loading = false;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        })
+    this.$api2
+      .postVmsDeviceProcessDebugEventColor(group, project, device, this.value)
+      .then(() => {
+        this.loading = false;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   validColor() {
-    return (0 <= this.value.red && this.value.red <= 255)
-        && (0 <= this.value.green && this.value.green <= 255)
-        && (0 <= this.value.blue && this.value.blue <= 255);
+    return (
+      0 <= this.value.red &&
+      this.value.red <= 255 &&
+      0 <= this.value.green &&
+      this.value.green <= 255 &&
+      0 <= this.value.blue &&
+      this.value.blue <= 255
+    );
   }
 
   validRoi() {
-    return Math.abs(this.value.x2 - this.value.x1) > 0
-        && Math.abs(this.value.y2 - this.value.y1) > 0;
+    return (
+      Math.abs(this.value.x2 - this.value.x1) > 0 &&
+      Math.abs(this.value.y2 - this.value.y1) > 0
+    );
   }
 
   @Emit('update:valid')

@@ -13,11 +13,10 @@
 
 <script lang="ts">
 import VueI18n from '@/translations/VueI18n';
-import { Component, Prop } from 'vue-property-decorator';
+import {Component, Prop} from 'vue-property-decorator';
 
 @Component
 export default class AppBarTitle extends VueI18n {
-
   @Prop({type: Boolean, default: false})
   readonly flat!: boolean;
 

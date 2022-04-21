@@ -1,30 +1,29 @@
 <i18n lang="yaml">
 en:
   user:
-    unknown: "[Unknown User]"
-  profile: "Profile"
-  appearance: "Appearance"
-  password: "Password"
+    unknown: '[Unknown User]'
+  profile: 'Profile'
+  appearance: 'Appearance'
+  password: 'Password'
 
 ko:
   user:
-    unknown: "[알수없는 사용자]"
-  profile: "프로파일"
-  appearance: "외관"
-  password: "비밀번호"
+    unknown: '[알수없는 사용자]'
+  profile: '프로파일'
+  appearance: '외관'
+  password: '비밀번호'
 </i18n>
 
 <template>
   <v-navigation-drawer
-      app
-      clipped
-      permanent
-      stateless
-      touchless
-      :mini-variant.sync="mini"
+    app
+    clipped
+    permanent
+    stateless
+    touchless
+    :mini-variant.sync="mini"
   >
     <v-list nav dense>
-
       <!-- User Profile -->
       <v-list-item link @click.stop="onClickFoldNavigation">
         <v-list-item-icon>
@@ -40,13 +39,7 @@ ko:
 
       <v-divider></v-divider>
 
-      <v-list-item-group
-          mandatory
-          color="primary"
-          :value="value"
-          @change="input"
-      >
-
+      <v-list-item-group mandatory color="primary" :value="value" @change="input">
         <v-list-item link @click.stop="profile">
           <v-list-item-icon>
             <v-icon>mdi-developer-board</v-icon>
@@ -73,7 +66,6 @@ ko:
             {{ $t('password') }}
           </v-list-item-title>
         </v-list-item>
-
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
@@ -85,7 +77,6 @@ import VueBase from '@/base/VueBase';
 
 @Component
 export default class MainAccount extends VueBase {
-
   @Prop({type: Boolean, default: false})
   readonly noDefault!: boolean;
 

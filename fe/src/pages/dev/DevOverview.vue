@@ -1,19 +1,19 @@
 <i18n lang="yaml">
 en:
-  python: "Python {0}"
+  python: 'Python {0}'
 
 ko:
-  python: "Python {0}"
+  python: 'Python {0}'
 </i18n>
 
 <template>
   <v-container>
     <v-progress-linear
-        absolute
-        top
-        color="primary"
-        v-show="loading"
-        :indeterminate="loading"
+      absolute
+      top
+      color="primary"
+      v-show="loading"
+      :indeterminate="loading"
     ></v-progress-linear>
 
     <toolbar-breadcrumbs :items="breadcrumbs"></toolbar-breadcrumbs>
@@ -29,7 +29,6 @@ ko:
         </card-button>
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -44,7 +43,7 @@ import {VersionsA} from '@/packet/system';
   components: {
     ToolbarBreadcrumbs,
     CardButton,
-  }
+  },
 })
 export default class DevOverview extends VueBase {
   private readonly breadcrumbs = [
@@ -64,15 +63,16 @@ export default class DevOverview extends VueBase {
 
   created() {
     this.loading = true;
-    this.$api2.getDevSystemVersions()
-        .then(item => {
-          this.loading = false;
-          this.item = item;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getDevSystemVersions()
+      .then(item => {
+        this.loading = false;
+        this.item = item;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

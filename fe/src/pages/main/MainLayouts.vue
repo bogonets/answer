@@ -1,21 +1,21 @@
 <i18n lang="yaml">
 en:
   tools:
-    layouts: "Layouts"
-    new_layouts: "New Layout"
-    widgets: "Widgets"
+    layouts: 'Layouts'
+    new_layouts: 'New Layout'
+    widgets: 'Widgets'
   msg:
-    unselected: "Unselected layout."
-    empty: "Empty Layouts."
+    unselected: 'Unselected layout.'
+    empty: 'Empty Layouts.'
 
 ko:
   tools:
-    layouts: "레이아웃"
-    new_layouts: "새로운 레이아웃"
-    widgets: "위젯"
+    layouts: '레이아웃'
+    new_layouts: '새로운 레이아웃'
+    widgets: '위젯'
   msg:
-    unselected: "선택된 레이아웃이 없습니다."
-    empty: "레이아웃이 존재하지 않습니다."
+    unselected: '선택된 레이아웃이 없습니다.'
+    empty: '레이아웃이 존재하지 않습니다.'
 </i18n>
 
 <template>
@@ -45,7 +45,6 @@ ko:
         </span>
       </div>
     </view-port>
-
   </div>
 </template>
 
@@ -59,7 +58,7 @@ import ViewPort from '@/components/ViewPort.vue';
   components: {
     BreadcrumbMain,
     ViewPort,
-  }
+  },
 })
 export default class MainLayouts extends VueBase {
   miniNavigation = false;
@@ -68,10 +67,8 @@ export default class MainLayouts extends VueBase {
     this.miniNavigation = !this.miniNavigation;
   }
 
-  onClickLayouts() {
-  }
+  onClickLayouts() {}
 
-  onClickMore() {
-  }
+  onClickMore() {}
 }
 </script>

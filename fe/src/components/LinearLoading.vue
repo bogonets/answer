@@ -2,10 +2,10 @@
   <v-container>
     <v-row class="my-12" align="center" justify="center">
       <v-progress-linear
-          :color="progressColor"
-          :height="progressHeight"
-          :indeterminate="progressIndeterminate"
-          rounded
+        :color="progressColor"
+        :height="progressHeight"
+        :indeterminate="progressIndeterminate"
+        rounded
       ></v-progress-linear>
     </v-row>
     <v-row class="my-6" align="center" justify="center">
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import {Vue, Component, Prop} from 'vue-property-decorator';
 
 const DEFAULT_PROGRESS_COLOR = 'primary';
 const DEFAULT_PROGRESS_HEIGHT = 6;
@@ -24,7 +24,6 @@ const DEFAULT_LOADING_TEXT = '';
 
 @Component
 export default class LinearLoading extends Vue {
-
   @Prop({type: String, default: DEFAULT_PROGRESS_COLOR})
   readonly progressColor!: string;
 

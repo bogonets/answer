@@ -1,29 +1,28 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  projects: "Projects"
+  groups: 'Groups'
+  projects: 'Projects'
 
 ko:
-  groups: "Groups"
-  projects: "Projects"
+  groups: 'Groups'
+  projects: 'Projects'
 </i18n>
 
 <template>
   <v-container>
-
     <span class="ml-2 text--primary text-overline">
       {{ $t('groups') }}
     </span>
     <v-divider></v-divider>
     <table-groups
-        hide-filter-input
-        hide-new-item-button
-        hide-action-edit
-        hide-action-move
-        clickable-row
-        :loading="loading"
-        :items="groups"
-        @click:row="onClickGroupRow"
+      hide-filter-input
+      hide-new-item-button
+      hide-action-edit
+      hide-action-move
+      clickable-row
+      :loading="loading"
+      :items="groups"
+      @click:row="onClickGroupRow"
     ></table-groups>
 
     <span v-if="!hideProjects" class="ml-2 text--primary text-overline">
@@ -31,17 +30,16 @@ ko:
     </span>
     <v-divider v-if="!hideProjects"></v-divider>
     <table-projects
-        v-if="!hideProjects"
-        hide-filter-input
-        hide-new-item-button
-        hide-action-edit
-        hide-action-move
-        clickable-row
-        :loading="loading"
-        :items="projects"
-        @click:row="onClickProjectRow"
+      v-if="!hideProjects"
+      hide-filter-input
+      hide-new-item-button
+      hide-action-edit
+      hide-action-move
+      clickable-row
+      :loading="loading"
+      :items="projects"
+      @click:row="onClickProjectRow"
     ></table-projects>
-
   </v-container>
 </template>
 
@@ -58,7 +56,7 @@ import {OEMS_TO_HIDE_ROOT_PROJECT} from '@/packet/oem';
   components: {
     TableGroups,
     TableProjects,
-  }
+  },
 })
 export default class Root extends VueBase {
   loading = false;

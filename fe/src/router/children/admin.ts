@@ -27,124 +27,124 @@ import AdminUsersNew from '@/pages/admin/AdminUsersNew.vue';
 import adminAirjoyChildren from '@/router/children/external/airjoy/admin';
 
 export const adminChildren = [
-    {
-        path: 'configs',
-        component: AdminConfigs,
-        name: adminNames.adminConfigs,
-    },
-    {
-        path: 'groups',
-        component: AdminGroups,
-        name: adminNames.adminGroups,
-    },
-    {
-        path: 'groups/edit/:group',
-        component: AdminGroupsEdit,
-        name: adminNames.adminGroupsEdit,
-    },
-    {
-        path: 'groups/new',
-        component: AdminGroupsNew,
-        name: adminNames.adminGroupsNew,
-    },
-    {
-        path: 'overview',
-        name: adminNames.adminOverview,
-        component: AdminOverview,
-    },
-    {
-        path: 'permissions',
-        component: AdminPermissions,
-        name: adminNames.adminPermissions,
-    },
-    {
-        path: 'permissions/edit/:perm',
-        component: AdminPermissionsEdit,
-        name: adminNames.adminPermissionsEdit,
-    },
-    {
-        path: 'permissions/new',
-        component: AdminPermissionsNew,
-        name: adminNames.adminPermissionsNew,
-    },
-    {
-        path: 'ports',
-        component: AdminPorts,
-        name: adminNames.adminPorts,
-    },
-    {
-        path: 'projects',
-        component: AdminProjects,
-        name: adminNames.adminProjects,
-    },
-    {
-        path: 'projects/edit/:group/:project',
-        component: AdminProjectsEdit,
-        name: adminNames.adminProjectsEdit,
-    },
-    {
-        path: 'projects/new',
-        component: AdminProjectsNew,
-        name: adminNames.adminProjectsNew,
-    },
-    {
-        path: 'containers',
-        component: AdminContainers,
-        name: adminNames.adminContainers,
-    },
-    {
-        path: 'templates',
-        component: AdminTemplates,
-        name: adminNames.adminTemplates,
-    },
-    {
-        path: 'users',
-        component: AdminUsers,
-        name: adminNames.adminUsers,
-    },
-    {
-        path: 'users/edit/:username',
-        component: AdminUsersEdit,
-        name: adminNames.adminUsersEdit,
-    },
-    {
-        path: 'users/new',
-        component: AdminUsersNew,
-        name: adminNames.adminUsersNew,
-    },
-    {
-        path: 'daemons',
-        component: AdminDaemons,
-        name: adminNames.adminDaemons,
-    },
-    {
-        path: 'daemons/edit/:daemon',
-        component: AdminDaemonsEdit,
-        children: [
-            {
-                path: 'info',
-                component: AdminDaemonsEditInfo,
-                name: adminNames.adminDaemonsEditInfo,
-            },
-            {
-                path: 'env',
-                component: AdminDaemonsEditEnv,
-                name: adminNames.adminDaemonsEditEnv,
-            },
-            {
-                path: 'log',
-                component: AdminDaemonsEditLog,
-                name: adminNames.adminDaemonsEditLog,
-            },
-        ],
-    },
-    {
-        path: 'daemons/new',
-        component: AdminDaemonsNew,
-        name: adminNames.adminDaemonsNew,
-    },
+  {
+    path: 'configs',
+    component: AdminConfigs,
+    name: adminNames.adminConfigs,
+  },
+  {
+    path: 'groups',
+    component: AdminGroups,
+    name: adminNames.adminGroups,
+  },
+  {
+    path: 'groups/edit/:group',
+    component: AdminGroupsEdit,
+    name: adminNames.adminGroupsEdit,
+  },
+  {
+    path: 'groups/new',
+    component: AdminGroupsNew,
+    name: adminNames.adminGroupsNew,
+  },
+  {
+    path: 'overview',
+    name: adminNames.adminOverview,
+    component: AdminOverview,
+  },
+  {
+    path: 'permissions',
+    component: AdminPermissions,
+    name: adminNames.adminPermissions,
+  },
+  {
+    path: 'permissions/edit/:perm',
+    component: AdminPermissionsEdit,
+    name: adminNames.adminPermissionsEdit,
+  },
+  {
+    path: 'permissions/new',
+    component: AdminPermissionsNew,
+    name: adminNames.adminPermissionsNew,
+  },
+  {
+    path: 'ports',
+    component: AdminPorts,
+    name: adminNames.adminPorts,
+  },
+  {
+    path: 'projects',
+    component: AdminProjects,
+    name: adminNames.adminProjects,
+  },
+  {
+    path: 'projects/edit/:group/:project',
+    component: AdminProjectsEdit,
+    name: adminNames.adminProjectsEdit,
+  },
+  {
+    path: 'projects/new',
+    component: AdminProjectsNew,
+    name: adminNames.adminProjectsNew,
+  },
+  {
+    path: 'containers',
+    component: AdminContainers,
+    name: adminNames.adminContainers,
+  },
+  {
+    path: 'templates',
+    component: AdminTemplates,
+    name: adminNames.adminTemplates,
+  },
+  {
+    path: 'users',
+    component: AdminUsers,
+    name: adminNames.adminUsers,
+  },
+  {
+    path: 'users/edit/:username',
+    component: AdminUsersEdit,
+    name: adminNames.adminUsersEdit,
+  },
+  {
+    path: 'users/new',
+    component: AdminUsersNew,
+    name: adminNames.adminUsersNew,
+  },
+  {
+    path: 'daemons',
+    component: AdminDaemons,
+    name: adminNames.adminDaemons,
+  },
+  {
+    path: 'daemons/edit/:daemon',
+    component: AdminDaemonsEdit,
+    children: [
+      {
+        path: 'info',
+        component: AdminDaemonsEditInfo,
+        name: adminNames.adminDaemonsEditInfo,
+      },
+      {
+        path: 'env',
+        component: AdminDaemonsEditEnv,
+        name: adminNames.adminDaemonsEditEnv,
+      },
+      {
+        path: 'log',
+        component: AdminDaemonsEditLog,
+        name: adminNames.adminDaemonsEditLog,
+      },
+    ],
+  },
+  {
+    path: 'daemons/new',
+    component: AdminDaemonsNew,
+    name: adminNames.adminDaemonsNew,
+  },
 
-    ...adminAirjoyChildren,
+  ...adminAirjoyChildren,
 ];
 
 export default adminChildren;

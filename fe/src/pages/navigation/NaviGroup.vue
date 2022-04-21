@@ -1,30 +1,29 @@
 <i18n lang="yaml">
 en:
   group:
-    unknown: "[Unknown Group]"
-  projects: "Projects"
-  members: "Members"
-  settings: "Settings"
+    unknown: '[Unknown Group]'
+  projects: 'Projects'
+  members: 'Members'
+  settings: 'Settings'
 
 ko:
   group:
-    unknown: "[알수없는 그룹]"
-  projects: "프로젝트"
-  members: "회원 관리"
-  settings: "그룹 설정"
+    unknown: '[알수없는 그룹]'
+  projects: '프로젝트'
+  members: '회원 관리'
+  settings: '그룹 설정'
 </i18n>
 
 <template>
   <v-navigation-drawer
-      app
-      clipped
-      permanent
-      stateless
-      touchless
-      :mini-variant.sync="mini"
+    app
+    clipped
+    permanent
+    stateless
+    touchless
+    :mini-variant.sync="mini"
   >
     <v-list nav dense>
-
       <!-- User Profile -->
       <v-list-item link @click.stop="onClickFoldNavigation">
         <v-list-item-icon>
@@ -40,13 +39,7 @@ ko:
 
       <v-divider></v-divider>
 
-      <v-list-item-group
-          mandatory
-          color="primary"
-          :value="index"
-          @change="input"
-      >
-
+      <v-list-item-group mandatory color="primary" :value="index" @change="input">
         <v-list-item link @click.stop="projects">
           <v-list-item-icon>
             <v-icon>mdi-clipboard-check-multiple</v-icon>
@@ -57,9 +50,9 @@ ko:
         </v-list-item>
 
         <v-list-item
-            v-if="!hideMembers && hasPermissionMemberView()"
-            link
-            @click.stop="members"
+          v-if="!hideMembers && hasPermissionMemberView()"
+          link
+          @click.stop="members"
         >
           <v-list-item-icon>
             <v-icon>mdi-account-group</v-icon>
@@ -70,9 +63,9 @@ ko:
         </v-list-item>
 
         <v-list-item
-            v-if="!hideSettings && hasPermissionSettingView()"
-            link
-            @click.stop="settings"
+          v-if="!hideSettings && hasPermissionSettingView()"
+          link
+          @click.stop="settings"
         >
           <v-list-item-icon>
             <v-icon>mdi-cog-outline</v-icon>
@@ -81,7 +74,6 @@ ko:
             {{ $t('settings') }}
           </v-list-item-title>
         </v-list-item>
-
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>

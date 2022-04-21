@@ -1,5 +1,5 @@
 export interface TemplateA {
-    position: number;
-    category: string;
-    name: string;
+  position: number;
+  category: string;
+  name: string;
 }

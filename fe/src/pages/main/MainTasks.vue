@@ -1,31 +1,31 @@
 <i18n lang="yaml">
 en:
   headers:
-    key: "ID"
-    name: "Name"
-    image: "Image"
-    created: "Created"
-    status: "Status"
-    actions: "Actions"
-  sync: "Sync"
-  search_label: "You can filter by key or name."
-  loading: "Loading... Please wait"
-  empty_items: "Empty Containers"
-  no_selected: "There are no items selected."
+    key: 'ID'
+    name: 'Name'
+    image: 'Image'
+    created: 'Created'
+    status: 'Status'
+    actions: 'Actions'
+  sync: 'Sync'
+  search_label: 'You can filter by key or name.'
+  loading: 'Loading... Please wait'
+  empty_items: 'Empty Containers'
+  no_selected: 'There are no items selected.'
 
 ko:
   headers:
-    key: "ID"
-    name: "이름"
-    image: "이미지"
-    created: "생성일"
-    status: "상태"
-    actions: "관리"
-  sync: "동기화"
-  search_label: "키(Key) 또는 이름을 필터링할 수 있습니다."
-  loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-  empty_items: "컨테이너가 존재하지 않습니다."
-  no_selected: "선택된 항목이 없습니다."
+    key: 'ID'
+    name: '이름'
+    image: '이미지'
+    created: '생성일'
+    status: '상태'
+    actions: '관리'
+  sync: '동기화'
+  search_label: '키(Key) 또는 이름을 필터링할 수 있습니다.'
+  loading: '불러오는중 입니다... 잠시만 기다려 주세요.'
+  empty_items: '컨테이너가 존재하지 않습니다.'
+  no_selected: '선택된 항목이 없습니다.'
 </i18n>
 
 <template>
@@ -34,56 +34,56 @@ ko:
     <v-divider></v-divider>
 
     <v-data-table
-        :value="selected"
-        @input="onInputSelected"
-        show-select
-        item-key="key"
-        :items-per-page="itemsPerPage"
-        :headers="headers"
-        :items="items"
-        :search="filter"
-        :loading="loading"
-        :loading-text="$t('loading')"
+      :value="selected"
+      @input="onInputSelected"
+      show-select
+      item-key="key"
+      :items-per-page="itemsPerPage"
+      :headers="headers"
+      :items="items"
+      :search="filter"
+      :loading="loading"
+      :loading-text="$t('loading')"
     >
       <template v-slot:top>
         <div>
           <v-toolbar flat>
             <v-text-field
-                class="mr-4"
-                v-model="filter"
-                append-icon="mdi-magnify"
-                :label="$t('search_label')"
-                single-line
-                hide-details
+              class="mr-4"
+              v-model="filter"
+              append-icon="mdi-magnify"
+              :label="$t('search_label')"
+              single-line
+              hide-details
             ></v-text-field>
           </v-toolbar>
         </div>
         <div class="d-flex flex-row">
           <container-control-group
-              small
-              :disabled-start="disabledStart"
-              :disabled-stop="disabledStop"
-              :disabled-kill="disabledKill"
-              :disabled-restart="disabledRestart"
-              :disabled-pause="disabledPause"
-              :disabled-resume="disabledResume"
-              :disabled-remove="disabledRemove"
-              @click:start="onClickStart"
-              @click:stop="onClickStop"
-              @click:kill="onClickKill"
-              @click:restart="onClickRestart"
-              @click:pause="onClickPause"
-              @click:resume="onClickResume"
-              @click:remove="onClickRemove"
+            small
+            :disabled-start="disabledStart"
+            :disabled-stop="disabledStop"
+            :disabled-kill="disabledKill"
+            :disabled-restart="disabledRestart"
+            :disabled-pause="disabledPause"
+            :disabled-resume="disabledResume"
+            :disabled-remove="disabledRemove"
+            @click:start="onClickStart"
+            @click:stop="onClickStop"
+            @click:kill="onClickKill"
+            @click:restart="onClickRestart"
+            @click:pause="onClickPause"
+            @click:resume="onClickResume"
+            @click:remove="onClickRemove"
           ></container-control-group>
           <v-btn
-              class="ml-2 rounded-xl"
-              color="primary"
-              small
-              outlined
-              rounded
-              tile
-              @click="onClickSync"
+            class="ml-2 rounded-xl"
+            color="primary"
+            small
+            outlined
+            rounded
+            tile
+            @click="onClickSync"
           >
             <v-icon left>mdi-sync</v-icon>
             {{ $t('sync') }}
@@ -91,31 +91,26 @@ ko:
         </div>
       </template>
 
-      <template v-slot:item.key="{ item }">
+      <template v-slot:item.key="{item}">
         {{ shortKey(item) }}
       </template>
 
-      <template v-slot:item.image="{ item }">
+      <template v-slot:item.image="{item}">
         {{ shortImage(item) }}
       </template>
 
-      <template v-slot:item.created="{ item }">
+      <template v-slot:item.created="{item}">
         {{ shortCreated(item) }}
       </template>
 
-      <template v-slot:item.status="{ item }">
+      <template v-slot:item.status="{item}">
         <v-chip small :color="statusColor(item)">
           {{ item.status }}
         </v-chip>
       </template>
 
-      <template v-slot:item.actions="{ item }">
-        <v-icon
-            small
-            disabled
-            class="mr-2"
-            @click="onClickContainerEdit(item)"
-        >
+      <template v-slot:item.actions="{item}">
+        <v-icon small disabled class="mr-2" @click="onClickContainerEdit(item)">
           mdi-pencil
         </v-icon>
       </template>
@@ -157,7 +152,7 @@ const ITEMS_PER_PAGE = 15;
   components: {
     BreadcrumbMain,
     ContainerControlGroup,
-  }
+  },
 })
 export default class MainTasks extends VueBase {
   readonly itemsPerPage = ITEMS_PER_PAGE;
@@ -228,15 +223,16 @@ export default class MainTasks extends VueBase {
 
   updateContainers() {
     this.loading = true;
-    this.$api2.getAdminContainers()
-        .then(items => {
-          this.loading = false;
-          this.items = items;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAdminContainers()
+      .then(items => {
+        this.loading = false;
+        this.items = items;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   shortKey(item: ContainerA) {
@@ -275,8 +271,7 @@ export default class MainTasks extends VueBase {
     }
   }
 
-  onClickContainerEdit(item: ContainerA) {
-  }
+  onClickContainerEdit(item: ContainerA) {}
 
   onInputSelected(value) {
     this.selected = value;
@@ -306,7 +301,7 @@ export default class MainTasks extends VueBase {
   controlContainers(operator: string) {
     const keys = this.selected.map(i => i.key);
     if (keys.length === 0) {
-      this.toastError(this.$t('no_selected').toString())
+      this.toastError(this.$t('no_selected').toString());
       return;
     }
 
@@ -315,17 +310,18 @@ export default class MainTasks extends VueBase {
       operator: operator,
     } as ControlContainersQ;
 
-    this.$api2.patchAdminContainers(body)
-        .then(() => {
-          this.selected = [];
-          this.updateContainers();
-          this.toastRequestSuccess();
-        })
-        .catch(error => {
-          this.selected = [];
-          this.updateContainers();
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .patchAdminContainers(body)
+      .then(() => {
+        this.selected = [];
+        this.updateContainers();
+        this.toastRequestSuccess();
+      })
+      .catch(error => {
+        this.selected = [];
+        this.updateContainers();
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickStart() {

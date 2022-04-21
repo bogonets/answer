@@ -1,10 +1,8 @@
 <template>
   <div class="router-navi-self">
-    <navi-self>
-    </navi-self>
+    <navi-self></navi-self>
 
-    <router-view>
-    </router-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -18,10 +16,9 @@ import NaviSelf from '@/pages/navigation/NaviSelf.vue';
   components: {
     BarMain,
     NaviSelf,
-  }
+  },
 })
-export default class RouterNaviSelf extends VueBase {
-}
+export default class RouterNaviSelf extends VueBase {}
 </script>
 
 <style lang="scss" scoped>

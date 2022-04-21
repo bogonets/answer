@@ -1,19 +1,19 @@
 <i18n lang="yaml">
 en:
   tools:
-    copy: "Copy"
-    cut: "Cut"
-    paste: "Paste"
+    copy: 'Copy'
+    cut: 'Cut'
+    paste: 'Paste'
   msg:
-    empty: "Unselected files."
+    empty: 'Unselected files.'
 
 ko:
   tools:
-    copy: "복사"
-    cut: "잘라내기"
-    paste: "붙여넣기"
+    copy: '복사'
+    cut: '잘라내기'
+    paste: '붙여넣기'
   msg:
-    empty: "선택한 파일이 없습니다."
+    empty: '선택한 파일이 없습니다.'
 </i18n>
 
 <template>
@@ -47,15 +47,15 @@ ko:
     <v-row no-gutters>
       <v-col cols="12" sm="4">
         <v-treeview
-            dense
-            v-model="tree"
-            :open="initiallyOpen"
-            :items="items"
-            activatable
-            item-key="name"
-            open-on-click
+          dense
+          v-model="tree"
+          :open="initiallyOpen"
+          :items="items"
+          activatable
+          item-key="name"
+          open-on-click
         >
-          <template v-slot:prepend="{ item, open }">
+          <template v-slot:prepend="{item, open}">
             <v-icon v-if="!item.file">
               {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
             </v-icon>
@@ -90,7 +90,7 @@ import ViewPort from '@/components/ViewPort.vue';
 @Component({
   components: {
     ViewPort,
-  }
+  },
 })
 export default class MainFiles extends VueBase {
   readonly icons = {
@@ -119,10 +119,12 @@ export default class MainFiles extends VueBase {
       children: [
         {
           name: 'static',
-          children: [{
-            name: 'logo.png',
-            file: 'png',
-          }],
+          children: [
+            {
+              name: 'logo.png',
+              file: 'png',
+            },
+          ],
         },
         {
           name: 'favicon.ico',
@@ -166,25 +168,18 @@ export default class MainFiles extends VueBase {
     this.miniNavigation = !this.miniNavigation;
   }
 
-  onClickCopy() {
-  }
+  onClickCopy() {}
 
-  onClickCut() {
-  }
+  onClickCut() {}
 
-  onClickPaste() {
-  }
+  onClickPaste() {}
 
-  onClickRename() {
-  }
+  onClickRename() {}
 
-  onClickUpload() {
-  }
+  onClickUpload() {}
 
-  onClickDownload() {
-  }
+  onClickDownload() {}
 
-  onClickSync() {
-  }
+  onClickSync() {}
 }
 </script>

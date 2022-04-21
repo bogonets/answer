@@ -1,21 +1,21 @@
 <i18n lang="yaml">
 en:
-  devices: "Devices"
-  new: "New"
+  devices: 'Devices'
+  new: 'New'
   msg:
-    enable_debugging: "Enable Device Debugging Mode"
-    disable_debugging: "Disable Device Debugging Mode"
-    failed_start_debugging: "Failed to switch device debugging mode."
-    failed_stop_debugging: "Failed to stop device debugging mode."
+    enable_debugging: 'Enable Device Debugging Mode'
+    disable_debugging: 'Disable Device Debugging Mode'
+    failed_start_debugging: 'Failed to switch device debugging mode.'
+    failed_stop_debugging: 'Failed to stop device debugging mode.'
 
 ko:
-  devices: "Devices"
-  new: "New"
+  devices: 'Devices'
+  new: 'New'
   msg:
-    enable_debugging: "장치 디버깅 모드를 활성화 했습니다."
-    disable_debugging: "장치 디버깅 모드를 비활성화 했습니다."
-    failed_start_debugging: "장치 디버깅 모드 전환에 실패하였습니다."
-    failed_stop_debugging: "장치 디버깅 모드 중단에 실패하였습니다."
+    enable_debugging: '장치 디버깅 모드를 활성화 했습니다.'
+    disable_debugging: '장치 디버깅 모드를 비활성화 했습니다.'
+    failed_start_debugging: '장치 디버깅 모드 전환에 실패하였습니다.'
+    failed_stop_debugging: '장치 디버깅 모드 중단에 실패하였습니다.'
 </i18n>
 
 <template>
@@ -24,12 +24,11 @@ ko:
     <v-divider></v-divider>
 
     <form-vms-event-config
-        :loading-submit="loadingSubmit"
-        :device="device"
-        @cancel="onClickCancel"
-        @ok="onClickOk"
+      :loading-submit="loadingSubmit"
+      :device="device"
+      @cancel="onClickCancel"
+      @ok="onClickOk"
     ></form-vms-event-config>
-
   </v-container>
 </template>
 
@@ -39,13 +38,13 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import FormVmsEventConfig from '@/components/FormVmsEventConfig.vue';
 import type {VmsEventConfigA, VmsCreateEventConfigQ} from '@/packet/vms';
-import {VmsDeviceA} from "@/packet/vms";
+import {VmsDeviceA} from '@/packet/vms';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
     FormVmsEventConfig,
-  }
+  },
 })
 export default class MainVmsDevicesEditEventConfigsNew extends VueBase {
   readonly breadcrumbs = [
@@ -120,13 +119,14 @@ export default class MainVmsDevicesEditEventConfigsNew extends VueBase {
     const group = this.currentGroup;
     const project = this.currentProject;
     const device = this.currentDevice;
-    this.$api2.postVmsDeviceProcessDebugStop(group, project, device)
-        .then(() => {
-          this.toastSuccess(this.$t('msg.disable_debugging'));
-        })
-        .catch(() => {
-          this.toastWarning(this.$t('msg.failed_stop_debugging'));
-        });
+    this.$api2
+      .postVmsDeviceProcessDebugStop(group, project, device)
+      .then(() => {
+        this.toastSuccess(this.$t('msg.disable_debugging'));
+      })
+      .catch(() => {
+        this.toastWarning(this.$t('msg.failed_stop_debugging'));
+      });
   }
 
   onClickCancel() {
@@ -146,16 +146,17 @@ export default class MainVmsDevicesEditEventConfigsNew extends VueBase {
     const project = this.$route.params.project;
     const device = this.$route.params.device;
     this.loadingSubmit = true;
-    this.$api2.postVmsDeviceEventsConfigs(group, project, device, body)
-        .then(() => {
-          this.loadingSubmit = false;
-          this.toastRequestSuccess();
-          this.moveToMainVmsDevicesEditEvents();
-        })
-        .catch(error => {
-          this.loadingSubmit = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .postVmsDeviceEventsConfigs(group, project, device, body)
+      .then(() => {
+        this.loadingSubmit = false;
+        this.toastRequestSuccess();
+        this.moveToMainVmsDevicesEditEvents();
+      })
+      .catch(error => {
+        this.loadingSubmit = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

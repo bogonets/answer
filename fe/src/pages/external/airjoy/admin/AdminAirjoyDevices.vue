@@ -1,16 +1,15 @@
 <i18n lang="yaml">
 en:
-  airjoy_devices: "Airjoy Devices"
+  airjoy_devices: 'Airjoy Devices'
 
 ko:
-  airjoy_devices: "Airjoy 장치 관리"
+  airjoy_devices: 'Airjoy 장치 관리'
 </i18n>
 
 <template>
   <v-container>
     <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
-
   </v-container>
 </template>
 
@@ -22,7 +21,7 @@ import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 @Component({
   components: {
     ToolbarBreadcrumbs,
-  }
+  },
 })
 export default class AdminAirjoyDevices extends VueBase {
   private readonly navigationItems = [

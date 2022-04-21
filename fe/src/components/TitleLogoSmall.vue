@@ -1,16 +1,16 @@
 <template>
   <v-img
-      v-if="this.$vuetify.theme.dark"
-      src="@/assets/logo/answer-logo-onlytext-dark.svg"
-      alt="ANSWER"
-      max-width="82px"
-      max-height="36px"
+    v-if="this.$vuetify.theme.dark"
+    src="@/assets/logo/answer-logo-onlytext-dark.svg"
+    alt="ANSWER"
+    max-width="82px"
+    max-height="36px"
   ></v-img>
   <v-img
-      v-else
-      src="@/assets/logo/answer-logo-onlytext.svg"
-      alt="ANSWER"
-      max-width="82px"
-      max-height="36px"
+    v-else
+    src="@/assets/logo/answer-logo-onlytext.svg"
+    alt="ANSWER"
+    max-width="82px"
+    max-height="36px"
   ></v-img>
 </template>

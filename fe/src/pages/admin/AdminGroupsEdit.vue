@@ -4,16 +4,15 @@
     <v-divider></v-divider>
 
     <form-group-edit
-        :value="group"
-        :loading-submit="loadingSubmit"
-        :loading-delete="loadingDelete"
-        :show-delete-dialog="showDeleteDialog"
-        @ok="onClickOk"
-        @delete:show="onClickDelete"
-        @delete:cancel="onClickDeleteCancel"
-        @delete:ok="onClickDeleteOk"
+      :value="group"
+      :loading-submit="loadingSubmit"
+      :loading-delete="loadingDelete"
+      :show-delete-dialog="showDeleteDialog"
+      @ok="onClickOk"
+      @delete:show="onClickDelete"
+      @delete:cancel="onClickDeleteCancel"
+      @delete:ok="onClickDeleteOk"
     ></form-group-edit>
-
   </v-container>
 </template>
 
@@ -21,14 +20,14 @@
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import FormGroupEdit from "@/components/FormGroupEdit.vue";
+import FormGroupEdit from '@/components/FormGroupEdit.vue';
 import {GroupA, UpdateGroupQ} from '@/packet/group';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
     FormGroupEdit,
-  }
+  },
 })
 export default class AdminGroupsEdit extends VueBase {
   private readonly navigationItems = [
@@ -59,28 +58,30 @@ export default class AdminGroupsEdit extends VueBase {
   }
 
   requestGroup() {
-    this.$api2.getAdminGroupsPgroup(this.$route.params.group)
-        .then(item => {
-          this.group = item;
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-          this.moveToBack();
-        });
+    this.$api2
+      .getAdminGroupsPgroup(this.$route.params.group)
+      .then(item => {
+        this.group = item;
+      })
+      .catch(error => {
+        this.toastRequestFailure(error);
+        this.moveToBack();
+      });
   }
 
   onClickOk(event: UpdateGroupQ) {
     this.loadingSubmit = true;
-    this.$api2.patchAdminGroupsPgroup(this.$route.params.group, event)
-        .then(() => {
-          this.loadingSubmit = false;
-          this.toastRequestSuccess();
-          this.requestGroup();
-        })
-        .catch(error => {
-          this.loadingSubmit = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .patchAdminGroupsPgroup(this.$route.params.group, event)
+      .then(() => {
+        this.loadingSubmit = false;
+        this.toastRequestSuccess();
+        this.requestGroup();
+      })
+      .catch(error => {
+        this.loadingSubmit = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickDelete() {
@@ -93,18 +94,19 @@ export default class AdminGroupsEdit extends VueBase {
 
   onClickDeleteOk() {
     this.loadingDelete = true;
-    this.$api2.deleteAdminGroupsGroup(this.$route.params.group)
-        .then(() => {
-          this.loadingDelete = false;
-          this.showDeleteDialog = false;
-          this.toastRequestSuccess();
-          this.moveToAdminGroups();
-        })
-        .catch(error => {
-          this.loadingDelete = false;
-          this.showDeleteDialog = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .deleteAdminGroupsGroup(this.$route.params.group)
+      .then(() => {
+        this.loadingDelete = false;
+        this.showDeleteDialog = false;
+        this.toastRequestSuccess();
+        this.moveToAdminGroups();
+      })
+      .catch(error => {
+        this.loadingDelete = false;
+        this.showDeleteDialog = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

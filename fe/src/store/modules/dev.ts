@@ -1,16 +1,16 @@
 export default {
-    namespaced: true,
-    state: {
-        enable: false,
+  namespaced: true,
+  state: {
+    enable: false,
+  },
+  getters: {
+    enable: state => {
+      return state.enable;
     },
-    getters: {
-        enable: (state) => {
-            return state.enable;
-        }
+  },
+  mutations: {
+    enable(state, val) {
+      state.enable = val;
     },
-    mutations: {
-        enable(state, val) {
-            state.enable = val;
-        }
-    },
-}
+  },
+};

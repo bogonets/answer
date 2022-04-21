@@ -129,7 +129,8 @@ export interface GraphOptions extends IApplicationOptions {
 }
 
 async function waitFontLoad(family: string, timeout: number) {
-  await (new FontFaceObserver(family)).load(null, timeout)
+  await new FontFaceObserver(family)
+    .load(null, timeout)
     .then(() => {
       console.debug(`waitFontLoad.then('${family}')`);
     })
@@ -139,7 +140,6 @@ async function waitFontLoad(family: string, timeout: number) {
 }
 
 export class LambdaContainer extends DraggingContainer {
-
   slots: Record<string, IPoint>;
 
   constructor(dragAlpha?: number) {
@@ -149,19 +149,19 @@ export class LambdaContainer extends DraggingContainer {
 }
 
 const FONT_FAMILY_MATERIAL_DESIGN_ICONS = 'Material Design Icons';
-const MDI_PULSE = 0xF0430;
-const MDI_FUNCTION = 0xF0295;
-const MDI_EXPORT = 0xF0207;
-const MDI_FILE_OUTLINE = 0xF0224;
-const MDI_HELP = 0xF02D6;
+const MDI_PULSE = 0xf0430;
+const MDI_FUNCTION = 0xf0295;
+const MDI_EXPORT = 0xf0207;
+const MDI_FILE_OUTLINE = 0xf0224;
+const MDI_HELP = 0xf02d6;
 
-const MDI_ARROW_RIGHT_BOLD = 0xF0734;
-const MDI_ARROW_RIGHT_BOLD_OUTLINE = 0xF09C2;
-const MDI_ARROW_RIGHT_DROP_CIRCLE_OUTLINE = 0xF005A;
-const MDI_ARROW_RIGHT_DROP_CIRCLE = 0xF0059;
-const MDI_HEXAGON = 0xF02D8;
-const MDI_HEXAGON_OUTLINE = 0xF02D9;
-const MDI_HEXAGON_SLICE_6 = 0xF0AC8;
+const MDI_ARROW_RIGHT_BOLD = 0xf0734;
+const MDI_ARROW_RIGHT_BOLD_OUTLINE = 0xf09c2;
+const MDI_ARROW_RIGHT_DROP_CIRCLE_OUTLINE = 0xf005a;
+const MDI_ARROW_RIGHT_DROP_CIRCLE = 0xf0059;
+const MDI_HEXAGON = 0xf02d8;
+const MDI_HEXAGON_OUTLINE = 0xf02d9;
+const MDI_HEXAGON_SLICE_6 = 0xf0ac8;
 
 const FONT_FAMILY_SERIF = 'serif';
 const FONT_FAMILY_SANS_SERIF = 'sans-serif';
@@ -190,7 +190,7 @@ export function createDefaultGraphOptions(options?: GraphOptions) {
   return {
     iconFontFamily: FONT_FAMILY_MATERIAL_DESIGN_ICONS,
     iconFontSize: 18,
-    iconFillColor: 0xFFFFFF,
+    iconFillColor: 0xffffff,
     iconCodeSignal: MDI_PULSE,
     iconCodeFunction: MDI_FUNCTION,
     iconCodeExport: MDI_EXPORT,
@@ -202,7 +202,7 @@ export function createDefaultGraphOptions(options?: GraphOptions) {
     iconCodeDataLink: MDI_HEXAGON,
     textFontFamily: DEFAULT_FONT_FAMILY,
     textFontSize: 12,
-    textFillColor: 0xFFFFFF,
+    textFillColor: 0xffffff,
     waitFontLoad: true,
     fontLoadTimeout: 4 * SECOND_BY_MILLISECONDS,
     lineWidth: DEFAULT_LINE_WIDTH,
@@ -215,22 +215,18 @@ export function createDefaultGraphOptions(options?: GraphOptions) {
     scale: DEFAULT_SCALE,
     draggingAlpha: DEFAULT_DRAGGING_ALPHA,
     antialias: true,
-    backgroundColor: 0xFAFAFA,
-    ... options,
+    backgroundColor: 0xfafafa,
+    ...options,
   } as GraphOptions;
 }
 
 export class Context {
-
   graph: Graph;
   options: GraphOptions;
   app?: Application;
 
-  constructor(
-    graph?: Graph,
-    options?: GraphOptions,
-  ) {
-    this.graph = graph || {} as Graph;
+  constructor(graph?: Graph, options?: GraphOptions) {
+    this.graph = graph || ({} as Graph);
     this.options = createDefaultGraphOptions(options);
     this.app = undefined;
 
@@ -245,8 +241,8 @@ export class Context {
       const iconFontFamily = this.options.iconFontFamily || '';
       const textFontFamily = this.options.textFontFamily || '';
 
-      await (new FontFaceObserver(iconFontFamily)).load(null, fontLoadTimeout)
-      await (new FontFaceObserver(textFontFamily)).load(null, fontLoadTimeout)
+      await new FontFaceObserver(iconFontFamily).load(null, fontLoadTimeout);
+      await new FontFaceObserver(textFontFamily).load(null, fontLoadTimeout);
     }
 
     const lambdas = {} as Record<string, LambdaContainer>;
@@ -259,7 +255,7 @@ export class Context {
       const arc = this.graph.arcs[key];
       const bezier = new Graphics();
 
-      this.app.ticker.add((delta) => {
+      this.app.ticker.add(delta => {
         const fromLambda = lambdas[arc.from.lambda];
         const toLambda = lambdas[arc.to.lambda];
 
@@ -283,14 +279,7 @@ export class Context {
         bezier.clear();
         bezier.lineStyle(3, 0xcfcfcf, 1);
         bezier.moveTo(fromX, fromY);
-        bezier.bezierCurveTo(
-          from2X,
-          from2Y,
-          to2X,
-          to2Y,
-          toX,
-          toY,
-        );
+        bezier.bezierCurveTo(from2X, from2Y, to2X, to2Y, toX, toY);
       });
 
       // bezier.x = fromLambda.x;
@@ -329,8 +318,7 @@ export class Context {
     }
   }
 
-  createGrid(width: number, height: number, widthStep: number, heightStep: number) {
-  }
+  createGrid(width: number, height: number, widthStep: number, heightStep: number) {}
 
   createLambdaContainer(lambda: Lambda) {
     const container = new LambdaContainer(this.options.draggingAlpha);
@@ -383,7 +371,7 @@ export class Context {
     children.push(icon);
 
     const dividerY = icon.height + iconPadding;
-    outline.lineStyle(lineWidth, 0xFFFFFF, lineAlpha);
+    outline.lineStyle(lineWidth, 0xffffff, lineAlpha);
     outline.moveTo(0, dividerY);
     outline.lineTo(width, dividerY);
 
@@ -395,7 +383,7 @@ export class Context {
     const title = new Text(lambda.template, textStyle);
     title.anchor.y = 0.5;
     title.x = icon.x + icon.width + iconPadding;
-    title.y = icon.y + (icon.height / 2.0);
+    title.y = icon.y + icon.height / 2.0;
     children.push(title);
 
     const slotIconStyle = new TextStyle({
@@ -420,70 +408,66 @@ export class Context {
 
       if (prop.type === 'flow_input') {
         const icon = new Text(String.fromCodePoint(flowUnlink), slotIconStyle);
-        icon.x = iconPadding + (icon.width / 2);
-        icon.y = propOffsetY + (leftLine * propHeight);
+        icon.x = iconPadding + icon.width / 2;
+        icon.y = propOffsetY + leftLine * propHeight;
         icon.anchor.set(0.5, 0.5);
         children.push(icon);
         container.slots[prop.name] = {x: icon.x, y: icon.y} as IPoint;
 
         const att = new Text(prop.name, textStyle);
-        att.x = icon.x + (icon.width / 2) + padding;
+        att.x = icon.x + icon.width / 2 + padding;
         att.y = icon.y;
         att.anchor.y = 0.5;
         children.push(att);
-
       } else if (prop.type === 'flow_output') {
         const icon = new Text(String.fromCodePoint(flowLink), slotIconStyle);
-        icon.x = width - (icon.width / 2);
-        icon.y = propOffsetY + (rightLine * propHeight);
+        icon.x = width - icon.width / 2;
+        icon.y = propOffsetY + rightLine * propHeight;
         icon.anchor.set(0.5, 0.5);
         children.push(icon);
         container.slots[prop.name] = {x: icon.x, y: icon.y} as IPoint;
 
         const att = new Text(prop.name, textStyle);
-        att.x = icon.x - (icon.width / 2) - padding;
+        att.x = icon.x - icon.width / 2 - padding;
         att.y = icon.y;
         att.anchor.x = 1;
         att.anchor.y = 0.5;
         children.push(att);
-
       } else if (prop.type === 'data_input') {
         const icon = new Text(String.fromCodePoint(dataUnlink), slotIconStyle);
-        icon.x = iconPadding + (icon.width / 2);
-        icon.y = propOffsetY + (leftLine * propHeight);
+        icon.x = iconPadding + icon.width / 2;
+        icon.y = propOffsetY + leftLine * propHeight;
         icon.anchor.set(0.5, 0.5);
         children.push(icon);
         container.slots[prop.name] = {x: icon.x, y: icon.y} as IPoint;
 
         const att = new Text(prop.name, textStyle);
-        att.x = icon.x + (icon.width / 2) + padding;
+        att.x = icon.x + icon.width / 2 + padding;
         att.y = icon.y;
         att.anchor.y = 0.5;
         children.push(att);
-
       } else if (prop.type === 'data_output') {
         const icon = new Text(String.fromCodePoint(dataLink), slotIconStyle);
-        icon.x = width - (icon.width / 2);
-        icon.y = propOffsetY + (rightLine * propHeight);
+        icon.x = width - icon.width / 2;
+        icon.y = propOffsetY + rightLine * propHeight;
         icon.anchor.set(0.5, 0.5);
         children.push(icon);
         container.slots[prop.name] = {x: icon.x, y: icon.y} as IPoint;
 
         const att = new Text(prop.name, textStyle);
-        att.x = icon.x - (icon.width / 2) - padding;
+        att.x = icon.x - icon.width / 2 - padding;
         att.y = icon.y;
         att.anchor.x = 1;
         att.anchor.y = 0.5;
         children.push(att);
-
       } else if (prop.type === 'button') {
         const button = new Graphics();
-        button.lineStyle(1, 0xFFFFFF);
+        button.lineStyle(1, 0xffffff);
         const buttonPadding = padding * 2;
         const x = buttonPadding;
-        const y = propOffsetY + (maxLine * propHeight) - propHeightHalf + buttonPadding;
-        const w = width - (buttonPadding * 2);
-        const h = propHeight - (buttonPadding * 2);
+        const y = propOffsetY + maxLine * propHeight - propHeightHalf + buttonPadding;
+        const w = width - buttonPadding * 2;
+        const h = propHeight - buttonPadding * 2;
         button.drawRoundedRect(x, y, w, h, 16);
         button.endFill();
         children.push(button);
@@ -491,10 +475,9 @@ export class Context {
         const buttonText = new Text(prop.value, textStyle);
         buttonText.anchor.set(0.5, 0.5);
         buttonText.anchor.y = 0.5;
-        buttonText.x = x + (w / 2);
-        buttonText.y = y + (h / 2);
+        buttonText.x = x + w / 2;
+        buttonText.y = y + h / 2;
         children.push(buttonText);
-
       } else if (prop.type === 'text_input') {
         const input = new TextInput({
           input: {
@@ -504,20 +487,20 @@ export class Context {
 
             padding: '12px',
             // width: '500px',
-            color: '#26272E'
+            color: '#26272E',
           },
           box: {
-            default: {fill: 0xE8E9F3, rounded: 12, stroke: {color: 0xCBCEE0, width: 3}},
-            focused: {fill: 0xE1E3EE, rounded: 12, stroke: {color: 0xABAFC6, width: 3}},
-            disabled: {fill: 0xDBDBDB, rounded: 12}
-          }
+            default: {fill: 0xe8e9f3, rounded: 12, stroke: {color: 0xcbcee0, width: 3}},
+            focused: {fill: 0xe1e3ee, rounded: 12, stroke: {color: 0xabafc6, width: 3}},
+            disabled: {fill: 0xdbdbdb, rounded: 12},
+          },
         });
 
         const buttonPadding = padding * 2;
         input.x = buttonPadding;
-        input.y = propOffsetY + (maxLine * propHeight) - propHeightHalf + buttonPadding;
-        input.width = width - (buttonPadding * 2);
-        input.height = propHeight - (buttonPadding * 2);
+        input.y = propOffsetY + maxLine * propHeight - propHeightHalf + buttonPadding;
+        input.width = width - buttonPadding * 2;
+        input.height = propHeight - buttonPadding * 2;
         input.placeholder = 'Enter your path ...';
         input.text = prop.value;
         children.push(input);

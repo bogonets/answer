@@ -1,54 +1,44 @@
 <i18n lang="yaml">
 en:
   tools:
-    tree: "Tree"
-    add: "Add Lambda"
-    properties: "Properties"
-    console: "Console"
+    tree: 'Tree'
+    add: 'Add Lambda'
+    properties: 'Properties'
+    console: 'Console'
 
 ko:
   tools:
-    tree: "계층 구조"
-    add: "람다 추가"
-    properties: "속성"
-    console: "콘솔"
+    tree: '계층 구조'
+    add: '람다 추가'
+    properties: '속성'
+    console: '콘솔'
 </i18n>
 
 <template>
   <div class="vp-main">
     <v-toolbar dense flat>
       <v-btn plain small @click="onClickTree">
-        <v-icon left>
-          mdi-file-tree
-        </v-icon>
+        <v-icon left>mdi-file-tree</v-icon>
         {{ $t('tools.tree') }}
       </v-btn>
 
       <v-btn plain small @click="onClickAddLambda">
-        <v-icon left>
-          mdi-lambda
-        </v-icon>
+        <v-icon left>mdi-lambda</v-icon>
         {{ $t('tools.add') }}
       </v-btn>
 
       <v-btn plain small @click="onClickProperties">
-        <v-icon left>
-          mdi-ballot-outline
-        </v-icon>
+        <v-icon left>mdi-ballot-outline</v-icon>
         {{ $t('tools.properties') }}
       </v-btn>
 
       <v-btn plain small @click="onClickConsole">
-        <v-icon left>
-          mdi-console
-        </v-icon>
+        <v-icon left>mdi-console</v-icon>
         {{ $t('tools.console') }}
       </v-btn>
 
       <v-btn icon plain small @click="onClickMore">
-        <v-icon>
-          mdi-dots-horizontal
-        </v-icon>
+        <v-icon>mdi-dots-horizontal</v-icon>
       </v-btn>
     </v-toolbar>
     <v-divider></v-divider>

@@ -1,12 +1,9 @@
 <template>
   <div class="router-navi-main">
-    <navi-main-airjoy v-if="isAirjoy">
-    </navi-main-airjoy>
-    <navi-main v-else>
-    </navi-main>
+    <navi-main-airjoy v-if="isAirjoy"></navi-main-airjoy>
+    <navi-main v-else></navi-main>
 
-    <router-view>
-    </router-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -23,7 +20,7 @@ import {OEM_AIRJOY} from '@/packet/oem';
     NaviMainAirjoy,
     NaviMain,
     BarMain,
-  }
+  },
 })
 export default class RouterNaviMain extends VueBase {
   get oem() {

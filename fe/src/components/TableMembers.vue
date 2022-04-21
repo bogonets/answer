@@ -1,77 +1,77 @@
 <i18n lang="yaml">
 en:
   label:
-    search: "You can filter by name or description."
-    owner: "Owner"
+    search: 'You can filter by name or description.'
+    owner: 'Owner'
   headers:
-    username: "Username"
-    role: "Role"
-    actions: "Actions"
+    username: 'Username'
+    role: 'Role'
+    actions: 'Actions'
   msg:
-    loading: "Loading... Please wait"
-    empty: "Empty Members"
+    loading: 'Loading... Please wait'
+    empty: 'Empty Members'
 
 ko:
   label:
-    search: "이름 또는 설명을 필터링할 수 있습니다."
-    owner: "소유자"
+    search: '이름 또는 설명을 필터링할 수 있습니다.'
+    owner: '소유자'
   headers:
-    username: "사용자명"
-    role: "역할"
-    actions: "관리"
+    username: '사용자명'
+    role: '역할'
+    actions: '관리'
   msg:
-    loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-    empty: "회원이 존재하지 않습니다."
+    loading: '불러오는중 입니다... 잠시만 기다려 주세요.'
+    empty: '회원이 존재하지 않습니다.'
 </i18n>
 
 <template>
   <v-data-table
-      :class="dataTableClass"
-      :headers="headers"
-      :items="items"
-      :search="filter"
-      :loading="loading"
-      :loading-text="$t('msg.loading')"
-      @click:row="onClickRow"
+    :class="dataTableClass"
+    :headers="headers"
+    :items="items"
+    :search="filter"
+    :loading="loading"
+    :loading-text="$t('msg.loading')"
+    @click:row="onClickRow"
   >
     <template v-if="!hideTopBar" v-slot:top>
       <v-toolbar flat>
         <v-text-field
-            v-if="!hideFilterInput"
-            class="mr-4"
-            v-model="filter"
-            append-icon="mdi-magnify"
-            single-line
-            hide-details
-            :label="$t('label.search')"
+          v-if="!hideFilterInput"
+          class="mr-4"
+          v-model="filter"
+          append-icon="mdi-magnify"
+          single-line
+          hide-details
+          :label="$t('label.search')"
         ></v-text-field>
       </v-toolbar>
     </template>
 
-    <template v-slot:item.role="{ item }">
+    <template v-slot:item.role="{item}">
       <div class="d-flex justify-center">
         <span class="font-weight-bold" v-if="item.role === owner">
           {{ $t('label.owner') }}
         </span>
         <v-select
-            v-else
-            dense
-            solo
-            flat
-            outlined
-            rounded
-            hide-details
-            :disabled="item.role === owner"
-            :value="selectPermission(item)"
-            @input="inputPermission($event, item)"
-            :items="visibleRoles"
-            @change="change($event, item)"
-            item-text="slug"
-            item-value="slug"
-            item-disabled="hidden"
-            return-object
+          v-else
+          dense
+          solo
+          flat
+          outlined
+          rounded
+          hide-details
+          :disabled="item.role === owner"
+          :value="selectPermission(item)"
+          @input="inputPermission($event, item)"
+          :items="visibleRoles"
+          @change="change($event, item)"
+          item-text="slug"
+          item-value="slug"
+          item-disabled="hidden"
+          return-object
         >
-          <template v-slot:item="{ item }">
+          <template v-slot:item="{item}">
             {{ item.name }}
             <v-chip class="ml-2" x-small outlined color="primary">
               <v-icon left>mdi-identifier</v-icon>
@@ -79,7 +79,7 @@ ko:
             </v-chip>
           </template>
 
-          <template v-slot:selection="{ item }">
+          <template v-slot:selection="{item}">
             {{ item.name }}
             <v-chip class="ml-2" x-small outlined color="primary">
               <v-icon left>mdi-identifier</v-icon>
@@ -90,12 +90,12 @@ ko:
       </div>
     </template>
 
-    <template v-if="!hideActions" v-slot:item.actions="{ item }">
+    <template v-if="!hideActions" v-slot:item.actions="{item}">
       <v-icon
-          v-if="!hideActionDelete && item.role !== owner"
-          small
-          color="red"
-          @click="clickDelete(item)"
+        v-if="!hideActionDelete && item.role !== owner"
+        small
+        color="red"
+        @click="clickDelete(item)"
       >
         mdi-delete
       </v-icon>
@@ -192,7 +192,7 @@ export default class TableMembers extends VueBase {
         filterable: false,
         sortable: false,
         value: 'actions',
-      })
+      });
     }
     return headers;
   }

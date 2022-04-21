@@ -1,11 +1,9 @@
 <template>
   <div class="router-bar-main">
-    <bar-main>
-    </bar-main>
+    <bar-main></bar-main>
 
     <v-main>
-      <router-view>
-      </router-view>
+      <router-view></router-view>
     </v-main>
   </div>
 </template>
@@ -18,10 +16,9 @@ import BarMain from '@/pages/bar/BarMain.vue';
 @Component({
   components: {
     BarMain,
-  }
+  },
 })
-export default class RouterBarMain extends VueBase {
-}
+export default class RouterBarMain extends VueBase {}
 </script>
 
 <style lang="scss" scoped>

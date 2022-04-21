@@ -4,13 +4,12 @@
     <v-divider></v-divider>
 
     <table-groups
-        :loading="loading"
-        :items="items"
-        @click:new="onClickNew"
-        @click:edit="onClickEdit"
-        @click:move="onClickMove"
+      :loading="loading"
+      :items="items"
+      @click:new="onClickNew"
+      @click:edit="onClickEdit"
+      @click:move="onClickMove"
     ></table-groups>
-
   </v-container>
 </template>
 
@@ -25,7 +24,7 @@ import {GroupA} from '@/packet/group';
   components: {
     ToolbarBreadcrumbs,
     TableGroups,
-  }
+  },
 })
 export default class AdminGroups extends VueBase {
   private readonly navigationItems = [
@@ -44,20 +43,21 @@ export default class AdminGroups extends VueBase {
   items = [] as Array<GroupA>;
 
   created() {
-    this.requestGroups()
+    this.requestGroups();
   }
 
   requestGroups() {
     this.loading = true;
-    this.$api2.getAdminGroups()
-        .then(items => {
-          this.loading = false;
-          this.items = items;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAdminGroups()
+      .then(items => {
+        this.loading = false;
+        this.items = items;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickNew() {

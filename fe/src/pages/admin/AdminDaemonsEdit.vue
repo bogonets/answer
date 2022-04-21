@@ -1,15 +1,15 @@
 <i18n lang="yaml">
 en:
   tab:
-    info: "Information"
-    env: "Environment"
-    log: "Logging"
+    info: 'Information'
+    env: 'Environment'
+    log: 'Logging'
 
 ko:
   tab:
-    info: "정보"
-    env: "환경"
-    log: "로그"
+    info: '정보'
+    env: '환경'
+    log: '로그'
 </i18n>
 
 <template>
@@ -24,9 +24,7 @@ ko:
     </v-tabs>
     <v-divider></v-divider>
 
-    <router-view>
-    </router-view>
-
+    <router-view></router-view>
   </v-container>
 </template>
 
@@ -38,7 +36,7 @@ import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 @Component({
   components: {
     ToolbarBreadcrumbs,
-  }
+  },
 })
 export default class AdminDaemonsEdit extends VueBase {
   readonly navigationItems = [

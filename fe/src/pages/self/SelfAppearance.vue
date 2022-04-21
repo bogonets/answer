@@ -1,41 +1,41 @@
 <i18n lang="yaml">
 en:
-  lang: "English"
-  title: "Appearance"
-  subtitle: "Customize the look and feel of your Answer."
+  lang: 'English'
+  title: 'Appearance'
+  subtitle: 'Customize the look and feel of your Answer.'
   headers:
-    timezone: "Timezone"
+    timezone: 'Timezone'
   subheaders:
-    timezone: "By setting the time zone, you can change the time format."
+    timezone: 'By setting the time zone, you can change the time format.'
   theme:
-    header: "Theme"
+    header: 'Theme'
     dark:
-      title: "Dark Mode"
-      subtitle: "Apply a theme that displays white text on a dark screen."
+      title: 'Dark Mode'
+      subtitle: 'Apply a theme that displays white text on a dark screen.'
   i18n:
-    header: "Internationalization"
+    header: 'Internationalization'
     lang:
-      title: "Language"
-      subtitle: "It will be translated into your preferred language."
+      title: 'Language'
+      subtitle: 'It will be translated into your preferred language.'
 
 ko:
-  lang: "한글"
-  title: "외관 설정"
-  subtitle: "Answer의 모양과 느낌을 설정할 수 있습니다."
+  lang: '한글'
+  title: '외관 설정'
+  subtitle: 'Answer의 모양과 느낌을 설정할 수 있습니다.'
   headers:
-    timezone: "시간대"
+    timezone: '시간대'
   subheaders:
-    timezone: "시간대를 설정하여, 출력 포맷을 변경할 수 있습니다."
+    timezone: '시간대를 설정하여, 출력 포맷을 변경할 수 있습니다.'
   theme:
-    header: "테마"
+    header: '테마'
     dark:
-      title: "어두운 화면"
-      subtitle: "어두운 화면에 흰 글자를 나타내는 테마를 적용합니다."
+      title: '어두운 화면'
+      subtitle: '어두운 화면에 흰 글자를 나타내는 테마를 적용합니다.'
   i18n:
-    header: "국제화"
+    header: '국제화'
     lang:
-      title: "언어"
-      subtitle: "원하는 언어로 번역됩니다."
+      title: '언어'
+      subtitle: '원하는 언어로 번역됩니다.'
 </i18n>
 
 <template>
@@ -45,20 +45,16 @@ ko:
 
     <v-subheader>{{ $t('theme.header') }}</v-subheader>
     <left-title
-        x-small
-        no-gutter
-        no-wrap-xs
-        :left-ratio="8"
-        :right-ratio="4"
-        :header="$t('theme.dark.title')"
-        :subheader="$t('theme.dark.subtitle')"
+      x-small
+      no-gutter
+      no-wrap-xs
+      :left-ratio="8"
+      :right-ratio="4"
+      :header="$t('theme.dark.title')"
+      :subheader="$t('theme.dark.subtitle')"
     >
       <div class="d-flex flex-row justify-end">
-        <v-switch
-            inset
-            v-model="extra.dark"
-            @change="onChangeDark"
-        ></v-switch>
+        <v-switch inset v-model="extra.dark" @change="onChangeDark"></v-switch>
       </div>
     </left-title>
 
@@ -66,49 +62,47 @@ ko:
     <v-subheader>{{ $t('i18n.header') }}</v-subheader>
 
     <left-title
-        x-small
-        no-gutter
-        no-wrap-xs
-        :left-ratio="8"
-        :right-ratio="4"
-        :header="$t('i18n.lang.title')"
-        :subheader="$t('i18n.lang.subtitle')"
+      x-small
+      no-gutter
+      no-wrap-xs
+      :left-ratio="8"
+      :right-ratio="4"
+      :header="$t('i18n.lang.title')"
+      :subheader="$t('i18n.lang.subtitle')"
     >
       <div class="d-flex flex-row justify-end">
         <v-menu transition="slide-y-transition" :offset-y="true">
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot:activator="{on, attrs}">
             <v-btn v-bind="attrs" v-on="on">
               {{ currentLangName }}
-              <v-icon right role="img" aria-hidden="false">
-                mdi-chevron-down
-              </v-icon>
+              <v-icon right role="img" aria-hidden="false">mdi-chevron-down</v-icon>
             </v-btn>
           </template>
           <list-languages
-              :init-lang="extra.lang"
-              @change-lang="onChangeLang"
+            :init-lang="extra.lang"
+            @change-lang="onChangeLang"
           ></list-languages>
         </v-menu>
       </div>
     </left-title>
 
     <left-title
-        x-small
-        no-gutter
-        no-wrap-xs
-        :left-ratio="8"
-        :right-ratio="4"
-        :header="$t('headers.timezone')"
-        :subheader="$t('subheaders.timezone')"
+      x-small
+      no-gutter
+      no-wrap-xs
+      :left-ratio="8"
+      :right-ratio="4"
+      :header="$t('headers.timezone')"
+      :subheader="$t('subheaders.timezone')"
     >
       <div class="d-flex flex-row justify-end">
         <v-combobox
-            dense
-            outlined
-            hide-details
-            v-model="extra.timezone"
-            :items="timezoneNames"
-            @change="onChangeTimezone"
+          dense
+          outlined
+          hide-details
+          v-model="extra.timezone"
+          :items="timezoneNames"
+          @change="onChangeTimezone"
         ></v-combobox>
       </div>
     </left-title>
@@ -124,14 +118,14 @@ import ListLanguages from '@/components/ListLanguages.vue';
 import type {UserExtraA} from '@/packet/user';
 import {createEmptyUserExtraA} from '@/packet/user';
 import momentTimezone from 'moment-timezone';
-import moment from "moment-timezone";
+import moment from 'moment-timezone';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
     LeftTitle,
     ListLanguages,
-  }
+  },
 })
 export default class SelfAppearance extends VueBase {
   private readonly navigationItems = [
@@ -189,15 +183,16 @@ export default class SelfAppearance extends VueBase {
 
   saveUserExtra() {
     this.loading = true;
-    this.$api2.patchSelfExtra(this.extra)
-        .then(() => {
-          this.loading = false;
-          this.toastRequestSuccess();
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .patchSelfExtra(this.extra)
+      .then(() => {
+        this.loading = false;
+        this.toastRequestSuccess();
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onChangeDark() {

@@ -1,32 +1,27 @@
 <i18n lang="yaml">
 en:
   label:
-    private: "Private"
-    internal: "Internal"
-    public: "Public"
+    private: 'Private'
+    internal: 'Internal'
+    public: 'Public'
   hint:
-    private: "Access must be explicitly granted to each user."
-    internal: "Any logged in user can access."
-    public: "Access is allowed without authentication."
+    private: 'Access must be explicitly granted to each user.'
+    internal: 'Any logged in user can access.'
+    public: 'Access is allowed without authentication.'
 
 ko:
   label:
-    private: "비공개"
-    internal: "내부"
-    public: "공개"
+    private: '비공개'
+    internal: '내부'
+    public: '공개'
   hint:
-    private: "접근 권한은 각 사용자에게 명시적으로 부여되어야 합니다."
-    internal: "로그인한 모든 사용자가 접근할 수 있습니다."
-    public: "인증 없이 접근할 수 있습니다."
+    private: '접근 권한은 각 사용자에게 명시적으로 부여되어야 합니다.'
+    internal: '로그인한 모든 사용자가 접근할 수 있습니다.'
+    public: '인증 없이 접근할 수 있습니다.'
 </i18n>
 
 <template>
-  <v-radio-group
-      dense
-      persistent-hint
-      :value="value"
-      @change="input"
-  >
+  <v-radio-group dense persistent-hint :value="value" @change="input">
     <v-radio :value="levelPrivate">
       <template v-slot:label>
         <div class="d-flex flex-column">
@@ -80,7 +75,7 @@ export default class RadioVisibility extends Vue {
   private readonly levelPublic = LEVEL_PUBLIC;
 
   @Prop({type: Boolean, default: true})
-  readonly hidePublic!: boolean
+  readonly hidePublic!: boolean;
 
   @Prop({type: Number, default: LEVEL_PRIVATE})
   readonly value!: number;

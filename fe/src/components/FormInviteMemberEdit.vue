@@ -1,27 +1,27 @@
 <i18n lang="yaml">
 en:
   header:
-    invite: "Invite member"
-    members: "Existing members"
+    invite: 'Invite member'
+    members: 'Existing members'
   subheader:
-    invite: "You can invite a new member."
+    invite: 'You can invite a new member.'
   label:
-    delete: "Delete a member"
-  delete_confirm: "Are you sure? Are you really removing this member?"
-  cancel: "Cancel"
-  delete: "Delete"
+    delete: 'Delete a member'
+  delete_confirm: 'Are you sure? Are you really removing this member?'
+  cancel: 'Cancel'
+  delete: 'Delete'
 
 ko:
   header:
-    invite: "회원 초대"
-    members: "기존 회원 목록"
+    invite: '회원 초대'
+    members: '기존 회원 목록'
   subheader:
-    invite: "새로운 회원을 초대할 수 있습니다."
+    invite: '새로운 회원을 초대할 수 있습니다.'
   label:
-    delete: "회원 제거"
-  delete_confirm: "이 회원을 정말 제거합니까?"
-  cancel: "취소"
-  delete: "제거"
+    delete: '회원 제거'
+  delete_confirm: '이 회원을 정말 제거합니까?'
+  cancel: '취소'
+  delete: '제거'
 </i18n>
 
 <template>
@@ -30,22 +30,22 @@ ko:
       <p :class="titleClass">{{ $t('header.invite') }}</p>
       <v-divider></v-divider>
       <form-invite-member
-          hide-cancel-button
-          :loading="loadingInvite"
-          :usernames="usernames"
-          :permissions="permissions"
-          @ok="invite"
+        hide-cancel-button
+        :loading="loadingInvite"
+        :usernames="usernames"
+        :permissions="permissions"
+        @ok="invite"
       ></form-invite-member>
 
       <p :class="titleClass">{{ $t('header.members') }}</p>
       <v-divider></v-divider>
 
       <table-members
-          :loading="loadingMembers"
-          :items="items"
-          :permissions="permissions"
-          @change="change"
-          @click:delete="onClickDelete"
+        :loading="loadingMembers"
+        :items="items"
+        :permissions="permissions"
+        @change="change"
+        @click:delete="onClickDelete"
       ></table-members>
     </v-container>
 
@@ -70,7 +70,6 @@ ko:
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </div>
 </template>
 
@@ -79,8 +78,8 @@ import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormInviteMember from '@/components/FormInviteMember.vue';
-import TableMembers from "@/components/TableMembers.vue";
-import type {MemberA, CreateMemberQ, UpdateMemberQ} from "@/packet/member";
+import TableMembers from '@/components/TableMembers.vue';
+import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
 import type {RoleA} from '@/packet/role';
 import {TITLE_CLASS} from '@/styles/title';
 
@@ -89,7 +88,7 @@ import {TITLE_CLASS} from '@/styles/title';
     TableMembers,
     LeftTitle,
     FormInviteMember,
-  }
+  },
 })
 export default class FormInviteMemberEdit extends VueBase {
   private readonly titleClass = TITLE_CLASS;

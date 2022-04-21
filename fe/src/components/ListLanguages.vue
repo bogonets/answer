@@ -1,9 +1,9 @@
 <i18n lang="yaml">
 en:
-  lang: "English"
+  lang: 'English'
 
 ko:
-  lang: "한글"
+  lang: '한글'
 </i18n>
 
 <template>
@@ -11,12 +11,7 @@ ko:
     <v-subheader v-if="!!header">{{ header }}</v-subheader>
     <v-divider v-if="!!header"></v-divider>
 
-    <v-list-item-group
-        mandatory
-        color="primary"
-        :value="index"
-        @change="changeLang"
-    >
+    <v-list-item-group mandatory color="primary" :value="index" @change="changeLang">
       <v-list-item v-for="lang in languages" :key="lang">
         <v-list-item-content>
           <v-list-item-title v-text="$t('lang', lang)"></v-list-item-title>

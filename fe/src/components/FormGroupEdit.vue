@@ -1,88 +1,76 @@
 <i18n lang="yaml">
 en:
   header:
-    basic: "Edit group"
-    detail: "Detail"
+    basic: 'Edit group'
+    detail: 'Detail'
   subheader:
     basic: "You can edit the group's basic properties."
-    detail: "Detailed information about this group."
+    detail: 'Detailed information about this group.'
   label:
-    created_at: "Created At"
-    updated_at: "Updated At"
-    delete: "Delete a group"
+    created_at: 'Created At'
+    updated_at: 'Updated At'
+    delete: 'Delete a group'
   hint:
-    delete: "Please be careful! It cannot be recovered."
-  delete_confirm: "Are you sure? Are you really removing this group?"
-  cancel: "Cancel"
-  delete: "Delete"
+    delete: 'Please be careful! It cannot be recovered.'
+  delete_confirm: 'Are you sure? Are you really removing this group?'
+  cancel: 'Cancel'
+  delete: 'Delete'
 
 ko:
   header:
-    basic: "그룹 편집"
-    detail: "상세 정보"
+    basic: '그룹 편집'
+    detail: '상세 정보'
   subheader:
-    basic: "그룹의 기본 속성을 편집할 수 있습니다."
-    detail: "이 그룹에 대한 자세한 정보입니다."
+    basic: '그룹의 기본 속성을 편집할 수 있습니다.'
+    detail: '이 그룹에 대한 자세한 정보입니다.'
   label:
-    created_at: "그룹 생성일"
-    updated_at: "그룹 갱신일"
-    delete: "그룹 제거"
+    created_at: '그룹 생성일'
+    updated_at: '그룹 갱신일'
+    delete: '그룹 제거'
   hint:
-    delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
-  delete_confirm: "이 그룹을 정말 제거합니까?"
-  cancel: "취소"
-  delete: "제거"
+    delete: '주의하세요! 이 명령은 되돌릴 수 없습니다!'
+  delete_confirm: '이 그룹을 정말 제거합니까?'
+  cancel: '취소'
+  delete: '제거'
 </i18n>
 
 <template>
   <div>
-    <left-title
-        :header="$t('header.basic')"
-        :subheader="$t('subheader.basic')"
-    >
+    <left-title :header="$t('header.basic')" :subheader="$t('subheader.basic')">
       <form-group
-          disable-slug
-          hide-cancel-button
-          hide-origin-prefix
-          :hide-features="hideFeatures"
-          :hide-visibility="hideVisibility"
-          :disable-submit-button="!modified"
-          :value="current"
-          @input="onUpdateCurrent"
-          :loading="loadingSubmit"
-          @ok="onClickOk"
+        disable-slug
+        hide-cancel-button
+        hide-origin-prefix
+        :hide-features="hideFeatures"
+        :hide-visibility="hideVisibility"
+        :disable-submit-button="!modified"
+        :value="current"
+        @input="onUpdateCurrent"
+        :loading="loadingSubmit"
+        @ok="onClickOk"
       ></form-group>
     </left-title>
 
-    <left-title
-        :header="$t('header.detail')"
-        :subheader="$t('subheader.detail')"
-    >
+    <left-title :header="$t('header.detail')" :subheader="$t('subheader.detail')">
       <v-card outlined>
         <v-simple-table class="elevation-1">
           <template v-slot:default>
             <tbody>
-            <tr>
-              <td>{{ $t('label.created_at') }}</td>
-              <td>{{ createdAt }}</td>
-            </tr>
-            <tr>
-              <td>{{ $t('label.updated_at') }}</td>
-              <td>{{ updatedAt }}</td>
-            </tr>
+              <tr>
+                <td>{{ $t('label.created_at') }}</td>
+                <td>{{ createdAt }}</td>
+              </tr>
+              <tr>
+                <td>{{ $t('label.updated_at') }}</td>
+                <td>{{ updatedAt }}</td>
+              </tr>
             </tbody>
           </template>
         </v-simple-table>
       </v-card>
     </left-title>
 
-    <v-alert
-        v-if="showDelete"
-        outlined
-        prominent
-        class="ma-4"
-        type="error"
-    >
+    <v-alert v-if="showDelete" outlined prominent class="ma-4" type="error">
       <v-row align="center" class="pl-4">
         <v-col>
           <v-row>
@@ -121,7 +109,6 @@ ko:
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </div>
 </template>
 
@@ -138,7 +125,7 @@ import * as _ from 'lodash';
   components: {
     LeftTitle,
     FormGroup,
-  }
+  },
 })
 export default class FormGroupEdit extends VueBase {
   @Prop({type: Boolean})

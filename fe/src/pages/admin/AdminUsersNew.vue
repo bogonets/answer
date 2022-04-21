@@ -1,11 +1,11 @@
 <i18n lang="yaml">
 en:
-  header: "New user"
-  subheader: "Register a new member."
+  header: 'New user'
+  subheader: 'Register a new member.'
 
 ko:
-  header: "새로운 사용자"
-  subheader: "새로운 구성원을 등록합니다."
+  header: '새로운 사용자'
+  subheader: '새로운 구성원을 등록합니다.'
 </i18n>
 
 <template>
@@ -13,14 +13,11 @@ ko:
     <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
-    <left-title
-        :header="$t('header')"
-        :subheader="$t('subheader')"
-    >
+    <left-title :header="$t('header')" :subheader="$t('subheader')">
       <form-user
-          :loading="submitLoading"
-          @cancel="onClickCancel"
-          @ok="onClickOk"
+        :loading="submitLoading"
+        @cancel="onClickCancel"
+        @ok="onClickOk"
       ></form-user>
     </left-title>
   </v-container>
@@ -39,7 +36,7 @@ import {SignupQ} from '@/packet/user';
     ToolbarBreadcrumbs,
     LeftTitle,
     FormUser,
-  }
+  },
 })
 export default class AdminUsersNew extends VueBase {
   private readonly navigationItems = [
@@ -77,16 +74,17 @@ export default class AdminUsersNew extends VueBase {
     } as SignupQ;
 
     this.submitLoading = true;
-    this.$api2.postAdminUsers(body)
-        .then(() => {
-          this.submitLoading = false;
-          this.moveToAdminUsers();
-          this.toastRequestSuccess();
-        })
-        .catch(error => {
-          this.submitLoading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .postAdminUsers(body)
+      .then(() => {
+        this.submitLoading = false;
+        this.moveToAdminUsers();
+        this.toastRequestSuccess();
+      })
+      .catch(error => {
+        this.submitLoading = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

@@ -1,65 +1,65 @@
 <i18n lang="yaml">
 en:
-  devices: "Devices"
+  devices: 'Devices'
   headers:
-    name: "Name"
-    stream_address: "Stream URL"
-    server_running: "Server Running"
-    server_status: "Server Status"
-    actions: "Actions"
+    name: 'Name'
+    stream_address: 'Stream URL'
+    server_running: 'Server Running'
+    server_status: 'Server Status'
+    actions: 'Actions'
   msg:
-    search: "You can filter by name."
-    loading: "Loading... Please wait"
-    empty: "Empty Devices"
+    search: 'You can filter by name.'
+    loading: 'Loading... Please wait'
+    empty: 'Empty Devices'
   labels:
-    add: "Add Device"
-    discovery: "Device Discovery"
+    add: 'Add Device'
+    discovery: 'Device Discovery'
   control:
-    start: "Start"
-    stop: "Stop"
-    sync: "Sync"
+    start: 'Start'
+    stop: 'Stop'
+    sync: 'Sync'
   status:
-    created: "Created"
-    beginning: "Beginning"
-    running: "Running"
-    ending: "Ending"
-    restarting: "Restarting"
-    paused: "Paused"
-    exited: "Exited"
-    dead: "Dead"
-    unknown: "Unknown"
-    undefined: "Undefined"
+    created: 'Created'
+    beginning: 'Beginning'
+    running: 'Running'
+    ending: 'Ending'
+    restarting: 'Restarting'
+    paused: 'Paused'
+    exited: 'Exited'
+    dead: 'Dead'
+    unknown: 'Unknown'
+    undefined: 'Undefined'
 
 ko:
-  devices: "Devices"
+  devices: 'Devices'
   headers:
-    name: "이름"
-    stream_address: "스트리밍 주소"
-    server_running: "서버 실행"
-    server_status: "서버 상태"
-    actions: "관리"
+    name: '이름'
+    stream_address: '스트리밍 주소'
+    server_running: '서버 실행'
+    server_status: '서버 상태'
+    actions: '관리'
   msg:
-    search: "이름을 필터링할 수 있습니다."
-    loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-    empty: "장치가 존재하지 않습니다."
+    search: '이름을 필터링할 수 있습니다.'
+    loading: '불러오는중 입니다... 잠시만 기다려 주세요.'
+    empty: '장치가 존재하지 않습니다.'
   labels:
-    add: "장치 추가"
-    discovery: "장치 탐색"
+    add: '장치 추가'
+    discovery: '장치 탐색'
   control:
-    start: "Start"
-    stop: "Stop"
-    sync: "Sync"
+    start: 'Start'
+    stop: 'Stop'
+    sync: 'Sync'
   status:
-    created: "Created"
-    beginning: "Beginning"
-    running: "Running"
-    ending: "Ending"
-    restarting: "Restarting"
-    paused: "Paused"
-    exited: "Exited"
-    dead: "Dead"
-    unknown: "Unknown"
-    undefined: "Undefined"
+    created: 'Created'
+    beginning: 'Beginning'
+    running: 'Running'
+    ending: 'Ending'
+    restarting: 'Restarting'
+    paused: 'Paused'
+    exited: 'Exited'
+    dead: 'Dead'
+    unknown: 'Unknown'
+    undefined: 'Undefined'
 </i18n>
 
 <template>
@@ -68,32 +68,36 @@ ko:
     <v-divider></v-divider>
 
     <v-data-table
-        :value="selected"
-        @input="onInputSelected"
-        show-select
-        sort-desc
-        sort-by="name"
-        item-key="device_uid"
-        :items-per-page="itemsPerPage"
-        :headers="headers"
-        :items="items"
-        :search="filter"
-        :loading="loading"
-        :loading-text="$t('msg.loading')"
+      :value="selected"
+      @input="onInputSelected"
+      show-select
+      sort-desc
+      sort-by="name"
+      item-key="device_uid"
+      :items-per-page="itemsPerPage"
+      :headers="headers"
+      :items="items"
+      :search="filter"
+      :loading="loading"
+      :loading-text="$t('msg.loading')"
     >
       <template v-slot:top>
         <div>
           <v-toolbar flat>
             <v-text-field
-                class="mr-4"
-                v-model="filter"
-                append-icon="mdi-magnify"
-                :label="$t('msg.search')"
-                single-line
-                hide-details
+              class="mr-4"
+              v-model="filter"
+              append-icon="mdi-magnify"
+              :label="$t('msg.search')"
+              single-line
+              hide-details
             ></v-text-field>
 
-            <v-btn color="primary" class="align-self-center mr-2" @click="onClickDiscovery">
+            <v-btn
+              color="primary"
+              class="align-self-center mr-2"
+              @click="onClickDiscovery"
+            >
               {{ $t('labels.discovery') }}
             </v-btn>
             <v-btn color="primary" class="align-self-center mr-2" @click="onClickAdd">
@@ -103,37 +107,37 @@ ko:
         </div>
         <div class="d-flex flex-row">
           <v-btn
-              class="ml-2 rounded-xl"
-              color="green"
-              small
-              rounded
-              tile
-              :disabled="disabledStart"
-              @click="onClickStart"
+            class="ml-2 rounded-xl"
+            color="green"
+            small
+            rounded
+            tile
+            :disabled="disabledStart"
+            @click="onClickStart"
           >
             <v-icon left>mdi-play</v-icon>
             {{ $t('control.start') }}
           </v-btn>
           <v-btn
-              class="ml-2 rounded-xl"
-              color="red"
-              small
-              rounded
-              tile
-              :disabled="disabledStop"
-              @click="onClickStop"
+            class="ml-2 rounded-xl"
+            color="red"
+            small
+            rounded
+            tile
+            :disabled="disabledStop"
+            @click="onClickStop"
           >
             <v-icon left>mdi-stop</v-icon>
             {{ $t('control.stop') }}
           </v-btn>
           <v-btn
-              class="ml-2 rounded-xl"
-              color="primary"
-              small
-              outlined
-              rounded
-              tile
-              @click="onClickSync"
+            class="ml-2 rounded-xl"
+            color="primary"
+            small
+            outlined
+            rounded
+            tile
+            @click="onClickSync"
           >
             <v-icon left>mdi-sync</v-icon>
             {{ $t('control.sync') }}
@@ -141,29 +145,24 @@ ko:
         </div>
       </template>
 
-      <template v-slot:item.server_running="{ item }">
-        <v-icon v-show="item.server_running" small disabled>
-          mdi-check
-        </v-icon>
+      <template v-slot:item.server_running="{item}">
+        <v-icon v-show="item.server_running" small disabled>mdi-check</v-icon>
       </template>
 
-      <template v-slot:item.server_status="{ item }">
+      <template v-slot:item.server_status="{item}">
         <v-chip small :color="serverStatusColor(item)">
           {{ serverStatusText(item) }}
         </v-chip>
       </template>
 
-      <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="onClickDevice(item)">
-          mdi-pencil
-        </v-icon>
+      <template v-slot:item.actions="{item}">
+        <v-icon small class="mr-2" @click="onClickDevice(item)">mdi-pencil</v-icon>
       </template>
 
       <template v-slot:no-data>
         {{ $t('msg.empty') }}
       </template>
     </v-data-table>
-
   </v-container>
 </template>
 
@@ -188,7 +187,7 @@ const ITEMS_PER_PAGE = 15;
 @Component({
   components: {
     ToolbarBreadcrumbs,
-  }
+  },
 })
 export default class MainVmsDevices extends VueBase {
   readonly itemsPerPage = ITEMS_PER_PAGE;
@@ -266,15 +265,16 @@ export default class MainVmsDevices extends VueBase {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     this.loading = true;
-    this.$api2.getVmsDevices(group, project)
-        .then(items => {
-          this.loading = false;
-          this.items = items;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getVmsDevices(group, project)
+      .then(items => {
+        this.loading = false;
+        this.items = items;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   serverStatusColor(item: VmsDeviceA) {
@@ -334,14 +334,15 @@ export default class MainVmsDevices extends VueBase {
       const group = this.$route.params.group;
       const project = this.$route.params.project;
       const device = item.device_uid.toString();
-      this.$api2.postVmsDeviceProcessStart(group, project, device)
-          .then(() => {
-            this.toastRequestSuccess();
-            this.updateItems();
-          })
-          .catch(error => {
-            this.toastRequestFailure(error);
-          });
+      this.$api2
+        .postVmsDeviceProcessStart(group, project, device)
+        .then(() => {
+          this.toastRequestSuccess();
+          this.updateItems();
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+        });
     }
   }
 
@@ -350,14 +351,15 @@ export default class MainVmsDevices extends VueBase {
       const group = this.$route.params.group;
       const project = this.$route.params.project;
       const device = item.device_uid.toString();
-      this.$api2.postVmsDeviceProcessStop(group, project, device)
-          .then(() => {
-            this.toastRequestSuccess();
-            this.updateItems();
-          })
-          .catch(error => {
-            this.toastRequestFailure(error);
-          });
+      this.$api2
+        .postVmsDeviceProcessStop(group, project, device)
+        .then(() => {
+          this.toastRequestSuccess();
+          this.updateItems();
+        })
+        .catch(error => {
+          this.toastRequestFailure(error);
+        });
     }
   }
 

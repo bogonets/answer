@@ -1,8 +1,8 @@
 <template>
   <hls-player
-      :group="$route.params.group"
-      :project="$route.params.project"
-      :device="$route.params.device"
+    :group="$route.params.group"
+    :project="$route.params.project"
+    :device="$route.params.device"
   ></hls-player>
 </template>
 
@@ -14,8 +14,7 @@ import HlsPlayer from '@/media/HlsPlayer.vue';
 @Component({
   components: {
     HlsPlayer,
-  }
+  },
 })
-export default class MainVmsDevicesEditRecord extends VueBase {
-}
+export default class MainVmsDevicesEditRecord extends VueBase {}
 </script>

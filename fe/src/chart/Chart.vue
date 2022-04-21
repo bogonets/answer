@@ -1,10 +1,6 @@
 <template>
   <div>
-    <canvas
-        ref="canvas"
-        :width="width"
-        :height="height"
-    ></canvas>
+    <canvas ref="canvas" :width="width" :height="height"></canvas>
   </div>
 </template>
 
@@ -37,10 +33,20 @@ export default class Chart extends Vue {
   @Prop({type: Array, default: () => []})
   readonly plugins!: Array<Plugin>;
 
-  @Prop({type: Object, default: () => { return {}; } })
+  @Prop({
+    type: Object,
+    default: () => {
+      return {};
+    },
+  })
   readonly chartData!: ChartData;
 
-  @Prop({type: Object, default: () => { return {}; } })
+  @Prop({
+    type: Object,
+    default: () => {
+      return {};
+    },
+  })
   readonly options!: ChartOptions;
 
   @Ref()
@@ -48,7 +54,7 @@ export default class Chart extends Vue {
 
   chart?: ChartJS;
 
-  beforeDestroy () {
+  beforeDestroy() {
     if (this.chart) {
       this.chart.destroy();
     }
@@ -88,25 +94,28 @@ export default class Chart extends Vue {
       const newDatasetLabels = newData.datasets.map(d => d.label);
       const oldDatasetLabels = oldData.datasets.map(d => d.label);
 
-      const oldLabels = JSON.stringify(oldDatasetLabels)
-      const newLabels = JSON.stringify(newDatasetLabels)
+      const oldLabels = JSON.stringify(oldDatasetLabels);
+      const newLabels = JSON.stringify(newDatasetLabels);
 
       // Check if Labels are equal and if dataset length is equal
-      if (newLabels === oldLabels && oldData.datasets.length === newData.datasets.length) {
+      if (
+        newLabels === oldLabels &&
+        oldData.datasets.length === newData.datasets.length
+      ) {
         newData.datasets.forEach((dataset, i) => {
           // Get new and old dataset keys
           const oldDatasetKeys = Object.keys(oldData.datasets[i]);
           const newDatasetKeys = Object.keys(dataset);
 
           // Get keys that aren't present in the new data
-          const deletionKeys = oldDatasetKeys.filter((key) => {
+          const deletionKeys = oldDatasetKeys.filter(key => {
             return key !== '_meta' && newDatasetKeys.indexOf(key) === -1;
-          })
+          });
 
           // Remove outdated key-value pairs
-          deletionKeys.forEach((deletionKey) => {
+          deletionKeys.forEach(deletionKey => {
             delete chart.data.datasets[i][deletionKey];
-          })
+          });
 
           // Update attributes individually to avoid re-rendering the entire chart
           for (const attribute in dataset) {
@@ -150,27 +159,21 @@ export default class Chart extends Vue {
   }
 
   @Emit('labels:update')
-  labelsUpdate() {
-  }
+  labelsUpdate() {}
 
   @Emit('xlabels:update')
-  xlabelsUpdate() {
-  }
+  xlabelsUpdate() {}
 
   @Emit('ylabels:update')
-  ylabelsUpdate() {
-  }
+  ylabelsUpdate() {}
 
   @Emit('chart:update')
-  chartUpdate() {
-  }
+  chartUpdate() {}
 
   @Emit('chart:destroy')
-  chartDestroy() {
-  }
+  chartDestroy() {}
 
   @Emit('chart:render')
-  chartRender() {
-  }
+  chartRender() {}
 }
 </script>

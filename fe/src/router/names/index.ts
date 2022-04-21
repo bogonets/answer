@@ -5,11 +5,11 @@ import rootNames from '@/router/names/root';
 import selfNames from '@/router/names/self';
 
 export const names = {
-    ...adminNames,
-    ...devNames,
-    ...groupNames,
-    ...rootNames,
-    ...selfNames,
+  ...adminNames,
+  ...devNames,
+  ...groupNames,
+  ...rootNames,
+  ...selfNames,
 };
 
 export default names;

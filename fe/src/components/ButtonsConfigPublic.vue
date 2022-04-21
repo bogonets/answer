@@ -2,48 +2,42 @@
 en:
   dialog:
     api_config:
-      title: "API Settings"
-      subtitle: "You can change the API origin address."
-      origin_label: "API origin address"
-      cancel: "Cancel"
-      ok: "Ok"
+      title: 'API Settings'
+      subtitle: 'You can change the API origin address.'
+      origin_label: 'API origin address'
+      cancel: 'Cancel'
+      ok: 'Ok'
 
 ko:
   dialog:
     api_config:
-      title: "API 설정"
-      subtitle: "서버 주소를 변경할 수 있습니다."
-      origin_label: "API 서버 주소"
-      cancel: "취소"
-      ok: "확인"
+      title: 'API 설정'
+      subtitle: '서버 주소를 변경할 수 있습니다.'
+      origin_label: 'API 서버 주소'
+      cancel: '취소'
+      ok: '확인'
 </i18n>
 
 <template>
   <v-row justify="space-around">
-
     <!-- Theme Config Button -->
     <v-btn icon small @click="changeDark">
-      <v-icon small role="img" aria-hidden="false">
-        mdi-theme-light-dark
-      </v-icon>
+      <v-icon small role="img" aria-hidden="false">mdi-theme-light-dark</v-icon>
     </v-btn>
 
     <!-- Language Config Button -->
-    <menu-translate
-        init-vuetify
-        @change-lang="changeLang"
-    ></menu-translate>
+    <menu-translate init-vuetify @change-lang="changeLang"></menu-translate>
 
     <!-- API Config Button & Dialog -->
     <v-dialog
-        v-if="!isProduction"
-        v-model="showApiConfigDialog"
-        max-width="800px"
-        persistent
-        no-click-animation
-        @keydown.esc.stop="cancelOrigin"
+      v-if="!isProduction"
+      v-model="showApiConfigDialog"
+      max-width="800px"
+      persistent
+      no-click-animation
+      @keydown.esc.stop="cancelOrigin"
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{on, attrs}">
         <v-btn icon small v-bind="attrs" v-on="on">
           <v-icon small role="img" aria-hidden="false">mdi-api</v-icon>
         </v-btn>
@@ -60,10 +54,10 @@ ko:
 
         <v-card-text>
           <v-text-field
-              required
-              v-model="currentApiOrigin"
-              :label="$t('dialog.api_config.origin_label')"
-              @keypress.enter.stop="changeOrigin"
+            required
+            v-model="currentApiOrigin"
+            :label="$t('dialog.api_config.origin_label')"
+            @keypress.enter.stop="changeOrigin"
           ></v-text-field>
         </v-card-text>
 
@@ -80,7 +74,6 @@ ko:
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </v-row>
 </template>
 
@@ -91,11 +84,10 @@ import MenuTranslate from '@/components/MenuTranslate.vue';
 
 @Component({
   components: {
-    MenuTranslate
-  }
+    MenuTranslate,
+  },
 })
 export default class ButtonsConfigPublic extends VueBase {
-
   @Prop({type: String, default: ''})
   readonly origin!: string;
 
@@ -125,7 +117,7 @@ export default class ButtonsConfigPublic extends VueBase {
     if (this.origin) {
       return this.origin;
     } else if (this.localStoreOrigin) {
-      return this.$localStore.origin;  // Perhaps the default is location origin.
+      return this.$localStore.origin; // Perhaps the default is location origin.
     } else if (this.apiOrigin) {
       return this.$api2.origin;
     } else if (this.locationOrigin) {

@@ -1,23 +1,23 @@
 <i18n lang="yaml">
 en:
-  search_label: "You can filter by key or value."
+  search_label: 'You can filter by key or value.'
   headers:
-    key: "Key"
-    type: "Type"
-    value: "Value"
-    actions: "Actions"
-  loading: "Loading... Please wait"
-  empty_configs: "Empty Configs"
+    key: 'Key'
+    type: 'Type'
+    value: 'Value'
+    actions: 'Actions'
+  loading: 'Loading... Please wait'
+  empty_configs: 'Empty Configs'
 
 ko:
-  search_label: "열쇠 또는 값을 필터링할 수 있습니다."
+  search_label: '열쇠 또는 값을 필터링할 수 있습니다.'
   headers:
-    key: "열쇠 (Key)"
-    type: "자료형 (Type)"
-    value: "값 (Value)"
-    actions: "관리"
-  loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-  empty_configs: "설정이 존재하지 않습니다."
+    key: '열쇠 (Key)'
+    type: '자료형 (Type)'
+    value: '값 (Value)'
+    actions: '관리'
+  loading: '불러오는중 입니다... 잠시만 기다려 주세요.'
+  empty_configs: '설정이 존재하지 않습니다.'
 </i18n>
 
 <template>
@@ -26,33 +26,27 @@ ko:
     <v-divider></v-divider>
 
     <v-data-table
-        :headers="headers"
-        :items="items"
-        :search="filterText"
-        :loading="loading"
-        :loading-text="$t('loading')"
+      :headers="headers"
+      :items="items"
+      :search="filterText"
+      :loading="loading"
+      :loading-text="$t('loading')"
     >
       <template v-slot:top>
         <v-toolbar flat>
           <v-text-field
-              class="mr-4"
-              v-model="filterText"
-              append-icon="mdi-magnify"
-              :label="$t('search_label')"
-              single-line
-              hide-details
+            class="mr-4"
+            v-model="filterText"
+            append-icon="mdi-magnify"
+            :label="$t('search_label')"
+            single-line
+            hide-details
           ></v-text-field>
         </v-toolbar>
       </template>
 
-      <template v-slot:item.actions="{ item }">
-        <v-icon
-            small
-            class="mr-2"
-            @click="onClickEditConfig(item)"
-        >
-          mdi-pencil
-        </v-icon>
+      <template v-slot:item.actions="{item}">
+        <v-icon small class="mr-2" @click="onClickEditConfig(item)">mdi-pencil</v-icon>
       </template>
 
       <template v-slot:no-data>
@@ -62,23 +56,22 @@ ko:
 
     <!-- Add Dialog -->
     <v-dialog
-        v-model="showEditConfigDialog"
-        persistent
-        max-width="360"
-        no-click-animation
-        @keydown.esc.stop="onClickEditConfigCancel"
+      v-model="showEditConfigDialog"
+      persistent
+      max-width="360"
+      no-click-animation
+      @keydown.esc.stop="onClickEditConfigCancel"
     >
       <config-card
-          mode="edit"
-          :config-key="editCandidateKey"
-          :config-type="editCandidateType"
-          :config-value="editCandidateValue"
-          :loading-submit="loadingEditConfigSubmit"
-          @cancel="onClickEditConfigCancel"
-          @ok="onClickEditConfigOk"
+        mode="edit"
+        :config-key="editCandidateKey"
+        :config-type="editCandidateType"
+        :config-value="editCandidateValue"
+        :loading-submit="loadingEditConfigSubmit"
+        @cancel="onClickEditConfigCancel"
+        @ok="onClickEditConfigOk"
       ></config-card>
     </v-dialog>
-
   </v-container>
 </template>
 
@@ -93,7 +86,7 @@ import {ConfigA, UpdateConfigValueQ} from '@/packet/config';
   components: {
     ToolbarBreadcrumbs,
     ConfigCard,
-  }
+  },
 })
 export default class DevConfigs extends VueBase {
   private readonly navigationItems = [
@@ -152,15 +145,16 @@ export default class DevConfigs extends VueBase {
 
   updateConfigs() {
     this.loading = true;
-    this.$api2.getDevConfigs()
-        .then(items => {
-          this.items = items;
-          this.loading = false;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getDevConfigs()
+      .then(items => {
+        this.items = items;
+        this.loading = false;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickEditConfig(item: ConfigA) {
@@ -179,17 +173,18 @@ export default class DevConfigs extends VueBase {
     const body = {
       value: item.value,
     } as UpdateConfigValueQ;
-    this.$api2.patchDevConfigsPkey(item.key, body)
-        .then(() => {
-          this.showEditConfigDialog = false;
-          this.loadingEditConfigSubmit = false;
-          this.toastRequestSuccess();
-          this.updateConfigs();
-        })
-        .catch(error => {
-          this.loadingEditConfigSubmit = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .patchDevConfigsPkey(item.key, body)
+      .then(() => {
+        this.showEditConfigDialog = false;
+        this.loadingEditConfigSubmit = false;
+        this.toastRequestSuccess();
+        this.updateConfigs();
+      })
+      .catch(error => {
+        this.loadingEditConfigSubmit = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

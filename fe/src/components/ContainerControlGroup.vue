@@ -1,37 +1,37 @@
 <i18n lang="yaml">
 en:
-  start: "Start"
-  stop: "Stop"
-  kill: "Kill"
-  restart: "Restart"
-  pause: "Pause"
-  resume: "Resume"
-  remove: "Remove"
+  start: 'Start'
+  stop: 'Stop'
+  kill: 'Kill'
+  restart: 'Restart'
+  pause: 'Pause'
+  resume: 'Resume'
+  remove: 'Remove'
 
 ko:
-  start: "Start"
-  stop: "Stop"
-  kill: "Kill"
-  restart: "Restart"
-  pause: "Pause"
-  resume: "Resume"
-  remove: "Remove"
+  start: 'Start'
+  stop: 'Stop'
+  kill: 'Kill'
+  restart: 'Restart'
+  pause: 'Pause'
+  resume: 'Resume'
+  remove: 'Remove'
 </i18n>
 
 <template>
   <div class="control-button-group">
     <v-btn
-        class="control-button-group--left control-button-group--select"
-        elevation="0"
-        tile
-        color="green"
-        :disabled="disabledStart"
-        :x-small="xSmall"
-        :small="small"
-        :large="large"
-        :x-large="xLarge"
-        :outlined="outlined"
-        @click.stop="start"
+      class="control-button-group--left control-button-group--select"
+      elevation="0"
+      tile
+      color="green"
+      :disabled="disabledStart"
+      :x-small="xSmall"
+      :small="small"
+      :large="large"
+      :x-large="xLarge"
+      :outlined="outlined"
+      @click.stop="start"
     >
       <v-icon :left="leftIcon">mdi-play</v-icon>
       <span v-if="showButtonText">
@@ -39,17 +39,17 @@ ko:
       </span>
     </v-btn>
     <v-btn
-        class="control-button-group--center"
-        elevation="0"
-        tile
-        color="red"
-        :disabled="disabledStop"
-        :x-small="xSmall"
-        :small="small"
-        :large="large"
-        :x-large="xLarge"
-        :outlined="outlined"
-        @click.stop="stop"
+      class="control-button-group--center"
+      elevation="0"
+      tile
+      color="red"
+      :disabled="disabledStop"
+      :x-small="xSmall"
+      :small="small"
+      :large="large"
+      :x-large="xLarge"
+      :outlined="outlined"
+      @click.stop="stop"
     >
       <v-icon :left="leftIcon">mdi-stop</v-icon>
       <span v-if="showButtonText">
@@ -57,17 +57,17 @@ ko:
       </span>
     </v-btn>
     <v-btn
-        class="control-button-group--center"
-        elevation="0"
-        tile
-        color="red"
-        :disabled="disabledKill"
-        :x-small="xSmall"
-        :small="small"
-        :large="large"
-        :x-large="xLarge"
-        :outlined="outlined"
-        @click.stop="kill"
+      class="control-button-group--center"
+      elevation="0"
+      tile
+      color="red"
+      :disabled="disabledKill"
+      :x-small="xSmall"
+      :small="small"
+      :large="large"
+      :x-large="xLarge"
+      :outlined="outlined"
+      @click.stop="kill"
     >
       <v-icon :left="leftIcon">mdi-bomb</v-icon>
       <span v-if="showButtonText">
@@ -75,17 +75,17 @@ ko:
       </span>
     </v-btn>
     <v-btn
-        class="control-button-group--center"
-        elevation="0"
-        tile
-        color="blue"
-        :disabled="disabledRestart"
-        :x-small="xSmall"
-        :small="small"
-        :large="large"
-        :x-large="xLarge"
-        :outlined="outlined"
-        @click.stop="restart"
+      class="control-button-group--center"
+      elevation="0"
+      tile
+      color="blue"
+      :disabled="disabledRestart"
+      :x-small="xSmall"
+      :small="small"
+      :large="large"
+      :x-large="xLarge"
+      :outlined="outlined"
+      @click.stop="restart"
     >
       <v-icon :left="leftIcon">mdi-cached</v-icon>
       <span v-if="showButtonText">
@@ -93,17 +93,17 @@ ko:
       </span>
     </v-btn>
     <v-btn
-        class="control-button-group--center"
-        elevation="0"
-        tile
-        color="blue"
-        :disabled="disabledPause"
-        :x-small="xSmall"
-        :small="small"
-        :large="large"
-        :x-large="xLarge"
-        :outlined="outlined"
-        @click.stop="pause"
+      class="control-button-group--center"
+      elevation="0"
+      tile
+      color="blue"
+      :disabled="disabledPause"
+      :x-small="xSmall"
+      :small="small"
+      :large="large"
+      :x-large="xLarge"
+      :outlined="outlined"
+      @click.stop="pause"
     >
       <v-icon :left="leftIcon">mdi-pause</v-icon>
       <span v-if="showButtonText">
@@ -111,17 +111,17 @@ ko:
       </span>
     </v-btn>
     <v-btn
-        class="control-button-group--center"
-        elevation="0"
-        tile
-        color="light-green"
-        :disabled="disabledResume"
-        :x-small="xSmall"
-        :small="small"
-        :large="large"
-        :x-large="xLarge"
-        :outlined="outlined"
-        @click.stop="resume"
+      class="control-button-group--center"
+      elevation="0"
+      tile
+      color="light-green"
+      :disabled="disabledResume"
+      :x-small="xSmall"
+      :small="small"
+      :large="large"
+      :x-large="xLarge"
+      :outlined="outlined"
+      @click.stop="resume"
     >
       <v-icon :left="leftIcon">mdi-play</v-icon>
       <span v-if="showButtonText">
@@ -129,17 +129,17 @@ ko:
       </span>
     </v-btn>
     <v-btn
-        class="control-button-group--right"
-        elevation="0"
-        tile
-        color="red"
-        :disabled="disabledRemove"
-        :x-small="xSmall"
-        :small="small"
-        :large="large"
-        :x-large="xLarge"
-        :outlined="outlined"
-        @click.stop="remove"
+      class="control-button-group--right"
+      elevation="0"
+      tile
+      color="red"
+      :disabled="disabledRemove"
+      :x-small="xSmall"
+      :small="small"
+      :large="large"
+      :x-large="xLarge"
+      :outlined="outlined"
+      @click.stop="remove"
     >
       <v-icon :left="leftIcon">mdi-delete</v-icon>
       <span v-if="showButtonText">
@@ -200,32 +200,25 @@ export default class ContainerControlGroup extends VueBase {
   }
 
   @Emit('click:start')
-  start() {
-  }
+  start() {}
 
   @Emit('click:stop')
-  stop() {
-  }
+  stop() {}
 
   @Emit('click:kill')
-  kill() {
-  }
+  kill() {}
 
   @Emit('click:restart')
-  restart() {
-  }
+  restart() {}
 
   @Emit('click:pause')
-  pause() {
-  }
+  pause() {}
 
   @Emit('click:resume')
-  resume() {
-  }
+  resume() {}
 
   @Emit('click:remove')
-  remove() {
-  }
+  remove() {}
 }
 </script>
 

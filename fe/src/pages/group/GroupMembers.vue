@@ -4,20 +4,19 @@
     <v-divider></v-divider>
 
     <form-invite-member-edit
-        :show-delete-dialog="showDeleteDialog"
-        :loading-delete="loadingDelete"
-        :loading-invite="loadingInvite"
-        :loading-members="loadingMembers"
-        :items="items"
-        :permissions="permissions"
-        :usernames="usernames"
-        @invite="onClickInvite"
-        @change="onChangeMember"
-        @delete:show="onClickDelete"
-        @delete:cancel="onClickDeleteCancel"
-        @delete:ok="onClickDeleteOk"
+      :show-delete-dialog="showDeleteDialog"
+      :loading-delete="loadingDelete"
+      :loading-invite="loadingInvite"
+      :loading-members="loadingMembers"
+      :items="items"
+      :permissions="permissions"
+      :usernames="usernames"
+      @invite="onClickInvite"
+      @change="onChangeMember"
+      @delete:show="onClickDelete"
+      @delete:cancel="onClickDeleteCancel"
+      @delete:ok="onClickDeleteOk"
     ></form-invite-member-edit>
-
   </v-container>
 </template>
 
@@ -33,7 +32,7 @@ import type {RoleA} from '@/packet/role';
   components: {
     ToolbarBreadcrumbs,
     FormInviteMemberEdit,
-  }
+  },
 })
 export default class GroupMembers extends VueBase {
   readonly breadcrumbs = [
@@ -86,48 +85,47 @@ export default class GroupMembers extends VueBase {
 
   reloadMembers() {
     this.loadingMembers = true;
-    this.$api2.getMainGroupsPgroupMembers(this.$route.params.group)
-        .then(items => {
-          this.loadingMembers = false;
-          this.items = items;
-        })
-        .catch(error => {
-          this.loadingMembers = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getMainGroupsPgroupMembers(this.$route.params.group)
+      .then(items => {
+        this.loadingMembers = false;
+        this.items = items;
+      })
+      .catch(error => {
+        this.loadingMembers = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickInvite(event: CreateMemberQ) {
     this.loadingInvite = true;
-    this.$api2.postMainGroupsPgroupMembers(this.$route.params.group, event)
-        .then(() => {
-          this.loadingInvite = false;
-          this.toastRequestSuccess();
-          this.reloadMembers();
-        })
-        .catch(error => {
-          this.loadingInvite = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .postMainGroupsPgroupMembers(this.$route.params.group, event)
+      .then(() => {
+        this.loadingInvite = false;
+        this.toastRequestSuccess();
+        this.reloadMembers();
+      })
+      .catch(error => {
+        this.loadingInvite = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onChangeMember(event: UpdateMemberQ) {
     const member = event.username;
     this.loadingMembers = true;
-    this.$api2.patchMainGroupsPgroupMembersPmember(
-        this.$route.params.group,
-        member,
-        event,
-    )
-        .then(() => {
-          this.loadingMembers = false;
-          this.toastRequestSuccess();
-        })
-        .catch(error => {
-          this.loadingInvite = false;
-          this.toastRequestFailure(error);
-          this.reloadMembers();
-        });
+    this.$api2
+      .patchMainGroupsPgroupMembersPmember(this.$route.params.group, member, event)
+      .then(() => {
+        this.loadingMembers = false;
+        this.toastRequestSuccess();
+      })
+      .catch(error => {
+        this.loadingInvite = false;
+        this.toastRequestFailure(error);
+        this.reloadMembers();
+      });
   }
 
   onClickDelete() {
@@ -141,17 +139,18 @@ export default class GroupMembers extends VueBase {
   onClickDeleteOk(item: MemberA) {
     const member = item.username;
     this.loadingDelete = true;
-    this.$api2.deleteMainGroupsPgroupMembersPmember(this.$route.params.group, member)
-        .then(() => {
-          this.loadingDelete = false;
-          this.showDeleteDialog = false;
-          this.toastRequestSuccess();
-          this.reloadMembers();
-        })
-        .catch(error => {
-          this.loadingDelete = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .deleteMainGroupsPgroupMembersPmember(this.$route.params.group, member)
+      .then(() => {
+        this.loadingDelete = false;
+        this.showDeleteDialog = false;
+        this.toastRequestSuccess();
+        this.reloadMembers();
+      })
+      .catch(error => {
+        this.loadingDelete = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

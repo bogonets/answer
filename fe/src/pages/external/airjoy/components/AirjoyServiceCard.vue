@@ -1,35 +1,35 @@
 <i18n lang="yaml">
 en:
   label:
-    uid: "Airjoy ID"
-    author: "Author"
-    time: "Date/Time"
-    description: "Description"
+    uid: 'Airjoy ID'
+    author: 'Author'
+    time: 'Date/Time'
+    description: 'Description'
   hint:
-    uid: "Please check the Airjoy serial number"
-    author: "Author"
-    time: "Date/Time"
-    description: "Details field for users"
-  name: "Name"
-  value: "Value"
-  cancel: "Cancel"
-  ok: "Ok"
+    uid: 'Please check the Airjoy serial number'
+    author: 'Author'
+    time: 'Date/Time'
+    description: 'Details field for users'
+  name: 'Name'
+  value: 'Value'
+  cancel: 'Cancel'
+  ok: 'Ok'
 
 ko:
   label:
-    uid: "에어조이 ID"
-    author: "담당자"
-    time: "날짜/시간"
-    description: "상세 설명"
+    uid: '에어조이 ID'
+    author: '담당자'
+    time: '날짜/시간'
+    description: '상세 설명'
   hint:
-    uid: "에어조이 시리얼넘버를 확인해 주세요"
-    author: "서비스 담당자 이름 입니다"
-    time: "서비스 날짜 입니다"
-    description: "제공된 서비스 상세 내역 입니다"
-  name: "이름"
-  value: "값 (Value)"
-  cancel: "취소"
-  ok: "확인"
+    uid: '에어조이 시리얼넘버를 확인해 주세요'
+    author: '서비스 담당자 이름 입니다'
+    time: '서비스 날짜 입니다'
+    description: '제공된 서비스 상세 내역 입니다'
+  name: '이름'
+  value: '값 (Value)'
+  cancel: '취소'
+  ok: '확인'
 </i18n>
 
 <template>
@@ -40,27 +40,23 @@ ko:
     <v-divider></v-divider>
 
     <v-container>
-      <v-form
-          ref="form"
-          v-model="valid"
-          lazy-validation
-      >
+      <v-form ref="form" v-model="valid" lazy-validation>
         <v-list flat>
           <v-list-item>
             <v-select
-                dense
-                outlined
-                :value="device"
-                @input="onInputDevice"
-                :disabled="disableDevice && !isEditable"
-                :rules="uidRules"
-                :items="devices"
-                :label="$t('label.uid')"
-                item-text="name"
-                item-value="uid"
-                return-object
+              dense
+              outlined
+              :value="device"
+              @input="onInputDevice"
+              :disabled="disableDevice && !isEditable"
+              :rules="uidRules"
+              :items="devices"
+              :label="$t('label.uid')"
+              item-text="name"
+              item-value="uid"
+              return-object
             >
-              <template v-slot:item="{ item }">
+              <template v-slot:item="{item}">
                 {{ item.name }}
                 <v-chip class="ml-2" x-small outlined color="primary">
                   <v-icon left>mdi-identifier</v-icon>
@@ -68,7 +64,7 @@ ko:
                 </v-chip>
               </template>
 
-              <template v-slot:selection="{ item }">
+              <template v-slot:selection="{item}">
                 {{ item.name }}
                 <v-chip class="ml-2" x-small outlined color="primary">
                   <v-icon left>mdi-identifier</v-icon>
@@ -80,57 +76,57 @@ ko:
 
           <v-list-item>
             <v-text-field
-                dense
-                outlined
-                :disabled="!isEditable"
-                :value="author"
-                @input="onInputAuthor"
-                :label="$t('label.author')"
-                :hint="$t('hint.author')"
+              dense
+              outlined
+              :disabled="!isEditable"
+              :value="author"
+              @input="onInputAuthor"
+              :label="$t('label.author')"
+              :hint="$t('hint.author')"
             ></v-text-field>
           </v-list-item>
 
           <v-list-item>
             <v-menu
-                offset-y
-                transition="scale-transition"
-                min-width="auto"
-                v-model="showTimeMenu"
-                :nudge-right="datePickerSize"
-                :close-on-content-click="false"
+              offset-y
+              transition="scale-transition"
+              min-width="auto"
+              v-model="showTimeMenu"
+              :nudge-right="datePickerSize"
+              :close-on-content-click="false"
             >
-              <template v-slot:activator="{ on, attrs }">
+              <template v-slot:activator="{on, attrs}">
                 <v-text-field
-                    dense
-                    outlined
-                    readonly
-                    v-model="time"
-                    :disabled="!isEditable"
-                    :label="$t('label.time')"
-                    :hint="$t('hint.time')"
-                    v-bind="attrs"
-                    v-on="on"
+                  dense
+                  outlined
+                  readonly
+                  v-model="time"
+                  :disabled="!isEditable"
+                  :label="$t('label.time')"
+                  :hint="$t('hint.time')"
+                  v-bind="attrs"
+                  v-on="on"
                 ></v-text-field>
               </template>
               <v-date-picker
-                  no-title
-                  scrollable
-                  :disabled="!isEditable"
-                  :value="time"
-                  @input="onInputTime"
+                no-title
+                scrollable
+                :disabled="!isEditable"
+                :value="time"
+                @input="onInputTime"
               ></v-date-picker>
             </v-menu>
           </v-list-item>
 
           <v-list-item>
             <v-textarea
-                dense
-                outlined
-                :disabled="!isEditable"
-                :value="description"
-                @input="onInputDescription"
-                :label="$t('label.description')"
-                :hint="$t('hint.description')"
+              dense
+              outlined
+              :disabled="!isEditable"
+              :value="description"
+              @input="onInputDescription"
+              :label="$t('label.description')"
+              :hint="$t('hint.description')"
             ></v-textarea>
           </v-list-item>
         </v-list>
@@ -141,19 +137,15 @@ ko:
 
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn
-          color="second"
-          class="mr-1"
-          @click="cancel"
-      >
+      <v-btn color="second" class="mr-1" @click="cancel">
         {{ $t('cancel') }}
       </v-btn>
       <v-btn
-          v-if="isEditable"
-          :disabled="!modified"
-          :loading="submitLoading"
-          color="primary"
-          @click="submit"
+        v-if="isEditable"
+        :disabled="!modified"
+        :loading="submitLoading"
+        color="primary"
+        @click="submit"
       >
         {{ $t('ok') }}
       </v-btn>
@@ -194,7 +186,12 @@ export default class AirjoyServiceCard extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly submitLoading!: boolean;
 
-  @Prop({type: Array, default: () => { return []; }})
+  @Prop({
+    type: Array,
+    default: () => {
+      return [];
+    },
+  })
   readonly devices!: Array<AirjoyDeviceA>;
 
   @Prop({type: Boolean, default: false})

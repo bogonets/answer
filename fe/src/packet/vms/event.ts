@@ -2,32 +2,32 @@ import type {VmsImageA} from '@/packet/vms/image';
 import type {VmsChannelEvent} from '@/packet/vms/channel/event';
 
 export interface VmsEventA {
-    event_uid: number;
-    time: string;
-    device_uid: number;
-    category_id: number;
-    event_config_uid: number;
-    directory: string;
-    filename: string;
-    extra?: VmsChannelEvent;
+  event_uid: number;
+  time: string;
+  device_uid: number;
+  category_id: number;
+  event_config_uid: number;
+  directory: string;
+  filename: string;
+  extra?: VmsChannelEvent;
 
-    description?: null | string;
+  description?: null | string;
 }
 
 export interface VmsFilterEventQ {
-    time_left: string;
-    time_right: string;
-    device_uid?: number;
-    category?: string;
+  time_left: string;
+  time_right: string;
+  device_uid?: number;
+  category?: string;
 }
 
 export interface VmsNewsEventQ {
-    time: string;
-    max: number;
+  time: string;
+  max: number;
 }
 
 export interface VmsLatestEventQ {
-    max: number;
+  max: number;
 }
 
 export type VmsEventImageA = VmsImageA;

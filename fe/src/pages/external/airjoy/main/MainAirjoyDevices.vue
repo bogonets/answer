@@ -1,25 +1,25 @@
 <i18n lang="yaml">
 en:
   add_device:
-    button: "Add Device"
-    title: "Register Airjoy Device"
-    subtitle: "Detects and registers new Airjoy devices"
+    button: 'Add Device'
+    title: 'Register Airjoy Device'
+    subtitle: 'Detects and registers new Airjoy devices'
   label:
-    search: "You can filter by name or UID."
+    search: 'You can filter by name or UID.'
   msg:
-    loading: "Loading... Please wait"
-    empty: "Devices do not exist"
+    loading: 'Loading... Please wait'
+    empty: 'Devices do not exist'
 
 ko:
   add_device:
-    button: "장치 추가"
-    title: "에어조이 기기 등록"
-    subtitle: "새로운 에어조이 기기를 탐지하고 등록합니다"
+    button: '장치 추가'
+    title: '에어조이 기기 등록'
+    subtitle: '새로운 에어조이 기기를 탐지하고 등록합니다'
   label:
-    search: "이름 또는 UID를 필터링할 수 있습니다."
+    search: '이름 또는 UID를 필터링할 수 있습니다.'
   msg:
-    loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-    empty: "장치가 존재하지 않습니다."
+    loading: '불러오는중 입니다... 잠시만 기다려 주세요.'
+    empty: '장치가 존재하지 않습니다.'
 </i18n>
 
 <template>
@@ -28,25 +28,25 @@ ko:
     <v-divider></v-divider>
 
     <v-data-table
-        hide-default-header
-        sort-desc
-        sort-by="name"
-        :items="items"
-        :search="filter"
-        :loading="loading"
-        :headers="headers"
-        :loading-text="$t('msg.loading')"
+      hide-default-header
+      sort-desc
+      sort-by="name"
+      :items="items"
+      :search="filter"
+      :loading="loading"
+      :headers="headers"
+      :loading-text="$t('msg.loading')"
     >
       <template v-if="!hideTopBar" v-slot:top>
         <v-toolbar flat>
           <v-text-field
-              v-if="!hideFilterInput"
-              class="mr-4"
-              v-model="filter"
-              append-icon="mdi-magnify"
-              single-line
-              hide-details
-              :label="$t('label.search')"
+            v-if="!hideFilterInput"
+            class="mr-4"
+            v-model="filter"
+            append-icon="mdi-magnify"
+            single-line
+            hide-details
+            :label="$t('label.search')"
           ></v-text-field>
           <v-btn color="primary" @click="onClickAddDevice">
             {{ $t('add_device.button') }}
@@ -54,32 +54,32 @@ ko:
         </v-toolbar>
       </template>
 
-      <template v-slot:item="{ item }">
+      <template v-slot:item="{item}">
         <airjoy-device-row
-            hide-description
-            :item="item"
-            @click:body="onClickBody"
-            @click:name="onClickName"
-            @click:power="onClickPower"
-            @click:pm10="onClickPm10"
-            @click:pm2_5="onClickPm2_5"
-            @click:co2="onClickCo2"
-            @click:humidity="onClickHumidity"
-            @click:temperature="onClickTemperature"
-            @click:voc="onClickVoc"
-            @click:service="onClickService"
-            @click:mode="onClickMode"
-            @click:fan-weak="onClickFanWeak"
-            @click:fan-medium="onClickFanMedium"
-            @click:fan-high="onClickFanHigh"
-            @click:lock="onClickLock"
-            @click:filter="onClickFilter"
-            @click:sleep="onClickSleep"
-            @click:timer-off="onClickTimerOff"
-            @click:timer-one="onClickTimerOne"
-            @click:timer-two="onClickTimerTwo"
-            @click:timer-four="onClickTimerFour"
-            @click:timer-eight="onClickTimerEight"
+          hide-description
+          :item="item"
+          @click:body="onClickBody"
+          @click:name="onClickName"
+          @click:power="onClickPower"
+          @click:pm10="onClickPm10"
+          @click:pm2_5="onClickPm2_5"
+          @click:co2="onClickCo2"
+          @click:humidity="onClickHumidity"
+          @click:temperature="onClickTemperature"
+          @click:voc="onClickVoc"
+          @click:service="onClickService"
+          @click:mode="onClickMode"
+          @click:fan-weak="onClickFanWeak"
+          @click:fan-medium="onClickFanMedium"
+          @click:fan-high="onClickFanHigh"
+          @click:lock="onClickLock"
+          @click:filter="onClickFilter"
+          @click:sleep="onClickSleep"
+          @click:timer-off="onClickTimerOff"
+          @click:timer-one="onClickTimerOne"
+          @click:timer-two="onClickTimerTwo"
+          @click:timer-four="onClickTimerFour"
+          @click:timer-eight="onClickTimerEight"
         ></airjoy-device-row>
       </template>
 
@@ -90,18 +90,18 @@ ko:
 
     <!-- Add Dialog -->
     <v-dialog
-        v-model="showAddDialog"
-        persistent
-        no-click-animation
-        :max-width="widthAddDialog"
-        @keydown.esc.stop="onClickAddCancel"
+      v-model="showAddDialog"
+      persistent
+      no-click-animation
+      :max-width="widthAddDialog"
+      @keydown.esc.stop="onClickAddCancel"
     >
       <airjoy-device-add
-          :title="$t('add_device.title')"
-          :subtitle="$t('add_device.subtitle')"
-          :submit-loading="loadingAddDevice"
-          @cancel="onClickAddCancel"
-          @ok="onClickAddOk"
+        :title="$t('add_device.title')"
+        :subtitle="$t('add_device.subtitle')"
+        :submit-loading="loadingAddDevice"
+        @cancel="onClickAddCancel"
+        @ok="onClickAddOk"
       ></airjoy-device-add>
     </v-dialog>
   </v-container>
@@ -121,12 +121,8 @@ import {
   CATEGORY_TEMPERATURE,
   CATEGORY_VOC,
 } from '@/packet/airjoy';
-import type {
-  AirjoyDeviceA,
-  AirjoyCreateDeviceQ,
-  AirjoyControlQ,
-} from '@/packet/airjoy';
-import {Control} from "@/pages/external/airjoy/main/MainAirjoyDetails.vue";
+import type {AirjoyDeviceA, AirjoyCreateDeviceQ, AirjoyControlQ} from '@/packet/airjoy';
+import {Control} from '@/pages/external/airjoy/main/MainAirjoyDetails.vue';
 
 const POWER_STATE_OFF = 0;
 const POWER_STATE_ON = 1;
@@ -149,7 +145,7 @@ const SLEEP = 1;
     BreadcrumbMain,
     AirjoyDeviceRow,
     AirjoyDeviceAdd,
-  }
+  },
 })
 export default class MainAirjoyDevices extends VueBase {
   @Prop({type: Boolean, default: false})
@@ -211,19 +207,20 @@ export default class MainAirjoyDevices extends VueBase {
     }
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    this.$api2.getAirjoyDevices(group, project)
-        .then(items => {
-          if (changeLoading) {
-            this.loading = false;
-          }
-          this.items = items;
-        })
-        .catch(error => {
-          if (changeLoading) {
-            this.loading = false;
-          }
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAirjoyDevices(group, project)
+      .then(items => {
+        if (changeLoading) {
+          this.loading = false;
+        }
+        this.items = items;
+      })
+      .catch(error => {
+        if (changeLoading) {
+          this.loading = false;
+        }
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickAddDevice() {
@@ -238,17 +235,18 @@ export default class MainAirjoyDevices extends VueBase {
     this.loadingAddDevice = true;
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    this.$api2.postAirjoyDevices(group, project, body)
-        .then(() => {
-          this.loadingAddDevice = false;
-          this.showAddDialog = false;
-          this.toastRequestSuccess();
-          this.updateDevices();
-        })
-        .catch(error => {
-          this.loadingAddDevice = false;
-          this.toastRequestFailure(error);
-        })
+    this.$api2
+      .postAirjoyDevices(group, project, body)
+      .then(() => {
+        this.loadingAddDevice = false;
+        this.showAddDialog = false;
+        this.toastRequestSuccess();
+        this.updateDevices();
+      })
+      .catch(error => {
+        this.loadingAddDevice = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickBody(item: AirjoyDeviceA) {
@@ -301,15 +299,16 @@ export default class MainAirjoyDevices extends VueBase {
       sleep_mode: state.sleep_mode ?? item.sleep_mode,
       time_reservation: state.time_reservation ?? item.time_reservation,
     } as AirjoyControlQ;
-    this.$api2.postAirjoyControl(group, project, item.uid.toString(), body)
-        .then(() => {
-          this.loading = false;
-          this.toastRequestSuccess();
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .postAirjoyControl(group, project, item.uid.toString(), body)
+      .then(() => {
+        this.loading = false;
+        this.toastRequestSuccess();
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickPower(item: AirjoyDeviceA) {

@@ -1,63 +1,63 @@
 <i18n lang="yaml">
 en:
-  groups: "Groups"
-  devices: "Devices"
-  service: "Service"
+  groups: 'Groups'
+  devices: 'Devices'
+  service: 'Service'
   labels:
-    search: "You can filter by author or description."
-    as_new: "New A/S"
-    device: "Please select a device ID to output as a chart"
+    search: 'You can filter by author or description.'
+    as_new: 'New A/S'
+    device: 'Please select a device ID to output as a chart'
   headers:
-    airjoy_name: "Name"
-    airjoy_uid: "ID"
-    author: "Author"
-    description: "Description"
-    datetime: "Datetime"
-    actions: "Actions"
+    airjoy_name: 'Name'
+    airjoy_uid: 'ID'
+    author: 'Author'
+    description: 'Description'
+    datetime: 'Datetime'
+    actions: 'Actions'
   msg:
-    loading: "Loading... Please wait"
-    empty: "Empty A/S"
+    loading: 'Loading... Please wait'
+    empty: 'Empty A/S'
   add_service:
-    title: "Register a new service"
-    subtitle: "You can register service details"
+    title: 'Register a new service'
+    subtitle: 'You can register service details'
   edit_service:
-    title: "Edit a service"
-    subtitle: "You can modify the contents of the service"
+    title: 'Edit a service'
+    subtitle: 'You can modify the contents of the service'
   delete_service:
-    title: "Remove a service"
-    subtitle: "Are you sure? Are you really removing this service?"
-  cancel: "Cancel"
-  delete: "Delete"
+    title: 'Remove a service'
+    subtitle: 'Are you sure? Are you really removing this service?'
+  cancel: 'Cancel'
+  delete: 'Delete'
 
 ko:
-  groups: "Groups"
-  devices: "Devices"
-  service: "Service"
+  groups: 'Groups'
+  devices: 'Devices'
+  service: 'Service'
   labels:
-    search: "담당자 또는 기록을 필터링할 수 있습니다."
-    as_new: "새로운 A/S 기록"
-    device: "차트로 출력할 장치 ID를 선택하세요"
+    search: '담당자 또는 기록을 필터링할 수 있습니다.'
+    as_new: '새로운 A/S 기록'
+    device: '차트로 출력할 장치 ID를 선택하세요'
   headers:
-    airjoy_name: "이름"
-    airjoy_uid: "ID"
-    author: "담당자"
-    description: "기록"
-    datetime: "날짜"
-    actions: "관리"
+    airjoy_name: '이름'
+    airjoy_uid: 'ID'
+    author: '담당자'
+    description: '기록'
+    datetime: '날짜'
+    actions: '관리'
   msg:
-    loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-    empty: "A/S 기록이 존재하지 않습니다."
+    loading: '불러오는중 입니다... 잠시만 기다려 주세요.'
+    empty: 'A/S 기록이 존재하지 않습니다.'
   add_service:
-    title: "새로운 A/S 등록"
-    subtitle: "서비스 내용을 등록할 수 있습니다"
+    title: '새로운 A/S 등록'
+    subtitle: '서비스 내용을 등록할 수 있습니다'
   edit_service:
-    title: "A/S 편집"
-    subtitle: "서비스 내용을 수정할 수 있습니다"
+    title: 'A/S 편집'
+    subtitle: '서비스 내용을 수정할 수 있습니다'
   delete_service:
-    title: "A/S 제거"
-    subtitle: "이 서비스를 정말 제거합니까?"
-  cancel: "취소"
-  delete: "제거"
+    title: 'A/S 제거'
+    subtitle: '이 서비스를 정말 제거합니까?'
+  cancel: '취소'
+  delete: '제거'
 </i18n>
 
 <template>
@@ -67,21 +67,21 @@ ko:
 
     <v-card>
       <v-data-table
-          :headers="headers"
-          :items="items"
-          :search="filter"
-          :loading="loading"
-          :loading-text="$t('msg.loading')"
+        :headers="headers"
+        :items="items"
+        :search="filter"
+        :loading="loading"
+        :loading-text="$t('msg.loading')"
       >
         <template v-slot:top>
           <v-toolbar flat>
             <v-text-field
-                class="mr-4"
-                v-model="filter"
-                append-icon="mdi-magnify"
-                single-line
-                hide-details
-                :label="$t('labels.search')"
+              class="mr-4"
+              v-model="filter"
+              append-icon="mdi-magnify"
+              single-line
+              hide-details
+              :label="$t('labels.search')"
             ></v-text-field>
             <v-btn v-if="showAdd" color="primary" @click="onClickNewAs">
               {{ $t('labels.as_new') }}
@@ -89,15 +89,20 @@ ko:
           </v-toolbar>
         </template>
 
-        <template v-slot:item.time="{ item }">
+        <template v-slot:item.time="{item}">
           {{ datetimeToDate(item.time) }}
         </template>
 
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:item.actions="{item}">
           <v-icon small class="mr-2" @click.stop="onClickServiceEdit(item)">
             mdi-pencil
           </v-icon>
-          <v-icon v-if="showDelete" small color="red" @click.stop="onClickServiceDelete(item)">
+          <v-icon
+            v-if="showDelete"
+            small
+            color="red"
+            @click.stop="onClickServiceDelete(item)"
+          >
             mdi-delete
           </v-icon>
         </template>
@@ -109,39 +114,39 @@ ko:
 
       <!-- Add Dialog -->
       <v-dialog
-          v-model="showAddDialog"
-          persistent
-          no-click-animation
-          :max-width="widthDialog"
-          @keydown.esc.stop="onClickAddCancel"
+        v-model="showAddDialog"
+        persistent
+        no-click-animation
+        :max-width="widthDialog"
+        @keydown.esc.stop="onClickAddCancel"
       >
         <airjoy-service-card
-            :title="$t('add_service.title')"
-            :subtitle="$t('add_service.subtitle')"
-            :submit-loading="loadingAddDevice"
-            :devices="devices"
-            @cancel="onClickAddCancel"
-            @ok="onClickAddOk"
+          :title="$t('add_service.title')"
+          :subtitle="$t('add_service.subtitle')"
+          :submit-loading="loadingAddDevice"
+          :devices="devices"
+          @cancel="onClickAddCancel"
+          @ok="onClickAddOk"
         ></airjoy-service-card>
       </v-dialog>
 
       <!-- Edit Dialog -->
       <v-dialog
-          v-model="showEditDialog"
-          persistent
-          no-click-animation
-          :max-width="widthDialog"
-          @keydown.esc.stop="onClickEditCancel"
+        v-model="showEditDialog"
+        persistent
+        no-click-animation
+        :max-width="widthDialog"
+        @keydown.esc.stop="onClickEditCancel"
       >
         <airjoy-service-card
-            disable-device
-            :title="$t('edit_service.title')"
-            :subtitle="$t('edit_service.subtitle')"
-            :submit-loading="loadingEditDevice"
-            :devices="devices"
-            :service="editService"
-            @cancel="onClickEditCancel"
-            @ok="onClickEditOk"
+          disable-device
+          :title="$t('edit_service.title')"
+          :subtitle="$t('edit_service.subtitle')"
+          :submit-loading="loadingEditDevice"
+          :devices="devices"
+          :service="editService"
+          @cancel="onClickEditCancel"
+          @ok="onClickEditOk"
         ></airjoy-service-card>
       </v-dialog>
 
@@ -166,7 +171,6 @@ ko:
           </v-card-actions>
         </v-card>
       </v-dialog>
-
     </v-card>
   </v-container>
 </template>
@@ -190,7 +194,7 @@ import {iso8601ToLocalDate} from '@/chrono/iso8601';
   components: {
     ToolbarBreadcrumbs,
     AirjoyServiceCard,
-  }
+  },
 })
 export default class MainAirjoyService extends VueBase {
   private readonly breadcrumbs = [
@@ -271,7 +275,7 @@ export default class MainAirjoyService extends VueBase {
       sortable: false,
       value: 'actions',
       width: '96px',
-    }
+    },
   ];
 
   @Prop({type: Number, default: 480})
@@ -296,7 +300,10 @@ export default class MainAirjoyService extends VueBase {
   deleteService = {} as AirjoyServiceA;
 
   created() {
-    if (!!this.$route.params.device && this.$route.params.device !== UNKNOWN_ROUTE_PARAMS_DEVICE) {
+    if (
+      !!this.$route.params.device &&
+      this.$route.params.device !== UNKNOWN_ROUTE_PARAMS_DEVICE
+    ) {
       this.filter = this.$route.params.device;
     }
     this.updateDevices();
@@ -307,30 +314,32 @@ export default class MainAirjoyService extends VueBase {
     this.loadingDevices = true;
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    this.$api2.getAirjoyDevices(group, project)
-        .then(items => {
-          this.loadingDevices = false;
-          this.devices = items;
-        })
-        .catch(error => {
-          this.loadingDevices = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAirjoyDevices(group, project)
+      .then(items => {
+        this.loadingDevices = false;
+        this.devices = items;
+      })
+      .catch(error => {
+        this.loadingDevices = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   updateServices() {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
     this.loading = true;
-    this.$api2.getAirjoyServices(group, project)
-        .then(items => {
-          this.items = items;
-          this.loading = false;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAirjoyServices(group, project)
+      .then(items => {
+        this.items = items;
+        this.loading = false;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   get showAdd() {
@@ -370,16 +379,17 @@ export default class MainAirjoyService extends VueBase {
       description: item.description,
       time: item.time,
     } as AirjoyCreateServiceQ;
-    this.$api2.postAirjoyServices(group, project, item.uid.toString(), body)
-        .then(() => {
-          this.loadingAddDevice = false;
-          this.showAddDialog = false;
-          this.updateServices();
-        })
-        .catch(error => {
-          this.loadingAddDevice = false;
-          this.toastRequestFailure(error);
-        })
+    this.$api2
+      .postAirjoyServices(group, project, item.uid.toString(), body)
+      .then(() => {
+        this.loadingAddDevice = false;
+        this.showAddDialog = false;
+        this.updateServices();
+      })
+      .catch(error => {
+        this.loadingAddDevice = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickServiceEdit(item: AirjoyServiceA) {
@@ -407,16 +417,17 @@ export default class MainAirjoyService extends VueBase {
       time: item.time,
     } as AirjoyUpdateServiceQ;
     this.loadingEditDevice = true;
-    this.$api2.patchAirjoyServices(group, project, device, service, body)
-        .then(() => {
-          this.loadingEditDevice = false;
-          this.showEditDialog = false;
-          this.updateServices();
-        })
-        .catch(error => {
-          this.loadingEditDevice = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .patchAirjoyServices(group, project, device, service, body)
+      .then(() => {
+        this.loadingEditDevice = false;
+        this.showEditDialog = false;
+        this.updateServices();
+      })
+      .catch(error => {
+        this.loadingEditDevice = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickDeleteCancel() {
@@ -429,16 +440,17 @@ export default class MainAirjoyService extends VueBase {
     const project = this.$route.params.project;
     const device = this.deleteService.airjoy_uid.toString();
     const service = this.deleteService.service_uid.toString();
-    this.$api2.deleteAirjoyServices(group, project, device, service)
-        .then(() => {
-          this.loadingDelete = false;
-          this.showDeleteDialog = false;
-          this.updateServices();
-        })
-        .catch(error => {
-          this.loadingDelete = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .deleteAirjoyServices(group, project, device, service)
+      .then(() => {
+        this.loadingDelete = false;
+        this.showDeleteDialog = false;
+        this.updateServices();
+      })
+      .catch(error => {
+        this.loadingDelete = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

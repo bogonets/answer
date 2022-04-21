@@ -1,17 +1,17 @@
 <i18n lang="yaml">
 en:
-  title: "Overview"
-  subtitle: "Prints a summary of the system status."
-  users: "Users: {0}"
-  groups: "Groups: {0}"
-  projects: "Projects: {0}"
+  title: 'Overview'
+  subtitle: 'Prints a summary of the system status.'
+  users: 'Users: {0}'
+  groups: 'Groups: {0}'
+  projects: 'Projects: {0}'
 
 ko:
-  title: "개요"
-  subtitle: "시스템의 상태를 요약하여 출력합니다."
-  users: "사용자: {0}"
-  groups: "그룹: {0}"
-  projects: "프로젝트: {0}"
+  title: '개요'
+  subtitle: '시스템의 상태를 요약하여 출력합니다.'
+  users: '사용자: {0}'
+  groups: '그룹: {0}'
+  projects: '프로젝트: {0}'
 </i18n>
 
 <template>
@@ -58,7 +58,6 @@ ko:
         </card-button>
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -73,7 +72,7 @@ import type {SystemOverviewA} from '@/packet/system';
   components: {
     ToolbarBreadcrumbs,
     CardButton,
-  }
+  },
 })
 export default class AdminOverview extends VueBase {
   private readonly navigationItems = [
@@ -97,15 +96,16 @@ export default class AdminOverview extends VueBase {
 
   updateOverview() {
     this.loading = true;
-    this.$api2.getAdminSystemOverview()
-        .then(item => {
-          this.loading = false;
-          this.item = item;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAdminSystemOverview()
+      .then(item => {
+        this.loading = false;
+        this.item = item;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickClock() {

@@ -1,11 +1,11 @@
 <i18n lang="yaml">
 en:
-  title: "Admin Sign Up"
-  subtitle: "You must register the first administrator."
+  title: 'Admin Sign Up'
+  subtitle: 'You must register the first administrator.'
 
 ko:
-  title: "관리자 등록"
-  subtitle: "첫 번째 관리자를 등록해야합니다."
+  title: '관리자 등록'
+  subtitle: '첫 번째 관리자를 등록해야합니다.'
 </i18n>
 
 <template>
@@ -17,14 +17,14 @@ ko:
             <v-card-title>{{ $t('title') }}</v-card-title>
             <v-card-subtitle>{{ $t('subtitle') }}</v-card-subtitle>
             <form-user
-                hide-cancel-button
-                class="pa-4"
-                hide-access
-                hide-profile
-                dense-footer
-                :loading="showSignupLoading"
-                @cancel="onClickCancel"
-                @ok="onClickOk"
+              hide-cancel-button
+              class="pa-4"
+              hide-access
+              hide-profile
+              dense-footer
+              :loading="showSignupLoading"
+              @cancel="onClickCancel"
+              @ok="onClickOk"
             ></form-user>
           </v-card>
         </v-col>
@@ -42,7 +42,7 @@ import {SignupQ} from '@/packet/user';
 @Component({
   components: {
     FormUser,
-  }
+  },
 })
 export default class Init extends VueBase {
   showSignupLoading = false;
@@ -54,16 +54,17 @@ export default class Init extends VueBase {
     } as SignupQ;
 
     this.showSignupLoading = true;
-    this.$api2.postPublicSignupAdmin(body)
-        .then(() => {
-          this.showSignupLoading = false;
-          this.moveToSignin();
-          this.toastRequestSuccess();
-        })
-        .catch(error => {
-          this.showSignupLoading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .postPublicSignupAdmin(body)
+      .then(() => {
+        this.showSignupLoading = false;
+        this.moveToSignin();
+        this.toastRequestSuccess();
+      })
+      .catch(error => {
+        this.showSignupLoading = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

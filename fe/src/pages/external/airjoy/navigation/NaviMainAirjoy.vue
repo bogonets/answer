@@ -1,36 +1,35 @@
 <i18n lang="yaml">
 en:
-  devices: "Devices"
-  summary: "Summary"
-  live: "Live"
-  chart: "Chart"
-  service: "Service"
-  airjoy_settings: "Airjoy Settings"
-  members: "Members"
-  settings: "Settings"
+  devices: 'Devices'
+  summary: 'Summary'
+  live: 'Live'
+  chart: 'Chart'
+  service: 'Service'
+  airjoy_settings: 'Airjoy Settings'
+  members: 'Members'
+  settings: 'Settings'
 
 ko:
-  devices: "장치 관리"
-  summary: "요약"
-  live: "실시간"
-  chart: "차트"
-  service: "서비스"
-  airjoy_settings: "에어조이 설정"
-  members: "회원 관리"
-  settings: "프로젝트 설정"
+  devices: '장치 관리'
+  summary: '요약'
+  live: '실시간'
+  chart: '차트'
+  service: '서비스'
+  airjoy_settings: '에어조이 설정'
+  members: '회원 관리'
+  settings: '프로젝트 설정'
 </i18n>
 
 <template>
   <v-navigation-drawer
-      app
-      clipped
-      permanent
-      stateless
-      touchless
-      :mini-variant.sync="mini"
+    app
+    clipped
+    permanent
+    stateless
+    touchless
+    :mini-variant.sync="mini"
   >
     <v-list nav dense>
-
       <v-list-item link @click.stop="onClickFoldNavigation">
         <v-list-item-icon>
           <v-avatar color="info" size="24">{{ projectAvatar }}</v-avatar>
@@ -45,13 +44,7 @@ ko:
 
       <v-divider></v-divider>
 
-      <v-list-item-group
-          mandatory
-          color="primary"
-          :value="index"
-          @change="input"
-      >
-
+      <v-list-item-group mandatory color="primary" :value="index" @change="input">
         <v-list-item v-if="!hideSummary" link @click.stop="airjoySummary">
           <v-list-item-icon>
             <v-icon>mdi-weather-windy</v-icon>
@@ -126,13 +119,12 @@ ko:
             {{ $t('settings') }}
           </v-list-item-title>
         </v-list-item>
-
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {ProjectA} from '@/packet/project';

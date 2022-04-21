@@ -1,32 +1,31 @@
 <i18n lang="yaml">
 en:
-  title: "DevTools"
-  overview: "Overview"
-  envs: "Environment"
-  infos: "Preferences"
-  plugins: "Plugins"
-  configs: "Configs"
+  title: 'DevTools'
+  overview: 'Overview'
+  envs: 'Environment'
+  infos: 'Preferences'
+  plugins: 'Plugins'
+  configs: 'Configs'
 
 ko:
-  title: "개발 도구"
-  overview: "개요"
-  envs: "환경 변수"
-  infos: "기본 설정"
-  plugins: "플러그인"
-  configs: "구성"
+  title: '개발 도구'
+  overview: '개요'
+  envs: '환경 변수'
+  infos: '기본 설정'
+  plugins: '플러그인'
+  configs: '구성'
 </i18n>
 
 <template>
   <v-navigation-drawer
-      app
-      clipped
-      permanent
-      stateless
-      touchless
-      :mini-variant.sync="mini"
+    app
+    clipped
+    permanent
+    stateless
+    touchless
+    :mini-variant.sync="mini"
   >
     <v-list nav dense>
-
       <v-list-item link @click.stop="onClickFoldNavigation">
         <v-list-item-icon>
           <v-icon>mdi-dev-to</v-icon>
@@ -41,13 +40,7 @@ ko:
 
       <v-divider></v-divider>
 
-      <v-list-item-group
-          mandatory
-          color="primary"
-          :value="index"
-          @change="input"
-      >
-
+      <v-list-item-group mandatory color="primary" :value="index" @change="input">
         <v-list-item link @click.stop="overview">
           <v-list-item-icon>
             <v-icon>mdi-developer-board</v-icon>
@@ -92,7 +85,6 @@ ko:
             {{ $t('configs') }}
           </v-list-item-title>
         </v-list-item>
-
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
@@ -105,7 +97,6 @@ import devNames from '@/router/names/dev';
 
 @Component
 export default class NaviDev extends VueBase {
-
   @Prop({type: Boolean, default: false})
   readonly noDefault!: boolean;
 

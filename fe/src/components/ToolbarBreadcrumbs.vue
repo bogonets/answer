@@ -1,12 +1,11 @@
 <template>
   <v-toolbar flat dense height="32">
     <v-breadcrumbs class="pa-0" :items="currentItems">
-
       <template v-slot:divider>
         <v-icon>mdi-chevron-right</v-icon>
       </template>
 
-      <template v-slot:item="{ item }">
+      <template v-slot:item="{item}">
         <span v-if="item.disabled" class="text-overline">
           {{ item.text }}
         </span>
@@ -14,7 +13,6 @@
           {{ item.text }}
         </a>
       </template>
-
     </v-breadcrumbs>
   </v-toolbar>
 </template>
@@ -25,8 +23,7 @@ import VueBase from '@/base/VueBase';
 
 @Component
 export default class ToolbarBreadcrumbs extends VueBase {
-
-  @Prop({ type: Array, default: () => [] })
+  @Prop({type: Array, default: () => []})
   readonly items!: Array<object>;
 
   currentItems = [] as Array<object>;
@@ -50,8 +47,7 @@ export default class ToolbarBreadcrumbs extends VueBase {
     }
   }
 
-  onClickEllipsis() {
-  }
+  onClickEllipsis() {}
 
   onClickNavigation(href) {
     if (typeof href === 'function') {

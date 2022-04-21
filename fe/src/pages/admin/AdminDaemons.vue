@@ -1,43 +1,43 @@
 <i18n lang="yaml">
 en:
   labels:
-    search: "You can filter by daemon name."
-    add: "Add Daemon"
+    search: 'You can filter by daemon name.'
+    add: 'Add Daemon'
   headers:
-    plugin: "Plugin"
-    slug: "Slug"
-    name: "Name"
-    address: "Address"
-    enable: "Enable"
-    state: "Status"
-    actions: "Actions"
+    plugin: 'Plugin'
+    slug: 'Slug'
+    name: 'Name'
+    address: 'Address'
+    enable: 'Enable'
+    state: 'Status'
+    actions: 'Actions'
   msg:
-    loading: "Loading... Please wait"
-    empty: "Empty Daemon"
+    loading: 'Loading... Please wait'
+    empty: 'Empty Daemon'
   control:
-    start: "Start"
-    stop: "Stop"
-    sync: "Sync"
+    start: 'Start'
+    stop: 'Stop'
+    sync: 'Sync'
 
 ko:
   labels:
-    search: "데몬 이름을 필터링할 수 있습니다."
-    add: "데몬 추가"
+    search: '데몬 이름을 필터링할 수 있습니다.'
+    add: '데몬 추가'
   headers:
-    plugin: "플러그인"
-    slug: "슬러그"
-    name: "이름"
-    address: "주소"
-    enable: "활성화"
-    state: "상태"
-    actions: "관리"
+    plugin: '플러그인'
+    slug: '슬러그'
+    name: '이름'
+    address: '주소'
+    enable: '활성화'
+    state: '상태'
+    actions: '관리'
   msg:
-    loading: "불러오는중 입니다... 잠시만 기다려 주세요."
-    empty: "데몬이 존재하지 않습니다."
+    loading: '불러오는중 입니다... 잠시만 기다려 주세요.'
+    empty: '데몬이 존재하지 않습니다.'
   control:
-    start: "Start"
-    stop: "Stop"
-    sync: "Sync"
+    start: 'Start'
+    stop: 'Stop'
+    sync: 'Sync'
 </i18n>
 
 <template>
@@ -46,26 +46,26 @@ ko:
     <v-divider></v-divider>
 
     <v-data-table
-        :value="selected"
-        @input="onInputSelected"
-        show-select
-        item-key="device_uid"
-        :headers="headers"
-        :items="items"
-        :search="filter"
-        :loading="loading"
-        :loading-text="$t('msg.loading')"
+      :value="selected"
+      @input="onInputSelected"
+      show-select
+      item-key="device_uid"
+      :headers="headers"
+      :items="items"
+      :search="filter"
+      :loading="loading"
+      :loading-text="$t('msg.loading')"
     >
       <template v-slot:top>
         <div>
           <v-toolbar flat>
             <v-text-field
-                class="mr-4"
-                v-model="filter"
-                append-icon="mdi-magnify"
-                single-line
-                hide-details
-                :label="$t('labels.search')"
+              class="mr-4"
+              v-model="filter"
+              append-icon="mdi-magnify"
+              single-line
+              hide-details
+              :label="$t('labels.search')"
             ></v-text-field>
 
             <v-btn color="primary" class="align-self-center mr-2" @click="onClickAdd">
@@ -75,37 +75,37 @@ ko:
         </div>
         <div class="d-flex flex-row">
           <v-btn
-              class="ml-2 rounded-xl"
-              color="green"
-              small
-              rounded
-              tile
-              :disabled="disabledStart"
-              @click="onClickStart"
+            class="ml-2 rounded-xl"
+            color="green"
+            small
+            rounded
+            tile
+            :disabled="disabledStart"
+            @click="onClickStart"
           >
             <v-icon left>mdi-play</v-icon>
             {{ $t('control.start') }}
           </v-btn>
           <v-btn
-              class="ml-2 rounded-xl"
-              color="red"
-              small
-              rounded
-              tile
-              :disabled="disabledStop"
-              @click="onClickStop"
+            class="ml-2 rounded-xl"
+            color="red"
+            small
+            rounded
+            tile
+            :disabled="disabledStop"
+            @click="onClickStop"
           >
             <v-icon left>mdi-stop</v-icon>
             {{ $t('control.stop') }}
           </v-btn>
           <v-btn
-              class="ml-2 rounded-xl"
-              color="primary"
-              small
-              outlined
-              rounded
-              tile
-              @click="onClickSync"
+            class="ml-2 rounded-xl"
+            color="primary"
+            small
+            outlined
+            rounded
+            tile
+            @click="onClickSync"
           >
             <v-icon left>mdi-sync</v-icon>
             {{ $t('control.sync') }}
@@ -113,29 +113,24 @@ ko:
         </div>
       </template>
 
-      <template v-slot:item.enable="{ item }">
-        <v-icon v-show="item.enable" small disabled>
-          mdi-check
-        </v-icon>
+      <template v-slot:item.enable="{item}">
+        <v-icon v-show="item.enable" small disabled>mdi-check</v-icon>
       </template>
 
-      <template v-slot:item.state="{ item }">
+      <template v-slot:item.state="{item}">
         <v-chip small :color="stateColor(item)">
           {{ stateName(item) }}
         </v-chip>
       </template>
 
-      <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="onClickDevice(item)">
-          mdi-pencil
-        </v-icon>
+      <template v-slot:item.actions="{item}">
+        <v-icon small class="mr-2" @click="onClickDevice(item)">mdi-pencil</v-icon>
       </template>
 
       <template v-slot:no-data>
         {{ $t('msg.empty') }}
       </template>
     </v-data-table>
-
   </v-container>
 </template>
 
@@ -149,7 +144,7 @@ import {getStateName, getStateColor} from '@/packet/daemon';
 @Component({
   components: {
     ToolbarBreadcrumbs,
-  }
+  },
 })
 export default class AdminDaemons extends VueBase {
   private readonly navigationItems = [
@@ -230,15 +225,16 @@ export default class AdminDaemons extends VueBase {
 
   updateItems() {
     this.loading = true;
-    this.$api2.getAdminDaemons()
-        .then(items => {
-          this.loading = false;
-          this.items = items;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAdminDaemons()
+      .then(items => {
+        this.loading = false;
+        this.items = items;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   stateName(item: DaemonA) {

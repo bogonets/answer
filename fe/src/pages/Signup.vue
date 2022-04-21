@@ -1,9 +1,9 @@
 <i18n lang="yaml">
 en:
-  title: "Sign Up"
+  title: 'Sign Up'
 
 ko:
-  title: "회원가입"
+  title: '회원가입'
 </i18n>
 
 <template>
@@ -14,12 +14,12 @@ ko:
           <v-card elevation="8">
             <v-card-title>{{ $t('title') }}</v-card-title>
             <form-user
-                class="pa-4"
-                hide-access
-                dense-footer
-                :loading="showSignupLoading"
-                @cancel="onClickCancel"
-                @ok="onClickOk"
+              class="pa-4"
+              hide-access
+              dense-footer
+              :loading="showSignupLoading"
+              @cancel="onClickCancel"
+              @ok="onClickOk"
             ></form-user>
           </v-card>
         </v-col>
@@ -37,7 +37,7 @@ import {SignupQ} from '@/packet/user';
 @Component({
   components: {
     FormUser,
-  }
+  },
 })
 export default class MainAdminUsersNew extends VueBase {
   showSignupLoading = false;
@@ -57,16 +57,17 @@ export default class MainAdminUsersNew extends VueBase {
     } as SignupQ;
 
     this.showSignupLoading = true;
-    this.$api2.postPublicSignup(body)
-        .then(() => {
-          this.showSignupLoading = false;
-          this.moveToBack();
-          this.toastRequestSuccess();
-        })
-        .catch(error => {
-          this.showSignupLoading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .postPublicSignup(body)
+      .then(() => {
+        this.showSignupLoading = false;
+        this.moveToBack();
+        this.toastRequestSuccess();
+      })
+      .catch(error => {
+        this.showSignupLoading = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

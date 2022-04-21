@@ -18,8 +18,10 @@ export const PERMISSION_SLUG_RECC_DOMAIN_DELETE = 'recc.domain.delete';
 
 export const PERMISSION_SLUG_RECC_DOMAIN_VMS_LIVE_VIEW = 'recc.domain.vms.live.view';
 export const PERMISSION_SLUG_RECC_DOMAIN_VMS_LIVE_EDIT = 'recc.domain.vms.live.edit';
-export const PERMISSION_SLUG_RECC_DOMAIN_VMS_DEVICE_VIEW = 'recc.domain.vms.device.view';
-export const PERMISSION_SLUG_RECC_DOMAIN_VMS_DEVICE_EDIT = 'recc.domain.vms.device.edit';
+export const PERMISSION_SLUG_RECC_DOMAIN_VMS_DEVICE_VIEW =
+  'recc.domain.vms.device.view';
+export const PERMISSION_SLUG_RECC_DOMAIN_VMS_DEVICE_EDIT =
+  'recc.domain.vms.device.edit';
 export const PERMISSION_SLUG_RECC_DOMAIN_VMS_EVENT_VIEW = 'recc.domain.vms.event.view';
 export const PERMISSION_SLUG_RECC_DOMAIN_VMS_EVENT_EDIT = 'recc.domain.vms.event.edit';
 
@@ -29,5 +31,7 @@ export const PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_LIVE_VIEW = 'recc.airjoy.live.vi
 export const PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_LIVE_EDIT = 'recc.airjoy.live.edit';
 export const PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_CHART_VIEW = 'recc.airjoy.chart.view';
 export const PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_CHART_EDIT = 'recc.airjoy.chart.edit';
-export const PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_SERVICE_VIEW = 'recc.airjoy.service.view';
-export const PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_SERVICE_EDIT = 'recc.airjoy.service.edit';
+export const PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_SERVICE_VIEW =
+  'recc.airjoy.service.view';
+export const PERMISSION_SLUG_RECC_DOMAIN_AIRJOY_SERVICE_EDIT =
+  'recc.airjoy.service.edit';

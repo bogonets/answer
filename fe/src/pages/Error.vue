@@ -1,13 +1,13 @@
 <i18n lang="yaml">
 en:
-  title: "404 Error"
-  message: "Not found page"
-  back: "Back"
+  title: '404 Error'
+  message: 'Not found page'
+  back: 'Back'
 
 ko:
-  title: "404 에러"
-  message: "페이지를 찾을 수 없습니다"
-  back: "뒤로 가기"
+  title: '404 에러'
+  message: '페이지를 찾을 수 없습니다'
+  back: '뒤로 가기'
 </i18n>
 
 <template>
@@ -23,12 +23,7 @@ ko:
         </v-card-text>
 
         <v-card-actions>
-          <v-btn
-              block
-              small
-              color="success"
-              @click="onClickBack"
-          >
+          <v-btn block small color="success" @click="onClickBack">
             {{ $t('back') }}
           </v-btn>
         </v-card-actions>
@@ -39,7 +34,7 @@ ko:
 
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
-import VueBase from "@/base/VueBase";
+import VueBase from '@/base/VueBase';
 
 @Component
 export default class Error extends VueBase {

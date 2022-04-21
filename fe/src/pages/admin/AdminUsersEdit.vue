@@ -1,39 +1,39 @@
 <i18n lang="yaml">
 en:
   header:
-    basic: "Edit user"
-    detail: "Detail"
+    basic: 'Edit user'
+    detail: 'Detail'
   subheader:
     basic: "You can edit the user's basic properties."
-    detail: "Detailed information about this account."
+    detail: 'Detailed information about this account.'
   label:
-    created_at: "Created At"
-    updated_at: "Updated At"
-    last_login: "Last signin"
-    delete: "Delete a user"
+    created_at: 'Created At'
+    updated_at: 'Updated At'
+    last_login: 'Last signin'
+    delete: 'Delete a user'
   hint:
-    delete: "Please be careful! It cannot be recovered."
-  delete_confirm: "Are you sure? Are you really removing this user?"
-  cancel: "Cancel"
-  delete: "Delete"
+    delete: 'Please be careful! It cannot be recovered.'
+  delete_confirm: 'Are you sure? Are you really removing this user?'
+  cancel: 'Cancel'
+  delete: 'Delete'
 
 ko:
   header:
-    basic: "사용자 편집"
-    detail: "상세 정보"
+    basic: '사용자 편집'
+    detail: '상세 정보'
   subheader:
-    basic: "사용자의 기본 속성을 편집할 수 있습니다."
-    detail: "이 계정에 대한 자세한 정보입니다."
+    basic: '사용자의 기본 속성을 편집할 수 있습니다.'
+    detail: '이 계정에 대한 자세한 정보입니다.'
   label:
-    created_at: "계정 생성일"
-    updated_at: "계정 갱신일"
-    last_login: "마지막 로그인"
-    delete: "사용자 제거"
+    created_at: '계정 생성일'
+    updated_at: '계정 갱신일'
+    last_login: '마지막 로그인'
+    delete: '사용자 제거'
   hint:
-    delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
-  delete_confirm: "이 사용자를 정말 제거합니까?"
-  cancel: "취소"
-  delete: "제거"
+    delete: '주의하세요! 이 명령은 되돌릴 수 없습니다!'
+  delete_confirm: '이 사용자를 정말 제거합니까?'
+  cancel: '취소'
+  delete: '제거'
 </i18n>
 
 <template>
@@ -41,34 +41,28 @@ ko:
     <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
-    <left-title
-        :header="$t('header.basic')"
-        :subheader="$t('subheader.basic')"
-    >
+    <left-title :header="$t('header.basic')" :subheader="$t('subheader.basic')">
       <form-user
-          disable-username
-          hide-password
-          hide-cancel-button
-          :disable-submit-button="!modified"
-          :value="current"
-          @input="onInputCurrent"
-          :loading="showSubmitLoading"
-          @ok="onClickOk"
+        disable-username
+        hide-password
+        hide-cancel-button
+        :disable-submit-button="!modified"
+        :value="current"
+        @input="onInputCurrent"
+        :loading="showSubmitLoading"
+        @ok="onClickOk"
       ></form-user>
     </left-title>
 
-    <left-title
-        :header="$t('header.detail')"
-        :subheader="$t('subheader.detail')"
-    >
+    <left-title :header="$t('header.detail')" :subheader="$t('subheader.detail')">
       <v-card outlined>
         <v-data-table
-            hide-default-header
-            hide-default-footer
-            :headers="detailHeaders"
-            :items="detailItems"
-            item-key="name"
-            class="elevation-1"
+          hide-default-header
+          hide-default-footer
+          :headers="detailHeaders"
+          :items="detailItems"
+          item-key="name"
+          class="elevation-1"
         ></v-data-table>
       </v-card>
     </left-title>
@@ -112,7 +106,6 @@ ko:
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </v-container>
 </template>
 
@@ -130,7 +123,7 @@ import {iso8601ToLocal} from '@/chrono/iso8601';
     ToolbarBreadcrumbs,
     LeftTitle,
     FormUser,
-  }
+  },
 })
 export default class AdminUsersEdit extends VueBase {
   private readonly navigationItems = [
@@ -180,14 +173,15 @@ export default class AdminUsersEdit extends VueBase {
 
   requestUser() {
     const username = this.$route.params.username;
-    this.$api2.getAdminUsersPuser(username)
-        .then(body => {
-          this.updateUser(body);
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-          this.moveToBack();
-        });
+    this.$api2
+      .getAdminUsersPuser(username)
+      .then(body => {
+        this.updateUser(body);
+      })
+      .catch(error => {
+        this.toastRequestFailure(error);
+        this.moveToBack();
+      });
   }
 
   updateUser(user: UserA) {
@@ -209,7 +203,7 @@ export default class AdminUsersEdit extends VueBase {
     this.current.is_admin = isAdmin;
     this.original.fromObject(this.current);
     this.modified = !this.original.isEqual(this.current);
-    console.log(`updateUser: ${this.modified}`)
+    console.log(`updateUser: ${this.modified}`);
 
     this.detailItems = [
       {
@@ -243,16 +237,17 @@ export default class AdminUsersEdit extends VueBase {
 
     const username = this.$route.params.username;
     this.showSubmitLoading = true;
-    this.$api2.patchAdminUsersPuser(username, body)
-        .then(() => {
-          this.showSubmitLoading = false;
-          this.toastRequestSuccess();
-          this.requestUser();
-        })
-        .catch(error => {
-          this.showSubmitLoading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .patchAdminUsersPuser(username, body)
+      .then(() => {
+        this.showSubmitLoading = false;
+        this.toastRequestSuccess();
+        this.requestUser();
+      })
+      .catch(error => {
+        this.showSubmitLoading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   // ------
@@ -270,17 +265,18 @@ export default class AdminUsersEdit extends VueBase {
   onClickDeleteOk() {
     const username = this.$route.params.username;
     this.loadingDelete = true;
-    this.$api2.deleteAdminUsersPuser(username)
-        .then(() => {
-          this.loadingDelete = false;
-          this.showDeleteDialog = false;
-          this.toastRequestSuccess();
-          this.moveToAdminUsers();
-        })
-        .catch(error => {
-          this.loadingDelete = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .deleteAdminUsersPuser(username)
+      .then(() => {
+        this.loadingDelete = false;
+        this.showDeleteDialog = false;
+        this.toastRequestSuccess();
+        this.moveToAdminUsers();
+      })
+      .catch(error => {
+        this.loadingDelete = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

@@ -4,12 +4,11 @@
     <v-divider></v-divider>
 
     <form-project-new
-        :loading-groups="loadingGroups"
-        :loading-submit="loadingSubmit"
-        :group-items="groupItems"
-        @ok="onClickOk"
+      :loading-groups="loadingGroups"
+      :loading-submit="loadingSubmit"
+      :group-items="groupItems"
+      @ok="onClickOk"
     ></form-project-new>
-
   </v-container>
 </template>
 
@@ -17,14 +16,14 @@
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import FormProjectNew from "@/components/FormProjectNew.vue";
-import {CreateProjectQ} from "@/packet/project";
+import FormProjectNew from '@/components/FormProjectNew.vue';
+import {CreateProjectQ} from '@/packet/project';
 
 @Component({
   components: {
     ToolbarBreadcrumbs,
     FormProjectNew,
-  }
+  },
 })
 export default class AdminProjectsNew extends VueBase {
   private readonly navigationItems = [
@@ -54,30 +53,32 @@ export default class AdminProjectsNew extends VueBase {
 
   requestGroups() {
     this.loadingGroups = true;
-    this.$api2.getAdminGroups()
-        .then(items => {
-          this.loadingGroups = false;
-          this.groupItems = items.map(x => x.slug);
-        })
-        .catch(error => {
-          this.loadingGroups = false;
-          this.moveToBack();
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAdminGroups()
+      .then(items => {
+        this.loadingGroups = false;
+        this.groupItems = items.map(x => x.slug);
+      })
+      .catch(error => {
+        this.loadingGroups = false;
+        this.moveToBack();
+        this.toastRequestFailure(error);
+      });
   }
 
   onClickOk(event: CreateProjectQ) {
     this.loadingSubmit = true;
-    this.$api2.postAdminProjects(event)
-        .then(() => {
-          this.loadingSubmit = false;
-          this.toastRequestSuccess();
-          this.moveToBack();
-        })
-        .catch(error => {
-          this.loadingSubmit = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .postAdminProjects(event)
+      .then(() => {
+        this.loadingSubmit = false;
+        this.toastRequestSuccess();
+        this.moveToBack();
+      })
+      .catch(error => {
+        this.loadingSubmit = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

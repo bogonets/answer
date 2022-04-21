@@ -1,19 +1,19 @@
 export function valueToRatio(value: number, min: number, max: number) {
-    console.assert(min <= value && value <= max);
-    console.assert(min < max);
+  console.assert(min <= value && value <= max);
+  console.assert(min < max);
 
-    const width = max - min;
-    const x = value - min;
+  const width = max - min;
+  const x = value - min;
 
-    return x / width;
+  return x / width;
 }
 
 export function ratioToValue(ratio: number, min: number, max: number) {
-    console.assert(0 <= ratio && ratio <= 1);
-    console.assert(min < max);
+  console.assert(0 <= ratio && ratio <= 1);
+  console.assert(min < max);
 
-    const width = max - min;
-    const pos = ratio * width;
+  const width = max - min;
+  const pos = ratio * width;
 
-    return min + pos;
+  return min + pos;
 }

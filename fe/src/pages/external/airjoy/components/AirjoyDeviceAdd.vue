@@ -1,31 +1,31 @@
 <i18n lang="yaml">
 en:
   label:
-    uid: "Airjoy ID"
-    name: "Name"
-    description: "Description"
+    uid: 'Airjoy ID'
+    name: 'Name'
+    description: 'Description'
   hint:
-    uid: "Please check the Airjoy serial number you purchased"
-    name: "The name of the Airjoy that will be displayed on the screen"
-    description: "Details field for users"
-  name: "Name"
-  value: "Value"
-  cancel: "Cancel"
-  ok: "Ok"
+    uid: 'Please check the Airjoy serial number you purchased'
+    name: 'The name of the Airjoy that will be displayed on the screen'
+    description: 'Details field for users'
+  name: 'Name'
+  value: 'Value'
+  cancel: 'Cancel'
+  ok: 'Ok'
 
 ko:
   label:
-    uid: "에어조이 ID"
-    name: "이름"
-    description: "상세 설명"
+    uid: '에어조이 ID'
+    name: '이름'
+    description: '상세 설명'
   hint:
-    uid: "구매한 에어조이 시리얼넘버를 확인해 주세요"
-    name: "화면에 표시될 에어조이 명칭 입니다"
-    description: "사용자를 위한 세부 정보 입니다"
-  name: "이름"
-  value: "값 (Value)"
-  cancel: "취소"
-  ok: "확인"
+    uid: '구매한 에어조이 시리얼넘버를 확인해 주세요'
+    name: '화면에 표시될 에어조이 명칭 입니다'
+    description: '사용자를 위한 세부 정보 입니다'
+  name: '이름'
+  value: '값 (Value)'
+  cancel: '취소'
+  ok: '확인'
 </i18n>
 
 <template>
@@ -36,41 +36,37 @@ ko:
     <v-divider></v-divider>
 
     <v-container>
-      <v-form
-          ref="form"
-          v-model="valid"
-          lazy-validation
-      >
+      <v-form ref="form" v-model="valid" lazy-validation>
         <v-list flat>
           <v-list-item>
             <v-text-field
-                dense
-                outlined
-                v-model="uid"
-                :rules="uidRules"
-                :label="$t('label.uid')"
-                :hint="$t('hint.uid')"
+              dense
+              outlined
+              v-model="uid"
+              :rules="uidRules"
+              :label="$t('label.uid')"
+              :hint="$t('hint.uid')"
             ></v-text-field>
           </v-list-item>
 
           <v-list-item>
             <v-text-field
-                dense
-                outlined
-                v-model="name"
-                :rules="nameRules"
-                :label="$t('label.name')"
-                :hint="$t('hint.name')"
+              dense
+              outlined
+              v-model="name"
+              :rules="nameRules"
+              :label="$t('label.name')"
+              :hint="$t('hint.name')"
             ></v-text-field>
           </v-list-item>
 
           <v-list-item>
             <v-textarea
-                dense
-                outlined
-                v-model="description"
-                :label="$t('label.description')"
-                :hint="$t('hint.description')"
+              dense
+              outlined
+              v-model="description"
+              :label="$t('label.description')"
+              :hint="$t('hint.description')"
             ></v-textarea>
           </v-list-item>
         </v-list>
@@ -81,18 +77,10 @@ ko:
 
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn
-          color="second"
-          class="mr-1"
-          @click="cancel"
-      >
+      <v-btn color="second" class="mr-1" @click="cancel">
         {{ $t('cancel') }}
       </v-btn>
-      <v-btn
-          :loading="submitLoading"
-          color="primary"
-          @click="submit"
-      >
+      <v-btn :loading="submitLoading" color="primary" @click="submit">
         {{ $t('ok') }}
       </v-btn>
     </v-card-actions>
@@ -103,9 +91,9 @@ ko:
 import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import requiredField from '@/rules/required';
-import {DEFAULT_CHART_COLOR} from "@/packet/airjoy";
+import {DEFAULT_CHART_COLOR} from '@/packet/airjoy';
 import type {AirjoyCreateDeviceQ} from '@/packet/airjoy';
-import {UID_RULES} from "@/rules";
+import {UID_RULES} from '@/rules';
 
 @Component
 export default class AirjoyDeviceAdd extends VueBase {
@@ -149,8 +137,7 @@ export default class AirjoyDeviceAdd extends VueBase {
   }
 
   @Emit()
-  cancel() {
-  }
+  cancel() {}
 
   @Emit()
   ok() {

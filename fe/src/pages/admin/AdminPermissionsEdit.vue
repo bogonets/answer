@@ -1,39 +1,39 @@
 <i18n lang="yaml">
 en:
   header:
-    basic: "Edit permission"
-    detail: "Detail"
+    basic: 'Edit permission'
+    detail: 'Detail'
   subheader:
     basic: "You can edit the permission's basic properties."
-    detail: "Detailed information about this permission."
+    detail: 'Detailed information about this permission.'
   label:
-    created_at: "Created At"
-    updated_at: "Updated At"
-    delete: "Delete a permission"
+    created_at: 'Created At'
+    updated_at: 'Updated At'
+    delete: 'Delete a permission'
   hint:
-    delete: "Please be careful! It cannot be recovered."
-    cannot_owner_delete: "The owner role cannot be deleted."
-  delete_confirm: "Are you sure? Are you really removing this permission?"
-  cancel: "Cancel"
-  delete: "Delete"
+    delete: 'Please be careful! It cannot be recovered.'
+    cannot_owner_delete: 'The owner role cannot be deleted.'
+  delete_confirm: 'Are you sure? Are you really removing this permission?'
+  cancel: 'Cancel'
+  delete: 'Delete'
 
 ko:
   header:
-    basic: "권한 편집"
-    detail: "상세 정보"
+    basic: '권한 편집'
+    detail: '상세 정보'
   subheader:
-    basic: "권한의 기본 속성을 편집할 수 있습니다."
-    detail: "이 권한에 대한 자세한 정보입니다."
+    basic: '권한의 기본 속성을 편집할 수 있습니다.'
+    detail: '이 권한에 대한 자세한 정보입니다.'
   label:
-    created_at: "권한 생성일"
-    updated_at: "권한 갱신일"
-    delete: "권한 제거"
+    created_at: '권한 생성일'
+    updated_at: '권한 갱신일'
+    delete: '권한 제거'
   hint:
-    delete: "주의하세요! 이 명령은 되돌릴 수 없습니다!"
-    cannot_owner_delete: "소유자(owner) 권한은 제거할 수 없습니다."
-  delete_confirm: "이 권한를 정말 제거합니까?"
-  cancel: "취소"
-  delete: "제거"
+    delete: '주의하세요! 이 명령은 되돌릴 수 없습니다!'
+    cannot_owner_delete: '소유자(owner) 권한은 제거할 수 없습니다.'
+  delete_confirm: '이 권한를 정말 제거합니까?'
+  cancel: '취소'
+  delete: '제거'
 </i18n>
 
 <template>
@@ -41,55 +41,43 @@ ko:
     <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
-    <left-title
-        :header="$t('header.basic')"
-        :subheader="$t('subheader.basic')"
-    >
+    <left-title :header="$t('header.basic')" :subheader="$t('subheader.basic')">
       <form-role
-          disable-slug
-          hide-cancel-button
-          :disable-all-ignore-lock="original.lock"
-          :disable-submit-button="!modified"
-          :loading="showSubmitLoading"
-          :permissions="permissions"
-          :value="current"
-          @input="inputCurrent"
-          @submit="onClickSubmit"
+        disable-slug
+        hide-cancel-button
+        :disable-all-ignore-lock="original.lock"
+        :disable-submit-button="!modified"
+        :loading="showSubmitLoading"
+        :permissions="permissions"
+        :value="current"
+        @input="inputCurrent"
+        @submit="onClickSubmit"
       ></form-role>
     </left-title>
 
-    <left-title
-        :header="$t('header.detail')"
-        :subheader="$t('subheader.detail')"
-    >
+    <left-title :header="$t('header.detail')" :subheader="$t('subheader.detail')">
       <v-card outlined>
         <v-data-table
-            hide-default-header
-            hide-default-footer
-            :headers="detailHeaders"
-            :items="detailItems"
-            item-key="name"
-            class="elevation-1"
+          hide-default-header
+          hide-default-footer
+          :headers="detailHeaders"
+          :items="detailItems"
+          item-key="name"
+          class="elevation-1"
         ></v-data-table>
       </v-card>
     </left-title>
 
     <v-alert
-        v-if="original.slug === owner"
-        outlined
-        prominent
-        border="left"
-        type="warning"
+      v-if="original.slug === owner"
+      outlined
+      prominent
+      border="left"
+      type="warning"
     >
       {{ $t('hint.cannot_owner_delete') }}
     </v-alert>
-    <v-alert
-        v-else-if="!original.lock"
-        outlined
-        prominent
-        type="error"
-        class="ma-4"
-    >
+    <v-alert v-else-if="!original.lock" outlined prominent type="error" class="ma-4">
       <v-row align="center" class="pl-4">
         <v-col>
           <v-row>
@@ -128,7 +116,6 @@ ko:
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </v-container>
 </template>
 
@@ -148,7 +135,7 @@ import * as _ from 'lodash';
     ToolbarBreadcrumbs,
     LeftTitle,
     FormRole,
-  }
+  },
 })
 export default class AdminPermissionsEdit extends VueBase {
   readonly owner = ROLE_SLUG_OWNER;
@@ -205,7 +192,7 @@ export default class AdminPermissionsEdit extends VueBase {
   async setup() {
     try {
       this.permissions = await this.$api2.getMainPermissions();
-      const role = await this.$api2.getAdminRolesProle(this.perm)
+      const role = await this.$api2.getAdminRolesProle(this.perm);
       this.updatePermission(role);
     } catch (error) {
       this.toastRequestFailure(error);
@@ -214,14 +201,15 @@ export default class AdminPermissionsEdit extends VueBase {
   }
 
   requestRole() {
-    this.$api2.getAdminRolesProle(this.perm)
-        .then(role => {
-          this.updatePermission(role);
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-          this.moveToBack();
-        });
+    this.$api2
+      .getAdminRolesProle(this.perm)
+      .then(role => {
+        this.updatePermission(role);
+      })
+      .catch(error => {
+        this.toastRequestFailure(error);
+        this.moveToBack();
+      });
   }
 
   updatePermission(permission: RoleA) {
@@ -257,16 +245,17 @@ export default class AdminPermissionsEdit extends VueBase {
     } as UpdateRoleQ;
 
     this.showSubmitLoading = true;
-    this.$api2.patchAdminRolesProle(this.perm, body)
-        .then(() => {
-          this.showSubmitLoading = false;
-          this.toastRequestSuccess();
-          this.requestRole();
-        })
-        .catch(error => {
-          this.showSubmitLoading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .patchAdminRolesProle(this.perm, body)
+      .then(() => {
+        this.showSubmitLoading = false;
+        this.toastRequestSuccess();
+        this.requestRole();
+      })
+      .catch(error => {
+        this.showSubmitLoading = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   // ------
@@ -283,18 +272,19 @@ export default class AdminPermissionsEdit extends VueBase {
 
   onClickDeleteOk() {
     this.showDeleteLoading = true;
-    this.$api2.deleteAdminRolesProle(this.perm)
-        .then(() => {
-          this.showDeleteLoading = false;
-          this.showDeleteDialog = false;
-          this.toastRequestSuccess();
-          this.moveToAdminPermissions();
-        })
-        .catch(error => {
-          this.showDeleteLoading = false;
-          this.showDeleteDialog = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .deleteAdminRolesProle(this.perm)
+      .then(() => {
+        this.showDeleteLoading = false;
+        this.showDeleteDialog = false;
+        this.toastRequestSuccess();
+        this.moveToAdminPermissions();
+      })
+      .catch(error => {
+        this.showDeleteLoading = false;
+        this.showDeleteDialog = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

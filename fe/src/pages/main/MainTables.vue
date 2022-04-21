@@ -1,80 +1,67 @@
 <i18n lang="yaml">
 en:
   tools:
-    tables: "Tables"
-    views: "Views"
-    filter: "Filter"
-    sort: "Sort"
-    hide: "Hide Fields"
+    tables: 'Tables'
+    views: 'Views'
+    filter: 'Filter'
+    sort: 'Sort'
+    hide: 'Hide Fields'
   msg:
-    empty: "Empty Tables"
+    empty: 'Empty Tables'
 
 ko:
   tools:
-    tables: "테이블"
-    views: "뷰"
-    filter: "필터"
-    sort: "정렬"
-    hide: "숨김"
+    tables: '테이블'
+    views: '뷰'
+    filter: '필터'
+    sort: '정렬'
+    hide: '숨김'
   msg:
-    empty: "테이블이 존재하지 않습니다."
+    empty: '테이블이 존재하지 않습니다.'
 </i18n>
 
 <template>
   <div class="main-table">
     <v-toolbar dense flat>
       <v-btn plain small @click="onClickView">
-        <v-icon left>
-          mdi-table
-        </v-icon>
+        <v-icon left>mdi-table</v-icon>
         {{ $t('tools.tables') }}
       </v-btn>
 
       <v-btn plain small @click="onClickView">
-        <v-icon left>
-          mdi-view-grid
-        </v-icon>
+        <v-icon left>mdi-view-grid</v-icon>
         {{ $t('tools.views') }}
       </v-btn>
 
       <v-btn plain small @click="onClickFilter">
-        <v-icon left>
-          mdi-filter
-        </v-icon>
+        <v-icon left>mdi-filter</v-icon>
         {{ $t('tools.filter') }}
       </v-btn>
 
       <v-btn plain small @click="onClickSort">
-        <v-icon left>
-          mdi-sort
-        </v-icon>
+        <v-icon left>mdi-sort</v-icon>
         {{ $t('tools.sort') }}
       </v-btn>
 
       <v-btn plain small @click="onClickHide">
-        <v-icon left>
-          mdi-eye-off
-        </v-icon>
+        <v-icon left>mdi-eye-off</v-icon>
         {{ $t('tools.hide') }}
       </v-btn>
 
       <v-btn icon plain small @click="onClickMore">
-        <v-icon>
-          mdi-dots-horizontal
-        </v-icon>
+        <v-icon>mdi-dots-horizontal</v-icon>
       </v-btn>
     </v-toolbar>
     <v-divider></v-divider>
 
     <view-port class="d-flex flex-row align-center justify-center">
       <grid
-          class="main-table--grid"
-          draggable="true"
-          :data="gridData"
-          :columns="columns"
+        class="main-table--grid"
+        draggable="true"
+        :data="gridData"
+        :columns="columns"
       ></grid>
     </view-port>
-
   </div>
 </template>
 
@@ -87,13 +74,13 @@ import {Grid} from '@toast-ui/vue-grid';
 
 const NAVIGATION_DENSE_HEIGHT = 48;
 const DIVIDER_HEIGHT = 1;
-const VIEW_PORT_MARGIN_TOP = (NAVIGATION_DENSE_HEIGHT * 2) + DIVIDER_HEIGHT;
+const VIEW_PORT_MARGIN_TOP = NAVIGATION_DENSE_HEIGHT * 2 + DIVIDER_HEIGHT;
 
 @Component({
   components: {
     ViewPort,
     Grid,
-  }
+  },
 })
 export default class MainTables extends VueBase {
   readonly viewPortMarginTop = VIEW_PORT_MARGIN_TOP;
@@ -387,50 +374,45 @@ export default class MainTables extends VueBase {
       name: 'name',
       sortable: true,
       filter: 'text',
-      rowSpan: true
+      rowSpan: true,
     },
     {
       header: 'Artist',
       name: 'artist',
       sortable: true,
       filter: 'text',
-      rowSpan: true
+      rowSpan: true,
     },
     {
       header: 'Type',
       name: 'type',
       sortable: true,
       filter: 'select',
-      rowSpan: true
+      rowSpan: true,
     },
     {
       header: 'Release',
       name: 'release',
       sortable: true,
-      rowSpan: true
+      rowSpan: true,
     },
     {
       header: 'Genre',
       name: 'genre',
       sortable: true,
-      rowSpan: true
-    }
+      rowSpan: true,
+    },
   ];
 
-  onClickView() {
-  }
+  onClickView() {}
 
-  onClickFilter() {
-  }
+  onClickFilter() {}
 
-  onClickSort() {
-  }
+  onClickSort() {}
 
-  onClickHide() {
-  }
+  onClickHide() {}
 
-  onClickMore() {
-  }
+  onClickMore() {}
 }
 </script>
 

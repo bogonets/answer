@@ -1,11 +1,11 @@
 <i18n lang="yaml">
 en:
-  header: "New permission"
-  subheader: "You can control the level of access to your project."
+  header: 'New permission'
+  subheader: 'You can control the level of access to your project.'
 
 ko:
-  header: "새로운 권한"
-  subheader: "프로젝트에 접근할 수 있는 수준을 제어할 수 있습니다."
+  header: '새로운 권한'
+  subheader: '프로젝트에 접근할 수 있는 수준을 제어할 수 있습니다.'
 </i18n>
 
 <template>
@@ -13,18 +13,14 @@ ko:
     <toolbar-breadcrumbs :items="navigationItems"></toolbar-breadcrumbs>
     <v-divider></v-divider>
 
-    <left-title
-        :header="$t('header')"
-        :subheader="$t('subheader')"
-    >
+    <left-title :header="$t('header')" :subheader="$t('subheader')">
       <form-role
-          :loading="submitLoading"
-          :permissions="permissions"
-          @cancel="onClickCancel"
-          @submit="onClickSubmit"
+        :loading="submitLoading"
+        :permissions="permissions"
+        @cancel="onClickCancel"
+        @submit="onClickSubmit"
       ></form-role>
     </left-title>
-
   </v-container>
 </template>
 
@@ -32,7 +28,7 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import LeftTitle from "@/components/LeftTitle.vue";
+import LeftTitle from '@/components/LeftTitle.vue';
 import FormRole from '@/components/FormRole.vue';
 import {RoleA, CreateRoleQ} from '@/packet/role';
 
@@ -41,7 +37,7 @@ import {RoleA, CreateRoleQ} from '@/packet/role';
     ToolbarBreadcrumbs,
     LeftTitle,
     FormRole,
-  }
+  },
 })
 export default class AdminPermissionsNew extends VueBase {
   private readonly navigationItems = [
@@ -69,16 +65,16 @@ export default class AdminPermissionsNew extends VueBase {
   }
 
   requestPermission() {
-    this.$api2.getMainPermissions()
-        .then(items => {
-          this.permissions = items;
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-          this.moveToBack();
-        });
+    this.$api2
+      .getMainPermissions()
+      .then(items => {
+        this.permissions = items;
+      })
+      .catch(error => {
+        this.toastRequestFailure(error);
+        this.moveToBack();
+      });
   }
-
 
   onClickCancel() {
     this.moveToBack();
@@ -95,16 +91,17 @@ export default class AdminPermissionsNew extends VueBase {
     } as CreateRoleQ;
 
     this.submitLoading = true;
-    this.$api2.postAdminRoles(body)
-        .then(() => {
-          this.submitLoading = false;
-          this.moveToAdminPermissions();
-          this.toastRequestSuccess();
-        })
-        .catch(error => {
-          this.submitLoading = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .postAdminRoles(body)
+      .then(() => {
+        this.submitLoading = false;
+        this.moveToAdminPermissions();
+        this.toastRequestSuccess();
+      })
+      .catch(error => {
+        this.submitLoading = false;
+        this.toastRequestFailure(error);
+      });
   }
 }
 </script>

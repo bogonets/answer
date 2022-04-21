@@ -1,15 +1,15 @@
 <i18n lang="yaml">
 en:
-  key: "Key"
-  value: "Value"
-  cancel: "Cancel"
-  ok: "Ok"
+  key: 'Key'
+  value: 'Value'
+  cancel: 'Cancel'
+  ok: 'Ok'
 
 ko:
-  key: "열쇠 (Key)"
-  value: "값 (Value)"
-  cancel: "취소"
-  ok: "확인"
+  key: '열쇠 (Key)'
+  value: '값 (Value)'
+  cancel: '취소'
+  ok: '확인'
 </i18n>
 
 <template>
@@ -20,35 +20,31 @@ ko:
     <v-divider></v-divider>
 
     <v-container>
-      <v-form
-          ref="form"
-          v-model="valid"
-          lazy-validation
-      >
+      <v-form ref="form" v-model="valid" lazy-validation>
         <v-list flat>
           <v-list-item>
             <v-text-field
-                dense
-                outlined
-                type="text"
-                autocomplete="off"
-                v-model="infoKey"
-                :filled="disableKey"
-                :disabled="disableKey"
-                :rules="infoRules"
-                :label="$t('key')"
+              dense
+              outlined
+              type="text"
+              autocomplete="off"
+              v-model="infoKey"
+              :filled="disableKey"
+              :disabled="disableKey"
+              :rules="infoRules"
+              :label="$t('key')"
             ></v-text-field>
           </v-list-item>
           <v-list-item>
             <v-text-field
-                dense
-                outlined
-                hide-details
-                type="text"
-                autocomplete="off"
-                v-model="infoValue"
-                :label="$t('value')"
-                @keydown.enter.stop="submit"
+              dense
+              outlined
+              hide-details
+              type="text"
+              autocomplete="off"
+              v-model="infoValue"
+              :label="$t('value')"
+              @keydown.enter.stop="submit"
             ></v-text-field>
           </v-list-item>
         </v-list>
@@ -59,17 +55,10 @@ ko:
 
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn
-          color="second"
-          class="mr-1"
-          @click="cancel"
-      >
+      <v-btn color="second" class="mr-1" @click="cancel">
         {{ $t('cancel') }}
       </v-btn>
-      <v-btn
-          color="primary"
-          @click="submit"
-      >
+      <v-btn color="primary" @click="submit">
         {{ $t('ok') }}
       </v-btn>
     </v-card-actions>

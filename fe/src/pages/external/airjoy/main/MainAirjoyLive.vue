@@ -1,39 +1,39 @@
 <i18n lang="yaml">
 en:
-  title: "Airjoy Device Live Viewer"
-  groups: "Groups"
-  chart: "Chart"
+  title: 'Airjoy Device Live Viewer'
+  groups: 'Groups'
+  chart: 'Chart'
   period:
-    start: "Start date"
-    end: "End date"
+    start: 'Start date'
+    end: 'End date'
   labels:
-    device: "Please select a device ID to output as a chart"
-    category: "Please select a category to output as a chart"
+    device: 'Please select a device ID to output as a chart'
+    category: 'Please select a category to output as a chart'
   categories:
-    pm10: "PM10"
-    pm2_5: "PM2.5"
-    co2: "CO2"
-    humidity: "Humidity"
-    temperature: "Temperature"
-    voc: "VOC"
+    pm10: 'PM10'
+    pm2_5: 'PM2.5'
+    co2: 'CO2'
+    humidity: 'Humidity'
+    temperature: 'Temperature'
+    voc: 'VOC'
 
 ko:
-  title: "AIRJOY 실시간 모니터링"
-  groups: "Groups"
-  chart: "Chart"
+  title: 'AIRJOY 실시간 모니터링'
+  groups: 'Groups'
+  chart: 'Chart'
   period:
-    start: "시작일"
-    end: "종료일"
+    start: '시작일'
+    end: '종료일'
   labels:
-    device: "차트로 출력할 장치 ID를 선택하세요"
-    category: "차트로 출력할 카테고리를 선택하세요"
+    device: '차트로 출력할 장치 ID를 선택하세요'
+    category: '차트로 출력할 카테고리를 선택하세요'
   categories:
-    pm10: "미세먼지"
-    pm2_5: "초미세먼지"
-    co2: "이산화탄소"
-    humidity: "습도"
-    temperature: "온도"
-    voc: "VOC"
+    pm10: '미세먼지'
+    pm2_5: '초미세먼지'
+    co2: '이산화탄소'
+    humidity: '습도'
+    temperature: '온도'
+    voc: 'VOC'
 </i18n>
 
 <template>
@@ -44,14 +44,14 @@ ko:
     <v-row class="my-4">
       <v-col class="pb-0" cols="12">
         <v-select
-            dense
-            rounded
-            outlined
-            hide-details
-            v-model="category"
-            :items="categories"
-            :label="$t('labels.category')"
-            @change="onChangeCategory"
+          dense
+          rounded
+          outlined
+          hide-details
+          v-model="category"
+          :items="categories"
+          :label="$t('labels.category')"
+          @change="onChangeCategory"
         ></v-select>
       </v-col>
     </v-row>
@@ -61,10 +61,10 @@ ko:
         {{ $t('title') }}
       </div>
       <chart
-          class="pa-2"
-          type="line"
-          :chart-data="chartData"
-          :options="chartOptions"
+        class="pa-2"
+        type="line"
+        :chart-data="chartData"
+        :options="chartOptions"
       ></chart>
       <v-spacer class="py-4"></v-spacer>
     </v-card>
@@ -75,9 +75,7 @@ ko:
       </v-btn>
     </v-row>
 
-    <div class="my-12">
-    </div>
-
+    <div class="my-12"></div>
   </v-container>
 </template>
 
@@ -87,10 +85,7 @@ import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import Chart from '@/chart/Chart.vue';
 import {Chart as ChartJS} from 'chart.js';
-import type {
-  AirjoyDeviceA,
-  AirjoySensorA,
-} from '@/packet/airjoy';
+import type {AirjoyDeviceA, AirjoySensorA} from '@/packet/airjoy';
 import {
   INDEX_UNKNOWN,
   INDEX_PM10,
@@ -127,7 +122,7 @@ function isFloating(value) {
   components: {
     BreadcrumbMain,
     Chart,
-  }
+  },
 })
 export default class MainAirjoyLive extends VueBase {
   chartOptions = {
@@ -152,9 +147,9 @@ export default class MainAirjoyLive extends VueBase {
           onRefresh: this.onChartRefresh,
         },
         ticks: {
-          callback: function(value, index, values) {
+          callback: function (value, index, values) {
             return value;
-          }
+          },
         },
       },
       y: {
@@ -165,10 +160,10 @@ export default class MainAirjoyLive extends VueBase {
             if (!isFloating(value)) {
               return value;
             }
-          }
+          },
         },
       },
-    }
+    },
   };
 
   loadingDevices = false;
@@ -239,15 +234,16 @@ export default class MainAirjoyLive extends VueBase {
     this.loadingDevices = true;
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    this.$api2.getAirjoyDevices(group, project)
-        .then(items => {
-          this.loadingDevices = false;
-          this.updateChartData(items);
-        })
-        .catch(error => {
-          this.loadingDevices = false;
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAirjoyDevices(group, project)
+      .then(items => {
+        this.loadingDevices = false;
+        this.updateChartData(items);
+      })
+      .catch(error => {
+        this.loadingDevices = false;
+        this.toastRequestFailure(error);
+      });
   }
 
   updateChartData(items: Array<AirjoyDeviceA>) {
@@ -255,7 +251,7 @@ export default class MainAirjoyLive extends VueBase {
     const defaultBackground = primaryTheme?.toString() || 'blue';
 
     const chartData = {
-      datasets: [] as Array<object>
+      datasets: [] as Array<object>,
     };
 
     for (const item of items) {
@@ -277,13 +273,14 @@ export default class MainAirjoyLive extends VueBase {
   updateChart() {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    this.$api2.getAirjoyLive(group, project)
-        .then(items => {
-          this.items = items;
-        })
-        .catch(error => {
-          this.toastRequestFailure(error);
-        });
+    this.$api2
+      .getAirjoyLive(group, project)
+      .then(items => {
+        this.items = items;
+      })
+      .catch(error => {
+        this.toastRequestFailure(error);
+      });
   }
 
   getSensorValue(item: AirjoySensorA) {

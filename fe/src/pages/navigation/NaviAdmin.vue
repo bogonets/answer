@@ -1,48 +1,47 @@
 <i18n lang="yaml">
 en:
-  title: "Admin setting"
-  overview: "Overview"
-  users: "Users"
-  groups: "Groups"
-  projects: "Projects"
-  permissions: "Permissions"
-  containers: "Containers"
-  lambdas: "Lambdas"
-  configs: "Configs"
-  ports: "Ports"
-  daemons: "Daemons"
+  title: 'Admin setting'
+  overview: 'Overview'
+  users: 'Users'
+  groups: 'Groups'
+  projects: 'Projects'
+  permissions: 'Permissions'
+  containers: 'Containers'
+  lambdas: 'Lambdas'
+  configs: 'Configs'
+  ports: 'Ports'
+  daemons: 'Daemons'
   external:
     airjoy:
-      devices: "AIRJOY Devices"
+      devices: 'AIRJOY Devices'
 
 ko:
-  title: "관리자 설정"
-  overview: "개요"
-  users: "사용자"
-  groups: "그룹"
-  projects: "프로젝트"
-  permissions: "권한"
-  containers: "컨테이너"
-  lambdas: "람다"
-  configs: "구성"
-  ports: "포트"
-  daemons: "데몬"
+  title: '관리자 설정'
+  overview: '개요'
+  users: '사용자'
+  groups: '그룹'
+  projects: '프로젝트'
+  permissions: '권한'
+  containers: '컨테이너'
+  lambdas: '람다'
+  configs: '구성'
+  ports: '포트'
+  daemons: '데몬'
   external:
     airjoy:
-      devices: "AIRJOY 장치 관리"
+      devices: 'AIRJOY 장치 관리'
 </i18n>
 
 <template>
   <v-navigation-drawer
-      app
-      clipped
-      permanent
-      stateless
-      touchless
-      :mini-variant.sync="mini"
+    app
+    clipped
+    permanent
+    stateless
+    touchless
+    :mini-variant.sync="mini"
   >
     <v-list nav dense>
-
       <v-list-item link @click.stop="onClickFoldNavigation">
         <v-list-item-icon>
           <v-icon>mdi-cog-outline</v-icon>
@@ -57,13 +56,7 @@ ko:
 
       <v-divider></v-divider>
 
-      <v-list-item-group
-          mandatory
-          color="primary"
-          :value="index"
-          @change="input"
-      >
-
+      <v-list-item-group mandatory color="primary" :value="index" @change="input">
         <v-list-item link @click.stop="overview">
           <v-list-item-icon>
             <v-icon>mdi-developer-board</v-icon>
@@ -163,7 +156,6 @@ ko:
             {{ $t('external.airjoy.devices') }}
           </v-list-item-title>
         </v-list-item>
-
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
@@ -173,11 +165,10 @@ ko:
 import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import adminNames from '@/router/names/admin';
-import devNames from "@/router/names/dev";
+import devNames from '@/router/names/dev';
 
 @Component
 export default class NaviAdmin extends VueBase {
-
   @Prop({type: Boolean, default: false})
   readonly noDefault!: boolean;
 

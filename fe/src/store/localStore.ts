@@ -39,14 +39,13 @@ export interface LocalStoreOptions {
 }
 
 export class LocalStore {
-
   private persist: VuexPersist<any>;
   private store: Store<any>;
   private defaultCommitOptions: CommitOptions;
 
   constructor(options?: LocalStoreOptions) {
-    const key = (options && options.key) ? options.key : DEFAULT_PERSIST_KEY;
-    const strict = (options && options.strict) ? options.strict : DEFAULT_STRICT;
+    const key = options && options.key ? options.key : DEFAULT_PERSIST_KEY;
+    const strict = options && options.strict ? options.strict : DEFAULT_STRICT;
 
     this.persist = new VuexPersist({
       key: key,

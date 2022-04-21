@@ -1,12 +1,12 @@
 <template>
   <div class="record-controller">
     <canvas
-        class="record-timeline"
-        ref="record-timeline"
-        :style="recordTimelineStyle"
-        @click="onClick"
-        @resize="onResize"
-        v-resize="onWindowResize"
+      class="record-timeline"
+      ref="record-timeline"
+      :style="recordTimelineStyle"
+      @click="onClick"
+      @resize="onResize"
+      v-resize="onWindowResize"
     ></canvas>
   </div>
 </template>
@@ -14,7 +14,7 @@
 <script lang="ts">
 import {Component, Prop, Ref, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import colors from 'vuetify/lib/util/colors'
+import colors from 'vuetify/lib/util/colors';
 import {ContextException, InvalidRangeException} from '@/exceptions';
 import moment from 'moment';
 
@@ -211,11 +211,13 @@ export default class RecordController extends VueBase {
   }
 
   get recordTimelineHeight() {
-    return this.rulerHeight
-        + this.recordHeight
-        + this.recordBufferHeight
-        + this.eventHeight
-        + this.eventBufferHeight;
+    return (
+      this.rulerHeight +
+      this.recordHeight +
+      this.recordBufferHeight +
+      this.eventHeight +
+      this.eventBufferHeight
+    );
   }
 
   get recordTimelineStyle() {
@@ -233,7 +235,7 @@ export default class RecordController extends VueBase {
     this.updateRecordTimeline(undefined, undefined, false);
   }
 
-  updateRecordTimeline(width?: number, height?: number, refresh=true) {
+  updateRecordTimeline(width?: number, height?: number, refresh = true) {
     const w = width ?? this.recordTimelineCanvas.offsetWidth;
     const h = height ?? this.recordTimelineCanvas.offsetHeight;
 
@@ -246,8 +248,8 @@ export default class RecordController extends VueBase {
       updateBackgroundOffscreenCanvas = true;
     }
     if (
-        this.backgroundOffscreenCanvas.width != w
-        || this.backgroundOffscreenCanvas.height != h
+      this.backgroundOffscreenCanvas.width != w ||
+      this.backgroundOffscreenCanvas.height != h
     ) {
       this.backgroundOffscreenCanvas.width = w;
       this.backgroundOffscreenCanvas.height = h;
@@ -279,11 +281,11 @@ export default class RecordController extends VueBase {
     const rulerWidth = width - this.paddingLeft - this.paddingRight;
     const timelineRulerY = 0;
     this.drawTimelineRuler(
-        context,
-        this.paddingLeft,
-        timelineRulerY,
-        rulerWidth,
-        this.rulerHeight,
+      context,
+      this.paddingLeft,
+      timelineRulerY,
+      rulerWidth,
+      this.rulerHeight,
     );
 
     const navigationY = timelineRulerY + this.rulerHeight;
@@ -295,31 +297,19 @@ export default class RecordController extends VueBase {
     context.strokeRect(this.paddingLeft, navigationY, rulerWidth, navigationHeight);
 
     const recordY = navigationY;
-    this.drawRecord(
-        context,
-        this.paddingLeft,
-        recordY,
-        rulerWidth,
-        this.recordHeight,
-    );
+    this.drawRecord(context, this.paddingLeft, recordY, rulerWidth, this.recordHeight);
 
     const recordBufferY = recordY + this.recordHeight;
     this.drawRecordBuffer(
-        context,
-        this.paddingLeft,
-        recordBufferY,
-        rulerWidth,
-        this.recordBufferHeight,
+      context,
+      this.paddingLeft,
+      recordBufferY,
+      rulerWidth,
+      this.recordBufferHeight,
     );
 
     const eventY = recordBufferY + this.recordBufferHeight;
-    this.drawEvent(
-        context,
-        this.paddingLeft,
-        eventY,
-        rulerWidth,
-        this.eventHeight,
-    );
+    this.drawEvent(context, this.paddingLeft, eventY, rulerWidth, this.eventHeight);
 
     // const eventBufferY = eventY + this.eventHeight;
     // this.drawEvent(
@@ -384,11 +374,11 @@ export default class RecordController extends VueBase {
   }
 
   drawTimelineRuler(
-      context: CanvasRenderingContext2D,
-      x: number,
-      y: number,
-      w: number,
-      h: number,
+    context: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
   ) {
     context.lineWidth = this.rulerLineWidth;
     context.strokeStyle = this.timelineColor;
@@ -402,7 +392,7 @@ export default class RecordController extends VueBase {
     const stepWidth = w / DAY_TO_HOURS;
     const stepHeight = h / 2;
     for (let i = 0; i <= DAY_TO_HOURS; ++i) {
-      const pos = x + (stepWidth * i);
+      const pos = x + stepWidth * i;
       context.beginPath();
       context.moveTo(pos, y + stepHeight + TEXT_BOTTOM_MARGIN);
       context.lineTo(pos, h);
@@ -412,31 +402,31 @@ export default class RecordController extends VueBase {
   }
 
   drawRecord(
-      context: CanvasRenderingContext2D,
-      x: number,
-      y: number,
-      w: number,
-      h: number,
+    context: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
   ) {
     context.fillStyle = this.recordColor;
     for (const range of this.recordRanges) {
-      const left = x + (range.start * w);
-      const right = x + (range.last * w);
+      const left = x + range.start * w;
+      const right = x + range.last * w;
       context.fillRect(left, y, Math.abs(right - left), h);
     }
   }
 
   drawEvent(
-      context: CanvasRenderingContext2D,
-      x: number,
-      y: number,
-      w: number,
-      h: number,
+    context: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
   ) {
     context.lineWidth = this.eventLineWidth;
     context.strokeStyle = this.eventColor;
     for (const offset of this.eventOffsets) {
-      const pos = x + (offset * w);
+      const pos = x + offset * w;
       context.beginPath();
       context.moveTo(pos, y);
       context.lineTo(pos, y + h);
@@ -445,37 +435,35 @@ export default class RecordController extends VueBase {
   }
 
   drawRecordBuffer(
-      context: CanvasRenderingContext2D,
-      x: number,
-      y: number,
-      w: number,
-      h: number,
-  ) {
-  }
+    context: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+  ) {}
 
   drawEventBuffer(
-      context: CanvasRenderingContext2D,
-      x: number,
-      y: number,
-      w: number,
-      h: number,
-  ) {
-  }
+    context: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+  ) {}
 
   drawCursor(
-      context: CanvasRenderingContext2D,
-      x: number,
-      y: number,
-      w: number,
-      h: number,
+    context: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
   ) {
     if (this.cursorPosition < 0 || 1 < this.cursorPosition) {
       throw new InvalidRangeException(
-          `Invalid range of position: ${this.cursorPosition} (Expect range: 0 <= pos <= 1)`
+        `Invalid range of position: ${this.cursorPosition} (Expect range: 0 <= pos <= 1)`,
       );
     }
 
-    const pos = x + (w * this.cursorPosition);
+    const pos = x + w * this.cursorPosition;
     context.lineWidth = this.cursorWidth;
     context.strokeStyle = this.cursorStyle;
     context.beginPath();
@@ -512,10 +500,10 @@ export default class RecordController extends VueBase {
   click(pos: number) {
     if (pos < 0 || 1 < pos) {
       throw new InvalidRangeException(
-          `Invalid range of position: ${pos} (Expect range: 0 <= pos <= 1)`
+        `Invalid range of position: ${pos} (Expect range: 0 <= pos <= 1)`,
       );
     }
-    return pos
+    return pos;
   }
 }
 </script>
