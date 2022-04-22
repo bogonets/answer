@@ -6,7 +6,7 @@
       </span>
       <v-img
         v-else
-        src="@/assets/logo/answer-logo.svg"
+        src="@/assets/logos/answer-logo.svg"
         contain
         :alt="titleText"
         :max-width="maxWidth"

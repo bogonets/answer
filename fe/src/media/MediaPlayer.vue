@@ -232,7 +232,7 @@ ko:
       <div v-show="!online" class="brand-logo-container">
         <img
           class="brand-logo"
-          src="@/assets/logo/answer-logo-notext.svg"
+          src="@/assets/logos/answer-logo-notext.svg"
           :alt="$t('hints.logo_alt')"
         />
       </div>

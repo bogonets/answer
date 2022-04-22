@@ -1,14 +1,14 @@
 <template>
   <v-img
     v-if="this.$vuetify.theme.dark"
-    src="@/assets/logo/answer-logo-onlytext-dark.svg"
+    src="@/assets/logos/answer-logo-onlytext-dark.svg"
     alt="ANSWER"
     max-width="82px"
     max-height="36px"
   ></v-img>
   <v-img
     v-else
-    src="@/assets/logo/answer-logo-onlytext.svg"
+    src="@/assets/logos/answer-logo-onlytext-light.svg"
     alt="ANSWER"
     max-width="82px"
     max-height="36px"
