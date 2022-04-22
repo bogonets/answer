@@ -224,7 +224,7 @@ export default class MainVmsLive extends VueBase {
   }
 
   playAlertSound() {
-    const audio = new Audio(require('@/assets/beep-1.wav'));
+    const audio = new Audio(require('@/assets/sfx/beep01.wav'));
     audio.play();
   }
 
