@@ -89,7 +89,7 @@ export default class Chart extends Vue {
   @Watch('chartData')
   onChangeChartData(newData, oldData) {
     if (oldData && typeof this.chart !== 'undefined') {
-      let chart = this.chart;
+      const chart = this.chart;
 
       const newDatasetLabels = newData.datasets.map(d => d.label);
       const oldDatasetLabels = oldData.datasets.map(d => d.label);
@@ -119,21 +119,21 @@ export default class Chart extends Vue {
 
           // Update attributes individually to avoid re-rendering the entire chart
           for (const attribute in dataset) {
-            if (dataset.hasOwnProperty(attribute)) {
+            if (typeof dataset[attribute] !== 'undefined') {
               chart.data.datasets[i][attribute] = dataset[attribute];
             }
           }
         });
 
-        if (newData.hasOwnProperty('labels')) {
+        if (typeof newData['labels'] !== 'undefined') {
           chart.data.labels = newData.labels;
           this.labelsUpdate();
         }
-        if (newData.hasOwnProperty('xLabels')) {
+        if (typeof newData['xLabels'] !== 'undefined') {
           chart.data['xLabels'] = newData.xLabels;
           this.xlabelsUpdate();
         }
-        if (newData.hasOwnProperty('yLabels')) {
+        if (typeof newData['yLabels'] !== 'undefined') {
           chart.data['yLabels'] = newData.yLabels;
           this.ylabelsUpdate();
         }

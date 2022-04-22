@@ -260,7 +260,7 @@ export default class FormProject extends VueBase {
   searchFeature = '';
 
   created() {
-    if (!!this.initGroup) {
+    if (this.initGroup) {
       this.value.group = this.initGroup;
     }
   }

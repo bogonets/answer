@@ -301,7 +301,7 @@ export default class Signin extends VueBase {
 
   updateValidations() {
     const fields = [this.$refs.usernameField, this.$refs.passwordField];
-    let result = true;
+    const result = true;
     for (const key in fields) {
       const field = fields[key];
       if (!field) {

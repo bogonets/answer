@@ -4,7 +4,7 @@ module.exports = {
 
   configureWebpack: config => {
     if (process.env.NODE_ENV !== 'production') {
-      return { devtool: 'eval-source-map' };
+      return {devtool: 'eval-source-map'};
     }
   },
 
@@ -15,7 +15,7 @@ module.exports = {
       locale: 'ko',
       fallbackLocale: 'ko',
       localeDir: 'locales',
-      enableInSFC: true
-    }
-  }
+      enableInSFC: true,
+    },
+  },
 };

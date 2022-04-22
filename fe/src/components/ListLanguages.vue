@@ -58,7 +58,7 @@ export default class ListLanguages extends VueI18n {
   }
 
   getInitLang() {
-    if (!!this.initLang) {
+    if (this.initLang) {
       return this.initLang;
     } else if (this.initVuetify) {
       return this.$vuetify.lang.current;

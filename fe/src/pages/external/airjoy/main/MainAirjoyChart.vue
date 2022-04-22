@@ -587,10 +587,10 @@ export default class MainAirjoyChart extends VueBase {
   }
 
   toCsvData() {
-    if (!this.chartData.hasOwnProperty('labels')) {
+    if (typeof this.chartData['labels'] === 'undefined') {
       throw Error('no labels');
     }
-    if (!this.chartData.hasOwnProperty('datasets')) {
+    if (this.chartData['datasets'] === 'undefined') {
       throw Error('no datasets');
     }
 

@@ -5,11 +5,10 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --no-clean --dest ../core/recc/www",
+    "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e --headless",
-    "lint": "vue-cli-service lint"
+    "test:e2e": "vue-cli-service test:e2e --headless"
   },
-  "main": "background.js",
   "dependencies": {
     "@juggle/resize-observer": "^3.3.1",
     "@recc/api": "^2.0.0-dev9-2",
@@ -96,27 +95,11 @@
       "ecmaVersion": 2020
     },
     "rules": {
-      "prettier/prettier": "error",
-      "camelcase": "off",
-      "no-redeclare": "off",
       "@typescript-eslint/camelcase": "off",
       "@typescript-eslint/no-empty-function": "off",
       "@typescript-eslint/no-unused-vars": "off",
-      "no-inner-declarations": "off",
-      "no-prototype-builtins": "off",
-      "no-dupe-keys": "off",
-      "no-empty": "off",
-      "prefer-spread": "off",
-      "no-constant-condition": "off",
-      "no-extra-boolean-cast": "off",
-      "valid-typeof": "off",
-      "prefer-const": "off",
-      "no-unreachable": "off",
-      "@typescript-eslint/no-array-constructor": "off",
-      "@typescript-eslint/no-this-alias": "off",
-      "@typescript-eslint/no-var-requires": "off",
-      "@typescript-eslint/no-use-before-define": "off",
-      "@typescript-eslint/no-explicit-any": "off"
+      "@typescript-eslint/no-explicit-any": "off",
+      "prettier/prettier": "error"
     },
     "overrides": [
       {

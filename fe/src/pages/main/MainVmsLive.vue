@@ -381,13 +381,6 @@ export default class MainVmsLive extends VueBase {
     return device.device_uid;
   }
 
-  getScorePercentage(extra: any) {
-    if (!extra.hasOwnProperty('score')) {
-      return undefined;
-    }
-    return Math.ceil(extra['score'] * 100);
-  }
-
   eventDeviceName(value: number) {
     const findDevice = this.devices.find(i => i.device_uid == value);
     if (typeof findDevice === 'undefined') {

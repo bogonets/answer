@@ -62,6 +62,14 @@ export interface RefreshTokenA {
   access: string;
 }
 
+export function createEmptyUserExtraA() {
+  return {
+    dark: false,
+    lang: '',
+    timezone: '',
+  } as UserExtraA;
+}
+
 export function createEmptyUserA() {
   return {
     username: '',
@@ -97,12 +105,4 @@ export function createEmptySignupQ() {
     is_admin: false,
     extra: createEmptyUserExtraA(),
   } as SignupQ;
-}
-
-export function createEmptyUserExtraA() {
-  return {
-    dark: false,
-    lang: '',
-    timezone: '',
-  } as UserExtraA;
 }
