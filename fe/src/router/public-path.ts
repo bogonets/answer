@@ -1,3 +1,3 @@
-export const PUBLIC_PATH = require('@/../vue.config').publicPath;
-
+import vueConfig from '@/../vue.config';
+export const PUBLIC_PATH = vueConfig.publicPath;
 export default PUBLIC_PATH;

@@ -87,7 +87,7 @@ ko:
 <script lang="ts">
 import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import {GroupA} from '@/packet/group';
+import type {GroupA} from '@/packet/group';
 import {iso8601ToLocalDate} from '@/chrono/iso8601';
 
 @Component

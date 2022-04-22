@@ -352,14 +352,10 @@ import {
   VMS_CHANNEL_META_CONSUME_CODE_SKIP,
   VMS_CHANNEL_META_CONSUME_CODE_UNKNOWN,
   EVENT_CATEGORY_TO_ICON,
-  VmsChannelEvent,
-  VmsEventConfigExtra,
-} from '@/packet/vms';
-import {
-  VmsChannelEventCode,
   VmsChannelMetaCode,
-  VmsChannelMetaConsumeCode,
+  VmsChannelEventCode,
 } from '@/packet/vms';
+import type {VmsChannelEvent, VmsEventConfigExtra} from '@/packet/vms';
 import type {
   VmsDeviceA,
   RtcOfferQ,
@@ -709,12 +705,10 @@ export default class MediaPlayer extends VueBase {
 
     const iceServers = [] as Array<RTCIceServer>;
     for (const ice of ices) {
-      let credentialType: undefined | 'password' | 'oauth' = undefined;
+      let credentialType: undefined | 'password' = undefined;
       if (typeof ice.credential_type !== 'undefined') {
         if (ice.credential_type === 'password') {
           credentialType = 'password';
-        } else if (ice.credential_type === 'oauth') {
-          credentialType = 'oauth';
         }
       }
       iceServers.push({
@@ -739,7 +733,9 @@ export default class MediaPlayer extends VueBase {
     this.channel.onopen = this.onChannelOpen;
     this.channel.onclose = this.onChannelClose;
     this.channel.onmessage = this.onChannelMessage;
-    this.channel.onerror = this.onChannelError;
+    this.channel.onerror = event => {
+      console.error(`Data channel error: ${event}`);
+    };
 
     const offer = await this.pc.createOffer();
     await this.pc.setLocalDescription(offer);
@@ -909,15 +905,15 @@ export default class MediaPlayer extends VueBase {
     //   context.fillText(`${score}`, x1, y1);
   }
 
-  onChannelError(event: RTCErrorEvent) {
-    console.error(`Data channel error: ${event.error.errorDetail}`);
-  }
+  // onChannelError(channel: RTCDataChannel, event: Event): any {
+  //   console.error(`Data channel error: ${event}`);
+  // }
 
   waitToCompleteIceGathering(pc: RTCPeerConnection) {
     return new Promise(resolve => {
       this.statusCode = gatheringStatus(pc.iceGatheringState);
       if (pc.iceGatheringState === 'complete') {
-        return resolve(); // DONE !!
+        return resolve('complete'); // DONE !!
       }
 
       const stateChangeCallback = () => {
@@ -925,7 +921,7 @@ export default class MediaPlayer extends VueBase {
         if (pc.iceGatheringState === 'complete') {
           pc.removeEventListener('icegatheringstatechange', stateChangeCallback);
           this.statusCode = Status.IceComplete;
-          return resolve(); // DONE !!
+          return resolve('complete'); // DONE !!
         }
       };
 

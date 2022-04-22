@@ -147,6 +147,7 @@ import {
 } from '@/packet/vms';
 import {iso8601ToLocalDateTime} from '@/chrono/iso8601';
 import moment from 'moment-timezone';
+import beep01 from '@/assets/sfx/beep01.wav';
 
 const EVENT_BOTTOM_MARGIN = 8;
 
@@ -224,7 +225,7 @@ export default class MainVmsLive extends VueBase {
   }
 
   playAlertSound() {
-    const audio = new Audio(require('@/assets/sfx/beep01.wav'));
+    const audio = new Audio(beep01);
     audio.play();
   }
 
