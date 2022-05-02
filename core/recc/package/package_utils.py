@@ -2,7 +2,7 @@
 
 import os
 from pkgutil import iter_modules, ModuleInfo
-from typing import List
+from typing import List, Optional
 from functools import reduce, lru_cache
 from importlib import import_module
 
@@ -67,3 +67,11 @@ def list_submodules_with_import_paths(*import_paths) -> List[ModuleInfo]:
 
 def list_submodule_names_with_import_paths(*import_paths) -> List[str]:
     return [m.name for m in list_submodules(*import_paths)]
+
+
+def all_module_names() -> List[str]:
+    return [m.name for m in iter_modules()]
+
+
+def find_module_names(prefix: str) -> List[str]:
+    return [m.name for m in iter_modules() if m.name.startswith(prefix)]
