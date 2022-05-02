@@ -69,13 +69,45 @@ ko:
       <v-divider vertical></v-divider>
 
       <v-col cols="0" sm="8">
-        <view-port class="d-flex flex-row align-center justify-center">
+        <view-port v-if="true" class="d-flex flex-row align-center justify-center">
           <div class="d-flex flex-column align-center justify-center">
             <v-icon x-large>mdi-file</v-icon>
             <span class="text--secondary text-subtitle-2">
               {{ $t('msg.empty') }}
             </span>
           </div>
+        </view-port>
+
+        <view-port v-if="false" class="d-flex flex-row">
+          <v-container class="pa-1">
+            <v-item-group v-model="selected" multiple>
+              <v-row>
+                <v-col v-for="(item, i) in files" :key="i" cols="12" md="6">
+                  <v-item v-slot="{active, toggle}">
+                    <v-img
+                      class="text-right pa-2"
+                      height="150"
+                      :src="item.src"
+                      @click="toggle"
+                    >
+                      <v-btn icon dark>
+                        <v-icon>
+                          {{
+                            active
+                              ? 'mdi-checkbox-marked'
+                              : 'mdi-checkbox-blank-outline'
+                          }}
+                        </v-icon>
+                      </v-btn>
+                    </v-img>
+                  </v-item>
+                  <span class="d-block ma-1 text-center text--primary text-body-2">
+                    {{ item.name }}
+                  </span>
+                </v-col>
+              </v-row>
+            </v-item-group>
+          </v-container>
         </view-port>
       </v-col>
     </v-row>
@@ -103,6 +135,30 @@ export default class MainFiles extends VueBase {
     txt: 'mdi-file-document-outline',
     xls: 'mdi-file-excel',
   };
+
+  selected = [];
+  files = [
+    // {
+    //   src: require('@/assets/temp/image38.jpeg'),
+    //   name: 'image38.jpeg',
+    // },
+    // {
+    //   src: require('@/assets/temp/image41.jpeg'),
+    //   name: 'image41.jpeg',
+    // },
+    // {
+    //   src: require('@/assets/temp/image42.jpeg'),
+    //   name: 'image42.jpeg',
+    // },
+    // {
+    //   src: require('@/assets/temp/image45.jpeg'),
+    //   name: 'image45.jpeg',
+    // },
+    // {
+    //   src: require('@/assets/temp/image46.jpeg'),
+    //   name: 'image46.jpeg',
+    // },
+  ];
 
   cwd = '';
   initiallyOpen = [''];
