@@ -8,7 +8,9 @@ import type {PreferenceA} from '@/packet/preference';
 // Modules
 import api from '@/store/modules/api';
 import appearance from '@/store/modules/appearance';
+import bar from '@/store/modules/bar';
 import dev from '@/store/modules/dev';
+import navi from '@/store/modules/navi';
 import session from '@/store/modules/session';
 import translation from '@/store/modules/translation';
 
@@ -18,7 +20,10 @@ const DEFAULT_STRICT = process.env.NODE_ENV !== 'production';
 const API_ORIGIN = 'api/origin';
 const APPEARANCE_DARK = 'appearance/dark';
 const APPEARANCE_TIMEZONE = 'appearance/timezone';
+const BAR_HIDE = 'bar/hide';
+const BAR_NAVI = 'bar/navi';
 const DEV_ENABLE = 'dev/enable';
+const NAVI_HIDE = 'navi/hide';
 const SESSION_ALREADY = 'session/already';
 const SESSION_ACCESS = 'session/access';
 const SESSION_REFRESH = 'session/refresh';
@@ -55,7 +60,9 @@ export class LocalStore {
             modules: {
                 api,
                 appearance,
+                bar,
                 dev,
+                navi,
                 session,
                 translation,
             },
@@ -108,12 +115,36 @@ export class LocalStore {
         this.setter(APPEARANCE_TIMEZONE, val);
     }
 
+    get barHide() {
+        return this.getter(BAR_HIDE) as boolean;
+    }
+
+    set barHide(val: boolean) {
+        this.setter(BAR_HIDE, val);
+    }
+
+    get barNavi() {
+        return this.getter(BAR_NAVI) as boolean;
+    }
+
+    set barNavi(val: boolean) {
+        this.setter(BAR_NAVI, val);
+    }
+
     get devEnable() {
         return this.getter(DEV_ENABLE) as boolean;
     }
 
     set devEnable(val: boolean) {
         this.setter(DEV_ENABLE, val);
+    }
+
+    get naviHide() {
+        return this.getter(NAVI_HIDE) as boolean;
+    }
+
+    set naviHide(val: boolean) {
+        this.setter(NAVI_HIDE, val);
     }
 
     get alreadySession() {
