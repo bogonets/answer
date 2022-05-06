@@ -1,7 +1,6 @@
 <template>
   <div class="router-bar-main">
-    <bar-main>
-    </bar-main>
+    <bar-main v-if="!$localStore.barHide"></bar-main>
 
     <v-main>
       <router-view>
@@ -21,6 +20,7 @@ import BarMain from '@/pages/bar/BarMain.vue';
   }
 })
 export default class RouterBarMain extends VueBase {
+  // EMPTY.
 }
 </script>
 

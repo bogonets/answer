@@ -22,12 +22,13 @@ ko:
 
 <template>
   <v-navigation-drawer
-      app
-      clipped
-      permanent
-      stateless
-      touchless
-      :mini-variant.sync="mini"
+    v-if="!$localStore.naviHide"
+    app
+    clipped
+    permanent
+    stateless
+    touchless
+    :mini-variant.sync="mini"
   >
     <v-list nav dense>
 
