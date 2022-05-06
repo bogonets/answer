@@ -217,6 +217,21 @@ export default class ApiV2 extends ReccApi {
     return this.delete(url);
   }
 
+  getAirjoyMediaDefaultFile(group: string, project: string) {
+    const url = `/plugins/airjoy/${group}/${project}/media/default/file`;
+    return this.get(url);
+  }
+
+  getAirjoyMediaFileName(group: string, project: string, name: string) {
+    const url = `/plugins/airjoy/${group}/${project}/media/file/${name}`;
+    return this.get(url);
+  }
+
+  getAirjoyMediaList(group: string, project: string) {
+    const url = `/plugins/airjoy/${group}/${project}/media/list`;
+    return this.get(url);
+  }
+
   // -------------------
   // Plugins/VMS/Devices
   // -------------------

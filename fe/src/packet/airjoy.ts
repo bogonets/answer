@@ -77,6 +77,46 @@ export const CHART_SCALE_Y_MAX_VOC = 3;
 
 export const DEFAULT_CHART_COLOR = '#00AAAAFF';
 
+export enum State {
+  Good,
+  Normal,
+  Warning,
+  Danger,
+}
+
+export const STATE_RANGE_BY_PM10 = [30, 50, 100];
+export const STATE_RANGE_BY_PM2_5 = [15, 25, 50];
+export const STATE_RANGE_BY_CO2 = [700, 1500, 2000];
+export const STATE_RANGE_BY_VOC = [0, 1, 2];
+
+export function getState(value: number, range: Array<number>) {
+  if (value <= range[0]) {
+    return State.Good;
+  } else if (value <= range[1]) {
+    return State.Normal;
+  } else if (value <= range[2]) {
+    return State.Warning;
+  } else {
+    return State.Danger;
+  }
+}
+
+export function getStateByPm10(value: number) {
+  return getState(value, STATE_RANGE_BY_PM10);
+}
+
+export function getStateByPm2_5(value: number) {
+  return getState(value, STATE_RANGE_BY_PM2_5);
+}
+
+export function getStateByCo2(value: number) {
+  return getState(value, STATE_RANGE_BY_CO2);
+}
+
+export function getStateByVoc(value: number) {
+  return getState(value, STATE_RANGE_BY_VOC);
+}
+
 export function calcHumidity(value: number) {
   return value / 10.0;
 }

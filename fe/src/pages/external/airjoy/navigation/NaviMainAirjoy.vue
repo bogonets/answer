@@ -22,6 +22,7 @@ ko:
 
 <template>
   <v-navigation-drawer
+    v-if="!$localStore.naviHide"
     app
     clipped
     permanent
