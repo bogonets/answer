@@ -146,7 +146,7 @@ export default class NaviMainAirjoy extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly noDefault!: boolean;
 
-  @Prop({type: Boolean, default: true})
+  @Prop({type: Boolean, default: false})
   readonly hideSummary!: boolean;
 
   @Prop({type: Boolean, default: true})
@@ -228,23 +228,23 @@ export default class NaviMainAirjoy extends VueBase {
   @Watch('$route')
   onChangeRoute() {
     const name = this.$route.name;
-    if (name === mainAirjoyNames.mainAirjoyDevices) {
+    if (name === mainAirjoyNames.mainAirjoySummary) {
       this.index = 0;
-    } else if (name === mainAirjoyNames.mainAirjoyDetails) {
-      this.index = 0;
-    } else if (name === mainAirjoyNames.mainAirjoyLive) {
+    } else if (name === mainAirjoyNames.mainAirjoyDevices) {
       this.index = 1;
-    } else if (name === mainAirjoyNames.mainAirjoyChart) {
+    } else if (name === mainAirjoyNames.mainAirjoyDetails) {
+      this.index = 1;
+    } else if (name === mainAirjoyNames.mainAirjoyLive) {
       this.index = 2;
-    } else if (name === mainAirjoyNames.mainAirjoyService) {
+    } else if (name === mainAirjoyNames.mainAirjoyChart) {
       this.index = 3;
-    } else if (name === mainNames.mainMembers) {
+    } else if (name === mainAirjoyNames.mainAirjoyService) {
       this.index = 4;
-    } else if (name === mainNames.mainSettings) {
+    } else if (name === mainNames.mainMembers) {
       this.index = 5;
+    } else if (name === mainNames.mainSettings) {
+      this.index = 6;
     } else if (name === mainAirjoyNames.mainAirjoySettings) {
-      this.index = -1;
-    } else if (name === mainAirjoyNames.mainAirjoySummary) {
       this.index = -1;
     } else {
       this.index = -1;

@@ -30,9 +30,11 @@ en:
     warning: 'Warning'
     danger: 'Danger'
     unknown: 'Unknown'
+  tooltips:
+    selectDevice: 'Select a device'
+    fullscreen: 'Toggle fullscreen mode'
   fullscreen: 'Fullscreen'
-  cancel: 'Cancel'
-  ok: 'Ok'
+  close: 'Close'
 
 ko:
   title:
@@ -65,27 +67,29 @@ ko:
     warning: '나쁨'
     danger: '매우나쁨'
     unknown: '알수없음'
+  tooltips:
+    selectDevice: '장치 선택'
+    fullscreen: '전체화면 토글'
   fullscreen: '전체 화면'
-  cancel: '취소'
-  ok: '확인'
+  close: '닫기'
 </i18n>
 
 <template>
   <div>
     <div class="control-panel">
-      <video ref="video-player" class="video-player" loop="loop" autoplay muted></video>
+      <video ref="video-player" class="video-player" muted></video>
 
-      <div class="mt-10 d-flex flex-row align-center justify-center">
+      <div class="mt-10 d-flex flex-row align-end justify-center">
         <v-img
           v-if="this.$vuetify.theme.dark"
-          src="@/assets/logos/answer-logo-onlytext-dark.svg"
+          src="@/assets/logo/answer-logo-onlytext-dark.svg"
           alt="ANSWER"
           :max-width="logoMinWidth"
           :max-height="logoMinHeight"
         ></v-img>
         <v-img
           v-else
-          src="@/assets/logos/answer-logo-onlytext-light.svg"
+          src="@/assets/logo/answer-logo-onlytext.svg"
           alt="ANSWER"
           :max-width="logoMinWidth"
           :max-height="logoMinHeight"
@@ -137,7 +141,7 @@ ko:
 
         <v-row>
           <v-col cols="6">
-            <div :class="`card  ${stateClassPm10}`">
+            <div :class="`card ${stateClassPm10}`">
               <div class="card--body">
                 <span>{{ stateNamePm10 }}</span>
               </div>
@@ -151,7 +155,7 @@ ko:
           </v-col>
 
           <v-col cols="6">
-            <div :class="`card  ${stateClassPm2_5}`">
+            <div :class="`card ${stateClassPm2_5}`">
               <div class="card--body">
                 <span>{{ stateNamePm2_5 }}</span>
               </div>
@@ -165,7 +169,7 @@ ko:
           </v-col>
 
           <v-col cols="6">
-            <div :class="`card  ${stateClassCo2}`">
+            <div :class="`card ${stateClassCo2}`">
               <div class="card--body">
                 <span>{{ stateNameCo2 }}</span>
               </div>
@@ -179,7 +183,7 @@ ko:
           </v-col>
 
           <v-col cols="6">
-            <div :class="`card  ${stateClassVoc}`">
+            <div :class="`card ${stateClassVoc}`">
               <div class="card--body">
                 <span>{{ stateNameVoc }}</span>
               </div>
@@ -243,15 +247,8 @@ ko:
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="second" class="mr-1" @click="onClickSelectDeviceCancel">
-            {{ $t('cancel') }}
-          </v-btn>
-          <v-btn
-            :loading="submitLoading"
-            color="primary"
-            @click="onClickSelectDeviceOk"
-          >
-            {{ $t('ok') }}
+          <v-btn color="primary" @click="onClickSelectDeviceClose">
+            {{ $t('close') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -270,13 +267,25 @@ ko:
         </v-btn>
       </template>
 
-      <v-btn fab x-small @click="onClickFullscreen">
-        <v-icon v-if="fullscreenMode">mdi-fullscreen-exit</v-icon>
-        <v-icon v-else>mdi-fullscreen</v-icon>
-      </v-btn>
-      <v-btn fab x-small @click="onClickSelectDevice">
-        <v-icon>mdi-tablet</v-icon>
-      </v-btn>
+      <v-tooltip left>
+        <template v-slot:activator="{on, attrs}">
+          <v-btn fab x-small @click="onClickFullscreen" v-bind="attrs" v-on="on">
+            <v-icon v-if="fullscreenMode">mdi-fullscreen-exit</v-icon>
+            <v-icon v-else>mdi-fullscreen</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('tooltips.fullscreen') }}</span>
+      </v-tooltip>
+
+      <v-tooltip left>
+        <template v-slot:activator="{on, attrs}">
+          <v-btn fab x-small @click="onClickSelectDevice" v-bind="attrs" v-on="on">
+            <v-icon>mdi-tablet</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('tooltips.selectDevice') }}</span>
+      </v-tooltip>
+
     </v-speed-dial>
   </div>
 </template>
@@ -300,9 +309,9 @@ import AxiosLib from 'axios';
 import {Moment} from 'moment-timezone';
 import {createMoment} from '@/chrono/date';
 
-function createAxios() {
+function createAxios(origin?: string) {
   return AxiosLib.create({
-    baseURL: document.location.origin,
+    baseURL: origin ?? document.location.origin,
     validateStatus: (status: number): boolean => {
       return 200 === status;
     },
@@ -355,6 +364,7 @@ export default class MainAirjoySummary extends VueBase {
   fab = false;
 
   playlist = [] as Array<string>;
+  currentIndex = -1;
 
   intervalHandle = -1;
 
@@ -362,7 +372,6 @@ export default class MainAirjoySummary extends VueBase {
   loadingDevices = false;
   devices = [] as Array<AirjoyDeviceA>;
   device = {} as AirjoyDeviceA;
-  submitLoading = false;
 
   now!: Moment;
   nowDate = '';
@@ -453,19 +462,19 @@ export default class MainAirjoySummary extends VueBase {
   }
 
   get stateClassPm10() {
-    return this.getStateClass(this.device.pm10);
+    return this.getStateClass(this.statePm10);
   }
 
   get stateClassPm2_5() {
-    return this.getStateClass(this.device.pm2_5);
+    return this.getStateClass(this.statePm2_5);
   }
 
   get stateClassCo2() {
-    return this.getStateClass(this.device.co2);
+    return this.getStateClass(this.stateCo2);
   }
 
   get stateClassVoc() {
-    return this.getStateClass(this.device.voc);
+    return this.getStateClass(this.stateVoc);
   }
 
   calcHumidityText(value: number) {
@@ -489,18 +498,25 @@ export default class MainAirjoySummary extends VueBase {
       .then(items => {
         this.loadingDevices = false;
         this.devices = items;
+        if (items.length >= 1) {
+            this.device = this.devices[0];
+        }
       })
       .catch(error => {
         this.loadingDevices = false;
         this.toastRequestFailure(error);
       });
 
-    const mediaPrefix = `/app/media/airjoy/${group}/${project}`;
-    const defaultMedia = `/app/media/airjoy/default.mp4`;
+    const mediaPrefix = `/media/airjoy/${group}/${project}`;
+    const defaultMedia = `/media/airjoy/default.mp4`;
     createAxios()
       .get<string>(`${mediaPrefix}/playlist`)
       .then(text => {
-        this.playlist = text.data.split('\n').map(x => mediaPrefix + '/' + x.trim());
+        this.playlist = text.data
+          .split('\n')
+          .map(x => x.trim())
+          .filter(x => x)
+          .map(x => mediaPrefix + '/' + x);
         this.playVideo();
       })
       .catch(error => {
@@ -538,30 +554,33 @@ export default class MainAirjoySummary extends VueBase {
 
     const group = this.$route.params.group;
     const project = this.$route.params.project;
-    this.$api2
-      .getAirjoyLive(group, project)
-      .then(items => {
-        this.toastRequestSuccess();
-      })
-      .catch(error => {
-        // this.toastRequestFailure(error);
-      });
+    const device = this.device.uid;
+    if (typeof device === 'undefined') {
+        return;
+    }
+
+    this.$api2.getAirjoyDevice(group, project, device)
+        .then(item => {
+            this.device = item;
+        })
+        .catch(error => {
+            // EMPTY.
+        });
   }
 
   playVideo(index = 0) {
-    this.videoPlayer.src = this.playlist[index];
+    this.currentIndex = index;
+    this.videoPlayer.src = this.playlist[this.currentIndex];
     this.videoPlayer.load();
     this.videoPlayer.play();
   }
 
   onVideoEnded() {
-    const currentIndex = this.playlist.indexOf(this.videoPlayer.src);
-
     let nextIndex: number;
-    if (currentIndex + 1 >= this.playlist.length) {
+    if (this.currentIndex + 1 >= this.playlist.length) {
       nextIndex = 0;
     } else {
-      nextIndex = currentIndex + 1;
+      nextIndex = this.currentIndex + 1;
     }
 
     this.playVideo(nextIndex);
@@ -599,7 +618,9 @@ export default class MainAirjoySummary extends VueBase {
     this.showSelectDeviceDialog = false;
   }
 
-  onClickSelectDeviceOk() {}
+  onClickSelectDeviceClose() {
+    this.showSelectDeviceDialog = false;
+  }
 
   onInputDevice(value) {
     this.device = value;
