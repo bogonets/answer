@@ -507,8 +507,8 @@ export default class MainAirjoySummary extends VueBase {
         this.toastRequestFailure(error);
       });
 
-    const mediaPrefix = `/media/airjoy/${group}/${project}`;
-    const defaultMedia = `/media/airjoy/default.mp4`;
+    const mediaPrefix = `/app/media/airjoy/${group}/${project}`;
+    const defaultMedia = `/app/media/airjoy/default.mp4`;
     createAxios()
       .get<string>(`${mediaPrefix}/playlist`)
       .then(text => {
