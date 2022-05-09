@@ -46,15 +46,6 @@ ko:
       <v-divider></v-divider>
 
       <v-list-item-group mandatory color="primary" :value="index" @change="input">
-        <v-list-item v-if="!hideSummary" link @click.stop="airjoySummary">
-          <v-list-item-icon>
-            <v-icon>mdi-weather-windy</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('summary') }}
-          </v-list-item-title>
-        </v-list-item>
-
         <v-list-item v-if="showDevices" link @click.stop="airjoyDevices">
           <v-list-item-icon>
             <v-icon>mdi-tablet</v-icon>
@@ -88,6 +79,15 @@ ko:
           </v-list-item-icon>
           <v-list-item-title>
             {{ $t('service') }}
+          </v-list-item-title>
+        </v-list-item>
+
+        <v-list-item v-if="showSummary" link @click.stop="airjoySummary">
+          <v-list-item-icon>
+            <v-icon>mdi-weather-windy</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ $t('summary') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -136,9 +136,6 @@ import mainNames from '@/router/names/main';
 export default class NaviMainAirjoy extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly noDefault!: boolean;
-
-  @Prop({type: Boolean, default: true})
-  readonly hideSummary!: boolean;
 
   @Prop({type: Boolean, default: true})
   readonly hideAirjoySettings!: boolean;
@@ -204,6 +201,10 @@ export default class NaviMainAirjoy extends VueBase {
     return this.hasPermissionAirjoyServiceView();
   }
 
+  get showSummary() {
+    return this.hasPermissionAirjoyLiveView();
+  }
+
   get showMember() {
     return this.hasPermissionMemberView();
   }
@@ -229,13 +230,13 @@ export default class NaviMainAirjoy extends VueBase {
       this.index = 2;
     } else if (name === mainAirjoyNames.mainAirjoyService) {
       this.index = 3;
-    } else if (name === mainNames.mainMembers) {
-      this.index = 4;
-    } else if (name === mainNames.mainSettings) {
-      this.index = 5;
-    } else if (name === mainAirjoyNames.mainAirjoySettings) {
-      this.index = -1;
     } else if (name === mainAirjoyNames.mainAirjoySummary) {
+      this.index = 4;
+    } else if (name === mainNames.mainMembers) {
+      this.index = 5;
+    } else if (name === mainNames.mainSettings) {
+      this.index = 6;
+    } else if (name === mainAirjoyNames.mainAirjoySettings) {
       this.index = -1;
     } else {
       this.index = -1;
