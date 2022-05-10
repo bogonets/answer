@@ -512,6 +512,9 @@ export default class MainAirjoySummary extends VueBase {
     createAxios()
       .get<string>(`${mediaPrefix}/playlist`)
       .then(text => {
+        if (text.headers['Content-Type'] !== 'application/octet-stream') {
+          throw new Error('Content-Type header is not application/octet-stream');
+        }
         this.playlist = text.data
           .split('\n')
           .map(x => x.trim())
