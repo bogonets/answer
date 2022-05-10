@@ -12,7 +12,7 @@ from recc.package.package_utils import get_module_path
 from recc.storage.local_storage import LocalStorage
 
 
-class CoreStorageTestCase(IsolatedAsyncioTestCase):
+class LocalStorageTestCase(IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.temp_dir = TemporaryDirectory()
         self.sm = LocalStorage(self.temp_dir.name)
@@ -53,10 +53,6 @@ class CoreStorageTestCase(IsolatedAsyncioTestCase):
                 json_name = os.path.basename(json_file)
                 expect_name = os.path.join("numpy", json_name)
                 self.assertIn(expect_name, tar_names)
-
-    async def test_plugin(self):
-        plugins = self.sm.find_plugin_dirs()
-        self.assertEqual(1, len(plugins))
 
 
 if __name__ == "__main__":

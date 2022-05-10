@@ -39,7 +39,7 @@ class ContextProject(ContextBase):
             )
         group_slug = await self.get_group_slug(group_uid)
         await self.cache.set_project(group_uid, slug, project_uid)
-        await self.plugins.create_project(group_slug, slug)
+        await self.plugins.call_create_project(group_slug, slug)
         return project_uid
 
     async def update_project(
@@ -71,7 +71,7 @@ class ContextProject(ContextBase):
         group_slug = await self.get_group_slug(project.group_uid)
 
         await self.database.delete_project_by_uid(uid)
-        await self.plugins.delete_project(group_slug, project.slug)
+        await self.plugins.call_delete_project(group_slug, project.slug)
         await self.cache.remove_project_by_uid(uid)
 
     async def get_projects(self, group_uid: Optional[int] = None) -> List[Project]:

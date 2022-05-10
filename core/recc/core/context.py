@@ -237,7 +237,7 @@ class Context(
         plugin_names = list(map(lambda x: x.name, plugin_dirs))
 
         self._plugins = PluginManager()
-        self._plugins.create(self, *plugin_dirs)
+        self._plugins.call_create(self, *plugin_dirs)
         for plugin_name, plugin in self._plugins.items():
             if plugin.exists_routes:
                 plugin.update_routes()
@@ -362,7 +362,7 @@ class Context(
         # )
         # logger.info("Opened daemon-manager")
 
-        await self._plugins.open()
+        await self._plugins.call_open()
         logger.info("Opened plugin-manager")
 
         await self._after_open()
@@ -385,10 +385,10 @@ class Context(
 
         teardown = self._config.teardown
 
-        await self._plugins.close()
+        await self._plugins.call_close()
         logger.info("Closed plugin-manager")
 
-        self._plugins.destroy()
+        self._plugins.call_destroy()
         logger.info("Destroyed plugin-manager")
 
         await self._tasks.close()

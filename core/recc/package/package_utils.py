@@ -2,7 +2,7 @@
 
 import os
 from pkgutil import iter_modules, ModuleInfo
-from typing import List, Optional
+from typing import List
 from functools import reduce, lru_cache
 from importlib import import_module
 
