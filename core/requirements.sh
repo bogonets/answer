@@ -12,14 +12,14 @@ Available options are:
   -h, --help       Print this message.
   -d, --download   First 'pip download', then 'pip install'
   -i, --install    Only 'pip install'
-  -u, --upgrade    Upgrade the 'requirement.main.txt' file of the package.
+  -u, --update     Update the 'requirement.main.txt' file of the package.
   -v, --verbose    Be more verbose/talkative during the operation.
   --               Stop handling options.
 "
 
 DOWNLOAD_FLAG=0
 INSTALL_FLAG=0
-UPGRADE_FLAG=0
+UPDATE_FLAG=0
 VERBOSE_FLAG=0
 
 trap 'cancel_installation' INT
@@ -80,8 +80,8 @@ while [[ -n $1 ]]; do
         INSTALL_FLAG=1
         shift
         ;;
-    -u|--upgrade)
-        UPGRADE_FLAG=1
+    -u|--update)
+        UPDATE_FLAG=1
         shift
         ;;
     -v|--verbose)
@@ -126,7 +126,7 @@ function install
     done
 }
 
-function upgrade
+function update_packages_requirements
 {
     print_message "Upgrade the 'requirement.main.txt' file of the package."
 
@@ -140,12 +140,18 @@ if [[ $DOWNLOAD_FLAG -ne 0 && $INSTALL_FLAG -ne 0 ]]; then
     exit 1
 fi
 
+if [[ $DOWNLOAD_FLAG -eq 0 && $INSTALL_FLAG -eq 0 && $UPDATE_FLAG -eq 0 ]]; then
+    print_error "No command specified."
+    print_usage
+    exit 1
+fi
+
 if [[ $DOWNLOAD_FLAG -ne 0 ]]; then
     download_and_install
 elif [[ $INSTALL_FLAG -ne 0 ]]; then
     install
 fi
 
-if [[ $UPGRADE_FLAG -ne 0 ]]; then
-    upgrade
+if [[ $UPDATE_FLAG -ne 0 ]]; then
+    update_packages_requirements
 fi

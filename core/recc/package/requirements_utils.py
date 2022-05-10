@@ -2,7 +2,7 @@
 
 import os
 from typing import List, Iterable
-from functools import reduce
+from functools import reduce, lru_cache
 
 _SCRIPT_PATH = os.path.abspath(__file__)
 _RECC_PACKAGE_DIR = os.path.dirname(_SCRIPT_PATH)
@@ -30,6 +30,7 @@ def get_requirements_argument(packages: Iterable[str]) -> str:
     return reduce(lambda x, y: f"{x} {y}", args)
 
 
+@lru_cache
 def get_recc_requirements_main_argument() -> str:
     return get_requirements_argument(RECC_REQUIREMENTS_MAIN)
 

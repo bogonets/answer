@@ -104,6 +104,7 @@ class Context(
         self._init_database()
         self._init_task_manager()
         self._init_plugin_manager()
+        self._init_plugin_manager_for_pip_download()
         self._init_daemons()
 
         if skip_assertion:
