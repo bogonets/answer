@@ -21,7 +21,6 @@ from recc.aio.task import all_tasks, cancel_tasks
 from recc.network.socket import bind_socket
 from recc.http.http_interface import HttpAppCallback, EmptyHttpAppCallback
 from recc.http.http_cors import create_cors
-from recc.http.v1.router_v1 import RouterV1
 from recc.http.v2.router_v2 import RouterV2
 from recc.http.http_www import HttpWWW
 from recc.http.http_utils import strip_prefix_slash
@@ -76,9 +75,6 @@ class HttpApp:
         self._app.on_startup.append(self.on_startup)
         self._app.on_shutdown.append(self.on_shutdown)
         self._app.on_cleanup.append(self.on_cleanup)
-
-        self._router_v1 = RouterV1(self._context)
-        self._app.add_subapp(u.api_v1, self._router_v1.app)
 
         self._router_v2 = RouterV2(self._context)
         self._app.add_subapp(u.api_v2, self._router_v2.app)

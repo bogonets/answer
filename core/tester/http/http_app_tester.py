@@ -1,17 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from hashlib import sha256
 from typing import Optional, Final
 from overrides import overrides
-from http import HTTPStatus
 from asyncio import Task, Event, AbstractEventLoop, CancelledError
 from tempfile import TemporaryDirectory
-from aiohttp.hdrs import AUTHORIZATION
 from aiohttp.web import Application
 from recc.argparse.default_parser import parse_arguments_to_core_config
-from recc.http.header.basic_auth import BasicAuth
-from recc.http.v1 import path_v1 as pv1
-from recc.http.v1.common import get_v1_path
 from recc.http.http_client import HttpClient
 from recc.http.http_interface import EmptyHttpAppCallback
 from recc.http.http_app import HttpApp
@@ -94,49 +88,6 @@ class HttpAppTester(HttpClient, EmptyHttpAppCallback):
 
     async def wait_startup(self) -> None:
         await self._startup.wait()
-
-    async def run_v1_admin_login(
-        self,
-        username=DEFAULT_ADMIN_USERNAME,
-        password=DEFAULT_ADMIN_PASSWORD,
-    ) -> None:
-        if not username:
-            raise ValueError("A `username` argument is required.")
-        if not password:
-            raise ValueError("A `password` argument is required.")
-
-        self.username = username
-        self.password = password
-        assert self.username
-        assert self.password
-
-        hashed_pw = sha256(self.password.encode(encoding="utf-8")).hexdigest()
-        signup_response = await self.post(
-            path=get_v1_path(pv1.signup_admin),
-            data={"id": self.username, "password": hashed_pw},
-        )
-        if signup_response.status != HTTPStatus.OK:
-            raise RuntimeError(f"Signup status error: {signup_response.status}")
-
-        auth = BasicAuth(self.username, hashed_pw)
-        login_response = await self.post(
-            path=get_v1_path(pv1.login),
-            headers={AUTHORIZATION: auth.encode()},
-            data={"id": self.username, "password": hashed_pw},
-        )
-        if login_response.status != HTTPStatus.OK:
-            raise RuntimeError(f"Login status error: {login_response.status}")
-
-        assert login_response.data
-        assert "result" in login_response.data
-        login_data = login_response.data["result"]
-        assert "user" in login_data
-        assert "id" in login_data["user"]
-        assert self.username == login_data["user"]["id"]
-        assert "accessToken" in login_data
-        assert "refreshToken" in login_data
-        self.access_token = login_data["accessToken"]
-        self.refresh_token = login_data["refreshToken"]
 
     async def signup(self, username: str, password: str) -> None:
         config_stash = self.context.config.public_signup
