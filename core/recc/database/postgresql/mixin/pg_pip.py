@@ -9,6 +9,7 @@ from recc.database.postgresql.query.pip import (
     INSERT_PIP,
     DELETE_PIP_BY_DOMAIN_AND_NAME,
     SELECT_PIP_BY_DOMAIN_AND_NAME,
+    SELECT_PIP_ALL,
 )
 
 
@@ -31,3 +32,7 @@ class PgPip(DbPip, PgBase):
     @overrides
     async def select_pip_by_domain_and_name(self, domain: str, name: str) -> List[Pip]:
         return await self.rows(Pip, SELECT_PIP_BY_DOMAIN_AND_NAME, domain, name)
+
+    @overrides
+    async def select_pip_all(self) -> List[Pip]:
+        return await self.rows(Pip, SELECT_PIP_ALL)

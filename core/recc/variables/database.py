@@ -95,7 +95,7 @@ PIP_DOMAIN_STR_SIZE = 128
 PIP_NAME_STR_SIZE = 128
 PIP_FILE_STR_SIZE = 256
 PIP_HASH_METHOD_STR_SIZE = 32
-PIP_HASH_VALUE_STR_SIZE = 512
+PIP_HASH_VALUE_STR_SIZE = 256
 
 # IPv6 addresses will consists of
 # - 8 sets of 4 characters -> `32` characters.

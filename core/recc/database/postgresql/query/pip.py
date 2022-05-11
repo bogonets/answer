@@ -24,3 +24,8 @@ SELECT *
 FROM {TABLE_PIP}
 WHERE domain=$1 AND name=$2;
 """
+
+SELECT_PIP_ALL = f"""
+SELECT *
+FROM {TABLE_PIP};
+"""

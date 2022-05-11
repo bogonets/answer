@@ -28,3 +28,7 @@ class DbPip(metaclass=ABCMeta):
     @abstractmethod
     async def select_pip_by_domain_and_name(self, domain: str, name: str) -> List[Pip]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def select_pip_all(self) -> List[Pip]:
+        raise NotImplementedError
