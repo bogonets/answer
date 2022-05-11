@@ -17,6 +17,7 @@ from recc.database.database import create_database
 from recc.storage.local_storage import LocalStorage
 from recc.task.task_connection_pool import create_task_connection_pool
 from recc.plugin.plugin_manager import PluginManager
+from recc.package.requirements_utils import RECC_REQUIREMENTS_MAIN
 from recc.daemon.daemon_manager import DaemonManager
 from recc.session.session import (
     DEFAULT_ISSUER_RECC_ACCESS,
@@ -104,7 +105,6 @@ class Context(
         self._init_database()
         self._init_task_manager()
         self._init_plugin_manager()
-        self._init_plugin_manager_for_pip_download()
         self._init_daemons()
 
         if skip_assertion:
@@ -310,6 +310,36 @@ class Context(
             logger.error(message)
             raise RuntimeError(message)
 
+    async def download_pip_packages(self, encoding="utf-8") -> None:
+        assert self._local_storage
+        assert self._database
+        assert self._database.is_open()
+
+        def _stdout_callback(data: bytes) -> None:
+            line = str(data, encoding=encoding).rstrip()
+            if line:
+                logger.debug(line)
+
+        def _stderr_callback(data: bytes) -> None:
+            line = str(data, encoding=encoding).rstrip()
+            if line:
+                logger.warning(line)
+
+        python = AsyncPythonSubprocess.create_system()
+        for package in RECC_REQUIREMENTS_MAIN:
+            logger.debug(f"Run pip download '{package}'")
+            code = await python.download(
+                package,
+                self._local_storage.pip_download,
+                _stdout_callback,
+                _stderr_callback,
+            )
+
+            if code == 0:
+                logger.debug(f"Done pip download '{package}'")
+            else:
+                raise RuntimeError(f"Error({code}) pip download '{package}'")
+
     async def get_database_configs(self) -> Dict[str, str]:
         """
         Configurations stored in the database.
@@ -332,6 +362,10 @@ class Context(
         await self.restore_configs(database_configs)
         logger.info("Restores the configuration from the database")
 
+        logger.debug("Download pip requirements ...")
+        await self.download_pip_packages()
+        logger.info("Complete downloading all pip requirements")
+
         await self._container.open()
         logger.info("Opened container-manager")
 
@@ -344,11 +378,11 @@ class Context(
             except Exception as e:
                 logger.exception(e)
             else:
-                logger.info("Default-task-image successfully created.")
+                logger.info("Default-task-image successfully created")
 
         if self.is_guest_mode():
             await self.connect_global_network()
-            logger.info("Connect global network.")
+            logger.info("Connect global network")
 
         await self._cache.open()
         logger.info("Opened cache-store")

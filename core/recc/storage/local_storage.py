@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Dict, List
+from typing import Dict, List, Optional
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from recc.filesystem.permission import prepare_directory
 from recc.template.lamda_template import LamdaTemplate
 from recc.template.manager.lamda_template_key import LamdaTemplateKey
@@ -16,6 +17,7 @@ from recc.variables.storage import (
     LOCAL_STORAGE_DAEMON_WORK_NAME,
     LOCAL_STORAGE_CACHE_NAME,
     LOCAL_STORAGE_PIP_DOWNLOAD_NAME,
+    LOCAL_STORAGE_TEMP,
 )
 
 
@@ -35,6 +37,7 @@ class LocalStorage:
         self.daemon_work = os.path.join(self.root, LOCAL_STORAGE_DAEMON_WORK_NAME)
         self.cache = os.path.join(self.root, LOCAL_STORAGE_CACHE_NAME)
         self.pip_download = os.path.join(self.root, LOCAL_STORAGE_PIP_DOWNLOAD_NAME)
+        self.temp = os.path.join(self.root, LOCAL_STORAGE_TEMP)
 
         if prepare:
             prepare_directory(self.root)
@@ -46,6 +49,7 @@ class LocalStorage:
             prepare_directory(self.daemon_work)
             prepare_directory(self.cache)
             prepare_directory(self.pip_download)
+            prepare_directory(self.temp)
 
         self._tm = LamdaTemplateManager(self.template, venv_directory=None)
 
@@ -100,3 +104,10 @@ class LocalStorage:
     def decompress_templates(self, data: bytes) -> None:
         assert self._tm is not None
         self._tm.decompress_templates(data)
+
+    def create_temporary_directory(
+        self,
+        suffix: Optional[str] = None,
+        prefix: Optional[str] = None,
+    ):
+        return TemporaryDirectory(suffix, prefix, self.temp)

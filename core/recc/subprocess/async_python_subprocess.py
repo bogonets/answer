@@ -13,6 +13,17 @@ from recc.subprocess.async_subprocess import (
 )
 from recc.driver.json import global_json_decoder
 
+PROGRESS_BAR_STYLE_OFF = "off"
+PROGRESS_BAR_STYLE_ASCII = "ascii"
+"""
+.. deprecated:: pip 22.1
+    Custom progress bar styles are deprecated pip 22.1
+    will enforce this behaviour change.
+"""
+
+DEFAULT_PROGRESS_BAR_STYLE = PROGRESS_BAR_STYLE_OFF
+PROGRESS_BAR_STYLE_FLAG = f"--progress-bar={DEFAULT_PROGRESS_BAR_STYLE}"
+
 
 class Package(object):
 
@@ -207,6 +218,24 @@ class AsyncPythonSubprocess:
         assert len(versions) == 3
         return versions[0], versions[1], versions[2]
 
+    async def download(
+        self,
+        package: str,
+        destination: str,
+        stdout_callback: Optional[ReaderCallable] = None,
+        stderr_callback: Optional[ReaderCallable] = None,
+    ) -> int:
+        proc = await self.start_pip(
+            "download",
+            "--dest",
+            destination,
+            PROGRESS_BAR_STYLE_FLAG,
+            package,
+            stdout_callback=stdout_callback,
+            stderr_callback=stderr_callback,
+        )
+        return await proc.wait()
+
     async def install(
         self,
         package: str,
@@ -215,7 +244,7 @@ class AsyncPythonSubprocess:
     ) -> int:
         proc = await self.start_pip(
             "install",
-            "--progress-bar=ascii",
+            PROGRESS_BAR_STYLE_FLAG,
             package,
             stdout_callback=stdout_callback,
             stderr_callback=stderr_callback,
@@ -230,7 +259,7 @@ class AsyncPythonSubprocess:
     ) -> int:
         proc = await self.start_pip(
             "install",
-            "--progress-bar=ascii",
+            PROGRESS_BAR_STYLE_FLAG,
             "--upgrade",
             package,
             stdout_callback=stdout_callback,

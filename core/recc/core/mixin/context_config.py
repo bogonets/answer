@@ -62,6 +62,9 @@ class ContextConfig(ContextBase):
         setattr(self._config, key, val)
 
     async def restore_configs(self, configs: Dict[str, str]) -> None:
+        """
+        It is used to restore configurations changed by the user at runtime.
+        """
         assert self._config is not None
 
         prefix = CONFIG_PREFIX_RECC_ARGPARSE_CONFIG

@@ -21,6 +21,7 @@ LOCAL_STORAGE_DAEMON_VENV_NAME = "daemon.venv"
 LOCAL_STORAGE_DAEMON_WORK_NAME = "daemon.work"
 LOCAL_STORAGE_CACHE_NAME = "cache"
 LOCAL_STORAGE_PIP_DOWNLOAD_NAME = "pip.download"
+LOCAL_STORAGE_TEMP = "temp"
 
 # [TaskStorage] first-depth categories.
 
