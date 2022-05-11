@@ -362,9 +362,12 @@ class Context(
         await self.restore_configs(database_configs)
         logger.info("Restores the configuration from the database")
 
-        logger.debug("Download pip requirements ...")
-        await self.download_pip_packages()
-        logger.info("Complete downloading all pip requirements")
+        if self._config.skip_pip_download:
+            logger.debug("Skip downloading the pip requirements")
+        else:
+            logger.debug("Download pip requirements ...")
+            await self.download_pip_packages()
+            logger.info("Complete downloading all pip requirements")
 
         await self._container.open()
         logger.info("Opened container-manager")

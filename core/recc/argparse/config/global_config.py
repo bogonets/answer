@@ -338,6 +338,13 @@ ARG_STORAGE_TIMEOUT = Argument(
 )
 
 
+ARG_SKIP_PIP_DOWNLOAD = Argument(
+    key="--skip-pip-download",
+    last_injection_value=False,
+    cls=bool,
+    action="store_true",
+    help="Skip downloading the pip requirements.",
+)
 ARG_SUPPRESS_PRINT = Argument(
     key="--suppress-print",
     last_injection_value=False,
@@ -405,6 +412,7 @@ GLOBAL_ARGS = (
     ARG_STORAGE_REGION,
     ARG_STORAGE_SECURE,
     ARG_STORAGE_TIMEOUT,
+    ARG_SKIP_PIP_DOWNLOAD,
     ARG_SUPPRESS_PRINT,
     ARG_VERBOSE,
     ARG_TEARDOWN,
@@ -458,6 +466,7 @@ class GlobalConfig(Namespace):
     storage_secure: bool
     storage_timeout: float
 
+    skip_pip_download: bool
     suppress_print: bool
     verbose: int
     teardown: bool

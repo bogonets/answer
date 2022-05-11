@@ -3,7 +3,10 @@
 from unittest import IsolatedAsyncioTestCase
 from asyncio import get_event_loop
 from tempfile import TemporaryDirectory
-from recc.argparse.default_parser import parse_arguments_to_core_config
+from recc.argparse.default_parser import (
+    parse_arguments_to_core_config,
+    update_test_config,
+)
 from recc.core.context import Context
 from tester.lamda.numpy_plugins import copy_builtin_numpy_nodes
 
@@ -12,10 +15,9 @@ class ContextTestCase(IsolatedAsyncioTestCase):
     async def _setup(self):
         self.temp_dir = TemporaryDirectory()
 
-        config = parse_arguments_to_core_config()
-        config.database_name = "recc.test"
+        config = update_test_config(parse_arguments_to_core_config())
         config.local_storage = self.temp_dir.name
-        config.teardown = True
+
         self.context = Context(config, loop=get_event_loop())
         await self.context.open()
         self.assertTrue(self.context.is_database_open())

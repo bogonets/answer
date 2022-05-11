@@ -5,12 +5,15 @@ from overrides import overrides
 from asyncio import Task, Event, AbstractEventLoop, CancelledError
 from tempfile import TemporaryDirectory
 from aiohttp.web import Application
-from recc.argparse.default_parser import parse_arguments_to_core_config
+from recc.argparse.default_parser import (
+    parse_arguments_to_core_config,
+    update_test_config,
+)
 from recc.http.http_client import HttpClient
 from recc.http.http_interface import EmptyHttpAppCallback
 from recc.http.http_app import HttpApp
 from recc.core.context import Context
-from recc.variables.http import DEFAULT_HTTP_TEST_PORT, DEFAULT_SCHEME
+from recc.variables.http import DEFAULT_SCHEME
 
 DEFAULT_ADMIN_USERNAME: Final[str] = "admin"
 DEFAULT_ADMIN_PASSWORD: Final[str] = "0000"
@@ -26,14 +29,7 @@ class HttpAppTester(HttpClient, EmptyHttpAppCallback):
         loop: Optional[AbstractEventLoop] = None,
         storage_root: Optional[str] = None,
     ):
-        config = parse_arguments_to_core_config()
-        config.developer = True
-        config.teardown = True
-        config.database_name = "recc.test"
-        config.cache_prefix = "recc.test"
-        config.http_port = DEFAULT_HTTP_TEST_PORT
-        config.public_signup = False
-        config.verbose = 0
+        config = update_test_config(parse_arguments_to_core_config())
 
         if storage_root:
             temp = None

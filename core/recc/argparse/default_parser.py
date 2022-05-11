@@ -32,6 +32,7 @@ from recc.variables.argparse import (
     RECC_DOM_ROOT,
 )
 from recc.variables.environment import RECC_ENV_PREFIX, RECC_ENV_FILE_SUFFIX
+from recc.variables.http import DEFAULT_HTTP_TEST_PORT
 from recc.util.version import version_text
 
 ConfigType = Union[
@@ -284,3 +285,17 @@ def parse_arguments_to_daemon_config(
     result = parse_arguments_to_config(*args, **kwargs)
     assert isinstance(result, DaemonConfig)
     return result
+
+
+def update_test_config(config: CoreConfig) -> CoreConfig:
+    # GlobalConfig
+    config.database_name = "recc.test"
+    config.cache_prefix = "recc.test"
+    config.skip_pip_download = True
+    config.verbose = 0
+    config.teardown = True
+    config.developer = True
+    # CoreConfig
+    config.http_port = DEFAULT_HTTP_TEST_PORT
+    config.public_signup = False
+    return config
