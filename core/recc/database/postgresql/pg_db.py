@@ -14,6 +14,7 @@ from recc.database.postgresql.mixin.pg_group_member import PgGroupMember
 from recc.database.postgresql.mixin.pg_info import PgInfo
 from recc.database.postgresql.mixin.pg_layout import PgLayout
 from recc.database.postgresql.mixin.pg_permission import PgPermission
+from recc.database.postgresql.mixin.pg_pip import PgPip
 from recc.database.postgresql.mixin.pg_port import PgPort
 from recc.database.postgresql.mixin.pg_project import PgProject
 from recc.database.postgresql.mixin.pg_project_member import PgProjectMember
@@ -56,6 +57,7 @@ class PgDb(
     PgInfo,
     PgLayout,
     PgPermission,
+    PgPip,
     PgPort,
     PgProject,
     PgProjectMember,

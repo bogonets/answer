@@ -8,6 +8,7 @@ from recc.database.interfaces.db_group_member import DbGroupMember
 from recc.database.interfaces.db_info import DbInfo
 from recc.database.interfaces.db_layout import DbLayout
 from recc.database.interfaces.db_permission import DbPermission
+from recc.database.interfaces.db_pip import DbPip
 from recc.database.interfaces.db_port import DbPort
 from recc.database.interfaces.db_project import DbProject
 from recc.database.interfaces.db_project_member import DbProjectMember
@@ -26,6 +27,7 @@ class DbInterface(
     DbInfo,
     DbLayout,
     DbPermission,
+    DbPip,
     DbPort,
     DbProject,
     DbProjectMember,
@@ -72,6 +74,7 @@ assert issubclass(DbInterface, DbGroupMember)
 assert issubclass(DbInterface, DbInfo)
 assert issubclass(DbInterface, DbLayout)
 assert issubclass(DbInterface, DbPermission)
+assert issubclass(DbInterface, DbPip)
 assert issubclass(DbInterface, DbPort)
 assert issubclass(DbInterface, DbProject)
 assert issubclass(DbInterface, DbProjectMember)
