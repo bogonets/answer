@@ -50,6 +50,7 @@ extinf
 extm
 extm3u
 fflags
+firstparty
 fullnames
 fullpath
 furo
@@ -85,6 +86,7 @@ levelname
 libav
 libavutil
 llong
+localfolder
 loopback
 mems
 metatags
@@ -143,6 +145,7 @@ swscaler
 targetduration
 taskname
 testdb
+thirdparty
 timestamptz
 tzdata
 tznow

@@ -25,7 +25,7 @@ function ci_runner
     fi
 }
 
-for cursor in black flake8 mypy sphinx pytest; do
+for cursor in isort black flake8 mypy sphinx pytest; do
     ci_runner $cursor
 done
 

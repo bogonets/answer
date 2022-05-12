@@ -23,13 +23,13 @@ function cancel_black
     exit 1
 }
 
-print_message "Run pytest ..."
+print_message "Run isort ..."
 
-"$RECC_DIR/python" -m pytest \
-     -v \
-     --cov \
-     --cov-report=term-missing \
-     --cov-report=html \
-     --cov-config="${CORE_DIR}/pytest.ini" \
-     "$CORE_DIR/test/" \
-     "$@"
+"$RECC_DIR/python" -m isort \
+    --settings-path "$CORE_DIR/isort.cfg" \
+    --check \
+    --diff \
+    --color \
+    "$CORE_DIR/recc" \
+    "$CORE_DIR/test" \
+    "$CORE_DIR/tester"
