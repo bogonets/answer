@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import os
+from shutil import move
+from hashlib import sha256
 from copy import deepcopy
 from asyncio import get_event_loop_policy, set_event_loop
 from typing import Optional, Dict
@@ -42,7 +45,10 @@ from recc.variables.database import (
     CONFIG_PREFIX_RECC_ARGPARSE_CONFIG,
     ROLE_UID_OWNER,
     ROLE_SLUG_OWNER,
+    PIP_DOMAIN_RECC,
+    PIP_HASH_METHOD_SHA256,
 )
+
 
 from recc.core.mixin.context_config import ContextConfig
 from recc.core.mixin.context_daemon import ContextDaemon
@@ -310,35 +316,113 @@ class Context(
             logger.error(message)
             raise RuntimeError(message)
 
-    async def download_pip_packages(self, encoding="utf-8") -> None:
+    @staticmethod
+    def _read_hash(path: str, method: str) -> str:
+        with open(path, "rb") as f:
+            content = f.read()
+            if method == PIP_HASH_METHOD_SHA256:
+                return sha256(content).hexdigest()
+            else:
+                raise ValueError(f"Unsupported hash method: '{method}'")
+
+    async def _exists_pip_package(self, domain: str, package: str) -> bool:
+        assert self._local_storage
+        assert self._database
+        assert self._database.is_open()
+
+        pip_infos = await self._database.select_pip_by_domain_and_name(domain, package)
+        if not pip_infos:
+            return False
+
+        assert len(pip_infos) >= 1
+        pip_download_dir = self._local_storage.pip_download
+
+        for pip_info in pip_infos:
+            pip_path = os.path.join(pip_download_dir, pip_info.file)
+            if not os.path.isfile(pip_path):
+                logger.warning(f"File not found: {pip_path}")
+                return False
+
+            try:
+                hash_value = self._read_hash(pip_path, pip_info.hash_method)
+                if hash_value != pip_info.hash_value:
+                    logger.warning(f"Hash mismatch: {pip_path}")
+                    return False
+            except ValueError:
+                return False
+
+        return True
+
+    async def download_pip_packages(
+        self,
+        domain: str,
+        hash_method: str,
+        logging_encoding="utf-8",
+    ) -> None:
         assert self._local_storage
         assert self._database
         assert self._database.is_open()
 
         def _stdout_callback(data: bytes) -> None:
-            line = str(data, encoding=encoding).rstrip()
+            line = str(data, encoding=logging_encoding).rstrip()
             if line:
                 logger.debug(line)
 
         def _stderr_callback(data: bytes) -> None:
-            line = str(data, encoding=encoding).rstrip()
+            line = str(data, encoding=logging_encoding).rstrip()
             if line:
                 logger.warning(line)
 
-        python = AsyncPythonSubprocess.create_system()
         for package in RECC_REQUIREMENTS_MAIN:
-            logger.debug(f"Run pip download '{package}'")
-            code = await python.download(
-                package,
-                self._local_storage.pip_download,
-                _stdout_callback,
-                _stderr_callback,
-            )
-
-            if code == 0:
-                logger.debug(f"Done pip download '{package}'")
+            if await self._exists_pip_package(domain, package):
+                logger.debug(f"Exists pip package '{package}'")
+                continue
             else:
-                raise RuntimeError(f"Error({code}) pip download '{package}'")
+                await self._database.delete_pip_by_domain_and_name(domain, package)
+
+            with self._local_storage.create_temporary_directory() as tmpdir:
+                logger.debug(f"Run pip download '{package}'")
+                code = await AsyncPythonSubprocess.create_system().download(
+                    package,
+                    tmpdir,
+                    _stdout_callback,
+                    _stderr_callback,
+                )
+
+                if code == 0:
+                    logger.debug(f"Subprocess is done: pip download '{package}'")
+                else:
+                    raise RuntimeError(f"Error({code}) pip download '{package}'")
+
+                for filename in os.listdir(tmpdir):
+                    filepath = os.path.abspath(os.path.join(tmpdir, filename))
+                    assert os.path.isfile(filepath)
+                    hash_value = self._read_hash(filepath, hash_method)
+
+                    dest = os.path.join(self._local_storage.pip_download, filename)
+                    if os.path.exists(dest):
+                        try:
+                            os.remove(dest)
+                            logger.debug(f"Remove the existing pip file: '{dest}'")
+                        except BaseException as e:
+                            logger.warning(f"Error remove existing pip file: {e}")
+                            continue
+
+                    try:
+                        move(filepath, dest)
+                    except BaseException as e:
+                        logger.warning(f"Error moving downloaded pip file: {e}")
+                        continue
+
+                    try:
+                        await self._database.insert_pip(
+                            domain, package, filename, hash_method, hash_value
+                        )
+                    except BaseException as e:
+                        logger.warning(f"Database insert error: {e}")
+                        continue
+
+                logger.debug(f"Done pip download '{package}'")
 
     async def get_database_configs(self) -> Dict[str, str]:
         """
@@ -366,7 +450,7 @@ class Context(
             logger.debug("Skip downloading the pip requirements")
         else:
             logger.debug("Download pip requirements ...")
-            await self.download_pip_packages()
+            await self.download_pip_packages(PIP_DOMAIN_RECC, PIP_HASH_METHOD_SHA256)
             logger.info("Complete downloading all pip requirements")
 
         await self._container.open()

@@ -60,6 +60,15 @@ UPDATE recc_daemon SET description='' WHERE description IS NULL;
 ALTER TABLE recc_daemon ALTER COLUMN description SET NOT NULL;
 ALTER TABLE recc_daemon ALTER COLUMN description SET DEFAULT '';
 
+-- Create table: `recc_pip`
+CREATE TABLE recc_pip (
+    domain VARCHAR(128) NOT NULL DEFAULT '',
+    name VARCHAR(128) NOT NULL DEFAULT '',
+    file VARCHAR(256) NOT NULL DEFAULT '',
+    hash_method VARCHAR(32) NOT NULL DEFAULT '',
+    hash_value VARCHAR(256) NOT NULL DEFAULT ''
+);
+
 -- Update version: `2.0.0` -> `2.1.0`
 UPDATE recc_info
 SET value='2.1.0', updated_at=NOW()
