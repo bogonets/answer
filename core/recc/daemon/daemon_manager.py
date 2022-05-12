@@ -15,7 +15,7 @@ from recc.filesystem.permission import (
     test_readable_file,
     test_writable_directory,
 )
-from recc.logging.logging import LOGGER_NAME_DAEMON_RPC
+from recc.logging.logging import LOGGER_NAME_RECC_DAEMON
 
 
 class _RunnerCallback(DaemonRunnerCallbacks):
@@ -29,7 +29,7 @@ class _RunnerCallback(DaemonRunnerCallbacks):
     ):
         self._work_dir = work_dir
         self._slug = slug
-        self._logger = getLogger(LOGGER_NAME_DAEMON_RPC + "." + slug)
+        self._logger = getLogger(LOGGER_NAME_RECC_DAEMON + "." + slug)
         self._encoding = encoding
         self._stdout_level = stdout_level
         self._stderr_level = stderr_level

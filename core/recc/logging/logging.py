@@ -20,16 +20,17 @@ from logging import getLogger, root
 from typing import Final, List, Literal, Optional, Union
 
 LOGGER_NAME_RECC = "recc"
-LOGGER_NAME_CORE_RECC = "recc.core"
-LOGGER_NAME_RECC_HTTP = "recc.http"
-LOGGER_NAME_RECC_RPC = "recc.rpc"
-LOGGER_NAME_DAEMON_RPC = "recc.daemon"
-LOGGER_NAME_RECC_CONTAINER = "recc.container"
 LOGGER_NAME_RECC_CACHE = "recc.cache"
-LOGGER_NAME_RECC_DATABASE = "recc.database"
 LOGGER_NAME_RECC_COMMON = "recc.common"
+LOGGER_NAME_RECC_CONTAINER = "recc.container"
+LOGGER_NAME_RECC_CORE = "recc.core"
+LOGGER_NAME_RECC_DAEMON = "recc.daemon"
+LOGGER_NAME_RECC_DATABASE = "recc.database"
+LOGGER_NAME_RECC_HTTP = "recc.http"
 LOGGER_NAME_RECC_LAMDA = "recc.lamda"
 LOGGER_NAME_RECC_NETWORK = "recc.network"
+LOGGER_NAME_RECC_PACKAGE = "recc.package"
+LOGGER_NAME_RECC_RPC = "recc.rpc"
 
 LOGGER_NAME_AIOHTTP = "aiohttp"
 LOGGER_NAME_ASYNCIO = "asyncio"
@@ -39,16 +40,17 @@ LOGGER_NAME_GRPC = "grpc"
 LOGGER_NAME_URLLIB3 = "urllib3"
 
 recc_logger = getLogger(LOGGER_NAME_RECC)
-recc_core_logger = getLogger(LOGGER_NAME_CORE_RECC)
-recc_http_logger = getLogger(LOGGER_NAME_RECC_HTTP)
-recc_rpc_logger = getLogger(LOGGER_NAME_RECC_RPC)
-recc_daemon_logger = getLogger(LOGGER_NAME_DAEMON_RPC)
-recc_container_logger = getLogger(LOGGER_NAME_RECC_CONTAINER)
 recc_cache_logger = getLogger(LOGGER_NAME_RECC_CACHE)
-recc_database_logger = getLogger(LOGGER_NAME_RECC_DATABASE)
 recc_common_logger = getLogger(LOGGER_NAME_RECC_COMMON)
+recc_container_logger = getLogger(LOGGER_NAME_RECC_CONTAINER)
+recc_core_logger = getLogger(LOGGER_NAME_RECC_CORE)
+recc_daemon_logger = getLogger(LOGGER_NAME_RECC_DAEMON)
+recc_database_logger = getLogger(LOGGER_NAME_RECC_DATABASE)
+recc_http_logger = getLogger(LOGGER_NAME_RECC_HTTP)
 recc_lamda_logger = getLogger(LOGGER_NAME_RECC_LAMDA)
 recc_network_logger = getLogger(LOGGER_NAME_RECC_NETWORK)
+recc_package_logger = getLogger(LOGGER_NAME_RECC_PACKAGE)
+recc_rpc_logger = getLogger(LOGGER_NAME_RECC_RPC)
 
 SEVERITY_NAME_CRITICAL = "critical"
 SEVERITY_NAME_FATAL = "fatal"
