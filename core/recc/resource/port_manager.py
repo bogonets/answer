@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from typing import Tuple, Set, Optional
+from typing import Optional, Set, Tuple
+
 from recc.variables.port import (
-    DEFAULT_MANAGEABLE_MINIMUM_PORT_NUMBER,
     DEFAULT_MANAGEABLE_MAXIMUM_PORT_NUMBER,
+    DEFAULT_MANAGEABLE_MINIMUM_PORT_NUMBER,
 )
 
 

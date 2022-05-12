@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from recc.vs.box import Box
+
 from recc.vs.arc import Arc
-from recc.vs.slot import SlotDirection, SlotCategory, Slot
+from recc.vs.box import Box
+from recc.vs.slot import Slot, SlotCategory, SlotDirection
 
 
 class SlotTestCase(unittest.TestCase):

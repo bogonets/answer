@@ -2,8 +2,9 @@
 
 import os
 from hashlib import sha256
-from tarfile import open as tar_open
 from io import BytesIO
+from tarfile import open as tar_open
+
 import recc as _recc_module
 from recc.archive.tar_archive import compress_tar
 from recc.package.requirements_utils import RECC_REQUIREMENTS_MAIN_ARG

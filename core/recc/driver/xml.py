@@ -2,7 +2,6 @@
 
 from typing import Any, Callable
 
-
 XmlEncoder = Callable[[Any], str]
 XmlDecoder = Callable[[str], Any]
 

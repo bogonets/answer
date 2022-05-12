@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
 from typing import Iterable, Mapping, MutableMapping
+from unittest import TestCase, main
+
 from recc.template.locale import Locale
 
 

@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
 from typing import Any, Optional, get_type_hints
+from unittest import TestCase, main
+
+from recc.inspect.member import get_public_attributes
+from recc.serialization.interface import Serializable
 from recc.serialization.utils import (
-    is_serialize_cls,
     is_serializable_pod_cls,
     is_serializable_pod_obj,
+    is_serialize_cls,
     normalize_strings,
 )
-from recc.serialization.interface import Serializable
-from recc.inspect.member import get_public_attributes
 
 
 class _Test1:

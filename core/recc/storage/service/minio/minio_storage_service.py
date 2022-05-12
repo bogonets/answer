@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, Iterable, Dict, Tuple
-from overrides import overrides
 from datetime import datetime
 from io import BytesIO
-from urllib3.response import HTTPResponse
+from typing import Dict, Iterable, List, Optional, Tuple
+
 from minio import Minio, S3Error
+from minio.commonconfig import ENABLED, Filter, Tag, Tags
 from minio.deleteobjects import DeleteObject
-from minio.commonconfig import Tags, Tag, Filter, ENABLED
-from minio.lifecycleconfig import LifecycleConfig, Rule, Expiration
+from minio.lifecycleconfig import Expiration, LifecycleConfig, Rule
+from overrides import overrides
+from urllib3.response import HTTPResponse
+
 from recc.mime.mime_type import APPLICATION_OCTET_STREAM
 from recc.storage.service.storage_service_interface import (
-    StorageServiceObject,
     StorageServiceInterface,
+    StorageServiceObject,
 )
 
 

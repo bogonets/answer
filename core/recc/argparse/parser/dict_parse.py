@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Union, Dict, Any, Optional
 from argparse import Namespace
+from typing import Any, Dict, Optional, Union
 
 
 def get_namespace_by_dict(

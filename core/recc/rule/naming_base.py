@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from functools import reduce
 from re import compile as re_compile
 from typing import List
-from functools import reduce
+
 from recc.variables.naming import VALID_NAMING_RULE_PATTERN
 
 _VALID_NAMING_RULE_REGEX = re_compile(VALID_NAMING_RULE_PATTERN)

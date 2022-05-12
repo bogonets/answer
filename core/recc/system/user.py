@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from os import setuid, chown
+from os import chown, setuid
 from pwd import getpwnam
 from typing import Union
 

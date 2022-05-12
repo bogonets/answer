@@ -3,7 +3,6 @@
 
 import numpy as np
 
-
 DTYPE_NAME_TO_TYPE = {
     "int8": np.int8,
     "int16": np.int16,

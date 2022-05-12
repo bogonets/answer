@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Optional, Any
+from typing import Any, List, Optional
+
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.project import Project
 from recc.database.struct.project_member import ProjectMember
 from recc.variables.database import (
     ROLE_UID_OWNER,
-    VISIBILITY_LEVEL_PRIVATE,
     VISIBILITY_LEVEL_INTERNAL,
+    VISIBILITY_LEVEL_PRIVATE,
 )
 
 

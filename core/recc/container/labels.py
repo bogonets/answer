@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, List, Optional, Iterable
+from typing import Dict, Iterable, List, Optional
+
 from recc.variables.labels import (
-    RECC_CLUSTER_KEY,
-    RECC_CLUSTER_VAL_TRUE,
-    RECC_CLUSTER_TRUE,
-    RECC_CATEGORY_KEY,
-    RECC_CATEGORY_VAL_TASK,
-    RECC_CATEGORY_TASK,
     RECC_CATEGORY_IMAGE,
+    RECC_CATEGORY_KEY,
+    RECC_CATEGORY_TASK,
+    RECC_CATEGORY_VAL_TASK,
+    RECC_CLUSTER_KEY,
+    RECC_CLUSTER_TRUE,
+    RECC_CLUSTER_VAL_TRUE,
     RECC_TASK_GROUP_KEY,
     RECC_TASK_PROJECT_KEY,
     RECC_TASK_TASK_KEY,

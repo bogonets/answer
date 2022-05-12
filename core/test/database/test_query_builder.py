@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.database.query_builder import UpdateBuilder
 
 

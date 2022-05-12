@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import reduce
+
 from recc.variables.database import SQL_SEQUENCE_POINT
 
 

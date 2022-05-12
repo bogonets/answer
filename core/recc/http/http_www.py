@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
 import os
-
 from typing import List
+
 from aiohttp import web
-from aiohttp.web_routedef import AbstractRouteDef
+from aiohttp.web_fileresponse import FileResponse
 from aiohttp.web_request import Request
 from aiohttp.web_response import StreamResponse
-from aiohttp.web_fileresponse import FileResponse
+from aiohttp.web_routedef import AbstractRouteDef
 
 from recc.argparse.config.core_config import ARG_HTTP_ROOT
 from recc.core.context import Context
-from recc.logging.logging import recc_http_logger as logger
 from recc.filesystem.permission import is_readable_dir, is_writable_dir
 from recc.http import http_urls as u
+from recc.logging.logging import recc_http_logger as logger
 
 DEFAULT_HTTP_ROOT = ARG_HTTP_ROOT.last_injection_value
 

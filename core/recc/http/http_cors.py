@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from aiohttp_cors import CorsConfig, ResourceOptions, setup
 from aiohttp import web
+from aiohttp_cors import CorsConfig, ResourceOptions, setup
 
 
 def create_cors(app: web.Application) -> CorsConfig:

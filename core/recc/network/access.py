@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
-from requests import get
 from http import HTTPStatus
+from typing import Optional
+
+from requests import get
 
 
 def accessible_network(

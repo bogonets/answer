@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Dict, KeysView, ValuesView, List
+from typing import Dict, KeysView, List, ValuesView
+
 from recc.filesystem.permission import prepare_directory
 from recc.storage.sock.sock_path import get_unix_domain_socket_url
 from recc.template.lamda_template import LamdaTemplate
 from recc.template.manager.lamda_template_key import LamdaTemplateKey
 from recc.template.manager.lamda_template_manager import LamdaTemplateManager
 from recc.variables.storage import (
-    TASK_STORAGE_WORKING_NAME,
     TASK_STORAGE_TEMPLATE_NAME,
     TASK_STORAGE_VENV_NAME,
+    TASK_STORAGE_WORKING_NAME,
 )
 
 

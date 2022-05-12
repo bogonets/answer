@@ -1,29 +1,31 @@
 # -*- coding: utf-8 -*-
 
-from typing import (
-    Optional,
-    Any,
-    List,
-    Dict,
-    Union,
-    Mapping,
-    Iterable,
-    Deque,
-    NamedTuple,
-)
-from inspect import signature, iscoroutinefunction
-from numpy import ndarray
 from collections import deque
+from inspect import iscoroutinefunction, signature
 from multiprocessing.shared_memory import SharedMemory
-from recc.daemon.packet.content_helper import has_array, has_shared_memory
-from recc.logging.logging import recc_daemon_logger as logger
+from typing import (
+    Any,
+    Deque,
+    Dict,
+    Iterable,
+    List,
+    Mapping,
+    NamedTuple,
+    Optional,
+    Union,
+)
+
+from numpy import ndarray
+
 from recc.conversion.to_boolean import string_to_boolean
+from recc.daemon.packet.content_helper import has_array, has_shared_memory
 from recc.inspect.type_origin import get_type_origin
-from recc.serialization.numpy import ndarray_to_bytes
-from recc.serialization.byte_coding import encode as byte_encode
-from recc.serialization.byte_coding import decode as byte_decode
+from recc.logging.logging import recc_daemon_logger as logger
+from recc.proto.daemon.daemon_api_pb2 import ArrayInfo, Content
 from recc.serialization.byte_coding import ByteCodingType
-from recc.proto.daemon.daemon_api_pb2 import Content, ArrayInfo
+from recc.serialization.byte_coding import decode as byte_decode
+from recc.serialization.byte_coding import encode as byte_encode
+from recc.serialization.numpy import ndarray_to_bytes
 
 
 def _is_path_class(obj) -> bool:

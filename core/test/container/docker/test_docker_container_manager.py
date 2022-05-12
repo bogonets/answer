@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main
 from tempfile import TemporaryDirectory
-from tester.unittest.docker_test_case import DockerTestCase
-from recc.container.struct.container_status import ContainerStatus
+from unittest import main
+
 from recc.container.docker.docker_container_manager import DockerContainerManager
-from recc.util.version import version_text, parse_version_numbers
+from recc.container.struct.container_status import ContainerStatus
+from recc.util.version import parse_version_numbers, version_text
+from tester.unittest.docker_test_case import DockerTestCase
 
 _WAIT_CONTAINER_TIMEOUT = 10
 

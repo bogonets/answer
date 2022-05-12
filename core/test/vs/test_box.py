@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from recc.vs.box import BoxState, Box
+
+from recc.vs.box import Box, BoxState
 
 
 class BoxTestCase(unittest.TestCase):

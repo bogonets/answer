@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List
 from dataclasses import dataclass
+from typing import List, Optional
 
 
 @dataclass

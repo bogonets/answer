@@ -2,14 +2,15 @@
 
 import os
 from io import BytesIO
+from shutil import copyfile
 from tarfile import open as tar_open
 from tempfile import TemporaryDirectory
-from shutil import copyfile
 from unittest import IsolatedAsyncioTestCase, main
-from tester.lamda.numpy_plugins import copy_builtin_numpy_nodes
-from tester.plugins import plugin_simple
+
 from recc.package.package_utils import get_module_path
 from recc.storage.local_storage import LocalStorage
+from tester.lamda.numpy_plugins import copy_builtin_numpy_nodes
+from tester.plugins import plugin_simple
 
 
 class LocalStorageTestCase(IsolatedAsyncioTestCase):

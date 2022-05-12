@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import grpc
 from unittest import IsolatedAsyncioTestCase, main
+
+import grpc
+
 from recc.proto.rpc import rpc_api_pb2 as api
 from recc.proto.rpc.rpc_api_pb2_grpc import RpcApiStub
 

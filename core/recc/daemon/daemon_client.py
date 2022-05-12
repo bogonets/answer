@@ -1,31 +1,33 @@
 # -*- coding: utf-8 -*-
 
-import grpc
 from typing import Optional
 from uuid import uuid4
+
+import grpc
 from grpc.aio._channel import Channel  # noqa
+
 from recc.chrono.datetime import tznow
-from recc.logging.logging import recc_daemon_logger as logger
-from recc.serialization.byte_coding import ByteCodingType
 from recc.daemon.daemon_answer import DaemonAnswer
 from recc.daemon.packet.content_packer import ContentPacker
 from recc.daemon.packet.content_unpacker import content_unpack
+from recc.logging.logging import recc_daemon_logger as logger
 from recc.memory.shared_memory_queue import SharedMemoryQueue
 from recc.memory.shared_memory_validator import (
     SharedMemoryTestInfo,
     register_shared_memory,
 )
-from recc.serialization.byte import COMPRESS_LEVEL_BEST
-from recc.proto.daemon.daemon_api_pb2_grpc import DaemonApiStub
 from recc.proto.daemon.daemon_api_pb2 import (
-    Pit,
+    PacketA,
+    PacketQ,
     Pat,
+    Pit,
+    RegisterA,
     RegisterCode,
     RegisterQ,
-    RegisterA,
-    PacketQ,
-    PacketA,
 )
+from recc.proto.daemon.daemon_api_pb2_grpc import DaemonApiStub
+from recc.serialization.byte import COMPRESS_LEVEL_BEST
+from recc.serialization.byte_coding import ByteCodingType
 from recc.variables.rpc import (
     DEFAULT_GRPC_OPTIONS,
     DEFAULT_HEARTBEAT_TIMEOUT,

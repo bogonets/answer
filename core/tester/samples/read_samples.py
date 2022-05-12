@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import os
 import json
-from typing import Final, Any
+import os
+from typing import Any, Final
 
 CURRENT_DIR: Final[str] = os.path.dirname(__file__)
 DEFAULT_ENCODING: Final[str] = "utf-8"

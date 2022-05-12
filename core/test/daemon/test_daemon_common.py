@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main, skipIf
-from numpy.random import randint
-from numpy import ndarray, uint8
-from datetime import datetime
-from typing import Dict, List, Any, Optional
-from grpc.aio import AioRpcError
 from dataclasses import dataclass
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+from unittest import main, skipIf
+
+from grpc.aio import AioRpcError
+from numpy import ndarray, uint8
+from numpy.random import randint
+
 from tester.unittest.daemon_server_test_case import DaemonServerTestCase
 from tester.variables import (
-    DAEMON_ARRAY_PERFORMANCE_TEST_SKIP,
     DAEMON_ARRAY_PERFORMANCE_ITERATION,
     DAEMON_ARRAY_PERFORMANCE_SKIP_MESSAGE,
+    DAEMON_ARRAY_PERFORMANCE_TEST_SKIP,
 )
 
 

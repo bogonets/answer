@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any
-from asyncio import Task, Event, create_task
-from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR, SO_REUSEPORT
+from asyncio import Event, Task, create_task
 from functools import partial
 from logging import getLogger
-from aiohttp.web import Application
-from aiohttp.web import _run_app  # noqa
+from socket import AF_INET, SO_REUSEADDR, SO_REUSEPORT, SOCK_STREAM, SOL_SOCKET, socket
+from typing import Any, Optional
+
 from aiohttp import web
+from aiohttp.web import _run_app  # noqa
+from aiohttp.web import Application
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
+
 from recc.http.http_decorator import has_layout_view
 
 DEFAULT_HOST = "0.0.0.0"

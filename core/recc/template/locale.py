@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, Any
 from copy import deepcopy
+from typing import Any, Dict
+
 from recc.serialization.interface import Serializable
 
 

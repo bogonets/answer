@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List
+from typing import List, Optional
+
 from recc.database.struct.role import Role
 from recc.packet.role import RoleA
 

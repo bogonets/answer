@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Set, Any
-from recc.rbac.rbac_permission import RbacPermission
+from typing import Any, Set
+
 from recc.rbac.rbac_exception import RbacMismatchContextError, RbacPermissionError
+from recc.rbac.rbac_permission import RbacPermission
 
 
 class RbacRole:

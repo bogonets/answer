@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main
 from typing import List
-from tester.unittest.postgresql_test_case import PostgresqlTestCase
+from unittest import main
+
 from recc.database.struct.permission import Permission
 from recc.variables.database import (
-    ROLE_SLUG_OWNER,
-    ROLE_SLUG_MAINTAINER,
     ROLE_SLUG_DEVELOPER,
-    ROLE_SLUG_REPORTER,
     ROLE_SLUG_GUEST,
+    ROLE_SLUG_MAINTAINER,
+    ROLE_SLUG_OWNER,
+    ROLE_SLUG_REPORTER,
 )
+from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
 def _permission_slugs(perms: List[Permission]) -> List[str]:

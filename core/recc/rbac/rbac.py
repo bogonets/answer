@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, Any
+from typing import Any, Dict
+
 from recc.rbac.rbac_domain import RbacDomain
+from recc.rbac.rbac_exception import RbacKeyError
 from recc.rbac.rbac_permission import RbacPermission
 from recc.rbac.rbac_role import RbacRole
 from recc.rbac.rbac_subject import RbacSubject
-from recc.rbac.rbac_exception import RbacKeyError
 
 
 class Rbac:

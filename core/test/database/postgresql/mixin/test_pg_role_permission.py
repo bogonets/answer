@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from unittest import main
-from tester.unittest.postgresql_test_case import PostgresqlTestCase
+
 from recc.database.postgresql.query.role_permission import (
     safe_insert_role_permission_by_slug,
 )
+from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
 class PgRolePermissionTestCase(PostgresqlTestCase):

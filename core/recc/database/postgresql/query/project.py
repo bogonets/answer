@@ -2,12 +2,13 @@
 
 from datetime import datetime
 from typing import Any, List, Optional
+
+from recc.database.query_builder import BuildResult, UpdateBuilder
 from recc.variables.database import (
+    TABLE_GROUP_MEMBER,
     TABLE_PROJECT,
     TABLE_PROJECT_MEMBER,
-    TABLE_GROUP_MEMBER,
 )
-from recc.database.query_builder import UpdateBuilder, BuildResult
 
 INSERT_PROJECT = f"""
 INSERT INTO {TABLE_PROJECT} (

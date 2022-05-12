@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import pickle
-from typing import Optional, Dict, Any, Callable
-from recc.driver.json import global_json_byte_encoder, global_json_byte_decoder
+from typing import Any, Callable, Dict, Optional
+
+from recc.driver.json import global_json_byte_decoder, global_json_byte_encoder
 from recc.mime.mime_codec import MimeCodec
-from recc.mime.mime_type import (
-    APPLICATION_OCTET_STREAM,
-    APPLICATION_JSON,
-    TEXT_PLAIN,
-)
+from recc.mime.mime_type import APPLICATION_JSON, APPLICATION_OCTET_STREAM, TEXT_PLAIN
 
 MimeEncoder = Callable[[Any], bytes]
 MimeDecoder = Callable[[bytes], Any]

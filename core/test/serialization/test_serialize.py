@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
-from datetime import datetime
-from typing import Any, Optional, NamedTuple, List
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
+from typing import Any, List, NamedTuple, Optional
+from unittest import TestCase, main
+
 from recc.serialization.interface import Serializable
 from recc.serialization.serialize import serialize, serialize_default
 

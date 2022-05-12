@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.mime.mime_register import (
+    REGISTERED_MIMES,
     TYPE_APPLICATION,
     TYPE_AUDIO,
-    TYPE_FONT,
     TYPE_EXAMPLE,
+    TYPE_FONT,
     TYPE_IMAGE,
     TYPE_MESSAGE,
     TYPE_MODEL,
     TYPE_MULTIPART,
     TYPE_TEXT,
     TYPE_VIDEO,
-    REGISTERED_MIMES,
 )
 
 

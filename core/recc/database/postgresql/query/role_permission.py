@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Union, Iterable, Optional
+from typing import Iterable, List, Optional, Union
+
 from recc.variables.database import (
-    TABLE_ROLE,
-    TABLE_PERMISSION,
-    TABLE_ROLE_PERMISSION,
-    ROLE_SLUG_OWNER,
-    ROLE_SLUG_MAINTAINER,
-    ROLE_SLUG_DEVELOPER,
-    ROLE_SLUG_REPORTER,
-    ROLE_SLUG_GUEST,
     DEFAULT_ROLE_PERMISSIONS_MAP,
+    ROLE_SLUG_DEVELOPER,
+    ROLE_SLUG_GUEST,
+    ROLE_SLUG_MAINTAINER,
+    ROLE_SLUG_OWNER,
+    ROLE_SLUG_REPORTER,
+    TABLE_PERMISSION,
+    TABLE_ROLE,
+    TABLE_ROLE_PERMISSION,
 )
 
 INSERT_ROLE_PERMISSION = f"""

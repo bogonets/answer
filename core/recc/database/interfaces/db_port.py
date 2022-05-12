@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
+from typing import List, Optional
+
 from recc.database.struct.port import Port, SockType
 
 

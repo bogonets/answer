@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.argparse.argument_parser import ArgumentMessage
+from recc.argparse.command import Command
 from recc.argparse.config.daemon_config import (
-    DaemonConfig,
     ARG_DAEMON_ADDRESS,
-    ARG_DAEMON_SCRIPT,
     ARG_DAEMON_PACKAGES_DIR,
+    ARG_DAEMON_SCRIPT,
+    DaemonConfig,
 )
 from recc.argparse.default_parser import parse_arguments_to_config
-from recc.argparse.command import Command
 
 
 class DaemonConfigTestCase(TestCase):

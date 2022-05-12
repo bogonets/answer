@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Final
-from overrides import overrides
-from asyncio import Task, Event, AbstractEventLoop, CancelledError
+from asyncio import AbstractEventLoop, CancelledError, Event, Task
 from tempfile import TemporaryDirectory
+from typing import Final, Optional
+
 from aiohttp.web import Application
+from overrides import overrides
+
 from recc.argparse.default_parser import (
     parse_arguments_to_core_config,
     update_test_config,
 )
+from recc.core.context import Context
+from recc.http.http_app import HttpApp
 from recc.http.http_client import HttpClient
 from recc.http.http_interface import EmptyHttpAppCallback
-from recc.http.http_app import HttpApp
-from recc.core.context import Context
 from recc.variables.http import DEFAULT_SCHEME
 
 DEFAULT_ADMIN_USERNAME: Final[str] = "admin"

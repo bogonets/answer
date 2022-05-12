@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
-from functools import reduce
-from overrides import overrides
 from datetime import datetime
+from functools import reduce
+from typing import Optional
+
+from overrides import overrides
+
 from recc.chrono.datetime import tznow
-from recc.logging.logging import recc_database_logger as logger
 from recc.database.interfaces.db_interface import DbInterface
+from recc.database.postgresql.migration.migration import migration_step
 from recc.database.postgresql.mixin._pg_base import PgBase  # noqa
 from recc.database.postgresql.mixin.pg_daemon import PgDaemon
 from recc.database.postgresql.mixin.pg_group import PgGroup
@@ -23,26 +25,26 @@ from recc.database.postgresql.mixin.pg_role_permission import PgRolePermission
 from recc.database.postgresql.mixin.pg_task import PgTask
 from recc.database.postgresql.mixin.pg_user import PgUser
 from recc.database.postgresql.mixin.pg_widget import PgWidget
-from recc.database.postgresql.query.create.tables import CREATE_TABLES, DROP_TABLES
-from recc.database.postgresql.query.create.indices import CREATE_INDICES, DROP_INDICES
-from recc.database.postgresql.query.create.views import CREATE_VIEWS, DROP_VIEWS
 from recc.database.postgresql.query.create.functions import (
     CREATE_FUNCTIONS,
     DROP_FUNCTIONS,
 )
+from recc.database.postgresql.query.create.indices import CREATE_INDICES, DROP_INDICES
+from recc.database.postgresql.query.create.tables import CREATE_TABLES, DROP_TABLES
+from recc.database.postgresql.query.create.views import CREATE_VIEWS, DROP_VIEWS
 from recc.database.postgresql.query.info import (
-    INSERT_INFO,
     EXISTS_INFO_BY_KEY,
+    INSERT_INFO,
     SELECT_INFO_UPDATED_AT_BY_KEY,
 )
-from recc.database.postgresql.query.role import INSERT_ROLE_DEFAULTS
 from recc.database.postgresql.query.permission import INSERT_PERMISSION_DEFAULTS
+from recc.database.postgresql.query.role import INSERT_ROLE_DEFAULTS
 from recc.database.postgresql.query.role_permission import (
     DEFAULT_INSERT_ROLE_PERMISSIONS,
 )
-from recc.database.postgresql.migration.migration import migration_step
-from recc.variables.database import INFO_KEY_RECC_DB_VERSION
+from recc.logging.logging import recc_database_logger as logger
 from recc.util.version import SemanticVersion, version_text
+from recc.variables.database import INFO_KEY_RECC_DB_VERSION
 
 
 def _merge_queries(*args: str) -> str:

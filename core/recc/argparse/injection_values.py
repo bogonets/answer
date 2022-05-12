@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from argparse import Namespace
+
 from recc.argparse.argument import Argument
+from recc.argparse.command import COMMAND_ARGUMENT_KEY, Command
 from recc.argparse.config.core_config import CORE_ARGS
 from recc.argparse.config.ctrl_config import CTRL_ARGS
-from recc.argparse.config.task_config import TASK_ARGS
 from recc.argparse.config.daemon_config import DAEMON_ARGS
 from recc.argparse.config.global_config import GLOBAL_ARGS
-from recc.argparse.command import Command, COMMAND_ARGUMENT_KEY
+from recc.argparse.config.task_config import TASK_ARGS
 
 
 def injection_values_by_args(

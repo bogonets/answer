@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, Iterable, Any, Callable
+from typing import Any, Callable, Iterable, List, Optional
+
+from recc.proto.rpc.rpc_api_pb2 import NodeSlotData, NodeSlotDataRequest, NodeSlotPath
 from recc.vs.box import BoxData, BoxRequest
-from recc.proto.rpc.rpc_api_pb2 import (
-    NodeSlotPath,
-    NodeSlotData,
-    NodeSlotDataRequest,
-)
 
 PicklingCallable = Callable[[Any], bytes]
 UnpicklingCallable = Callable[[bytes], Any]

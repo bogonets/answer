@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.template.control import Control
 from recc.template.controller import Controller
 

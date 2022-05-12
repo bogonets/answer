@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, Union
+
+from recc.database.interfaces.db_base import DbBase
+from recc.database.interfaces.db_interface import DbInterface
+from recc.database.postgresql.pg_common import PgCommon
+from recc.database.postgresql.pg_db import PgDb
 from recc.variables.database import (
-    DatabaseTypeLiteral,
     DB_TYPE_NAME_MYSQL,
     DB_TYPE_NAME_POSTGRES,
     DB_TYPE_NAME_SQLITE,
     DEFAULT_DATABASE_TYPE,
+    DatabaseTypeLiteral,
 )
-from recc.database.interfaces.db_base import DbBase
-from recc.database.interfaces.db_interface import DbInterface
-from recc.database.postgresql.pg_db import PgDb
-from recc.database.postgresql.pg_common import PgCommon
 
 
 def create_database(

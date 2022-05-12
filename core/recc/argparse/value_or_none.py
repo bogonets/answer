@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Any, Union, Optional, Type, Mapping
+from typing import Any, List, Mapping, Optional, Type, Union
 
 ValueType = Optional[Union[str, int, float, bool]]
 KeysType = Union[str, List[str]]

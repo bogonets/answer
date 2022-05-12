@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import os
-from unittest import TestCase, main
 from tempfile import TemporaryDirectory
-from recc.argparse.default_parser import parse_arguments_to_config
-from recc.argparse.config.global_config import ARG_CONFIG
-from recc.argparse.config.daemon_config import DaemonConfig, ARG_DAEMON_SCRIPT
+from unittest import TestCase, main
+
 from recc.argparse.command import Command
+from recc.argparse.config.daemon_config import ARG_DAEMON_SCRIPT, DaemonConfig
+from recc.argparse.config.global_config import ARG_CONFIG
+from recc.argparse.default_parser import parse_arguments_to_config
 from recc.system.environ import exchange_env
 from recc.variables.argparse import RECC_DOM_ROOT
 

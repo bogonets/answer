@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Tuple
+
 from recc.rule.naming_base import merge_naming, split_naming
 from recc.variables.template import LAMDA_TEMPLATE_KEY_DELIMITER
 

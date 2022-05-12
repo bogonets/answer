@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
 from abc import ABCMeta, abstractmethod
+from typing import Optional
 
 
 class ContainerOpen(metaclass=ABCMeta):

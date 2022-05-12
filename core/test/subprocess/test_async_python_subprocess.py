@@ -3,6 +3,7 @@
 import os
 from sys import executable, version_info
 from unittest import IsolatedAsyncioTestCase, main
+
 from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
 from recc.util.version import parse_version_numbers
 

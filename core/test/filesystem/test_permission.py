@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
 
 import os
-from tempfile import mkstemp, mkdtemp
+from tempfile import mkdtemp, mkstemp
 from unittest import TestCase, main
+
 from recc.filesystem.permission import (
+    change_executable,
     change_readable,
     change_writable,
-    change_executable,
     exists,
-    remove_file,
-    remove_dir,
-    is_readable_file,
-    is_writable_file,
+    is_executable_dir,
     is_executable_file,
     is_readable_dir,
+    is_readable_file,
     is_writable_dir,
-    is_executable_dir,
+    is_writable_file,
+    remove_dir,
+    remove_file,
 )
 
 

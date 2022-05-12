@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
 from datetime import datetime
+from unittest import TestCase, main
+
 from recc.chrono.datetime_filename import parse_dirname_and_filename
 
 

@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from os import urandom
-from typing import Optional, List, Tuple, Any
 from datetime import timedelta
-from recc.chrono.duration import duration_to_timedelta
+from os import urandom
+from typing import Any, List, Optional, Tuple
+
 from recc.chrono.datetime import tznow
-from recc.crypto.password import encrypt_password
-from recc.session.session import Session
-from recc.database.struct.user import PassInfo, User
+from recc.chrono.duration import duration_to_timedelta
 from recc.core.mixin.context_base import ContextBase
-from recc.variables.database import (
-    PASSWORD_HEX_STR_SIZE,
-    SALT_BYTE,
-    SALT_HEX_STR_SIZE,
-)
+from recc.crypto.password import encrypt_password
+from recc.database.struct.user import PassInfo, User
+from recc.session.session import Session
+from recc.variables.database import PASSWORD_HEX_STR_SIZE, SALT_BYTE, SALT_HEX_STR_SIZE
 
 
 def salting_password(hashed_password: str) -> PassInfo:

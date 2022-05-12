@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import TypeVar, Type, Dict
 from enum import Enum
+from typing import Dict, Type, TypeVar
 
 _ASSERT_MSG_NOT_ENUM_FORMAT = "The `{cls}` type must inherit from Enum class."
 _T = TypeVar("_T")

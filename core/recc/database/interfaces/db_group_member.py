@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from typing import List
 from abc import ABCMeta, abstractmethod
-from recc.database.struct.group_member import GroupMember
+from typing import List
+
 from recc.database.struct.group_join_member import (
     GroupJoinGroupMember,
     ProjectJoinGroupMember,
 )
+from recc.database.struct.group_member import GroupMember
 
 
 class DbGroupMember(metaclass=ABCMeta):

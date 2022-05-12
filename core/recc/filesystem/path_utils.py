@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-from tempfile import gettempdir
 from functools import lru_cache
+from tempfile import gettempdir
 
 
 @lru_cache

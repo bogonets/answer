@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Any, Dict
+from typing import Any, Dict, List
+
 from aiohttp import web
-from aiohttp.web_routedef import AbstractRouteDef
 from aiohttp.web_exceptions import HTTPUnauthorized
+from aiohttp.web_routedef import AbstractRouteDef
+
 from recc.core.context import Context
-from recc.http.http_parameter import parameter_matcher
-from recc.http.http_decorator import domain_group, domain_project
 from recc.http import http_urls as u
+from recc.http.http_decorator import domain_group, domain_project
+from recc.http.http_parameter import parameter_matcher
+from recc.packet.user import UpdatePasswordQ, UpdateUserQ, UserA
 from recc.session.session_ex import SessionEx
-from recc.packet.user import UserA, UpdateUserQ, UpdatePasswordQ
 
 
 class RouterV2Self:

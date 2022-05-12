@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main
-from tester.unittest.postgresql_test_case import PostgresqlTestCase
 from datetime import datetime, timedelta
+from unittest import main
+
+from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
 class PgWidgetTestCase(PostgresqlTestCase):

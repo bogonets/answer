@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from recc.variables.database import (
+    DEFAULT_PERMISSION_SLUGS,
     TABLE_PERMISSION,
     TABLE_ROLE_PERMISSION,
-    DEFAULT_PERMISSION_SLUGS,
 )
 
 INSERT_PERMISSION = f"""

@@ -1,26 +1,28 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List
 from datetime import datetime
+from typing import List, Optional
+
 from overrides import overrides
+
 from recc.chrono.datetime import tznow
-from recc.uri.rpc_uri import parse_rpc_address_as_class
-from recc.database.struct.daemon import Daemon
 from recc.database.interfaces.db_daemon import DbDaemon
 from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.create.functions.add_daemon_and_port import (
     get_insert_daemon_and_port,
 )
 from recc.database.postgresql.query.daemon import (
-    DELETE_DAEMON_BY_UID,
     DELETE_DAEMON_BY_SLUG,
+    DELETE_DAEMON_BY_UID,
+    SELECT_DAEMON_ADDRESS_BY_SLUG,
+    SELECT_DAEMON_ALL,
+    SELECT_DAEMON_BY_SLUG,
     SELECT_DAEMON_BY_UID,
     SELECT_DAEMON_UID_BY_SLUG,
-    SELECT_DAEMON_ADDRESS_BY_SLUG,
-    SELECT_DAEMON_BY_SLUG,
-    SELECT_DAEMON_ALL,
     get_update_daemon_query_by_uid,
 )
+from recc.database.struct.daemon import Daemon
+from recc.uri.rpc_uri import parse_rpc_address_as_class
 
 
 class PgDaemon(DbDaemon, PgBase):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Optional, List, Tuple
+from typing import List, Optional, Tuple
 
 
 def _install_package(name: str, version: Optional[str] = None) -> None:

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, NamedTuple
-from uuid import uuid4
 from contextlib import contextmanager
 from multiprocessing.shared_memory import SharedMemory
+from typing import NamedTuple, Optional
+from uuid import uuid4
 
 
 class SharedMemoryTestInfo(NamedTuple):

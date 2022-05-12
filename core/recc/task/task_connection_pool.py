@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Dict, KeysView
+from typing import Dict, KeysView, Optional
+
 from recc.rpc.rpc_client import RpcClient
 from recc.task.task_key import TaskKey
 

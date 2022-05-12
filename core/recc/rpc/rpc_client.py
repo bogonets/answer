@@ -1,43 +1,44 @@
 # -*- coding: utf-8 -*-
 
-import grpc
 import pickle
-from typing import Optional, List, Any
+from typing import Any, List, Optional
+
+import grpc
 from grpc.aio._channel import Channel  # noqa
-from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_register
-from recc.serialization.json import serialize_json_text
+
 from recc.blueprint.blueprint import BpTask
-from recc.variables.rpc import DEFAULT_GRPC_OPTIONS, DEFAULT_HEARTBEAT_TIMEOUT
-from recc.vs.box import BoxData, BoxRequest
+from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_register
+from recc.proto.rpc.rpc_api_pb2 import (
+    Data,
+    Empty,
+    GetNodePropertyA,
+    GetNodePropertyQ,
+    Names,
+    NodePropertyPath,
+    Pat,
+    Ping,
+    Pit,
+    Pong,
+    Result,
+    SendSignalA,
+    SendSignalQ,
+    SetNodePropertyA,
+    SetNodePropertyQ,
+    SetTaskBlueprintA,
+    SetTaskBlueprintQ,
+    TarFile,
+    UploadTemplateA,
+    UploadTemplateQ,
+)
+from recc.proto.rpc.rpc_api_pb2_grpc import RpcApiStub
 from recc.rpc.rpc_converter import (
     cvt_box_datas,
     cvt_node_slot_data_requests,
     cvt_node_slot_datas,
 )
-from recc.proto.rpc.rpc_api_pb2_grpc import RpcApiStub
-from recc.proto.rpc.rpc_api_pb2 import (
-    Pit,
-    Pat,
-    Ping,
-    Pong,
-    Empty,
-    Data,
-    Result,
-    Names,
-    TarFile,
-    UploadTemplateQ,
-    UploadTemplateA,
-    SetTaskBlueprintQ,
-    SetTaskBlueprintA,
-    NodePropertyPath,
-    GetNodePropertyQ,
-    GetNodePropertyA,
-    SetNodePropertyQ,
-    SetNodePropertyA,
-    SendSignalQ,
-    SendSignalA,
-)
-
+from recc.serialization.json import serialize_json_text
+from recc.variables.rpc import DEFAULT_GRPC_OPTIONS, DEFAULT_HEARTBEAT_TIMEOUT
+from recc.vs.box import BoxData, BoxRequest
 
 # def generate_test_q():
 #     for i in range(10):

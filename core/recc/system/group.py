@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from os import setgid, chown
 from grp import getgrnam
+from os import chown, setgid
 from typing import Union
 
 

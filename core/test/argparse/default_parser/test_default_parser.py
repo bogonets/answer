@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
 from argparse import Namespace
+from unittest import TestCase, main
+
 from recc.argparse.default_parser import left_join
 
 

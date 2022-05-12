@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from unittest import IsolatedAsyncioTestCase, main
-from recc.aio.task import all_tasks
+from asyncio import CancelledError, create_task, get_event_loop
 from asyncio import sleep as asyncio_sleep
-from asyncio import create_task, get_event_loop, CancelledError
+from unittest import IsolatedAsyncioTestCase, main
+
+from recc.aio.task import all_tasks
 
 
 async def _timeout_1s_cb():

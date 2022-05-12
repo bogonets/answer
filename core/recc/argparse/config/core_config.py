@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
 
-from recc.argparse.config.global_config import create_usage, GlobalConfig
-from recc.argparse.argument import Argument
-from recc.argparse.shortcut import Shortcut
-from recc.argparse.command import Command
-from recc.package.package_utils import get_module_directory
 from recc import www as recc_www_module
+from recc.argparse.argument import Argument
+from recc.argparse.command import Command
+from recc.argparse.config.global_config import GlobalConfig, create_usage
+from recc.argparse.shortcut import Shortcut
+from recc.package.package_utils import get_module_directory
 from recc.variables.http import (
     DEFAULT_HTTP_BIND,
     DEFAULT_HTTP_PORT,
     DEFAULT_HTTP_TIMEOUT,
 )
 from recc.variables.port import (
-    DEFAULT_MANAGEABLE_MINIMUM_PORT_NUMBER,
     DEFAULT_MANAGEABLE_MAXIMUM_PORT_NUMBER,
+    DEFAULT_MANAGEABLE_MINIMUM_PORT_NUMBER,
 )
-from recc.variables.user import ENABLE_PUBLIC_SIGNUP
 from recc.variables.session import (
     SESSION_ACCESS_TOKEN_DURATION,
     SESSION_REFRESH_TOKEN_DURATION,
 )
+from recc.variables.user import ENABLE_PUBLIC_SIGNUP
 
 CORE_USAGE = create_usage(Command.core)
 CORE_DESCRIPTION = "Core server"

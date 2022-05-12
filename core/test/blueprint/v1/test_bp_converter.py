@@ -2,9 +2,10 @@
 
 import json
 from unittest import TestCase, main
-from tester.samples.read_samples import read_sample
-from recc.blueprint.v1.converter import bp_converter
+
 from recc.blueprint.blueprint import BpGraph, BpTask
+from recc.blueprint.v1.converter import bp_converter
+from tester.samples.read_samples import read_sample
 
 
 class BpConverterTestCase(TestCase):

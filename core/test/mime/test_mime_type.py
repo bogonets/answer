@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.mime.mime_type import (
-    MimeType,
     MIME_ANY,
     MIME_ANY_BOTH,
-    MIME_APPLICATION_OCTET_STREAM,
     MIME_APPLICATION_JSON,
+    MIME_APPLICATION_OCTET_STREAM,
     MIME_TEXT_PLAIN,
+    MimeType,
 )
 
 

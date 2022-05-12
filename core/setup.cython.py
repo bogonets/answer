@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import codecs
 import os
 import re
 import sys
-import codecs
 
-from setuptools import setup, find_packages
-from setuptools.command.build_py import build_py
 from Cython.Build import cythonize
-
+from setuptools import find_packages, setup
+from setuptools.command.build_py import build_py
 
 SOURCE_PATH = os.path.abspath(__file__)
 SOURCE_DIR = os.path.dirname(SOURCE_PATH)

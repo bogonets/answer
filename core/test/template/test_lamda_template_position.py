@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.template.manager.lamda_template_position import (
-    LamdaTemplatePosition,
     LAMDA_TEMPLATE_POSITION_MAP,
     LAMDA_TEMPLATE_POSITION_NAME_MAP,
+    LamdaTemplatePosition,
 )
 
 

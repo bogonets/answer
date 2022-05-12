@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from inspect import Parameter
-from typing import Any, get_origin, Union
+from typing import Any, Union, get_origin
 
 
 def get_type_origin(param: Parameter) -> Any:

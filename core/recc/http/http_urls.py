@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional
+
 from recc.http import http_path_keys as p
 
 # Depth root.

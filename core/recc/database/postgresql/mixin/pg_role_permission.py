@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from typing import List
-from overrides import overrides
 from io import StringIO
-from recc.database.struct.role_permission import RolePermission
+from typing import List
+
+from overrides import overrides
+
 from recc.database.interfaces.db_role_permission import DbRolePermission
 from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.role_permission import (
-    INSERT_ROLE_PERMISSION,
     DELETE_ROLE_PERMISSION,
+    INSERT_ROLE_PERMISSION,
     SELECT_ROLE_PERMISSION_ALL,
     SELECT_ROLE_PERMISSION_BY_ROLE_UID,
     delete_role_permission_by_role_uid,
     safe_insert_role_permission_by_slug,
 )
+from recc.database.struct.role_permission import RolePermission
 
 
 class PgRolePermission(DbRolePermission, PgBase):

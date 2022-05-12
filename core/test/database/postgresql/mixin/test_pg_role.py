@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main
 from datetime import datetime, timedelta
+from unittest import main
+
+from recc.variables.database import ROLE_SLUG_OWNER, ROLE_UID_OWNER
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
-from recc.variables.database import ROLE_UID_OWNER, ROLE_SLUG_OWNER
 
 
 class PgRoleTestCase(PostgresqlTestCase):

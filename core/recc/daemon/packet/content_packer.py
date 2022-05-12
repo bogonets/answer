@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Iterable, Mapping, Any, List, Dict, NamedTuple, Set
+from typing import Any, Dict, Iterable, List, Mapping, NamedTuple, Optional, Set
+
 from numpy import ndarray
+
 from recc.memory.shared_memory_queue import SharedMemoryQueue
-from recc.proto.daemon.daemon_api_pb2 import Content, ArrayInfo
-from recc.serialization.numpy import ndarray_to_bytes
-from recc.serialization.byte_coding import encode as byte_encode
+from recc.proto.daemon.daemon_api_pb2 import ArrayInfo, Content
 from recc.serialization.byte_coding import ByteCodingType
+from recc.serialization.byte_coding import encode as byte_encode
+from recc.serialization.numpy import ndarray_to_bytes
 
 
 class PackedTuple(NamedTuple):

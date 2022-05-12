@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, Optional
 from argparse import Namespace
+from typing import Dict, Optional
+
 from recc.system.environ import get_os_envs_dict
 
 

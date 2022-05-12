@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.mime.mime_codec_register import get_global_mime_register
 
 

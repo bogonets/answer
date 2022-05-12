@@ -2,6 +2,7 @@
 
 import unittest
 from hashlib import sha256
+
 from recc.http.header.basic_auth import BasicAuth
 
 

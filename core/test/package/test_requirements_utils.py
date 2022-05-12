@@ -2,11 +2,9 @@
 
 import os
 from unittest import TestCase, main
-from recc.package.requirements_utils import (
-    _RECC_PACKAGE_DIR,  # noqa
-    read_packages,
-    RECC_REQUIREMENTS_MAIN,
-)
+
+from recc.package.requirements_utils import _RECC_PACKAGE_DIR  # noqa
+from recc.package.requirements_utils import RECC_REQUIREMENTS_MAIN, read_packages
 
 
 class RequirementsUtilsTestCase(TestCase):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import List, Iterable
 from functools import reduce
+from typing import Iterable, List
 
 _SCRIPT_PATH = os.path.abspath(__file__)
 _RECC_PACKAGE_DIR = os.path.dirname(_SCRIPT_PATH)

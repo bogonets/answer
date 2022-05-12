@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main, TestCase
+from unittest import TestCase, main
+
 from recc.packet.raw.raw_field_spec import RawFieldSpec
 from recc.packet.raw.raw_packet_base import RawPacketBase
 

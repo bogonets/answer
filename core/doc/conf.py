@@ -5,8 +5,8 @@
 
 import os
 import sys
-from recc.util.version import version_text
 
+from recc.util.version import version_text
 
 SCRIPT_PATH = os.path.abspath(__file__)
 SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)

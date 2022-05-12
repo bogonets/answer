@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from recc.argparse.config.core_config import CoreConfig
-from recc.http.http_app import HttpAppCallback, HttpApp
 from recc.core.context import Context
+from recc.http.http_app import HttpApp, HttpAppCallback
 
 
 def core_main(

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABCMeta, abstractmethod
+
 from aiohttp.web import Application
 
 

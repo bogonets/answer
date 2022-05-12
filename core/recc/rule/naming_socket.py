@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from recc.rule.naming_base import merge_naming
-from recc.variables.naming import (
-    PREFIX_RECC,
-    NAME_DELIMITER,
-    SUFFIX_SOCKET,
-)
+from recc.variables.naming import NAME_DELIMITER, PREFIX_RECC, SUFFIX_SOCKET
 
 
 def naming_socket(task_name: str, hidden=False) -> str:

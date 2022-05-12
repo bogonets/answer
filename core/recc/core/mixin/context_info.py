@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Dict
+from typing import Dict, List
+
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.info import Info
 from recc.rule.database_info import (

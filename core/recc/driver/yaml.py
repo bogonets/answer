@@ -2,7 +2,6 @@
 
 from typing import Any, Callable
 
-
 YamlEncoder = Callable[[Any], str]
 YamlDecoder = Callable[[str], Any]
 

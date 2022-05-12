@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional
+
 from recc.database.postgresql.mixin._pg_base import PgBase  # noqa
 
 

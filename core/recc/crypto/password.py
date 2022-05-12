@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from hashlib import pbkdf2_hmac
+
 from recc.variables.crypto import (
     DEFAULT_PBKDF2_HMAC_HASH_NAME,
     DEFAULT_PBKDF2_HMAC_ITERATIONS,

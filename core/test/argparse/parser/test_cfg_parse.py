@@ -4,6 +4,7 @@ import os
 from argparse import Namespace
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 from unittest import TestCase, main
+
 from recc.argparse.parser.cfg_parse import get_namespace_by_cfg_path, write_cfg_file
 
 TEST_HTTP_BIND = "localhost"

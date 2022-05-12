@@ -3,6 +3,7 @@
 import os
 import tempfile
 from unittest import TestCase, main
+
 from recc.argparse.config_file import read_config_file
 
 TEST_FLAG_VALUE = "Hello, World!"

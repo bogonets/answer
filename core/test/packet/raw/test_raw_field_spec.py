@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main, TestCase
+from unittest import TestCase, main
+
+from recc.limit.integer import UBYTE_MAX, UBYTE_MIN, max_unsigned
 from recc.packet.raw.raw_field_spec import RawFieldSpec
-from recc.limit.integer import UBYTE_MIN, UBYTE_MAX, max_unsigned
 
 
 class RawFieldSpecTestCase(TestCase):

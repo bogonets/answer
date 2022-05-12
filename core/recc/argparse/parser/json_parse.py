@@ -2,6 +2,7 @@
 
 import json  # [WARNING] Don't use any other `json` driver.
 from argparse import Namespace
+
 from recc.argparse.parser.dict_parse import get_namespace_by_dict
 
 

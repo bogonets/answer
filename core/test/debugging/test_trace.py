@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.debugging.trace import is_debugging_mode
 
 

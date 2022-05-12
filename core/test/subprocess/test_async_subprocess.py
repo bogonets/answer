@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from sys import executable, version_info
 from collections import deque
+from sys import executable, version_info
 from unittest import IsolatedAsyncioTestCase, main
+
 from recc.subprocess.async_subprocess import start_async_subprocess
 
 

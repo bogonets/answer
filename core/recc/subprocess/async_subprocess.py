@@ -1,21 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import os
-from enum import Enum
 from asyncio import (
     Task,
-    create_task,
-    gather,
     create_subprocess_exec,
     create_subprocess_shell,
+    create_task,
+    gather,
 )
-from asyncio.subprocess import Process, PIPE
 from asyncio.streams import StreamReader, StreamWriter
-from typing import Optional, Callable, Mapping, Tuple
+from asyncio.subprocess import PIPE, Process
+from enum import Enum
 from functools import reduce
 from io import BytesIO
-from recc.system.environ import get_os_envs_dict
+from typing import Callable, Mapping, Optional, Tuple
+
 import psutil
+
+from recc.system.environ import get_os_envs_dict
 
 ReaderCallable = Callable[[bytes], None]
 

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import TypeVar, Generic, List, Iterable
-from recc.geometry.primitive.point import Point
+from typing import Generic, Iterable, List, TypeVar
 
+from recc.geometry.primitive.point import Point
 
 _T = TypeVar("_T")
 

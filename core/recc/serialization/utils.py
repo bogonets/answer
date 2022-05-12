@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, List, Optional, Iterable, Dict, Final
+from typing import Any, Dict, Final, Iterable, List, Optional
+
 from recc.serialization.interface import (
-    SerializeInterface,
-    DeserializeInterface,
-    SERIALIZE_METHOD_NAME,
     DESERIALIZE_METHOD_NAME,
+    SERIALIZE_METHOD_NAME,
+    DeserializeInterface,
+    SerializeInterface,
 )
 
 MAPPING_METHOD_ITEMS: Final[str] = "items"

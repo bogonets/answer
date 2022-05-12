@@ -2,53 +2,50 @@
 
 import os
 import re
-from typing import Optional, List, Dict, Any
 from enum import Enum
+from typing import Any, Dict, List, Optional
+
 from docker import DockerClient
 from overrides import overrides
-from recc.logging.logging import recc_container_logger as logger
-from recc.rule.naming_base import valid_naming
-from recc.rule.naming_task import (
-    naming_task,
-    naming_task_volume,
-    naming_task_network,
-)
-from recc.variables.container import DOCKER_SOCK_LOCAL_BASE_URL
+
+from recc.container.docker.mixin.docker_container import DockerContainer
+from recc.container.docker.mixin.docker_image import DockerImage
+from recc.container.docker.mixin.docker_network import DockerNetwork
+from recc.container.docker.mixin.docker_volume import DockerVolume
+from recc.container.docker.task_init import get_compressed_task_dockerfile_tar
+from recc.container.interfaces.container_interface import ContainerInterface
 from recc.container.labels import (
     task_create_labels,
     task_find_labels,
     task_image_find_labels,
 )
 from recc.container.struct.container_info import ContainerInfo
-from recc.container.struct.volume_info import VolumeInfo
-from recc.container.struct.network_info import NetworkInfo
 from recc.container.struct.image_info import ImageInfo
-from recc.container.docker.task_init import get_compressed_task_dockerfile_tar
+from recc.container.struct.network_info import NetworkInfo
+from recc.container.struct.volume_info import VolumeInfo
+from recc.logging.logging import recc_container_logger as logger
 from recc.package.recc_package import (
     RECC_MODULE_TAR_BYTES_SHA256,
     RECC_REQUIREMENTS_MAIN_SHA256,
 )
+from recc.rule.naming_base import valid_naming
+from recc.rule.naming_task import naming_task, naming_task_network, naming_task_volume
+from recc.util.version import version_text
 from recc.variables.container import (
     BUILD_CONTEXT_BUILD_PATH,
     BUILD_CONTEXT_DOCKERFILE_PATH,
-    TASK_IMAGE_LATEST_FULLNAME,
-    TASK_GUEST_WORKSPACE_DIR,
-    TASK_GUEST_CACHE_DIR,
     DEFAULT_RESTART_COUNT,
     DEFAULT_TIME_ZONE,
+    DOCKER_SOCK_LOCAL_BASE_URL,
+    TASK_GUEST_CACHE_DIR,
+    TASK_GUEST_WORKSPACE_DIR,
+    TASK_IMAGE_LATEST_FULLNAME,
 )
 from recc.variables.labels import (
-    RECC_IMAGE_VERSION_KEY,
     RECC_IMAGE_MODULE_SHA256_KEY,
     RECC_IMAGE_REQUIREMENTS_SHA256_KEY,
+    RECC_IMAGE_VERSION_KEY,
 )
-
-from recc.util.version import version_text
-from recc.container.interfaces.container_interface import ContainerInterface
-from recc.container.docker.mixin.docker_container import DockerContainer
-from recc.container.docker.mixin.docker_image import DockerImage
-from recc.container.docker.mixin.docker_network import DockerNetwork
-from recc.container.docker.mixin.docker_volume import DockerVolume
 
 SELF_CGROUP_PATH = "/proc/self/cgroup"
 DOCKER_CGROUP_REGEX = re.compile(r"\d+:[\w=]+:/docker(-[ce]e)?/(\w+)")

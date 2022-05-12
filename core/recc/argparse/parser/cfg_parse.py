@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from configparser import ConfigParser  # [WARNING] Don't use any other `cfg` driver.
-from typing import Optional, Dict, Any
 from argparse import Namespace
+from configparser import ConfigParser  # [WARNING] Don't use any other `cfg` driver.
+from typing import Any, Dict, Optional
+
 from recc.argparse.parser.dict_parse import get_namespace_by_dict
 
 

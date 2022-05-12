@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from typing import Tuple, Dict
 from argparse import ArgumentParser, RawTextHelpFormatter
+from typing import Dict, Tuple
+
 from overrides import overrides
+
 from recc.argparse.command import (
     COMMAND_ARGUMENT_KEY,
     HELP_ARGUMENT_KEY,
@@ -10,36 +12,36 @@ from recc.argparse.command import (
     VERSION_ARGUMENT_KEY,
     Command,
 )
-from recc.argparse.config.global_config import (
-    GLOBAL_ARGS,
-    GLOBAL_PROGRAM,
-    GLOBAL_USAGE,
-    GLOBAL_DESCRIPTION,
-    GLOBAL_EPILOG,
-)
 from recc.argparse.config.core_config import (
-    CORE_USAGE,
+    CORE_ARGS,
     CORE_DESCRIPTION,
     CORE_EPILOG,
-    CORE_ARGS,
+    CORE_USAGE,
 )
 from recc.argparse.config.ctrl_config import (
-    CTRL_USAGE,
+    CTRL_ARGS,
     CTRL_DESCRIPTION,
     CTRL_EPILOG,
-    CTRL_ARGS,
+    CTRL_USAGE,
 )
 from recc.argparse.config.daemon_config import (
-    DAEMON_USAGE,
+    DAEMON_ARGS,
     DAEMON_DESCRIPTION,
     DAEMON_EPILOG,
-    DAEMON_ARGS,
+    DAEMON_USAGE,
+)
+from recc.argparse.config.global_config import (
+    GLOBAL_ARGS,
+    GLOBAL_DESCRIPTION,
+    GLOBAL_EPILOG,
+    GLOBAL_PROGRAM,
+    GLOBAL_USAGE,
 )
 from recc.argparse.config.task_config import (
-    TASK_USAGE,
+    TASK_ARGS,
     TASK_DESCRIPTION,
     TASK_EPILOG,
-    TASK_ARGS,
+    TASK_USAGE,
 )
 
 CmdToHelp = Dict[Command, str]

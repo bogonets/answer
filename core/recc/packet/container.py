@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Dict, List
 from dataclasses import dataclass
 from enum import Enum
+from typing import Dict, List, Optional
 
 
 class ContainerOperator(Enum):

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, Iterable, Dict, Tuple
+from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
-from abc import ABCMeta, abstractmethod
+from typing import Dict, Iterable, List, Optional, Tuple
 
 
 @dataclass

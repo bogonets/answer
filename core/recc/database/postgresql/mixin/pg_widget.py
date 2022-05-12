@@ -1,24 +1,26 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List
 from datetime import datetime
+from typing import Any, List, Optional
+
 from overrides import overrides
+
 from recc.chrono.datetime import tznow
-from recc.database.struct.widget import Widget
 from recc.database.interfaces.db_widget import DbWidget
 from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.widget import (
-    INSERT_WIDGET,
-    UPDATE_WIDGET_DESCRIPTION_BY_UID,
-    UPDATE_WIDGET_DESCRIPTION_BY_LAYOUT_UID_AND_NAME,
-    UPDATE_WIDGET_EXTRA_BY_UID,
-    UPDATE_WIDGET_EXTRA_BY_LAYOUT_UID_AND_NAME,
-    DELETE_WIDGET_BY_UID,
     DELETE_WIDGET_BY_LAYOUT_UID_AND_NAME,
-    SELECT_WIDGET_BY_UID,
-    SELECT_WIDGET_BY_LAYOUT_ID_AND_NAME,
+    DELETE_WIDGET_BY_UID,
+    INSERT_WIDGET,
     SELECT_WIDGET_BY_LAYOUT_ID,
+    SELECT_WIDGET_BY_LAYOUT_ID_AND_NAME,
+    SELECT_WIDGET_BY_UID,
+    UPDATE_WIDGET_DESCRIPTION_BY_LAYOUT_UID_AND_NAME,
+    UPDATE_WIDGET_DESCRIPTION_BY_UID,
+    UPDATE_WIDGET_EXTRA_BY_LAYOUT_UID_AND_NAME,
+    UPDATE_WIDGET_EXTRA_BY_UID,
 )
+from recc.database.struct.widget import Widget
 
 
 class PgWidget(DbWidget, PgBase):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from recc.argparse.config.global_config import create_usage, GlobalConfig
 from recc.argparse.argument import Argument
 from recc.argparse.command import Command
+from recc.argparse.config.global_config import GlobalConfig, create_usage
 from recc.variables.http import (
     DEFAULT_HTTP_ADDRESS,
     DEFAULT_HTTP_TIMEOUT,

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Optional, Any, Union, Dict, Set
+from typing import Any, Dict, List, Optional, Set, Union
+
 from recc.core.mixin.context_base import ContextBase
-from recc.database.struct.role import Role
 from recc.database.struct.permission import Permission
+from recc.database.struct.role import Role
 from recc.database.struct.role_permission import RolePermission
 from recc.session.session_ex import SessionEx
 

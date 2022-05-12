@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.argparse.argument_parser import ArgumentMessage
-from recc.argparse.config.global_config import ARG_CONFIG
-from recc.argparse.config.core_config import CoreConfig, ARG_HTTP_BIND, ARG_HTTP_PORT
-from recc.argparse.default_parser import parse_arguments_to_config
 from recc.argparse.command import Command
+from recc.argparse.config.core_config import ARG_HTTP_BIND, ARG_HTTP_PORT, CoreConfig
+from recc.argparse.config.global_config import ARG_CONFIG
+from recc.argparse.default_parser import parse_arguments_to_config
 
 
 class CoreConfigTestCase(TestCase):

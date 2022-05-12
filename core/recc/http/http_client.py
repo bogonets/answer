@@ -1,38 +1,39 @@
 # -*- coding: utf-8 -*-
 
-import requests
 from http import HTTPStatus
-from time import time
-from typing import Optional, Tuple, TypeVar, Any, Dict, Type
 from re import match
+from time import time
+from typing import Any, Dict, Optional, Tuple, Type, TypeVar
 from urllib.parse import urlparse
-from multidict import CIMultiDict
+
+import requests
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.hdrs import (
-    METH_HEAD,
-    METH_GET,
+    AUTHORIZATION,
+    CONTENT_TYPE,
     METH_DELETE,
+    METH_GET,
+    METH_HEAD,
     METH_OPTIONS,
     METH_PATCH,
     METH_POST,
     METH_PUT,
-    AUTHORIZATION,
-    CONTENT_TYPE,
 )
+from multidict import CIMultiDict
 
 from recc.driver.json import global_json_encoder
-from recc.mime.mime_type import MIME_APPLICATION_JSON_UTF8, APPLICATION_JSON
-from recc.packet.user import SigninA, SignupQ
-from recc.serialization.serialize import serialize_default
-from recc.http.http_packet import HttpResponse
+from recc.http import http_urls as u
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.header.bearer_auth import BearerAuth
+from recc.http.http_packet import HttpResponse
 from recc.http.http_payload import payload_to_class
 from recc.http.http_utils import join_urls, v2_public_path
-from recc.http import http_urls as u
+from recc.mime.mime_type import APPLICATION_JSON, MIME_APPLICATION_JSON_UTF8
+from recc.packet.user import SigninA, SignupQ
+from recc.serialization.serialize import serialize_default
 from recc.variables.http import (
-    DEFAULT_SCHEME,
     DEFAULT_REQUEST_TIMEOUT_SECONDS,
+    DEFAULT_SCHEME,
     URI_PATH_SEPARATOR,
 )
 

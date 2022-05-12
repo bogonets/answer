@@ -2,22 +2,24 @@
 
 import os
 from unittest import main, skipIf
-from numpy.random import randint
+
 from numpy import ndarray, uint8
-from tester.unittest.daemon_server_test_case import DaemonFileTestCase
-from tester.source.storage import get_pip_download_dir
-from tester.pydevd.detect_pydevd import get_isolate_ensure_pip_flag
+from numpy.random import randint
+
 from recc.daemon.daemon_client import create_daemon_client
-from recc.daemon.daemon_runner import StandardDaemonRunnerCallbacks, DaemonRunner
+from recc.daemon.daemon_runner import DaemonRunner, StandardDaemonRunnerCallbacks
 from recc.daemon.daemon_servicer import wait_connectable
 from recc.daemon.daemon_state import DaemonState
 from recc.filesystem.permission import is_executable_file
 from recc.network.access import accessible_network
-from recc.variables.rpc import DEFAULT_DAEMON_PORT, DEFAULT_DAEMON_ADDRESS
+from recc.variables.rpc import DEFAULT_DAEMON_ADDRESS, DEFAULT_DAEMON_PORT
 from recc.variables.storage import (
     LOCAL_STORAGE_DAEMON_VENV_NAME,
     LOCAL_STORAGE_DAEMON_WORK_NAME,
 )
+from tester.pydevd.detect_pydevd import get_isolate_ensure_pip_flag
+from tester.source.storage import get_pip_download_dir
+from tester.unittest.daemon_server_test_case import DaemonFileTestCase
 
 
 class DaemonRunnerTestCase(DaemonFileTestCase):

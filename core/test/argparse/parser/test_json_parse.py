@@ -3,6 +3,7 @@
 import os
 import tempfile
 from unittest import TestCase, main
+
 from recc.argparse.parser.json_parse import get_namespace_by_json_path
 
 TEST_HTTP_BIND = "localhost"

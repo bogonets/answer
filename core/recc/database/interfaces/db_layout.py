@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Optional, List
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
+from typing import Any, List, Optional
+
 from recc.database.struct.layout import Layout
 
 

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
 from argparse import Namespace
-from recc.argparse.default_parser import parse_arguments_to_config
-from recc.argparse.config.core_config import CoreConfig
-from recc.argparse.config.task_config import TaskConfig, ARG_TASK_NAME
-from recc.argparse.config.global_config import GlobalConfig
+from unittest import TestCase, main
+
 from recc.argparse.command import Command
+from recc.argparse.config.core_config import CoreConfig
+from recc.argparse.config.global_config import GlobalConfig
+from recc.argparse.config.task_config import ARG_TASK_NAME, TaskConfig
+from recc.argparse.default_parser import parse_arguments_to_config
 
 
 class DefaultParserForTaskTestCase(TestCase):

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Any, Dict, Union, Optional, Mapping, Type, get_origin, get_args
-from re import compile as re_compile
 from argparse import Namespace
+from re import compile as re_compile
+from typing import Any, Dict, List, Mapping, Optional, Type, Union, get_args, get_origin
+
 from recc.argparse.shortcut import Shortcut
-from recc.variables.environment import RECC_ENV_PREFIX, RECC_ENV_FILE_SUFFIX
+from recc.variables.environment import RECC_ENV_FILE_SUFFIX, RECC_ENV_PREFIX
 
 ValueType = Optional[Union[str, int, float, bool]]
 MapType = Mapping[str, Any]

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from unittest import IsolatedAsyncioTestCase, TestCase, main
-from logging import DEBUG, WARNING, StreamHandler, getLogger
 from io import StringIO
+from logging import DEBUG, WARNING, StreamHandler, getLogger
 from time import sleep
+from unittest import IsolatedAsyncioTestCase, TestCase, main
+
 from recc.logging.logging_elapsed import logging_elapsed
 
 

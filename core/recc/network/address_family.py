@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from ipaddress import ip_address, IPv4Address
+from ipaddress import IPv4Address, ip_address
 from socket import AF_INET, AF_INET6
 
 

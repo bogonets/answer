@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-from unittest import TestCase, main
 from tempfile import TemporaryDirectory
+from unittest import TestCase, main
+
 from recc.package.recc_package import extract_recc_module
 
 

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from recc.template.property import Property
+
 from recc.template.locale import Locale
+from recc.template.property import Property
 
 
 class TemplatePropertyTestCase(TestCase):

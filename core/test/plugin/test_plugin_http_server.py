@@ -3,10 +3,11 @@
 import os
 from tempfile import TemporaryDirectory
 from unittest import IsolatedAsyncioTestCase, main
-from tester.plugins.copy_plugin import copy_plugin
-from recc.plugin.plugin import Plugin
+
 from recc.http.http_client import HttpClient
+from recc.plugin.plugin import Plugin
 from recc.variables.http import DEFAULT_HTTP_TEST_PORT
+from tester.plugins.copy_plugin import copy_plugin
 
 
 class PluginHttpServerTestCase(IsolatedAsyncioTestCase):

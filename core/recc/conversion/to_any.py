@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Any
+
 from recc.conversion.to_boolean import string_to_boolean
 
 

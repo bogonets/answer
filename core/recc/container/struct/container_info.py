@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Dict
+from typing import Dict, List
+
 from recc.container.struct.container_status import ContainerStatus
-from recc.container.struct.port_binding_host import PortBindingHost
 from recc.container.struct.port_binding_guest import PortBindingGuest
+from recc.container.struct.port_binding_host import PortBindingHost
 
 
 class ContainerInfo:

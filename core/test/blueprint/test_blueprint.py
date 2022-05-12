@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from recc.blueprint.blueprint import BpSlot, BpArc, BpProperty, BpNode, BpTask, BpGraph
+
+from recc.blueprint.blueprint import BpArc, BpGraph, BpNode, BpProperty, BpSlot, BpTask
 from recc.serialization.deserialize import deserialize
 from recc.serialization.serialize import serialize
 

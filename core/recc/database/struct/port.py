@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Union
-from datetime import datetime
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
-from socket import SOCK_STREAM, SOCK_DGRAM, SOCK_RAW
+from socket import SOCK_DGRAM, SOCK_RAW, SOCK_STREAM
+from typing import Optional, Union
 
 
 class SockType(Enum):

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Union, Any, Callable
+from typing import Any, Callable, Optional, Union
+
 from recc.mime.mime_type import MimeType
 
 MimeEncoder = Callable[[Any], bytes]

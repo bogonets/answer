@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from unittest import IsolatedAsyncioTestCase
 from asyncio import get_event_loop
 from tempfile import TemporaryDirectory
+from unittest import IsolatedAsyncioTestCase
+
 from recc.argparse.default_parser import (
     parse_arguments_to_core_config,
     update_test_config,

@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.uri.rpc_uri import (
-    RpcSchemeType,
     RpcDnsAddress,
-    RpcUnixAddress,
-    RpcUnixAbstractAddress,
     RpcIpv4Addresses,
     RpcIpv6Addresses,
-    parse_rpc_dns_address,
-    parse_rpc_unix_address,
-    parse_rpc_unix_abstract_address,
-    parse_rpc_ipv4_addresses,
-    parse_rpc_ipv6_addresses,
+    RpcSchemeType,
+    RpcUnixAbstractAddress,
+    RpcUnixAddress,
     parse_rpc_address,
     parse_rpc_address_as_class,
+    parse_rpc_dns_address,
+    parse_rpc_ipv4_addresses,
+    parse_rpc_ipv6_addresses,
+    parse_rpc_unix_abstract_address,
+    parse_rpc_unix_address,
 )
 
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from recc.variables.port import DEFAULT_TASK_RPC_PORT, DEFAULT_DAEMON_PORT
+from recc.variables.port import DEFAULT_DAEMON_PORT, DEFAULT_TASK_RPC_PORT
 
 _1KB = 1024
 _1MB = _1KB * 1024

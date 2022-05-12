@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any
+from typing import Any, Optional
+
 from multidict import CIMultiDictProxy
 
 

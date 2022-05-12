@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABCMeta, abstractmethod
-from typing import Optional, Dict, Union
+from typing import Dict, Optional, Union
 
 ValueType = Union[bytes, memoryview, str, int, float]
 

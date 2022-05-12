@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from asyncio import AbstractEventLoop
+
 from recc.argparse.config.core_config import CoreConfig
+from recc.cache.cache import Cache
+from recc.container.interfaces.container_interface import ContainerInterface
+from recc.daemon.daemon_manager import DaemonManager
+from recc.database.interfaces.db_interface import DbInterface
+from recc.plugin.plugin_manager import PluginManager
 from recc.session.session import SessionPairFactory
 from recc.storage.local_storage import LocalStorage
-from recc.container.interfaces.container_interface import ContainerInterface
-from recc.cache.cache import Cache
-from recc.database.interfaces.db_interface import DbInterface
 from recc.task.task_connection_pool import TaskConnectionPool
-from recc.plugin.plugin_manager import PluginManager
-from recc.daemon.daemon_manager import DaemonManager
 
 
 class ContextBase:

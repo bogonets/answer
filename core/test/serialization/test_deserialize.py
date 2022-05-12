@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
-from datetime import datetime
-from typing import Any, List, Dict, Optional, NamedTuple
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
-from recc.serialization.interface import DeserializeInterface
+from typing import Any, Dict, List, NamedTuple, Optional
+from unittest import TestCase, main
+
 from recc.serialization.deserialize import deserialize, deserialize_default
+from recc.serialization.interface import DeserializeInterface
 
 
 class _Test0:

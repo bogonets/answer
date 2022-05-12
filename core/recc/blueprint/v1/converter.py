@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, Any, List, Set
-from recc.blueprint.blueprint import BpSlot, BpArc, BpProperty, BpNode, BpTask, BpGraph
+from typing import Any, Dict, List, Set
+
+from recc.blueprint.blueprint import BpArc, BpGraph, BpNode, BpProperty, BpSlot, BpTask
 
 k_id = "id"
 k_info = "info"

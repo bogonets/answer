@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from recc.vs.box import Box
+
 from recc.vs.arc import Arc
+from recc.vs.box import Box
 
 
 class ArcTestCase(unittest.TestCase):

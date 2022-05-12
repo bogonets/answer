@@ -2,16 +2,17 @@
 
 import os
 import sys
-from typing import Optional, List, Dict, Tuple, Mapping
-from functools import reduce
 from dataclasses import dataclass
+from functools import reduce
+from typing import Dict, List, Mapping, Optional, Tuple
+
+from recc.driver.json import global_json_decoder
 from recc.subprocess.async_subprocess import (
-    SubprocessMethod,
     AsyncSubprocess,
     ReaderCallable,
+    SubprocessMethod,
     start_async_subprocess,
 )
-from recc.driver.json import global_json_decoder
 
 PROGRESS_BAR_STYLE_OFF = "off"
 PROGRESS_BAR_STYLE_ASCII = "ascii"

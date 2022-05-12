@@ -1,26 +1,27 @@
 # -*- coding: utf-8 -*-
 
-from unittest import IsolatedAsyncioTestCase, main
-from typing import List
 from asyncio import get_event_loop
 from logging import CRITICAL, DEBUG
-from tester.http.http_app_tester import HttpAppTester
-from recc.http.http_utils import v2_admin_path
-from recc.http import http_urls as u
+from typing import List
+from unittest import IsolatedAsyncioTestCase, main
+
 from recc.http import http_path_keys as p
-from recc.packet.config import ConfigA, UpdateConfigValueQ
-from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
-from recc.packet.role import RoleA, CreateRoleQ, UpdateRoleQ
-from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
-from recc.packet.system import SystemOverviewA
-from recc.packet.port import PortA, PortRangeA
+from recc.http import http_urls as u
+from recc.http.http_utils import v2_admin_path
 from recc.logging.logging import get_root_level
+from recc.packet.config import ConfigA, UpdateConfigValueQ
+from recc.packet.group import CreateGroupQ, GroupA, UpdateGroupQ
+from recc.packet.port import PortA, PortRangeA
+from recc.packet.project import CreateProjectQ, ProjectA, UpdateProjectQ
+from recc.packet.role import CreateRoleQ, RoleA, UpdateRoleQ
+from recc.packet.system import SystemOverviewA
 from recc.variables.database import (
-    PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
-    PERMISSION_SLUG_RECC_DOMAIN_SETTING_EDIT,
-    PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_VIEW,
     PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_SETTING_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
 )
+from tester.http.http_app_tester import HttpAppTester
 
 
 class RouterV2AdminTestCase(IsolatedAsyncioTestCase):

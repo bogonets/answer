@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import IsolatedAsyncioTestCase
+
 from recc.container.docker.docker_container_manager import DockerContainerManager
 
 

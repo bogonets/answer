@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
-from tarfile import open as tar_open
-from tarfile import TarFile, TarInfo, REGTYPE, DIRTYPE
-from typing import Optional
 from io import BytesIO
+from tarfile import DIRTYPE, REGTYPE, TarFile, TarInfo
+from tarfile import open as tar_open
+from typing import Optional
 
 
 def compress_tar(

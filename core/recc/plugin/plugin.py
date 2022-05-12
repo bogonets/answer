@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Optional, Any, Dict, Tuple, Iterable, List, Mapping, Text
-from inspect import iscoroutinefunction
 from copy import deepcopy
+from inspect import iscoroutinefunction
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Text, Tuple
+
 from aiohttp.web_urldispatcher import DynamicResource
+
 from recc.compile.future import get_annotations_compiler_flag
 from recc.typing.annotation import eval_annotations
 

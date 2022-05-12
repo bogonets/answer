@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any
 from datetime import datetime
+from typing import Any
+
 from recc.session.session import Session
 
 

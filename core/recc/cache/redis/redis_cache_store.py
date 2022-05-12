@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Dict, Set, List, Any, Union, Callable, Awaitable
-from asyncio import Task, create_task, TimeoutError
-from overrides import overrides
-from aioredis import Redis, ConnectionPool
-from aioredis.client import PubSub
+from asyncio import Task, TimeoutError, create_task
 from inspect import iscoroutinefunction, isfunction
+from typing import Any, Awaitable, Callable, Dict, List, Optional, Set, Union
+
+from aioredis import ConnectionPool, Redis
+from aioredis.client import PubSub
 from async_timeout import timeout as async_timeout_timeout
+from overrides import overrides
+
 from recc.cache.cache_store_interface import CacheStoreInterface, ValueType
 from recc.variables.cache import DEFAULT_MAX_CONNECTIONS
 

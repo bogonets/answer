@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
 from socket import (
-    socket,
     AF_INET,
     AF_INET6,
-    SOCK_STREAM,
-    SOL_SOCKET,
     SO_REUSEADDR,
     SO_REUSEPORT,
+    SOCK_STREAM,
+    SOL_SOCKET,
+    socket,
 )
+from typing import Optional
 
 from recc.logging.logging import recc_network_logger as logger
 from recc.network.address_family import get_ip_address_family

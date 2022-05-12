@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
 from logging import DEBUG, INFO, WARNING
+from unittest import TestCase, main
+
 from recc.logging.logging import recc_core_logger, recc_http_logger, recc_rpc_logger
 
 

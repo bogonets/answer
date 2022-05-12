@@ -1,27 +1,28 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Iterable, Union
 from random import randint
+from typing import Iterable, Optional, Union
+
 from recc.limit.integer import (
-    BYTE_MIN,
     BYTE_MAX,
-    UBYTE_MIN,
-    UBYTE_MAX,
-    SHORT_MIN,
-    SHORT_MAX,
-    USHORT_MIN,
-    USHORT_MAX,
-    LONG_MIN,
-    LONG_MAX,
-    ULONG_MIN,
-    ULONG_MAX,
-    LLONG_MIN,
+    BYTE_MIN,
     LLONG_MAX,
-    ULLONG_MIN,
+    LLONG_MIN,
+    LONG_MAX,
+    LONG_MIN,
+    SHORT_MAX,
+    SHORT_MIN,
+    UBYTE_MAX,
+    UBYTE_MIN,
     ULLONG_MAX,
-    min_signed,
+    ULLONG_MIN,
+    ULONG_MAX,
+    ULONG_MIN,
+    USHORT_MAX,
+    USHORT_MIN,
     max_signed,
     max_unsigned,
+    min_signed,
 )
 
 BIG_ENDIAN = "big"

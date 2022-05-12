@@ -1,32 +1,33 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
 from io import BytesIO
 from tarfile import open as tar_open
+from typing import Optional
+
 from recc.archive.tar_archive import file_info
 from recc.package.recc_package import (
     RECC_MODULE_TAR_BYTES,
     RECC_MODULE_TAR_BYTES_SHA256,
     RECC_REQUIREMENTS_MAIN_SHA256,
 )
+from recc.package.requirements_utils import RECC_REQUIREMENTS_MAIN_ARG
+from recc.util.version import version_text
 from recc.variables.container import (
     BASE_IMAGE_FULLNAME,
-    GUEST_GROUP_NAME,
-    GUEST_USER_NAME,
     BUILD_CONTEXT_DOCKERFILE_PATH,
     BUILD_CONTEXT_RECC_PATH,
-    TASK_GUEST_WORKSPACE_DIR,
-    TASK_GUEST_PACKAGE_DIR,
+    GUEST_GROUP_NAME,
+    GUEST_USER_NAME,
     TASK_GUEST_CACHE_DIR,
+    TASK_GUEST_PACKAGE_DIR,
+    TASK_GUEST_WORKSPACE_DIR,
 )
 from recc.variables.labels import (
     RECC_CATEGORY_IMAGE,
-    RECC_IMAGE_VERSION_KEY,
     RECC_IMAGE_MODULE_SHA256_KEY,
     RECC_IMAGE_REQUIREMENTS_SHA256_KEY,
+    RECC_IMAGE_VERSION_KEY,
 )
-from recc.package.requirements_utils import RECC_REQUIREMENTS_MAIN_ARG
-from recc.util.version import version_text
 
 TASK_INIT_DOCKERFILE_TEMPLATE = f"""
 FROM {{base_image}}

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, Any, Optional
 from inspect import ismethod
+from typing import Any, Dict, Optional
 
 ATTRIBUTE_FUNC = "__func__"
 ATTRIBUTE_ANNOTATIONS = "__annotations__"

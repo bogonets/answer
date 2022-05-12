@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from typing import NamedTuple, Optional, Tuple, List, Union
-from socket import AF_INET, AF_INET6
 from enum import Enum
-from io import StringIO
 from functools import reduce
+from io import StringIO
+from socket import AF_INET, AF_INET6
+from typing import List, NamedTuple, Optional, Tuple, Union
+
+from recc.network.address_family import get_ip_address_family
 from recc.uri.host_port import (
+    CLOSING_IPV6,
+    OPENING_IPV6,
+    OPENING_PORT,
+    parse_host_port,
     parse_ipv4_or_domain_port,
     parse_ipv6_port,
-    parse_host_port,
-    OPENING_PORT,
-    OPENING_IPV6,
-    CLOSING_IPV6,
 )
-from recc.network.address_family import get_ip_address_family
 
 
 class RpcSchemeType(Enum):

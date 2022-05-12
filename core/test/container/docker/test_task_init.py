@@ -2,15 +2,16 @@
 
 import os
 from io import BytesIO
-from unittest import TestCase, main
 from tarfile import open as tar_open
+from unittest import TestCase, main
+
+from recc.archive.tar_archive import remove_first_slash
 from recc.container.docker.task_init import (
     BUILD_CONTEXT_DOCKERFILE_PATH,
     BUILD_CONTEXT_RECC_PATH,
     get_compressed_task_dockerfile_tar,
 )
-from recc.package.recc_package import RECC_MODULE_INIT_PATH, RECC_MODULE_DIR
-from recc.archive.tar_archive import remove_first_slash
+from recc.package.recc_package import RECC_MODULE_DIR, RECC_MODULE_INIT_PATH
 
 
 class TaskInitTestCase(TestCase):

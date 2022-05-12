@@ -1,44 +1,45 @@
 # -*- coding: utf-8 -*-
 
 import os
-from json import loads as json_loads
-from typing import Any, Callable
-from datetime import datetime
 from dataclasses import dataclass
+from datetime import datetime
+from json import loads as json_loads
 from tempfile import TemporaryDirectory
+from typing import Any, Callable
 from unittest import IsolatedAsyncioTestCase, main, skipIf
+
 from recc.argparse.default_config import get_default_task_config
 from recc.rpc.rpc_client import create_rpc_client
-from recc.task.task_server import create_task_server
 from recc.serialization.byte import (
+    msgpack_bz2_decoder,
+    msgpack_bz2_encoder,
+    msgpack_decoder,
+    msgpack_encoder,
+    msgpack_gzip_decoder,
+    msgpack_gzip_encoder,
+    msgpack_lzma_decoder,
+    msgpack_lzma_encoder,
+    msgpack_zlib_decoder,
+    msgpack_zlib_encoder,
+    orjson_bz2_decoder,
+    orjson_bz2_encoder,
+    orjson_decoder,
+    orjson_encoder,
+    orjson_gzip_decoder,
+    orjson_gzip_encoder,
+    orjson_lzma_decoder,
+    orjson_lzma_encoder,
+    orjson_zlib_decoder,
+    orjson_zlib_encoder,
     pickling,
     unpickling,
-    orjson_encoder,
-    orjson_decoder,
-    orjson_zlib_encoder,
-    orjson_zlib_decoder,
-    orjson_gzip_encoder,
-    orjson_gzip_decoder,
-    orjson_lzma_encoder,
-    orjson_lzma_decoder,
-    orjson_bz2_encoder,
-    orjson_bz2_decoder,
-    msgpack_encoder,
-    msgpack_decoder,
-    msgpack_zlib_encoder,
-    msgpack_zlib_decoder,
-    msgpack_gzip_encoder,
-    msgpack_gzip_decoder,
-    msgpack_lzma_encoder,
-    msgpack_lzma_decoder,
-    msgpack_bz2_encoder,
-    msgpack_bz2_decoder,
 )
+from recc.task.task_server import create_task_server
 from tester.samples.read_samples import read_sample
 from tester.variables import (
-    GRPC_PACKET_PERFORMANCE_TEST_SKIP,
     GRPC_PACKET_PERFORMANCE_ITERATION,
     GRPC_PACKET_PERFORMANCE_SKIP_MESSAGE,
+    GRPC_PACKET_PERFORMANCE_TEST_SKIP,
 )
 
 ByteEncoder = Callable[[Any], bytes]

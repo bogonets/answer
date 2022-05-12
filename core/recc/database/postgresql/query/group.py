@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List
 from datetime import datetime
+from typing import Any, List, Optional
+
 from recc.chrono.datetime import tznow
+from recc.database.query_builder import BuildResult, UpdateBuilder
 from recc.variables.database import TABLE_GROUP, TABLE_GROUP_MEMBER
-from recc.database.query_builder import UpdateBuilder, BuildResult
 
 INSERT_GROUP = f"""
 INSERT INTO {TABLE_GROUP} (

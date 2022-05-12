@@ -1,25 +1,27 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List
 from datetime import datetime
+from typing import Any, List, Optional
+
 from overrides import overrides
+
 from recc.chrono.datetime import tznow
-from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
-from recc.database.struct.project import Project
 from recc.database.interfaces.db_project import DbProject
 from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.project import (
-    INSERT_PROJECT,
     DELETE_PROJECT_BY_UID,
-    SELECT_PROJECT_UID_BY_GROUP_UID_AND_SLUG,
+    INSERT_PROJECT,
     SELECT_PROJECT_ALL,
-    SELECT_PROJECT_BY_UID,
-    SELECT_PROJECT_BY_GROUP_ID,
     SELECT_PROJECT_BY_BELOW_VISIBILITY,
-    SELECT_PROJECT_COUNT,
+    SELECT_PROJECT_BY_GROUP_ID,
+    SELECT_PROJECT_BY_UID,
     SELECT_PROJECT_BY_USER_UID,
+    SELECT_PROJECT_COUNT,
+    SELECT_PROJECT_UID_BY_GROUP_UID_AND_SLUG,
     get_update_project_query_by_uid,
 )
+from recc.database.struct.project import Project
+from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 
 
 class PgProject(DbProject, PgBase):

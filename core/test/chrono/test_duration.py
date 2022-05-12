@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
 from datetime import timedelta
+from unittest import TestCase, main
+
 from recc.chrono.duration import duration_to_timedelta
 
 

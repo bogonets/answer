@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List
 from io import StringIO
-from xml.etree.ElementTree import parse as _xml_parse
-from xml.etree.ElementTree import Element
 from shutil import which
+from typing import List, Optional
+from xml.etree.ElementTree import Element
+from xml.etree.ElementTree import parse as _xml_parse
+
 from recc.packet.nvidia import (
-    ClocksThrottleReasons,
-    MemoryUsage,
-    Utilization,
-    Temperature,
     Clocks,
-    ProcessInfo,
+    ClocksThrottleReasons,
     Gpu,
+    MemoryUsage,
     NvidiaSmiLog,
+    ProcessInfo,
+    Temperature,
+    Utilization,
 )
 from recc.subprocess.async_subprocess import start_async_subprocess_simply
 from recc.variables.nvidia import (

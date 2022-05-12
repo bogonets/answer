@@ -1,24 +1,26 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List
 from datetime import datetime
+from typing import Any, List, Optional
+
 from overrides import overrides
+
 from recc.chrono.datetime import tznow
-from recc.database.struct.layout import Layout
 from recc.database.interfaces.db_layout import DbLayout
 from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.layout import (
-    INSERT_LAYOUT,
-    UPDATE_LAYOUT_DESCRIPTION_BY_UID,
-    UPDATE_LAYOUT_DESCRIPTION_BY_PROJECT_UID_AND_NAME,
-    UPDATE_LAYOUT_EXTRA_BY_UID,
-    UPDATE_LAYOUT_EXTRA_BY_PROJECT_UID_AND_NAME,
-    DELETE_LAYOUT_BY_UID,
     DELETE_LAYOUT_BY_PROJECT_UID_AND_NAME,
-    SELECT_LAYOUT_BY_UID,
-    SELECT_LAYOUT_BY_PROJECT_ID_AND_NAME,
+    DELETE_LAYOUT_BY_UID,
+    INSERT_LAYOUT,
     SELECT_LAYOUT_BY_PROJECT_ID,
+    SELECT_LAYOUT_BY_PROJECT_ID_AND_NAME,
+    SELECT_LAYOUT_BY_UID,
+    UPDATE_LAYOUT_DESCRIPTION_BY_PROJECT_UID_AND_NAME,
+    UPDATE_LAYOUT_DESCRIPTION_BY_UID,
+    UPDATE_LAYOUT_EXTRA_BY_PROJECT_UID_AND_NAME,
+    UPDATE_LAYOUT_EXTRA_BY_UID,
 )
+from recc.database.struct.layout import Layout
 
 
 class PgLayout(DbLayout, PgBase):

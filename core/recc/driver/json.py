@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Callable
 import json
-
+from typing import Any, Callable
 
 JsonByteEncoder = Callable[[Any], bytes]
 JsonByteDecoder = Callable[[bytes], Any]

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Dict
+from typing import Dict, List
 
 
 class ImageInfo:

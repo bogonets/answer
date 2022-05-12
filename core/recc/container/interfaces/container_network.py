@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, Dict, Any
 from abc import ABCMeta, abstractmethod
+from typing import Any, Dict, List, Optional
+
 from recc.container.struct.network_info import NetworkInfo
 
 

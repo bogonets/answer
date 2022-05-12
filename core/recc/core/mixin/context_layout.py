@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Optional, Any
+from typing import Any, List, Optional
+
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.layout import Layout
 

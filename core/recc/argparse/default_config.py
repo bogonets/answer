@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from argparse import Namespace
+
 from recc.argparse.argument import Argument
-from recc.argparse.command import Command
-from recc.argparse.config.core_config import CoreConfig, CORE_ARGS
-from recc.argparse.config.ctrl_config import CtrlConfig, CTRL_ARGS
-from recc.argparse.config.task_config import TaskConfig, TASK_ARGS
-from recc.argparse.config.daemon_config import DaemonConfig, DAEMON_ARGS
-from recc.argparse.config.global_config import GlobalConfig, GLOBAL_ARGS
-from recc.argparse.command import COMMAND_ARGUMENT_KEY
+from recc.argparse.command import COMMAND_ARGUMENT_KEY, Command
+from recc.argparse.config.core_config import CORE_ARGS, CoreConfig
+from recc.argparse.config.ctrl_config import CTRL_ARGS, CtrlConfig
+from recc.argparse.config.daemon_config import DAEMON_ARGS, DaemonConfig
+from recc.argparse.config.global_config import GLOBAL_ARGS, GlobalConfig
+from recc.argparse.config.task_config import TASK_ARGS, TaskConfig
 
 
 def get_default_namespace(*args: Argument) -> Namespace:

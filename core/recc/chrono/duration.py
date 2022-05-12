@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from re import compile as re_compile
 from datetime import timedelta
+from re import compile as re_compile
 
 NUMBER_REGX = re_compile(r"^[0-9]+\.?[0-9]*")
 

@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import zlib
+import bz2
 import gzip
 import lzma
-import bz2
-
 import pickle
-import orjson
-import msgpack
-
+import zlib
 from typing import Any, Callable
+
+import msgpack
+import orjson
 
 ByteEncoder = Callable[[Any], bytes]
 ByteDecoder = Callable[[bytes], Any]

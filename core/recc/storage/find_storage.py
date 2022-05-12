@@ -1,19 +1,25 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Optional, List, Union
 from tempfile import mkdtemp
+from typing import List, Optional, Union
+
 from recc.filesystem.path_utils import HOME_DIR
-from recc.filesystem.permission import is_readable_dir, is_writable_dir, \
-    test_readable_directory, test_writable_directory, prepare_readable_directory, \
-    prepare_writable_directory
-from recc.system.user import change_user
+from recc.filesystem.permission import (
+    is_readable_dir,
+    is_writable_dir,
+    prepare_readable_directory,
+    prepare_writable_directory,
+    test_readable_directory,
+    test_writable_directory,
+)
 from recc.system.group import change_group
+from recc.system.user import change_user
 from recc.variables.storage import (
-    DEFAULT_STORAGE_HOME_NAME,
     DEFAULT_STORAGE_GLOBAL_DIR,
-    DEFAULT_TEMP_STORAGE_SUFFIX,
+    DEFAULT_STORAGE_HOME_NAME,
     DEFAULT_TEMP_STORAGE_PREFIX,
+    DEFAULT_TEMP_STORAGE_SUFFIX,
 )
 
 

@@ -2,6 +2,7 @@
 
 import os
 from typing import List
+
 from recc.mime.mime_type import MimeType
 
 

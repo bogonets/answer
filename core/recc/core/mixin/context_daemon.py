@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List
+from typing import List, Optional
+
 from recc.core.mixin.context_base import ContextBase
-from recc.database.struct.daemon import Daemon
 from recc.daemon.daemon_runner import DAEMON_SCRIPT_EXTENSION
 from recc.daemon.daemon_state import DaemonState
+from recc.database.struct.daemon import Daemon
 
 
 class ContextDaemon(ContextBase):

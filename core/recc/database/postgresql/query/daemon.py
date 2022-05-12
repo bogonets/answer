@@ -2,9 +2,10 @@
 
 from datetime import datetime
 from typing import Optional
+
 from recc.chrono.datetime import tznow
-from recc.variables.database import TABLE_DAEMON, FUNC_ADD_DAEMON_AND_PORT
-from recc.database.query_builder import UpdateBuilder, BuildResult
+from recc.database.query_builder import BuildResult, UpdateBuilder
+from recc.variables.database import FUNC_ADD_DAEMON_AND_PORT, TABLE_DAEMON
 
 INSERT_DAEMON = f"""
 INSERT INTO {TABLE_DAEMON} (

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from recc.argparse.default_parser import parse_arguments_to_config
+
+from recc.argparse.command import Command
 from recc.argparse.config.core_config import CoreConfig
 from recc.argparse.config.task_config import TaskConfig
-from recc.argparse.command import Command
+from recc.argparse.default_parser import parse_arguments_to_config
 from recc.system.environ import exchange_env
 
 RECC_VERBOSE = "RECC_VERBOSE"

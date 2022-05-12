@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from recc.template.lamda_template import LamdaTemplate
-from recc.template.information import Information
+
 from recc.template.controller import Controller
+from recc.template.information import Information
+from recc.template.lamda_template import LamdaTemplate
 from recc.template.property import Property
 
 SAMPLE_DATA = {

@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, Dict, Any, Union
-from tarfile import open as tar_open
-from tarfile import TarFile
-from signal import SIGINT, SIGKILL
 from io import BytesIO
-from overrides import overrides
+from signal import SIGINT, SIGKILL
+from tarfile import TarFile
+from tarfile import open as tar_open
+from typing import Any, Dict, List, Optional, Union
+
 from docker.models.containers import Container
+from overrides import overrides
+
+from recc.container.docker.mixin.docker_base import DockerBase
 from recc.container.interfaces.container_container import ContainerContainer
 from recc.container.struct.container_info import ContainerInfo
 from recc.container.struct.port_binding_guest import PortBindingGuest
 from recc.container.struct.port_binding_host import PortBindingHost
-from recc.container.docker.mixin.docker_base import DockerBase
 
 _ERR_FMT_HOST_PORT_TYPE = "The host port information is not a `list` type: %s"
 

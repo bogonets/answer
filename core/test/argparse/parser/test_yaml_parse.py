@@ -3,6 +3,7 @@
 import os
 import tempfile
 from unittest import TestCase, main
+
 from recc.argparse.parser.yaml_parse import get_namespace_by_yaml_path
 
 TEST_HTTP_BIND = "localhost"

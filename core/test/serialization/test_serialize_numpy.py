@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
-from typing import Optional, List
-from unittest import TestCase, main
 from dataclasses import dataclass
-from recc.serialization.numpy import numpy_serialize, numpy_deserialize
-from recc.serialization.serialize import serialize_default
+from typing import List, Optional
+from unittest import TestCase, main
+
+import numpy as np
+
 from recc.serialization.deserialize import deserialize_default
+from recc.serialization.numpy import numpy_deserialize, numpy_serialize
+from recc.serialization.serialize import serialize_default
 
 
 @dataclass

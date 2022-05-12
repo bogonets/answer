@@ -3,8 +3,9 @@
 import os
 from tempfile import TemporaryDirectory
 from unittest import IsolatedAsyncioTestCase, main
-from tester.plugins.copy_plugin import copy_plugin
+
 from recc.plugin.plugin import Plugin
+from tester.plugins.copy_plugin import copy_plugin
 
 
 class PluginSimpleTestCase(IsolatedAsyncioTestCase):

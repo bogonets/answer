@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from enum import Enum
-from typing import Dict, Set, Optional, Union, Any, Tuple
-from recc.vs.box import Box
+from typing import Any, Dict, Optional, Set, Tuple, Union
+
 from recc.vs.arc import Arc
+from recc.vs.box import Box
 
 
 class SlotDirection(Enum):

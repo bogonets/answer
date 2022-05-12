@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+
 from recc.util.version import (
-    parse_version_numbers,
     normalize_version,
+    parse_version_numbers,
     version_text,
     version_tuple,
 )

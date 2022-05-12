@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Optional
 from argparse import Namespace
+from typing import Optional
+
 from recc.argparse.parser.cfg_parse import get_namespace_by_cfg_path
 from recc.argparse.parser.json_parse import get_namespace_by_json_path
 from recc.argparse.parser.yaml_parse import get_namespace_by_yaml_path

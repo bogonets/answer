@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
 from datetime import date, datetime
-from recc.chrono.date import parse_yyyy_mm_dd, date_to_datetime_range
+from unittest import TestCase, main
+
+from recc.chrono.date import date_to_datetime_range, parse_yyyy_mm_dd
 
 
 class DateParseTestCase(TestCase):

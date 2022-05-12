@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
+from tempfile import NamedTemporaryFile, TemporaryDirectory
 from unittest import IsolatedAsyncioTestCase, main
-from tempfile import TemporaryDirectory, NamedTemporaryFile
+
 from recc.aio.file_remover import remove_files_from_subprocess
 
 

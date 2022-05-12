@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from typing import List
-from recc.argparse.config.global_config import create_usage, GlobalConfig
+
 from recc.argparse.argument import Argument
 from recc.argparse.command import Command
+from recc.argparse.config.global_config import GlobalConfig, create_usage
 
 DAEMON_USAGE = create_usage(Command.daemon)
 DAEMON_DESCRIPTION = "Daemon process"

@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Optional, Any
+from typing import Any, List, Optional
+
 from recc.core.mixin.context_base import ContextBase
 from recc.database.struct.group import Group
-from recc.database.struct.group_member import GroupMember
 from recc.database.struct.group_join_member import GroupJoinGroupMember
+from recc.database.struct.group_member import GroupMember
 from recc.variables.database import (
-    VISIBILITY_LEVEL_PRIVATE,
-    VISIBILITY_LEVEL_INTERNAL,
     ROLE_UID_OWNER,
+    VISIBILITY_LEVEL_INTERNAL,
+    VISIBILITY_LEVEL_PRIVATE,
 )
 
 

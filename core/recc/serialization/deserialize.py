@@ -1,39 +1,41 @@
 # -*- coding: utf-8 -*-
 
+from dataclasses import is_dataclass
+from datetime import date, datetime, time
+from enum import Enum
 from inspect import isclass
 from typing import (
-    get_type_hints,
-    get_origin,
-    get_args,
-    Union,
     Any,
-    Tuple,
     Dict,
-    TypeVar,
-    Type,
     Iterable,
     Mapping,
-    Optional,
-    MutableSequence,
     MutableMapping,
+    MutableSequence,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    get_args,
+    get_origin,
+    get_type_hints,
 )
-from datetime import datetime, date, time
-from dataclasses import is_dataclass
-from enum import Enum
+
 from numpy import ndarray
+
+from recc.inspect.init_signature import required_init_parameters
+from recc.inspect.member import get_public_attributes
+from recc.serialization.errors import DeserializeError
+from recc.serialization.interface import DESERIALIZE_METHOD_NAME
+from recc.serialization.numpy import numpy_deserialize
 from recc.serialization.utils import (
     MAPPING_METHOD_ITEMS,
     MAPPING_METHOD_KEYS,
     SEQUENCE_METHOD_INSERT,
     is_deserialize_cls,
-    is_serializable_pod_cls,
     is_none,
+    is_serializable_pod_cls,
 )
-from recc.serialization.interface import DESERIALIZE_METHOD_NAME
-from recc.serialization.errors import DeserializeError
-from recc.serialization.numpy import numpy_deserialize
-from recc.inspect.member import get_public_attributes
-from recc.inspect.init_signature import required_init_parameters
 from recc.util.version import version_tuple
 
 _T = TypeVar("_T")

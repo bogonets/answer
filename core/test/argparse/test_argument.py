@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.argparse.argument import (
+    remove_start_with_dash,
     valid_key_name,
     valid_normalize_name,
-    remove_start_with_dash,
 )
 
 

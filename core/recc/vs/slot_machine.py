@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from typing import Dict
-from recc.vs.slot import SlotDirection, SlotCategory, Slot, SlotKey
+
+from recc.vs.slot import Slot, SlotCategory, SlotDirection, SlotKey
 
 
 class SlotMachine:

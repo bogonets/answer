@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict
 from multiprocessing.shared_memory import SharedMemory
+from typing import Dict
 
 
 class SharedMemoryUser:

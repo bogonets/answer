@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main
 from datetime import datetime, timedelta
-from tester.unittest.postgresql_test_case import PostgresqlTestCase
+from unittest import main
+
 from recc.util.version import version_text
+from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
 class PgInfoTestCase(PostgresqlTestCase):

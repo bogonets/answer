@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.rbac.rbac import Rbac
 from recc.rbac.rbac_exception import RbacMismatchContextError
 

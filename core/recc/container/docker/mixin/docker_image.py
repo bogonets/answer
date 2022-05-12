@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, Dict, Any
 from io import BytesIO, StringIO
-from overrides import overrides
+from typing import Any, Dict, List, Optional
+
 from docker.models.images import Image
-from recc.logging.logging import recc_container_logger as logger
-from recc.container.interfaces.container_image import ContainerImage
+from overrides import overrides
+
 from recc.container.docker.mixin.docker_base import DockerBase
+from recc.container.interfaces.container_image import ContainerImage
 from recc.container.struct.image_info import ImageInfo
+from recc.logging.logging import recc_container_logger as logger
 from recc.variables.container import (
     BUILD_CONTEXT_BUILD_PATH,
     BUILD_CONTEXT_DOCKERFILE_PATH,

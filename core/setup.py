@@ -2,7 +2,8 @@
 
 import os
 from typing import List
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 SOURCE_PATH = os.path.abspath(__file__)
 SOURCE_DIR = os.path.dirname(SOURCE_PATH)

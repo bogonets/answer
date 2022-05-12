@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from sys import platform
-from typing import NamedTuple, List, Union, Iterable
-from numpy import ndarray, dtype
+from typing import Iterable, List, NamedTuple, Union
+
+from numpy import dtype, ndarray
 
 
 def _ndarray_to_bytes_by_darwin(array: ndarray) -> bytes:

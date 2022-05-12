@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
 from functools import reduce
+from unittest import TestCase, main
+
 from recc.__main__ import main as root_main
 from recc.util.version import version_text
 

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, Dict, Any
-from overrides import overrides
+from typing import Any, Dict, List, Optional
+
 from docker.models.networks import Network
+from overrides import overrides
+
+from recc.container.docker.mixin.docker_base import DockerBase
 from recc.container.interfaces.container_network import ContainerNetwork
 from recc.container.struct.network_info import NetworkInfo
-from recc.container.docker.mixin.docker_base import DockerBase
 
 
 def _create_network_info(network: Network) -> NetworkInfo:

@@ -1,24 +1,26 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List
 from datetime import datetime
-from overrides import overrides
+from typing import List, Optional
+
 from asyncpg.exceptions import UniqueViolationError
+from overrides import overrides
+
 from recc.chrono.datetime import tznow
-from recc.database.struct.info import Info
 from recc.database.interfaces.db_info import DbInfo
 from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.info import (
-    INSERT_INFO,
-    UPDATE_INFO_VALUE_BY_KEY,
-    UPSERT_INFO,
     DELETE_INFO_BY_KEY,
     EXISTS_INFO_BY_KEY,
+    INSERT_INFO,
+    SELECT_INFO_ALL,
     SELECT_INFO_BY_KEY,
     SELECT_INFO_BY_KEY_LIKE,
-    SELECT_INFO_ALL,
     SELECT_INFO_DB_VERSION,
+    UPDATE_INFO_VALUE_BY_KEY,
+    UPSERT_INFO,
 )
+from recc.database.struct.info import Info
 
 
 class PgInfo(DbInfo, PgBase):

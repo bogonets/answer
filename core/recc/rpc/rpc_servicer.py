@@ -1,48 +1,46 @@
 # -*- coding: utf-8 -*-
 
-import os
 import asyncio
+import os
 import pickle
 from copy import deepcopy
 from typing import Any, Optional, Union
+
 from grpc.aio import ServicerContext
+
 from recc.argparse.config.task_config import TaskConfig
 from recc.argparse.default_config import get_default_task_config
 from recc.argparse.injection_values import injection_task_default_values
 from recc.logging.logging import recc_rpc_logger as logger
-from recc.storage.task_storage import TaskStorage
-from recc.system.user import get_user_id
-from recc.system.group import get_group_id
-from recc.rpc.rpc_converter import (
-    cvt_node_slot_data,
-    cvt_box_data,
-    cvt_box_request,
-)
-from recc.variables.rpc import DEFAULT_RPC_ADDRESS
-from recc.vs.task_graph import TaskGraph
-from recc.proto.rpc.rpc_api_pb2_grpc import RpcApiServicer
 from recc.proto.rpc.rpc_api_pb2 import (
-    Pit,
+    Data,
+    Empty,
+    GetNodePropertyA,
+    GetNodePropertyQ,
+    Names,
+    NodePropertyPath,
     Pat,
     Ping,
+    Pit,
     Pong,
-    Empty,
-    Data,
     Result,
-    Names,
-    TarFile,
-    UploadTemplateQ,
-    UploadTemplateA,
-    SetTaskBlueprintQ,
-    SetTaskBlueprintA,
-    NodePropertyPath,
-    GetNodePropertyQ,
-    GetNodePropertyA,
-    SetNodePropertyQ,
-    SetNodePropertyA,
-    SendSignalQ,
     SendSignalA,
+    SendSignalQ,
+    SetNodePropertyA,
+    SetNodePropertyQ,
+    SetTaskBlueprintA,
+    SetTaskBlueprintQ,
+    TarFile,
+    UploadTemplateA,
+    UploadTemplateQ,
 )
+from recc.proto.rpc.rpc_api_pb2_grpc import RpcApiServicer
+from recc.rpc.rpc_converter import cvt_box_data, cvt_box_request, cvt_node_slot_data
+from recc.storage.task_storage import TaskStorage
+from recc.system.group import get_group_id
+from recc.system.user import get_user_id
+from recc.variables.rpc import DEFAULT_RPC_ADDRESS
+from recc.vs.task_graph import TaskGraph
 
 
 def _chown(

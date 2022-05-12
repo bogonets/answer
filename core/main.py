@@ -12,6 +12,5 @@ sys.path.append(SOURCE_DIR)
 
 from recc.app.entrypoint import main  # noqa
 
-
 if __name__ == "__main__":
     exit(main())

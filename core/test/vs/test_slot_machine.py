@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from recc.vs.slot import SlotDirection, SlotCategory, Slot
+
+from recc.vs.slot import Slot, SlotCategory, SlotDirection
 from recc.vs.slot_machine import SlotMachine
 
 

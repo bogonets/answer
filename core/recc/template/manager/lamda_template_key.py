@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from typing import Tuple, Union
+
 from recc.rule.naming_base import valid_naming
-from recc.template.manager.lamda_template_position import (
-    LamdaTemplatePosition,
-    LAMDA_TEMPLATE_POSITION_MAP,
-)
 from recc.rule.naming_template import (
     naming_lamda_template_key_name,
     split_lamda_template_key_name,
+)
+from recc.template.manager.lamda_template_position import (
+    LAMDA_TEMPLATE_POSITION_MAP,
+    LamdaTemplatePosition,
 )
 
 

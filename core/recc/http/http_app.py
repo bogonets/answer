@@ -1,34 +1,34 @@
 # -*- coding: utf-8 -*-
 
 import os
-from asyncio import Task, CancelledError
+from asyncio import CancelledError, Task
 from socket import socket
-from typing import Optional, List
+from typing import List, Optional
 
 from aiohttp import web
 from aiohttp.log import access_logger
-from aiohttp.web import GracefulExit
 from aiohttp.web import _run_app  # noqa
-from aiohttp.web_log import AccessLogger
-from aiohttp.web_request import Request
-from aiohttp.web_response import StreamResponse, Response
-from aiohttp.web_routedef import AbstractRouteDef
+from aiohttp.web import GracefulExit
 from aiohttp.web_exceptions import HTTPNotFound
 from aiohttp.web_fileresponse import FileResponse
+from aiohttp.web_log import AccessLogger
+from aiohttp.web_request import Request
+from aiohttp.web_response import Response, StreamResponse
+from aiohttp.web_routedef import AbstractRouteDef
 
-from recc.core.context import Context
 from recc.aio.task import all_tasks, cancel_tasks
-from recc.network.socket import bind_socket
-from recc.http.http_interface import HttpAppCallback, EmptyHttpAppCallback
-from recc.http.http_cors import create_cors
-from recc.http.v2.router_v2 import RouterV2
-from recc.http.http_www import HttpWWW
-from recc.http.http_utils import strip_prefix_slash
-from recc.http import http_urls as u
+from recc.core.context import Context
 from recc.http import http_path_keys as p
+from recc.http import http_urls as u
+from recc.http.http_cors import create_cors
+from recc.http.http_interface import EmptyHttpAppCallback, HttpAppCallback
+from recc.http.http_utils import strip_prefix_slash
+from recc.http.http_www import HttpWWW
+from recc.http.v2.router_v2 import RouterV2
 from recc.logging.logging import recc_http_logger as logger
-from recc.util.version import version_text
+from recc.network.socket import bind_socket
 from recc.util.python_version import PY_36
+from recc.util.version import version_text
 from recc.variables.http import DEFAULT_CLIENT_MAX_SIZE
 from recc.variables.plugin import STATIC_WEB_FILES_DIRECTORY_NAME, STATIC_WEB_INDEX_HTML
 

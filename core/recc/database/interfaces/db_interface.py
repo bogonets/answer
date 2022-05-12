@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABCMeta, abstractmethod
+
 from recc.database.interfaces.db_base import DbBase
 from recc.database.interfaces.db_daemon import DbDaemon
 from recc.database.interfaces.db_group import DbGroup

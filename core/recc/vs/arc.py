@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, Union, Tuple
+from typing import Any, Optional, Tuple, Union
+
 from recc.vs.box import Box
 
 

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, Any
-from pathlib import Path
 from asyncio import gather
+from pathlib import Path
+from typing import Any, Dict
+
 from recc.plugin.plugin import Plugin
 
 PLUGIN_SCRIPT_EXTENSION = ".py"

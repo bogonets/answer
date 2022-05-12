@@ -2,6 +2,7 @@
 
 from abc import ABCMeta
 from typing import Optional
+
 from recc.database.interfaces.db_base_interface import DbBaseInterface
 from recc.database.query_utils import merge_queries
 

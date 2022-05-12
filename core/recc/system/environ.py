@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from os import environ
-from typing import Optional, Dict, Any, Type
+from typing import Any, Dict, Optional, Type
 
 
 def get_os_envs_dict() -> Dict[str, str]:

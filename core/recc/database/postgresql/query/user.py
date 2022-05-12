@@ -2,14 +2,15 @@
 
 from datetime import datetime
 from typing import Any, Optional
+
 from recc.chrono.datetime import tznow
+from recc.database.query_builder import BuildResult, UpdateBuilder
 from recc.variables.database import (
-    TABLE_USER,
     TABLE_GROUP_MEMBER,
     TABLE_PROJECT_MEMBER,
+    TABLE_USER,
     VIEW_USER_ADMIN_COUNT,
 )
-from recc.database.query_builder import UpdateBuilder, BuildResult
 
 INSERT_USER = f"""
 INSERT INTO {TABLE_USER} (

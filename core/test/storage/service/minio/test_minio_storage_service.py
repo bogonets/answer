@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from unittest import main
-from tester.unittest.minio_test_case import MinioTestCase
+
 from minio import S3Error
+
+from tester.unittest.minio_test_case import MinioTestCase
 
 
 class MinioStorageServiceTestCase(MinioTestCase):

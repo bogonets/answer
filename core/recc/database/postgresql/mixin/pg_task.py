@@ -1,30 +1,32 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List, Dict
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from overrides import overrides
+
 from recc.chrono.datetime import tznow
-from recc.database.struct.task import Task
 from recc.database.interfaces.db_task import DbTask
 from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.task import (
-    INSERT_TASK,
-    UPDATE_TASK_DESCRIPTION_BY_UID,
-    UPDATE_TASK_DESCRIPTION_BY_PROJECT_UID_AND_SLUG,
-    UPDATE_TASK_EXTRA_BY_UID,
-    UPDATE_TASK_EXTRA_BY_PROJECT_UID_AND_SLUG,
-    UPDATE_TASK_KEYS_BY_UID,
-    UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_SLUG,
-    DELETE_TASK_BY_UID,
     DELETE_TASK_BY_PROJECT_UID_AND_SLUG,
-    SELECT_TASK_BY_UID,
-    SELECT_TASK_BY_PROJECT_ID_AND_SLUG,
-    SELECT_TASK_UID_BY_PROJECT_ID_AND_SLUG,
-    SELECT_TASK_BY_PROJECT_ID,
+    DELETE_TASK_BY_UID,
+    INSERT_TASK,
     SELECT_TASK_BY_FULLPATH,
+    SELECT_TASK_BY_PROJECT_ID,
+    SELECT_TASK_BY_PROJECT_ID_AND_SLUG,
+    SELECT_TASK_BY_UID,
     SELECT_TASK_UID_BY_FULLPATH,
+    SELECT_TASK_UID_BY_PROJECT_ID_AND_SLUG,
+    UPDATE_TASK_DESCRIPTION_BY_PROJECT_UID_AND_SLUG,
+    UPDATE_TASK_DESCRIPTION_BY_UID,
+    UPDATE_TASK_EXTRA_BY_PROJECT_UID_AND_SLUG,
+    UPDATE_TASK_EXTRA_BY_UID,
+    UPDATE_TASK_KEYS_BY_PROJECT_UID_AND_SLUG,
+    UPDATE_TASK_KEYS_BY_UID,
     get_update_task_query_by_uid,
 )
+from recc.database.struct.task import Task
 
 
 class PgTask(DbTask, PgBase):

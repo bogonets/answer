@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from unittest import IsolatedAsyncioTestCase, main
 from asyncio import get_event_loop
-from tester.http.http_app_tester import HttpAppTester
-from recc.packet.user import SignupQ
+from unittest import IsolatedAsyncioTestCase, main
+
+from aiohttp.hdrs import AUTHORIZATION
+
 from recc.http import http_urls as u
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.http_utils import v2_public_path
+from recc.packet.user import SignupQ
 from recc.util.version import version_text
-from aiohttp.hdrs import AUTHORIZATION
+from tester.http.http_app_tester import HttpAppTester
 
 
 class RouterV2PublicTestCase(IsolatedAsyncioTestCase):

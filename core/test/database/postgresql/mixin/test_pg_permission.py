@@ -1,22 +1,23 @@
 # -*- coding: utf-8 -*-
 
 from unittest import main
-from tester.unittest.postgresql_test_case import PostgresqlTestCase
+
+from recc.database.postgresql.query.permission import safe_insert_permission_only_slug
 from recc.variables.database import (
     DEFAULT_PERMISSION_SLUGS,
     DEFAULT_ROLE_SLUGS,
-    ROLE_SLUG_OWNER,
-    ROLE_SLUG_MAINTAINER,
-    ROLE_SLUG_DEVELOPER,
-    ROLE_SLUG_REPORTER,
-    ROLE_SLUG_GUEST,
-    PERMISSIONS_OF_OWNER,
-    PERMISSIONS_OF_MAINTAINER,
     PERMISSIONS_OF_DEVELOPER,
-    PERMISSIONS_OF_REPORTER,
     PERMISSIONS_OF_GUEST,
+    PERMISSIONS_OF_MAINTAINER,
+    PERMISSIONS_OF_OWNER,
+    PERMISSIONS_OF_REPORTER,
+    ROLE_SLUG_DEVELOPER,
+    ROLE_SLUG_GUEST,
+    ROLE_SLUG_MAINTAINER,
+    ROLE_SLUG_OWNER,
+    ROLE_SLUG_REPORTER,
 )
-from recc.database.postgresql.query.permission import safe_insert_permission_only_slug
+from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 
 class PgPermissionTestCase(PostgresqlTestCase):

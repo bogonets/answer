@@ -2,9 +2,10 @@
 
 from datetime import datetime
 from typing import Optional
+
 from recc.chrono.datetime import tznow
+from recc.database.query_builder import BuildResult, UpdateBuilder
 from recc.variables.database import TABLE_PORT
-from recc.database.query_builder import UpdateBuilder, BuildResult
 
 INSERT_PORT = f"""
 INSERT INTO {TABLE_PORT} (

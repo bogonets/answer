@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
-from pkgutil import iter_modules, ModuleInfo
-from typing import List
-from functools import reduce, lru_cache
+from functools import lru_cache, reduce
 from importlib import import_module
+from pkgutil import ModuleInfo, iter_modules
+from typing import List
 
 
 def get_module_path(module) -> str:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABCMeta, abstractmethod
-from typing import Optional, Any, TypeVar, Type, List
+from typing import Any, List, Optional, Type, TypeVar
 
 RecordType = TypeVar("RecordType")
 ColumnType = TypeVar("ColumnType")

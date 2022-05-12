@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # [WARNING] Do not use 3rd-party libraries in this file.
 
-from typing import Optional, Final, NamedTuple
+from typing import Final, NamedTuple, Optional
 
 
 class SemanticVersion(NamedTuple):

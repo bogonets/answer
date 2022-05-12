@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional
-from recc.storage.service.storage_service_interface import StorageServiceInterface
+
 from recc.storage.service.minio.minio_storage_service import MinioStorageService
+from recc.storage.service.storage_service_interface import StorageServiceInterface
 from recc.variables.storage import STORAGE_SERVICE_TYPE_MINIO
 
 

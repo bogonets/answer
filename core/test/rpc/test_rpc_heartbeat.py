@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
-import grpc
 from tempfile import TemporaryDirectory
 from unittest import IsolatedAsyncioTestCase, main
+
+import grpc
+
 from recc.argparse.default_config import get_default_task_config
 from recc.proto.rpc import rpc_api_pb2 as api
 from recc.proto.rpc.rpc_api_pb2_grpc import RpcApiStub

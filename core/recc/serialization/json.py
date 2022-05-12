@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import codecs
-from typing import Type, TypeVar, Optional, Any, Final
 from json import JSONDecodeError
-from recc.driver.json import global_json_encoder, global_json_decoder
-from recc.serialization.serialize import serialize
+from typing import Any, Final, Optional, Type, TypeVar
+
+from recc.driver.json import global_json_decoder, global_json_encoder
 from recc.serialization.deserialize import deserialize
+from recc.serialization.serialize import serialize
 
 _T = TypeVar("_T")
 _ET = TypeVar("_ET")

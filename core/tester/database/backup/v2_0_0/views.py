@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from tester.database.backup.v2_0_0.variables import (
+    INFO_KEY_RECC_DB_VERSION,
     TABLE_INFO,
     TABLE_USER,
     VIEW_INFO_DB_VERSION,
     VIEW_USER_ADMIN,
     VIEW_USER_ADMIN_COUNT,
-    INFO_KEY_RECC_DB_VERSION,
 )
 
 CREATE_VIEW_INFO_DB_VERSION = f"""

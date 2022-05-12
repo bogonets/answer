@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # UDS = Unix Domain Socket
 
-from recc.variables.rpc import UNIX_URI_PREFIX, UNIX_ABSTRACT_URI_PREFIX
+from recc.variables.rpc import UNIX_ABSTRACT_URI_PREFIX, UNIX_URI_PREFIX
 
 
 def is_uds_family(address: str) -> bool:

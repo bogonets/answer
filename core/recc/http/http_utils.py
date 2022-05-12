@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from typing import Mapping, Optional, Any
 from functools import reduce
+from typing import Any, Mapping, Optional
 from urllib.parse import urlencode
-from recc.variables.http import URI_PATH_SEPARATOR, URI_QUERY_PREFIX
-from recc.http import http_urls as u
+
 from recc.http import http_path_keys as p
+from recc.http import http_urls as u
+from recc.variables.http import URI_PATH_SEPARATOR, URI_QUERY_PREFIX
 
 
 def strip_prefix_slash(path: str) -> str:

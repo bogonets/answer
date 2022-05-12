@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import os
-from unittest import TestCase, main
-from tarfile import open as tar_open
 from io import BytesIO
+from tarfile import open as tar_open
+from unittest import TestCase, main
+
 from recc import rpc
-from recc.rpc import rpc_client
-from recc.rpc import rpc_converter
-from recc.rpc import rpc_servicer
 from recc.archive.tar_archive import compress_tar
+from recc.rpc import rpc_client, rpc_converter, rpc_servicer
 
 
 class TarArchiveTestCase(TestCase):

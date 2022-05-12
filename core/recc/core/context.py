@@ -1,55 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import os
-from shutil import move
-from hashlib import sha256
+from asyncio import AbstractEventLoop, get_event_loop_policy, set_event_loop
 from copy import deepcopy
-from asyncio import get_event_loop_policy, set_event_loop
-from typing import Optional, Dict
-from asyncio import AbstractEventLoop
+from hashlib import sha256
+from shutil import move
+from typing import Dict, Optional
 
 from recc.argparse.config.core_config import CoreConfig
-from recc.crypto.signature import generate_signature
-from recc.logging.logging import recc_core_logger as logger
-from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
 from recc.argparse.default_config import get_default_core_config
 from recc.argparse.injection_values import injection_core_default_values
-from recc.container.container_manager import create_container_manager
 from recc.cache.cache import Cache
-from recc.database.database import create_database
-from recc.storage.local_storage import LocalStorage
-from recc.task.task_connection_pool import create_task_connection_pool
-from recc.plugin.plugin_manager import PluginManager
-from recc.package.requirements_utils import RECC_REQUIREMENTS_MAIN
-from recc.daemon.daemon_manager import DaemonManager
-from recc.session.session import (
-    DEFAULT_ISSUER_RECC_ACCESS,
-    DEFAULT_ISSUER_RECC_REFRESH,
-    DEFAULT_ACCESS_MAX_AGE_SECONDS,
-    DEFAULT_REFRESH_MAX_AGE_SECONDS,
-    DEFAULT_JWT_ALGORITHM,
-    DEFAULT_LEEWAY_SECONDS,
-    SessionPairFactory,
-)
-from recc.init.default import (
-    init_logger,
-    init_json_driver,
-    init_xml_driver,
-    init_yaml_driver,
-    init_loop_driver,
-)
-from recc.util.version import version_text, version_tuple, parse_semantic_version
-from recc.variables.crypto import SIGNATURE_SIZE
-from recc.variables.logging import VERBOSE_LOGGING_LEVEL_1
-from recc.variables.database import (
-    CONFIG_PREFIX_RECC_ARGPARSE_CONFIG,
-    ROLE_UID_OWNER,
-    ROLE_SLUG_OWNER,
-    PIP_DOMAIN_RECC,
-    PIP_HASH_METHOD_SHA256,
-)
-
-
+from recc.container.container_manager import create_container_manager
 from recc.core.mixin.context_config import ContextConfig
 from recc.core.mixin.context_daemon import ContextDaemon
 from recc.core.mixin.context_group import ContextGroup
@@ -64,6 +26,41 @@ from recc.core.mixin.context_storage import ContextStorage
 from recc.core.mixin.context_system import ContextSystem
 from recc.core.mixin.context_task import ContextTask
 from recc.core.mixin.context_user import ContextUser
+from recc.crypto.signature import generate_signature
+from recc.daemon.daemon_manager import DaemonManager
+from recc.database.database import create_database
+from recc.init.default import (
+    init_json_driver,
+    init_logger,
+    init_loop_driver,
+    init_xml_driver,
+    init_yaml_driver,
+)
+from recc.logging.logging import recc_core_logger as logger
+from recc.package.requirements_utils import RECC_REQUIREMENTS_MAIN
+from recc.plugin.plugin_manager import PluginManager
+from recc.session.session import (
+    DEFAULT_ACCESS_MAX_AGE_SECONDS,
+    DEFAULT_ISSUER_RECC_ACCESS,
+    DEFAULT_ISSUER_RECC_REFRESH,
+    DEFAULT_JWT_ALGORITHM,
+    DEFAULT_LEEWAY_SECONDS,
+    DEFAULT_REFRESH_MAX_AGE_SECONDS,
+    SessionPairFactory,
+)
+from recc.storage.local_storage import LocalStorage
+from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
+from recc.task.task_connection_pool import create_task_connection_pool
+from recc.util.version import parse_semantic_version, version_text, version_tuple
+from recc.variables.crypto import SIGNATURE_SIZE
+from recc.variables.database import (
+    CONFIG_PREFIX_RECC_ARGPARSE_CONFIG,
+    PIP_DOMAIN_RECC,
+    PIP_HASH_METHOD_SHA256,
+    ROLE_SLUG_OWNER,
+    ROLE_UID_OWNER,
+)
+from recc.variables.logging import VERBOSE_LOGGING_LEVEL_1
 
 
 class Context(

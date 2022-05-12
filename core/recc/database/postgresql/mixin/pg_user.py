@@ -1,30 +1,32 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List
 from datetime import datetime
+from typing import Any, List, Optional
+
 from overrides import overrides
+
 from recc.chrono.datetime import tznow
-from recc.database.struct.user import User, PassInfo
 from recc.database.interfaces.db_user import DbUser
 from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.user import (
+    DELETE_USER_BY_UID,
     INSERT_USER,
+    SELECT_USER_ADMIN_COUNT,
+    SELECT_USER_ALL,
+    SELECT_USER_BY_UID,
+    SELECT_USER_COUNT,
+    SELECT_USER_EXISTS_BY_USERNAME,
+    SELECT_USER_EXTRA_BY_UID,
+    SELECT_USER_PASSWORD_AND_SALT_BY_UID,
+    SELECT_USER_UID_BY_USERNAME,
+    SELECT_USER_USERNAME,
+    SELECT_USER_USERNAME_BY_UID,
+    UPDATE_USER_EXTRA_BY_UID,
     UPDATE_USER_LAST_LOGIN_BY_UID,
     UPDATE_USER_PASSWORD_AND_SALT_BY_UID,
-    UPDATE_USER_EXTRA_BY_UID,
-    DELETE_USER_BY_UID,
-    SELECT_USER_USERNAME_BY_UID,
-    SELECT_USER_UID_BY_USERNAME,
-    SELECT_USER_EXISTS_BY_USERNAME,
-    SELECT_USER_PASSWORD_AND_SALT_BY_UID,
-    SELECT_USER_EXTRA_BY_UID,
-    SELECT_USER_BY_UID,
-    SELECT_USER_ALL,
-    SELECT_USER_USERNAME,
-    SELECT_USER_ADMIN_COUNT,
-    SELECT_USER_COUNT,
     get_update_user_query_by_uid,
 )
+from recc.database.struct.user import PassInfo, User
 
 
 class PgUser(DbUser, PgBase):

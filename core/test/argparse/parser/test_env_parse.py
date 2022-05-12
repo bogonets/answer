@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import os
-from unittest import TestCase, main
 from tempfile import NamedTemporaryFile
+from unittest import TestCase, main
+
 from recc.argparse.parser.env_parse import (
-    normalize_config_key,
     get_filtered_namespace,
-    get_namespace_by_os_envs,
     get_namespace_by_os_env_files,
+    get_namespace_by_os_envs,
+    normalize_config_key,
 )
 from recc.system.environ import exchange_env, get_env
-from recc.variables.environment import RECC_ENV_PREFIX, RECC_ENV_FILE_SUFFIX
+from recc.variables.environment import RECC_ENV_FILE_SUFFIX, RECC_ENV_PREFIX
 
 RECC_CONFIG = "RECC_CONFIG"
 RECC_HTTP_HOST_FILE = "RECC_HTTP_HOST_FILE"

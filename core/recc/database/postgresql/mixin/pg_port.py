@@ -1,21 +1,23 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List
 from datetime import datetime
+from typing import List, Optional
+
 from overrides import overrides
+
 from recc.chrono.datetime import tznow
-from recc.database.struct.port import Port, SockType
 from recc.database.interfaces.db_port import DbPort
 from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.port import (
-    INSERT_PORT,
     DELETE_PORT_BY_NUMBER_AND_SOCK,
-    SELECT_PORT_BY_NUMBER,
+    INSERT_PORT,
     SELECT_PORT_ALL,
+    SELECT_PORT_BY_NUMBER,
     SELECT_PORT_BY_REF_UID_AND_REF_CATEGORY,
     SELECT_PORT_NUMBER_ALL,
     get_update_port_query_by_number,
 )
+from recc.database.struct.port import Port, SockType
 
 
 class PgPort(DbPort, PgBase):

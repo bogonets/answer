@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, Dict, List
-from recc.typing.optional import strip_optional
-from recc.serialization.utils import update_dict, normalize_strings
-from recc.serialization.interface import Serializable
+from typing import Any, Dict, List, Optional
+
 from recc.serialization.deserialize import deserialize
+from recc.serialization.interface import Serializable
 from recc.serialization.serialize import serialize
+from recc.serialization.utils import normalize_strings, update_dict
 from recc.template.dependency import Dependency
 from recc.template.environment import Environment
 from recc.template.locale import Locale
 from recc.template.v1 import keys as v1k
 from recc.template.v2 import keys as v2k
+from recc.typing.optional import strip_optional
 
 EDGE_BEGIN = "begin"
 EDGE_MIDDLE = "middle"

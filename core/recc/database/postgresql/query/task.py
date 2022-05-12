@@ -2,9 +2,10 @@
 
 from datetime import datetime
 from typing import Any, Dict, Optional
+
 from recc.chrono.datetime import tznow
+from recc.database.query_builder import BuildResult, UpdateBuilder
 from recc.variables.database import TABLE_GROUP, TABLE_PROJECT, TABLE_TASK
-from recc.database.query_builder import UpdateBuilder, BuildResult
 
 INSERT_TASK = f"""
 INSERT INTO {TABLE_TASK} (

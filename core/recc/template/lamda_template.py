@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, Dict, List, Tuple
-from recc.serialization.utils import update_dict
+from typing import Any, Dict, List, Optional, Tuple
+
+from recc.serialization.deserialize import deserialize
 from recc.serialization.interface import Serializable
 from recc.serialization.serialize import serialize
-from recc.serialization.deserialize import deserialize
-from recc.template.information import Information, EDGE_BEGIN, EDGE_MIDDLE, EDGE_END
-from recc.template.runtime_information import RuntimeInformation
+from recc.serialization.utils import update_dict
 from recc.template.controller import Controller
+from recc.template.information import EDGE_BEGIN, EDGE_END, EDGE_MIDDLE, Information
 from recc.template.property import Property
+from recc.template.runtime_information import RuntimeInformation
 from recc.template.v1 import keys as v1k
 from recc.template.v2 import keys as v2k
 

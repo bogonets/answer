@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from recc.vs.slot import SlotDirection, SlotCategory, Slot
-from recc.vs.node import NodeEdge, Node
+
+from recc.vs.node import Node, NodeEdge
+from recc.vs.slot import Slot, SlotCategory, SlotDirection
 
 
 class NodeTestCase(unittest.TestCase):

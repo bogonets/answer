@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
 from typing import Optional
+from unittest import TestCase, main
+
 from recc.event.watcher_container import WatcherContainer
 
 

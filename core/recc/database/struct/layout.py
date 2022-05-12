@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from enum import Enum
-from typing import Optional, Any
-from datetime import datetime
 from dataclasses import dataclass
+from datetime import datetime
+from enum import Enum
+from typing import Any, Optional
 
 
 class LayoutState(Enum):

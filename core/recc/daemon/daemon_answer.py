@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, List, Dict, Union, TypeVar, Type
 from functools import reduce
+from typing import Any, Dict, List, Type, TypeVar, Union
+
 from recc.serialization.deserialize import deserialize_default
 
 _T = TypeVar("_T")

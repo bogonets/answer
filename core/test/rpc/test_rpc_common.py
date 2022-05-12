@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import os
 import asyncio
-import numpy as np
-from unittest import main
-from tester.unittest.rpc_test_case import RpcTestCase
-from tester.lamda.numpy_plugins import copy_builtin_numpy_nodes
+import os
 from datetime import datetime, timedelta
-from recc.variables.storage import LOCAL_STORAGE_TEMPLATE_NAME, TASK_STORAGE_VENV_NAME
+from unittest import main
+
+import numpy as np
+
 from recc.filesystem.remove import remove_recursively
+from recc.variables.storage import LOCAL_STORAGE_TEMPLATE_NAME, TASK_STORAGE_VENV_NAME
+from tester.lamda.numpy_plugins import copy_builtin_numpy_nodes
+from tester.unittest.rpc_test_case import RpcTestCase
 
 
 class RpcCommonTestCase(RpcTestCase):

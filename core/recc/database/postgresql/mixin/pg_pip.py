@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from typing import List
+
 from overrides import overrides
-from recc.database.struct.pip import Pip
+
 from recc.database.interfaces.db_pip import DbPip
 from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.pip import (
-    INSERT_PIP,
     DELETE_PIP_BY_DOMAIN_AND_NAME,
-    SELECT_PIP_BY_DOMAIN_AND_NAME,
+    INSERT_PIP,
     SELECT_PIP_ALL,
+    SELECT_PIP_BY_DOMAIN_AND_NAME,
 )
+from recc.database.struct.pip import Pip
 
 
 class PgPip(DbPip, PgBase):

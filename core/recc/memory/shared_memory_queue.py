@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Deque, Dict, Optional, Union, NamedTuple
 from collections import deque
 from multiprocessing.shared_memory import SharedMemory
+from typing import Deque, Dict, NamedTuple, Optional, Union
 
 SHARED_MEMORY_INFINITY_QUEUE = 0
 

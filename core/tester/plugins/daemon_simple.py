@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple
+
 from numpy import ndarray
 
 # from recc.util.version import version_text

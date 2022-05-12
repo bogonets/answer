@@ -1,27 +1,25 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, TypeVar, Type, Union, get_type_hints, get_origin, get_args
 from io import StringIO
+from typing import Any, Type, TypeVar, Union, get_args, get_origin, get_type_hints
 from urllib.parse import parse_qs
-from multidict import CIMultiDictProxy
-from aiohttp.web_request import Request
-from aiohttp.hdrs import (
-    CONTENT_TYPE,
-    CONTENT_ENCODING,
-    CONTENT_LENGTH,
-)
+
+from aiohttp.hdrs import CONTENT_ENCODING, CONTENT_LENGTH, CONTENT_TYPE
 from aiohttp.web_exceptions import HTTPBadRequest, HTTPLengthRequired
-from recc.mime.mime_type import (
-    MimeType,
-    MIME_APPLICATION_JSON,
-    MIME_APPLICATION_XML,
-    MIME_APPLICATION_YAML,
-    MIME_APPLICATION_FORM,
-    MIME_TEXT_PLAIN,
-)
+from aiohttp.web_request import Request
+from multidict import CIMultiDictProxy
+
 from recc.driver.json import global_json_decoder
 from recc.driver.xml import global_xml_decoder
 from recc.driver.yaml import global_yaml_decoder
+from recc.mime.mime_type import (
+    MIME_APPLICATION_FORM,
+    MIME_APPLICATION_JSON,
+    MIME_APPLICATION_XML,
+    MIME_APPLICATION_YAML,
+    MIME_TEXT_PLAIN,
+    MimeType,
+)
 from recc.serialization.deserialize import deserialize_default
 
 _T = TypeVar("_T")

@@ -2,10 +2,22 @@
 
 import os
 import sys
-from typing import Union, Final, Literal, List, Optional
-from logging import root, getLogger, Logger, Formatter, StreamHandler
-from logging import CRITICAL, FATAL, ERROR, WARNING, WARN, INFO, DEBUG, NOTSET
+from logging import (
+    CRITICAL,
+    DEBUG,
+    ERROR,
+    FATAL,
+    INFO,
+    NOTSET,
+    WARN,
+    WARNING,
+    Formatter,
+    Logger,
+    StreamHandler,
+)
 from logging import config as logging_config
+from logging import getLogger, root
+from typing import Final, List, Literal, Optional, Union
 
 LOGGER_NAME_RECC = "recc"
 LOGGER_NAME_CORE_RECC = "recc.core"

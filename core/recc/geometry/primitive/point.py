@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import TypeVar, Generic
+from typing import Generic, TypeVar
 
 _T = TypeVar("_T")
 

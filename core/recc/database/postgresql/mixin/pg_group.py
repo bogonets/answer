@@ -1,24 +1,26 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List
 from datetime import datetime
+from typing import Any, List, Optional
+
 from overrides import overrides
+
 from recc.chrono.datetime import tznow
-from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
-from recc.database.struct.group import Group
 from recc.database.interfaces.db_group import DbGroup
 from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.group import (
-    INSERT_GROUP,
     DELETE_GROUP_BY_UID,
-    SELECT_GROUP_UID_BY_SLUG,
-    SELECT_GROUP_SLUG_BY_UID,
-    SELECT_GROUP_BY_UID,
+    INSERT_GROUP,
     SELECT_GROUP_ALL,
     SELECT_GROUP_BY_BELOW_VISIBILITY,
+    SELECT_GROUP_BY_UID,
     SELECT_GROUP_COUNT,
+    SELECT_GROUP_SLUG_BY_UID,
+    SELECT_GROUP_UID_BY_SLUG,
     get_update_group_query_by_uid,
 )
+from recc.database.struct.group import Group
+from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 
 
 class PgGroup(DbGroup, PgBase):

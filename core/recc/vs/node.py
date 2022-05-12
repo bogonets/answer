@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from enum import Enum
-from typing import Optional, Union, Any
-from recc.vs.lamda_interface import LamdaInterface, Lamda
+from typing import Any, Optional, Union
+
+from recc.vs.lamda_interface import Lamda, LamdaInterface
 from recc.vs.slot import Slot, SlotKey
 from recc.vs.slot_machine import SlotMachine
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Tuple
+
 from recc.rule.naming_base import valid_naming
 from recc.rule.naming_task import naming_task, split_task_name
 

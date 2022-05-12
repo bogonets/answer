@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import List
 from abc import ABCMeta, abstractmethod
+from typing import List
+
 from recc.database.struct.project_member import ProjectMember
 
 

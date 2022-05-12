@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from typing import Dict, List
-from recc.packet.container import ContainerA
+
 from recc.container.struct.container_info import ContainerInfo
+from recc.packet.container import ContainerA
 
 
 def container_to_answer(container: ContainerInfo) -> ContainerA:

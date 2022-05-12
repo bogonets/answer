@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.template.manager.lamda_template_manager import (
-    json_to_py_extension,
     LamdaTemplateManager,
+    json_to_py_extension,
 )
 
 

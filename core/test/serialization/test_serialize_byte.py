@@ -1,31 +1,32 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
-from typing import Any
 from json import loads as json_loads
+from typing import Any
+from unittest import TestCase, main
+
 from recc.serialization.byte import (
+    msgpack_bz2_decoder,
+    msgpack_bz2_encoder,
+    msgpack_decoder,
+    msgpack_encoder,
+    msgpack_gzip_decoder,
+    msgpack_gzip_encoder,
+    msgpack_lzma_decoder,
+    msgpack_lzma_encoder,
+    msgpack_zlib_decoder,
+    msgpack_zlib_encoder,
+    orjson_bz2_decoder,
+    orjson_bz2_encoder,
+    orjson_decoder,
+    orjson_encoder,
+    orjson_gzip_decoder,
+    orjson_gzip_encoder,
+    orjson_lzma_decoder,
+    orjson_lzma_encoder,
+    orjson_zlib_decoder,
+    orjson_zlib_encoder,
     pickling,
     unpickling,
-    orjson_encoder,
-    orjson_decoder,
-    orjson_zlib_encoder,
-    orjson_zlib_decoder,
-    orjson_gzip_encoder,
-    orjson_gzip_decoder,
-    orjson_lzma_encoder,
-    orjson_lzma_decoder,
-    orjson_bz2_encoder,
-    orjson_bz2_decoder,
-    msgpack_encoder,
-    msgpack_decoder,
-    msgpack_zlib_encoder,
-    msgpack_zlib_decoder,
-    msgpack_gzip_encoder,
-    msgpack_gzip_decoder,
-    msgpack_lzma_encoder,
-    msgpack_lzma_decoder,
-    msgpack_bz2_encoder,
-    msgpack_bz2_decoder,
 )
 from tester.samples.read_samples import read_sample
 

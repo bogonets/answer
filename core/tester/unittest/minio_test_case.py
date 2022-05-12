@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from unittest import IsolatedAsyncioTestCase
-from recc.storage.service.minio.minio_storage_service import MinioStorageService
+
 from recc.argparse.default_parser import parse_arguments_to_core_config
+from recc.storage.service.minio.minio_storage_service import MinioStorageService
 
 
 class MinioTestCase(IsolatedAsyncioTestCase):

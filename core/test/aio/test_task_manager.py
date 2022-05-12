@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from unittest import IsolatedAsyncioTestCase, main
-from recc.aio.task_manager import TaskManager, AutoRemoveTaskManager
+from asyncio import CancelledError, TimeoutError
 from asyncio import sleep as asyncio_sleep
-from asyncio import TimeoutError, CancelledError
+from unittest import IsolatedAsyncioTestCase, main
+
+from recc.aio.task_manager import AutoRemoveTaskManager, TaskManager
 
 
 class TaskManagerTestCase(IsolatedAsyncioTestCase):

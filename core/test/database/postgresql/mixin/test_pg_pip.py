@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import main
+
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 

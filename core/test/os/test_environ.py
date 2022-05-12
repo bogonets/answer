@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from recc.system.environ import get_os_envs_dict, exchange_env, opt_env, get_env
+
+from recc.system.environ import exchange_env, get_env, get_os_envs_dict, opt_env
 
 TEST_RECC_HTTP_BIND = "TEST_RECC_HTTP_BIND"
 

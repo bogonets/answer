@@ -1,35 +1,37 @@
 # -*- coding: utf-8 -*-
 
 from enum import Enum
-from multidict import CIMultiDict
-from typing import Any, List, Optional, Union
-from zlib import compress as zlib_compress
 from gzip import compress as gzip_compress
 from http import HTTPStatus
-from aiohttp.web_request import Request
-from aiohttp.web_response import Response
+from typing import Any, List, Optional, Union
+from zlib import compress as zlib_compress
+
 from aiohttp.hdrs import (
     ACCEPT,
     ACCEPT_ENCODING,
-    CONTENT_TYPE,
     CONTENT_ENCODING,
     CONTENT_LENGTH,
+    CONTENT_TYPE,
 )
 from aiohttp.web_exceptions import HTTPNotAcceptable
-from recc.mime.mime_type import (
-    MimeType,
-    ANY_WILDCARD,
-    MIME_APPLICATION_JSON,
-    MIME_APPLICATION_XML,
-    MIME_APPLICATION_YAML,
-    MIME_TEXT_PLAIN,
-    MIME_APPLICATION_JSON_UTF8,
-    MIME_APPLICATION_XML_UTF8,
-    MIME_APPLICATION_YAML_UTF8,
-)
+from aiohttp.web_request import Request
+from aiohttp.web_response import Response
+from multidict import CIMultiDict
+
 from recc.driver.json import global_json_encoder
 from recc.driver.xml import global_xml_encoder
 from recc.driver.yaml import global_yaml_encoder
+from recc.mime.mime_type import (
+    ANY_WILDCARD,
+    MIME_APPLICATION_JSON,
+    MIME_APPLICATION_JSON_UTF8,
+    MIME_APPLICATION_XML,
+    MIME_APPLICATION_XML_UTF8,
+    MIME_APPLICATION_YAML,
+    MIME_APPLICATION_YAML_UTF8,
+    MIME_TEXT_PLAIN,
+    MimeType,
+)
 
 APPLICATION = MIME_APPLICATION_JSON.family
 JSON = MIME_APPLICATION_JSON.subtype

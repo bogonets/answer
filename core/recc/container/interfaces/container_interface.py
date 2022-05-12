@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABCMeta
+
 from recc.container.interfaces.container_container import ContainerContainer
 from recc.container.interfaces.container_image import ContainerImage
 from recc.container.interfaces.container_misc import ContainerMisc

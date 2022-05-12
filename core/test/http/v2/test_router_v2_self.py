@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from unittest import IsolatedAsyncioTestCase, main
 from asyncio import get_event_loop
-from tester.http.http_app_tester import HttpAppTester
-from recc.http.http_utils import v2_self_path
+from unittest import IsolatedAsyncioTestCase, main
+
 from recc.http import http_urls as u
+from recc.http.http_utils import v2_self_path
 from recc.packet.user import UserExtraA
+from tester.http.http_app_tester import HttpAppTester
 
 
 class RouterV2SelfTestCase(IsolatedAsyncioTestCase):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Dict, Any
-from datetime import datetime
 from dataclasses import dataclass
+from datetime import datetime
+from typing import Any, Dict, Optional
 
 
 @dataclass

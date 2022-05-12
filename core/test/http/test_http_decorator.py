@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main, TestCase
-from recc.http.http_decorator import (
-    has_vp_view,
-    has_setting_view,
-    has_setting_edit,
-)
+from unittest import TestCase, main
+
+from recc.http.http_decorator import has_setting_edit, has_setting_view, has_vp_view
 from recc.variables.annotation import ANNOTATION_PERMISSIONS
 from recc.variables.database import (
-    PERMISSION_SLUG_RECC_DOMAIN_VP_VIEW,
-    PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
     PERMISSION_SLUG_RECC_DOMAIN_SETTING_EDIT,
+    PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
+    PERMISSION_SLUG_RECC_DOMAIN_VP_VIEW,
 )
 
 

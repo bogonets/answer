@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from inspect import signature, Parameter
-from typing import TypeVar, Type, List
+from inspect import Parameter, signature
+from typing import List, Type, TypeVar
 
 _T = TypeVar("_T")
 

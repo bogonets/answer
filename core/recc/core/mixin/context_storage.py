@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, List, Any
+from typing import Any, Dict, List
+
 from recc.core.mixin.context_base import ContextBase
 from recc.template.v1 import keys as v1k
 

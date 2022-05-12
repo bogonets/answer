@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from typing import Tuple
+
 from recc.rule.naming_base import merge_naming, split_naming
 from recc.variables.naming import (
-    PREFIX_RECC,
-    NAME_DELIMITER,
     NAME_CONTAINER,
-    NAME_VOLUME,
+    NAME_DELIMITER,
     NAME_NETWORK,
+    NAME_VOLUME,
+    PREFIX_RECC,
 )
 
 

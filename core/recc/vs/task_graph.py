@@ -1,23 +1,24 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, List, Optional, Any, Iterable
 from functools import reduce
-from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_register
-from recc.mime.mime_codec import MimeEncoder, MimeDecoder
-from recc.sequence.sequencer_interface import SequencerInterface
-from recc.sequence.default_sequencer import DefaultSequencer
+from typing import Any, Dict, Iterable, List, Optional
+
 from recc.blueprint.blueprint import BpTask
-from recc.template.manager.lamda_template_manager import LamdaTemplateManager
-from recc.template.information import EDGE_BEGIN, EDGE_MIDDLE, EDGE_END
+from recc.mime.mime_codec import MimeDecoder, MimeEncoder
+from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_register
+from recc.sequence.default_sequencer import DefaultSequencer
+from recc.sequence.sequencer_interface import SequencerInterface
 from recc.serialization.json import deserialize_json_text
-from recc.vs.box import BoxState, BoxData, BoxRequest
+from recc.template.information import EDGE_BEGIN, EDGE_END, EDGE_MIDDLE
+from recc.template.manager.lamda_template_manager import LamdaTemplateManager
 from recc.vs.arc import Arc, ArcKey
-from recc.vs.slot import SlotDirection, SlotCategory, Slot, SlotKey
-from recc.vs.slot_machine import SlotMachine
-from recc.vs.node import NodeEdge, Node, NodeKey
-from recc.vs.lamda_interface import REQUEST_METHOD_SET, REQUEST_METHOD_GET, Lamda
+from recc.vs.box import BoxData, BoxRequest, BoxState
+from recc.vs.lamda_interface import REQUEST_METHOD_GET, REQUEST_METHOD_SET, Lamda
 from recc.vs.lamda_python import LamdaPython
+from recc.vs.node import Node, NodeEdge, NodeKey
 from recc.vs.signal import Signal, SignalResult
+from recc.vs.slot import Slot, SlotCategory, SlotDirection, SlotKey
+from recc.vs.slot_machine import SlotMachine
 
 _ERR_MSG_NO_IFC_NAME = "Some of the input flow controllers are unnamed."
 _ERR_MSG_NO_OFC_NAME = "Some of the output flow controllers are unnamed."

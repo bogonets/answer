@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, Any
-from asyncio import Task, CancelledError, ensure_future
+from asyncio import CancelledError, Task, ensure_future
 from asyncio import sleep as asyncio_sleep
+from typing import Any, Dict
 
 
 class Sleeper:

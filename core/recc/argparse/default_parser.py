@@ -3,8 +3,10 @@
 import os
 import sys
 from argparse import Namespace
-from typing import Optional, Any, Union, List
 from functools import lru_cache
+from typing import Any, List, Optional, Union
+
+from recc.argparse.argument_parser import ArgumentMessage, create_argument_parser
 from recc.argparse.command import (
     COMMAND_ARGUMENT_KEY,
     HELP_ARGUMENT_KEY,
@@ -15,25 +17,24 @@ from recc.argparse.command import (
 )
 from recc.argparse.config.core_config import CoreConfig
 from recc.argparse.config.ctrl_config import CtrlConfig
-from recc.argparse.config.task_config import TaskConfig
 from recc.argparse.config.daemon_config import DaemonConfig
 from recc.argparse.config.global_config import GlobalConfig
+from recc.argparse.config.task_config import TaskConfig
 from recc.argparse.config_file import read_config_file_if_readable
-from recc.argparse.argument_parser import ArgumentMessage, create_argument_parser
-from recc.argparse.parser.env_parse import (
-    get_namespace_by_os_envs,
-    get_namespace_by_os_env_files,
-)
 from recc.argparse.injection_values import injection_default_values
+from recc.argparse.parser.env_parse import (
+    get_namespace_by_os_env_files,
+    get_namespace_by_os_envs,
+)
 from recc.filesystem.path_utils import get_home_dir
+from recc.util.version import version_text
 from recc.variables.argparse import (
     DEFAULT_CONFIG_FILENAME,
     GLOBAL_CONFIG_PATH,
     RECC_DOM_ROOT,
 )
-from recc.variables.environment import RECC_ENV_PREFIX, RECC_ENV_FILE_SUFFIX
+from recc.variables.environment import RECC_ENV_FILE_SUFFIX, RECC_ENV_PREFIX
 from recc.variables.http import DEFAULT_HTTP_TEST_PORT
-from recc.util.version import version_text
 
 ConfigType = Union[
     Namespace,

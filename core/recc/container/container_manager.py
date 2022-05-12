@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional
+
+from recc.container.docker.docker_container_manager import DockerContainerManager
+from recc.container.interfaces.container_interface import ContainerInterface
 from recc.variables.container import (
     CONTAINER_TYPE_DOCKER,
-    CONTAINER_TYPE_SWARM,
     CONTAINER_TYPE_KUBERNETES,
+    CONTAINER_TYPE_SWARM,
 )
-from recc.container.interfaces.container_interface import ContainerInterface
-from recc.container.docker.docker_container_manager import DockerContainerManager
 
 
 def create_container_manager(

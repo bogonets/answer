@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
 from unittest import main
-from tester.samples.read_samples import read_sample_json
-from tester.unittest.rpc_test_case import RpcTestCase
+
+import numpy as np
+
 from recc.blueprint.blueprint import BpTask
 from recc.blueprint.v1.converter import bp_converter
 from recc.vs.box import BoxRequest
+from tester.samples.read_samples import read_sample_json
+from tester.unittest.rpc_test_case import RpcTestCase
 
 
 class SetGraphNumpy1TestCase(RpcTestCase):

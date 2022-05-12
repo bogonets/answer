@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Iterable, Mapping, Any, List, Dict
-from numpy import ndarray
 from multiprocessing.shared_memory import SharedMemory
+from typing import Any, Dict, Iterable, List, Mapping, Optional
+
+from numpy import ndarray
+
 from recc.daemon.daemon_answer import DaemonAnswer
 from recc.daemon.packet.content_helper import has_array, has_shared_memory
 from recc.proto.daemon.daemon_api_pb2 import Content
-from recc.serialization.byte_coding import bytes_to_object
-from recc.serialization.byte_coding import ByteCodingType
+from recc.serialization.byte_coding import ByteCodingType, bytes_to_object
 
 
 class ContentUnpacker:

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List
-from datetime import datetime
 from dataclasses import dataclass
+from datetime import datetime
+from typing import Any, List, Optional
+
 from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 
 

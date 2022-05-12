@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, Tuple
-from recc.cache.cache_store_interface import CacheStoreInterface
+
 from recc.cache.cache_store import create_cache_store
+from recc.cache.cache_store_interface import CacheStoreInterface
 from recc.variables.cache import (
-    CACHE_FORMAT_USER_NAME_TO_UID,
-    CACHE_FORMAT_USER_UID_TO_NAME,
     CACHE_FORMAT_GROUP_SLUG_TO_UID,
     CACHE_FORMAT_GROUP_UID_TO_SLUG,
     CACHE_FORMAT_PROJECT_KEY_TO_UID,
     CACHE_FORMAT_PROJECT_UID_TO_KEY,
     CACHE_FORMAT_ROLE_SLUG_TO_UID,
     CACHE_FORMAT_ROLE_UID_TO_SLUG,
-    PROJECT_KEY_SEPARATOR,
+    CACHE_FORMAT_USER_NAME_TO_UID,
+    CACHE_FORMAT_USER_UID_TO_NAME,
     PROJECT_KEY_FORMAT,
+    PROJECT_KEY_SEPARATOR,
 )
 
 

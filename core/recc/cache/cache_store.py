@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional
-from recc.variables.cache import CS_TYPE_NAME_REDIS
+
 from recc.cache.cache_store_interface import CacheStoreInterface
 from recc.cache.redis.redis_cache_store import RedisCacheStore
+from recc.variables.cache import CS_TYPE_NAME_REDIS
 
 
 def create_cache_store(

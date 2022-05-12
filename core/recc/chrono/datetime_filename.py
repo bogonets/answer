@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Tuple
 from datetime import datetime
+from typing import Tuple
 
 """
 '%Y'

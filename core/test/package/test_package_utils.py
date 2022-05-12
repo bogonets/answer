@@ -2,14 +2,15 @@
 
 import os
 from unittest import TestCase, main
+
+from recc import lamda_builtin
 from recc.package.package_utils import (
+    all_module_names,
+    find_module_names,
     get_module_directory,
     get_recc_module_directory,
     list_submodule_names,
-    all_module_names,
-    find_module_names,
 )
-from recc import lamda_builtin
 
 
 class PackageUtilsTestCase(TestCase):

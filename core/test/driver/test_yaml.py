@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.driver.yaml import (
-    install_pyyaml_driver,
     global_yaml_decoder,
     global_yaml_encoder,
+    install_pyyaml_driver,
 )
 
 

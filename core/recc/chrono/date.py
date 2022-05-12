@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Tuple
 from datetime import date, datetime
-from recc.variables.chrono import YYYY_MM_DD_TEMPLATE_LEN, DEFAULT_DATE_SEPARATOR
+from typing import Tuple
+
+from recc.variables.chrono import DEFAULT_DATE_SEPARATOR, YYYY_MM_DD_TEMPLATE_LEN
 
 
 def parse_yyyy_mm_dd(text: str, separator=DEFAULT_DATE_SEPARATOR) -> date:

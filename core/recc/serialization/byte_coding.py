@@ -1,34 +1,34 @@
 from enum import Enum
-
 from typing import Any, Optional
-from recc.serialization.serialize import serialize_default
-from recc.serialization.deserialize import deserialize_default
+
 from recc.serialization.byte import (
-    DEFAULT_PICKLE_ENCODING,
     COMPRESS_LEVEL_TRADEOFF,
+    DEFAULT_PICKLE_ENCODING,
+    msgpack_bz2_decoder,
+    msgpack_bz2_encoder,
+    msgpack_decoder,
+    msgpack_encoder,
+    msgpack_gzip_decoder,
+    msgpack_gzip_encoder,
+    msgpack_lzma_decoder,
+    msgpack_lzma_encoder,
+    msgpack_zlib_decoder,
+    msgpack_zlib_encoder,
+    orjson_bz2_decoder,
+    orjson_bz2_encoder,
+    orjson_decoder,
+    orjson_encoder,
+    orjson_gzip_decoder,
+    orjson_gzip_encoder,
+    orjson_lzma_decoder,
+    orjson_lzma_encoder,
+    orjson_zlib_decoder,
+    orjson_zlib_encoder,
     pickling5,
     unpickling,
-    orjson_encoder,
-    orjson_decoder,
-    orjson_zlib_encoder,
-    orjson_zlib_decoder,
-    orjson_gzip_encoder,
-    orjson_gzip_decoder,
-    orjson_lzma_encoder,
-    orjson_lzma_decoder,
-    orjson_bz2_encoder,
-    orjson_bz2_decoder,
-    msgpack_encoder,
-    msgpack_decoder,
-    msgpack_zlib_encoder,
-    msgpack_zlib_decoder,
-    msgpack_gzip_encoder,
-    msgpack_gzip_decoder,
-    msgpack_lzma_encoder,
-    msgpack_lzma_decoder,
-    msgpack_bz2_encoder,
-    msgpack_bz2_decoder,
 )
+from recc.serialization.deserialize import deserialize_default
+from recc.serialization.serialize import serialize_default
 
 
 class ByteCodingType(Enum):

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.memory.shared_memory_validator import (
     SharedMemoryTestInfo,
     register_shared_memory,

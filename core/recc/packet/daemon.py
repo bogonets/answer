@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
-from datetime import datetime
 from dataclasses import dataclass
+from datetime import datetime
+from typing import Optional
+
 from recc.daemon.daemon_state import DaemonState
 
 

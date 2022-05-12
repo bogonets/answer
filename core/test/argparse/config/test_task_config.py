@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.argparse.argument_parser import ArgumentMessage
-from recc.argparse.config.task_config import TaskConfig, ARG_TASK_ADDRESS
-from recc.argparse.default_parser import parse_arguments_to_config
 from recc.argparse.command import Command
+from recc.argparse.config.task_config import ARG_TASK_ADDRESS, TaskConfig
+from recc.argparse.default_parser import parse_arguments_to_config
 
 
 class TaskConfigTestCase(TestCase):

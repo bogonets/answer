@@ -2,35 +2,33 @@
 
 from argparse import Namespace
 from typing import Final, Union
-from recc.argparse.command import Command
+
 from recc.argparse.argument import Argument
+from recc.argparse.command import Command
 from recc.argparse.shortcut import Shortcut
 from recc.logging.logging import (
     SEVERITY_NAME_CRITICAL,
-    SEVERITY_NAME_ERROR,
-    SEVERITY_NAME_WARNING,
-    SEVERITY_NAME_INFO,
     SEVERITY_NAME_DEBUG,
+    SEVERITY_NAME_ERROR,
+    SEVERITY_NAME_INFO,
     SEVERITY_NAME_NOTSET,
     SEVERITY_NAME_OFF,
+    SEVERITY_NAME_WARNING,
 )
-from recc.variables.cache import CS_TYPE_NAME_REDIS, CACHE_PREFIX_ROOT
+from recc.variables.cache import CACHE_PREFIX_ROOT, CS_TYPE_NAME_REDIS
 from recc.variables.container import (
     CONTAINER_TYPE_DOCKER,
-    CONTAINER_TYPE_SWARM,
     CONTAINER_TYPE_KUBERNETES,
+    CONTAINER_TYPE_SWARM,
     DOCKER_SOCK_LOCAL_BASE_URL,
 )
 from recc.variables.database import (
-    DB_TYPE_NAME_POSTGRES,
-    DB_TYPE_NAME_MYSQL,
-    DB_TYPE_NAME_SQLITE,
     DATABASE_COMMAND_TIMEOUT_SECONDS,
+    DB_TYPE_NAME_MYSQL,
+    DB_TYPE_NAME_POSTGRES,
+    DB_TYPE_NAME_SQLITE,
 )
-from recc.variables.storage import (
-    STORAGE_SERVICE_TYPE_MINIO,
-    STORAGE_REQUEST_TIMEOUT,
-)
+from recc.variables.storage import STORAGE_REQUEST_TIMEOUT, STORAGE_SERVICE_TYPE_MINIO
 
 _DEFAULT_PROGRAM: Final[str] = "recc"
 _DEFAULT_SUBCOMMAND: Final[str] = "{subcommand}"

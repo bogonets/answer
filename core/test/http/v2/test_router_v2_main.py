@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 
-from unittest import IsolatedAsyncioTestCase, main
-from typing import List
 from asyncio import get_event_loop
-from tester.http.http_app_tester import HttpAppTester
-from recc.http.http_utils import v2_main_path
-from recc.http import http_urls as u
+from typing import List
+from unittest import IsolatedAsyncioTestCase, main
+
 from recc.http import http_path_keys as p
-from recc.packet.group import GroupA, CreateGroupQ, UpdateGroupQ
-from recc.packet.project import ProjectA, CreateProjectQ, UpdateProjectQ
-from recc.packet.member import MemberA, CreateMemberQ, UpdateMemberQ
-from recc.packet.role import RoleA
+from recc.http import http_urls as u
+from recc.http.http_utils import v2_main_path
+from recc.packet.group import CreateGroupQ, GroupA, UpdateGroupQ
 from recc.packet.info import InfoA
+from recc.packet.member import CreateMemberQ, MemberA, UpdateMemberQ
+from recc.packet.project import CreateProjectQ, ProjectA, UpdateProjectQ
+from recc.packet.role import RoleA
 from recc.variables.database import (
-    VISIBILITY_LEVEL_PRIVATE,
     DEFAULT_PERMISSION_SLUGS,
-    ROLE_SLUG_GUEST,
-    ROLE_SLUG_REPORTER,
-    ROLE_SLUG_OWNER,
     DEFAULT_ROLE_SLUGS,
+    ROLE_SLUG_GUEST,
+    ROLE_SLUG_OWNER,
+    ROLE_SLUG_REPORTER,
+    VISIBILITY_LEVEL_PRIVATE,
 )
+from tester.http.http_app_tester import HttpAppTester
 
 
 class RouterV2MainTestCase(IsolatedAsyncioTestCase):

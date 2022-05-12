@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, Optional, Any, Iterable, List
+from typing import Any, Dict, Iterable, List, Optional
 
 
 class Signal:

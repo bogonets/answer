@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.argparse.parser.dict_parse import get_namespace_by_dict
 
 

@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from typing import Union, Optional, Callable, Final
 from functools import wraps
+from inspect import iscoroutinefunction
 from logging import Logger
 from time import time
-from inspect import iscoroutinefunction
-from recc.logging.logging import get_logger, convert_level_number
+from typing import Callable, Final, Optional, Union
+
+from recc.logging.logging import convert_level_number, get_logger
 
 LoggingElapsedCallable = Callable[[str, float], None]
 

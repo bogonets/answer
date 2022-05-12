@@ -2,9 +2,10 @@
 
 from abc import ABCMeta, abstractmethod
 from typing import Any
+
 from recc.serialization.errors import (
-    NotImplementedSerializeError,
     NotImplementedDeserializeError,
+    NotImplementedSerializeError,
 )
 
 

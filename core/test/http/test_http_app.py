@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from unittest import IsolatedAsyncioTestCase, main
 from asyncio import get_event_loop
-from tester.http.http_app_tester import HttpAppTester
+from unittest import IsolatedAsyncioTestCase, main
+
 from recc.http import http_urls as u
 from recc.util.version import version_text
+from tester.http.http_app_tester import HttpAppTester
 
 
 class HttpAppTestCase(IsolatedAsyncioTestCase):

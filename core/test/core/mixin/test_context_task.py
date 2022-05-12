@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from unittest import main
-from tester.unittest.context_test_case import ContextTestCase
+
 from recc.variables.storage import LOCAL_STORAGE_TEMPLATE_NAME, TASK_STORAGE_VENV_NAME
+from tester.unittest.context_test_case import ContextTestCase
 
 
 class ContextTaskTestCase(ContextTestCase):

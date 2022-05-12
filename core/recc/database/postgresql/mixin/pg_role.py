@@ -1,24 +1,26 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Any, List
 from datetime import datetime
+from typing import Any, List, Optional
+
 from overrides import overrides
+
 from recc.chrono.datetime import tznow
-from recc.database.struct.role import Role
 from recc.database.interfaces.db_role import DbRole
 from recc.database.postgresql.mixin._pg_base import PgBase
 from recc.database.postgresql.query.role import (
-    INSERT_ROLE,
     DELETE_ROLE_BY_UID,
-    SELECT_ROLE_UID_BY_SLUG,
-    SELECT_ROLE_SLUG_BY_UID,
-    SELECT_ROLE_BY_UID,
-    SELECT_ROLE_LOCK_BY_UID,
+    INSERT_ROLE,
     SELECT_ROLE_ALL,
+    SELECT_ROLE_BY_UID,
     SELECT_ROLE_BY_USER_UID_AND_GROUP_UID,
     SELECT_ROLE_BY_USER_UID_AND_PROJECT_UID,
+    SELECT_ROLE_LOCK_BY_UID,
+    SELECT_ROLE_SLUG_BY_UID,
+    SELECT_ROLE_UID_BY_SLUG,
     get_update_role_query_by_uid,
 )
+from recc.database.struct.role import Role
 
 
 class PgRole(DbRole, PgBase):

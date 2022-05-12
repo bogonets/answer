@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Final, List, Tuple
+from typing import Final, List, Optional, Tuple
 
 TYPE_SEPARATOR: Final[str] = "/"
 PARAMETER_SEPARATOR: Final[str] = ";"

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from asyncio import sleep
-from typing import Optional, Callable, Awaitable
+from typing import Awaitable, Callable, Optional
 
 DEFAULT_RESTART_DURATION = 5.0
 DEFAULT_RESTART_COUNT = 5

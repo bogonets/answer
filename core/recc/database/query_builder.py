@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from enum import Enum
-from typing import Tuple, List, Any
 from abc import ABCMeta, abstractmethod
+from enum import Enum
+from typing import Any, List, Tuple
 
 QueryString = str
 Arguments = List[Any]

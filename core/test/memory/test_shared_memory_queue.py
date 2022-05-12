@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, main
 from multiprocessing.shared_memory import SharedMemory
+from unittest import TestCase, main
+
 from recc.memory.shared_memory_queue import SharedMemoryQueue
 
 

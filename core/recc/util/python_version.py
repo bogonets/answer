@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, Union
 from sys import version_info
-
+from typing import Dict, Union
 
 PY_26 = version_info >= (2, 6)
 PY_27 = version_info >= (2, 7)

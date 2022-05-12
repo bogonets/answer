@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from unittest import IsolatedAsyncioTestCase, main, skipIf
-from tester.samples.read_samples import read_sample
-from recc.packet.nvidia import NvidiaSmiLog
+
 from recc.nvidia.nvidia_smi import (
-    parse_nvidia_smi_query,
     exists_nvidia_smi_executable,
     nvidia_smi_query,
+    parse_nvidia_smi_query,
 )
+from recc.packet.nvidia import NvidiaSmiLog
+from tester.samples.read_samples import read_sample
 
 
 class NvidiaSmiTestCase(IsolatedAsyncioTestCase):

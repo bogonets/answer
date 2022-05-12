@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from typing import List
 from datetime import datetime
 from functools import reduce
+from typing import List
+
 from recc.database.struct.port import SockType
 from recc.variables.database import (
-    TABLE_DAEMON,
-    TABLE_PORT,
+    DAEMON_NAME_STR_SIZE,
     DAEMON_PLUGIN_STR_SIZE,
     DAEMON_SLUG_STR_SIZE,
-    DAEMON_NAME_STR_SIZE,
-    URL_STR_SIZE,
     FUNC_ADD_DAEMON_AND_PORT,
     REFERENCE_CATEGORY_RECC_DAEMON,
+    TABLE_DAEMON,
+    TABLE_PORT,
+    URL_STR_SIZE,
 )
 
 CREATE_FUNC_ADD_DAEMON_AND_PORT = f"""

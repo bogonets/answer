@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from typing import Iterable, Union, Optional, Mapping, List
 from functools import reduce
 from io import BytesIO
-from recc.packet.raw.raw_field_spec import RawFieldSpec
+from typing import Iterable, List, Mapping, Optional, Union
+
 from recc.inspect.member import get_public_attributes
+from recc.packet.raw.raw_field_spec import RawFieldSpec
 
 DEFAULT_VERSION = 0
 

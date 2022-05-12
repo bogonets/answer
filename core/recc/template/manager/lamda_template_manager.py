@@ -2,26 +2,27 @@
 
 import os
 import re
-from re import Pattern
 from io import BytesIO, StringIO
-from tarfile import open as tar_open
+from re import Pattern
 from tarfile import TarInfo
-from typing import List, Dict, Optional, Iterable, KeysView, ValuesView
-from recc.package.package_utils import get_module_directory
-from recc.filesystem.permission import is_readable_dir
-from recc.serialization.json import deserialize_json_file
-from recc.template.lamda_template import LamdaTemplate, RuntimeInformation
-from recc.template.manager.lamda_template_position import LamdaTemplatePosition
-from recc.template.manager.lamda_template_key import LamdaTemplateKey
-from recc.venv.async_virtual_environment import AsyncVirtualEnvironment
-from recc.variables.template import (
-    LAMBDA_TEMPLATE_APP_JSON_SUFFIX_REGEX,
-    LAMBDA_TEMPLATE_JSON_SUFFIX_REGEX,
-    JSON_SUFFIX_REGEX,
-    COMPRESS_IGNORE_PATTERNS,
-)
+from tarfile import open as tar_open
+from typing import Dict, Iterable, KeysView, List, Optional, ValuesView
+
 from recc import lamda as recc_lamda_module
 from recc import lamda_builtin as recc_lamda_builtin_module
+from recc.filesystem.permission import is_readable_dir
+from recc.package.package_utils import get_module_directory
+from recc.serialization.json import deserialize_json_file
+from recc.template.lamda_template import LamdaTemplate, RuntimeInformation
+from recc.template.manager.lamda_template_key import LamdaTemplateKey
+from recc.template.manager.lamda_template_position import LamdaTemplatePosition
+from recc.variables.template import (
+    COMPRESS_IGNORE_PATTERNS,
+    JSON_SUFFIX_REGEX,
+    LAMBDA_TEMPLATE_APP_JSON_SUFFIX_REGEX,
+    LAMBDA_TEMPLATE_JSON_SUFFIX_REGEX,
+)
+from recc.venv.async_virtual_environment import AsyncVirtualEnvironment
 
 FIND_APP_JSON_REGEX = re.compile(LAMBDA_TEMPLATE_APP_JSON_SUFFIX_REGEX)
 FIND_JSON_REGEX = re.compile(LAMBDA_TEMPLATE_JSON_SUFFIX_REGEX)

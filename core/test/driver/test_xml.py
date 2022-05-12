@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.driver.xml import (
-    install_xmltodict_driver,
     global_xml_decoder,
     global_xml_encoder,
+    install_xmltodict_driver,
 )
 
 

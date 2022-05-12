@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Dict, Optional
 from asyncio import AbstractEventLoop
+from logging import INFO, WARNING, getLogger
+from typing import Dict, Optional
+
 from overrides import overrides
-from logging import getLogger, INFO, WARNING
-from recc.logging.logging import LOGGER_NAME_DAEMON_RPC
-from recc.daemon.daemon_runner import DaemonRunnerCallbacks, DaemonRunner
+
+from recc.daemon.daemon_runner import DaemonRunner, DaemonRunnerCallbacks
 from recc.daemon.daemon_state import DaemonState
 from recc.filesystem.permission import (
-    test_readable_directory,
-    test_writable_directory,
-    test_readable_file,
     prepare_writable_directory,
+    test_readable_directory,
+    test_readable_file,
+    test_writable_directory,
 )
+from recc.logging.logging import LOGGER_NAME_DAEMON_RPC
 
 
 class _RunnerCallback(DaemonRunnerCallbacks):

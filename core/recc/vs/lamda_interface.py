@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABCMeta, abstractmethod
-from typing import Optional, Any, Dict
+from typing import Any, Dict, Optional
 
 REQUEST_METHOD_SET = "set"
 REQUEST_METHOD_GET = "get"

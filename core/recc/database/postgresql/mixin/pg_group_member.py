@@ -1,26 +1,28 @@
 # -*- coding: utf-8 -*-
 
 from typing import List
+
 from overrides import overrides
-from recc.database.struct.group_member import GroupMember
+
+from recc.database.interfaces.db_group_member import DbGroupMember
+from recc.database.postgresql.mixin._pg_base import PgBase
+from recc.database.postgresql.query.group_member import (
+    DELETE_GROUP_MEMBER,
+    INSERT_GROUP_MEMBER,
+    SELECT_GROUP_MEMBER_ALL,
+    SELECT_GROUP_MEMBER_BY_GROUP_UID,
+    SELECT_GROUP_MEMBER_BY_GROUP_UID_AND_USER_UID,
+    SELECT_GROUP_MEMBER_BY_USER_UID,
+    SELECT_GROUP_MEMBER_JOIN_GROUP_BY_USER_UID,
+    SELECT_GROUP_MEMBER_JOIN_GROUP_BY_USER_UID_AND_GROUP_UID,
+    SELECT_GROUP_MEMBER_JOIN_PROJECT_BY_USER_UID,
+    UPDATE_GROUP_MEMBER_ROLE,
+)
 from recc.database.struct.group_join_member import (
     GroupJoinGroupMember,
     ProjectJoinGroupMember,
 )
-from recc.database.interfaces.db_group_member import DbGroupMember
-from recc.database.postgresql.mixin._pg_base import PgBase
-from recc.database.postgresql.query.group_member import (
-    INSERT_GROUP_MEMBER,
-    UPDATE_GROUP_MEMBER_ROLE,
-    DELETE_GROUP_MEMBER,
-    SELECT_GROUP_MEMBER_BY_GROUP_UID_AND_USER_UID,
-    SELECT_GROUP_MEMBER_BY_GROUP_UID,
-    SELECT_GROUP_MEMBER_BY_USER_UID,
-    SELECT_GROUP_MEMBER_ALL,
-    SELECT_GROUP_MEMBER_JOIN_GROUP_BY_USER_UID,
-    SELECT_GROUP_MEMBER_JOIN_GROUP_BY_USER_UID_AND_GROUP_UID,
-    SELECT_GROUP_MEMBER_JOIN_PROJECT_BY_USER_UID,
-)
+from recc.database.struct.group_member import GroupMember
 
 
 class PgGroupMember(DbGroupMember, PgBase):

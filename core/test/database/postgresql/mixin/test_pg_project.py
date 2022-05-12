@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main
 from datetime import datetime, timedelta
+from unittest import main
+
 from recc.variables.database import (
-    VISIBILITY_LEVEL_PRIVATE,
     VISIBILITY_LEVEL_INTERNAL,
+    VISIBILITY_LEVEL_PRIVATE,
     VISIBILITY_LEVEL_PUBLIC,
 )
 from tester.unittest.postgresql_test_case import PostgresqlTestCase

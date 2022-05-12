@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, Union, Callable, Awaitable
 from inspect import iscoroutinefunction
+from typing import Any, Awaitable, Callable, Dict, Union
 
 Watcher = Callable[..., Union[Awaitable[Any], Any]]
 

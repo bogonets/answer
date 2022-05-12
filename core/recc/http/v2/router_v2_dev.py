@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from typing import List
+
 from aiohttp import web
-from aiohttp.web_routedef import AbstractRouteDef
+from aiohttp.web_exceptions import HTTPBadRequest, HTTPNotFound
 from aiohttp.web_request import Request
-from aiohttp.web_exceptions import (
-    HTTPNotFound,
-    HTTPBadRequest,
-)
+from aiohttp.web_routedef import AbstractRouteDef
+
 from recc.core.context import Context
 from recc.http import http_urls as u
 from recc.http.http_parameter import parameter_matcher
 from recc.packet.config import ConfigA, UpdateConfigValueQ
 from recc.packet.environment import EnvironmentA
-from recc.packet.info import InfoA, CreateInfoQ, UpdateInfoQ
+from recc.packet.info import CreateInfoQ, InfoA, UpdateInfoQ
 from recc.packet.plugin import PluginA
 from recc.packet.system import VersionsA
 from recc.variables.environment import RECC_ENV_PREFIX

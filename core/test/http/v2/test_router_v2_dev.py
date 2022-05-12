@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from unittest import IsolatedAsyncioTestCase, main
-from typing import List
 from asyncio import get_event_loop
-from tester.http.http_app_tester import HttpAppTester
-from recc.variables.database import INFO_KEY_RECC_DB_VERSION
-from recc.http.http_utils import v2_dev_path
-from recc.http import http_urls as u
+from typing import List
+from unittest import IsolatedAsyncioTestCase, main
+
 from recc.http import http_path_keys as p
+from recc.http import http_urls as u
+from recc.http.http_utils import v2_dev_path
 from recc.packet.config import ConfigA, UpdateConfigValueQ
-from recc.packet.info import InfoA, CreateInfoQ
+from recc.packet.info import CreateInfoQ, InfoA
 from recc.packet.plugin import PluginA
+from recc.variables.database import INFO_KEY_RECC_DB_VERSION
+from tester.http.http_app_tester import HttpAppTester
 
 
 class RouterV2DevTestCase(IsolatedAsyncioTestCase):

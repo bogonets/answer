@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
-from typing import List, Union, Dict, Any
+from typing import Any, Dict, List, Union
 
+import numpy as np
 
 DTYPE_NAME_TO_TYPE: Dict[str, Any] = {
     "int8": np.int8,

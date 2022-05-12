@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from dataclasses import dataclass
+from datetime import datetime
 from hashlib import sha256
 from typing import Optional
-from datetime import datetime
+
 from recc.packet.preference import PreferenceA
 
 

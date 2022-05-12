@@ -2,18 +2,19 @@
 
 from datetime import datetime
 from typing import Any, Optional
+
 from recc.chrono.datetime import tznow
+from recc.database.query_builder import BuildResult, UpdateBuilder
 from recc.variables.database import (
-    TABLE_ROLE,
+    ROLE_SLUG_DEVELOPER,
+    ROLE_SLUG_GUEST,
+    ROLE_SLUG_MAINTAINER,
+    ROLE_SLUG_OWNER,
+    ROLE_SLUG_REPORTER,
     TABLE_GROUP_MEMBER,
     TABLE_PROJECT_MEMBER,
-    ROLE_SLUG_OWNER,
-    ROLE_SLUG_MAINTAINER,
-    ROLE_SLUG_DEVELOPER,
-    ROLE_SLUG_REPORTER,
-    ROLE_SLUG_GUEST,
+    TABLE_ROLE,
 )
-from recc.database.query_builder import UpdateBuilder, BuildResult
 
 INSERT_ROLE = f"""
 INSERT INTO {TABLE_ROLE} (

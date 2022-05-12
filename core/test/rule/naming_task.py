@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
-from recc.rule.naming_task import naming_task, naming_task_volume, naming_task_network
+
+from recc.rule.naming_task import naming_task, naming_task_network, naming_task_volume
 
 
 class NamingTaskTestCase(TestCase):

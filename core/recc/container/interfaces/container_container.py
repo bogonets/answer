@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, Union, Dict, Any
 from abc import ABCMeta, abstractmethod
-from tarfile import TarFile
 from signal import SIGKILL
+from tarfile import TarFile
+from typing import Any, Dict, List, Optional, Union
+
 from recc.container.struct.container_info import ContainerInfo
 
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from unittest import main, TestCase
+from unittest import TestCase, main
+
 from recc.pattern.singleton import singleton
 
 

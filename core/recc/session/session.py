@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import os
-from jwt import encode as jwt_encode
-from jwt import decode as jwt_decode
-from typing import Optional, Tuple
 from datetime import datetime, timedelta
+from typing import Optional, Tuple
+
+from jwt import decode as jwt_decode
+from jwt import encode as jwt_encode
+
 from recc.chrono.datetime import tznow
 
 VERIFY_AUDIENCE_OPTION_KEY = "verify_aud"

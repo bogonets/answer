@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import yaml  # [WARNING] Don't use any other `yaml` driver.
 from argparse import Namespace
+
+import yaml  # [WARNING] Don't use any other `yaml` driver.
+
 from recc.argparse.parser.dict_parse import get_namespace_by_dict
 
 

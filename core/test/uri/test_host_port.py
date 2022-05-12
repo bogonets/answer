@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase, main
+
 from recc.uri.host_port import (
+    parse_host_port,
     parse_ipv4_or_domain_port,
     parse_ipv6_port,
-    parse_host_port,
 )
 
 

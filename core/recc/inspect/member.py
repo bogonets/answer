@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from inspect import getmembers, isroutine
-from typing import Any, List, Tuple, Mapping, Iterable
+from typing import Any, Iterable, List, Mapping, Tuple
 
 
 def is_dunder(name: str) -> bool:

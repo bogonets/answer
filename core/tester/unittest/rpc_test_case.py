@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-from unittest import IsolatedAsyncioTestCase
 from tempfile import TemporaryDirectory
+from unittest import IsolatedAsyncioTestCase
+
 from recc.argparse.default_config import get_default_task_config
 from recc.rpc.rpc_client import create_rpc_client
 from recc.task.task_server import create_task_server

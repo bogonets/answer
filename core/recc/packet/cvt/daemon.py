@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional
-from recc.packet.daemon import DaemonA
-from recc.database.struct.daemon import Daemon
+
 from recc.daemon.daemon_state import DaemonState
+from recc.database.struct.daemon import Daemon
+from recc.packet.daemon import DaemonA
 
 
 def daemon_to_answer(

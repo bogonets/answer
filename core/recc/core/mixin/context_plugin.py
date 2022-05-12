@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import List
+
 from recc.core.mixin.context_base import ContextBase
 from recc.packet.plugin import PluginA
 

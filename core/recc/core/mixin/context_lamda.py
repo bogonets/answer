@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import List
+
 from recc.core.mixin.context_base import ContextBase
 from recc.packet.template import TemplateA
 from recc.template.manager.lamda_template_key import LamdaTemplateKey

@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from typing import Final
 from sys import version_info as python_version_info
+from typing import Final
+
 from aiohttp import __version__ as aiohttp_version_text
 from google.protobuf import __version__ as protobuf_version_text  # type: ignore[import]
 from grpc import __version__ as grpc_version_text
-from uvloop import __version__ as uvloop_version_text
-from orjson import __version__ as orjson_version_text
 from jwt import __version__ as pyjwt_version_text  # noqa
 from numpy import version as numpy_version_text
-
+from orjson import __version__ as orjson_version_text
+from uvloop import __version__ as uvloop_version_text
 
 PYTHON_MAJOR = python_version_info.major
 PYTHON_MINOR = python_version_info.minor
