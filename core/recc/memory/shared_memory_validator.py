@@ -11,6 +11,9 @@ class SharedMemoryTestInfo(NamedTuple):
     data: str
 
 
+# TODO: class SharedMemoryContext:
+
+
 @contextmanager
 def register_shared_memory(disable=False):
     sm: Optional[SharedMemory]
@@ -40,7 +43,10 @@ def validate_shared_memory(name: str, data: str) -> bool:
     if name and data:
         try:
             sm = SharedMemory(name=name)
-            return bytes(sm.buf[:]) == bytes.fromhex(data)
+            try:
+                return bytes(sm.buf[:]) == bytes.fromhex(data)
+            finally:
+                sm.close()
         except:  # noqa
             pass
     return False

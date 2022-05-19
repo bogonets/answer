@@ -61,20 +61,6 @@ class LocalStorage:
     def template_manager(self) -> LamdaTemplateManager:
         return self._tm
 
-    def find_daemon_dirs(self) -> List[Path]:
-        result: List[Path] = list()
-        for file in Path(self.daemon).iterdir():
-            if file.is_dir():
-                result.append(file)
-        return result
-
-    def find_plugin_dirs(self) -> List[Path]:
-        result: List[Path] = list()
-        for file in Path(self.plugin).iterdir():
-            if file.is_dir():
-                result.append(file)
-        return result
-
     def prepare_project_directory(self, group: str, project: str) -> str:
         group_dir = os.path.join(self.workspace, group)
         prepare_directory(group_dir)

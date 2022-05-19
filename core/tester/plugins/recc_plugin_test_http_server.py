@@ -14,20 +14,18 @@ from aiohttp.web_response import Response
 
 from recc.http.http_decorator import has_layout_view
 
-DEFAULT_HOST = "0.0.0.0"
-DEFAULT_PORT = 39999
+TEST_HOST = "0.0.0.0"
+TEST_PORT = 34567
 
-logger = getLogger("recc.plugin.http_server")
+logger = getLogger("recc.plugin.test_http_server")
 
 
 class Server:
 
     task: Optional[Task] = None
 
-    def __init__(self, context: Any, **kwargs):
+    def __init__(self, context: Any):
         self.context = context
-        self.host = str(kwargs.get("host", DEFAULT_HOST))
-        self.port = int(kwargs.get("port", DEFAULT_PORT))
         self.app = Application()
         self.app.add_routes([web.get("/tester", self.on_get_tester)])
         self.app.on_startup.append(self.on_startup)
@@ -37,7 +35,7 @@ class Server:
         self.sock = socket(family=AF_INET, type=SOCK_STREAM)
         self.sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         self.sock.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
-        self.sock.bind((self.host, self.port))
+        self.sock.bind((TEST_HOST, TEST_PORT))
 
     async def on_startup(self, app):
         assert app is not None
@@ -78,9 +76,9 @@ class Server:
 server: Optional[Server] = None
 
 
-def on_create(context: Any, **kwargs) -> None:
+def on_create(context: Any) -> None:
     global server
-    server = Server(context, **kwargs)
+    server = Server(context)
 
 
 def on_destroy() -> None:

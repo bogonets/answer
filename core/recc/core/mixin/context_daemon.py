@@ -3,19 +3,16 @@
 from typing import List, Optional
 
 from recc.core.mixin.context_base import ContextBase
-from recc.daemon.daemon_runner import DAEMON_SCRIPT_EXTENSION
 from recc.daemon.daemon_state import DaemonState
 from recc.database.struct.daemon import Daemon
+from recc.package.package_utils import filter_module_names
+from recc.variables.plugin import DAEMON_PACKAGE_PREFIX
 
 
 class ContextDaemon(ContextBase):
-    def get_daemon_plugins(self) -> List[str]:
-        result = list()
-        for directory in self.local_storage.find_daemon_dirs():
-            script_path = directory / (directory.name + DAEMON_SCRIPT_EXTENSION)
-            if script_path.is_file():
-                result.append(directory.name)
-        return result
+    @staticmethod
+    def find_daemon_package_names() -> List[str]:
+        return filter_module_names(DAEMON_PACKAGE_PREFIX)
 
     async def create_daemon(
         self,
@@ -26,7 +23,7 @@ class ContextDaemon(ContextBase):
         description: Optional[str] = None,
         enable=False,
     ) -> int:
-        if plugin not in self.get_daemon_plugins():
+        if plugin not in self.find_daemon_package_names():
             raise ValueError(f"Not exists plugin: {plugin}")
 
         return await self.database.insert_daemon(
@@ -80,11 +77,11 @@ class ContextDaemon(ContextBase):
         return await self.database.select_daemons()
 
     def get_daemon_state(self, slug: str) -> DaemonState:
-        return self.daemons.get_state(slug)
+        return self._daemons.get_state(slug)
 
     async def start_daemon(self, slug: str) -> None:
         address = await self.get_daemon_address_by_slug(slug)
-        await self.daemons.start_daemon(slug, address)
+        await self._daemons.start(slug, address)
 
     def kill_daemon(self, slug: str) -> None:
-        self.daemons.kill_daemon(slug)
+        self._daemons.kill(slug)

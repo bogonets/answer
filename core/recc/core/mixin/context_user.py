@@ -119,7 +119,7 @@ class ContextUser(ContextBase):
     async def signin(self, username: str) -> Tuple[str, str]:
         user_uid = await self.get_user_uid(username)
         await self.database.update_user_last_login_by_uid(user_uid)
-        return self.session_factory.create_tokens(
+        return self._session_factory.create_tokens(
             username,
             issued_at=tznow(),
             access_max_age=self.access_max_age,
@@ -172,12 +172,12 @@ class ContextUser(ContextBase):
         await self.database.update_user_extra_by_uid(user_uid, extra)
 
     async def renew_access_token(self, refresh_token: str) -> str:
-        return self.session_factory.renew_access_token(
+        return self._session_factory.renew_access_token(
             refresh_token, max_age=self.access_max_age
         )
 
     async def get_access_session(self, token: str) -> Session:
-        return self.session_factory.decode_access(token)
+        return self._session_factory.decode_access(token)
 
     async def get_user(self, uid: int) -> User:
         return await self.database.select_user_by_uid(uid)

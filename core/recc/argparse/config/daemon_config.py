@@ -17,8 +17,8 @@ ARG_DAEMON_ADDRESS = Argument(
     metavar="address",
     help="The address to bind the daemon service to.",
 )
-ARG_DAEMON_SCRIPT = Argument(
-    key="--daemon-script",
+ARG_DAEMON_MODULE = Argument(
+    key="--daemon-module",
     last_injection_value="",
     cls=str,
     metavar="file",
@@ -33,25 +33,16 @@ ARG_DAEMON_PACKAGES_DIR = Argument(
     action="append",
     help="Additional packages directory.",
 )
-ARG_DAEMON_VENV_DIR = Argument(
-    key="--daemon-venv-dir",
-    last_injection_value="",
-    cls=str,
-    metavar="dir",
-    help="The daemon's venv directory.",
-)
 
 DAEMON_ARGS = (
     ARG_DAEMON_ADDRESS,
-    ARG_DAEMON_SCRIPT,
+    ARG_DAEMON_MODULE,
     ARG_DAEMON_PACKAGES_DIR,
-    ARG_DAEMON_VENV_DIR,
 )
 
 
 class DaemonConfig(GlobalConfig):
 
     daemon_address: str
-    daemon_script: str
+    daemon_module: str
     daemon_packages_dir: List[str]
-    daemon_venv_dir: str

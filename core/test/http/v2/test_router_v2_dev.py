@@ -59,7 +59,6 @@ class RouterV2DevTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(200, response.status)
         self.assertIsNotNone(response.data)
         self.assertIsInstance(response.data, list)
-        self.assertEqual(0, len(response.data))
 
     async def test_configs(self):
         path1 = v2_dev_path(u.configs)

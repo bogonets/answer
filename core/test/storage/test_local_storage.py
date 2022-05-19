@@ -2,49 +2,37 @@
 
 import os
 from io import BytesIO
-from shutil import copyfile
 from tarfile import open as tar_open
 from tempfile import TemporaryDirectory
 from unittest import IsolatedAsyncioTestCase, main
 
-from recc.package.package_utils import get_module_path
 from recc.storage.local_storage import LocalStorage
 from tester.lamda.numpy_plugins import copy_builtin_numpy_nodes
-from tester.plugins import plugin_simple
 
 
 class LocalStorageTestCase(IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.temp_dir = TemporaryDirectory()
-        self.sm = LocalStorage(self.temp_dir.name)
+        self.local_storage = LocalStorage(self.temp_dir.name)
 
-        self.assertTrue(os.path.isdir(self.sm.root))
-        self.assertTrue(os.path.isdir(self.sm.get_template_directory()))
-        self.assertTrue(os.path.isdir(self.sm.workspace))
+        self.assertTrue(os.path.isdir(self.local_storage.root))
+        self.assertTrue(os.path.isdir(self.local_storage.get_template_directory()))
+        self.assertTrue(os.path.isdir(self.local_storage.workspace))
 
-        template_dir = self.sm.get_template_directory()
+        template_dir = self.local_storage.get_template_directory()
         self.numpy_json_files = copy_builtin_numpy_nodes(template_dir)
         self.assertLess(0, len(self.numpy_json_files))
-        self.sm.refresh_templates()
-
-        self.assertTrue(os.path.isdir(self.sm.plugin))
-        plugin_path = get_module_path(plugin_simple)
-        plugin_filename = os.path.split(plugin_path)[1]
-        plugin_name = os.path.splitext(plugin_filename)[0]
-        plugin_dir = os.path.join(self.sm.plugin, plugin_name)
-        plugin_output = os.path.join(plugin_dir, plugin_filename)
-        os.mkdir(plugin_dir)
-        copyfile(plugin_path, plugin_output)
+        self.local_storage.refresh_templates()
 
     async def asyncTearDown(self):
         self.temp_dir.cleanup()
 
     async def test_default(self):
-        templates = self.sm.get_templates()
+        templates = self.local_storage.get_templates()
         self.assertLess(0, len(templates))
 
     async def test_tar_bytes(self):
-        data = self.sm.compress_templates()
+        data = self.local_storage.compress_templates()
         self.assertLess(0, len(data))
 
         io_bytes = BytesIO(data)

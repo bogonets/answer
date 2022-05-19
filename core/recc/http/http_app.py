@@ -30,7 +30,7 @@ from recc.network.socket import bind_socket
 from recc.util.python_version import PY_36
 from recc.util.version import version_text
 from recc.variables.http import DEFAULT_CLIENT_MAX_SIZE
-from recc.variables.plugin import STATIC_WEB_FILES_DIRECTORY_NAME, STATIC_WEB_INDEX_HTML
+from recc.variables.plugin import STATIC_WEB_INDEX_HTML
 
 
 class HttpApp:
@@ -117,19 +117,18 @@ class HttpApp:
     async def get_plugins_pplugin_www_ptail(self, request: Request) -> StreamResponse:
         plugin = request.match_info[p.plugin]
         tail = request.match_info[p.tail]
-        module = self.context.plugins.get(plugin, None)
+        module = self.context.get_core_plugin(plugin)
         if module is None:
             raise HTTPNotFound(reason=f"Not found `{plugin}` plugin")
 
         path = strip_prefix_slash(tail) if tail else STATIC_WEB_INDEX_HTML
-        www = os.path.join(module.directory, STATIC_WEB_FILES_DIRECTORY_NAME)
-        file = os.path.join(www, path)
+        file = os.path.join(module.www_dir, path)
 
         if os.path.isfile(file):
             return FileResponse(file)
 
         # SPA(Single Page Application) reads only one page (file).
-        return FileResponse(os.path.join(www, STATIC_WEB_INDEX_HTML))
+        return FileResponse(module.index_html_path)
 
     def _print(self, *args, **kwargs) -> None:
         if not self._context.config.suppress_print:

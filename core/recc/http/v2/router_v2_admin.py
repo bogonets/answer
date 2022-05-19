@@ -475,7 +475,7 @@ class RouterV2Admin:
 
     @parameter_matcher
     async def get_daemon_plugins(self) -> List[str]:
-        return self.context.get_daemon_plugins()
+        return self.context.find_daemon_package_names()
 
     @parameter_matcher
     async def get_daemons(self) -> List[DaemonA]:

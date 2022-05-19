@@ -7,7 +7,7 @@ from recc.cache.cache import Cache
 from recc.container.interfaces.container_interface import ContainerInterface
 from recc.daemon.daemon_manager import DaemonManager
 from recc.database.interfaces.db_interface import DbInterface
-from recc.plugin.plugin_manager import PluginManager
+from recc.plugin.core_plugin_manager import CorePluginManager
 from recc.session.session import SessionPairFactory
 from recc.storage.local_storage import LocalStorage
 from recc.task.task_connection_pool import TaskConnectionPool
@@ -25,7 +25,7 @@ class ContextBase:
     _cache: Cache
     _database: DbInterface
     _tasks: TaskConnectionPool
-    _plugins: PluginManager
+    _plugins: CorePluginManager
     _daemons: DaemonManager
 
     @property
@@ -41,28 +41,6 @@ class ContextBase:
         Default event loop.
         """
         return self._loop
-
-    @property
-    def local_storage(self):
-        """
-        Local storage manager property.
-        """
-        return self._local_storage
-
-    @property
-    def template_manager(self):
-        """
-        Template Manager property.
-        """
-        return self.local_storage.template_manager
-
-    @property
-    def session_factory(self):
-        """
-        Session Factory property.
-        """
-        assert self._session_factory is not None
-        return self._session_factory
 
     @property
     def container(self):
@@ -115,33 +93,6 @@ class ContextBase:
     def is_database_open(self) -> bool:
         assert self._database is not None
         return self._database.is_open()
-
-    async def get_database_version(self) -> str:
-        return await self.database.select_database_version()
-
-    @property
-    def tasks(self):
-        """
-        Task Manager.
-        """
-        assert self._tasks is not None
-        return self._tasks
-
-    @property
-    def plugins(self):
-        """
-        Plugin Manager.
-        """
-        assert self._plugins is not None
-        return self._plugins
-
-    @property
-    def daemons(self):
-        """
-        Daemon Manager.
-        """
-        assert self._daemons is not None
-        return self._daemons
 
     # ----------------
     # Database caching

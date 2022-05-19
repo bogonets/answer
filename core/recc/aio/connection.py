@@ -3,13 +3,13 @@
 from asyncio import sleep
 from typing import Awaitable, Callable, Optional
 
-DEFAULT_RESTART_DURATION = 5.0
+DEFAULT_RESTART_DURATION = 1.0
 DEFAULT_RESTART_COUNT = 5
 
 
 async def try_connection(
     predictor: Callable[[], Awaitable[bool]],
-    delay: Optional[float] = None,
+    retry_delay: Optional[float] = None,
     max_attempts: Optional[int] = None,
     *,
     try_cb: Callable[[int, int], None] = None,
@@ -17,7 +17,7 @@ async def try_connection(
     success_cb: Callable[[int, int], None] = None,
     failure_cb: Callable[[int, int], None] = None,
 ) -> bool:
-    retry_delay = delay if delay else DEFAULT_RESTART_DURATION
+    retry_seconds = retry_delay if retry_delay else DEFAULT_RESTART_DURATION
     retry_count = max_attempts if max_attempts else DEFAULT_RESTART_COUNT
     i = 0
     while i < retry_count:
@@ -35,7 +35,7 @@ async def try_connection(
         if i < retry_count:
             if retry_cb:
                 retry_cb(i, retry_count)
-            await sleep(retry_delay)
+            await sleep(retry_seconds)
 
     if failure_cb:
         failure_cb(i, retry_count)

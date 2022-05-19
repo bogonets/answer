@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from asyncio import AbstractEventLoop, CancelledError, Event, Task
+from asyncio import AbstractEventLoop, CancelledError, Event, Task, wait_for
 from tempfile import TemporaryDirectory
 from typing import Final, Optional
 
@@ -15,10 +15,12 @@ from recc.core.context import Context
 from recc.http.http_app import HttpApp
 from recc.http.http_client import HttpClient
 from recc.http.http_interface import EmptyHttpAppCallback
+from recc.logging.logging import recc_http_logger as logger
 from recc.variables.http import DEFAULT_SCHEME
 
 DEFAULT_ADMIN_USERNAME: Final[str] = "admin"
 DEFAULT_ADMIN_PASSWORD: Final[str] = "0000"
+DEFAULT_WAIT_STARTUP: Final[float] = 8.0
 
 
 class HttpAppTester(HttpClient, EmptyHttpAppCallback):
@@ -84,8 +86,16 @@ class HttpAppTester(HttpClient, EmptyHttpAppCallback):
         finally:
             self._app.close_socket()
 
-    async def wait_startup(self) -> None:
-        await self._startup.wait()
+    async def wait_startup(
+        self,
+        timeout: Optional[float] = DEFAULT_WAIT_STARTUP,
+    ) -> None:
+        if timeout is not None and timeout > 0:
+            logger.debug(f"Waiting for startup ... {timeout}s")
+            await wait_for(self._startup.wait(), timeout)
+        else:
+            logger.debug("Waiting for startup ...")
+            await self._startup.wait()
 
     async def signup(self, username: str, password: str) -> None:
         config_stash = self.context.config.public_signup

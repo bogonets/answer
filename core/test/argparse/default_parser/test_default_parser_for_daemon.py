@@ -5,7 +5,7 @@ from tempfile import TemporaryDirectory
 from unittest import TestCase, main
 
 from recc.argparse.command import Command
-from recc.argparse.config.daemon_config import ARG_DAEMON_SCRIPT, DaemonConfig
+from recc.argparse.config.daemon_config import ARG_DAEMON_MODULE, DaemonConfig
 from recc.argparse.config.global_config import ARG_CONFIG
 from recc.argparse.default_parser import parse_arguments_to_config
 from recc.system.environ import exchange_env
@@ -141,7 +141,7 @@ class DefaultParserForDaemonTestCase(TestCase):
         daemon_script = "/unknown/path"
         config = parse_arguments_to_config(
             Command.daemon.name,
-            ARG_DAEMON_SCRIPT.long_key,
+            ARG_DAEMON_MODULE.long_key,
             daemon_script,
             ignore_sys_argv=True,
             ignore_environment=False,
@@ -154,7 +154,7 @@ class DefaultParserForDaemonTestCase(TestCase):
         self.assertTrue(config.developer)
 
         self.assertEqual(TEST_DAEMON_ADDRESS, config.daemon_address)
-        self.assertEqual(daemon_script, config.daemon_script)
+        self.assertEqual(daemon_script, config.daemon_module)
         self.assertIsInstance(config.daemon_packages_dir, list)
         self.assertEqual(2, len(config.daemon_packages_dir))
         self.assertEqual(CONFIG_PACKAGES_DIR2, config.daemon_packages_dir[0])
@@ -166,7 +166,7 @@ class DefaultParserForDaemonTestCase(TestCase):
             ARG_CONFIG.long_key,
             self.config_json0_path,
             Command.daemon.name,
-            ARG_DAEMON_SCRIPT.long_key,
+            ARG_DAEMON_MODULE.long_key,
             daemon_script,
             ignore_sys_argv=True,
             ignore_environment=False,
@@ -179,7 +179,7 @@ class DefaultParserForDaemonTestCase(TestCase):
         self.assertTrue(config.developer)
 
         self.assertEqual(TEST_DAEMON_ADDRESS, config.daemon_address)
-        self.assertEqual(daemon_script, config.daemon_script)
+        self.assertEqual(daemon_script, config.daemon_module)
         self.assertIsInstance(config.daemon_packages_dir, list)
         self.assertEqual(2, len(config.daemon_packages_dir))
         self.assertEqual(CONFIG_PACKAGES_DIR4, config.daemon_packages_dir[0])
@@ -191,7 +191,7 @@ class DefaultParserForDaemonTestCase(TestCase):
             ARG_CONFIG.long_key,
             self.config_json1_path,
             Command.daemon.name,
-            ARG_DAEMON_SCRIPT.long_key,
+            ARG_DAEMON_MODULE.long_key,
             daemon_script,
             ignore_sys_argv=True,
             ignore_environment=False,
@@ -204,7 +204,7 @@ class DefaultParserForDaemonTestCase(TestCase):
         self.assertTrue(config.developer)
 
         self.assertEqual(TEST_DAEMON_ADDRESS, config.daemon_address)
-        self.assertEqual(daemon_script, config.daemon_script)
+        self.assertEqual(daemon_script, config.daemon_module)
         self.assertIsInstance(config.daemon_packages_dir, list)
         self.assertEqual(2, len(config.daemon_packages_dir))
         self.assertEqual(CONFIG_PACKAGES_DIR4, config.daemon_packages_dir[0])
@@ -216,7 +216,7 @@ class DefaultParserForDaemonTestCase(TestCase):
             ARG_CONFIG.long_key,
             self.config_yaml0_path,
             Command.daemon.name,
-            ARG_DAEMON_SCRIPT.long_key,
+            ARG_DAEMON_MODULE.long_key,
             daemon_script,
             ignore_sys_argv=True,
             ignore_environment=False,
@@ -229,7 +229,7 @@ class DefaultParserForDaemonTestCase(TestCase):
         self.assertTrue(config.developer)
 
         self.assertEqual(TEST_DAEMON_ADDRESS, config.daemon_address)
-        self.assertEqual(daemon_script, config.daemon_script)
+        self.assertEqual(daemon_script, config.daemon_module)
         self.assertIsInstance(config.daemon_packages_dir, list)
         self.assertEqual(2, len(config.daemon_packages_dir))
         self.assertEqual(CONFIG_PACKAGES_DIR6, config.daemon_packages_dir[0])
@@ -241,7 +241,7 @@ class DefaultParserForDaemonTestCase(TestCase):
             ARG_CONFIG.long_key,
             self.config_yaml1_path,
             Command.daemon.name,
-            ARG_DAEMON_SCRIPT.long_key,
+            ARG_DAEMON_MODULE.long_key,
             daemon_script,
             ignore_sys_argv=True,
             ignore_environment=False,
@@ -254,7 +254,7 @@ class DefaultParserForDaemonTestCase(TestCase):
         self.assertTrue(config.developer)
 
         self.assertEqual(TEST_DAEMON_ADDRESS, config.daemon_address)
-        self.assertEqual(daemon_script, config.daemon_script)
+        self.assertEqual(daemon_script, config.daemon_module)
         self.assertIsInstance(config.daemon_packages_dir, list)
         self.assertEqual(2, len(config.daemon_packages_dir))
         self.assertEqual(CONFIG_PACKAGES_DIR6, config.daemon_packages_dir[0])

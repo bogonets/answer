@@ -77,7 +77,7 @@ class RouterV2Plugins:
 
     @parameter_matcher
     async def any_pplugin_ptail(self, plugin: str, tail: str, request: Request) -> Any:
-        module = self.context.plugins.get(plugin, None)
+        module = self.context.get_core_plugin(plugin)
         if module is None:
             raise HTTPNotFound(reason=f"Not found {plugin} plugin")
 

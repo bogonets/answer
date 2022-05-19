@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import os
-from functools import lru_cache, reduce
-from importlib import import_module
 from pkgutil import ModuleInfo, iter_modules
+from types import ModuleType
 from typing import List
 
 
-def get_module_path(module) -> str:
+def get_module_path(module: ModuleType) -> str:
     module_path = getattr(module, "__path__", None)
     if module_path:
         assert isinstance(module_path, list)
@@ -21,7 +20,7 @@ def get_module_path(module) -> str:
     raise RuntimeError(f"The '{module.__name__}' module path is unknown")
 
 
-def get_module_directory(module) -> str:
+def get_module_directory(module: ModuleType) -> str:
     module_path = getattr(module, "__path__", None)
     if module_path:
         assert isinstance(module_path, list)
@@ -35,43 +34,20 @@ def get_module_directory(module) -> str:
     raise RuntimeError(f"The '{module.__name__}' module path is unknown")
 
 
-def get_module_directory_by_import_path(import_path: str) -> str:
-    return get_module_directory(import_module(import_path))
-
-
-@lru_cache
-def get_recc_module_directory() -> str:
-    return get_module_directory_by_import_path("recc")
-
-
-def merge_import_path(*modules) -> str:
-    return reduce(lambda x, y: f"{x}.{y}", modules)
-
-
-def list_submodules(module) -> List[ModuleInfo]:
+def list_submodules(module: ModuleType) -> List[ModuleInfo]:
     module_path = getattr(module, "__path__")
     if module_path:
         return [submodule for submodule in iter_modules(module_path)]
     raise RuntimeError(f"'{module.__name__}' does not have attribute `__path__`")
 
 
-def list_submodule_names(module) -> List[str]:
+def list_submodule_names(module: ModuleType) -> List[str]:
     return [m.name for m in list_submodules(module)]
-
-
-def list_submodules_with_import_paths(*import_paths) -> List[ModuleInfo]:
-    import_path = merge_import_path(*import_paths)
-    module = import_module(import_path)
-    return list_submodules(module)
-
-
-def list_submodule_names_with_import_paths(*import_paths) -> List[str]:
-    return [m.name for m in list_submodules(*import_paths)]
 
 
 def all_module_names() -> List[str]:
     return [m.name for m in iter_modules()]
 
 
-def find_module_names(prefix: str) -> List[str]:
+def filter_module_names(prefix: str) -> List[str]:
     return [m.name for m in iter_modules() if m.name.startswith(prefix)]

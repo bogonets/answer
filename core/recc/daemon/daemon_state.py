@@ -6,24 +6,23 @@ from enum import Enum
 class DaemonState(Enum):
     Unknown = 0
     Unregistered = 1
-    EnvNotFound = 2
-    EnvCreating = 3
-    Down = 4
+    Down = 2
+    NoSuchProcess = 3
 
-    Running = 5
-    Sleeping = 6
-    DiskSleep = 7
-    Stopped = 8
-    TracingStop = 9
-    Zombie = 10
-    Dead = 11
-    WakeKill = 12
-    Waking = 13
-    Idle = 14
-    Locked = 15
-    Waiting = 16
-    Suspended = 17
-    Parked = 18
+    Running = 101
+    Sleeping = 102
+    DiskSleep = 103
+    Stopped = 104
+    TracingStop = 105
+    Zombie = 106
+    Dead = 107
+    WakeKill = 108
+    Waking = 109
+    Idle = 110
+    Locked = 111
+    Waiting = 112
+    Suspended = 113
+    Parked = 114
 
     @classmethod
     def from_process_status(cls, status: str):
@@ -42,7 +41,7 @@ class DaemonState(Enum):
         elif status == "dead":
             return cls.Dead
         elif status == "wake-kill":
-            return cls.Waking
+            return cls.WakeKill
         elif status == "waking":
             return cls.Waking
         elif status == "idle":  # Linux, macOS, FreeBSD

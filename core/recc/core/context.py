@@ -38,7 +38,7 @@ from recc.init.default import (
 )
 from recc.logging.logging import recc_core_logger as logger
 from recc.package.requirements_utils import RECC_REQUIREMENTS_MAIN
-from recc.plugin.plugin_manager import PluginManager
+from recc.plugin.core_plugin_manager import CorePluginManager
 from recc.session.session import (
     DEFAULT_ACCESS_MAX_AGE_SECONDS,
     DEFAULT_ISSUER_RECC_ACCESS,
@@ -61,6 +61,7 @@ from recc.variables.database import (
     ROLE_UID_OWNER,
 )
 from recc.variables.logging import VERBOSE_LOGGING_LEVEL_1
+from recc.variables.plugin import PLUGIN_PACKAGE_PREFIX
 
 
 class Context(
@@ -232,28 +233,20 @@ class Context(
 
     def _init_task_manager(self) -> None:
         self._tasks = create_task_connection_pool()
-        logger.info("Created task-manager.")
+        logger.info("Created task-manager")
 
     def _init_plugin_manager(self) -> None:
-        assert self._local_storage
-
-        plugin_dirs = self._local_storage.find_plugin_dirs()
-        plugin_names = list(map(lambda x: x.name, plugin_dirs))
-
-        self._plugins = PluginManager()
-        self._plugins.call_create(self, *plugin_dirs)
-        for plugin_name, plugin in self._plugins.items():
-            if plugin.exists_routes:
-                plugin.update_routes()
-        logger.info(f"Created plugin-manager: {plugin_names}")
+        self._plugins = CorePluginManager(
+            filter_prefix=PLUGIN_PACKAGE_PREFIX,
+            context=self,
+            allow_patterns=[],
+            deny_patterns=[],
+        )
+        logger.info("Created plugin-manager")
 
     def _init_daemons(self) -> None:
         assert self._local_storage
-        self._daemons = DaemonManager(
-            daemon_work_root_dir=self._local_storage.daemon_work,
-            daemon_venv_root_dir=self._local_storage.daemon_venv,
-            pip_download_dir=self._local_storage.pip_download,
-        )
+        self._daemons = DaemonManager(self._local_storage.daemon_work)
         logger.info("Created daemon-manager")
 
     @classmethod
@@ -277,10 +270,7 @@ class Context(
                 f"{e}"
             )
 
-    async def open_database(self) -> None:
-        await self._database.open()
-        logger.info("Opened database")
-
+    async def migrate_database(self) -> None:
         db_version: Optional[str]
         try:
             db_version = await self._database.select_database_version()
@@ -436,7 +426,11 @@ class Context(
         self.setup_context_config()
         logger.info("Setup context configurations")
 
-        await self.open_database()
+        await self._database.open()
+        logger.info("Opened database")
+
+        await self.migrate_database()
+        logger.info("Migrated database")
         assert self._database.is_open()
 
         database_configs = await self.get_database_configs()
@@ -466,7 +460,9 @@ class Context(
 
         if self.is_guest_mode():
             await self.connect_global_network()
-            logger.info("Connect global network")
+            logger.info("Guest network mode: connect global network")
+        else:
+            logger.debug("Host network mode")
 
         await self._cache.open()
         logger.info("Opened cache-store")
@@ -481,8 +477,8 @@ class Context(
         # )
         # logger.info("Opened daemon-manager")
 
-        await self._plugins.call_open()
-        logger.info("Opened plugin-manager")
+        await self._plugins.open()
+        logger.info("Opened core-plugins")
 
         await self._after_open()
         logger.info("The context has been opened")
@@ -504,11 +500,8 @@ class Context(
 
         teardown = self._config.teardown
 
-        await self._plugins.call_close()
+        await self._plugins.close()
         logger.info("Closed plugin-manager")
-
-        self._plugins.call_destroy()
-        logger.info("Destroyed plugin-manager")
 
         await self._tasks.close()
         logger.info("Closed task-manager")

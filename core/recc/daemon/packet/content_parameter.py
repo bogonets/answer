@@ -90,10 +90,13 @@ class ContentParameterMatcher:
     async def call(self) -> ResultTuple:
         update_arguments = self._get_arguments()
 
-        if iscoroutinefunction(self._func):
-            result = await self._func(*update_arguments)
-        else:
-            result = self._func(*update_arguments)
+        try:
+            if iscoroutinefunction(self._func):
+                result = await self._func(*update_arguments)
+            else:
+                result = self._func(*update_arguments)
+        except BaseException as e:
+            raise RuntimeError("A runtime error occurred in the route") from e
 
         result_args: List[Any] = list()
         result_kwargs: Dict[str, Any] = dict()

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import sys
 from asyncio import run as asyncio_run
 from asyncio import sleep
-from multiprocessing.shared_memory import SharedMemory
 from typing import List, Mapping, Optional
 
 import grpc
@@ -20,7 +20,8 @@ from recc.init.default import (
     init_yaml_driver,
 )
 from recc.logging.logging import recc_daemon_logger as logger
-from recc.plugin.plugin import Plugin
+from recc.memory.shared_memory_validator import validate_shared_memory
+from recc.plugin.daemon_plugin import DaemonPlugin
 from recc.proto.daemon.daemon_api_pb2 import (
     PacketA,
     PacketQ,
@@ -40,50 +41,41 @@ from recc.uri.uds import is_uds_family
 from recc.variables.rpc import (
     ACCEPTED_UDS_PORT_NUMBER,
     DEFAULT_GRPC_OPTIONS,
+    DEFAULT_HEARTBEAT_TIMEOUT,
     DEFAULT_PICKLE_ENCODING,
     REGISTER_ANSWER_KEY_MIN_SM_BYTE,
     REGISTER_ANSWER_KEY_MIN_SM_SIZE,
 )
 
 
-def _test_shared_memory(name: str, password: str) -> bool:
-    if name and password:
-        try:
-            sm = SharedMemory(name=name)
-            return bytes(sm.buf[:]) == bytes.fromhex(password)
-        except:  # noqa
-            pass
-    return False
-
-
 class DaemonServicer(DaemonApiServicer):
-    def __init__(self, plugin: Plugin):
+    def __init__(self, plugin: DaemonPlugin):
         self._plugin = plugin
         self._encoding = DEFAULT_PICKLE_ENCODING
         self._compress_level = COMPRESS_LEVEL_BEST
 
     def __repr__(self) -> str:
-        return f"DaemonServicer<{self._plugin.name}>"
+        return f"DaemonServicer<{self._plugin.module_name}>"
 
     def __str__(self) -> str:
-        return f"DaemonServicer<{self._plugin.name}>"
+        return f"DaemonServicer<{self._plugin.module_name}>"
 
     @property
-    def plugin(self) -> Plugin:
+    def plugin(self) -> DaemonPlugin:
         return self._plugin
 
-    async def on_open(self) -> None:
+    async def open(self) -> None:
         logger.info("Daemon opening ...")
-        if self._plugin.exists_open:
-            await self._plugin.call_open()
-        if self._plugin.exists_routes:
+        if self._plugin.has_on_open:
+            await self._plugin.on_open()
+        if self._plugin.has_on_routes:
             self._plugin.update_routes()
         logger.info("Daemon opened.")
 
-    async def on_close(self) -> None:
+    async def close(self) -> None:
         logger.info("Daemon closing ...")
-        if self._plugin.exists_close:
-            await self._plugin.call_close()
+        if self._plugin.has_on_close:
+            await self._plugin.on_close()
         logger.info("Daemon closed.")
 
     async def Heartbeat(self, request: Pit, context: ServicerContext) -> Pat:
@@ -97,8 +89,8 @@ class DaemonServicer(DaemonApiServicer):
         kwargs = dict(request.kwargs)
         logger.debug(f"Register(session={session},args={args},kwargs={kwargs})")
 
-        if self._plugin.exists_register:
-            result = await self._plugin.call_register(*args, **kwargs)
+        if self._plugin.has_on_register:
+            result = await self._plugin.on_register(*args, **kwargs)
             code = RegisterCode.Success
         else:
             result = None
@@ -107,10 +99,7 @@ class DaemonServicer(DaemonApiServicer):
         test_sm_name = request.test_sm_name
         test_sm_pass = request.test_sm_pass
         if test_sm_name and test_sm_pass:
-            is_sm = _test_shared_memory(
-                name=request.test_sm_name,
-                password=request.test_sm_pass,
-            )
+            is_sm = validate_shared_memory(request.test_sm_name, request.test_sm_pass)
         else:
             is_sm = False
 
@@ -168,12 +157,16 @@ class _AcceptInfo(object):
 
 def create_daemon_server(
     address: str,
-    daemon_file: str,
-    daemon_packages_dir: Optional[List[str]] = None,
+    module_name: str,
+    packages_dirs: Optional[List[str]] = None,
 ) -> _AcceptInfo:
-    packages_dir = daemon_packages_dir[0] if daemon_packages_dir else None
-    daemon_plugin = Plugin(daemon_file, packages_dir)
-    servicer = DaemonServicer(daemon_plugin)
+    if packages_dirs:
+        for packages_dir in packages_dirs:
+            sys.path.insert(0, packages_dir)
+            logger.debug(f"Insert packages directory: {packages_dir}")
+
+    plugin = DaemonPlugin(module_name)
+    servicer = DaemonServicer(plugin)
     logger.info(f"Daemon servicer address: {address}")
 
     server = grpc.aio.server(options=DEFAULT_GRPC_OPTIONS)
@@ -194,8 +187,9 @@ def create_daemon_server(
 
 async def wait_connectable(
     address: str,
-    delay: Optional[float] = None,
+    retry_delay: Optional[float] = None,
     max_attempts: Optional[int] = None,
+    heartbeat_timeout: Optional[float] = DEFAULT_HEARTBEAT_TIMEOUT,
 ) -> bool:
     def _try_cb(i: int, m: int) -> None:
         assert 0 <= i <= m
@@ -217,8 +211,8 @@ async def wait_connectable(
 
     logger.info(f"Try connection address: {address}")
     return await try_connection(
-        predictor=lambda: heartbeat(address),
-        delay=delay,
+        predictor=lambda: heartbeat(address, delay=0, timeout=heartbeat_timeout),
+        retry_delay=retry_delay,
         max_attempts=max_attempts,
         try_cb=_try_cb,
         retry_cb=_retry_cb,
@@ -228,15 +222,15 @@ async def wait_connectable(
 
 
 async def run_daemon_server(config: DaemonConfig, wait_connect=True) -> None:
-    logger.info(f"Start the daemon server: {config.daemon_script}")
+    logger.info(f"Start the daemon server: {config.daemon_module}")
 
     accept_info = create_daemon_server(
         config.daemon_address,
-        config.daemon_script,
+        config.daemon_module,
         config.daemon_packages_dir,
     )
     servicer = accept_info.servicer
-    await servicer.on_open()
+    await servicer.open()
     server = accept_info.server
     accepted_port_number = accept_info.accepted_port_number
 
@@ -251,14 +245,13 @@ async def run_daemon_server(config: DaemonConfig, wait_connect=True) -> None:
     try:
         logger.info("SERVER IS RUNNING !!")
         await server.wait_for_termination()
-    except KeyboardInterrupt:
+    finally:
         # Shuts down the server with 0 seconds of grace period. During the
         # grace period, the server won't accept new connections and allow
         # existing RPCs to continue within the grace period.
         await server.stop(0)
-    finally:
-        await servicer.on_close()
-        logger.info(f"Daemon server done: {config.daemon_script}")
+        await servicer.close()
+        logger.info(f"Daemon server done: {config.daemon_module}")
 
 
 def run_daemon_until_complete(config: DaemonConfig) -> int:

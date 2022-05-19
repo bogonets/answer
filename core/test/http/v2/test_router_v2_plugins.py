@@ -1,29 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import os
 from asyncio import get_event_loop
-from tempfile import TemporaryDirectory
 from typing import List
-from unittest import IsolatedAsyncioTestCase, main
+from unittest import main
 
 from recc.http import http_urls as u
 from recc.http.http_utils import v2_plugins_path, v2_plugins_pplugin_path
-from recc.variables.storage import LOCAL_STORAGE_PLUGIN_NAME
+from recc.variables.plugin import PLUGIN_PACKAGE_PREFIX
 from tester.http.http_app_tester import HttpAppTester
-from tester.plugins.copy_plugin import copy_plugin
+from tester.unittest.plugin_test_case import PluginTestCase
 
 
-class RouterV2PluginsTestCase(IsolatedAsyncioTestCase):
+class RouterV2PluginsTestCase(PluginTestCase):
     async def asyncSetUp(self):
-        self.temp = TemporaryDirectory()
-        self.plugin_dir = os.path.join(self.temp.name, LOCAL_STORAGE_PLUGIN_NAME)
-        os.mkdir(self.plugin_dir)
-        self.plugin_name = "plugin_http_server"
-        self.plugin_filename = self.plugin_name + ".py"
-        self.plugin_path = copy_plugin(self.plugin_filename, self.plugin_dir)
-        self.assertTrue(os.path.isfile(self.plugin_path))
-
-        self.tester = HttpAppTester(get_event_loop(), self.temp.name)
+        self.tester = HttpAppTester(get_event_loop())
         await self.tester.setup()
         await self.tester.wait_startup()
 
@@ -35,28 +25,34 @@ class RouterV2PluginsTestCase(IsolatedAsyncioTestCase):
             await self.tester.signin(self.username, self.password, save_session=True)
         except:  # noqa
             await self.tester.teardown()
-            self.temp.cleanup()
             raise
 
-        plugin_keys = list(self.tester.context.plugins.keys())
-        self.assertEqual(1, len(plugin_keys))
-        self.plugin_name = plugin_keys[0]
-        self.assertEqual(self.plugin_name, self.plugin_name)
+        self.plugin_keys = list(self.tester.context._plugins.keys())
+        self.assertLess(0, len(self.test_core_plugin_names))
+        self.assertLessEqual(len(self.test_core_plugin_names), len(self.plugin_keys))
+
+        for test_plugin_name in self.test_core_plugin_names:
+            test_plugin_key = test_plugin_name[len(PLUGIN_PACKAGE_PREFIX) :]
+            self.assertIn(test_plugin_key, self.plugin_keys)
+
+        self.request_plugin_key = "test_http_server"
+        self.request_plugin_name = PLUGIN_PACKAGE_PREFIX + self.request_plugin_key
+        self.assertIn(self.request_plugin_name, self.test_core_plugin_names)
+        self.assertIn(self.request_plugin_key, self.plugin_keys)
 
     async def asyncTearDown(self):
         await self.tester.teardown()
-        self.temp.cleanup()
 
     async def test_root(self):
         response = await self.tester.get(v2_plugins_path(u.root), cls=List[str])
         self.assertEqual(200, response.status)
         response_data = response.data
         self.assertIsInstance(response_data, list)
-        self.assertEqual(1, len(response_data))
-        self.assertEqual(self.plugin_name, response_data[0])
+        self.assertListEqual(self.plugin_keys, response_data)
 
-    async def test_request(self):
-        path = v2_plugins_pplugin_path(self.plugin_name, "/")
+    async def test_plugin_route(self):
+        path = v2_plugins_pplugin_path(self.request_plugin_key, "/")
+        print("test_plugin_route")
         get_response = await self.tester.get(path)
         self.assertEqual(200, get_response.status)
 

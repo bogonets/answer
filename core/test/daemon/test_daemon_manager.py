@@ -1,85 +1,65 @@
 # -*- coding: utf-8 -*-
 
+import os
+from tempfile import TemporaryDirectory
 from unittest import main
 
-from tester.unittest.daemon_server_test_case import DaemonFileTestCase
-
-# import os
-# from unittest import main, skipIf
-# from numpy.random import randint
-# from numpy import ndarray, uint8
-# from tester.unittest.daemon_server_test_case import DaemonFileTestCase
-# from tester.source.storage import get_pip_download_dir
-# from tester.pydevd.detect_pydevd import get_isolate_ensure_pip_flag
-# from recc.daemon.daemon_client import create_daemon_client
-# from recc.daemon.daemon_runner import StandardDaemonRunnerCallbacks, DaemonRunner
-# from recc.daemon.daemon_servicer import wait_connectable
-# from recc.daemon.daemon_state import DaemonState
-# from recc.filesystem.permission import is_executable_file
-# from recc.network.access import accessible_network
-# from recc.variables.rpc import DEFAULT_DAEMON_PORT, DEFAULT_DAEMON_ADDRESS
-# from recc.variables.storage import (
-#     LOCAL_STORAGE_DAEMON_VENV_NAME,
-#     LOCAL_STORAGE_DAEMON_WORK_NAME,
-# )
+from recc.daemon.daemon_client import create_daemon_client
+from recc.daemon.daemon_manager import DaemonManager
+from recc.variables.rpc import DEFAULT_DAEMON_PORT
+from tester.unittest.plugin_test_case import PluginTestCase
 
 
-class DaemonManagerTestCase(DaemonFileTestCase):
-    def setUp(self):
-        super().setUp()
-
-        # self.venv_dir = os.path.join(self.temp.name, LOCAL_STORAGE_DAEMON_VENV_NAME)
-        # self.work_dir = os.path.join(self.temp.name, LOCAL_STORAGE_DAEMON_WORK_NAME)
-        # os.mkdir(self.venv_dir)
-        # os.mkdir(self.work_dir)
-        # self.server_address = DEFAULT_DAEMON_ADDRESS
-        # self.port = DEFAULT_DAEMON_PORT
-        # self.client_address = f"localhost:{self.port}"
-        # self.client = create_daemon_client(self.client_address)
-        # self.runner = DaemonRunner(
-        #     self.daemon_dir,
-        #     self.daemon_path,
-        #     self.work_dir,
-        #     self.venv_dir,
-        #     pip_download_dir=get_pip_download_dir(),
-        #     callbacks=StandardDaemonRunnerCallbacks(),
-        #     isolate_ensure_pip=get_isolate_ensure_pip_flag(),
-        # )
-
-    def tearDown(self):
-        super().tearDown()
-
+class DaemonManagerTestCase(PluginTestCase):
     async def _start_server(self):
-        # self.assertEqual(DaemonState.EnvNotFound, self.runner.state)
-        # self.runner.create_venv(32.0)
-        # self.assertEqual(DaemonState.EnvCreating, self.runner.state)
-        # await self.runner.join_venv_task()
-        # self.assertIsNone(self.runner._venv_task)
-        # self.assertEqual(DaemonState.Down, self.runner.state)
-        # self.assertTrue(self.runner.exists)
-        # self.assertTrue(is_executable_file(self.runner.python_executable))
-        # self.assertTrue(is_executable_file(self.runner.pip_executable))
-        #
-        # await self.runner.start_daemon(self.server_address)
-        # self.assertNotEqual(DaemonState.Down, self.runner.state)
-        # self.assertTrue(await wait_connectable(self.client_address))
-        #
-        # await self.client.open()
-        # self.assertTrue(self.client.is_open())
-        # self.assertEqual(0, await self.client.register())
-        pass
+        self.assertTrue(os.path.isdir(self.working_temp.name))
+
+        module1 = "recc_daemon_test_router"
+        module2 = "recc_daemon_test_router"
+        slug1 = "daemon1"
+        slug2 = "daemon2"
+        port1 = DEFAULT_DAEMON_PORT
+        port2 = DEFAULT_DAEMON_PORT + 1
+        bind1 = f"[::]:{port1}"
+        bind2 = f"[::]:{port2}"
+        address1 = f"localhost:{port1}"
+        address2 = f"localhost:{port2}"
+
+        self.manager = DaemonManager(
+            working_root_dir=self.working_temp.name,
+            packages_dirs=[self.temp.name],
+        )
+        await self.manager.run(slug1, module1, bind1, address1)
+        await self.manager.run(slug2, module2, bind2, address2)
+
+        self.client1 = create_daemon_client(address1)
+        self.client2 = create_daemon_client(address2)
+        await self.client1.open()
+        await self.client2.open()
+
+        self.assertTrue(self.client1.is_open())
+        self.assertTrue(self.client2.is_open())
+        self.assertEqual(0, await self.client1.register())
+        self.assertEqual(0, await self.client2.register())
 
     async def _stop_server(self):
-        # if self.client.is_open():
-        #     await self.client.close()
-        # self.assertFalse(self.client.is_open())
-        # self.runner.kill_daemon()
-        # await self.runner.join_daemon_task()
-        # self.assertIsNone(self.runner._daemon_task)
-        # self.assertIsNone(self.runner._daemon_process)
-        pass
+        if self.client1.is_open():
+            await self.client1.close()
+        if self.client2.is_open():
+            await self.client2.close()
+
+        self.assertFalse(self.client1.is_open())
+        self.assertFalse(self.client2.is_open())
+
+        await self.manager.close(each_join_timeout=18.0)
+        self.assertEqual(0, len(self.manager.zombies))
+        self.assertEqual(0, len(self.manager))
+
+        assert self.working_temp
+        self.working_temp.cleanup()
 
     async def asyncSetUp(self):
+        self.working_temp = TemporaryDirectory()
         try:
             await self._start_server()
         except:  # noqa
@@ -89,56 +69,12 @@ class DaemonManagerTestCase(DaemonFileTestCase):
     async def asyncTearDown(self):
         await self._stop_server()
 
-    # async def test_request(self):
-    #     self.assertTrue(await self.client.heartbeat(0))
-    #     self.assertEqual(0, len(await self.client.get("/test")))
-    #
-    # async def test_requirements(self):
-    #     files = self.runner.find_requirements()
-    #     names = {
-    #         os.path.basename(self.requirements1_path),
-    #         os.path.basename(self.requirements2_path),
-    #     }
-    #     self.assertSetEqual(names, set(files))
-    #
-    # async def test_default_pip(self):
-    #     show_package_name = "aiohttp"
-    #     packages = await self.runner.list_pip()
-    #     package_names = set(map(lambda x: x.name, packages))
-    #     self.assertIn(show_package_name, package_names)
-    #
-    #     pip_info = await self.runner.show_pip(show_package_name)
-    #     self.assertEqual(show_package_name, pip_info.name)
-    #
-    # async def test_post_test_numpy(self):
-    #     array = randint(0, 255, size=(1270, 1920, 3), dtype=uint8)
-    #     result = await self.client.post("/test/numpy", array)
-    #     self.assertEqual(1, len(result))
-    #     self.assertIsInstance(result[0], ndarray)
-    #     self.assertTrue((result[0] == 0).all())
-    #
-    # @skipIf(
-    #     not accessible_network("https://pypi.org/"),
-    #     "You should be able to access the pypi.org site",
-    # )
-    # async def test_pip_install(self):
-    #     install_package_name = "black"
-    #     packages = await self.runner.list_pip()
-    #     package_names = set(map(lambda x: x.name, packages))
-    #     self.assertNotIn(install_package_name, package_names)
-    #
-    #     self.assertIsNone(self.runner._pip_task)
-    #     self.assertIsNone(self.runner._pip_process)
-    #     await self.runner.install_pip(install_package_name)
-    #     self.assertIsNotNone(self.runner._pip_task)
-    #     self.assertIsNotNone(self.runner._pip_process)
-    #     await self.runner.join_pip_task()
-    #     self.assertIsNone(self.runner._pip_task)
-    #     self.assertIsNone(self.runner._pip_process)
-    #
-    #     packages = await self.runner.list_pip()
-    #     package_names = set(map(lambda x: x.name, packages))
-    #     self.assertIn(install_package_name, package_names)
+    async def test_all_request(self):
+        self.assertTrue(await self.client1.heartbeat(0))
+        self.assertEqual(0, len(await self.client1.get("/test")))
+
+        self.assertTrue(await self.client2.heartbeat(0))
+        self.assertEqual(0, len(await self.client2.get("/test")))
 
 
 if __name__ == "__main__":

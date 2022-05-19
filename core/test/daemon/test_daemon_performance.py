@@ -5,11 +5,12 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 from unittest import main, skipIf
 
-from grpc.aio import AioRpcError
 from numpy import ndarray, uint8
 from numpy.random import randint
 
-from tester.unittest.daemon_server_test_case import DaemonServerTestCase
+from recc.daemon.daemon_client import create_daemon_client
+from recc.daemon.daemon_servicer import create_daemon_server
+from tester.unittest.plugin_test_case import PluginTestCase
 from tester.variables import (
     DAEMON_ARRAY_PERFORMANCE_ITERATION,
     DAEMON_ARRAY_PERFORMANCE_SKIP_MESSAGE,
@@ -43,57 +44,38 @@ PERFORMANCE_TEST_ARRAY = randint(0, 255, size=(1270, 1920, 3), dtype=uint8)
 PERFORMANCE_TEST_BODY = _Test1(0, "aa", {"k": 100}, [1, "Y"], None, [])
 
 
-class DaemonCommonTestCase(DaemonServerTestCase):
-    async def test_heartbeat(self):
-        self.assertTrue(await self.client.heartbeat(0))
+@skipIf(DAEMON_ARRAY_PERFORMANCE_TEST_SKIP, DAEMON_ARRAY_PERFORMANCE_SKIP_MESSAGE)
+class DaemonPerformanceTestCase(PluginTestCase):
+    async def _start_server(self):
+        module_name = "recc_daemon_test_performance"
+        accept_info = create_daemon_server("[::]:0", module_name)
+        self.servicer = accept_info.servicer
+        self.server = accept_info.server
+        self.port = accept_info.accepted_port_number
+        self.address = f"localhost:{self.port}"
+        self.client = create_daemon_client(self.address)
 
-    async def test_get_test(self):
-        result = await self.client.get("/test")
-        self.assertEqual(0, len(result))
+        await self.servicer.open()
+        await self.server.start()
+        await self.client.open()
+        self.assertTrue(self.client.is_open())
+        self.assertEqual(0, await self.client.register())
 
-    async def test_request_test_value_path(self):
-        result0 = await self.client.post("/test/sample/path")
-        self.assertEqual(result0[0], "sample")
+    async def _stop_server(self):
+        await self.servicer.close()
+        await self.client.close()
+        await self.server.stop(None)
+        self.assertFalse(self.client.is_open())
 
-        result1 = await self.client.get("/test/kkk/path")
-        self.assertEqual(result1[0], "kkk")
+    async def asyncSetUp(self):
+        try:
+            await self._start_server()
+        except:  # noqa
+            await self._stop_server()
+            raise
 
-    async def test_put_test_body(self):
-        body = _Test1(0, "aa", {"k": 100}, [1, "Y"], None, [])
-        result = await self.client.put("/test/body", body)
-        data = result.cast(0, _Test1)
-        self.assertIsInstance(data, _Test1)
-        self.assertEqual(data, body)
-
-    async def test_get_test_exception(self):
-        with self.assertRaises(AioRpcError):
-            await self.client.get("/test/exception")
-
-    async def test_post_test_numpy(self):
-        array = randint(0, 255, size=(1270, 1920, 3), dtype=uint8)
-        result = await self.client.post("/test/numpy", array)
-        self.assertEqual(1, len(result))
-        self.assertIsInstance(result[0], ndarray)
-        self.assertTrue((result[0] == 0).all())
-
-    async def test_post_test_numpy_body(self):
-        array = randint(0, 255, size=(1270, 1920, 3), dtype=uint8)
-        body = _Test1(0, "aa", {"k": 100}, [1, "Y"], None, [])
-
-        result = await self.client.patch("/test/numpy/body", array, body)
-        self.assertEqual(2, len(result))
-
-        self.assertIsInstance(result[0], ndarray)
-        self.assertTrue((result[0] == 0).all())
-
-        self.assertIsInstance(result[1], dict)
-        self.assertEqual(body.value1, result[1]["value1"])
-        self.assertEqual(body.value2, result[1]["value2"])
-
-        data = result.cast(1, _Result1)
-        self.assertIsInstance(data, _Result1)
-        self.assertEqual(body.value1, data.value1)
-        self.assertEqual(body.value2, data.value2)
+    async def asyncTearDown(self):
+        await self._stop_server()
 
     async def _call_split_array(
         self, array: ndarray, body: _Test1, iteration: int
@@ -102,7 +84,7 @@ class DaemonCommonTestCase(DaemonServerTestCase):
 
         for _ in range(iteration):
             begin = datetime.now()
-            result = await self.client.patch("/test/numpy/body", array, body)
+            result = await self.client.patch("/performance1", array, body)
             total_seconds += (datetime.now() - begin).total_seconds()
 
             self.assertEqual(2, len(result))
@@ -124,7 +106,7 @@ class DaemonCommonTestCase(DaemonServerTestCase):
 
         for _ in range(iteration):
             begin = datetime.now()
-            result = await self.client.patch("/test/numpy/body2", merged)
+            result = await self.client.patch("/performance2", merged)
             total_seconds += (datetime.now() - begin).total_seconds()
 
             self.assertEqual(2, len(result))

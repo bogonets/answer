@@ -6,108 +6,58 @@ from abc import ABCMeta, abstractmethod
 from asyncio import (
     AbstractEventLoop,
     Task,
-    gather,
     get_running_loop,
     run_coroutine_threadsafe,
     shield,
     wait_for,
 )
 from functools import partial
-from re import Pattern
-from re import compile as re_compile
 from signal import SIGINT
-from typing import List, Optional
+from typing import Iterable, Optional
 
 from overrides import overrides
+from psutil import NoSuchProcess
 
 from recc.argparse.command import Command
 from recc.argparse.config.daemon_config import (
     ARG_DAEMON_ADDRESS,
+    ARG_DAEMON_MODULE,
     ARG_DAEMON_PACKAGES_DIR,
-    ARG_DAEMON_SCRIPT,
 )
 from recc.argparse.config.global_config import ARG_LOG_SIMPLY
 from recc.daemon.daemon_state import DaemonState
-from recc.filesystem.permission import (
-    is_readable_dir,
-    is_readable_file,
-    is_writable_dir,
-)
-from recc.subprocess.async_python_subprocess import Package, PackageInfo
+from recc.filesystem.permission import is_writable_dir
+from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
 from recc.subprocess.async_subprocess import AsyncSubprocess
-from recc.venv.async_recc_virtual_environment import AsyncReccVirtualEnvironment
-
-DAEMON_SCRIPT_EXTENSION = ".py"
-DAEMON_REQUIREMENTS_TXT = "requirements.txt"
-DAEMON_VENV_DIRECTORY = ".venv"
-
-RE_REQUIREMENTS = re_compile(r"requirements.*\.txt")
-RE_CONSTRAINTS = re_compile(r"constraints.*\.txt")
 
 
 class DaemonRunnerCallbacks(metaclass=ABCMeta):
     @abstractmethod
-    async def on_created_venv(self, result: bool, root: str) -> None:
+    def on_stdout(self, data: bytes) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def on_stdout(self, data: bytes) -> None:
+    def on_stderr(self, data: bytes) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def on_stderr(self, data: bytes) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def on_daemon_done(self, exit_code: int) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def on_pip_install_stdout(self, data: bytes) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def on_pip_install_stderr(self, data: bytes) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def on_pip_install_done(self, exit_code: int) -> None:
+    async def on_exit(self, code: int) -> None:
         raise NotImplementedError
 
 
 class StandardDaemonRunnerCallbacks(DaemonRunnerCallbacks):
     @overrides
-    async def on_created_venv(self, result: bool, root: str) -> None:
-        sys.stdout.write(f"The virtual environment has been created: '{root}'\n")
-
-    @overrides
-    async def on_stdout(self, data: bytes) -> None:
+    def on_stdout(self, data: bytes) -> None:
         sys.stdout.write(str(data, encoding="utf-8"))
 
     @overrides
-    async def on_stderr(self, data: bytes) -> None:
+    def on_stderr(self, data: bytes) -> None:
         sys.stderr.write(str(data, encoding="utf-8"))
 
     @overrides
-    async def on_daemon_done(self, exit_code: int) -> None:
-        report = f"Daemon process done (exit_code={exit_code})\n"
-        if exit_code == 0:
-            sys.stdout.write(report)
-        else:
-            sys.stderr.write(report)
-
-    @overrides
-    async def on_pip_install_stdout(self, data: bytes) -> None:
-        sys.stdout.write(str(data, encoding="utf-8"))
-
-    @overrides
-    async def on_pip_install_stderr(self, data: bytes) -> None:
-        sys.stderr.write(str(data, encoding="utf-8"))
-
-    @overrides
-    async def on_pip_install_done(self, exit_code: int) -> None:
-        report = f"pip install done (exit_code={exit_code})\n"
-        if exit_code == 0:
+    async def on_exit(self, code: int) -> None:
+        report = f"The daemon process has been exited (code={code})\n"
+        if code == 0:
             sys.stdout.write(report)
         else:
             sys.stderr.write(report)
@@ -116,193 +66,83 @@ class StandardDaemonRunnerCallbacks(DaemonRunnerCallbacks):
 class DaemonRunner:
     def __init__(
         self,
-        plugin_dir: str,
-        plugin_script_path: str,
-        work_dir: str,
-        venv_dir: str,
-        system_site_packages=False,
-        pip_timeout: Optional[float] = None,
-        pip_download_dir: Optional[str] = None,
+        module_name: str,
+        working_dir: str,
+        packages_dirs: Optional[Iterable[str]] = None,
         callbacks: Optional[DaemonRunnerCallbacks] = None,
-        *,
-        isolate_ensure_pip=True,
     ) -> None:
-        assert os.path.isdir(plugin_dir)
-        assert is_readable_dir(plugin_dir)
+        assert os.path.isdir(working_dir)
+        assert is_writable_dir(working_dir)
 
-        assert os.path.isfile(plugin_script_path)
-        assert is_readable_file(plugin_script_path)
-
-        assert os.path.isdir(work_dir)
-        assert is_writable_dir(work_dir)
-
-        assert os.path.isdir(venv_dir)
-        assert is_readable_dir(venv_dir)
-
-        self._plugin_dir = plugin_dir
-        self._plugin_script_path = plugin_script_path
-        self._work_dir = work_dir
-        self._venv = AsyncReccVirtualEnvironment(
-            root_directory=venv_dir,
-            system_site_packages=system_site_packages,
-            pip_timeout=pip_timeout,
-            pip_download_dir=pip_download_dir,
-            isolate_ensure_pip=isolate_ensure_pip,
-        )
-
-        self._venv_task: Optional[Task] = None
-
-        self._daemon_process: Optional[AsyncSubprocess] = None
-        self._daemon_task: Optional[Task] = None
-
-        self._pip_process: Optional[AsyncSubprocess] = None
-        self._pip_task: Optional[Task] = None
-
+        self._module_name = module_name
+        self._working_dir = working_dir
+        self._packages_dirs = list(packages_dirs) if packages_dirs else list()
         self._callbacks = callbacks
 
-    @staticmethod
-    async def _timeout_wrapper(coro, timeout: Optional[float] = None) -> None:
-        if timeout is not None:
-            assert timeout > 0
-            await wait_for(coro, timeout=timeout)
-        else:
-            await coro
+        self._process: Optional[AsyncSubprocess] = None
+        self._task: Optional[Task] = None
 
-    @staticmethod
-    async def _cancel_task(task: Optional[Task]) -> None:
-        if task is None:
+    async def cancel_task(self) -> None:
+        if self._task is None:
             return
-        if task.done():
+        if self._task.done():
             return
-        task.cancel()
+        self._task.cancel()
         try:
-            await task
+            await self._task
         except:  # noqa
             pass
 
-    @staticmethod
-    async def _join_task(task: Optional[Task], timeout: Optional[float] = None) -> None:
-        if task is None:
+    async def join(self, timeout: Optional[float] = None) -> None:
+        if self._task is None:
             return
         if timeout is not None:
             assert timeout > 0
-            await wait_for(shield(task), timeout=timeout)
+            await wait_for(shield(self._task), timeout=timeout)
         else:
-            await task
-
-    async def cancel_venv_task(self) -> None:
-        await self._cancel_task(self._venv_task)
-
-    async def join_venv_task(self, timeout: Optional[float] = None) -> None:
-        await self._join_task(self._venv_task, timeout)
-
-    async def cancel_daemon_task(self) -> None:
-        await self._cancel_task(self._daemon_task)
-
-    async def join_daemon_task(self, timeout: Optional[float] = None) -> None:
-        await self._join_task(self._daemon_task, timeout)
-
-    async def cancel_pip_task(self) -> None:
-        await self._cancel_task(self._pip_task)
-
-    async def join_pip_task(self, timeout: Optional[float] = None) -> None:
-        await self._join_task(self._pip_task, timeout)
-
-    def create_venv(
-        self,
-        timeout: Optional[float] = None,
-        loop: Optional[AbstractEventLoop] = None,
-    ) -> None:
-        if self._venv_task is not None:
-            raise RuntimeError("Already creating virtual environment")
-
-        running_loop = loop if loop else get_running_loop()
-        self._venv_task = running_loop.create_task(
-            self._timeout_wrapper(self._venv.create_if_not_exists(), timeout)
-        )
-        self._venv_task.add_done_callback(partial(self._venv_task_done, running_loop))
-
-    def _venv_task_done(self, loop: AbstractEventLoop, task: Task) -> None:
-        assert self._venv_task == task
-        self._venv_task = None
-        if self._callbacks is None:
-            return
-        run_coroutine_threadsafe(
-            self._callbacks.on_created_venv(self.exists, self.venv_dir), loop
-        )
+            await self._task
 
     @property
-    def plugin_dir(self):
-        return self._plugin_dir
+    def working(self) -> str:
+        return self._working_dir
 
     @property
-    def plugin_script_path(self):
-        return self._plugin_script_path
-
-    @property
-    def work_dir(self):
-        return self._work_dir
-
-    @property
-    def venv_dir(self):
-        return self._venv.root
-
-    @property
-    def exists(self) -> bool:
-        return self._venv.exists
-
-    @property
-    def python_executable(self) -> str:
-        return self._venv.env_exe
-
-    @property
-    def pip_executable(self) -> str:
-        return self._venv.pip_exe
+    def running(self) -> bool:
+        return self._task is not None and not self._task.done()
 
     @property
     def state(self) -> DaemonState:
-        # Make sure the environment is being created.
-        if self._venv_task is not None:
-            if not self._venv_task.done():
-                return DaemonState.EnvCreating
-
-        if not self.exists:
-            return DaemonState.EnvNotFound
-
-        if self._daemon_process is None:
+        if self._process:
+            try:
+                return DaemonState.from_process_status(self._process.status)
+            except NoSuchProcess:
+                return DaemonState.NoSuchProcess
+            except:  # noqa
+                return DaemonState.Unknown
+        else:
             return DaemonState.Down
 
-        return DaemonState.from_process_status(self._daemon_process.status)
-
-    def is_venv_creating(self) -> bool:
-        return self._venv_task is not None and not self._venv_task.done()
-
-    def is_daemon_running(self) -> bool:
-        return self._daemon_task is not None and not self._daemon_task.done()
-
-    def is_pip_running(self) -> bool:
-        return self._pip_task is not None and not self._pip_task.done()
-
-    def _stdout_callback(self, loop: AbstractEventLoop, data: bytes) -> None:
+    def _stdout_callback(self, data: bytes) -> None:
         if self._callbacks is None:
             return
-        run_coroutine_threadsafe(self._callbacks.on_stdout(data), loop)
+        self._callbacks.on_stdout(data)
 
-    def _stderr_callback(self, loop: AbstractEventLoop, data: bytes) -> None:
+    def _stderr_callback(self, data: bytes) -> None:
         if self._callbacks is None:
             return
-        run_coroutine_threadsafe(self._callbacks.on_stderr(data), loop)
+        self._callbacks.on_stderr(data)
 
-    async def start_daemon(
+    async def start(
         self,
         address: str,
+        *,
         loop: Optional[AbstractEventLoop] = None,
     ) -> None:
-        if self._daemon_task is not None:
+        if self._task is not None:
             raise RuntimeError("Already daemon task")
 
-        if self._daemon_process is not None:
-            pid = self._daemon_process.get_pid()
+        if self._process is not None:
+            pid = self._process.get_pid()
             raise RuntimeError(f"Already daemon process (pid={pid})")
 
         subcommands = [
@@ -312,168 +152,46 @@ class DaemonRunner:
             Command.daemon.name,
             ARG_DAEMON_ADDRESS.long_key,
             address,
-            ARG_DAEMON_SCRIPT.long_key,
-            self._plugin_script_path,
-            ARG_DAEMON_PACKAGES_DIR.long_key,
-            self._venv.site_packages_dir,
+            ARG_DAEMON_MODULE.long_key,
+            self._module_name,
         ]
 
+        for packages_dir in self._packages_dirs:
+            subcommands += [ARG_DAEMON_PACKAGES_DIR.long_key, packages_dir]
+
         running_loop = loop if loop else get_running_loop()
-        python = self._venv.create_python_subprocess()
-        self._daemon_process = await python.start_python(
+        python = AsyncPythonSubprocess.create_system()
+        self._process = await python.start_python(
             *subcommands,
-            stdout_callback=partial(self._stdout_callback, running_loop),
-            stderr_callback=partial(self._stderr_callback, running_loop),
-            cwd=self._work_dir,
+            stdout_callback=self._stdout_callback,
+            stderr_callback=self._stderr_callback,
+            cwd=self._working_dir,
             writable=False,
         )
 
-        self._daemon_task = running_loop.create_task(self._daemon_process.wait())
-        self._daemon_task.add_done_callback(
-            partial(self._daemon_task_done, running_loop)
-        )
+        self._task = running_loop.create_task(self._process.wait())
+        self._task.add_done_callback(partial(self._on_task_done, running_loop))
 
-    def _daemon_task_done(self, loop: AbstractEventLoop, task: Task) -> None:
-        assert self._daemon_task is not None
-        assert self._daemon_process is not None
-        assert self._daemon_task == task
+    def _on_task_done(self, loop: AbstractEventLoop, task: Task) -> None:
+        assert self._task is not None
+        assert self._process is not None
+        assert self._task == task
 
-        exit_code = self._daemon_task.result()
+        exit_code = self._task.result()
         assert isinstance(exit_code, int)
 
-        self._daemon_task = None
-        self._daemon_process = None
+        self._task = None
+        self._process = None
 
-        if self._callbacks is None:
-            return
+        if self._callbacks is not None:
+            run_coroutine_threadsafe(self._callbacks.on_exit(exit_code), loop)
 
-        run_coroutine_threadsafe(self._callbacks.on_daemon_done(exit_code), loop)
-
-    def interrupt_daemon(self) -> None:
-        """
-        .. warning::
-            I have code that intercepts the interrupt internally.
-            So you should use ``self.kill_daemon()`` instead.
-        """
-
-        if self._daemon_process is None:
+    def interrupt(self) -> None:
+        if self._process is None:
             raise RuntimeError("Not exists daemon process")
-        self._daemon_process.send_signal(SIGINT)
+        self._process.send_signal(SIGINT)
 
-    def kill_daemon(self) -> None:
-        if self._daemon_process is None:
+    def kill(self) -> None:
+        if self._process is None:
             raise RuntimeError("Not exists daemon process")
-        self._daemon_process.kill()
-
-    async def list_pip(self) -> List[Package]:
-        return await self._venv.create_python_subprocess().list()
-
-    async def show_pip(self, package: str) -> PackageInfo:
-        return await self._venv.create_python_subprocess().show_as_info(package)
-
-    async def uninstall_pip(self, package: str) -> int:
-        return await self._venv.create_python_subprocess().uninstall(package)
-
-    def _pip_install_stdout_callback(
-        self, loop: AbstractEventLoop, data: bytes
-    ) -> None:
-        if self._callbacks is None:
-            return
-        run_coroutine_threadsafe(self._callbacks.on_pip_install_stdout(data), loop)
-
-    def _pip_install_stderr_callback(
-        self, loop: AbstractEventLoop, data: bytes
-    ) -> None:
-        if self._callbacks is None:
-            return
-        run_coroutine_threadsafe(self._callbacks.on_pip_install_stderr(data), loop)
-
-    async def install_pip(
-        self,
-        *arguments: str,
-        upgrade=False,
-        loop: Optional[AbstractEventLoop] = None,
-    ) -> None:
-        if self._pip_task is not None:
-            raise RuntimeError("Already pip task")
-
-        if self._pip_process is not None:
-            pid = self._pip_process.get_pid()
-            raise RuntimeError(f"Already pip process (pid={pid})")
-
-        python_for_pip = self._venv.create_python_subprocess()
-        subcommands = ["install", "--progress-bar=ascii"]
-        if upgrade:
-            subcommands.append("--upgrade")
-        subcommands += arguments
-
-        running_loop = loop if loop else get_running_loop()
-        self._pip_process = await python_for_pip.start_pip(
-            *subcommands,
-            stdout_callback=partial(self._pip_install_stdout_callback, running_loop),
-            stderr_callback=partial(self._pip_install_stderr_callback, running_loop),
-            cwd=self._work_dir,
-            env=python_for_pip.env,
-            writable=False,
-        )
-
-        self._pip_task = running_loop.create_task(self._pip_process.wait())
-        self._pip_task.add_done_callback(partial(self._pip_task_done, running_loop))
-
-    def _pip_task_done(self, loop: AbstractEventLoop, task: Task) -> None:
-        assert self._pip_task is not None
-        assert self._pip_process is not None
-        assert self._pip_task == task
-
-        exit_code = self._pip_task.result()
-        assert isinstance(exit_code, int)
-
-        self._pip_task = None
-        self._pip_process = None
-
-        if self._callbacks is None:
-            return
-
-        run_coroutine_threadsafe(self._callbacks.on_pip_install_done(exit_code), loop)
-
-    def interrupt_pip(self) -> None:
-        if self._pip_process is None:
-            raise RuntimeError("Not exists pip process")
-        self._pip_process.send_signal(SIGINT)
-
-    def kill_pip(self) -> None:
-        if self._pip_process is None:
-            raise RuntimeError("Not exists pip process")
-        self._pip_process.kill()
-
-    async def close(
-        self,
-        timeout: Optional[float] = None,
-    ) -> None:
-        joins = list()
-        if self.is_venv_creating():
-            joins.append(self.join_venv_task(timeout))
-        if self.is_daemon_running():
-            joins.append(self.join_daemon_task(timeout))
-        if self.is_pip_running():
-            joins.append(self.join_pip_task(timeout))
-        await gather(*joins)
-
-    @staticmethod
-    def _find_files(
-        directory: str,
-        name_pattern: Pattern,
-        join_prefix=False,
-    ) -> List[str]:
-        result = list()
-        for name in os.listdir(directory):
-            if name_pattern.match(name):
-                f = os.path.join(directory, name) if join_prefix else name
-                result.append(f)
-        return result
-
-    def find_requirements(self, join_dir=False) -> List[str]:
-        return self._find_files(self.plugin_dir, RE_REQUIREMENTS, join_dir)
-
-    def find_constraints(self, join_dir=False) -> List[str]:
-        return self._find_files(self.plugin_dir, RE_CONSTRAINTS, join_dir)
+        self._process.kill()

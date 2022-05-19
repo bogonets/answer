@@ -108,13 +108,7 @@ class ContextTask(ContextBase):
 
     async def prepare_project_volume(self, group: str, project: str) -> str:
         if self.is_host_mode():
-            return self.local_storage.prepare_project_directory(group, project)
-        volume = await self.container.create_task_volume_if_not_exist(group, project)
-        return volume.key
-
-    async def prepare_substorage_volume(self, group: str, project: str) -> str:
-        if self.is_host_mode():
-            return self.local_storage.prepare_substorage_dir(group, project)
+            return self._local_storage.prepare_project_directory(group, project)
         volume = await self.container.create_task_volume_if_not_exist(group, project)
         return volume.key
 
@@ -147,7 +141,7 @@ class ContextTask(ContextBase):
         wait_retries=DEFAULT_WAIT_TASK_RETRIES,
         verbose_level: Optional[int] = None,
     ) -> RpcClient:
-        local_storage_root = self.local_storage.root
+        local_storage_root = self._local_storage.root
         if self.is_host_mode() and not os.path.isdir(local_storage_root):
             raise RuntimeError("In Host mode, the storage path must be specified")
 
@@ -335,16 +329,16 @@ class ContextTask(ContextBase):
         task_name: str,
         rpc_address: str,
     ) -> RpcClient:
-        key = self.tasks.make_key(group_name, project_name, task_name)
-        if self.tasks.exist(key):
-            client = self.tasks.get(key)
+        key = self._tasks.make_key(group_name, project_name, task_name)
+        if self._tasks.exist(key):
+            client = self._tasks.get(key)
             if client.is_open():
                 await client.close()
-            self.tasks.remove(key)
+            self._tasks.remove(key)
 
         client = create_rpc_client(rpc_address)
         await client.open()
-        self.tasks.set(key, client)
+        self._tasks.set(key, client)
         return client
 
     async def remove_task_client(
@@ -353,12 +347,12 @@ class ContextTask(ContextBase):
         project_name: str,
         task_name: str,
     ) -> None:
-        key = self.tasks.make_key(group_name, project_name, task_name)
-        if self.tasks.exist(key):
-            client = self.tasks.get(key)
+        key = self._tasks.make_key(group_name, project_name, task_name)
+        if self._tasks.exist(key):
+            client = self._tasks.get(key)
             if client.is_open():
                 await client.close()
-            self.tasks.remove(key)
+            self._tasks.remove(key)
 
     async def get_task_client(
         self,
@@ -366,8 +360,8 @@ class ContextTask(ContextBase):
         project_name: str,
         task_name: str,
     ) -> RpcClient:
-        key = self.tasks.make_key(group_name, project_name, task_name)
-        return self.tasks.get(key)
+        key = self._tasks.make_key(group_name, project_name, task_name)
+        return self._tasks.get(key)
 
     async def log_task(
         self,
@@ -450,7 +444,7 @@ class ContextTask(ContextBase):
 
         for task_name, task in graph.tasks.items():
             client = await self.run_task(group_name, project_name, task_name)
-            await client.upload_templates(self.local_storage.compress_templates())
+            await client.upload_templates(self._local_storage.compress_templates())
             await client.set_task_blueprint(task)
 
         await self.database.update_project_by_uid(project_uid, extra=extra)

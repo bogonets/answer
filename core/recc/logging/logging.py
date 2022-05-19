@@ -30,6 +30,7 @@ LOGGER_NAME_RECC_HTTP = "recc.http"
 LOGGER_NAME_RECC_LAMDA = "recc.lamda"
 LOGGER_NAME_RECC_NETWORK = "recc.network"
 LOGGER_NAME_RECC_PACKAGE = "recc.package"
+LOGGER_NAME_RECC_PLUGIN = "recc.plugin"
 LOGGER_NAME_RECC_RPC = "recc.rpc"
 
 LOGGER_NAME_AIOHTTP = "aiohttp"
@@ -50,6 +51,7 @@ recc_http_logger = getLogger(LOGGER_NAME_RECC_HTTP)
 recc_lamda_logger = getLogger(LOGGER_NAME_RECC_LAMDA)
 recc_network_logger = getLogger(LOGGER_NAME_RECC_NETWORK)
 recc_package_logger = getLogger(LOGGER_NAME_RECC_PACKAGE)
+recc_plugin_logger = getLogger(LOGGER_NAME_RECC_PLUGIN)
 recc_rpc_logger = getLogger(LOGGER_NAME_RECC_RPC)
 
 SEVERITY_NAME_CRITICAL = "critical"

@@ -11,8 +11,8 @@ class DataClassTester:
     val: int = DEFAULT_VALUE
 
 
-def on_create(context, **kwargs) -> None:
-    pass
+def on_create(context) -> None:
+    assert context is not None
 
 
 def on_destroy() -> None:
