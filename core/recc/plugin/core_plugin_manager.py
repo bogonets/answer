@@ -85,7 +85,7 @@ class CorePluginManager:
                 plugin.on_create(context=context)
                 logger.info(f"Plugin<{key}> Called on_create")
             else:
-                logger.debug(f"Plugin<{key}> on_create callback not found")
+                logger.debug(f"Skip Plugin<{key}> on_create callback not found")
             assert module_name.startswith(filter_prefix)
             plugins[key] = plugin
         self._plugins = plugins
@@ -120,7 +120,7 @@ class CorePluginManager:
                 else:
                     logger.info(f"Plugin<{key}> Called on_close")
             else:
-                logger.debug(f"Plugin<{key}> on_close callback not found")
+                logger.debug(f"Skip Plugin<{key}> on_close callback not found")
 
             if plugin.has_on_destroy:
                 logger.debug(f"Plugin<{key}> Calling on_destroy ...")
@@ -132,7 +132,7 @@ class CorePluginManager:
                 else:
                     logger.info(f"Plugin<{key}> Called on_destroy")
             else:
-                logger.debug(f"Plugin<{key}> on_destroy callback not found")
+                logger.debug(f"Skip Plugin<{key}> on_destroy callback not found")
 
     async def close(self) -> None:
         await self._close(self._plugins)
@@ -150,14 +150,14 @@ class CorePluginManager:
                     opened_plugins[key] = plugin
                     logger.info(f"Plugin<{key}> Called on_open")
                 else:
-                    logger.debug(f"Plugin<{key}> on_open callback not found")
+                    logger.debug(f"Skip Plugin<{key}> on_open callback not found")
 
                 if plugin.has_on_routes:
                     logger.debug(f"Plugin<{key}> Calling update_routes ...")
                     plugin.update_routes()
                     logger.info(f"Plugin<{key}> Called update_routes")
                 else:
-                    logger.debug(f"Plugin<{key}> update_routes callback not found")
+                    logger.debug(f"Skip Plugin<{key}> update_routes callback not found")
         except:  # noqa
             # [IMPORTANT]
             # If an error occurs even in one plug-in,

@@ -14,6 +14,13 @@ class PluginCallbackError(PluginError):
         self.callback = callback
 
 
+class PluginCallbackInvalidStateError(PluginCallbackError):
+    def __init__(self, plugin: str, callback: str, detail: Optional[str] = None):
+        prefix = "Invalid state"
+        message = f"{prefix}: {detail}" if detail else prefix
+        super().__init__(plugin, callback, message)
+
+
 class PluginCallbackNotFoundError(PluginCallbackError):
     def __init__(self, plugin: str, callback: str):
         super().__init__(plugin, callback, "Callback not found")
