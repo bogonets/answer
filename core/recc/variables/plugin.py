@@ -25,3 +25,11 @@ NAME_ON_DELETE_PROJECT = "on_delete_project"
 NAME_ON_ROUTES = "on_routes"
 
 NAME_ON_REGISTER = "on_register"
+
+# -----------------------
+# Special attribute names
+# -----------------------
+
+NAME_VERSION = "__version__"
+NAME_DOC = "__doc__"
+NAME_RECC_SPEC = "__recc_spec__"

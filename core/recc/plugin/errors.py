@@ -8,6 +8,34 @@ class PluginError(Exception):
         self.plugin = plugin
 
 
+# ---------------
+# Attribute Error
+# ---------------
+
+
+class PluginAttributeError(PluginError):
+    def __init__(self, plugin: str, attribute: str, detail: str):
+        super().__init__(plugin, f"Plugin[{plugin}.{attribute}] {detail}")
+        self.attribute = attribute
+
+
+class PluginAttributeNotFoundError(PluginAttributeError):
+    def __init__(self, plugin: str, attribute: str):
+        super().__init__(plugin, attribute, "Attribute not found")
+
+
+class PluginAttributeInvalidValueError(PluginAttributeError):
+    def __init__(self, plugin: str, attribute: str, detail: Optional[str] = None):
+        prefix = "The attribute value is invalid"
+        message = f"{prefix}: {detail}" if detail else prefix
+        super().__init__(plugin, attribute, message)
+
+
+# --------------
+# Callback Error
+# --------------
+
+
 class PluginCallbackError(PluginError):
     def __init__(self, plugin: str, callback: str, detail: str):
         super().__init__(plugin, f"Plugin[{plugin}.{callback}] {detail}")

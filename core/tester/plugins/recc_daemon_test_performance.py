@@ -5,6 +5,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from numpy import ndarray
 
+__version__ = "0.0.0"
+
 
 async def on_register(*args, **kwargs) -> int:
     assert args is not None

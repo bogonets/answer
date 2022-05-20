@@ -14,6 +14,8 @@ from aiohttp.web_response import Response
 
 from recc.http.http_decorator import has_layout_view
 
+__version__ = "0.0.0"
+
 TEST_HOST = "0.0.0.0"
 TEST_PORT = 34567
 

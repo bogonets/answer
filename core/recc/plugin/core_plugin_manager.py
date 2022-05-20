@@ -80,6 +80,9 @@ class CorePluginManager:
         for module_name in module_names:
             key = module_name[len(filter_prefix) :]
             plugin = CorePlugin(module_name)
+
+            logger.info(f"Create Plugin<{key}> version: {plugin.version}")
+
             if plugin.has_on_create:
                 logger.debug(f"Plugin<{key}> Calling on_create ...")
                 plugin.on_create(context=context)

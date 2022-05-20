@@ -49,5 +49,9 @@ def all_module_names() -> List[str]:
     return [m.name for m in iter_modules()]
 
 
+def startswith_module_names(prefix: str) -> List[str]:
+    return [m.name for m in iter_modules() if m.name.startswith(prefix)]
+
+
 def filter_module_names(prefix: str) -> List[str]:
     return [m.name for m in iter_modules() if m.name.startswith(prefix)]

@@ -2,6 +2,8 @@
 
 from dataclasses import dataclass
 
+__version__ = "0.0.0"
+
 DEFAULT_VALUE = 0
 
 

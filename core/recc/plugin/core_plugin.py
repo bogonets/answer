@@ -5,6 +5,7 @@ from recc.plugin.mixin.plugin_group import PluginGroup
 from recc.plugin.mixin.plugin_open import PluginOpen
 from recc.plugin.mixin.plugin_project import PluginProject
 from recc.plugin.mixin.plugin_router import PluginRouter
+from recc.plugin.mixin.plugin_version import PluginVersion
 from recc.plugin.mixin.plugin_www import PluginWww
 
 
@@ -14,6 +15,7 @@ class CorePlugin(
     PluginOpen,
     PluginProject,
     PluginRouter,
+    PluginVersion,
     PluginWww,
 ):
     def __init__(self, module_name: str):
