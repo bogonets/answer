@@ -39,7 +39,7 @@ class ContextProject(ContextBase):
                 project_uid, owner_uid, ROLE_UID_OWNER
             )
         await self.cache.set_project(group_uid, slug, project_uid)
-        await self._plugins.call_on_create_project(project_uid)
+        await self._plugins.on_create_project(project_uid)
         return project_uid
 
     async def update_project(
@@ -68,7 +68,7 @@ class ContextProject(ContextBase):
 
     async def delete_project(self, uid: int) -> None:
         await self.database.delete_project_by_uid(uid)
-        await self._plugins.call_on_delete_project(uid)
+        await self._plugins.on_delete_project(uid)
         await self.cache.remove_project_by_uid(uid)
 
     async def get_projects(self, group_uid: Optional[int] = None) -> List[Project]:

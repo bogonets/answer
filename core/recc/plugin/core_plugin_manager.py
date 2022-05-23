@@ -31,21 +31,21 @@ def convert_patterns(
 class CorePluginManager:
     def __init__(
         self,
-        filter_prefix=PLUGIN_PACKAGE_PREFIX,
+        prefix=PLUGIN_PACKAGE_PREFIX,
         context=None,
-        *,
-        allow_patterns: Optional[List[Union[str, Pattern]]] = None,
-        deny_patterns: Optional[List[Union[str, Pattern]]] = None,
+        denies: Optional[List[Union[str, Pattern]]] = None,
+        allows: Optional[List[Union[str, Pattern]]] = None,
     ):
         module_names = filter_module_names(
-            prefix=filter_prefix,
-            denies=deny_patterns,
-            allows=allow_patterns,
+            prefix=prefix,
+            denies=denies,
+            allows=allows,
         )
+        prefix_length = len(prefix)
 
         plugins = dict()
         for module_name in module_names:
-            key = module_name[len(filter_prefix) :]
+            key = module_name[prefix_length:]
             plugin = CorePlugin(module_name)
 
             logger.info(f"Create Plugin<{key}> version: {plugin.version}")
@@ -56,7 +56,7 @@ class CorePluginManager:
                 logger.info(f"Plugin<{key}> Called on_create")
             else:
                 logger.debug(f"Skip Plugin<{key}> on_create callback not found")
-            assert module_name.startswith(filter_prefix)
+            assert module_name.startswith(prefix)
             plugins[key] = plugin
         self._plugins = plugins
 
@@ -65,15 +65,6 @@ class CorePluginManager:
 
     def get(self, module_name: str) -> Optional[CorePlugin]:
         return self._plugins.get(module_name, None)
-
-    def __setitem__(self, module_name: str, plugin: CorePlugin) -> None:
-        self._plugins.__setitem__(module_name, plugin)
-
-    def __getitem__(self, module_name: str) -> CorePlugin:
-        return self._plugins.__getitem__(module_name)
-
-    def __delitem__(self, module_name: str) -> None:
-        self._plugins.__delitem__(module_name)
 
     @staticmethod
     async def _close(plugins: Dict[str, CorePlugin]) -> None:
@@ -139,28 +130,28 @@ class CorePluginManager:
             await self._close(opened_plugins)
             raise
 
-    async def call_on_create_group(self, uid: int) -> None:
+    async def on_create_group(self, uid: int) -> None:
         coroutines = []
         for plugin in self._plugins.values():
             if plugin.has_on_create_group:
                 coroutines.append(plugin.on_create_group(uid))
         await gather(*coroutines)
 
-    async def call_on_delete_group(self, uid: int) -> None:
+    async def on_delete_group(self, uid: int) -> None:
         coroutines = []
         for plugin in self._plugins.values():
             if plugin.has_on_delete_group:
                 coroutines.append(plugin.on_delete_group(uid))
         await gather(*coroutines)
 
-    async def call_on_create_project(self, uid: int) -> None:
+    async def on_create_project(self, uid: int) -> None:
         coroutines = []
         for plugin in self._plugins.values():
             if plugin.has_on_create_project:
                 coroutines.append(plugin.on_create_project(uid))
         await gather(*coroutines)
 
-    async def call_on_delete_project(self, uid: int) -> None:
+    async def on_delete_project(self, uid: int) -> None:
         coroutines = []
         for plugin in self._plugins.values():
             if plugin.has_on_delete_project:

@@ -38,7 +38,7 @@ class ContextGroup(ContextBase):
                 group_uid, owner_uid, ROLE_UID_OWNER
             )
         await self.cache.set_group(slug, group_uid)
-        await self._plugins.call_on_create_group(group_uid)
+        await self._plugins.on_create_group(group_uid)
         return group_uid
 
     async def update_group(
@@ -66,7 +66,7 @@ class ContextGroup(ContextBase):
 
     async def delete_group(self, uid: int) -> None:
         await self.database.delete_group_by_uid(uid)
-        await self._plugins.call_on_delete_group(uid)
+        await self._plugins.on_delete_group(uid)
         # TODO: call on_delete_project() of all plugins
         await self.cache.remove_group_by_uid(uid)
 

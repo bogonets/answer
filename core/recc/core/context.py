@@ -237,10 +237,10 @@ class Context(
 
     def _init_plugin_manager(self) -> None:
         self._plugins = CorePluginManager(
-            filter_prefix=PLUGIN_PACKAGE_PREFIX,
+            prefix=PLUGIN_PACKAGE_PREFIX,
             context=self,
-            allow_patterns=[],
-            deny_patterns=[],
+            denies=[],
+            allows=[],
         )
         logger.info("Created plugin-manager")
 
