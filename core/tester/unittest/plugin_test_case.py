@@ -5,7 +5,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import IsolatedAsyncioTestCase
 
-from recc.package.package_utils import filter_module_names
+from recc.package.package_utils import all_module_names
 from recc.system.path_context import PathContext
 from tester.plugins.copy_plugin import copy_plugin
 
@@ -26,6 +26,7 @@ class PluginTestCase(IsolatedAsyncioTestCase):
     def _setUpPlugins(self):
         assert self.temp
         assert self.path_context
+
         self.test_core_plugin_names = [
             "recc_plugin_test_http_server",
             "recc_plugin_test_simple",
@@ -37,11 +38,10 @@ class PluginTestCase(IsolatedAsyncioTestCase):
         self.test_plugin_names = (
             self.test_core_plugin_names + self.test_daemon_plugin_names
         )
+
         for plugin_name in self.test_plugin_names:
             self._createPluginPackage(plugin_name)
-            modules = filter_module_names(plugin_name)
-            self.assertEqual(1, len(modules))
-            self.assertIn(plugin_name, modules[0])
+            self.assertIn(plugin_name, all_module_names())
 
     def _tearDownPlugins(self):
         assert self.temp

@@ -24,11 +24,11 @@ class PluginCreate(PluginBase):
 
     @property
     def has_on_create(self) -> bool:
-        return hasattr(self._module, NAME_ON_CREATE)
+        return self.has(NAME_ON_CREATE)
 
     @property
     def has_on_destroy(self) -> bool:
-        return hasattr(self._module, NAME_ON_DESTROY)
+        return self.has(NAME_ON_DESTROY)
 
     def on_create(self, context: Any) -> None:
         if self._created:
@@ -36,7 +36,7 @@ class PluginCreate(PluginBase):
                 self.module_name, NAME_ON_CREATE, "Already created"
             )
 
-        callback = getattr(self._module, NAME_ON_CREATE, None)
+        callback = self.get(NAME_ON_CREATE)
         if callback is None:
             raise PluginCallbackNotFoundError(self.module_name, NAME_ON_CREATE)
 
@@ -56,7 +56,7 @@ class PluginCreate(PluginBase):
                 self.module_name, NAME_ON_DESTROY, "Not created"
             )
 
-        callback = getattr(self._module, NAME_ON_DESTROY, None)
+        callback = self.get(NAME_ON_DESTROY)
         if callback is None:
             raise PluginCallbackNotFoundError(self.module_name, NAME_ON_DESTROY)
 

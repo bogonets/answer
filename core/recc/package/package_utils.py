@@ -3,7 +3,9 @@
 import os
 from pkgutil import ModuleInfo, iter_modules
 from types import ModuleType
-from typing import List
+from typing import List, Optional
+
+from recc.regex.access_filter import UnionPattern, access_filter
 
 
 def get_module_path(module: ModuleType) -> str:
@@ -53,5 +55,13 @@ def startswith_module_names(prefix: str) -> List[str]:
     return [m.name for m in iter_modules() if m.name.startswith(prefix)]
 
 
-def filter_module_names(prefix: str) -> List[str]:
-    return [m.name for m in iter_modules() if m.name.startswith(prefix)]
+def filter_module_names(
+    prefix: str,
+    denies: Optional[List[UnionPattern]] = None,
+    allows: Optional[List[UnionPattern]] = None,
+) -> List[str]:
+    return access_filter(
+        names=startswith_module_names(prefix),
+        denies=denies,
+        allows=allows,
+    )

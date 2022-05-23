@@ -6,7 +6,7 @@ from re import compile as re_compile
 from typing import Dict, List, Optional, Union
 
 from recc.logging.logging import recc_plugin_logger as logger
-from recc.package.package_utils import filter_module_names as _filter_module_names
+from recc.package.package_utils import filter_module_names
 from recc.plugin.core_plugin import CorePlugin
 from recc.variables.plugin import PLUGIN_PACKAGE_PREFIX
 
@@ -28,39 +28,6 @@ def convert_patterns(
     return result
 
 
-def filter_module_names(
-    filter_prefix: str,
-    allow_patterns: Optional[List[Union[str, Pattern]]] = None,
-    deny_patterns: Optional[List[Union[str, Pattern]]] = None,
-) -> List[str]:
-    allows = convert_patterns(allow_patterns)
-    denies = convert_patterns(deny_patterns)
-    result = list()
-    for module_name in _filter_module_names(filter_prefix):
-        # The deny list has high priority.
-        if denies:
-            for deny in denies:
-                if deny.match(module_name) is not None:
-                    logger.debug(
-                        f"The module has been filtered by the deny list: {module_name}"
-                    )
-                    continue
-
-        # If the allow list is not defined, add it forcibly.
-        if not allows:
-            result.append(module_name)
-            continue
-
-        for allow in allows:
-            if allow.match(module_name) is not None:
-                result.append(module_name)
-                continue
-
-        logger.debug(f"The module has been added by the allow list: {module_name}")
-
-    return result
-
-
 class CorePluginManager:
     def __init__(
         self,
@@ -71,9 +38,9 @@ class CorePluginManager:
         deny_patterns: Optional[List[Union[str, Pattern]]] = None,
     ):
         module_names = filter_module_names(
-            filter_prefix=filter_prefix,
-            allow_patterns=allow_patterns,
-            deny_patterns=deny_patterns,
+            prefix=filter_prefix,
+            denies=deny_patterns,
+            allows=allow_patterns,
         )
 
         plugins = dict()

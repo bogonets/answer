@@ -16,6 +16,9 @@ class DaemonManagerTestCase(PluginTestCase):
 
         module1 = "recc_daemon_test_router"
         module2 = "recc_daemon_test_router"
+        self.assertIn(module1, self.test_daemon_plugin_names)
+        self.assertIn(module2, self.test_daemon_plugin_names)
+
         slug1 = "daemon1"
         slug2 = "daemon2"
         port1 = DEFAULT_DAEMON_PORT

@@ -14,14 +14,14 @@ from recc.variables.plugin import NAME_ON_CREATE_PROJECT, NAME_ON_DELETE_PROJECT
 class PluginProject(PluginBase):
     @property
     def has_on_create_project(self) -> bool:
-        return hasattr(self._module, NAME_ON_CREATE_PROJECT)
+        return self.has(NAME_ON_CREATE_PROJECT)
 
     @property
     def has_on_delete_project(self) -> bool:
-        return hasattr(self._module, NAME_ON_DELETE_PROJECT)
+        return self.has(NAME_ON_DELETE_PROJECT)
 
     async def on_create_project(self, uid: int) -> None:
-        callback = getattr(self._module, NAME_ON_CREATE_PROJECT, None)
+        callback = self.get(NAME_ON_CREATE_PROJECT)
         if callback is None:
             raise PluginCallbackNotFoundError(self.module_name, NAME_ON_CREATE_PROJECT)
 
@@ -40,7 +40,7 @@ class PluginProject(PluginBase):
             ) from e
 
     async def on_delete_project(self, uid: int) -> None:
-        callback = getattr(self._module, NAME_ON_DELETE_PROJECT, None)
+        callback = self.get(NAME_ON_DELETE_PROJECT)
         if callback is None:
             raise PluginCallbackNotFoundError(self.module_name, NAME_ON_DELETE_PROJECT)
 

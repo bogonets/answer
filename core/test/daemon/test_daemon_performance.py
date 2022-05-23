@@ -48,6 +48,8 @@ PERFORMANCE_TEST_BODY = _Test1(0, "aa", {"k": 100}, [1, "Y"], None, [])
 class DaemonPerformanceTestCase(PluginTestCase):
     async def _start_server(self):
         module_name = "recc_daemon_test_performance"
+        self.assertIn(module_name, self.test_daemon_plugin_names)
+
         accept_info = create_daemon_server("[::]:0", module_name)
         self.servicer = accept_info.servicer
         self.server = accept_info.server

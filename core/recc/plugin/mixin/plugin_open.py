@@ -23,11 +23,11 @@ class PluginOpen(PluginBase):
 
     @property
     def has_on_open(self) -> bool:
-        return hasattr(self._module, NAME_ON_OPEN)
+        return self.has(NAME_ON_OPEN)
 
     @property
     def has_on_close(self) -> bool:
-        return hasattr(self._module, NAME_ON_CLOSE)
+        return self.has(NAME_ON_CLOSE)
 
     async def on_open(self) -> None:
         if self._opened:
@@ -35,7 +35,7 @@ class PluginOpen(PluginBase):
                 self.module_name, NAME_ON_OPEN, "Already opened"
             )
 
-        callback = getattr(self._module, NAME_ON_OPEN, None)
+        callback = self.get(NAME_ON_OPEN)
         if callback is None:
             raise PluginCallbackNotFoundError(self.module_name, NAME_ON_OPEN)
 
@@ -55,7 +55,7 @@ class PluginOpen(PluginBase):
                 self.module_name, NAME_ON_CLOSE, "Not opened"
             )
 
-        callback = getattr(self._module, NAME_ON_CLOSE, None)
+        callback = self.get(NAME_ON_CLOSE)
         if callback is None:
             raise PluginCallbackNotFoundError(self.module_name, NAME_ON_CLOSE)
 

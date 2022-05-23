@@ -52,7 +52,7 @@ class PluginRouter(PluginBase):
 
     @property
     def has_on_routes(self) -> bool:
-        return hasattr(self._module, NAME_ON_ROUTES)
+        return self.has(NAME_ON_ROUTES)
 
     def _validate_routes_result_item(self, index: int, item: Any) -> None:
         if len(item) < 3:
@@ -109,7 +109,7 @@ class PluginRouter(PluginBase):
             self._validate_routes_result_item(index, item)
 
     def _on_routes(self) -> Iterable[RouteTuple]:
-        callback = getattr(self._module, NAME_ON_ROUTES, None)
+        callback = self.get(NAME_ON_ROUTES)
         if callback is None:
             raise PluginCallbackNotFoundError(self.module_name, NAME_ON_ROUTES)
 

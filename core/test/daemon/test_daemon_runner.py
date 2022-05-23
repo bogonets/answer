@@ -17,6 +17,8 @@ class DaemonRunnerTestCase(PluginTestCase):
         self.assertTrue(os.path.isdir(self.working_temp.name))
 
         module_name = "recc_daemon_test_router"
+        self.assertIn(module_name, self.test_daemon_plugin_names)
+
         self.server_address = DEFAULT_DAEMON_ADDRESS
         self.port = DEFAULT_DAEMON_PORT
         self.client_address = f"localhost:{self.port}"

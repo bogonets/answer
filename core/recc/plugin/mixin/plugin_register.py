@@ -24,7 +24,7 @@ class PluginRegister(PluginBase):
 
     @property
     def has_on_register(self) -> bool:
-        return hasattr(self._module, NAME_ON_REGISTER)
+        return self.has(NAME_ON_REGISTER)
 
     async def on_register(self, *args, **kwargs) -> int:
         if self._registered:
@@ -32,7 +32,7 @@ class PluginRegister(PluginBase):
                 self.module_name, NAME_ON_REGISTER, "Already registered"
             )
 
-        callback = getattr(self._module, NAME_ON_REGISTER, None)
+        callback = self.get(NAME_ON_REGISTER)
         if callback is None:
             raise PluginCallbackNotFoundError(self.module_name, NAME_ON_REGISTER)
 

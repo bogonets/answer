@@ -11,10 +11,10 @@ from recc.variables.plugin import NAME_VERSION
 class PluginVersion(PluginBase):
     @property
     def version(self) -> str:
-        if not hasattr(self._module, NAME_VERSION):
+        if not self.has(NAME_VERSION):
             raise PluginAttributeNotFoundError(self.module_name, NAME_VERSION)
 
-        value = getattr(self._module, NAME_VERSION)
+        value = self.get(NAME_VERSION)
 
         if value is None:
             raise PluginAttributeInvalidValueError(
