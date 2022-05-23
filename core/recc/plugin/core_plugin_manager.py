@@ -44,6 +44,8 @@ class CorePluginManager:
         prefix_length = len(prefix)
 
         plugins = dict()
+        specs = dict()
+
         for module_name in module_names:
             key = module_name[prefix_length:]
             plugin = CorePlugin(module_name)
@@ -56,9 +58,13 @@ class CorePluginManager:
                 logger.info(f"Plugin<{key}> Called on_create")
             else:
                 logger.debug(f"Skip Plugin<{key}> on_create callback not found")
+
             assert module_name.startswith(prefix)
             plugins[key] = plugin
+            specs[key] = plugin.spec
+
         self._plugins = plugins
+        self._specs = specs
 
     def keys(self):
         return self._plugins.keys()
