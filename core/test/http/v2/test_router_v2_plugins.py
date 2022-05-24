@@ -36,8 +36,8 @@ class RouterV2PluginsTestCase(PluginTestCase):
             test_plugin_key = test_plugin_name[prefix_length:]
             self.assertIn(test_plugin_key, self.plugin_keys)
 
-        self.request_plugin_key = "http_server"
-        self.request_plugin_name = prefix + self.request_plugin_key
+        self.request_plugin_name = self.recc_plugin_test_http_server
+        self.request_plugin_key = self.request_plugin_name[prefix_length:]
         self.assertIn(self.request_plugin_name, self.test_core_plugin_names)
         self.assertIn(self.request_plugin_key, self.plugin_keys)
 

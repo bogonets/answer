@@ -16,9 +16,7 @@ class DaemonRunnerTestCase(PluginTestCase):
     async def _start_server(self):
         self.assertTrue(os.path.isdir(self.working_temp.name))
 
-        module_name = "recc_daemon_test_router"
-        self.assertIn(module_name, self.test_daemon_plugin_names)
-
+        module_name = self.recc_daemon_test_router
         self.server_address = DEFAULT_DAEMON_ADDRESS
         self.port = DEFAULT_DAEMON_PORT
         self.client_address = f"localhost:{self.port}"
@@ -26,7 +24,7 @@ class DaemonRunnerTestCase(PluginTestCase):
         self.runner = DaemonRunner(
             module_name=module_name,
             working_dir=self.working_temp.name,
-            packages_dirs=[self.temp.name],
+            packages_dirs=[self.plugins_dir],
             callbacks=StandardDaemonRunnerCallbacks(),
         )
 

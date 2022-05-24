@@ -14,11 +14,8 @@ class DaemonManagerTestCase(PluginTestCase):
     async def _start_server(self):
         self.assertTrue(os.path.isdir(self.working_temp.name))
 
-        module1 = "recc_daemon_test_router"
-        module2 = "recc_daemon_test_router"
-        self.assertIn(module1, self.test_daemon_plugin_names)
-        self.assertIn(module2, self.test_daemon_plugin_names)
-
+        module1 = self.recc_daemon_test_router
+        module2 = self.recc_daemon_test_router
         slug1 = "daemon1"
         slug2 = "daemon2"
         port1 = DEFAULT_DAEMON_PORT
@@ -30,7 +27,7 @@ class DaemonManagerTestCase(PluginTestCase):
 
         self.manager = DaemonManager(
             working_root_dir=self.working_temp.name,
-            packages_dirs=[self.temp.name],
+            packages_dirs=[self.plugins_dir],
         )
         await self.manager.run(slug1, module1, bind1, address1)
         await self.manager.run(slug2, module2, bind2, address2)
