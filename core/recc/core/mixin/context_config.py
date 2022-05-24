@@ -96,31 +96,21 @@ class ContextConfig(ContextBase):
         return set(
             filter(
                 lambda x: x not in IGNORE_CONFIG_KEYS,
-                vars(self.config).keys(),
+                vars(self._config).keys(),
             )
         )
 
-    def get_config_keys(self, dev_mode: Optional[bool] = None) -> Set[str]:
+    def get_config_keys(self, *, dev_mode: Optional[bool] = None) -> Set[str]:
         if dev_mode is None:
-            develop = self.config.developer
-        else:
-            develop = dev_mode
+            # MUST be specified to avoid 'ambiguous' calls.
+            raise ValueError("The `dev_mode` argument must be specified")
 
-        if develop:
+        if self._config.developer if dev_mode is None else dev_mode:
             return self.get_develop_config_keys()
         else:
             return self.get_release_config_keys()
 
-    async def set_config(
-        self,
-        key: str,
-        val: Any,
-        dev_mode: Optional[bool] = None,
-    ) -> None:
-        keys = self.get_config_keys(dev_mode)
-        if key not in keys:
-            raise KeyError(f"Not exists config key: {key}")
-
+    async def set_config(self, key: str, val: Any) -> None:
         if key in CORE_CONFIG_TYPE_HINTS:
             cls = CORE_CONFIG_TYPE_HINTS[key]
             if issubclass(cls, bool) and isinstance(val, str):
@@ -137,27 +127,28 @@ class ContextConfig(ContextBase):
         else:
             await self._set_config_value(key, val)
 
-    def get_configs(self, dev_mode: Optional[bool] = None) -> List[ConfigA]:
-        result = list()
-        for key in self.get_config_keys(dev_mode):
-            value = getattr(self.config, key)
-            if key in CORE_CONFIG_TYPE_HINTS:
-                type_origin = get_origin(CORE_CONFIG_TYPE_HINTS[key])
-                if type_origin is None:
-                    type_name = CORE_CONFIG_TYPE_HINTS[key].__name__
-                else:
-                    type_name = type_origin.__name__
-            else:
-                type_name = type(value).__name__
-            result.append(ConfigA(key, type_name, str(value)))
-        return result
+    def get_configs(self, *, dev_mode: Optional[bool] = None) -> List[ConfigA]:
+        if dev_mode is None:
+            # MUST be specified to avoid 'ambiguous' calls.
+            raise ValueError("The `dev_mode` argument must be specified")
 
-    def get_config(self, key: str, dev_mode: Optional[bool] = None) -> ConfigA:
-        if key not in self.get_config_keys(dev_mode):
-            raise KeyError(f"Not exists {key} key")
-        value = getattr(self.config, key)
+        return [self.get_config(k) for k in self.get_config_keys(dev_mode=dev_mode)]
+
+    def has_configs(self, key: str, *, dev_mode: Optional[bool] = None) -> bool:
+        if dev_mode is None:
+            # MUST be specified to avoid 'ambiguous' calls.
+            raise ValueError("The `dev_mode` argument must be specified")
+
+        return key in self.get_config_keys(dev_mode=dev_mode)
+
+    def get_config(self, key: str) -> ConfigA:
+        value = getattr(self._config, key)
         if key in CORE_CONFIG_TYPE_HINTS:
-            type_name = CORE_CONFIG_TYPE_HINTS[key].__name__
+            type_origin = get_origin(CORE_CONFIG_TYPE_HINTS[key])
+            if type_origin is None:
+                type_name = CORE_CONFIG_TYPE_HINTS[key].__name__
+            else:
+                type_name = type_origin.__name__
         else:
             type_name = type(value).__name__
         return ConfigA(key, type_name, str(value))

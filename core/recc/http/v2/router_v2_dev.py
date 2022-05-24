@@ -77,15 +77,21 @@ class RouterV2Dev:
 
     @parameter_matcher
     async def get_configs_pkey(self, key: str) -> ConfigA:
+        if not self.context.has_configs(key, dev_mode=True):
+            raise HTTPBadRequest(reason=f"Not exists {key} key")
+
         try:
-            return self.context.get_config(key, dev_mode=True)
+            return self.context.get_config(key)
         except KeyError as e:
             raise HTTPBadRequest(reason=str(e))
 
     @parameter_matcher
     async def patch_configs_pkey(self, key: str, body: UpdateConfigValueQ) -> None:
+        if not self.context.has_configs(key, dev_mode=True):
+            raise HTTPBadRequest(reason=f"Not exists {key} key")
+
         try:
-            await self.context.set_config(key, body.value, dev_mode=True)
+            await self.context.set_config(key, body.value)
         except KeyError as e:
             raise HTTPBadRequest(reason=str(e))
 
