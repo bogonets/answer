@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
-from dataclasses import dataclass
-from re import Pattern
 from typing import Any, Dict, List, Optional
 
 from recc.plugin.errors import PluginAttributeInvalidValueError
 from recc.plugin.mixin._plugin_base import PluginBase
-from recc.regex.access_filter import compile_pattern
+from recc.regex.resource_matcher import MatchItem, find_match_file
 from recc.variables.plugin import (
     NAME_RECC_SPEC,
     SPEC_WWW,
@@ -15,43 +13,24 @@ from recc.variables.plugin import (
 )
 
 
-@dataclass
-class ReccSpecWww:
-    pattern: Pattern
-    file: str
-
-
-def _parse_spec_www(spec: Dict[str, Any]) -> List[ReccSpecWww]:
+def parse_spec_www(spec: Dict[str, Any]) -> List[MatchItem]:
     if SPEC_WWW not in spec:
         return list()
 
     www = spec[SPEC_WWW]
-    assert isinstance(www, list)
+    if not isinstance(www, (tuple, list, set)):
+        raise TypeError(f"Unsupported www type: {type(www).__name__}")
 
-    result = list()
-    for item in www:
-        assert isinstance(item, tuple)
-        assert len(item) == 2
-
-        pattern = compile_pattern(item[0])
-        file = item[1]
-        assert isinstance(file, str)
-
-        result.append(ReccSpecWww(pattern, file))
-
-    return result
+    return [MatchItem.parse(item) for item in www]
 
 
 class ReccSpec:
     def __init__(self, spec: Optional[Dict[str, Any]] = None):
         self._spec: Dict[str, Any] = spec if spec else dict()
-        self._www = _parse_spec_www(self._spec)
+        self._www = parse_spec_www(self._spec)
 
-    def match_www(self, path: str) -> str:
-        for www in self._www:
-            if www.pattern.match(path) is not None:
-                return www.file
-        raise KeyError("No matching www resource was found")
+    def match_www(self, base_dir: str, test_value: str) -> str:
+        return os.path.join(base_dir, find_match_file(self._www, test_value, base_dir))
 
 
 class PluginSpec(PluginBase):
@@ -85,5 +64,5 @@ class PluginSpec(PluginBase):
     def www_dir(self) -> str:
         return os.path.join(self.module_directory, STATIC_WEB_FILES_DIRECTORY_NAME)
 
-    def match_www(self, path: str) -> str:
-        return os.path.join(self.www_dir, self.spec.match_www(path))
+    def match_www(self, test_value: str) -> str:
+        return self.spec.match_www(self.www_dir, test_value)

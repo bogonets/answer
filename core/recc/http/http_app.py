@@ -106,24 +106,10 @@ class HttpApp:
 
     def _get_common_api_routes(self) -> List[AbstractRouteDef]:
         return [
-            web.get(u.api_heartbeat, self.on_heartbeat),
-            web.get(u.api_version, self.on_version),
+            web.get(u.api_heartbeat, self.get_api_heartbeat),
+            web.get(u.api_version, self.get_api_version),
             web.get(u.plugins_pplugin_www_ptail, self.get_plugins_pplugin_www_ptail),
         ]
-
-    async def get_plugins_pplugin_www_ptail(self, request: Request) -> StreamResponse:
-        plugin = request.match_info[p.plugin]
-        tail = request.match_info[p.tail]
-        module = self.context.get_core_plugin(plugin)
-        if module is None:
-            raise HTTPNotFound(reason=f"Not found `{plugin}` plugin")
-
-        try:
-            file = module.spec.match_www(tail)
-        except KeyError as e:
-            raise HTTPNotFound(reason=str(e))
-
-        return FileResponse(file)
 
     def _print(self, *args, **kwargs) -> None:
         if not self._context.config.suppress_print:
@@ -141,15 +127,29 @@ class HttpApp:
     async def on_get_favicon(self, request: Request) -> Response:
         raise web.HTTPFound(u.app_favicon)
 
-    async def on_heartbeat(self, _: Request) -> Response:
+    async def get_api_heartbeat(self, _: Request) -> Response:
         assert self._context
-        logger.info("http_app.on_heartbeat()")
+        logger.info("http_app.get_api_heartbeat()")
         return Response()
 
-    async def on_version(self, _: Request) -> Response:
+    async def get_api_version(self, _: Request) -> Response:
         assert self._context
-        logger.info(f"http_app.on_version() -> {version_text}")
+        logger.info(f"http_app.get_api_version() -> {version_text}")
         return Response(text=version_text)
+
+    async def get_plugins_pplugin_www_ptail(self, request: Request) -> StreamResponse:
+        plugin = request.match_info[p.plugin]
+        tail = request.match_info[p.tail]
+        module = self.context.get_core_plugin(plugin)
+        if module is None:
+            raise HTTPNotFound(reason=f"Not found `{plugin}` plugin")
+
+        try:
+            file = module.match_www(tail)
+        except KeyError as e:
+            raise HTTPNotFound(reason=str(e))
+
+        return FileResponse(file)
 
     async def call_soon_graceful_exit(self):
         assert self._task

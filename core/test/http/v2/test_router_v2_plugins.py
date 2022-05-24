@@ -53,7 +53,6 @@ class RouterV2PluginsTestCase(PluginTestCase):
 
     async def test_plugin_route(self):
         path = v2_plugins_pplugin_path(self.request_plugin_key, "/")
-        print("test_plugin_route")
         get_response = await self.tester.get(path)
         self.assertEqual(200, get_response.status)
 
@@ -61,6 +60,31 @@ class RouterV2PluginsTestCase(PluginTestCase):
         post_response = await self.tester.post(path, data=test_body)
         self.assertEqual(200, post_response.status)
         self.assertEqual(test_body, post_response.data)
+
+    async def test_plugin_spec_www(self):
+        path_format = u.plugins_pplugin_www_ptail
+        path_plugin = path_format.replace(u.pplugin, "/" + self.request_plugin_key)
+
+        index_html_content = "INDEX"
+        default_js_content = "'use strict';"
+
+        path1 = path_plugin.replace(u.ptail, "/any_suffix_paths_to_index.html")
+        get_response = await self.tester.get(path1)
+        self.assertEqual(200, get_response.status)
+        self.assertIsInstance(get_response.data, str)
+        self.assertEqual(index_html_content, get_response.data.strip())
+
+        path2 = path_plugin.replace(u.ptail, "/default.js")
+        get_response = await self.tester.get(path2)
+        self.assertEqual(200, get_response.status)
+        self.assertIsInstance(get_response.data, str)
+        self.assertEqual(default_js_content, get_response.data.strip())
+
+        path3 = path_plugin.replace(u.ptail, "/index.html")
+        get_response = await self.tester.get(path3)
+        self.assertEqual(200, get_response.status)
+        self.assertIsInstance(get_response.data, str)
+        self.assertEqual(index_html_content, get_response.data.strip())
 
 
 if __name__ == "__main__":

@@ -16,10 +16,30 @@ from recc.http.http_decorator import has_layout_view
 
 __version__ = "0.0.0"
 
+__recc_spec__ = {
+    "self": {},
+    "group": {},
+    "project": {
+        "menus": [
+            {
+                "icon": "mdi-image-edit",
+                "name": "Labeling",
+                "path": "/",
+                "lang": "project.menu.labeling",
+            }
+        ],
+    },
+    "admin": {},
+    "www": [
+        (r"(.*)", r"\1"),
+        "index.html",
+    ],
+}
+
 TEST_HOST = "0.0.0.0"
 TEST_PORT = 34567
 
-logger = getLogger("recc.plugin.test_http_server")
+logger = getLogger("recc_plugin_test_http_server")
 
 
 class Server:
