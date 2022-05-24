@@ -22,7 +22,6 @@ from recc.http import http_path_keys as p
 from recc.http import http_urls as u
 from recc.http.http_cors import create_cors
 from recc.http.http_interface import EmptyHttpAppCallback, HttpAppCallback
-from recc.http.http_utils import strip_prefix_slash
 from recc.http.http_www import HttpWWW
 from recc.http.v2.router_v2 import RouterV2
 from recc.logging.logging import recc_http_logger as logger
@@ -30,7 +29,6 @@ from recc.network.socket import bind_socket
 from recc.util.python_version import PY_36
 from recc.util.version import version_text
 from recc.variables.http import DEFAULT_CLIENT_MAX_SIZE
-from recc.variables.plugin import STATIC_WEB_INDEX_HTML
 
 
 class HttpApp:
@@ -121,14 +119,12 @@ class HttpApp:
         if module is None:
             raise HTTPNotFound(reason=f"Not found `{plugin}` plugin")
 
-        path = strip_prefix_slash(tail) if tail else STATIC_WEB_INDEX_HTML
-        file = os.path.join(module.www_dir, path)
+        try:
+            file = module.spec.match_www(tail)
+        except KeyError as e:
+            raise HTTPNotFound(reason=str(e))
 
-        if os.path.isfile(file):
-            return FileResponse(file)
-
-        # SPA(Single Page Application) reads only one page (file).
-        return FileResponse(module.index_html_path)
+        return FileResponse(file)
 
     def _print(self, *args, **kwargs) -> None:
         if not self._context.config.suppress_print:

@@ -6,19 +6,19 @@ from typing import List, Optional, Pattern, Union
 UnionPattern = Union[str, Pattern]
 
 
+def compile_pattern(pattern: UnionPattern) -> Pattern:
+    if isinstance(pattern, str):
+        return re_compile(pattern)
+    elif isinstance(pattern, Pattern):
+        return pattern
+    else:
+        raise TypeError(f"Unsupported pattern type: `{type(pattern).__name__}`")
+
+
 def compile_patterns(patterns: Optional[List[UnionPattern]] = None) -> List[Pattern]:
     if not patterns:
         return list()
-
-    result = list()
-    for pattern in patterns:
-        if isinstance(pattern, str):
-            result.append(re_compile(pattern))
-        elif isinstance(pattern, Pattern):
-            result.append(pattern)
-        else:
-            raise TypeError(f"Unsupported pattern type: `{type(pattern).__name__}`")
-    return result
+    return [compile_pattern(p) for p in patterns]
 
 
 def deny(name: str, patterns: List[Pattern]) -> bool:

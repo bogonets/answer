@@ -33,3 +33,9 @@ NAME_ON_REGISTER = "on_register"
 NAME_VERSION = "__version__"
 NAME_DOC = "__doc__"
 NAME_RECC_SPEC = "__recc_spec__"
+
+# -------------------
+# Specification names
+# -------------------
+
+SPEC_WWW = "www"
