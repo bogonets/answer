@@ -61,7 +61,6 @@ from recc.variables.database import (
     ROLE_UID_OWNER,
 )
 from recc.variables.logging import VERBOSE_LOGGING_LEVEL_1
-from recc.variables.plugin import PLUGIN_PACKAGE_PREFIX
 
 
 class Context(
@@ -237,10 +236,10 @@ class Context(
 
     def _init_plugin_manager(self) -> None:
         self._plugins = CorePluginManager(
-            prefix=PLUGIN_PACKAGE_PREFIX,
+            prefix=self._config.core_plugin_prefix,
             context=self,
-            denies=[],
-            allows=[],
+            denies=self._config.core_plugin_deny,
+            allows=self._config.core_plugin_allow,
         )
         logger.info("Created plugin-manager")
 

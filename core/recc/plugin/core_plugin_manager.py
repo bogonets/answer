@@ -2,39 +2,20 @@
 
 from asyncio import gather
 from re import Pattern
-from re import compile as re_compile
-from typing import Dict, List, Optional, Union
+from typing import Dict, Optional, Sequence, Union
 
 from recc.logging.logging import recc_plugin_logger as logger
 from recc.package.package_utils import filter_module_names
 from recc.plugin.core_plugin import CorePlugin
-from recc.variables.plugin import PLUGIN_PACKAGE_PREFIX
-
-
-def convert_patterns(
-    patterns: Optional[List[Union[str, Pattern]]] = None
-) -> List[Pattern]:
-    if not patterns:
-        return list()
-
-    result = list()
-    for pattern in patterns:
-        if isinstance(pattern, str):
-            result.append(re_compile(pattern))
-        elif isinstance(pattern, Pattern):
-            result.append(pattern)
-        else:
-            raise TypeError(f"Unsupported pattern type: `{type(pattern).__name__}`")
-    return result
 
 
 class CorePluginManager:
     def __init__(
         self,
-        prefix=PLUGIN_PACKAGE_PREFIX,
+        prefix: str,
         context=None,
-        denies: Optional[List[Union[str, Pattern]]] = None,
-        allows: Optional[List[Union[str, Pattern]]] = None,
+        denies: Optional[Sequence[Union[str, Pattern]]] = None,
+        allows: Optional[Sequence[Union[str, Pattern]]] = None,
     ):
         module_names = filter_module_names(
             prefix=prefix,
@@ -42,6 +23,11 @@ class CorePluginManager:
             allows=allows,
         )
         prefix_length = len(prefix)
+
+        logger.debug(f"[CorePluginManager] Prefix: '{prefix}'")
+        logger.debug(f"[CorePluginManager] Denies: {denies}")
+        logger.debug(f"[CorePluginManager] Allows: {allows}")
+        logger.debug(f"[CorePluginManager] Found the core plugins: {module_names}")
 
         plugins = dict()
         specs = dict()

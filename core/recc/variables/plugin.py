@@ -3,8 +3,11 @@
 STATIC_WEB_FILES_DIRECTORY_NAME = "www"
 STATIC_WEB_INDEX_HTML = "index.html"
 
-DAEMON_PACKAGE_PREFIX = "recc_daemon_"
-PLUGIN_PACKAGE_PREFIX = "recc_plugin_"
+CORE_PLUGIN_PREFIX = "recc_plugin_"
+DAEMON_PLUGIN_PREFIX = "recc_daemon_"
+
+TEST_CORE_PLUGIN_PREFIX = "recc_plugin_test_"
+TEST_DAEMON_PLUGIN_PREFIX = "recc_daemon_test_"
 
 # -----------------------
 # Callback function names

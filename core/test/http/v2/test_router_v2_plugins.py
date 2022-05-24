@@ -6,7 +6,6 @@ from unittest import main
 
 from recc.http import http_urls as u
 from recc.http.http_utils import v2_plugins_path, v2_plugins_pplugin_path
-from recc.variables.plugin import PLUGIN_PACKAGE_PREFIX
 from tester.http.http_app_tester import HttpAppTester
 from tester.unittest.plugin_test_case import PluginTestCase
 
@@ -28,15 +27,17 @@ class RouterV2PluginsTestCase(PluginTestCase):
             raise
 
         self.plugin_keys = list(self.tester.context._plugins.keys())
-        self.assertLess(0, len(self.test_core_plugin_names))
-        self.assertLessEqual(len(self.test_core_plugin_names), len(self.plugin_keys))
+        self.assertEqual(len(self.test_core_plugin_names), len(self.plugin_keys))
+
+        prefix = self.tester.context.config.core_plugin_prefix
+        prefix_length = len(prefix)
 
         for test_plugin_name in self.test_core_plugin_names:
-            test_plugin_key = test_plugin_name[len(PLUGIN_PACKAGE_PREFIX) :]
+            test_plugin_key = test_plugin_name[prefix_length:]
             self.assertIn(test_plugin_key, self.plugin_keys)
 
-        self.request_plugin_key = "test_http_server"
-        self.request_plugin_name = PLUGIN_PACKAGE_PREFIX + self.request_plugin_key
+        self.request_plugin_key = "http_server"
+        self.request_plugin_name = prefix + self.request_plugin_key
         self.assertIn(self.request_plugin_name, self.test_core_plugin_names)
         self.assertIn(self.request_plugin_key, self.plugin_keys)
 

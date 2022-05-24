@@ -6,13 +6,11 @@ from recc.core.mixin.context_base import ContextBase
 from recc.daemon.daemon_state import DaemonState
 from recc.database.struct.daemon import Daemon
 from recc.package.package_utils import filter_module_names
-from recc.variables.plugin import DAEMON_PACKAGE_PREFIX
 
 
 class ContextDaemon(ContextBase):
-    @staticmethod
-    def find_daemon_package_names() -> List[str]:
-        return filter_module_names(DAEMON_PACKAGE_PREFIX)
+    def find_daemon_package_names(self) -> List[str]:
+        return filter_module_names(self.config.daemon_plugin_prefix)
 
     async def create_daemon(
         self,

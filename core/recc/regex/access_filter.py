@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from re import compile as re_compile
-from typing import List, Optional, Pattern, Union
+from typing import List, Optional, Pattern, Sequence, Union
 
 UnionPattern = Union[str, Pattern]
 
@@ -15,7 +15,9 @@ def compile_pattern(pattern: UnionPattern) -> Pattern:
         raise TypeError(f"Unsupported pattern type: `{type(pattern).__name__}`")
 
 
-def compile_patterns(patterns: Optional[List[UnionPattern]] = None) -> List[Pattern]:
+def compile_patterns(
+    patterns: Optional[Sequence[UnionPattern]] = None,
+) -> List[Pattern]:
     if not patterns:
         return list()
     return [compile_pattern(p) for p in patterns]
@@ -37,8 +39,8 @@ def allow(name: str, patterns: List[Pattern]) -> bool:
 
 def access_filter(
     names: List[str],
-    denies: Optional[List[UnionPattern]] = None,
-    allows: Optional[List[UnionPattern]] = None,
+    denies: Optional[Sequence[UnionPattern]] = None,
+    allows: Optional[Sequence[UnionPattern]] = None,
 ) -> List[str]:
     result = list()
 

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from typing import List
+
 from recc import www as recc_www_module
 from recc.argparse.argument import Argument
 from recc.argparse.command import Command
@@ -11,6 +13,7 @@ from recc.variables.http import (
     DEFAULT_HTTP_PORT,
     DEFAULT_HTTP_TIMEOUT,
 )
+from recc.variables.plugin import CORE_PLUGIN_PREFIX, DAEMON_PLUGIN_PREFIX
 from recc.variables.port import (
     DEFAULT_MANAGEABLE_MAXIMUM_PORT_NUMBER,
     DEFAULT_MANAGEABLE_MINIMUM_PORT_NUMBER,
@@ -93,7 +96,40 @@ ARG_SIGNATURE = Argument(
     cls=str,
     shortcut=Shortcut.k,
     metavar="key",
-    help="Specify the signing key.",
+    help="Specifies the key used to sign the JWT token.",
+)
+
+ARG_CORE_PLUGIN_PREFIX = Argument(
+    key="--core-plugin-prefix",
+    last_injection_value=CORE_PLUGIN_PREFIX,
+    cls=str,
+    metavar="prefix",
+    help="The prefix of the package name used to search for core plugins.",
+)
+ARG_CORE_PLUGIN_ALLOW = Argument(
+    key="--core-plugin-allow",
+    last_injection_value=list(),
+    cls=List[str],
+    delimiter=":",
+    metavar="regex",
+    action="append",
+    help="Allow-list of found core plugins.",
+)
+ARG_CORE_PLUGIN_DENY = Argument(
+    key="--core-plugin-deny",
+    last_injection_value=list(),
+    cls=List[str],
+    delimiter=":",
+    metavar="regex",
+    action="append",
+    help="Deny-list of found core plugins.",
+)
+ARG_DAEMON_PLUGIN_PREFIX = Argument(
+    key="--daemon-plugin-prefix",
+    last_injection_value=DAEMON_PLUGIN_PREFIX,
+    cls=str,
+    metavar="prefix",
+    help="The prefix of the package name used to search for daemon plugins.",
 )
 
 ARG_PUBLIC_SIGNUP = Argument(
@@ -128,6 +164,10 @@ CORE_ARGS = (
     ARG_MANAGE_PORT_MAX,
     ARG_LOCAL_STORAGE,
     ARG_SIGNATURE,
+    ARG_CORE_PLUGIN_PREFIX,
+    ARG_CORE_PLUGIN_ALLOW,
+    ARG_CORE_PLUGIN_DENY,
+    ARG_DAEMON_PLUGIN_PREFIX,
     ARG_PUBLIC_SIGNUP,
     ARG_ACCESS_TOKEN_DURATION,
     ARG_REFRESH_TOKEN_DURATION,
@@ -149,6 +189,11 @@ class CoreConfig(GlobalConfig):
     local_storage: str
 
     signature: str
+
+    core_plugin_prefix: str
+    core_plugin_allow: List[str]
+    core_plugin_deny: List[str]
+    daemon_plugin_prefix: str
 
     public_signup: bool
     access_token_duration: str

@@ -35,6 +35,7 @@ from recc.variables.argparse import (
 )
 from recc.variables.environment import RECC_ENV_FILE_SUFFIX, RECC_ENV_PREFIX
 from recc.variables.http import DEFAULT_HTTP_TEST_PORT
+from recc.variables.plugin import TEST_CORE_PLUGIN_PREFIX, TEST_DAEMON_PLUGIN_PREFIX
 
 ConfigType = Union[
     Namespace,
@@ -299,4 +300,6 @@ def update_test_config(config: CoreConfig) -> CoreConfig:
     # CoreConfig
     config.http_port = DEFAULT_HTTP_TEST_PORT
     config.public_signup = False
+    config.core_plugin_prefix = TEST_CORE_PLUGIN_PREFIX
+    config.daemon_plugin_prefix = TEST_DAEMON_PLUGIN_PREFIX
     return config

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, List, Optional, Set, get_type_hints
+from typing import Any, Dict, List, Optional, Set, get_origin, get_type_hints
 
 from recc.argparse.config.core_config import CoreConfig
 from recc.argparse.parser.env_parse import get_filtered_namespace
@@ -142,7 +142,11 @@ class ContextConfig(ContextBase):
         for key in self.get_config_keys(dev_mode):
             value = getattr(self.config, key)
             if key in CORE_CONFIG_TYPE_HINTS:
-                type_name = CORE_CONFIG_TYPE_HINTS[key].__name__
+                type_origin = get_origin(CORE_CONFIG_TYPE_HINTS[key])
+                if type_origin is None:
+                    type_name = CORE_CONFIG_TYPE_HINTS[key].__name__
+                else:
+                    type_name = type_origin.__name__
             else:
                 type_name = type(value).__name__
             result.append(ConfigA(key, type_name, str(value)))

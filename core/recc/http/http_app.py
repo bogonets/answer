@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 from asyncio import CancelledError, Task
 from socket import socket
 from typing import List, Optional

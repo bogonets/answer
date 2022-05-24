@@ -3,7 +3,7 @@
 import os
 from pkgutil import ModuleInfo, iter_modules
 from types import ModuleType
-from typing import List, Optional
+from typing import List, Optional, Sequence
 
 from recc.regex.access_filter import UnionPattern, access_filter
 
@@ -57,8 +57,8 @@ def startswith_module_names(prefix: str) -> List[str]:
 
 def filter_module_names(
     prefix: str,
-    denies: Optional[List[UnionPattern]] = None,
-    allows: Optional[List[UnionPattern]] = None,
+    denies: Optional[Sequence[UnionPattern]] = None,
+    allows: Optional[Sequence[UnionPattern]] = None,
 ) -> List[str]:
     return access_filter(
         names=startswith_module_names(prefix),

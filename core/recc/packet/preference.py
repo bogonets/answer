@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict
 
 
 @dataclass
