@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import os
+from json import loads as json_loads  # [WARNING] Don't use any other `json` driver.
 from typing import Any, Dict, Final, Optional
 
-from recc.driver.json import global_json_decoder
-from recc.driver.yaml import global_yaml_decoder
+from yaml import full_load as yaml_loads  # [WARNING] Don't use any other `yaml` driver.
+
+# [IMPORTANT] Do not import files. Can be used in plugin projects.
 
 LangCode = str
 TransKey = str
@@ -28,10 +30,10 @@ def _read_file(path: str, encoding="utf-8") -> str:
 def _decode_file(path: str, encoding="utf-8") -> Any:
     ext = os.path.splitext(path)[1]
     lower_ext = ext.lower()
-    if lower_ext in _YAML_EXTENSIONS:
-        return global_yaml_decoder(_read_file(path, encoding))
-    elif lower_ext in _JSON_EXTENSIONS:
-        return global_json_decoder(_read_file(path, encoding))
+    if lower_ext in _JSON_EXTENSIONS:
+        return json_loads(_read_file(path, encoding))
+    elif lower_ext in _YAML_EXTENSIONS:
+        return yaml_loads(_read_file(path, encoding))
     else:
         raise ValueError(f"Unsupported file extension: '{ext}'")
 
