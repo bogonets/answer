@@ -112,7 +112,7 @@ class RouterV2Public:
             updated_at=db_user.updated_at,
             last_login=db_user.last_login,
         )
-        preference = PreferenceA(oem=oem, extra=self._context.get_plugin_extra())
+        preference = PreferenceA(oem=oem, plugins=self._context.get_plugins())
         return SigninA(access, refresh, user, preference)
 
     # -----

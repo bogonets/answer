@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 from asyncio import Event, Task, create_task
 from functools import partial
 from logging import getLogger
@@ -13,6 +14,10 @@ from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 
 from recc.http.http_decorator import has_layout_view
+from recc.translations.translator import TranslatorLangMapper
+
+logger = getLogger("recc_plugin_test_http_server")
+t = TranslatorLangMapper.from_dir(os.path.join(os.path.dirname(__file__), "lang"))
 
 __version__ = "0.0.0"
 
@@ -23,7 +28,7 @@ __recc_spec__ = {
                 "icon": "mdi-image-edit",
                 "name": "Labeling",
                 "path": "/",
-                "lang": "menus.project.labeling",
+                "lang": t("menu.labeling"),
             }
         ]
     },
@@ -35,8 +40,6 @@ __recc_spec__ = {
 
 TEST_HOST = "0.0.0.0"
 TEST_PORT = 34567
-
-logger = getLogger("recc_plugin_test_http_server")
 
 
 class Server:
@@ -56,6 +59,8 @@ class Server:
         self.sock.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
         self.sock.bind((TEST_HOST, TEST_PORT))
 
+        self.suppress_print = True
+
     async def on_startup(self, app):
         assert app is not None
         self.ready.set()
@@ -64,8 +69,12 @@ class Server:
         self.body = await request.text()
         return Response()
 
+    def _print(self, *args, **kwargs) -> None:
+        if not self.suppress_print:
+            print(*args, **kwargs)
+
     async def _runner(self) -> None:
-        await _run_app(self.app, sock=self.sock)
+        await _run_app(self.app, sock=self.sock, print=self._print)
 
     async def on_open(self) -> None:
         logger.debug("on_open")

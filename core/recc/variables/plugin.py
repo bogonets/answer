@@ -41,4 +41,13 @@ NAME_RECC_SPEC = "__recc_spec__"
 # Specification names
 # -------------------
 
+SPEC_MENUS = "menus"
+SPEC_MENUS_CATEGORY_ADMIN = "admin"
+SPEC_MENUS_CATEGORY_GROUP = "group"
+SPEC_MENUS_CATEGORY_PROJECT = "project"
+SPEC_MENUS_CATEGORY_USER = "user"
+SPEC_MENU_ITEM_PROP_ICON = "icon"
+SPEC_MENU_ITEM_PROP_NAME = "name"
+SPEC_MENU_ITEM_PROP_PATH = "path"
+SPEC_MENU_ITEM_PROP_LANG = "lang"
 SPEC_WWW = "www"

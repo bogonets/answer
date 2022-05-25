@@ -84,6 +84,10 @@ class Translator:
         self._fallback_lang = fallback_lang
 
     @property
+    def langs(self):
+        return self._lang_trans_map.keys()
+
+    @property
     def lang(self) -> str:
         return self._lang
 
@@ -144,7 +148,7 @@ class Translator:
         root = _decode_file(path, encoding)
         return cls(parse_to_lang_trans_map(root, delimiter), lang, fallback_lang)
 
-    def get(self, key: TransKey, lang: Optional[LangCode] = None) -> str:
+    def get(self, key: TransKey, lang: Optional[LangCode] = None) -> TransValue:
         lang_code = lang if lang else self._lang
         try:
             return self._lang_trans_map[lang_code][key]
@@ -154,9 +158,41 @@ class Translator:
             else:
                 return self._lang_trans_map[self._fallback_lang][key]
 
-    def t(self, key: TransKey, *args, **kwargs) -> str:
+    def tl(self, lang: LangCode, key: TransKey, *args, **kwargs) -> TransValue:
+        value = self._lang_trans_map[lang][key]
+        if args or kwargs:
+            return value.format(*args, **kwargs)
+        else:
+            return value
+
+    def tm(self, key: TransKey, *args, **kwargs) -> Dict[LangCode, TransValue]:
+        result = dict()
+        for lang in self.langs:
+            try:
+                result[lang] = self.tl(lang, key, *args, **kwargs)
+            except:  # noqa
+                continue
+        return result
+
+    def t(self, key: TransKey, *args, **kwargs) -> TransValue:
         value = self.get(key)
         if args or kwargs:
             return value.format(*args, **kwargs)
         else:
             return value
+
+    def __call__(self, key: TransKey, *args, **kwargs):
+        return self.t(key, *args, **kwargs)
+
+
+class TranslatorLangMapper(Translator):
+    def __init__(
+        self,
+        lang_trans_map: LangTransMap,
+        lang=DEFAULT_LANGUAGE_CODE,
+        fallback_lang=DEFAULT_FALLBACK_LANGUAGE_CODE,
+    ):
+        super().__init__(lang_trans_map, lang, fallback_lang)
+
+    def __call__(self, key: TransKey, *args, **kwargs):
+        return self.tm(key, *args, **kwargs)

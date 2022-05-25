@@ -2,10 +2,11 @@
 
 from asyncio import gather
 from re import Pattern
-from typing import Dict, Optional, Sequence, Union
+from typing import Dict, List, Optional, Sequence, Union
 
 from recc.logging.logging import recc_plugin_logger as logger
 from recc.package.package_utils import filter_module_names
+from recc.packet.plugin import PluginA
 from recc.plugin.core_plugin import CorePlugin
 
 
@@ -149,3 +150,6 @@ class CorePluginManager:
             if plugin.has_on_delete_project:
                 coroutines.append(plugin.on_delete_project(uid))
         await gather(*coroutines)
+
+    def as_answer_packet(self) -> List[PluginA]:
+        return [PluginA(name=k, menus=p.spec.menus) for k, p in self._plugins.items()]
