@@ -34,10 +34,6 @@ class RouterV2Public:
     def app(self) -> web.Application:
         return self._app
 
-    @property
-    def context(self) -> Context:
-        return self._context
-
     # noinspection PyTypeChecker
     def _routes(self) -> List[AbstractRouteDef]:
         return [
@@ -64,13 +60,13 @@ class RouterV2Public:
 
     @parameter_matcher
     async def get_state_already(self) -> bool:
-        return await self.context.is_initialized_database()
+        return await self._context.is_initialized_database()
 
     @parameter_matcher
     async def post_signup(self, body: SignupQ) -> None:
-        if not self.context.config.public_signup:
+        if not self._context.config.public_signup:
             raise HTTPServiceUnavailable(reason="You cannot signup without permission")
-        await self.context.signup_guest(
+        await self._context.signup_guest(
             username=body.username,
             hashed_password=body.password,
             nickname=body.nickname,
@@ -81,9 +77,9 @@ class RouterV2Public:
 
     @parameter_matcher
     async def post_signup_admin(self, signup: SignupQ) -> None:
-        if await self.context.is_initialized_database():
+        if await self._context.is_initialized_database():
             raise HTTPServiceUnavailable(reason="An admin account already exists")
-        await self.context.signup_admin(signup.username, signup.password)
+        await self._context.signup_admin(signup.username, signup.password)
 
     @parameter_matcher
     async def post_signin(self, auth: BasicAuth) -> SigninA:
@@ -91,7 +87,7 @@ class RouterV2Public:
         password = auth.password
 
         try:
-            if not await self.context.challenge_password(username, password):
+            if not await self._context.challenge_password(username, password):
                 raise HTTPUnauthorized(reason="The password is incorrect")
         except RuntimeError as e:
             # maybe `not found user`
@@ -99,10 +95,10 @@ class RouterV2Public:
         except ValueError as e:
             raise HTTPBadRequest(reason=str(e))
 
-        access, refresh = await self.context.signin(username)
-        user_uid = await self.context.get_user_uid(username)
-        db_user = await self.context.get_user(user_uid)
-        oem = await self.context.opt_info_oem_value()
+        access, refresh = await self._context.signin(username)
+        user_uid = await self._context.get_user_uid(username)
+        db_user = await self._context.get_user(user_uid)
+        oem = await self._context.opt_info_oem_value()
         assert db_user.username is not None
         user = UserA(
             username=db_user.username,
@@ -116,7 +112,7 @@ class RouterV2Public:
             updated_at=db_user.updated_at,
             last_login=db_user.last_login,
         )
-        preference = PreferenceA(oem=oem)
+        preference = PreferenceA(oem=oem, extra=self._context.get_plugin_extra())
         return SigninA(access, refresh, user, preference)
 
     # -----
@@ -126,5 +122,5 @@ class RouterV2Public:
     @parameter_matcher
     async def post_token_refresh(self, bearer: BearerAuth) -> RefreshTokenA:
         refresh_token = bearer.token
-        token = await self.context.renew_access_token(refresh_token)
+        token = await self._context.renew_access_token(refresh_token)
         return RefreshTokenA(access=token)

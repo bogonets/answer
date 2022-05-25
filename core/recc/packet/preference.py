@@ -1,23 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, List
+
+from recc.packet.plugin import PluginMenuA
 
 
 @dataclass
-class ExtraMenuA:
-    icon: str
-    name: str
-    plugin: str
-    path: str
-    translations: Dict[str, Dict[str, str]]
+class ExtraA:
+    menus: Dict[str, List[PluginMenuA]]
 
 
 @dataclass
 class PreferenceA:
     oem: str
-
-    # self_menus: List[ExtraMenuA]
-    # group_menus: List[ExtraMenuA]
-    # project_menus: List[ExtraMenuA]
-    # admin_menus: List[ExtraMenuA]
+    extra: ExtraA
