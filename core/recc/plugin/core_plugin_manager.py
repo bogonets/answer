@@ -25,10 +25,10 @@ class CorePluginManager:
         )
         prefix_length = len(prefix)
 
-        logger.debug(f"[CorePluginManager] Prefix: '{prefix}'")
-        logger.debug(f"[CorePluginManager] Denies: {denies}")
-        logger.debug(f"[CorePluginManager] Allows: {allows}")
-        logger.debug(f"[CorePluginManager] Found the core plugins: {module_names}")
+        logger.debug(f"Core plugin prefix: '{prefix}'")
+        logger.debug(f"Core plugin denies: {denies}")
+        logger.debug(f"Core plugin allows: {allows}")
+        logger.debug(f"Found the core plugins: {module_names}")
 
         plugins = dict()
         specs = dict()
