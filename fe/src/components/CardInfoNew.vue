@@ -66,8 +66,9 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
+import {Component, Prop, Emit, Watch, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import VForm from 'vuetify/lib/components/VForm';
 import {INFO_RULES} from '@/rules';
 
 @Component
@@ -92,6 +93,9 @@ export default class CardInfoNew extends VueBase {
   @Prop({type: String, default: ''})
   readonly initValue!: string;
 
+  @Ref('form')
+  readonly form!: VForm;
+
   valid = false;
   infoKey = '';
   infoValue = '';
@@ -111,17 +115,9 @@ export default class CardInfoNew extends VueBase {
     this.infoValue = value;
   }
 
-  get form() {
-    return this.$refs.form;
-  }
-
-  formValidate() {
-    this.form['validate']();
-  }
-
   submit() {
     if (!this.disableValidate) {
-      this.formValidate();
+      this.form.validate();
       if (!this.valid) {
         return;
       }

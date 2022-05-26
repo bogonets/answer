@@ -88,8 +88,9 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop, Emit} from 'vue-property-decorator';
+import {Component, Prop, Emit, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
+import VForm from 'vuetify/lib/components/VForm';
 import requiredField from '@/rules/required';
 import {DEFAULT_CHART_COLOR} from '@/packet/airjoy';
 import type {AirjoyCreateDeviceQ} from '@/packet/airjoy';
@@ -112,22 +113,17 @@ export default class AirjoyDeviceAdd extends VueBase {
   @Prop({type: Boolean, default: false})
   readonly submitLoading!: boolean;
 
+  @Ref('form')
+  readonly form!: VForm;
+
   valid = false;
   uid = '';
   name = '';
   description = '';
 
-  get form() {
-    return this.$refs.form;
-  }
-
-  formValidate() {
-    this.form['validate']();
-  }
-
   submit() {
     if (!this.disableValidate) {
-      this.formValidate();
+      this.form.validate();
       if (!this.valid) {
         return;
       }
@@ -137,7 +133,9 @@ export default class AirjoyDeviceAdd extends VueBase {
   }
 
   @Emit()
-  cancel() {}
+  cancel() {
+    // EMPTY.
+  }
 
   @Emit()
   ok() {
