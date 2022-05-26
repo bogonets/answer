@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Toast from 'vue-toastification';
-import '@/toast/style.scss';
+import 'vue-toastification/dist/index.css';
+// import '@/toast/style.scss';
 
 const options = {
   maxToasts: 20,
