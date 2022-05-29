@@ -4,8 +4,8 @@ import {Store, CommitOptions} from 'vuex';
 import VuexPersist from 'vuex-persist';
 
 // Packets
-import type {UserA, UserExtraA} from '@/packet/user';
-import type {PreferenceA} from '@/packet/preference';
+import type {UserA, VmsUserExtraA} from '@recc/api/dist/packet/user';
+import type {PreferenceA} from '@recc/api/dist/packet/preference';
 
 // Modules
 import api from '@/store/modules/api';
@@ -185,10 +185,10 @@ export class LocalStore {
   }
 
   get userExtra() {
-    return this.getter(SESSION_USER_EXTRA) as UserExtraA;
+    return this.getter(SESSION_USER_EXTRA) as VmsUserExtraA;
   }
 
-  set userExtra(val: UserExtraA) {
+  set userExtra(val: VmsUserExtraA) {
     this.setter(SESSION_USER_EXTRA, val);
   }
 

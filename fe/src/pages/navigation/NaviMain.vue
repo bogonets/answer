@@ -126,6 +126,24 @@ ko:
           </v-list-item>
         </div>
 
+        <div v-for="plugin in plugins" :key="plugin.name">
+          <v-divider v-if="plugin.menus.project.length >= 1"></v-divider>
+
+          <v-list-item
+            v-for="menu in plugin.menus.project"
+            :key="`${plugin.name}-${menu.name}`"
+            link
+            @click.stop="moveToMainPlugin(menu)"
+          >
+            <v-list-item-icon v-if="menu.icon">
+              <v-icon>{{ menu.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ pluginMenuTitle(menu) }}
+            </v-list-item-title>
+          </v-list-item>
+        </div>
+
         <v-divider
           v-if="hasPermissionMemberView() || hasPermissionSettingView()"
         ></v-divider>
@@ -155,8 +173,8 @@ ko:
 <script lang="ts">
 import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import type {ProjectA} from '@/packet/project';
-import {FEATURE_VMS} from '@/packet/features';
+import type {ProjectA} from '@recc/api/dist/packet/project';
+import type {PluginMenuA} from '@recc/api/dist/packet/plugin';
 import mainNames from '@/router/names/main';
 
 @Component
@@ -191,16 +209,8 @@ export default class NaviMain extends VueBase {
     return '?';
   }
 
-  get features() {
-    return this.project?.features || ([] as Array<string>);
-  }
-
-  get isVms() {
-    return this.features.findIndex(i => i == FEATURE_VMS) != -1;
-  }
-
-  get hasManagerRead() {
-    return this.hasPermissionMemberView();
+  get plugins() {
+    return this.$localStore.preference.plugins;
   }
 
   created() {
@@ -340,48 +350,6 @@ export default class NaviMain extends VueBase {
     }
   }
 
-  @Emit('click:vms-live')
-  vmsLive() {
-    if (!this.noDefault) {
-      this.moveToMainVmsLive();
-    }
-  }
-
-  @Emit('click:vms-devices')
-  vmsDevices() {
-    if (!this.noDefault) {
-      this.moveToMainVmsDevices();
-    }
-  }
-
-  @Emit('click:vms-layouts')
-  vmsLayouts() {
-    if (!this.noDefault) {
-      this.moveToMainVmsLayouts();
-    }
-  }
-
-  @Emit('click:vms-events-calendar')
-  vmsEventsCalendar() {
-    if (!this.noDefault) {
-      this.moveToMainVmsEventsCalendar();
-    }
-  }
-
-  @Emit('click:vms-events-list')
-  vmsEventsList() {
-    if (!this.noDefault) {
-      this.moveToMainVmsEventsList();
-    }
-  }
-
-  @Emit('click:vms-user-configs')
-  vmsUserConfigs() {
-    if (!this.noDefault) {
-      this.moveToMainVmsUserConfigs();
-    }
-  }
-
   @Emit('click:members')
   members() {
     if (!this.noDefault) {
@@ -393,6 +361,19 @@ export default class NaviMain extends VueBase {
   settings() {
     if (!this.noDefault) {
       this.moveToMainSettings();
+    }
+  }
+
+  moveToMainPlugin(menu: PluginMenuA) {
+    // EMPTY.
+  }
+
+  pluginMenuTitle(menu: PluginMenuA) {
+    const localeName = menu.translations[this.$localStore.lang];
+    if (localeName) {
+      return localeName;
+    } else {
+      return menu.name;
     }
   }
 }

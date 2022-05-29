@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import moment from 'moment-timezone';
-import type {SigninA, UserA, UserExtraA} from '@/packet/user';
-import type {PreferenceA} from '@/packet/preference';
+import type {SigninA, UserExtraA} from '@recc/api/dist/packet/user';
 
 function loadApiOriginFromLocalStorage(vue: Vue) {
   const api = vue.$localStore.origin;
