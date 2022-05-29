@@ -5,7 +5,7 @@ from asyncio import AbstractEventLoop, get_event_loop_policy, set_event_loop
 from copy import deepcopy
 from hashlib import sha256
 from shutil import move
-from typing import Dict, Optional
+from typing import Dict, Optional, Set
 
 from recc.argparse.config.core_config import CoreConfig
 from recc.argparse.default_config import get_default_core_config
@@ -419,6 +419,19 @@ class Context(
         infos = await self.get_infos_like(like)
         return {c.key: c.value for c in infos if c.key and c.value}
 
+    async def update_core_plugins_permissions(self) -> None:
+        permissions = await self.get_permissions()
+        permission_names: Set[str] = set(p.slug for p in permissions if p.slug)
+        for key in self._plugins.keys():
+            plugin = self._plugins.get(key)
+            assert plugin is not None
+            for permission in plugin.spec.permissions:
+                if permission in permission_names:
+                    logger.debug(f"Skip `{key}` core-plugin permission: {permission}")
+                else:
+                    await self.add_permission(permission)
+                    logger.info(f"Add `{key}` core-plugin permission: {permission}")
+
     async def open(self) -> None:
         await self._test_recc_subprocess()
 
@@ -476,6 +489,7 @@ class Context(
         # )
         # logger.info("Opened daemon-manager")
 
+        await self.update_core_plugins_permissions()
         await self._plugins.open()
         logger.info("Opened core-plugins")
 

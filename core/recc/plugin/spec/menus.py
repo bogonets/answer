@@ -5,9 +5,10 @@ from typing import Any, Dict, List
 from recc.packet.plugin import PluginMenuA, PluginMenusA
 from recc.variables.plugin import (
     SPEC_MENU_ITEM_PROP_ICON,
-    SPEC_MENU_ITEM_PROP_LANG,
     SPEC_MENU_ITEM_PROP_NAME,
     SPEC_MENU_ITEM_PROP_PATH,
+    SPEC_MENU_ITEM_PROP_PERMISSION,
+    SPEC_MENU_ITEM_PROP_TRANSLATIONS,
     SPEC_MENUS,
     SPEC_MENUS_CATEGORY_ADMIN,
     SPEC_MENUS_CATEGORY_GROUP,
@@ -18,32 +19,37 @@ from recc.variables.plugin import (
 
 def parse_spec_menu_category_item(element: Any) -> PluginMenuA:
     if not isinstance(element, dict):
-        type_name = type(element).__name__
-        raise TypeError(f"Menu `elements` must be of type 'dict': {type_name}")
+        typename = type(element).__name__
+        raise TypeError(f"Menu `elements` must be of type 'dict': {typename}")
 
     icon = element.get(SPEC_MENU_ITEM_PROP_ICON, str())
     name = element.get(SPEC_MENU_ITEM_PROP_NAME, str())
     path = element.get(SPEC_MENU_ITEM_PROP_PATH, str())
-    lang = element.get(SPEC_MENU_ITEM_PROP_LANG, dict())
+    translations = element.get(SPEC_MENU_ITEM_PROP_TRANSLATIONS, dict())
+    permission = element.get(SPEC_MENU_ITEM_PROP_PERMISSION, str())
 
     if not isinstance(icon, str):
         prop = SPEC_MENU_ITEM_PROP_ICON
-        type_name = type(icon).__name__
-        raise TypeError(f"Menu `{prop}` must be of type 'str': {type_name}")
+        typename = type(icon).__name__
+        raise TypeError(f"Menu `{prop}` must be of type 'str': {typename}")
     if not isinstance(name, str):
         prop = SPEC_MENU_ITEM_PROP_NAME
-        type_name = type(name).__name__
-        raise TypeError(f"Menu `{prop}` must be of type 'str': {type_name}")
+        typename = type(name).__name__
+        raise TypeError(f"Menu `{prop}` must be of type 'str': {typename}")
     if not isinstance(path, str):
         prop = SPEC_MENU_ITEM_PROP_PATH
-        type_name = type(path).__name__
-        raise TypeError(f"Menu `{prop}` must be of type 'str': {type_name}")
-    if not isinstance(lang, dict):
-        prop = SPEC_MENU_ITEM_PROP_LANG
-        type_name = type(lang).__name__
-        raise TypeError(f"Menu `{prop}` must be of type 'dict': {type_name}")
+        typename = type(path).__name__
+        raise TypeError(f"Menu `{prop}` must be of type 'str': {typename}")
+    if not isinstance(translations, dict):
+        prop = SPEC_MENU_ITEM_PROP_TRANSLATIONS
+        typename = type(translations).__name__
+        raise TypeError(f"Menu `{prop}` must be of type 'dict': {typename}")
+    if not isinstance(permission, str):
+        prop = SPEC_MENU_ITEM_PROP_PERMISSION
+        typename = type(permission).__name__
+        raise TypeError(f"Menu `{prop}` must be of type 'str': {typename}")
 
-    return PluginMenuA(icon, name, path, lang)
+    return PluginMenuA(icon, name, path, translations, permission)
 
 
 def parse_spec_menu_category(category: Any) -> List[PluginMenuA]:

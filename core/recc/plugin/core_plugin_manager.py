@@ -14,7 +14,7 @@ class CorePluginManager:
     def __init__(
         self,
         prefix: str,
-        context=None,
+        context=None,  # Do not use type annotation. reason: circular reference.
         denies: Optional[Sequence[Union[str, Pattern]]] = None,
         allows: Optional[Sequence[Union[str, Pattern]]] = None,
     ):
@@ -31,7 +31,6 @@ class CorePluginManager:
         logger.debug(f"Found the core plugins: {module_names}")
 
         plugins = dict()
-        specs = dict()
 
         for module_name in module_names:
             key = module_name[prefix_length:]
@@ -48,10 +47,8 @@ class CorePluginManager:
 
             assert module_name.startswith(prefix)
             plugins[key] = plugin
-            specs[key] = plugin.spec
 
         self._plugins = plugins
-        self._specs = specs
 
     def keys(self):
         return self._plugins.keys()

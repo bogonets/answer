@@ -22,13 +22,17 @@ t = TranslatorLangMapper.from_dir(os.path.join(os.path.dirname(__file__), "lang"
 __version__ = "0.0.0"
 
 __recc_spec__ = {
+    "permissions": [
+        "recc.plugin.test.http_server.view",
+    ],
     "menus": {
         "project": [
             {
                 "icon": "mdi-image-edit",
                 "name": "Labeling",
                 "path": "/",
-                "lang": t("menu.labeling"),
+                "permission": "recc.plugin.test.http_server.view",
+                "translations": t("menu.labeling"),
             }
         ]
     },

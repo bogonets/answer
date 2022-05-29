@@ -78,6 +78,13 @@ class CorePluginHttpServerTestCase(PluginTestCase):
         self.assertIsNone(self.plugin.spec.www[1].pattern)
         self.assertEqual("index.html", self.plugin.spec.www[1].file)
 
+    def test_spec_permissions(self):
+        self.assertEqual(1, len(self.plugin.spec.permissions))
+        self.assertEqual(
+            "recc.plugin.test.http_server.view",
+            self.plugin.spec.permissions[0],
+        )
+
     def test_spec_menus(self):
         self.assertEqual(0, len(self.plugin.spec.menus.admin))
         self.assertEqual(0, len(self.plugin.spec.menus.group))
@@ -88,9 +95,9 @@ class CorePluginHttpServerTestCase(PluginTestCase):
         self.assertEqual("mdi-image-edit", project_menu.icon)
         self.assertEqual("Labeling", project_menu.name)
         self.assertEqual("/", project_menu.path)
-        self.assertEqual(2, len(project_menu.lang))
-        self.assertEqual("English", project_menu.lang["en"])
-        self.assertEqual("Korean", project_menu.lang["ko"])
+        self.assertEqual(2, len(project_menu.translations))
+        self.assertEqual("English", project_menu.translations["en"])
+        self.assertEqual("Korean", project_menu.translations["ko"])
 
 
 if __name__ == "__main__":

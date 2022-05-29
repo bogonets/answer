@@ -9,7 +9,8 @@ class PluginMenuA:
     icon: str
     name: str
     path: str
-    lang: Dict[str, str]
+    translations: Dict[str, str]
+    permission: str
 
 
 @dataclass

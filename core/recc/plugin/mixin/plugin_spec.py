@@ -6,6 +6,7 @@ from typing import Any, Dict, Optional
 from recc.plugin.errors import PluginAttributeInvalidValueError
 from recc.plugin.mixin._plugin_base import PluginBase
 from recc.plugin.spec.menus import parse_spec_menus
+from recc.plugin.spec.permissions import parse_spec_permissions
 from recc.plugin.spec.www import parse_spec_www
 from recc.regex.resource_matcher import find_match_file
 from recc.variables.plugin import NAME_RECC_SPEC, STATIC_WEB_FILES_DIRECTORY_NAME
@@ -15,6 +16,7 @@ class ReccSpec:
     def __init__(self, spec: Optional[Dict[str, Any]] = None):
         self.raw: Dict[str, Any] = spec if spec else dict()
         self.menus = parse_spec_menus(self.raw)
+        self.permissions = parse_spec_permissions(self.raw)
         self.www = parse_spec_www(self.raw)
 
 

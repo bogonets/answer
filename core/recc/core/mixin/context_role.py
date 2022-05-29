@@ -114,6 +114,9 @@ class ContextRole(ContextBase):
     async def get_permissions(self) -> List[Permission]:
         return await self.database.select_permission_all()
 
+    async def add_permission(self, slug: str) -> None:
+        await self.database.insert_permission(slug)
+
     async def get_permission_slugs_dict(self) -> Dict[int, str]:
         permissions = await self.get_permissions()
         result = dict()
