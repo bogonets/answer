@@ -22,7 +22,7 @@ ko:
 
 <template>
   <v-navigation-drawer
-    v-if="!$localStore.naviHide"
+    v-if="!$localStore.naviHide || !isAirjoySummery"
     app
     clipped
     permanent
@@ -173,6 +173,10 @@ export default class NaviMainAirjoy extends VueBase {
       return name[0].toUpperCase();
     }
     return '?';
+  }
+
+  get isAirjoySummery() {
+    return this.$route.name === mainNames.mainAirjoySummary;
   }
 
   created() {

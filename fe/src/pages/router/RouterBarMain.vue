@@ -1,6 +1,6 @@
 <template>
   <div class="router-bar-main">
-    <bar-main v-if="!$localStore.barHide"></bar-main>
+    <bar-main v-if="!$localStore.barHide || !isAirjoySummery"></bar-main>
 
     <v-main>
       <router-view>
@@ -13,6 +13,7 @@
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BarMain from '@/pages/bar/BarMain.vue';
+import mainNames from '@/router/names/main';
 
 @Component({
   components: {
@@ -20,7 +21,9 @@ import BarMain from '@/pages/bar/BarMain.vue';
   }
 })
 export default class RouterBarMain extends VueBase {
-  // EMPTY.
+  get isAirjoySummery() {
+    return this.$route.name === mainNames.mainAirjoySummary;
+  }
 }
 </script>
 
