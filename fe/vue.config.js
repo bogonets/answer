@@ -18,4 +18,13 @@ module.exports = {
       enableInSFC: true,
     },
   },
+
+  devServer: {
+    proxy: {
+      '/plugins': {
+        target: 'http://localhost:20000',
+        changeOrigin: true,
+      },
+    },
+  },
 };

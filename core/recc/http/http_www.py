@@ -12,6 +12,7 @@ from aiohttp.web_routedef import AbstractRouteDef
 from recc.argparse.config.core_config import ARG_HTTP_ROOT
 from recc.core.context import Context
 from recc.filesystem.permission import is_readable_dir, is_writable_dir
+from recc.http import http_path_keys as p
 from recc.http import http_urls as u
 from recc.logging.logging import recc_http_logger as logger
 
@@ -55,8 +56,8 @@ class HttpWWW:
 
     def _routes(self) -> List[AbstractRouteDef]:
         return [
-            web.get("", self.get_root),
-            web.get("/{path:.*}", self.get_path),
+            web.get(u.empty, self.get_root),
+            web.get(u.ppath, self.get_path),
         ]
 
     async def get_root(self, request: Request) -> StreamResponse:
@@ -64,8 +65,8 @@ class HttpWWW:
 
     async def get_path(self, request: Request) -> StreamResponse:
         http_root = self._context.config.http_root
-        path = request.match_info["path"]
-        logger.debug(f"get_path() -> {path}")
+        path = request.match_info[p.path]
+        logger.debug(f"WWW GET '{path}'")
 
         file = os.path.join(http_root, path)
         if os.path.isfile(file):

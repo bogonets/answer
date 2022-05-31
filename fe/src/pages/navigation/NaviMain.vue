@@ -127,13 +127,13 @@ ko:
         </div>
 
         <div v-for="plugin in plugins" :key="plugin.name">
-          <v-divider v-if="plugin.menus.project.length >= 1"></v-divider>
+          <v-divider v-if="anyPluginMenu(plugin)"></v-divider>
 
           <v-list-item
-            v-for="menu in plugin.menus.project"
+            v-for="menu in visiblePluginMenus(plugin)"
             :key="`${plugin.name}-${menu.name}`"
             link
-            @click.stop="moveToMainPlugin(menu)"
+            @click.stop="pluginMenu(plugin.name, menu)"
           >
             <v-list-item-icon v-if="menu.icon">
               <v-icon>{{ menu.icon }}</v-icon>
@@ -174,7 +174,7 @@ ko:
 import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {ProjectA} from '@recc/api/dist/packet/project';
-import type {PluginMenuA} from '@recc/api/dist/packet/plugin';
+import type {PluginA, PluginMenuA} from '@recc/api/dist/packet/plugin';
 import mainNames from '@/router/names/main';
 
 @Component
@@ -364,8 +364,37 @@ export default class NaviMain extends VueBase {
     }
   }
 
-  moveToMainPlugin(menu: PluginMenuA) {
-    // EMPTY.
+  @Emit('click:plugin')
+  pluginMenu(plugin: string, menu: PluginMenuA) {
+    if (!this.noDefault) {
+      this.moveToMainPlugin(plugin, menu.name);
+    }
+    return menu;
+  }
+
+  anyPluginMenu(plugin: PluginA) {
+    if (plugin.menus.project.length == 0) {
+      return false;
+    }
+    for (const menu of plugin.menus.project) {
+      if (!menu.permission) {
+        continue;
+      }
+      if (!this.hasPermission(menu.permission)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  visiblePluginMenus(plugin: PluginA) {
+    const result = [] as Array<PluginMenuA>;
+    for (const menu of plugin.menus.project) {
+      if (menu.permission && this.hasPermission(menu.permission)) {
+        result.push(menu);
+      }
+    }
+    return result;
   }
 
   pluginMenuTitle(menu: PluginMenuA) {

@@ -4,6 +4,7 @@ import MainFiles from '@/pages/main/MainFiles.vue';
 import MainKanban from '@/pages/main/MainKanban.vue';
 import MainLayouts from '@/pages/main/MainLayouts.vue';
 import MainMembers from '@/pages/main/MainMembers.vue';
+import MainPlugin from '@/pages/main/MainPlugin.vue';
 import MainSettings from '@/pages/main/MainSettings.vue';
 import MainTables from '@/pages/main/MainTables.vue';
 import MainTasks from '@/pages/main/MainTasks.vue';
@@ -57,6 +58,11 @@ export const mainChildren = [
     path: ':group/:project/members',
     component: MainMembers,
     name: mainNames.mainMembers,
+  },
+  {
+    path: ':group/:project/plugins/:plugin/:menu',
+    component: MainPlugin,
+    name: mainNames.mainPlugin,
   },
   {
     path: ':group/:project/settings',

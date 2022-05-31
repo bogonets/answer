@@ -6,6 +6,7 @@ export const mainNames = {
   mainFiles: 'mainFiles',
   mainLayouts: 'mainLayouts',
   mainMembers: 'mainMembers',
+  mainPlugin: 'mainPlugin',
   mainSettings: 'mainSettings',
   mainTables: 'mainTables',
   mainTasks: 'mainTasks',

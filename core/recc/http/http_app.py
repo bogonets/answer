@@ -8,19 +8,17 @@ from aiohttp import web
 from aiohttp.log import access_logger
 from aiohttp.web import _run_app  # noqa
 from aiohttp.web import GracefulExit
-from aiohttp.web_exceptions import HTTPNotFound
-from aiohttp.web_fileresponse import FileResponse
 from aiohttp.web_log import AccessLogger
 from aiohttp.web_request import Request
-from aiohttp.web_response import Response, StreamResponse
+from aiohttp.web_response import Response
 from aiohttp.web_routedef import AbstractRouteDef
 
 from recc.aio.task import all_tasks, cancel_tasks
 from recc.core.context import Context
-from recc.http import http_path_keys as p
 from recc.http import http_urls as u
 from recc.http.http_cors import create_cors
 from recc.http.http_interface import EmptyHttpAppCallback, HttpAppCallback
+from recc.http.http_plugins_www import HttpPluginsWww
 from recc.http.http_www import HttpWWW
 from recc.http.v2.router_v2 import RouterV2
 from recc.logging.logging import recc_http_logger as logger
@@ -79,6 +77,9 @@ class HttpApp:
         self._www = HttpWWW(self._context)
         self._app.add_subapp(u.app, self._www.app)
 
+        self._plugins = HttpPluginsWww(self._context)
+        self._app.add_subapp(u.plugins, self._plugins.app)
+
         self._cors = create_cors(self._app)
 
     @property
@@ -108,7 +109,6 @@ class HttpApp:
         return [
             web.get(u.api_heartbeat, self.get_api_heartbeat),
             web.get(u.api_version, self.get_api_version),
-            web.get(u.plugins_pplugin_www_ptail, self.get_plugins_pplugin_www_ptail),
         ]
 
     def _print(self, *args, **kwargs) -> None:
@@ -136,20 +136,6 @@ class HttpApp:
         assert self._context
         logger.info(f"http_app.get_api_version() -> {version_text}")
         return Response(text=version_text)
-
-    async def get_plugins_pplugin_www_ptail(self, request: Request) -> StreamResponse:
-        plugin = request.match_info[p.plugin]
-        tail = request.match_info[p.tail]
-        module = self.context.get_core_plugin(plugin)
-        if module is None:
-            raise HTTPNotFound(reason=f"Not found `{plugin}` plugin")
-
-        try:
-            file = module.match_www(tail)
-        except KeyError as e:
-            raise HTTPNotFound(reason=str(e))
-
-        return FileResponse(file)
 
     async def call_soon_graceful_exit(self):
         assert self._task

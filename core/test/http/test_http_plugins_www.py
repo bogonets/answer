@@ -1,30 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from asyncio import get_event_loop
-from typing import List
 from unittest import main
 
 from recc.http import http_urls as u
-from recc.http.http_utils import v2_plugins_path, v2_plugins_pplugin_path
 from tester.http.http_app_tester import HttpAppTester
 from tester.unittest.plugin_test_case import PluginTestCase
 
 
-class RouterV2PluginsTestCase(PluginTestCase):
+class HttpPluginsWwwTestCase(PluginTestCase):
     async def asyncSetUp(self):
         self.tester = HttpAppTester(get_event_loop())
         await self.tester.setup()
         await self.tester.wait_startup()
-
-        self.username = "user1"
-        self.password = "1234"
-        try:
-            await self.tester.signup_default_admin()
-            await self.tester.signup(self.username, self.password)
-            await self.tester.signin(self.username, self.password, save_session=True)
-        except:  # noqa
-            await self.tester.teardown()
-            raise
 
         self.plugin_keys = list(self.tester.context._plugins.keys())
         self.assertEqual(len(self.test_core_plugin_names), len(self.plugin_keys))
@@ -44,22 +32,29 @@ class RouterV2PluginsTestCase(PluginTestCase):
     async def asyncTearDown(self):
         await self.tester.teardown()
 
-    async def test_root(self):
-        response = await self.tester.get(v2_plugins_path(u.root), cls=List[str])
-        self.assertEqual(200, response.status)
-        response_data = response.data
-        self.assertIsInstance(response_data, list)
-        self.assertListEqual(self.plugin_keys, response_data)
+    async def test_plugin_spec_www(self):
+        path_prefix = u.plugins + u.pplugin.format(plugin=self.request_plugin_key)
 
-    async def test_plugin_route(self):
-        path = v2_plugins_pplugin_path(self.request_plugin_key, "/")
-        get_response = await self.tester.get(path)
+        index_html_content = "INDEX"
+        default_js_content = "'use strict';"
+
+        path1 = path_prefix + "/any_suffix_paths_to_index.html"
+        get_response = await self.tester.get(path1)
         self.assertEqual(200, get_response.status)
+        self.assertIsInstance(get_response.data, str)
+        self.assertEqual(index_html_content, get_response.data.strip())
 
-        test_body = "TEST_BODY"
-        post_response = await self.tester.post(path, data=test_body)
-        self.assertEqual(200, post_response.status)
-        self.assertEqual(test_body, post_response.data)
+        path2 = path_prefix + "/default.js"
+        get_response = await self.tester.get(path2)
+        self.assertEqual(200, get_response.status)
+        self.assertIsInstance(get_response.data, str)
+        self.assertEqual(default_js_content, get_response.data.strip())
+
+        path3 = path_prefix + "/index.html"
+        get_response = await self.tester.get(path3)
+        self.assertEqual(200, get_response.status)
+        self.assertIsInstance(get_response.data, str)
+        self.assertEqual(index_html_content, get_response.data.strip())
 
 
 if __name__ == "__main__":
