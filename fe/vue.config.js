@@ -21,7 +21,7 @@ module.exports = {
 
   devServer: {
     proxy: {
-      '/plugins': {
+      '^/plugins': {
         target: 'http://localhost:20000',
         changeOrigin: true,
       },

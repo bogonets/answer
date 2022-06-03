@@ -38,11 +38,16 @@ export interface ReccApiOptions {
   onRefreshTokenError?: () => void;
   onRenewalAccessToken?: (accessToken: string) => void;
   onUninitializedService?: () => void;
+
+  accessToken?: string;
+  refreshToken?: string;
 }
 
 export class ReccApiBase {
   originAddress: string;
+  timeout: number;
   validateStatus: Array<number>;
+  accept: string;
   apiVersion: number;
   logging: boolean;
 
@@ -61,17 +66,15 @@ export class ReccApiBase {
   refreshing = false;
 
   constructor(options?: ReccApiOptions) {
-    const origin = options?.origin || document.location.origin;
-    const timeout = options?.timeout || DEFAULT_TIMEOUT_MILLISECONDS;
-    const validate = options?.validateStatus || VALIDATE_STATUS;
-    const accept = options?.accept || DEFAULT_ACCEPT;
-    const version = options?.version || DEFAULT_API_VERSION;
-    const logging = options?.logging || false;
+    this.originAddress = options?.origin || document.location.origin;
+    this.timeout = options?.timeout || DEFAULT_TIMEOUT_MILLISECONDS;
+    this.validateStatus = options?.validateStatus || VALIDATE_STATUS;
+    this.accept = options?.accept || DEFAULT_ACCEPT;
+    this.apiVersion = options?.version || DEFAULT_API_VERSION;
+    this.logging = options?.logging || false;
+    this.accessToken = options?.accessToken || '';
+    this.refreshToken = options?.refreshToken || '';
 
-    this.originAddress = origin;
-    this.validateStatus = validate;
-    this.apiVersion = version;
-    this.logging = logging;
     this.onRefreshTokenError = options?.onRefreshTokenError;
     this.onRenewalAccessToken = options?.onRenewalAccessToken;
     this.onUninitializedService = options?.onUninitializedService;
@@ -79,17 +82,38 @@ export class ReccApiBase {
     this.onUnregisterRefreshSubscribers = undefined;
 
     this.axios = AxiosLib.create({
-      baseURL: originToBaseUrl(origin, version),
-      timeout: timeout,
-      headers: {Accept: accept},
+      baseURL: originToBaseUrl(this.originAddress, this.apiVersion),
+      timeout: this.timeout,
+      headers: {Accept: this.accept},
       validateStatus: (status: number): boolean => {
-        return VALIDATE_STATUS.includes(status);
+        return this.validateStatus.includes(status);
       },
     });
+    if (this.accessToken) {
+      this.axios.defaults.headers.common[
+        HEADER_AUTHORIZATION
+      ] = `Bearer ${this.accessToken}`;
+    }
     this.axios.interceptors.response.use(
       response => response,
       error => this.onResponseRejected(error),
     );
+  }
+
+  asPortableOptions() {
+    return {
+      origin: this.originAddress,
+      timeout: this.timeout,
+      validateStatus: this.validateStatus,
+      accept: this.accept,
+      logging: this.logging,
+      version: this.apiVersion,
+      onRefreshTokenError: undefined,
+      onRenewalAccessToken: undefined,
+      onUninitializedService: undefined,
+      accessToken: this.accessToken,
+      refreshToken: this.refreshToken,
+    } as ReccApiOptions;
   }
 
   get refreshConfig() {
