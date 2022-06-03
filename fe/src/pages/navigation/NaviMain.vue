@@ -127,10 +127,10 @@ ko:
         </div>
 
         <div v-for="plugin in plugins" :key="plugin.name">
-          <v-divider v-if="anyPluginMenu(plugin)"></v-divider>
+          <v-divider></v-divider>
 
           <v-list-item
-            v-for="menu in visiblePluginMenus(plugin)"
+            v-for="menu in plugin.menus.project"
             :key="`${plugin.name}-${menu.name}`"
             link
             @click.stop="pluginMenu(plugin.name, menu)"
@@ -174,7 +174,7 @@ ko:
 import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {ProjectA} from '@recc/api/dist/packet/project';
-import type {PluginA, PluginMenuA} from '@recc/api/dist/packet/plugin';
+import type {PluginA, PluginMenuA, PluginMenusA} from '@recc/api/dist/packet/plugin';
 import mainNames from '@/router/names/main';
 
 @Component
@@ -192,6 +192,7 @@ export default class NaviMain extends VueBase {
   mini = false;
   project = {} as ProjectA;
   permission = {} as Array<string>;
+  plugins = [] as Array<PluginA>;
 
   get projectSlug(): string {
     const project = this.$route.params.project;
@@ -209,14 +210,55 @@ export default class NaviMain extends VueBase {
     return '?';
   }
 
-  get plugins() {
-    return this.$localStore.preference.plugins;
+  anyPluginMenu(plugin: PluginA): boolean {
+    if (plugin.menus.project.length == 0) {
+      return false;
+    }
+    for (const menu of plugin.menus.project) {
+      if (!menu.permission) {
+        continue;
+      }
+      if (!this.hasPermission(menu.permission)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  visiblePluginMenus(plugin: PluginA): Array<PluginMenuA> {
+    const result = [] as Array<PluginMenuA>;
+    for (const menu of plugin.menus.project) {
+      if (menu.permission && this.hasPermission(menu.permission)) {
+        result.push(menu);
+      }
+    }
+    return result;
   }
 
   created() {
+    const result = [] as Array<PluginA>;
+    for (const plugin of this.$localStore.preference.plugins) {
+      if (this.anyPluginMenu(plugin)) {
+        result.push({
+          name: plugin.name,
+          menus: {
+            admin: [],
+            group: [],
+            project: this.visiblePluginMenus(plugin),
+            user: [],
+          } as PluginMenusA,
+        } as PluginA);
+      }
+    }
+    this.plugins = result;
+
     (async () => {
       await this.requestSetup();
     })();
+  }
+
+  get pluginsMenusLength() {
+    return this.plugins.map(x => x.menus.project.length).reduce((x, y) => x + y);
   }
 
   async requestSetup() {
@@ -229,6 +271,30 @@ export default class NaviMain extends VueBase {
       this.toastRequestFailure(error);
       this.moveToBack();
     }
+  }
+
+  findMenuIndex() {
+    const currentPluginName = this.$router.currentRoute.params.plugin;
+    const currentMenuName = this.$router.currentRoute.params.menu;
+
+    let pluginIndex = 0;
+    for (const plugin of this.plugins) {
+      if (currentPluginName !== plugin.name) {
+        pluginIndex += plugin.menus.project.length;
+        continue;
+      }
+
+      for (const menu of plugin.menus.project) {
+        if (currentMenuName !== menu.name) {
+          pluginIndex++;
+          continue;
+        }
+
+        return pluginIndex;
+      }
+    }
+
+    return -1;
   }
 
   @Watch('$route')
@@ -248,44 +314,12 @@ export default class NaviMain extends VueBase {
       this.index = 5;
     } else if (name === mainNames.mainVisualProgramming) {
       this.index = 6;
-    } else if (name === mainNames.mainVmsLive) {
-      this.index = 7;
-    } else if (name === mainNames.mainVmsDevices) {
-      this.index = 8;
-    } else if (name === mainNames.mainVmsDevicesDiscovery) {
-      this.index = 8;
-    } else if (name === mainNames.mainVmsDevicesDiscoveryEpr) {
-      this.index = 8;
-    } else if (name === mainNames.mainVmsDevicesEditInfo) {
-      this.index = 8;
-    } else if (name === mainNames.mainVmsDevicesEditLive) {
-      this.index = 8;
-    } else if (name === mainNames.mainVmsDevicesEditRecord) {
-      this.index = 8;
-    } else if (name === mainNames.mainVmsDevicesEditEvents) {
-      this.index = 8;
-    } else if (name === mainNames.mainVmsDevicesEditEventConfigsEdit) {
-      this.index = 8;
-    } else if (name === mainNames.mainVmsDevicesEditEventConfigsNew) {
-      this.index = 8;
-    } else if (name === mainNames.mainVmsDevicesNew) {
-      this.index = 8;
-    } else if (name === mainNames.mainVmsLayouts) {
-      this.index = 9;
-    } else if (name === mainNames.mainVmsLayoutsEdit) {
-      this.index = 9;
-    } else if (name === mainNames.mainVmsLayoutsNew) {
-      this.index = 9;
-    } else if (name === mainNames.mainVmsEventsCalendar) {
-      this.index = 10;
-    } else if (name === mainNames.mainVmsEventsList) {
-      this.index = 11;
-    } else if (name === mainNames.mainVmsUserConfigs) {
-      this.index = 12;
+    } else if (name === mainNames.mainPlugin) {
+      this.index = 6 + this.findMenuIndex() + 1;
     } else if (name === mainNames.mainMembers) {
-      this.index = 13;
+      this.index = 6 + this.pluginsMenusLength + 1;
     } else if (name === mainNames.mainSettings) {
-      this.index = 14;
+      this.index = 6 + this.pluginsMenusLength + 2;
     } else {
       this.index = -1;
     }
@@ -372,32 +406,7 @@ export default class NaviMain extends VueBase {
     return menu;
   }
 
-  anyPluginMenu(plugin: PluginA) {
-    if (plugin.menus.project.length == 0) {
-      return false;
-    }
-    for (const menu of plugin.menus.project) {
-      if (!menu.permission) {
-        continue;
-      }
-      if (!this.hasPermission(menu.permission)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  visiblePluginMenus(plugin: PluginA) {
-    const result = [] as Array<PluginMenuA>;
-    for (const menu of plugin.menus.project) {
-      if (menu.permission && this.hasPermission(menu.permission)) {
-        result.push(menu);
-      }
-    }
-    return result;
-  }
-
-  pluginMenuTitle(menu: PluginMenuA) {
+  pluginMenuTitle(menu: PluginMenuA): string {
     const localeName = menu.translations[this.$localStore.lang];
     if (localeName) {
       return localeName;

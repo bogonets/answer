@@ -1,6 +1,7 @@
 import {Vue, Component} from 'vue-property-decorator';
 import {RawLocation} from 'vue-router';
 import {Dictionary} from 'vue-router/types/router';
+import _ from 'lodash';
 
 type ParamsType = Dictionary<string>;
 type QueryType = Dictionary<string | (string | null)[] | null | undefined>;
@@ -13,7 +14,11 @@ export default class Router extends Vue {
 
   moveTo(name: string, params?: ParamsType, query?: QueryType) {
     if (this.$router.currentRoute.name === name) {
-      return;
+      const paramsEqual = _.isEqual(params, this.$router.currentRoute.params);
+      const queryEqual = _.isEqual(query, this.$router.currentRoute.query);
+      if (paramsEqual && queryEqual) {
+        return;
+      }
     }
 
     const rawLocation = {
