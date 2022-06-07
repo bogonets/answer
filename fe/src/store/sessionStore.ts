@@ -7,9 +7,6 @@ import VuexPersist from 'vuex-persist';
 import permission from '@/store/modules/permission';
 import vms from '@/store/modules/vms';
 
-// Packets
-import type {VmsDiscoveredDeviceA} from '@/packet/vms';
-
 const DEFAULT_PERSIST_KEY = 'answer.store.session';
 const DEFAULT_STRICT = process.env.NODE_ENV !== 'production';
 
@@ -98,18 +95,6 @@ export class SessionStore {
 
   set permissionPermissions(val: Array<string>) {
     this.setter(PERMISSION_PERMISSIONS, val);
-  }
-
-  // ---
-  // VMS
-  // ---
-
-  get vmsWds() {
-    return this.getter(VMS_WSD) as Array<VmsDiscoveredDeviceA>;
-  }
-
-  set vmsWds(val: Array<VmsDiscoveredDeviceA>) {
-    this.setter(VMS_WSD, val);
   }
 }
 
