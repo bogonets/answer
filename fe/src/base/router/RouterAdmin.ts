@@ -1,9 +1,9 @@
-import Component, {mixins} from 'vue-class-component';
-import RouterAdminAirjoy from '@/base/router/external/airjoy/RouterAdminAirjoy';
+import Component from 'vue-class-component';
+import Router from '@/base/router/Router';
 import adminNames from '@/router/names/admin';
 
 @Component
-export default class RouterAdmin extends mixins(RouterAdminAirjoy) {
+export default class RouterAdmin extends Router {
   moveToAdmin() {
     this.moveToAdminOverview();
   }

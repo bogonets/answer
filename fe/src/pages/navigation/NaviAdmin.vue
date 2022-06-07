@@ -222,8 +222,6 @@ export default class NaviAdmin extends VueBase {
       this.index = 9;
     } else if (name === adminNames.adminDaemonsNew) {
       this.index = 9;
-    } else if (name === adminNames.adminAirjoyDevices) {
-      this.index = 10;
     } else {
       this.index = -1;
     }
@@ -302,13 +300,6 @@ export default class NaviAdmin extends VueBase {
   daemons() {
     if (!this.noDefault) {
       this.moveToAdminDaemons();
-    }
-  }
-
-  @Emit('click:external-airjoy-devices')
-  externalAirjoyDevices() {
-    if (!this.noDefault) {
-      this.moveToAdminAirjoyDevices();
     }
   }
 }

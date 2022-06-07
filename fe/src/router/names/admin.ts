@@ -1,5 +1,3 @@
-import adminAirjoyNames from '@/router/names/external/airjoy/admin';
-
 export const adminNames = {
   adminConfigs: 'adminConfigs',
   adminContainers: 'adminContainers',
@@ -24,8 +22,6 @@ export const adminNames = {
   adminUsers: 'adminUsers',
   adminUsersEdit: 'adminUsersEdit',
   adminUsersNew: 'adminUsersNew',
-
-  ...adminAirjoyNames,
 };
 
 export default adminNames;

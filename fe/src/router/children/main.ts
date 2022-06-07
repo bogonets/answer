@@ -11,7 +11,6 @@ import MainTasks from '@/pages/main/MainTasks.vue';
 import MainVisualProgramming from '@/pages/main/MainVisualProgramming.vue';
 
 // External
-import mainAirjoyChildren from '@/router/children/external/airjoy/main';
 import RootGroups from '@/pages/RootGroups.vue';
 import rootNames from '@/router/names/root';
 
@@ -66,8 +65,6 @@ export const mainChildren = [
     component: MainVisualProgramming,
     name: mainNames.mainVisualProgramming,
   },
-
-  ...mainAirjoyChildren,
 ];
 
 export default mainChildren;

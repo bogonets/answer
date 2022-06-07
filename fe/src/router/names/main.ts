@@ -1,5 +1,3 @@
-import mainAirjoyNames from '@/router/names/external/airjoy/main';
-
 export const mainNames = {
   mainDashboard: 'mainDashboard',
   mainKanban: 'mainKanban',
@@ -11,8 +9,6 @@ export const mainNames = {
   mainTables: 'mainTables',
   mainTasks: 'mainTasks',
   mainVisualProgramming: 'mainVisualProgramming',
-
-  ...mainAirjoyNames,
 };
 
 export default mainNames;

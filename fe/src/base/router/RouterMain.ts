@@ -1,20 +1,12 @@
 import Component, {mixins} from 'vue-class-component';
-import RouterMainAirjoy from '@/base/router/external/airjoy/RouterMainAirjoy';
+import Router from '@/base/router/Router';
 import mainNames from '@/router/names/main';
 import {OEM_AIRJOY} from '@/packet/oem';
 
 @Component
-export default class RouterMain extends mixins(RouterMainAirjoy) {
+export default class RouterMain extends Router {
   moveToMain(group?: string, project?: string) {
-    const oem = this.$localStore.preference.oem;
-    switch (oem) {
-      case OEM_AIRJOY:
-        this.moveToMainAirjoyDevices(group, project);
-        break;
-      default:
-        this.moveToMainDashboard(group, project);
-        break;
-    }
+    this.moveToMainDashboard(group, project);
   }
 
   private _moveToMainSubpage(routeName: string, group?: string, project?: string) {
