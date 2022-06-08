@@ -32,8 +32,8 @@ export default class Toast extends Vue {
     this.$toast.error(this.simpleToast(message, detail));
   }
 
-  toastRequestSuccess() {
-    this.toastSuccess(this.$t('toast.request_success').toString());
+  toastRequestSuccess(detail?: any) {
+    this.toastSuccess(this.$t('toast.request_success').toString(), detail);
   }
 
   toastRequestFailure(error?: any) {

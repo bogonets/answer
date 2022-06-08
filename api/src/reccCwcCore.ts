@@ -104,8 +104,14 @@ export class ReccCwcCore {
     }
   }
 
-  postInit(apiOptions: ReccApiOptions, dark: boolean, lang: string) {
-    postInit(this._window, {apiOptions, dark, lang});
+  postInit(
+    apiOptions: ReccApiOptions,
+    group: string,
+    project: string,
+    dark: boolean,
+    lang: string,
+  ) {
+    postInit(this._window, {apiOptions, group, project, dark, lang});
   }
 }
 

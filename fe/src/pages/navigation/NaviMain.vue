@@ -228,7 +228,7 @@ export default class NaviMain extends VueBase {
   visiblePluginMenus(plugin: PluginA): Array<PluginMenuA> {
     const result = [] as Array<PluginMenuA>;
     for (const menu of plugin.menus.project) {
-      if (menu.permission && this.hasPermission(menu.permission)) {
+      if (!menu.permission || this.hasPermission(menu.permission)) {
         result.push(menu);
       }
     }

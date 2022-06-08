@@ -1,7 +1,12 @@
+import type {AxiosRequestConfig} from 'axios';
 import ReccApi from './reccApi';
 import type {ReccApiOptions} from './reccApiBase';
 import type {ReccCwcDataInit, ReccCwcMessage} from './reccCwc';
-import {ReccCwcOriginMismatchError, UninitializedError} from './error';
+import {
+  ReccCwcOriginMismatchError,
+  UninitializedError,
+  UnsupportedOperationError,
+} from './error';
 import {
   MESSAGE_EVENT_TYPE,
   MESSAGE_DATA_TYPE_INIT,
@@ -18,6 +23,18 @@ export interface ReccCwcPluginOptions {
   origin?: string;
 
   onInit?: (data: ReccCwcDataInit) => void;
+}
+
+function debugEnvs() {
+  return {
+    apiOrigin: process.env.RECC_CWC_PLUGIN_DEBUG_API_ORIGIN || 'http://localhost:20000',
+    username: process.env.RECC_CWC_PLUGIN_DEBUG_USERNAME || 'admin',
+    password: process.env.RECC_CWC_PLUGIN_DEBUG_PASSWORD || '0000',
+    dark: process.env.RECC_CWC_PLUGIN_DEBUG_DARK === 'true',
+    lang: process.env.RECC_CWC_PLUGIN_DEBUG_LANG || 'ko',
+    group: process.env.RECC_CWC_PLUGIN_DEBUG_GROUP || 'group',
+    project: process.env.RECC_CWC_PLUGIN_DEBUG_PROJECT || 'project',
+  };
 }
 
 /**
@@ -56,6 +73,36 @@ export class ReccCwcPlugin {
     this._window.removeEventListener(MESSAGE_EVENT_TYPE, this._messageHandler);
   }
 
+  runDebuggingMode() {
+    if (process.env.NODE_ENV !== 'production') {
+      (async () => {
+        await this.debug();
+      })();
+    }
+  }
+
+  async debug() {
+    if (process.env.NODE_ENV === 'production') {
+      throw new UnsupportedOperationError(
+        'Debug operations are not supported in production mode',
+      );
+    }
+
+    const envs = debugEnvs();
+    const api = new ReccApi({origin: envs.apiOrigin});
+    const signin = await api.postSignin(envs.username, envs.password);
+    const accessToken = signin.access;
+    const refreshToken = signin.refresh;
+
+    this.onInit({
+      apiOptions: {accessToken, refreshToken},
+      dark: envs.dark,
+      lang: envs.lang,
+      group: envs.group,
+      project: envs.project,
+    });
+  }
+
   onInit(data: ReccCwcDataInit) {
     const apiOptions = {
       ...data.apiOptions,
@@ -73,18 +120,19 @@ export class ReccCwcPlugin {
 
     try {
       this._api = new ReccApi(apiOptions);
+
+      this._dark = data.dark;
+      this._lang = data.lang;
+      this._group = data.group || '';
+      this._project = data.project || '';
+
+      if (this._options.onInit) {
+        this._options.onInit(data);
+      }
+
       this._initPromiseResolve(true);
     } catch (error) {
       this._initPromiseReject(error);
-    }
-
-    this._dark = data.dark;
-    this._lang = data.lang;
-    this._group = data.group || '';
-    this._project = data.project || '';
-
-    if (this._options.onInit) {
-      this._options.onInit(data);
     }
   }
 
@@ -111,8 +159,12 @@ export class ReccCwcPlugin {
     });
   }
 
+  get initialized(): boolean {
+    return typeof this._api !== 'undefined';
+  }
+
   get api(): ReccApi {
-    if (!this._api) {
+    if (!this.initialized) {
       throw new UninitializedError();
     }
     return this._api;
@@ -134,34 +186,68 @@ export class ReccCwcPlugin {
     return this._project;
   }
 
-  toastSuccess(message: string, detail?: string) {
-    postToast(this._window, {
-      level: ToastLevel.Success,
-      message: message,
-      detail: detail,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get<T = any>(url: string, config?: AxiosRequestConfig) {
+    return this.waitInitialized().then(api => {
+      return api.get<T>(url, config);
     });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
+    return this.waitInitialized().then(api => {
+      return api.post<T>(url, config);
+    });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
+    return this.waitInitialized().then(api => {
+      return api.patch<T>(url, config);
+    });
+  }
+
+  delete(url: string, config?: AxiosRequestConfig) {
+    return this.waitInitialized().then(api => {
+      return api.delete(url, config);
+    });
+  }
+
+  toastSuccess(message: string, detail?: string) {
+    postToast(this._window, {level: ToastLevel.Success, message, detail});
   }
 
   toastInfo(message: string, detail?: string) {
-    postToast(this._window, {
-      level: ToastLevel.Info,
-      message: message,
-      detail: detail,
-    });
+    postToast(this._window, {level: ToastLevel.Info, message, detail});
   }
 
   toastWarning(message: string, detail?: string) {
-    postToast(this._window, {
-      level: ToastLevel.Warning,
-      message: message,
-      detail: detail,
-    });
+    postToast(this._window, {level: ToastLevel.Warning, message, detail});
   }
 
   toastError(message: string, detail?: string) {
+    postToast(this._window, {level: ToastLevel.Error, message, detail});
+  }
+
+  toastRequestSuccess(detail?: string) {
+    postToast(this._window, {level: ToastLevel.RequestSuccess, detail});
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  toastRequestFailure(error?: any) {
+    let detail: undefined | string = undefined;
+    if (error) {
+      if (typeof error.response !== 'undefined') {
+        const code = error.response.status || '?';
+        const reason = error.response.statusText || 'Unknown';
+        detail = `[${code}] ${reason}`;
+      } else {
+        detail = error.toString();
+      }
+    }
+
     postToast(this._window, {
-      level: ToastLevel.Error,
-      message: message,
+      level: ToastLevel.RequestFailure,
       detail: detail,
     });
   }

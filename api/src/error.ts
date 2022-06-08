@@ -4,6 +4,12 @@ export class ReccError extends Error {
   }
 }
 
+export class UnsupportedOperationError extends ReccError {
+  constructor(message?: string) {
+    super(message || 'Unsupported operation Error');
+  }
+}
+
 export class UninitializedError extends ReccError {
   constructor(message?: string) {
     super(message || 'Uninitialized Error');

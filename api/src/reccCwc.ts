@@ -24,11 +24,13 @@ export enum ToastLevel {
   Info,
   Warning,
   Error,
+  RequestSuccess,
+  RequestFailure,
 }
 
 export interface ReccCwcDataToast {
   level: ToastLevel;
-  message: string;
+  message?: string;
   detail?: string;
 }
 

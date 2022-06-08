@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Ref} from 'vue-property-decorator';
+import {Component, Prop, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ViewPort from '@/components/ViewPort.vue';
 import {ReccCwcCore} from '@recc/api/dist/reccCwcCore';
@@ -23,6 +23,9 @@ import {
   },
 })
 export default class MainPlugin extends VueBase {
+  @Prop({type: Boolean, default: false})
+  readonly verbose!: boolean;
+
   @Ref('frame')
   frame!: HTMLIFrameElement;
 
@@ -49,7 +52,10 @@ export default class MainPlugin extends VueBase {
   }
 
   onToast(data: ReccCwcDataToast) {
-    console.debug(`<plugin>.onToast(message=${data.message},detail=${data.detail})`);
+    if (this.verbose) {
+      console.debug(`<plugin>.onToast(message=${data.message},detail=${data.detail})`);
+    }
+
     switch (data.level) {
       case ToastLevel.Success:
         this.toastSuccess(data.message, data.detail);
@@ -63,13 +69,22 @@ export default class MainPlugin extends VueBase {
       case ToastLevel.Error:
         this.toastError(data.message, data.detail);
         break;
+      case ToastLevel.RequestSuccess:
+        this.toastRequestSuccess(data.detail);
+        break;
+      case ToastLevel.RequestFailure:
+        this.toastError(this.$t('toast.request_failure').toString(), data.detail);
+        break;
       default:
         throw new Error(`Unknown toast level: ${data.level}`);
     }
   }
 
   onMove(data: ReccCwcDataMove) {
-    console.debug(`<plugin>.onMove(name=${data.name},path=${data.path})`);
+    if (this.verbose) {
+      console.debug(`<plugin>.onMove(name=${data.name},path=${data.path})`);
+    }
+
     if (!data.name && !data.path) {
       throw new Error('name or path argument must be provided');
     }
@@ -85,9 +100,12 @@ export default class MainPlugin extends VueBase {
   }
 
   onFullscreen(data: ReccCwcDataFullscreen) {
-    console.debug(
-      `<plugin>.onFullscreen(fullscreen=${data.fullscreen},flip=${data.flip})`,
-    );
+    if (this.verbose) {
+      console.debug(
+        `<plugin>.onFullscreen(fullscreen=${data.fullscreen},flip=${data.flip})`,
+      );
+    }
+
     if (!data.fullscreen && !data.flip) {
       throw new Error('fullscreen or flip argument must be provided');
     }
@@ -97,14 +115,20 @@ export default class MainPlugin extends VueBase {
   }
 
   onRefreshTokenError() {
-    console.debug('<plugin>.onRefreshTokenError()');
+    if (this.verbose) {
+      console.debug('<plugin>.onRefreshTokenError()');
+    }
+
     if (this.$api2.onRefreshTokenError) {
       this.$api2.onRefreshTokenError();
     }
   }
 
   onRenewalAccessToken(data: ReccCwcDataRenewalAccessToken) {
-    console.debug('<plugin>.onRenewalAccessToken(...)');
+    if (this.verbose) {
+      console.debug('<plugin>.onRenewalAccessToken(...)');
+    }
+
     this.$api2.setAccessToken(data.accessToken);
     if (this.$api2.onRenewalAccessToken) {
       this.$api2.onRenewalAccessToken(data.accessToken);
@@ -112,7 +136,10 @@ export default class MainPlugin extends VueBase {
   }
 
   onUninitializedService() {
-    console.debug('<plugin>.onUninitializedService()');
+    if (this.verbose) {
+      console.debug('<plugin>.onUninitializedService()');
+    }
+
     if (this.$api2.onUninitializedService) {
       this.$api2.onUninitializedService();
     }
@@ -147,6 +174,8 @@ export default class MainPlugin extends VueBase {
 
     this.cwc.postInit(
       this.$api2.asPortableOptions(),
+      this.$route.params.group,
+      this.$route.params.project,
       this.$localStore.dark,
       this.$localStore.lang,
     );
