@@ -43,6 +43,13 @@ class ContextBase:
         return self._loop
 
     @property
+    def local_storage(self):
+        """
+        Local Storage property.
+        """
+        return self._local_storage
+
+    @property
     def container(self):
         """
         Container Manager property.
