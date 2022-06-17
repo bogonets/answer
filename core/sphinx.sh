@@ -11,17 +11,15 @@ LOCALE_DIR="$CORE_DIR/.sphinx_locale"
 CACHED_DIR="$CORE_DIR/.sphinx_cache"
 
 USAGE_MESSAGE="
-Sphinx helper.
-
-  Usage: sphinx.sh [options] [command]
-
-Available options are:
-  -h, --help Print this message.
+Usage: ${BASH_SOURCE[0]} [options] command
 
 Available command are:
   gettext  Run gettext
   intl     Run translate
   html     Run html
+
+Available options are:
+  -h, --help Print this message.
 "
 
 if [[ ! -d "$SOURCE_DIR" ]]; then

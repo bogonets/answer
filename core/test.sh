@@ -1,18 +1,16 @@
 #!/usr/bin/env bash
 
-USAGE_MESSAGE="
-UnitTest manager.
+CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 
-  Usage: test.sh [options] args
+ITERATOR=1
+
+USAGE_MESSAGE="
+Usage: ${BASH_SOURCE[0]} [options]
 
 Available options are:
-  -h, --help        Print this message.
-  -i {num}, --iterator={name}
-                    Number of repetitions. (default: 1)
+  -h, --help                    Print this message.
+  -i {num}, --iterator {name}   Number of repetitions. (current: $ITERATOR)
 "
-
-CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
-ITERATOR=1
 
 while [[ -n $1 ]]; do
     case $1 in
@@ -20,7 +18,15 @@ while [[ -n $1 ]]; do
         echo "$USAGE_MESSAGE"
         return 0
         ;;
+    --iterator=)
+        ITERATOR=${2#*=}
+        shift
+        ;;
     -i|--iterator)
+        if [[ -z $2 ]]; then
+            print_usage
+            exit 0
+        fi
         ITERATOR=$2
         shift 2
         ;;

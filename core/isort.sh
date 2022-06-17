@@ -4,7 +4,7 @@ CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
 
 USAGE="
-Usage: $0 [options]
+Usage: ${BASH_SOURCE[0]} [options]
 
 Available options are:
   -h, --help       Print this message.
