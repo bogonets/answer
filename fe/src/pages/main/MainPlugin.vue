@@ -10,11 +10,12 @@ import VueBase from '@/base/VueBase';
 import ViewPort from '@/components/ViewPort.vue';
 import {ReccCwcCore} from '@recc/api/dist/reccCwcCore';
 import {
-  ReccCwcDataFullscreen,
-  ReccCwcDataMove,
-  ReccCwcDataRenewalAccessToken,
-  ReccCwcDataToast,
+  ReccCwcDataInit,
   ToastLevel,
+  ReccCwcDataToast,
+  ReccCwcDataMove,
+  ReccCwcDataFullscreen,
+  ReccCwcDataRenewalAccessToken,
 } from '@recc/api/dist/reccCwc';
 
 @Component({
@@ -145,13 +146,30 @@ export default class MainPlugin extends VueBase {
     }
   }
 
+  /**
+   * Do not call from `mounted()` callback method.
+   * `frame.contentWindow` may not be complete.
+   */
   onFrameLoad() {
     if (!this.frame.contentWindow) {
       throw new Error('<iframe>.contentWindow not exist');
     }
 
+    const apiOptions = this.$api2.asPortableOptions();
+    const dark = this.$localStore.dark;
+    const lang = this.$localStore.lang;
+    const group = this.$route.params.group;
+    const project = this.$route.params.project;
+
     this.cwc = new ReccCwcCore(this.frame, {
       origin: window.origin,
+      initData: {
+        apiOptions,
+        dark,
+        lang,
+        group,
+        project,
+      } as ReccCwcDataInit,
       onToast: data => {
         this.onToast(data);
       },
@@ -171,14 +189,6 @@ export default class MainPlugin extends VueBase {
         this.onUninitializedService();
       },
     });
-
-    this.cwc.postInit(
-      this.$api2.asPortableOptions(),
-      this.$route.params.group,
-      this.$route.params.project,
-      this.$localStore.dark,
-      this.$localStore.lang,
-    );
   }
 }
 </script>

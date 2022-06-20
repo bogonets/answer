@@ -1,4 +1,3 @@
-import type {ReccApiOptions} from './reccApiBase';
 import type {
   ReccCwcDataFullscreen,
   ReccCwcDataMove,
@@ -9,17 +8,20 @@ import type {
 import {UninitializedError, ReccCwcOriginMismatchError} from './error';
 import {
   MESSAGE_EVENT_TYPE,
+  MESSAGE_DATA_TYPE_INIT_READY,
   MESSAGE_DATA_TYPE_TOAST,
   MESSAGE_DATA_TYPE_MOVE,
   MESSAGE_DATA_TYPE_FULLSCREEN,
   MESSAGE_DATA_TYPE_REFRESH_TOKEN_ERROR,
   MESSAGE_DATA_TYPE_RENEWAL_ACCESS_TOKEN,
   MESSAGE_DATA_TYPE_UNINITIALIZED_SERVICE,
+  ReccCwcDataInit,
   postInit,
 } from './reccCwc';
 
 export interface ReccCwcCoreOptions {
   origin?: string;
+  initData?: ReccCwcDataInit;
 
   onToast?: (data: ReccCwcDataToast) => void;
   onMove?: (data: ReccCwcDataMove) => void;
@@ -64,6 +66,12 @@ export class ReccCwcCore {
     }
 
     switch (event.data.type) {
+      case MESSAGE_DATA_TYPE_INIT_READY:
+        if (this._options.initData) {
+          postInit(this._window, this._options.initData);
+        }
+        break;
+
       case MESSAGE_DATA_TYPE_TOAST:
         if (this._options.onToast) {
           this._options.onToast(event.data.data as ReccCwcDataToast);
@@ -102,16 +110,6 @@ export class ReccCwcCore {
         }
         break;
     }
-  }
-
-  postInit(
-    apiOptions: ReccApiOptions,
-    group: string,
-    project: string,
-    dark: boolean,
-    lang: string,
-  ) {
-    postInit(this._window, {apiOptions, group, project, dark, lang});
   }
 }
 

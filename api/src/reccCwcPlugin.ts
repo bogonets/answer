@@ -11,6 +11,7 @@ import {
   MESSAGE_EVENT_TYPE,
   MESSAGE_DATA_TYPE_INIT,
   ToastLevel,
+  postInitReady,
   postToast,
   postMove,
   postFullscreen,
@@ -94,6 +95,8 @@ export class ReccCwcPlugin {
     const accessToken = signin.access;
     const refreshToken = signin.refresh;
 
+    // `onInit()` is a message received from the parent window.
+    // Debugging mode forces this message to occur.
     this.onInit({
       apiOptions: {accessToken, refreshToken},
       dark: envs.dark,
@@ -148,6 +151,10 @@ export class ReccCwcPlugin {
         this.onInit(event.data.data as ReccCwcDataInit);
         break;
     }
+  }
+
+  ready() {
+    postInitReady(this._window);
   }
 
   waitInitialized() {
@@ -213,24 +220,52 @@ export class ReccCwcPlugin {
     });
   }
 
-  toastSuccess(message: string, detail?: string) {
-    postToast(this._window, {level: ToastLevel.Success, message, detail});
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  toast(level: ToastLevel, message?: any, detail?: any) {
+    let m: string | undefined;
+    if (typeof message !== 'undefined') {
+      if (typeof message === 'string') {
+        m = message;
+      } else {
+        m = message.toString();
+      }
+    }
+
+    let d: string | undefined;
+    if (typeof detail !== 'undefined') {
+      if (typeof detail === 'string') {
+        d = detail;
+      } else {
+        d = detail.toString();
+      }
+    }
+
+    postToast(this._window, {level: level, message: m, detail: d});
   }
 
-  toastInfo(message: string, detail?: string) {
-    postToast(this._window, {level: ToastLevel.Info, message, detail});
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  toastSuccess(message: any, detail?: any) {
+    this.toast(ToastLevel.Success, message, detail);
   }
 
-  toastWarning(message: string, detail?: string) {
-    postToast(this._window, {level: ToastLevel.Warning, message, detail});
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  toastInfo(message: any, detail?: any) {
+    this.toast(ToastLevel.Info, message, detail);
   }
 
-  toastError(message: string, detail?: string) {
-    postToast(this._window, {level: ToastLevel.Error, message, detail});
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  toastWarning(message: any, detail?: any) {
+    this.toast(ToastLevel.Warning, message, detail);
   }
 
-  toastRequestSuccess(detail?: string) {
-    postToast(this._window, {level: ToastLevel.RequestSuccess, detail});
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  toastError(message: any, detail?: any) {
+    this.toast(ToastLevel.Error, message, detail);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  toastRequestSuccess(detail?: any) {
+    this.toast(ToastLevel.RequestSuccess, undefined, detail);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -246,10 +281,7 @@ export class ReccCwcPlugin {
       }
     }
 
-    postToast(this._window, {
-      level: ToastLevel.RequestFailure,
-      detail: detail,
-    });
+    this.toast(ToastLevel.RequestFailure, undefined, detail);
   }
 
   moveToName(name: string, params?: object) {
