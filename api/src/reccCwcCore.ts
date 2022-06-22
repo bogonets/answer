@@ -8,7 +8,6 @@ import type {
 import {UninitializedError, ReccCwcOriginMismatchError} from './error';
 import {
   MESSAGE_EVENT_TYPE,
-  MESSAGE_DATA_TYPE_INIT_READY,
   MESSAGE_DATA_TYPE_TOAST,
   MESSAGE_DATA_TYPE_MOVE,
   MESSAGE_DATA_TYPE_FULLSCREEN,
@@ -52,6 +51,10 @@ export class ReccCwcCore {
     this._options = options ?? {};
     this._window = frame.contentWindow;
     this._window.addEventListener(MESSAGE_EVENT_TYPE, this._messageHandler);
+
+    if (this._options.initData) {
+      postInit(this._window, this._options.initData);
+    }
   }
 
   unregister() {
@@ -66,12 +69,6 @@ export class ReccCwcCore {
     }
 
     switch (event.data.type) {
-      case MESSAGE_DATA_TYPE_INIT_READY:
-        if (this._options.initData) {
-          postInit(this._window, this._options.initData);
-        }
-        break;
-
       case MESSAGE_DATA_TYPE_TOAST:
         if (this._options.onToast) {
           this._options.onToast(event.data.data as ReccCwcDataToast);

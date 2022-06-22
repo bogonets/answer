@@ -156,8 +156,8 @@ export default class MainPlugin extends VueBase {
     }
 
     const apiOptions = this.$api2.asPortableOptions();
-    const dark = this.$localStore.dark;
-    const lang = this.$localStore.lang;
+    const dark = this.$vuetify.theme.dark;
+    const lang = this.$vuetify.lang.current;
     const group = this.$route.params.group;
     const project = this.$route.params.project;
 

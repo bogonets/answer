@@ -11,7 +11,6 @@ import {
   MESSAGE_EVENT_TYPE,
   MESSAGE_DATA_TYPE_INIT,
   ToastLevel,
-  postInitReady,
   postToast,
   postMove,
   postFullscreen,
@@ -151,10 +150,6 @@ export class ReccCwcPlugin {
         this.onInit(event.data.data as ReccCwcDataInit);
         break;
     }
-  }
-
-  ready() {
-    postInitReady(this._window);
   }
 
   waitInitialized() {

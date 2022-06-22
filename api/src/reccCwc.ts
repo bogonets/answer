@@ -2,7 +2,6 @@ import type {ReccApiOptions} from './reccApiBase';
 
 export const MESSAGE_EVENT_TYPE = 'message';
 
-export const MESSAGE_DATA_TYPE_INIT_READY = 'recc/initReady';
 export const MESSAGE_DATA_TYPE_INIT = 'recc/init';
 export const MESSAGE_DATA_TYPE_TOAST = 'recc/toast';
 export const MESSAGE_DATA_TYPE_MOVE = 'recc/move';
@@ -64,10 +63,6 @@ export interface ReccCwcMessage {
 
 export function postMessage(w: Window, m: ReccCwcMessage) {
   w.postMessage(m, w.origin);
-}
-
-export function postInitReady(w: Window) {
-  postMessage(w, {type: MESSAGE_DATA_TYPE_INIT_READY});
 }
 
 export function postInit(w: Window, data: ReccCwcDataInit) {
