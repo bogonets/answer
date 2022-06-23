@@ -24,6 +24,10 @@ export interface ReccCwcPluginOptions {
   onInit?: (data: ReccCwcDataInit) => void;
 }
 
+function isDebuggingMode() {
+  return process.env.NODE_ENV !== 'production';
+}
+
 function debugEnvs() {
   return {
     apiOrigin: process.env.RECC_CWC_PLUGIN_DEBUG_API_ORIGIN || 'http://localhost:20000',
@@ -68,20 +72,37 @@ export class ReccCwcPlugin {
     });
   }
 
+  get debuggingMode() {
+    return isDebuggingMode();
+  }
+
+  asParamsText() {
+    let result = '';
+    if (this.apiOrigin) {
+      result = `api='${this.apiOrigin}',`;
+    }
+    if (this.group) {
+      result += `group='${this.group}',`;
+    }
+    if (this.project) {
+      result += `project='${this.project}',`;
+    }
+    if (this.lang) {
+      result += `lang='${this.lang}',`;
+    }
+    return result + `dark=${this.dark}`;
+  }
+
+  toString() {
+    return `ReccCwcPlugin(${this.asParamsText()})`;
+  }
+
   unregister() {
     this._window.removeEventListener(MESSAGE_EVENT_TYPE, this._messageHandler);
   }
 
-  runDebuggingMode() {
-    if (process.env.NODE_ENV !== 'production') {
-      (async () => {
-        await this.debug();
-      })();
-    }
-  }
-
   async debug() {
-    if (process.env.NODE_ENV === 'production') {
+    if (!this.debuggingMode) {
       throw new UnsupportedOperationError(
         'Debug operations are not supported in production mode',
       );
@@ -167,6 +188,10 @@ export class ReccCwcPlugin {
       throw new UninitializedError();
     }
     return this._api;
+  }
+
+  get apiOrigin() {
+    return this.api.origin;
   }
 
   get dark() {
