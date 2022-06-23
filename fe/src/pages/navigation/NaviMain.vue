@@ -414,7 +414,7 @@ export default class NaviMain extends VueBase {
   }
 
   onClickPluginMenu(plugin: string, menu: PluginMenuA) {
-    this.moveToMainPlugin(plugin, menu.name);
+    this.moveToMainPlugin(undefined, undefined, plugin, menu.name, menu.path);
   }
 
   pluginMenuTitle(menu: PluginMenuA): string {

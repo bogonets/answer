@@ -37,12 +37,19 @@ export default class RouterMain extends Router {
     this._moveToMainSubpage(mainNames.mainMembers, group, project);
   }
 
-  moveToMainPlugin(plugin: string, menu: string, group?: string, project?: string) {
+  moveToMainPlugin(
+    group?: string,
+    project?: string,
+    plugin?: string,
+    menu?: string,
+    path?: string,
+  ) {
     const params = {
-      plugin: plugin || this.$route.params.plugin,
-      menu: menu || this.$route.params.menu,
       group: group || this.$route.params.group,
       project: project || this.$route.params.project,
+      plugin: plugin || this.$route.params.plugin,
+      menu: menu || this.$route.params.menu,
+      path: path || this.$route.params.path,
     };
     this.moveTo(mainNames.mainPlugin, params);
   }
