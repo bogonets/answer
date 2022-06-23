@@ -21,6 +21,9 @@ export default class ViewPort extends Vue {
   @Prop({type: Number, default: 0})
   readonly marginRight!: number;
 
+  @Prop({type: Boolean, default: false})
+  readonly flex!: boolean;
+
   @Ref()
   readonly root!: HTMLDivElement;
 
@@ -58,10 +61,16 @@ export default class ViewPort extends Vue {
   }
 
   get contentStyle() {
-    return {
+    const result = {
       height: `${this.contentHeight}px`,
       'max-height': `${this.contentHeight}px`,
     };
+
+    if (this.flex) {
+      return {display: 'flex', ...result};
+    } else {
+      return result;
+    }
   }
 
   mounted() {

@@ -1,5 +1,5 @@
 <template>
-  <view-port>
+  <view-port flex>
     <iframe class="plugin-frame" ref="frame" :src="src" @load="onFrameLoad"></iframe>
   </view-port>
 </template>

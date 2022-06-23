@@ -15,7 +15,7 @@ ko:
 </i18n>
 
 <template>
-  <div class="vp-main">
+  <div>
     <v-toolbar dense flat>
       <v-btn plain small @click="onClickTree">
         <v-icon left>mdi-file-tree</v-icon>
@@ -43,7 +43,7 @@ ko:
     </v-toolbar>
     <v-divider></v-divider>
 
-    <view-port>
+    <view-port flex>
       <div ref="vp-canvas--wrapper" class="vp-canvas--wrapper">
         <canvas ref="vp-canvas" class="vp-canvas" @contextmenu="onContextMenu"></canvas>
       </div>
