@@ -21,7 +21,6 @@ import {
 
 export interface ReccCwcPluginOptions {
   origin?: string;
-
   onInit?: (data: ReccCwcDataInit) => void;
 }
 
@@ -90,14 +89,12 @@ export class ReccCwcPlugin {
 
     const envs = debugEnvs();
     const api = new ReccApi({origin: envs.apiOrigin});
-    const signin = await api.postSignin(envs.username, envs.password);
-    const accessToken = signin.access;
-    const refreshToken = signin.refresh;
+    await api.postSignin(envs.username, envs.password);
 
     // `onInit()` is a message received from the parent window.
     // Debugging mode forces this message to occur.
     this.onInit({
-      apiOptions: {accessToken, refreshToken},
+      apiOptions: api.asPortableOptions(),
       dark: envs.dark,
       lang: envs.lang,
       group: envs.group,
