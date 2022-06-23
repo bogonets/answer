@@ -220,14 +220,14 @@ export class ReccCwcPlugin {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   post<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
     return this.waitInitialized().then(api => {
-      return api.post<T>(url, config);
+      return api.post<T>(url, data, config);
     });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
     return this.waitInitialized().then(api => {
-      return api.patch<T>(url, config);
+      return api.patch<T>(url, data, config);
     });
   }
 
