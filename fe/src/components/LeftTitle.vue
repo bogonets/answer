@@ -42,10 +42,10 @@ import VueI18n from 'vue-i18n';
 @Component
 export default class LeftTitle extends Vue {
   @Prop({type: [String, Object]})
-  readonly header?: VueI18n.TranslateResult;
+  readonly header?: string | VueI18n.TranslateResult;
 
   @Prop({type: [String, Object]})
-  readonly subheader?: VueI18n.TranslateResult;
+  readonly subheader?: string | VueI18n.TranslateResult;
 
   @Prop({type: Number, default: 4})
   readonly leftRatio!: number;

@@ -232,7 +232,7 @@ export default class LabelSpan extends Vue {
   }
 
   get classes() {
-    return [
+    const styles = [
       this.sizeClassName,
       this.weightClassName,
       this.italicClassName,
@@ -248,9 +248,8 @@ export default class LabelSpan extends Vue {
       this.brightnessClassName,
       this.backgroundColorClassName,
       this.backgroundBrightnessClassName,
-    ]
-      .filter(x => !!x)
-      .join(' ');
+    ];
+    return styles.filter(x => !!x).join(' ');
   }
 
   get colorStyle() {
