@@ -58,11 +58,16 @@ ko:
         </v-btn>
       </v-list-item>
 
-      <v-list-item-group mandatory color="primary" :value="index" @change="input">
+      <v-list-item-group
+        mandatory
+        color="primary"
+        :value="index"
+        @change="onChangeMenuIndex"
+      >
         <div>
           <v-divider></v-divider>
 
-          <v-list-item link @click.stop="dashboard">
+          <v-list-item link @click.stop="onClickDashboard">
             <v-list-item-icon>
               <v-icon>mdi-gauge</v-icon>
             </v-list-item-icon>
@@ -71,7 +76,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item link @click.stop="kanban">
+          <v-list-item :v-show="showKanban" link @click.stop="onClickKanban">
             <v-list-item-icon>
               <v-icon>mdi-view-week-outline</v-icon>
             </v-list-item-icon>
@@ -80,7 +85,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item link @click.stop="layouts">
+          <v-list-item :v-show="showLayouts" link @click.stop="onClickLayouts">
             <v-list-item-icon>
               <v-icon>mdi-view-dashboard</v-icon>
             </v-list-item-icon>
@@ -89,7 +94,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item link @click.stop="files">
+          <v-list-item :v-show="showFiles" link @click.stop="onClickFiles">
             <v-list-item-icon>
               <v-icon>mdi-folder</v-icon>
             </v-list-item-icon>
@@ -98,7 +103,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item link @click.stop="tables">
+          <v-list-item :v-show="showTables" link @click.stop="onClickTables">
             <v-list-item-icon>
               <v-icon>mdi-table-multiple</v-icon>
             </v-list-item-icon>
@@ -107,7 +112,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="false" link @click.stop="tasks">
+          <v-list-item v-show="showTasks" link @click.stop="onClickTasks">
             <v-list-item-icon>
               <v-icon>mdi-format-list-checks</v-icon>
             </v-list-item-icon>
@@ -116,7 +121,7 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item link @click.stop="visualProgramming">
+          <v-list-item v-show="showVp" link @click.stop="onClickVisualProgramming">
             <v-list-item-icon>
               <v-icon>mdi-lambda</v-icon>
             </v-list-item-icon>
@@ -133,7 +138,7 @@ ko:
             v-for="menu in plugin.menus.project"
             :key="`${plugin.name}-${menu.name}`"
             link
-            @click.stop="pluginMenu(plugin.name, menu)"
+            @click.stop="onClickPluginMenu(plugin.name, menu)"
           >
             <v-list-item-icon v-if="menu.icon">
               <v-icon>{{ menu.icon }}</v-icon>
@@ -144,54 +149,116 @@ ko:
           </v-list-item>
         </div>
 
-        <v-divider
-          v-if="hasPermissionMemberView() || hasPermissionSettingView()"
-        ></v-divider>
+        <div v-if="showMembers || showSettings">
+          <v-divider></v-divider>
 
-        <v-list-item v-show="hasPermissionMemberView()" link @click.stop="members">
-          <v-list-item-icon>
-            <v-icon>mdi-account-group</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('members') }}
-          </v-list-item-title>
-        </v-list-item>
+          <v-list-item v-if="showMembers" link @click.stop="onClickMembers">
+            <v-list-item-icon>
+              <v-icon>mdi-account-group</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('members') }}
+            </v-list-item-title>
+          </v-list-item>
 
-        <v-list-item v-show="hasPermissionSettingView()" link @click.stop="settings">
-          <v-list-item-icon>
-            <v-icon>mdi-cog-outline</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('settings') }}
-          </v-list-item-title>
-        </v-list-item>
+          <v-list-item v-if="showSettings" link @click.stop="onClickSettings">
+            <v-list-item-icon>
+              <v-icon>mdi-cog-outline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('settings') }}
+            </v-list-item-title>
+          </v-list-item>
+        </div>
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script lang="ts">
-import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
+import {Component, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import type {ProjectA} from '@recc/api/dist/packet/project';
 import type {PluginA, PluginMenuA, PluginMenusA} from '@recc/api/dist/packet/plugin';
+import {
+  PERMISSION_SLUG_RECC_DOMAIN_FILE_VIEW,
+  PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_VIEW,
+  PERMISSION_SLUG_RECC_DOMAIN_TABLE_VIEW,
+  PERMISSION_SLUG_RECC_DOMAIN_TASK_VIEW,
+  PERMISSION_SLUG_RECC_DOMAIN_VP_VIEW,
+  PERMISSION_SLUG_RECC_DOMAIN_MEMBER_VIEW,
+  PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
+} from '@/packet/permission';
 import mainNames from '@/router/names/main';
+
+function visiblePluginMenus(plugin: PluginA, permissions: Array<string>) {
+  const result = [] as Array<PluginMenuA>;
+  for (const menu of plugin.menus.project) {
+    if (!menu.permission || permissions.includes(menu.permission)) {
+      result.push(menu);
+    }
+  }
+  return result;
+}
+
+function anyPluginMenu(plugin: PluginA, permissions: Array<string>): boolean {
+  if (plugin.menus.project.length == 0) {
+    return false;
+  }
+  for (const menu of plugin.menus.project) {
+    if (!menu.permission) {
+      continue;
+    }
+    if (!permissions.includes(menu.permission)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function findAvailablePlugins(plugins: Array<PluginA>, permissions: Array<string>) {
+  const result = [] as Array<PluginA>;
+  for (const plugin of plugins) {
+    if (anyPluginMenu(plugin, permissions)) {
+      result.push({
+        name: plugin.name,
+        menus: {
+          admin: [],
+          group: [],
+          project: visiblePluginMenus(plugin, permissions),
+          user: [],
+        } as PluginMenusA,
+      } as PluginA);
+    }
+  }
+  return result;
+}
+
+function findMenuIndex(pluginName: string, menuName: string, plugins: Array<PluginA>) {
+  let result = 0;
+  for (const plugin of plugins) {
+    if (pluginName !== plugin.name) {
+      result += plugin.menus.project.length;
+      continue;
+    }
+
+    for (const menu of plugin.menus.project) {
+      if (menuName !== menu.name) {
+        result++;
+        continue;
+      }
+
+      return result;
+    }
+  }
+
+  return -1;
+}
 
 @Component
 export default class NaviMain extends VueBase {
-  @Prop({type: Boolean, default: false})
-  readonly noDefault!: boolean;
-
-  @Prop({type: Boolean, default: false})
-  readonly hideMembers!: boolean;
-
-  @Prop({type: Boolean, default: false})
-  readonly hideSettings!: boolean;
-
   index = 0;
   mini = false;
-  project = {} as ProjectA;
-  permission = {} as Array<string>;
+  permissions = [] as Array<string>;
   plugins = [] as Array<PluginA>;
 
   get projectSlug(): string {
@@ -210,91 +277,66 @@ export default class NaviMain extends VueBase {
     return '?';
   }
 
-  anyPluginMenu(plugin: PluginA): boolean {
-    if (plugin.menus.project.length == 0) {
-      return false;
-    }
-    for (const menu of plugin.menus.project) {
-      if (!menu.permission) {
-        continue;
-      }
-      if (!this.hasPermission(menu.permission)) {
-        return false;
-      }
-    }
+  private hasPermission(perm: string) {
+    return this.permissions.includes(perm);
+  }
+
+  get showKanban() {
     return true;
   }
 
-  visiblePluginMenus(plugin: PluginA): Array<PluginMenuA> {
-    const result = [] as Array<PluginMenuA>;
-    for (const menu of plugin.menus.project) {
-      if (!menu.permission || this.hasPermission(menu.permission)) {
-        result.push(menu);
-      }
-    }
-    return result;
+  get showLayouts() {
+    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_VIEW);
   }
 
-  created() {
-    const result = [] as Array<PluginA>;
-    for (const plugin of this.$localStore.preference.plugins) {
-      if (this.anyPluginMenu(plugin)) {
-        result.push({
-          name: plugin.name,
-          menus: {
-            admin: [],
-            group: [],
-            project: this.visiblePluginMenus(plugin),
-            user: [],
-          } as PluginMenusA,
-        } as PluginA);
-      }
-    }
-    this.plugins = result;
+  get showFiles() {
+    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_FILE_VIEW);
+  }
 
-    (async () => {
-      await this.requestSetup();
-    })();
+  get showTables() {
+    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_TABLE_VIEW);
+  }
+
+  get showTasks() {
+    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_TASK_VIEW);
+  }
+
+  get showVp() {
+    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_VP_VIEW);
+  }
+
+  get showMembers() {
+    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_MEMBER_VIEW);
+  }
+
+  get showSettings() {
+    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW);
   }
 
   get pluginsMenusLength() {
     return this.plugins.map(x => x.menus.project.length).reduce((x, y) => x + y);
   }
 
+  created() {
+    (async () => {
+      await this.requestSetup();
+    })();
+  }
+
   async requestSetup() {
     try {
       const group = this.$route.params.group;
       const project = this.$route.params.project;
-      this.project = await this.$api2.getMainProjectsPgroupPproject(group, project);
-      this.permission = await this.requestProjectPermission();
+      this.permissions = await this.$api2.getSelfPermissionsPgroupPproject(
+        group,
+        project,
+      );
+      const plugins = this.$localStore.preference.plugins;
+      this.plugins = findAvailablePlugins(plugins, this.permissions);
     } catch (error) {
       this.toastRequestFailure(error);
       this.moveToBack();
     }
-  }
-
-  findMenuIndex() {
-    const currentPluginName = this.$router.currentRoute.params.plugin;
-    const currentMenuName = this.$router.currentRoute.params.menu;
-
-    let pluginIndex = 0;
-    for (const plugin of this.plugins) {
-      if (currentPluginName !== plugin.name) {
-        pluginIndex += plugin.menus.project.length;
-        continue;
-      }
-
-      for (const menu of plugin.menus.project) {
-        if (currentMenuName !== menu.name) {
-          pluginIndex++;
-          continue;
-        }
-
-        return pluginIndex;
-      }
-    }
-
-    return -1;
   }
 
   @Watch('$route')
@@ -315,7 +357,9 @@ export default class NaviMain extends VueBase {
     } else if (name === mainNames.mainVisualProgramming) {
       this.index = 6;
     } else if (name === mainNames.mainPlugin) {
-      this.index = 6 + this.findMenuIndex() + 1;
+      const plugin = this.$router.currentRoute.params.plugin;
+      const menu = this.$router.currentRoute.params.menu;
+      this.index = 6 + findMenuIndex(plugin, menu, this.plugins) + 1;
     } else if (name === mainNames.mainMembers) {
       this.index = 6 + this.pluginsMenusLength + 1;
     } else if (name === mainNames.mainSettings) {
@@ -329,81 +373,48 @@ export default class NaviMain extends VueBase {
     this.mini = !this.mini;
   }
 
-  @Emit()
-  input(index: number) {
+  onChangeMenuIndex(index: number) {
     this.index = index;
-    return index;
   }
 
-  @Emit('click:dashboard')
-  dashboard() {
-    if (!this.noDefault) {
-      this.moveToMainDashboard();
-    }
+  onClickDashboard() {
+    this.moveToMainDashboard();
   }
 
-  @Emit('click:kanban')
-  kanban() {
-    if (!this.noDefault) {
-      this.moveToMainKanban();
-    }
+  onClickKanban() {
+    this.moveToMainKanban();
   }
 
-  @Emit('click:layouts')
-  layouts() {
-    if (!this.noDefault) {
-      this.moveToMainLayouts();
-    }
+  onClickLayouts() {
+    this.moveToMainLayouts();
   }
 
-  @Emit('click:files')
-  files() {
-    if (!this.noDefault) {
-      this.moveToMainFiles();
-    }
+  onClickFiles() {
+    this.moveToMainFiles();
   }
 
-  @Emit('click:tables')
-  tables() {
-    if (!this.noDefault) {
-      this.moveToMainTables();
-    }
+  onClickTables() {
+    this.moveToMainTables();
   }
 
-  @Emit('click:tasks')
-  tasks() {
-    if (!this.noDefault) {
-      this.moveToMainTasks();
-    }
+  onClickTasks() {
+    this.moveToMainTasks();
   }
 
-  @Emit('click:visual-programming')
-  visualProgramming() {
-    if (!this.noDefault) {
-      this.moveToMainVisualProgramming();
-    }
+  onClickVisualProgramming() {
+    this.moveToMainVisualProgramming();
   }
 
-  @Emit('click:members')
-  members() {
-    if (!this.noDefault) {
-      this.moveToMainMembers();
-    }
+  onClickMembers() {
+    this.moveToMainMembers();
   }
 
-  @Emit('click:settings')
-  settings() {
-    if (!this.noDefault) {
-      this.moveToMainSettings();
-    }
+  onClickSettings() {
+    this.moveToMainSettings();
   }
 
-  @Emit('click:plugin')
-  pluginMenu(plugin: string, menu: PluginMenuA) {
-    if (!this.noDefault) {
-      this.moveToMainPlugin(plugin, menu.name);
-    }
-    return menu;
+  onClickPluginMenu(plugin: string, menu: PluginMenuA) {
+    this.moveToMainPlugin(plugin, menu.name);
   }
 
   pluginMenuTitle(menu: PluginMenuA): string {

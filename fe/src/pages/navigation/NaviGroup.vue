@@ -39,8 +39,13 @@ ko:
 
       <v-divider></v-divider>
 
-      <v-list-item-group mandatory color="primary" :value="index" @change="input">
-        <v-list-item link @click.stop="projects">
+      <v-list-item-group
+        mandatory
+        color="primary"
+        :value="index"
+        @change="onChangeIndex"
+      >
+        <v-list-item link @click.stop="onClickProjects">
           <v-list-item-icon>
             <v-icon>mdi-clipboard-check-multiple</v-icon>
           </v-list-item-icon>
@@ -49,56 +54,45 @@ ko:
           </v-list-item-title>
         </v-list-item>
 
-        <v-list-item
-          v-if="!hideMembers && hasPermissionMemberView()"
-          link
-          @click.stop="members"
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-account-group</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('members') }}
-          </v-list-item-title>
-        </v-list-item>
+        <div v-if="showMembers || showSettings">
+          <v-divider></v-divider>
 
-        <v-list-item
-          v-if="!hideSettings && hasPermissionSettingView()"
-          link
-          @click.stop="settings"
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-cog-outline</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('settings') }}
-          </v-list-item-title>
-        </v-list-item>
+          <v-list-item v-if="showMembers" link @click.stop="onClickMembers">
+            <v-list-item-icon>
+              <v-icon>mdi-account-group</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('members') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item v-if="showSettings" link @click.stop="onClickSettings">
+            <v-list-item-icon>
+              <v-icon>mdi-cog-outline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('settings') }}
+            </v-list-item-title>
+          </v-list-item>
+        </div>
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script lang="ts">
-import {Component, Emit, Prop} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import type {GroupA} from '@/packet/group';
+import {
+  PERMISSION_SLUG_RECC_DOMAIN_MEMBER_VIEW,
+  PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
+} from '@/packet/permission';
 
 @Component
 export default class MainAccount extends VueBase {
-  @Prop({type: Boolean, default: false})
-  readonly noDefault!: boolean;
-
-  @Prop({type: Boolean, default: false})
-  readonly hideMembers!: boolean;
-
-  @Prop({type: Boolean, default: false})
-  readonly hideSettings!: boolean;
-
   index = 0;
   mini = false;
-  group = {} as GroupA;
-  permission = {} as Array<string>;
+  permissions = [] as Array<string>;
 
   get groupSlug(): string {
     const name = this.$route.params.group;
@@ -116,6 +110,18 @@ export default class MainAccount extends VueBase {
     return '?';
   }
 
+  private hasPermission(perm: string) {
+    return this.permissions.includes(perm);
+  }
+
+  get showMembers() {
+    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_MEMBER_VIEW);
+  }
+
+  get showSettings() {
+    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW);
+  }
+
   created() {
     (async () => {
       await this.requestSetup();
@@ -125,8 +131,7 @@ export default class MainAccount extends VueBase {
   async requestSetup() {
     try {
       const group = this.$route.params.group;
-      this.group = await this.$api2.getMainGroupsPgroup(group);
-      this.permission = await this.requestGroupPermission();
+      this.permissions = await this.$api2.getSelfPermissionsPgroup(group);
     } catch (error) {
       this.toastRequestFailure(error);
       this.moveToBack();
@@ -137,31 +142,20 @@ export default class MainAccount extends VueBase {
     this.mini = !this.mini;
   }
 
-  @Emit()
-  input(index: number) {
+  onChangeIndex(index: number) {
     this.index = index;
-    return index;
   }
 
-  @Emit('click:projects')
-  projects() {
-    if (!this.noDefault) {
-      this.moveToGroupProjects(this.$route.params.group);
-    }
+  onClickProjects() {
+    this.moveToGroupProjects(this.$route.params.group);
   }
 
-  @Emit('click:members')
-  members() {
-    if (!this.noDefault) {
-      this.moveToGroupMembers(this.$route.params.group);
-    }
+  onClickMembers() {
+    this.moveToGroupMembers(this.$route.params.group);
   }
 
-  @Emit('click:settings')
-  settings() {
-    if (!this.noDefault) {
-      this.moveToGroupSettings(this.$route.params.group);
-    }
+  onClickSettings() {
+    this.moveToGroupSettings(this.$route.params.group);
   }
 }
 </script>

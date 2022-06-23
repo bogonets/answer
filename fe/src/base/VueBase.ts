@@ -7,7 +7,6 @@ import RouterGroup from '@/base/router/RouterGroup';
 import RouterMain from '@/base/router/RouterMain';
 import RouterRoot from '@/base/router/RouterRoot';
 import RouterSelf from '@/base/router/RouterSelf';
-import StorePermission from '@/base/store/StorePermission';
 
 @Component
 export default class VueBase extends mixins(
@@ -19,7 +18,6 @@ export default class VueBase extends mixins(
   RouterMain,
   RouterRoot,
   RouterSelf,
-  StorePermission,
 ) {
   getOem() {
     return this.$localStore.preference.oem;

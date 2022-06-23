@@ -3,17 +3,8 @@ import {PluginObject} from 'vue/types/plugin';
 import {Store, CommitOptions} from 'vuex';
 import VuexPersist from 'vuex-persist';
 
-// Modules
-import permission from '@/store/modules/permission';
-import vms from '@/store/modules/vms';
-
 const DEFAULT_PERSIST_KEY = 'answer.store.session';
 const DEFAULT_STRICT = process.env.NODE_ENV !== 'production';
-
-const PERMISSION_GROUP = 'permission/group';
-const PERMISSION_PROJECT = 'permission/project';
-const PERMISSION_PERMISSIONS = 'permission/permissions';
-const VMS_WSD = 'vms/wsd';
 
 export interface SessionStoreOptions {
   key?: string;
@@ -37,8 +28,7 @@ export class SessionStore {
 
     this.store = new Store({
       modules: {
-        permission,
-        vms,
+        // EMPTY.
       },
       strict: strict,
       plugins: [this.persist.plugin],
@@ -63,38 +53,6 @@ export class SessionStore {
 
   private clear(key: string) {
     return this.setter(key, undefined);
-  }
-
-  clearPermissionGroup() {
-    this.clear(PERMISSION_GROUP);
-  }
-
-  get permissionGroup() {
-    return this.getter(PERMISSION_GROUP) as string;
-  }
-
-  set permissionGroup(val: string) {
-    this.setter(PERMISSION_GROUP, val);
-  }
-
-  clearPermissionProject() {
-    this.clear(PERMISSION_PROJECT);
-  }
-
-  get permissionProject() {
-    return this.getter(PERMISSION_PROJECT) as string;
-  }
-
-  set permissionProject(val: string) {
-    this.setter(PERMISSION_PROJECT, val);
-  }
-
-  get permissionPermissions() {
-    return this.getter(PERMISSION_PERMISSIONS) as Array<string>;
-  }
-
-  set permissionPermissions(val: Array<string>) {
-    this.setter(PERMISSION_PERMISSIONS, val);
   }
 }
 
