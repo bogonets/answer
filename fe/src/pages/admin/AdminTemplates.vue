@@ -86,7 +86,7 @@ ko:
 import {Component, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import {TemplateA} from '@/packet/template';
+import {TemplateA} from '@recc/api/dist/packet/template';
 import * as _ from 'lodash';
 
 const ITEMS_PER_PAGE = 15;

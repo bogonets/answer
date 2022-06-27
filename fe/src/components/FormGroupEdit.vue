@@ -117,7 +117,7 @@ import {Component, Prop, Watch, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormGroup, {GroupItem} from '@/components/FormGroup.vue';
-import type {GroupA, UpdateGroupQ} from '@/packet/group';
+import type {GroupA, UpdateGroupQ} from '@recc/api/dist/packet/group';
 import {iso8601ToLocal} from '@/chrono/iso8601';
 import * as _ from 'lodash';
 

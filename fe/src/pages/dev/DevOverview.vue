@@ -37,7 +37,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import CardButton from '@/components/CardButton.vue';
-import {VersionsA} from '@/packet/system';
+import {VersionsA} from '@recc/api/dist/packet/system';
 
 @Component({
   components: {

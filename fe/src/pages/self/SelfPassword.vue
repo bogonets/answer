@@ -108,7 +108,7 @@ import {VForm} from 'vuetify/lib/components/VForm';
 import {VTextField} from 'vuetify/lib/components/VTextField';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {PASSWORD_RULES} from '@/rules';
-import {UpdatePasswordQ} from '@/packet/user';
+import {UpdatePasswordQ} from '@recc/api/dist/packet/user';
 
 @Component({
   components: {

@@ -20,7 +20,7 @@
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import {ProjectA, UpdateProjectQ} from '@/packet/project';
+import {ProjectA, UpdateProjectQ} from '@recc/api/dist/packet/project';
 import FormProjectEdit from '@/components/FormProjectEdit.vue';
 
 @Component({

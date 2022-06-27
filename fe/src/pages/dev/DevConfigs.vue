@@ -80,7 +80,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import ConfigCard from '@/config/ConfigCard.vue';
-import {ConfigA, UpdateConfigValueQ} from '@/packet/config';
+import {ConfigA, UpdateConfigValueQ} from '@recc/api/dist/packet/config';
 
 @Component({
   components: {

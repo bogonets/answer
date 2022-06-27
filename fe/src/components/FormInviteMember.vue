@@ -85,9 +85,9 @@ import VueBase from '@/base/VueBase';
 import {VForm} from 'vuetify/lib/components/VForm';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {USERNAME_RULES} from '@/rules';
-import type {CreateMemberQ} from '@/packet/member';
-import type {RoleA} from '@/packet/role';
-import {ROLE_SLUG_OWNER} from '@/packet/role';
+import type {CreateMemberQ} from '@recc/api/dist/packet/member';
+import type {RoleA} from '@recc/api/dist/packet/role';
+import {ROLE_SLUG_OWNER} from '@recc/api/dist/packet/role';
 import requiredField from '@/rules/required';
 import slugFormat from '@/rules/slug';
 

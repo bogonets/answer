@@ -20,7 +20,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import TableProjects from '@/components/TableProjects.vue';
-import {ProjectA} from '@/packet/project';
+import {ProjectA} from '@recc/api/dist/packet/project';
 
 @Component({
   components: {

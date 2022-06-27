@@ -79,8 +79,8 @@ import VueBase from '@/base/VueBase';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormInviteMember from '@/components/FormInviteMember.vue';
 import TableMembers from '@/components/TableMembers.vue';
-import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
-import type {RoleA} from '@/packet/role';
+import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@recc/api/dist/packet/member';
+import type {RoleA} from '@recc/api/dist/packet/role';
 import {TITLE_CLASS} from '@/styles/title';
 
 @Component({

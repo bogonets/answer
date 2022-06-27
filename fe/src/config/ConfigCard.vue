@@ -95,7 +95,7 @@ import {Component, Prop, Emit, Watch, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {VForm} from 'vuetify/lib/components/VForm';
 import requiredField from '@/rules/required';
-import {ConfigA} from '@/packet/config';
+import {ConfigA} from '@recc/api/dist/packet/config';
 
 type ModeType = '' | 'new' | 'edit';
 

@@ -127,7 +127,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import ContainerControlGroup from '@/components/ContainerControlGroup.vue';
-import type {ContainerA, ControlContainersQ} from '@/packet/container';
+import type {ContainerA, ControlContainersQ} from '@recc/api/dist/packet/container';
 import {
   STATUS_CREATED,
   STATUS_RESTARTING,
@@ -143,7 +143,7 @@ import {
   CONTROL_OPERATOR_PAUSE,
   CONTROL_OPERATOR_RESUME,
   CONTROL_OPERATOR_REMOVE,
-} from '@/packet/container';
+} from '@recc/api/dist/packet/container';
 import {iso8601ToLocalDate} from '@/chrono/iso8601';
 
 const ITEMS_PER_PAGE = 15;

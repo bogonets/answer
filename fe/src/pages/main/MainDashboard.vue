@@ -78,7 +78,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import CardButton from '@/components/CardButton.vue';
-import type {ProjectOverviewA} from '@/packet/project';
+import type {ProjectOverviewA} from '@recc/api/dist/packet/project';
 
 @Component({
   components: {

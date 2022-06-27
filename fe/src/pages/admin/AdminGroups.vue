@@ -18,7 +18,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import TableGroups from '@/components/TableGroups.vue';
-import {GroupA} from '@/packet/group';
+import {GroupA} from '@recc/api/dist/packet/group';
 
 @Component({
   components: {

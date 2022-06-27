@@ -83,7 +83,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import AppBarTitle from '@/components/AppBarTitle.vue';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import type {UserA} from '@/packet/user';
+import type {UserA} from '@recc/api/dist/packet/user';
 import {iso8601ToLocalDate} from '@/chrono/iso8601';
 
 @Component({

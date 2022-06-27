@@ -32,7 +32,7 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import FormUser, {UserItem} from '@/components/FormUser.vue';
-import {SignupQ} from '@/packet/user';
+import {SignupQ} from '@recc/api/dist/packet/user';
 
 @Component({
   components: {

@@ -30,7 +30,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormRole from '@/components/FormRole.vue';
-import {RoleA, CreateRoleQ} from '@/packet/role';
+import {RoleA, CreateRoleQ} from '@recc/api/dist/packet/role';
 
 @Component({
   components: {

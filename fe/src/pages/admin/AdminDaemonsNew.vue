@@ -32,7 +32,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormDaemon from '@/components/FormDaemon.vue';
-import type {DaemonA, CreateDaemonQ} from '@/packet/daemon';
+import type {DaemonA, CreateDaemonQ} from '@recc/api/dist/packet/daemon';
 
 @Component({
   components: {

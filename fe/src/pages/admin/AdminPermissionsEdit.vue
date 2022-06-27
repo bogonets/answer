@@ -125,8 +125,8 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormRole from '@/components/FormRole.vue';
-import type {RoleA, UpdateRoleQ} from '@/packet/role';
-import {ROLE_SLUG_OWNER} from '@/packet/role';
+import type {RoleA, UpdateRoleQ} from '@recc/api/dist/packet/role';
+import {ROLE_SLUG_OWNER} from '@recc/api/dist/packet/role';
 import {iso8601ToLocal} from '@/chrono/iso8601';
 import * as _ from 'lodash';
 

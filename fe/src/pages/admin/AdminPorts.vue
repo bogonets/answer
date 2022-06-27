@@ -120,7 +120,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
-import type {PortA} from '@/packet/port';
+import type {PortA} from '@recc/api/dist/packet/port';
 
 @Component({
   components: {

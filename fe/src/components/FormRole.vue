@@ -181,7 +181,7 @@ import {VSelectItem} from '@/hints/vuetify';
 import {PERMISSION_SLUG_RULES} from '@/rules';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {CAPTION_CLASS} from '@/styles/caption';
-import type {RoleA} from '@/packet/role';
+import type {RoleA} from '@recc/api/dist/packet/role';
 import {getPermissionName} from '@/translations';
 import {EmptyException} from '@/exceptions';
 

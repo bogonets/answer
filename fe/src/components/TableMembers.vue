@@ -110,9 +110,9 @@ ko:
 <script lang="ts">
 import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import type {MemberA, UpdateMemberQ} from '@/packet/member';
-import type {RoleA} from '@/packet/role';
-import {ROLE_SLUG_OWNER} from '@/packet/role';
+import type {MemberA, UpdateMemberQ} from '@recc/api/dist/packet/member';
+import type {RoleA} from '@recc/api/dist/packet/role';
+import {ROLE_SLUG_OWNER} from '@recc/api/dist/packet/role';
 
 @Component
 export default class TableMembers extends VueBase {

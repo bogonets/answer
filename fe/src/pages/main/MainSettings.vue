@@ -23,7 +23,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import FormProjectEdit from '@/components/FormProjectEdit.vue';
-import {ProjectA, UpdateProjectQ} from '@/packet/project';
+import {ProjectA, UpdateProjectQ} from '@recc/api/dist/packet/project';
 
 @Component({
   components: {

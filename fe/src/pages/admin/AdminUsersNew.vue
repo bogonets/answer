@@ -29,7 +29,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormUser, {UserItem} from '@/components/FormUser.vue';
-import {SignupQ} from '@/packet/user';
+import {SignupQ} from '@recc/api/dist/packet/user';
 
 @Component({
   components: {

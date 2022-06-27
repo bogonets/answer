@@ -223,7 +223,7 @@ import requiredField from '@/rules/required';
 import {DAEMON_SLUG_RULES} from '@/rules';
 import {SUBTITLE_CLASS} from '@/styles/subtitle';
 import {CAPTION_CLASS} from '@/styles/caption';
-import type {DaemonA} from '@/packet/daemon';
+import type {DaemonA} from '@recc/api/dist/packet/daemon';
 import {InaccessibleAreaException} from '@/exceptions';
 
 @Component({

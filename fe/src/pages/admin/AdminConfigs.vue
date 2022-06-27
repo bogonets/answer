@@ -266,7 +266,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
-import {ConfigA, UpdateConfigValueQ} from '@/packet/config';
+import {ConfigA, UpdateConfigValueQ} from '@recc/api/dist/packet/config';
 
 export function findBoolean(items: Array<ConfigA>, key: string, defaultValue = false) {
   const config = items.find(x => x.key === key);

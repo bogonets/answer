@@ -138,8 +138,8 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import type {DaemonA} from '@/packet/daemon';
-import {getStateName, getStateColor} from '@/packet/daemon';
+import type {DaemonA} from '@recc/api/dist/packet/daemon';
+import {getStateName, getStateColor} from '@recc/api/dist/packet/daemon';
 
 @Component({
   components: {

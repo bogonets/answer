@@ -180,14 +180,14 @@ import {Component, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import type {PluginA, PluginMenuA, PluginMenusA} from '@recc/api/dist/packet/plugin';
 import {
-  PERMISSION_SLUG_RECC_DOMAIN_FILE_VIEW,
-  PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_VIEW,
-  PERMISSION_SLUG_RECC_DOMAIN_TABLE_VIEW,
-  PERMISSION_SLUG_RECC_DOMAIN_TASK_VIEW,
-  PERMISSION_SLUG_RECC_DOMAIN_VP_VIEW,
-  PERMISSION_SLUG_RECC_DOMAIN_MEMBER_VIEW,
-  PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
-} from '@/packet/permission';
+  PERM_SLUG_RECC_DOMAIN_FILE_VIEW,
+  PERM_SLUG_RECC_DOMAIN_LAYOUT_VIEW,
+  PERM_SLUG_RECC_DOMAIN_TABLE_VIEW,
+  PERM_SLUG_RECC_DOMAIN_TASK_VIEW,
+  PERM_SLUG_RECC_DOMAIN_VP_VIEW,
+  PERM_SLUG_RECC_DOMAIN_MEMBER_VIEW,
+  PERM_SLUG_RECC_DOMAIN_SETTING_VIEW,
+} from '@recc/api/dist/packet/permission';
 import mainNames from '@/router/names/main';
 
 function visiblePluginMenus(plugin: PluginA, permissions: Array<string>) {
@@ -286,31 +286,31 @@ export default class NaviMain extends VueBase {
   }
 
   get showLayouts() {
-    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_LAYOUT_VIEW);
+    return this.hasPermission(PERM_SLUG_RECC_DOMAIN_LAYOUT_VIEW);
   }
 
   get showFiles() {
-    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_FILE_VIEW);
+    return this.hasPermission(PERM_SLUG_RECC_DOMAIN_FILE_VIEW);
   }
 
   get showTables() {
-    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_TABLE_VIEW);
+    return this.hasPermission(PERM_SLUG_RECC_DOMAIN_TABLE_VIEW);
   }
 
   get showTasks() {
-    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_TASK_VIEW);
+    return this.hasPermission(PERM_SLUG_RECC_DOMAIN_TASK_VIEW);
   }
 
   get showVp() {
-    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_VP_VIEW);
+    return this.hasPermission(PERM_SLUG_RECC_DOMAIN_VP_VIEW);
   }
 
   get showMembers() {
-    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_MEMBER_VIEW);
+    return this.hasPermission(PERM_SLUG_RECC_DOMAIN_MEMBER_VIEW);
   }
 
   get showSettings() {
-    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW);
+    return this.hasPermission(PERM_SLUG_RECC_DOMAIN_SETTING_VIEW);
   }
 
   get pluginsMenusLength() {

@@ -31,7 +31,7 @@ import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormGroup, {GroupItem} from '@/components/FormGroup.vue';
-import {CreateGroupQ} from '@/packet/group';
+import {CreateGroupQ} from '@recc/api/dist/packet/group';
 
 const REQUEST_TYPE_SELF = 'self';
 const REQUEST_TYPE_ADMIN = 'admin';

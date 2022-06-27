@@ -115,7 +115,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormUser, {UserItem} from '@/components/FormUser.vue';
-import type {UserA, UpdateUserQ} from '@/packet/user';
+import type {UserA, UpdateUserQ} from '@recc/api/dist/packet/user';
 import {iso8601ToLocal} from '@/chrono/iso8601';
 
 @Component({

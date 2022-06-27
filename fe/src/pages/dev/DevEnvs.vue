@@ -56,7 +56,7 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
-import type {EnvironmentA} from '@/packet/environment';
+import type {EnvironmentA} from '@recc/api/dist/packet/environment';
 
 @Component({
   components: {

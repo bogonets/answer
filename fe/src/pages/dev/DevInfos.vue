@@ -173,7 +173,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import CardInfoNew from '@/components/CardInfoNew.vue';
 import {isReccKey} from '@/rules/recc-info';
-import type {CreateInfoQ, UpdateInfoQ} from '@/packet/info';
+import type {CreateInfoQ, UpdateInfoQ} from '@recc/api/dist/packet/info';
 import {iso8601ToLocalDate} from '@/chrono/iso8601';
 
 @Component({

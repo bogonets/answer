@@ -115,8 +115,8 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import ListLanguages from '@/components/ListLanguages.vue';
-import type {UserExtraA} from '@/packet/user';
-import {createEmptyUserExtraA} from '@/packet/user';
+import type {UserExtraA} from '@recc/api/dist/packet/user';
+import {newUserExtraA} from '@recc/api/dist/packet/user';
 import momentTimezone from 'moment-timezone';
 import moment from 'moment-timezone';
 
@@ -143,7 +143,7 @@ export default class SelfAppearance extends VueBase {
   private readonly timezoneNames = momentTimezone.tz.names();
 
   loading = false;
-  extra = createEmptyUserExtraA();
+  extra = newUserExtraA();
 
   created() {
     this.extra = this.getInitExtra();

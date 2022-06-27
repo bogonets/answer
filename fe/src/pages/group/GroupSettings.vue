@@ -24,7 +24,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import FormGroupEdit from '@/components/FormGroupEdit.vue';
-import {GroupA, UpdateGroupQ} from '@/packet/group';
+import {GroupA, UpdateGroupQ} from '@recc/api/dist/packet/group';
 
 @Component({
   components: {

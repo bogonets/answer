@@ -84,9 +84,9 @@ ko:
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import {
-  PERMISSION_SLUG_RECC_DOMAIN_MEMBER_VIEW,
-  PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW,
-} from '@/packet/permission';
+  PERM_SLUG_RECC_DOMAIN_MEMBER_VIEW,
+  PERM_SLUG_RECC_DOMAIN_SETTING_VIEW,
+} from '@recc/api/dist/packet/permission';
 
 @Component
 export default class MainAccount extends VueBase {
@@ -115,11 +115,11 @@ export default class MainAccount extends VueBase {
   }
 
   get showMembers() {
-    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_MEMBER_VIEW);
+    return this.hasPermission(PERM_SLUG_RECC_DOMAIN_MEMBER_VIEW);
   }
 
   get showSettings() {
-    return this.hasPermission(PERMISSION_SLUG_RECC_DOMAIN_SETTING_VIEW);
+    return this.hasPermission(PERM_SLUG_RECC_DOMAIN_SETTING_VIEW);
   }
 
   created() {

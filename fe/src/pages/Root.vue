@@ -48,9 +48,9 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import TableGroups from '@/components/TableGroups.vue';
 import TableProjects from '@/components/TableProjects.vue';
-import type {GroupA} from '@/packet/group';
-import type {ProjectA} from '@/packet/project';
-import {OEMS_TO_HIDE_ROOT_PROJECT} from '@/packet/oem';
+import type {GroupA} from '@recc/api/dist/packet/group';
+import type {ProjectA} from '@recc/api/dist/packet/project';
+import {OEMS_TO_HIDE_ROOT_PROJECT} from '@recc/api/dist/packet/oem';
 
 @Component({
   components: {

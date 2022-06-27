@@ -178,7 +178,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormDaemon from '@/components/FormDaemon.vue';
-import type {DaemonA, UpdateDaemonQ} from '@/packet/daemon';
+import type {DaemonA, UpdateDaemonQ} from '@recc/api/dist/packet/daemon';
 import {iso8601ToLocal} from '@/chrono/iso8601';
 import * as _ from 'lodash';
 import {
@@ -186,7 +186,7 @@ import {
   getStateColor,
   getStateName,
   isStateRunning,
-} from '@/packet/daemon';
+} from '@recc/api/dist/packet/daemon';
 
 @Component({
   components: {

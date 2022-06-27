@@ -1,7 +1,7 @@
 import Component, {mixins} from 'vue-class-component';
 import Router from '@/base/router/Router';
 import mainNames from '@/router/names/main';
-import {OEM_AIRJOY} from '@/packet/oem';
+import {OEM_AIRJOY} from '@recc/api/dist/packet/oem';
 
 @Component
 export default class RouterMain extends Router {

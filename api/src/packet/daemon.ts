@@ -1,23 +1,23 @@
 export enum DaemonState {
   Unknown = 0,
   Unregistered = 1,
-  EnvNotFound = 2,
-  EnvCreating = 3,
-  Down = 4,
-  Running = 5,
-  Sleeping = 6,
-  DiskSleep = 7,
-  Stopped = 8,
-  TracingStop = 9,
-  Zombie = 10,
-  Dead = 11,
-  WakeKill = 12,
-  Waking = 13,
-  Idle = 14,
-  Locked = 15,
-  Waiting = 16,
-  Suspended = 17,
-  Parked = 18,
+  Down = 2,
+  NoSuchProcess = 3,
+
+  Running = 101,
+  Sleeping = 102,
+  DiskSleep = 103,
+  Stopped = 104,
+  TracingStop = 105,
+  Zombie = 106,
+  Dead = 107,
+  WakeKill = 108,
+  Waking = 109,
+  Idle = 110,
+  Locked = 111,
+  Waiting = 112,
+  Suspended = 113,
+  Parked = 114,
 }
 
 export function getStateName(state: DaemonState) {
@@ -26,12 +26,10 @@ export function getStateName(state: DaemonState) {
       return 'Unknown';
     case DaemonState.Unregistered:
       return 'Unregistered';
-    case DaemonState.EnvNotFound:
-      return 'EnvNotFound';
-    case DaemonState.EnvCreating:
-      return 'EnvCreating';
     case DaemonState.Down:
       return 'Down';
+    case DaemonState.NoSuchProcess:
+      return 'NoSuchProcess';
     case DaemonState.Running:
       return 'Running';
     case DaemonState.Sleeping:
@@ -70,9 +68,8 @@ export function getStateColor(state: DaemonState) {
     case DaemonState.Unknown:
       return 'red';
     case DaemonState.Unregistered:
-    case DaemonState.EnvNotFound:
-    case DaemonState.EnvCreating:
     case DaemonState.Down:
+    case DaemonState.NoSuchProcess:
       return 'grey';
     case DaemonState.Running:
       return 'green';
@@ -101,9 +98,8 @@ export function isStateRunning(state: DaemonState) {
   switch (state) {
     case DaemonState.Unknown:
     case DaemonState.Unregistered:
-    case DaemonState.EnvNotFound:
-    case DaemonState.EnvCreating:
     case DaemonState.Down:
+    case DaemonState.NoSuchProcess:
       return false;
     case DaemonState.Running:
     case DaemonState.Sleeping:

@@ -33,7 +33,7 @@ import {Component, Prop, Emit} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import LeftTitle from '@/components/LeftTitle.vue';
 import FormProject, {ProjectItem} from '@/components/FormProject.vue';
-import {CreateProjectQ} from '@/packet/project';
+import {CreateProjectQ} from '@recc/api/dist/packet/project';
 
 @Component({
   components: {

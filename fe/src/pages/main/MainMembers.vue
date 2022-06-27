@@ -25,8 +25,8 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import FormInviteMemberEdit from '@/components/FormInviteMemberEdit.vue';
-import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@/packet/member';
-import type {RoleA} from '@/packet/role';
+import type {MemberA, CreateMemberQ, UpdateMemberQ} from '@recc/api/dist/packet/member';
+import type {RoleA} from '@recc/api/dist/packet/role';
 
 @Component({
   components: {

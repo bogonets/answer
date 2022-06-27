@@ -17,7 +17,7 @@ import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import FormProjectNew from '@/components/FormProjectNew.vue';
-import {CreateProjectQ} from '@/packet/project';
+import {CreateProjectQ} from '@recc/api/dist/packet/project';
 
 @Component({
   components: {
