@@ -11,11 +11,11 @@ After=\
 Environment=RECC_VERBOSE=0
 Environment=RECC_DEVELOPER=false
 Environment=RECC_LOG_LEVEL=INFO
-Environment=RECC_CONFIG=/usr/local/recc/home/config.yml
-Environment=RECC_LOCAL_STORAGE=/usr/local/recc/home/storage
+Environment=RECC_CONFIG=/usr/local/recc/config.yml
+Environment=RECC_LOCAL_STORAGE=/usr/local/recc/storage
 Restart=always
-WorkingDirectory=/usr/local/recc/home
-ExecStart=/usr/local/recc/python/bin/python3.8 -OO -m recc core
+WorkingDirectory=/usr/local/recc/working
+ExecStart=/usr/local/recc/python/bin/python3.9 -OO -m recc core
 LogNamespace=recc
 TimeoutSec=300
 

@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-if [[ $(id -u) -ne 0 ]]; then
-    echo 'Please run as root.'
-    exit 1
-fi
-
 USAGE="
 Usage: $0 [options]
 
@@ -40,11 +35,10 @@ RECC_PYTHON_SRC=$RECC_ROOT_DIR/Python-${PYTHON_VERSION}
 RECC_PYTHON_FILE=$RECC_ROOT_DIR/$PYTHON_FILE
 RECC_PYTHON_EXE=$RECC_PYTHON_BIN/python3
 RECC_PYTHON_PIP=$RECC_PYTHON_BIN/pip3
-RECC_HOME_DIR=$RECC_ROOT_DIR/home
+RECC_WORKING_DIR=$RECC_ROOT_DIR/home
 
-RECC_STORAGE_DIR=$RECC_HOME_DIR/storage
-RECC_CONFIG_PATH=$RECC_HOME_DIR/config.yml
-RECC_LOGGING_PATH=$RECC_HOME_DIR/logging.yml
+RECC_STORAGE_DIR=$RECC_ROOT_DIR/storage
+RECC_CONFIG_PATH=$RECC_ROOT_DIR/config.yml
 
 RECC_SERVICE_SRC="$SCRIPT_DIR/recc.service"
 RECC_SERVICE_DEST="/etc/systemd/system/recc.service"
@@ -74,11 +68,13 @@ function print_verbose
 
 function print_message
 {
+    # shellcheck disable=SC2145
     echo -e "\033[32m$@\033[0m"
 }
 
 function print_error
 {
+    # shellcheck disable=SC2145
     echo -e "\033[31m$@\033[0m" 1>&2
 }
 
@@ -103,7 +99,7 @@ function check_dir_or_create_chown
     else
         print_verbose "Create directory: $dir"
         mkdir -p "$dir"
-        chown $user:$group "$dir"
+        chown "$user:$group" "$dir"
     fi
 }
 
@@ -111,20 +107,24 @@ function exists_program_or_exit
 {
     local name=$1
     local var_name=$2
-    local which_path=$(which $name 2> /dev/null)
+
+    local which_path
+    which_path=$(which "$name" 2> /dev/null)
 
     if [[ ! -x "$which_path" ]]; then
         print_error "Not found $name"
         exit 1
     fi
-    if [[ ! -z $var_name ]]; then
+    if [[ -n $var_name ]]; then
         eval "$var_name=$which_path"
     fi
 }
 
 function get_core_count
 {
-    local platform=$(uname -s)
+    local platform
+    platform=$(uname -s)
+
     case "$platform" in
     Darwin)
         exists_program_or_exit sysctl
@@ -139,19 +139,24 @@ function get_core_count
 
 function get_build_thread_count
 {
-    local core_count=$(get_core_count)
     local thread_count=1
+    local core_count
+    core_count=$(get_core_count)
+
     if [[ $core_count -ge 1 ]]; then
-        let "thread_count = $core_count * 2"
+        thread_count=$(( core_count * 2 ))
+    else
+        thread_count=1
     fi
-    echo $thread_count
+    echo "$thread_count"
 }
 
 function get_datetime
 {
     local prefix=$1
     local suffix=$2
-    local datetime=$(date '+%Y%m%d_%H%M%S')
+    local datetime
+    datetime=$(date '+%Y%m%d_%H%M%S')
     echo "$prefix$datetime$suffix"
 }
 
@@ -193,7 +198,9 @@ function checksum_or_exit
 {
     local file_path=$1
     local checksum=$2
-    local result=$(get_file_checksum "$file_path")
+    local result
+    result=$(get_file_checksum "$file_path")
+
     if [[ "$result" != "$checksum" ]]; then
         print_error "Checksum error: actual(${result}) vs expected(${checksum})"
         exit 1
@@ -237,8 +244,10 @@ function extract
         mkdir -p "$output"
     fi
 
-    local ext=$(get_file_extension "$file")
-    local ext_lower=$(to_lower "$ext")
+    local ext
+    local ext_lower
+    ext=$(get_file_extension "$file")
+    ext_lower=$(to_lower "$ext")
 
     case $ext_lower in
     .zip)
@@ -274,10 +283,7 @@ function git_sync
     local dest=$2
     exists_program_or_exit git
     if [[ -d "$dest" ]]; then
-        pushd "$PWD" > /dev/null
-        cd "$dest"
-        git pull
-        popd > /dev/null
+        git --work-tree="$dest" --git-dir="$dest/.git" pull
     else
         git clone --depth 1 "$url" "$dest"
     fi
@@ -301,15 +307,17 @@ function checked_download
 
     download "$file" "$url" "$@"
 
-    if [[ ! -z "$md5_checksum" ]]; then
+    if [[ -n "$md5_checksum" ]]; then
         checksum_or_exit "$file" "$md5_checksum"
     fi
 }
 
+# shellcheck disable=SC2120
 function check_code_or_exit
 {
     local code=$?
     local msg=$1
+
     if [[ $code -ne 0 ]]; then
         print_error "An error has been detected (exit=$code,file=${BASH_SOURCE[0]})"
         if [[ -n $msg ]]; then
@@ -322,7 +330,8 @@ function check_code_or_exit
 function test_installed_dpkg
 {
     exists_program_or_exit sed
-    local result=`dpkg --get-selections $1 | sed -E 's/^([^\t ]+)[[:space:]]+([^\t ]+)$/\2/g'`
+    local result
+    result=$(dpkg --get-selections "$1" | sed -E 's/^([^\t ]+)[[:space:]]+([^\t ]+)$/\2/g')
     if [[ "$result" == "install" ]]; then
         echo 1
     else
@@ -345,11 +354,14 @@ function install_python
         exit 1
     fi
 
-    pushd "$PWD" > /dev/null
-    cd "$RECC_PYTHON_SRC"
+    pushd "$PWD" > /dev/null || exit 1
+    cd "$RECC_PYTHON_SRC" || exit 1
 
-    LDFLAGS="-L/opt/X11/lib -L$RECC_PYTHON_LIB -Wl,-rpath=$RECC_PYTHON_LIB" \
-    CPPFLAGS="-I/opt/X11/include -I$RECC_PYTHON_INC" \
+    LDFLAGS="-L/opt/X11/lib -L$RECC_PYTHON_LIB -Wl,-rpath=$RECC_PYTHON_LIB"
+    CPPFLAGS="-I/opt/X11/include -I$RECC_PYTHON_INC"
+    export LDFLAGS
+    export CPPFLAGS
+
     ./configure \
         --prefix=$RECC_PYTHON_DIR \
         --libdir=$RECC_PYTHON_LIB \
@@ -358,10 +370,13 @@ function install_python
         --with-lto
     check_code_or_exit
 
-    make -s -j$(get_build_thread_count) install
+    local thread_count
+    thread_count=$(get_build_thread_count)
+
+    make -s "-j$thread_count" install
     check_code_or_exit
 
-    popd > /dev/null
+    popd > /dev/null || exit 1
 }
 
 function install_debian_dependencies
@@ -372,14 +387,18 @@ function install_debian_dependencies
 
 function test_and_install_debian_dependencies
 {
-    local packages="$@"
+    local packages
+    packages=("$@")
+
+    local prev_checksum
+    local next_checksum
 
     if [[ -f "$RECC_DEPENDENCIES" ]]; then
-        local prev_checksum=$(get_file_checksum "$RECC_DEPENDENCIES")
-        local next_checksum=$(get_variable_checksum "$packages")
+        prev_checksum=$(get_file_checksum "$RECC_DEPENDENCIES")
+        next_checksum=$(get_variable_checksum "${packages[@]}")
 
-        print_verbose "Dependencies checksum prev: "$prev_checksum
-        print_verbose "Dependencies checksum next: "$next_checksum
+        print_verbose "Dependencies checksum prev: $prev_checksum"
+        print_verbose "Dependencies checksum next: $next_checksum"
 
         if [[ "$prev_checksum" == "$next_checksum" ]]; then
             print_verbose "Dependencies checksum is equals"
@@ -387,10 +406,10 @@ function test_and_install_debian_dependencies
         fi
     fi
 
-    install_debian_dependencies $packages
+    install_debian_dependencies "${packages[@]}"
     check_code_or_exit
 
-    echo "$packages" > "$RECC_DEPENDENCIES"
+    echo "${packages[@]}" > "$RECC_DEPENDENCIES"
 }
 
 function install_user_and_group
@@ -398,16 +417,19 @@ function install_user_and_group
     exists_program_or_exit awk
     exists_program_or_exit grep
 
-    local exists_user=$(cat /etc/passwd | awk -F: '{print $1}' | grep recc)
+    local exists_user
+    exists_user=$(awk -F: '{print $1}' /etc/passwd | grep recc)
+
     if [[ -n $exists_user ]]; then
         print_verbose "Exists '$RECC_USER' user"
     else
         exists_program_or_exit useradd
         print_verbose "Create '$RECC_USER' user"
-        useradd -l -M -N -d "$RECC_HOME_DIR" -s /bin/bash "$RECC_USER"
+        useradd -l -M -N -d "$RECC_WORKING_DIR" -s /bin/bash "$RECC_USER"
     fi
 
-    local exists_group=$(cat /etc/group | awk -F: '{print $1}' | grep recc)
+    local exists_group
+    exists_group=$(awk -F: '{print $1}' /etc/group | grep recc)
     if [[ -n $exists_group ]]; then
         print_verbose "Exists '$RECC_GROUP' group"
     else
@@ -420,7 +442,7 @@ function install_user_and_group
         usermod -aG docker "$RECC_USER"
     fi
 
-    check_dir_or_create_chown "$RECC_HOME_DIR" "$RECC_USER" "$RECC_GROUP"
+    check_dir_or_create_chown "$RECC_WORKING_DIR" "$RECC_USER" "$RECC_GROUP"
     check_dir_or_create_chown "$RECC_STORAGE_DIR" "$RECC_USER" "$RECC_GROUP"
 }
 
@@ -464,14 +486,15 @@ function test_and_copy_recc_file
 function install_recc
 {
     exists_program_or_exit grep
-    local exists_recc=$("$RECC_PYTHON_PIP" list | grep recc | sed 's/  */-/g')
+    local exists_recc
+    exists_recc=$("$RECC_PYTHON_PIP" list | grep recc | sed 's/  */-/g')
     if [[ -n "$exists_recc" ]]; then
         print_verbose "Exists $exists_recc"
         exit 0
     fi
 
-    if [[ ! -d "$RECC_HOME_DIR" ]]; then
-        print_error "Not exists home directory: $RECC_HOME_DIR"
+    if [[ ! -d "$RECC_WORKING_DIR" ]]; then
+        print_error "Not exists home directory: $RECC_WORKING_DIR"
         exit 1
     fi
 
@@ -492,8 +515,8 @@ function install_recc
     "$RECC_PYTHON_EXE" "$SOURCE_CORE_DIR/setup.py" install
 
     print_message "Copy other files ..."
-    test_and_copy_recc_file "$SOURCE_CORE_DIR/logging.yml" "$RECC_HOME_DIR/logging.yml"
-    test_and_copy_recc_file "$SOURCE_CORE_DIR/config.yml" "$RECC_HOME_DIR/config.yml"
+    test_and_copy_recc_file "$SOURCE_CORE_DIR/logging.yml" "$RECC_WORKING_DIR/logging.yml"
+    test_and_copy_recc_file "$SOURCE_CORE_DIR/config.yml" "$RECC_WORKING_DIR/config.yml"
     test_and_copy "$RECC_CTL_SRC" "$RECC_CTL_DEST"
     test_and_copy "$RECC_SERVICE_SRC" "$RECC_SERVICE_DEST"
     test_and_copy "$RECC_JOURNAL_SRC" "$RECC_JOURNAL_DEST"
@@ -534,8 +557,8 @@ while [[ -n $1 ]]; do
 done
 
 if [[ $UNINSTALL_FLAG -eq 1 ]]; then
-    read -p "Remove all installed files? (y/n)" USER_ANSWER
-    case "$USER_ANSWER" in
+    read -r -p "Remove all installed files? (y/n) " YN
+    case "$YN" in
     y|Y)
       rm -rf "$RECC_ROOT_DIR"
       rm "$RECC_SERVICE_DEST"
@@ -546,6 +569,11 @@ if [[ $UNINSTALL_FLAG -eq 1 ]]; then
       exit 1
       ;;
     esac
+fi
+
+if [[ $(id -u) -ne 0 ]]; then
+    print_error "Please run as root."
+    exit 1
 fi
 
 check_dir_or_create "$RECC_ROOT_DIR"
