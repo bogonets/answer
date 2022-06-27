@@ -22,6 +22,10 @@ Reference:
  - Func: grpc_resolve_unix_domain_address
 """
 
+DNS_URI_PREFIX = "dns:"
+"""Prefix of DNS.
+"""
+
 UNIX_URI_PREFIX = "unix:"
 """Prefix of UDS(Unix Domain Socket).
 

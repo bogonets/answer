@@ -131,6 +131,24 @@ ARG_DAEMON_PLUGIN_PREFIX = Argument(
     metavar="prefix",
     help="The prefix of the package name used to search for daemon plugins.",
 )
+ARG_DAEMON_PLUGIN_ALLOW = Argument(
+    key="--daemon-plugin-allow",
+    last_injection_value=list(),
+    cls=List[str],
+    delimiter=":",
+    metavar="regex",
+    action="append",
+    help="Allow-list of found daemon plugins.",
+)
+ARG_DAEMON_PLUGIN_DENY = Argument(
+    key="--daemon-plugin-deny",
+    last_injection_value=list(),
+    cls=List[str],
+    delimiter=":",
+    metavar="regex",
+    action="append",
+    help="Deny-list of found daemon plugins.",
+)
 
 ARG_PUBLIC_SIGNUP = Argument(
     key="--public-signup",
@@ -168,6 +186,8 @@ CORE_ARGS = (
     ARG_CORE_PLUGIN_ALLOW,
     ARG_CORE_PLUGIN_DENY,
     ARG_DAEMON_PLUGIN_PREFIX,
+    ARG_DAEMON_PLUGIN_ALLOW,
+    ARG_DAEMON_PLUGIN_DENY,
     ARG_PUBLIC_SIGNUP,
     ARG_ACCESS_TOKEN_DURATION,
     ARG_REFRESH_TOKEN_DURATION,
@@ -194,6 +214,8 @@ class CoreConfig(GlobalConfig):
     core_plugin_allow: List[str]
     core_plugin_deny: List[str]
     daemon_plugin_prefix: str
+    daemon_plugin_allow: List[str]
+    daemon_plugin_deny: List[str]
 
     public_signup: bool
     access_token_duration: str

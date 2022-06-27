@@ -245,7 +245,12 @@ class Context(
 
     def _init_daemons(self) -> None:
         assert self._local_storage
-        self._daemons = DaemonManager(self._local_storage.daemon_work)
+        self._daemons = DaemonManager(
+            prefix=self._config.daemon_plugin_prefix,
+            working_root_dir=self._local_storage.daemon_work,
+            denies=self._config.daemon_plugin_deny,
+            allows=self._config.daemon_plugin_allow,
+        )
         logger.info("Created daemon-manager")
 
     @classmethod
@@ -432,6 +437,21 @@ class Context(
                     await self.add_permission(permission)
                     logger.info(f"Add `{key}` core-plugin permission: {permission}")
 
+    async def open_enabled_daemons(self) -> None:
+        daemons = await self._database.select_daemons()
+        for daemon in daemons:
+            if not daemon.enable:
+                logger.debug(f"Daemon<{daemon.slug}> Skipped opening")
+                continue
+
+            logger.debug(f"Daemon<{daemon.slug}> Opening ...")
+            try:
+                await self._daemons.run(daemon.slug, daemon.plugin, daemon.address)
+            except BaseException as e:
+                logger.error(f"Daemon<{daemon.slug}> Open failed: {e}")
+            else:
+                logger.info(f"Daemon<{daemon.slug}> Opened")
+
     async def open(self) -> None:
         await self._test_recc_subprocess()
 
@@ -482,26 +502,20 @@ class Context(
         await self._tasks.open()
         logger.info("Opened task-manager")
 
-        # await self._daemons.open(
-        #     self._local_storage.daemon,
-        #     self.database,
-        #     self._loop,
-        # )
-        # logger.info("Opened daemon-manager")
-
-        await self.update_core_plugins_permissions()
-        await self._plugins.open()
-        logger.info("Opened core-plugins")
-
         await self._after_open()
         logger.info("The context has been opened")
 
     async def _after_open(self) -> None:
-        pass
+        await self.update_core_plugins_permissions()
+        await self._plugins.open()
+        logger.info("Opened core-plugins")
+
+        await self.open_enabled_daemons()
+        logger.info("Opened daemon-manager")
 
     async def _before_close(self) -> None:
-        # await self._daemons.close()
-        # logger.info("Daemon-manager de-initialization is complete")
+        await self._daemons.close()
+        logger.info("Closed daemon-manager")
 
         if self.container.is_open() and self.is_guest_mode():
             await self.disconnect_global_network()

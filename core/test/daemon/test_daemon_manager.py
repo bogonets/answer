@@ -14,6 +14,7 @@ class DaemonManagerTestCase(PluginTestCase):
     async def _start_server(self):
         self.assertTrue(os.path.isdir(self.working_temp.name))
 
+        prefix = "recc_daemon_test_"
         module1 = self.recc_daemon_test_router
         module2 = self.recc_daemon_test_router
         slug1 = "daemon1"
@@ -26,6 +27,7 @@ class DaemonManagerTestCase(PluginTestCase):
         address2 = f"localhost:{port2}"
 
         self.manager = DaemonManager(
+            prefix=prefix,
             working_root_dir=self.working_temp.name,
             packages_dirs=[self.plugins_dir],
         )

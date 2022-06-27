@@ -4,7 +4,8 @@ import os
 from abc import ABCMeta, abstractmethod
 from asyncio import AbstractEventLoop, gather
 from logging import INFO, WARNING, Logger, getLogger
-from typing import Dict, Iterable, Optional
+from re import Pattern
+from typing import Dict, Iterable, Optional, Sequence, Union
 
 from overrides import overrides
 
@@ -17,6 +18,7 @@ from recc.filesystem.permission import (
 )
 from recc.logging.logging import LOGGER_NAME_RECC_DAEMON
 from recc.logging.logging import recc_daemon_logger as logger
+from recc.package.package_utils import filter_module_names
 
 
 class _RunnerCallback(DaemonRunnerCallbacks):
@@ -54,6 +56,7 @@ class DaemonManagerEvents(metaclass=ABCMeta):
 class DaemonManager(DaemonManagerEvents):
     def __init__(
         self,
+        prefix: str,
         working_root_dir: str,
         enable_default_logging=True,
         logging_encoding="utf-8",
@@ -65,9 +68,16 @@ class DaemonManager(DaemonManagerEvents):
         connection_max_attempts=5,
         connection_heartbeat_timeout=5.0,
         loop: Optional[AbstractEventLoop] = None,
+        denies: Optional[Sequence[Union[str, Pattern]]] = None,
+        allows: Optional[Sequence[Union[str, Pattern]]] = None,
     ):
         test_writable_directory(working_root_dir)
 
+        self._modules = filter_module_names(
+            prefix=prefix,
+            denies=denies,
+            allows=allows,
+        )
         self._working_root_dir = working_root_dir
         self._enable_default_logging = enable_default_logging
         self._logging_encoding = logging_encoding
@@ -82,6 +92,13 @@ class DaemonManager(DaemonManagerEvents):
         self._daemons: Dict[str, DaemonRunner] = dict()
         self._zombies: Dict[str, DaemonRunner] = dict()
         self._loggers: Dict[str, Logger] = dict()
+
+        logger.debug(f"Daemon manager working root: '{working_root_dir}'")
+        logger.debug(f"Daemon manager packages dirs: {packages_dirs}")
+        logger.debug(f"Daemon plugin prefix: '{prefix}'")
+        logger.debug(f"Daemon plugin denies: {denies}")
+        logger.debug(f"Daemon plugin allows: {allows}")
+        logger.debug(f"Found the daemon plugins: {self._modules}")
 
     def __len__(self) -> int:
         return len(self._daemons)
@@ -109,6 +126,8 @@ class DaemonManager(DaemonManagerEvents):
 
         if slug in self._daemons:
             raise KeyError(f"The `{slug}` daemon already exists")
+        if module not in self._modules:
+            raise KeyError(f"Not found module name: {module}")
 
         working_dir = os.path.join(self._working_root_dir, slug)
         prepare_writable_directory(working_dir)
@@ -200,17 +219,15 @@ class DaemonManager(DaemonManagerEvents):
     def on_stdout(self, slug: str, data: bytes) -> None:
         if not self._enable_default_logging:
             return
-        message = str(data, encoding=self._logging_encoding)
+        message = str(data, encoding=self._logging_encoding).rstrip()
         self._loggers[slug].log(self._stdout_level, message)
-        logger.log(self._stdout_level, message)
 
     @overrides
     def on_stderr(self, slug: str, data: bytes) -> None:
         if not self._enable_default_logging:
             return
-        message = str(data, encoding=self._logging_encoding)
+        message = str(data, encoding=self._logging_encoding).rstrip()
         self._loggers[slug].log(self._stderr_level, message)
-        logger.log(self._stderr_level, message)
 
     @overrides
     async def on_exit(self, slug: str, code: int) -> None:
@@ -218,6 +235,8 @@ class DaemonManager(DaemonManagerEvents):
             return
 
         if code == 0:
-            logger.info(f"The `{slug}` daemon exited normally")
+            message = f"The `{slug}` daemon exited normally"
+            self._loggers[slug].log(self._stdout_level, message)
         else:
-            logger.warning(f"The `{slug}` daemon exited abnormally {code}")
+            message = f"The `{slug}` daemon exited abnormally {code}"
+            self._loggers[slug].log(self._stderr_level, message)

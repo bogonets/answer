@@ -3,7 +3,7 @@
 import sys
 from asyncio import run as asyncio_run
 from asyncio import sleep
-from typing import List, Mapping, Optional
+from typing import Final, List, Mapping, Optional
 
 import grpc
 from grpc.aio import ServicerContext
@@ -43,9 +43,12 @@ from recc.variables.rpc import (
     DEFAULT_GRPC_OPTIONS,
     DEFAULT_HEARTBEAT_TIMEOUT,
     DEFAULT_PICKLE_ENCODING,
+    DNS_URI_PREFIX,
     REGISTER_ANSWER_KEY_MIN_SM_BYTE,
     REGISTER_ANSWER_KEY_MIN_SM_SIZE,
 )
+
+DNS_URI_PREFIX_LEN: Final[int] = len(DNS_URI_PREFIX)
 
 
 class DaemonServicer(DaemonApiServicer):
@@ -165,9 +168,15 @@ def create_daemon_server(
             sys.path.insert(0, packages_dir)
             logger.debug(f"Insert packages directory: {packages_dir}")
 
+    if address.startswith(DNS_URI_PREFIX):
+        logger.debug(f"Strip unnecessary prefix: '{DNS_URI_PREFIX}'")
+        address = address[DNS_URI_PREFIX_LEN:]
+
+    logger.info(f"Daemon module name: {module_name}")
+    logger.info(f"Daemon servicer address: {address}")
+
     plugin = DaemonPlugin(module_name)
     servicer = DaemonServicer(plugin)
-    logger.info(f"Daemon servicer address: {address}")
 
     server = grpc.aio.server(options=DEFAULT_GRPC_OPTIONS)
     accepted_port_number = server.add_insecure_port(address)
