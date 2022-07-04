@@ -20,6 +20,7 @@ from aiohttp.hdrs import (
     METH_PUT,
 )
 from multidict import CIMultiDict
+from type_serialize import serialize
 
 from recc.driver.json import global_json_encoder
 from recc.http import http_urls as u
@@ -30,7 +31,6 @@ from recc.http.http_payload import payload_to_class
 from recc.http.http_utils import join_urls, v2_public_path
 from recc.mime.mime_type import APPLICATION_JSON, MIME_APPLICATION_JSON_UTF8
 from recc.packet.user import SigninA, SignupQ
-from recc.serialization.serialize import serialize_default
 from recc.variables.http import (
     DEFAULT_REQUEST_TIMEOUT_SECONDS,
     DEFAULT_SCHEME,
@@ -212,7 +212,7 @@ class HttpClient:
         elif text:
             request_body = text
         elif data:
-            request_body = global_json_encoder(serialize_default(data))
+            request_body = global_json_encoder(serialize(data))
             if CONTENT_TYPE not in updated_headers:
                 updated_headers.add(CONTENT_TYPE, str(MIME_APPLICATION_JSON_UTF8))
         else:

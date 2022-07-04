@@ -108,7 +108,3 @@ def serialize(obj: Any) -> Any:
         return _serialize_any(obj)
     except SerializeError as e:
         raise KeyError(f"Key({e.key}) error: {e.msg}")
-
-
-def serialize_default(obj: Any) -> Any:
-    return serialize(obj)

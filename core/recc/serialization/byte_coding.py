@@ -28,7 +28,7 @@ from recc.serialization.byte import (
     unpickling,
 )
 from recc.serialization.deserialize import deserialize_default
-from recc.serialization.serialize import serialize_default
+from recc.serialization.serialize import serialize
 
 
 class ByteCodingType(Enum):
@@ -121,7 +121,7 @@ def encode(
     level=COMPRESS_LEVEL_TRADEOFF,
 ) -> bytes:
     return object_to_bytes(
-        data=serialize_default(data),
+        data=serialize(data),
         coding=coding,
         level=level,
     )

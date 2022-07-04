@@ -11,6 +11,7 @@ from aiohttp.web_exceptions import HTTPBadRequest, HTTPException, HTTPUnauthoriz
 from aiohttp.web_fileresponse import FileResponse
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response, StreamResponse
+from type_serialize import serialize
 
 from recc.chrono.datetime import tznow
 from recc.conversion.to_any import string_to_any
@@ -30,7 +31,6 @@ from recc.http.http_status import (
 )
 from recc.inspect.type_origin import get_type_origin
 from recc.logging.logging import recc_http_logger as logger
-from recc.serialization.serialize import serialize_default
 from recc.session.session import Session
 from recc.session.session_ex import SessionEx
 from recc.variables.annotation import ANNOTATION_DOMAIN, ANNOTATION_PERMISSIONS, Domain
@@ -176,9 +176,7 @@ class HttpParameterMatcher:
         # elif _is_serializable_instance(result):
         #     return create_response(self.accept, self.encoding, result)
         elif isclass(type(result)):
-            return create_response(
-                self.accept, self.encoding, serialize_default(result)
-            )
+            return create_response(self.accept, self.encoding, serialize(result))
 
         raise NotImplementedError
 

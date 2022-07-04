@@ -2,9 +2,9 @@
 
 from typing import Any, Dict, List, Optional
 
-from recc.serialization.deserialize import deserialize
-from recc.serialization.interface import Serializable
-from recc.serialization.serialize import serialize
+from type_serialize import deserialize, serialize
+from type_serialize.obj.interface import Serializable
+
 from recc.serialization.utils import update_dict
 from recc.template.locale import Locale
 from recc.template.v2 import keys as v2k
@@ -122,8 +122,7 @@ class Property(Serializable):
         self.hide = data.get(v2k.k_hide)
         self.style = data.get(v2k.k_style)
 
-        locale_hint = Optional[Locale]
         titles_val = data.get(v2k.k_titles)
         helps_val = data.get(v2k.k_helps)
-        self.titles = deserialize(titles_val, Locale, locale_hint)
-        self.helps = deserialize(helps_val, Locale, locale_hint)
+        self.titles = deserialize(titles_val, Optional[Locale])
+        self.helps = deserialize(helps_val, Optional[Locale])
