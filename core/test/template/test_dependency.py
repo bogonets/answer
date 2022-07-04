@@ -12,14 +12,14 @@ class TemplateDependencyTestCase(TestCase):
         obj.source = "numpy"
         obj.destination = "localhost"
         obj.extra = ["arg1", "arg2"]
-        data = obj.serialize(1)
+        data = obj.__serialize__(1)
         self.assertEqual("pip", data["type"])
         self.assertEqual("numpy", data["src"])
         self.assertEqual("localhost", data["dest"])
         self.assertEqual(["arg1", "arg2"], data["extra"])
 
         obj2 = Dependency()
-        obj2.deserialize(1, data)
+        obj2.__deserialize__(1, data)
         self.assertEqual("pip", obj2.category)
         self.assertEqual("numpy", obj2.source)
         self.assertEqual("localhost", obj2.destination)
@@ -36,14 +36,14 @@ class TemplateDependencyTestCase(TestCase):
         obj.source = url
         obj.destination = dest
         obj.extra = args
-        data = obj.serialize(2)
+        data = obj.__serialize__(2)
         self.assertEqual(cat, data["category"])
         self.assertEqual(url, data["source"])
         self.assertEqual(dest, data["destination"])
         self.assertEqual(args, data["extra"])
 
         obj2 = Dependency()
-        obj2.deserialize(2, data)
+        obj2.__deserialize__(2, data)
         self.assertEqual(cat, obj2.category)
         self.assertEqual(url, obj2.source)
         self.assertEqual(dest, obj2.destination)

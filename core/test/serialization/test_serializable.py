@@ -38,10 +38,10 @@ class _Test3(Serializable):
     test2: Optional[_Test2]
     name: Optional[str]
 
-    def serialize(self, version: int) -> Any:
+    def __serialize__(self, version: int) -> Any:
         return {"name": self.name}
 
-    def deserialize(self, version: int, data: Any) -> None:
+    def __deserialize__(self, version: int, data: Any) -> None:
         self.name = data.get("name")
 
     @property

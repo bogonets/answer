@@ -46,13 +46,13 @@ class Environment(Serializable):
     def is_system(self) -> bool:
         return self.get_category() == EnvironmentCategory.System
 
-    def serialize(self, version: int) -> Any:
+    def __serialize__(self, version: int) -> Any:
         if version == 1:
             return self.serialize_v1()
         else:
             return self.serialize_v2()
 
-    def deserialize(self, version: int, data: Any) -> None:
+    def __deserialize__(self, version: int, data: Any) -> None:
         self.clear()
         if data is None:
             return

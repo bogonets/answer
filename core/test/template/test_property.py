@@ -23,7 +23,7 @@ class TemplatePropertyTestCase(TestCase):
             "help": {"en": "en.options", "ko": "ko.options"},
         }
         obj = Property()
-        obj.deserialize(1, data)
+        obj.__deserialize__(1, data)
         self.assertEqual("initialize_only", obj.rule)
         self.assertEqual("options", obj.name)
         self.assertEqual("rtsp,tcp", obj.value_default)
@@ -35,7 +35,7 @@ class TemplatePropertyTestCase(TestCase):
         self.assertEqual({"en": "options", "ko": "options"}, obj.titles)
         self.assertEqual({"en": "en.options", "ko": "ko.options"}, obj.helps)
 
-        serialize_data = obj.serialize(1)
+        serialize_data = obj.__serialize__(1)
         self.assertEqual(data, serialize_data)
 
     def test_default_v2(self):
@@ -48,7 +48,7 @@ class TemplatePropertyTestCase(TestCase):
         obj.helps = Locale()
         obj.helps["jp"] = "japanese"
 
-        data = obj.serialize(2)
+        data = obj.__serialize__(2)
         self.assertIsInstance(data, dict)
         self.assertEqual(["a", "b"], data["choice"])
         self.assertEqual(["c", "d"], data["hint"])
@@ -59,7 +59,7 @@ class TemplatePropertyTestCase(TestCase):
         self.assertEqual("japanese", data["helps"]["jp"])
 
         data2 = Property()
-        data2.deserialize(2, data)
+        data2.__deserialize__(2, data)
         self.assertEqual(["a", "b"], data2.choice)
         self.assertEqual(["c", "d"], data2.hint)
         self.assertEqual(2, len(data2.titles))

@@ -16,13 +16,13 @@ class TemplateLocaleTestCase(TestCase):
         obj = Locale()
         obj["en"] = "Hah"
         obj["ko"] = "Eng"
-        data = obj.serialize(1)
+        data = obj.__serialize__(1)
         self.assertEqual(2, len(data))
         self.assertEqual("Hah", data["en"])
         self.assertEqual("Eng", data["ko"])
 
         obj2 = Locale()
-        obj2.deserialize(1, data)
+        obj2.__deserialize__(1, data)
         self.assertEqual(2, len(obj2))
         self.assertEqual("Hah", obj2["en"])
         self.assertEqual("Eng", obj2["ko"])
@@ -31,13 +31,13 @@ class TemplateLocaleTestCase(TestCase):
         obj = Locale()
         obj["en"] = "Hah"
         obj["ko"] = "Eng"
-        data = obj.serialize(2)
+        data = obj.__serialize__(2)
         self.assertEqual(2, len(data))
         self.assertEqual("Hah", data["en"])
         self.assertEqual("Eng", data["ko"])
 
         obj2 = Locale()
-        obj2.deserialize(2, data)
+        obj2.__deserialize__(2, data)
         self.assertEqual(2, len(obj2))
         self.assertEqual("Hah", obj2["en"])
         self.assertEqual("Eng", obj2["ko"])

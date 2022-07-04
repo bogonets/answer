@@ -143,13 +143,13 @@ class LamdaTemplate(Serializable):
         self.controller = None
         self.properties = None
 
-    def serialize(self, version: int) -> Any:
+    def __serialize__(self, version: int) -> Any:
         if version == 1:
             return self.serialize_v1()
         else:
             return self.serialize_v2()
 
-    def deserialize(self, version: int, data: Any) -> None:
+    def __deserialize__(self, version: int, data: Any) -> None:
         self.clear()
         if data is None:
             return
@@ -164,10 +164,10 @@ class LamdaTemplate(Serializable):
         self.version = "1.0"
 
         self.information = Information()
-        self.information.deserialize(1, data.get(v1k.k_info))
+        self.information.__deserialize__(1, data.get(v1k.k_info))
 
         self.controller = Controller()
-        self.controller.deserialize(1, data.get(v1k.k_controls))
+        self.controller.__deserialize__(1, data.get(v1k.k_controls))
 
         properties_val = data.get(v1k.k_props)
         properties_hint = Optional[List[Property]]
@@ -191,10 +191,10 @@ class LamdaTemplate(Serializable):
         self.version = data.get(v2k.k_version)
 
         self.information = Information()
-        self.information.deserialize(2, data.get(v2k.k_information))
+        self.information.__deserialize__(2, data.get(v2k.k_information))
 
         self.controller = Controller()
-        self.controller.deserialize(2, data.get(v2k.k_controller))
+        self.controller.__deserialize__(2, data.get(v2k.k_controller))
 
         properties_val = data.get(v2k.k_properties)
         properties_hint = Optional[List[Property]]

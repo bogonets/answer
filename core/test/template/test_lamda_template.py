@@ -66,7 +66,7 @@ SAMPLE_DATA = {
 class LamdaTemplateTestCase(TestCase):
     def test_default_v1(self):
         obj = LamdaTemplate()
-        obj.deserialize(1, SAMPLE_DATA)
+        obj.__deserialize__(1, SAMPLE_DATA)
 
         self.assertEqual(1, obj.get_version_tuple()[0])
         self.assertIsInstance(obj.information, Information)
@@ -138,7 +138,7 @@ class LamdaTemplateTestCase(TestCase):
         self.assertEqual(1, len(obj.properties[1].helps))
         self.assertEqual("number", obj.properties[1].helps["ko"])
 
-        serialize_data = obj.serialize(1)
+        serialize_data = obj.__serialize__(1)
         changed_controls = {
             "output": {
                 "dynamic": False,

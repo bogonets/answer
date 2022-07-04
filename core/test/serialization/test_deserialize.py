@@ -39,7 +39,7 @@ class _Test3(DeserializeInterface):
         self.version = None
         self.data = None
 
-    def deserialize(self, version: int, data: Any) -> None:
+    def __deserialize__(self, version: int, data: Any) -> None:
         self.version = version
         self.data = data
 
@@ -50,7 +50,7 @@ class _Test4:
         self.test2 = None
         self.test3 = None
 
-    def deserialize(self, version: int, data: Any) -> None:  # noqa
+    def __deserialize__(self, version: int, data: Any) -> None:  # noqa
         self.test1 = deserialize(version, data.get("test1"), _Test1)
         self.test2 = deserialize(version, data.get("test2"), _Test2)
         self.test3 = deserialize(version, data.get("test3"), _Test3)

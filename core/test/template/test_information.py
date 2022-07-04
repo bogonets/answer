@@ -31,7 +31,7 @@ class TemplateInformationTestCase(TestCase):
         }
 
         obj = Information()
-        obj.deserialize(1, data)
+        obj.__deserialize__(1, data)
         self.assertEqual("av_stream_video", obj.name)
         self.assertEqual("1.1.4", obj.version)
         self.assertEqual("av", obj.category)
@@ -65,7 +65,7 @@ class TemplateInformationTestCase(TestCase):
         self.assertIsNotNone(obj.meta)
         self.assertEqual(0, len(obj.meta))
 
-        serialize_data = obj.serialize(1)
+        serialize_data = obj.__serialize__(1)
         self.assertIsInstance(serialize_data, dict)
         self.assertIsInstance(serialize_data["keywords"], list)
         self.assertEqual(1, len(serialize_data["keywords"]))
@@ -84,7 +84,7 @@ class TemplateInformationTestCase(TestCase):
         obj.name = "lambda"
         obj.license_name = "mit"
         obj.license_text = "..."
-        data = obj.serialize(2)
+        data = obj.__serialize__(2)
         self.assertIsInstance(data, dict)
         self.assertEqual(3, len(data))
         self.assertEqual("lambda", data["name"])
@@ -92,7 +92,7 @@ class TemplateInformationTestCase(TestCase):
         self.assertEqual("...", data["license_text"])
 
         obj2 = Information()
-        obj2.deserialize(2, data)
+        obj2.__deserialize__(2, data)
         self.assertEqual("lambda", obj2.name)
         self.assertEqual("mit", obj2.license_name)
         self.assertEqual("...", obj2.license_text)

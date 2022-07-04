@@ -22,7 +22,7 @@ class TemplateControllerTestCase(TestCase):
         obj = Controller()
         obj.data_inputs = [input1, input2]
         obj.data_outputs = [output1, output2]
-        data = obj.serialize(1)
+        data = obj.__serialize__(1)
 
         self.assertEqual(2, len(data))
 
@@ -40,7 +40,7 @@ class TemplateControllerTestCase(TestCase):
         self.assertEqual({"name": "o1", "mimes": ["jpeg", "png"]}, outputs["list"][0])
         self.assertEqual({"name": "o2"}, outputs["list"][1])
 
-        obj.deserialize(1, data)
+        obj.__deserialize__(1, data)
         self.assertEqual(2, len(obj.data_inputs))
         self.assertEqual(2, len(obj.data_outputs))
         self.assertEqual("i1", obj.data_inputs[0].name)
@@ -55,7 +55,7 @@ class TemplateControllerTestCase(TestCase):
     def test_simple_str_v1(self):
         data = {"input": "i1"}
         obj = Controller()
-        obj.deserialize(1, data)
+        obj.__deserialize__(1, data)
         self.assertIsInstance(obj.data_inputs, list)
         self.assertIsNone(obj.data_outputs)
         self.assertEqual(1, len(obj.data_inputs))
@@ -64,7 +64,7 @@ class TemplateControllerTestCase(TestCase):
     def test_simple_list_str_only_v1(self):
         data = {"input": ["i1", "i2"]}
         obj = Controller()
-        obj.deserialize(1, data)
+        obj.__deserialize__(1, data)
         self.assertIsInstance(obj.data_inputs, list)
         self.assertIsNone(obj.data_outputs)
         self.assertEqual(2, len(obj.data_inputs))
@@ -74,7 +74,7 @@ class TemplateControllerTestCase(TestCase):
     def test_simple_dict_str_v1(self):
         data = {"output": {"list": "o1"}}
         obj = Controller()
-        obj.deserialize(1, data)
+        obj.__deserialize__(1, data)
         self.assertIsNone(obj.data_inputs)
         self.assertIsInstance(obj.data_outputs, list)
         self.assertEqual(1, len(obj.data_outputs))
@@ -89,7 +89,7 @@ class TemplateControllerTestCase(TestCase):
             },
         }
         obj = Controller()
-        obj.deserialize(1, data)
+        obj.__deserialize__(1, data)
         self.assertIsNone(obj.data_inputs)
         self.assertIsInstance(obj.data_outputs, list)
         self.assertEqual(1, len(obj.data_outputs))
@@ -106,7 +106,7 @@ class TemplateControllerTestCase(TestCase):
             },
         }
         obj = Controller()
-        obj.deserialize(1, data)
+        obj.__deserialize__(1, data)
         self.assertIsNone(obj.data_inputs)
         self.assertIsInstance(obj.data_outputs, list)
         self.assertEqual(1, len(obj.data_outputs))
@@ -122,7 +122,7 @@ class TemplateControllerTestCase(TestCase):
         obj = Controller()
         obj.data_inputs = [input1]
         obj.data_outputs = [output1]
-        data = obj.serialize(2)
+        data = obj.__serialize__(2)
 
         self.assertEqual(2, len(data))
 
@@ -134,7 +134,7 @@ class TemplateControllerTestCase(TestCase):
         self.assertEqual({"name": "i1", "mimes": ["json"]}, inputs[0])
         self.assertEqual({"name": "o1", "mimes": ["jpeg", "png"]}, outputs[0])
 
-        obj.deserialize(2, data)
+        obj.__deserialize__(2, data)
         self.assertEqual(1, len(obj.data_inputs))
         self.assertEqual(1, len(obj.data_outputs))
         self.assertEqual("i1", obj.data_inputs[0].name)

@@ -10,12 +10,12 @@ class TemplateEnvironmentTestCase(TestCase):
         obj = Environment()
         obj.category = "venv"
         obj.name = "numpy"
-        data = obj.serialize(1)
+        data = obj.__serialize__(1)
         self.assertEqual("venv", data["type"])
         self.assertEqual("numpy", data["name"])
 
         obj2 = Environment()
-        obj2.deserialize(1, data)
+        obj2.__deserialize__(1, data)
         self.assertEqual("venv", obj2.category)
         self.assertEqual("numpy", obj2.name)
 
@@ -23,12 +23,12 @@ class TemplateEnvironmentTestCase(TestCase):
         obj = Environment()
         obj.category = "venv"
         obj.name = "numpy"
-        data = obj.serialize(2)
+        data = obj.__serialize__(2)
         self.assertEqual("venv", data["category"])
         self.assertEqual("numpy", data["name"])
 
         obj2 = Environment()
-        obj2.deserialize(2, data)
+        obj2.__deserialize__(2, data)
         self.assertEqual("venv", obj2.category)
         self.assertEqual("numpy", obj2.name)
 

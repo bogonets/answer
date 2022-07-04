@@ -20,7 +20,7 @@ SAMPLE_DATA = {
 class LamdaTemplateJsonTestCase(TestCase):
     def test_default_v1(self):
         obj = LamdaTemplate()
-        obj.deserialize(1, SAMPLE_DATA)
+        obj.__deserialize__(1, SAMPLE_DATA)
 
         self.assertEqual(1, obj.get_version_tuple()[0])
         self.assertIsInstance(obj.information, Information)
@@ -39,8 +39,8 @@ class LamdaTemplateJsonTestCase(TestCase):
 
     def test_json_file(self):
         obj = LamdaTemplate()
-        obj.deserialize(1, SAMPLE_DATA)
-        serialize_data = obj.serialize(1)
+        obj.__deserialize__(1, SAMPLE_DATA)
+        serialize_data = obj.__serialize__(1)
 
         with tempfile.TemporaryDirectory() as temp_dir:
             json_path = os.path.join(temp_dir, "temp.json")

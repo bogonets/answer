@@ -30,7 +30,7 @@ class _Test2:
     def __init__(self):
         self.name = "test2"
 
-    def serialize(self, version: int) -> Any:  # noqa
+    def __serialize__(self, version: int) -> Any:  # noqa
         return {"a": 0, "b": 1, "c": 3.14}
 
 
