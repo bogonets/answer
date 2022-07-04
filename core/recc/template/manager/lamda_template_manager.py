@@ -8,11 +8,12 @@ from tarfile import TarInfo
 from tarfile import open as tar_open
 from typing import Dict, Iterable, KeysView, List, Optional, ValuesView
 
+from type_serialize.json import load
+
 from recc import lamda as recc_lamda_module
 from recc import lamda_builtin as recc_lamda_builtin_module
 from recc.filesystem.permission import is_readable_dir
 from recc.package.package_utils import get_module_directory
-from recc.serialization.json import deserialize_json_file
 from recc.template.lamda_template import LamdaTemplate, RuntimeInformation
 from recc.template.manager.lamda_template_key import LamdaTemplateKey
 from recc.template.manager.lamda_template_position import LamdaTemplatePosition
@@ -59,7 +60,10 @@ def create_template(
     template_directory: Optional[str] = None,
     venv_directory: Optional[str] = None,
 ) -> LamdaTemplate:
-    template = deserialize_json_file(template_path, LamdaTemplate)
+    with open(template_path, mode="rb") as f:
+        template = load(f, LamdaTemplate)
+
+    assert isinstance(template, LamdaTemplate)
     if not template.information:
         raise ValueError(f"Empty template information section: {template_path}")
 
@@ -94,6 +98,9 @@ def create_template(
 
     environment = template.information.environment
     if venv_directory and environment and environment.name:
+        assert venv_directory is not None
+        assert template.information.environment is not None
+        assert template.information.environment.name is not None
         venv_name = template.information.environment.name
         venv_dir = os.path.join(venv_directory, venv_name)
         runtime_info.venv = AsyncVirtualEnvironment(

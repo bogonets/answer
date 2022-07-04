@@ -3,12 +3,13 @@
 from functools import reduce
 from typing import Any, Dict, Iterable, List, Optional
 
+from type_serialize.json import loads
+
 from recc.blueprint.blueprint import BpTask
 from recc.mime.mime_codec import MimeDecoder, MimeEncoder
 from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_register
 from recc.sequence.default_sequencer import DefaultSequencer
 from recc.sequence.sequencer_interface import SequencerInterface
-from recc.serialization.json import deserialize_json_text
 from recc.template.information import EDGE_BEGIN, EDGE_END, EDGE_MIDDLE
 from recc.template.manager.lamda_template_manager import LamdaTemplateManager
 from recc.vs.arc import Arc, ArcKey
@@ -463,7 +464,7 @@ class TaskGraph:
                 self.add_arc(self.get_slot(back_slot), self.get_slot(front_slot))
 
     def set_blueprint_json(self, json_text: str, tm: LamdaTemplateManager) -> None:
-        blueprint = deserialize_json_text(json_text, BpTask)
+        blueprint = loads(json_text.encode("utf-8"), BpTask)
         self.set_blueprint(blueprint, tm)
 
     # Signal

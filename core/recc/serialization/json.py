@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import codecs
-from json import JSONDecodeError
-from typing import Any, Final, Optional, Type, TypeVar
+from typing import Any, Final, TypeVar
+
+from type_serialize import serialize
 
 from recc.driver.json import global_json_decoder, global_json_encoder
-from recc.serialization.deserialize import deserialize
-from recc.serialization.serialize import serialize
 
 _T = TypeVar("_T")
 _ET = TypeVar("_ET")
@@ -26,14 +24,6 @@ def serialize_json_text(obj: Any) -> str:
     return _encode_json_text(serialize(obj))
 
 
-def deserialize_json_text(
-    json_text: str,
-    cls: Type[_T],
-    hint: Optional[Type[_ET]] = None,
-) -> Any:
-    return deserialize(_decode_json_text(json_text), cls, hint)
-
-
 def serialize_json_file(
     obj: Any,
     path: str,
@@ -41,19 +31,3 @@ def serialize_json_file(
 ) -> None:
     with open(path, mode="w", encoding=encoding) as f:
         f.write(serialize_json_text(obj))
-
-
-def deserialize_json_file(
-    json_file: str,
-    cls: Type[_T],
-    hint: Optional[Type[_ET]] = None,
-    encoding=DEFAULT_ENCODING,
-) -> Any:
-    try:
-        with codecs.open(filename=json_file, encoding=encoding) as f:
-            return deserialize_json_text(f.read(), cls, hint)
-    except JSONDecodeError as e:
-        msg = f"{json_file} file, {e.msg}"
-        doc = e.doc
-        pos = e.pos
-        raise JSONDecodeError(msg, doc, pos)
