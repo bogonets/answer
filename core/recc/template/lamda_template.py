@@ -2,9 +2,8 @@
 
 from typing import Any, Dict, List, Optional, Tuple
 
-from recc.serialization.deserialize import deserialize
-from recc.serialization.interface import Serializable
-from recc.serialization.serialize import serialize
+from type_serialize import Serializable, deserialize, serialize
+
 from recc.serialization.utils import update_dict
 from recc.template.controller import Controller
 from recc.template.information import EDGE_BEGIN, EDGE_END, EDGE_MIDDLE, Information
@@ -167,5 +166,4 @@ class LamdaTemplate(Serializable):
         self.controller.__deserialize__(data.get(v2k.k_controller))
 
         properties_val = data.get(v2k.k_properties)
-        properties_hint = Optional[List[Property]]
-        self.properties = deserialize(properties_val, list, properties_hint)
+        self.properties = deserialize(properties_val, Optional[List[Property]])

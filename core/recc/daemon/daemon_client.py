@@ -5,6 +5,8 @@ from uuid import uuid4
 
 import grpc
 from grpc.aio._channel import Channel  # noqa
+from type_serialize import ByteCoding
+from type_serialize.variables import COMPRESS_LEVEL_BEST
 
 from recc.chrono.datetime import tznow
 from recc.daemon.daemon_answer import DaemonAnswer
@@ -26,8 +28,6 @@ from recc.proto.daemon.daemon_api_pb2 import (
     RegisterQ,
 )
 from recc.proto.daemon.daemon_api_pb2_grpc import DaemonApiStub
-from recc.serialization.byte import COMPRESS_LEVEL_BEST
-from recc.serialization.byte_coding import ByteCodingType
 from recc.variables.rpc import (
     DEFAULT_GRPC_OPTIONS,
     DEFAULT_HEARTBEAT_TIMEOUT,
@@ -84,7 +84,7 @@ class DaemonClient:
         self._smq = SharedMemoryQueue()
         self._encoding = DEFAULT_PICKLE_ENCODING
         self._compress_level = COMPRESS_LEVEL_BEST
-        self._coding = ByteCodingType.MsgpackZlib
+        self._coding = ByteCoding.MsgpackZlib
         self._min_sm_size = 0
         self._min_sm_byte = 0
 

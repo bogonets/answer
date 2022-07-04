@@ -2,9 +2,8 @@
 
 from typing import Any, Dict, List, Optional
 
-from recc.serialization.deserialize import deserialize
-from recc.serialization.interface import Serializable
-from recc.serialization.serialize import serialize
+from type_serialize import Serializable, deserialize, serialize
+
 from recc.serialization.utils import update_dict
 from recc.template.dependency import Dependency
 from recc.template.environment import Environment
@@ -163,21 +162,19 @@ class Information(Serializable):
         self.author = data.get(v2k.k_author)
 
         dependency_val = data.get(v2k.k_dependencies)
-        dependency_hint = Optional[List[Dependency]]
-        self.dependencies = deserialize(dependency_val, list, dependency_hint)
+        self.dependencies = deserialize(dependency_val, Optional[List[Dependency]])
 
         self.engines = data.get(v2k.k_engines)
 
         self.environment = Environment()
         self.environment.__deserialize__(data.get(v2k.k_environment))
 
-        locale_hint = Optional[Locale]
         titles_val = data.get(v2k.k_titles)
         descriptions_val = data.get(v2k.k_descriptions)
         documentations_val = data.get(v2k.k_documentations)
-        self.titles = deserialize(titles_val, Locale, locale_hint)
-        self.descriptions = deserialize(descriptions_val, Locale, locale_hint)
+        self.titles = deserialize(titles_val, Optional[Locale])
+        self.descriptions = deserialize(descriptions_val, Optional[Locale])
         self.documentation_mime = data.get(v2k.k_documentation_mime)
-        self.documentations = deserialize(documentations_val, Locale, locale_hint)
+        self.documentations = deserialize(documentations_val, Optional[Locale])
         self.edge = data.get(v2k.k_edge)
         self.meta = data.get(v2k.k_meta)

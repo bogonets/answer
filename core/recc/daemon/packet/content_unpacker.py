@@ -4,16 +4,17 @@ from multiprocessing.shared_memory import SharedMemory
 from typing import Any, Dict, Iterable, List, Mapping, Optional
 
 from numpy import ndarray
+from type_serialize import ByteCoding
+from type_serialize.byte.byte_coder import bytes_to_object
 
 from recc.daemon.daemon_answer import DaemonAnswer
 from recc.daemon.packet.content_helper import has_array, has_shared_memory
 from recc.proto.daemon.daemon_api_pb2 import Content
-from recc.serialization.byte_coding import ByteCodingType, bytes_to_object
 
 
 class ContentUnpacker:
 
-    _coding: ByteCodingType
+    _coding: ByteCoding
     _encoding: str
     _args: List[Content]
     _kwargs: Dict[str, Content]
@@ -21,7 +22,7 @@ class ContentUnpacker:
 
     def __init__(
         self,
-        coding: ByteCodingType,
+        coding: ByteCoding,
         encoding: str,
         args: Optional[Iterable[Content]] = None,
         kwargs: Optional[Mapping[str, Content]] = None,
@@ -54,11 +55,7 @@ class ContentUnpacker:
                 strides=content.array.strides,
             )
         else:
-            return bytes_to_object(
-                data=data,
-                coding=self._coding,
-                encoding=self._encoding,
-            )
+            return bytes_to_object(data=data, coding=self._coding)
 
     def args_to_anys(self) -> List[Any]:
         return [self.content_to_any(arg) for arg in self._args]
@@ -73,7 +70,7 @@ class ContentUnpacker:
 
 
 def content_unpack(
-    coding: ByteCodingType,
+    coding: ByteCoding,
     encoding: str,
     args: Optional[Iterable[Content]] = None,
     kwargs: Optional[Mapping[str, Content]] = None,

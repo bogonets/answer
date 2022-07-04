@@ -2,8 +2,8 @@
 
 from typing import Any, Dict, List, Optional
 
-from recc.serialization.deserialize import deserialize
-from recc.serialization.interface import Serializable
+from type_serialize import Serializable, deserialize
+
 from recc.template.control import Control
 from recc.template.v2 import keys as v2k
 
@@ -41,9 +41,9 @@ class Controller(Serializable):
             raise TypeError
         hint = Optional[List[Control]]
         # fmt: off
-        self.flow_inputs = deserialize(data.get(v2k.k_flow_inputs), list, hint)
-        self.flow_outputs = deserialize(data.get(v2k.k_flow_outputs), list, hint)
-        self.data_inputs = deserialize(data.get(v2k.k_data_inputs), list, hint)
-        self.data_outputs = deserialize(data.get(v2k.k_data_outputs), list, hint)
+        self.flow_inputs = deserialize(data.get(v2k.k_flow_inputs), hint)
+        self.flow_outputs = deserialize(data.get(v2k.k_flow_outputs), hint)
+        self.data_inputs = deserialize(data.get(v2k.k_data_inputs), hint)
+        self.data_outputs = deserialize(data.get(v2k.k_data_outputs), hint)
         self.data_output_as_flow_output = deserialize(data.get(v2k.k_data_output_as_flow_output), bool)  # noqa
         # fmt: on

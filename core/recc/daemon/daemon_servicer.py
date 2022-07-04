@@ -7,6 +7,8 @@ from typing import Final, List, Mapping, Optional
 
 import grpc
 from grpc.aio import ServicerContext
+from type_serialize import ByteCoding
+from type_serialize.variables import COMPRESS_LEVEL_BEST
 
 from recc.aio.connection import try_connection
 from recc.argparse.config.daemon_config import DaemonConfig
@@ -35,8 +37,6 @@ from recc.proto.daemon.daemon_api_pb2_grpc import (
     DaemonApiServicer,
     add_DaemonApiServicer_to_server,
 )
-from recc.serialization.byte import COMPRESS_LEVEL_BEST
-from recc.serialization.byte_coding import ByteCodingType
 from recc.uri.uds import is_uds_family
 from recc.variables.rpc import (
     ACCEPTED_UDS_PORT_NUMBER,
@@ -133,7 +133,7 @@ class DaemonServicer(DaemonApiServicer):
         result = await call_router(
             func=route,
             match_info=match_info,
-            coding=ByteCodingType(request.coding),
+            coding=ByteCoding(request.coding),
             encoding=self._encoding,
             compress_level=self._compress_level,
             args=request.args,

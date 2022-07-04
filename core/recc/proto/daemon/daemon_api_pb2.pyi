@@ -35,30 +35,80 @@ class _CodingEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTyp
     Raw: _Coding.ValueType  # 0
     Pickle5: _Coding.ValueType  # 1
     Json: _Coding.ValueType  # 2
+    """Automatically select the installed json library."""
+
     JsonZlib: _Coding.ValueType  # 3
     JsonGzip: _Coding.ValueType  # 4
     JsonLzma: _Coding.ValueType  # 5
     JsonBz2: _Coding.ValueType  # 6
-    Msgpack: _Coding.ValueType  # 7
-    MsgpackZlib: _Coding.ValueType  # 8
-    MsgpackGzip: _Coding.ValueType  # 9
-    MsgpackLzma: _Coding.ValueType  # 10
-    MsgpackBz2: _Coding.ValueType  # 11
+    Pyjson: _Coding.ValueType  # 7
+    """System default json library."""
+
+    PyjsonZlib: _Coding.ValueType  # 8
+    PyjsonGzip: _Coding.ValueType  # 9
+    PyjsonLzma: _Coding.ValueType  # 10
+    PyjsonBz2: _Coding.ValueType  # 11
+    Orjson: _Coding.ValueType  # 12
+    """orjson module"""
+
+    OrjsonZlib: _Coding.ValueType  # 13
+    OrjsonGzip: _Coding.ValueType  # 14
+    OrjsonLzma: _Coding.ValueType  # 15
+    OrjsonBz2: _Coding.ValueType  # 16
+    Msgpack: _Coding.ValueType  # 17
+    """msgpack module"""
+
+    MsgpackZlib: _Coding.ValueType  # 18
+    MsgpackGzip: _Coding.ValueType  # 19
+    MsgpackLzma: _Coding.ValueType  # 20
+    MsgpackBz2: _Coding.ValueType  # 21
+    Yaml: _Coding.ValueType  # 22
+    """yaml module"""
+
+    YamlZlib: _Coding.ValueType  # 23
+    YamlGzip: _Coding.ValueType  # 24
+    YamlLzma: _Coding.ValueType  # 25
+    YamlBz2: _Coding.ValueType  # 26
 class Coding(_Coding, metaclass=_CodingEnumTypeWrapper):
     pass
 
 Raw: Coding.ValueType  # 0
 Pickle5: Coding.ValueType  # 1
 Json: Coding.ValueType  # 2
+"""Automatically select the installed json library."""
+
 JsonZlib: Coding.ValueType  # 3
 JsonGzip: Coding.ValueType  # 4
 JsonLzma: Coding.ValueType  # 5
 JsonBz2: Coding.ValueType  # 6
-Msgpack: Coding.ValueType  # 7
-MsgpackZlib: Coding.ValueType  # 8
-MsgpackGzip: Coding.ValueType  # 9
-MsgpackLzma: Coding.ValueType  # 10
-MsgpackBz2: Coding.ValueType  # 11
+Pyjson: Coding.ValueType  # 7
+"""System default json library."""
+
+PyjsonZlib: Coding.ValueType  # 8
+PyjsonGzip: Coding.ValueType  # 9
+PyjsonLzma: Coding.ValueType  # 10
+PyjsonBz2: Coding.ValueType  # 11
+Orjson: Coding.ValueType  # 12
+"""orjson module"""
+
+OrjsonZlib: Coding.ValueType  # 13
+OrjsonGzip: Coding.ValueType  # 14
+OrjsonLzma: Coding.ValueType  # 15
+OrjsonBz2: Coding.ValueType  # 16
+Msgpack: Coding.ValueType  # 17
+"""msgpack module"""
+
+MsgpackZlib: Coding.ValueType  # 18
+MsgpackGzip: Coding.ValueType  # 19
+MsgpackLzma: Coding.ValueType  # 20
+MsgpackBz2: Coding.ValueType  # 21
+Yaml: Coding.ValueType  # 22
+"""yaml module"""
+
+YamlZlib: Coding.ValueType  # 23
+YamlGzip: Coding.ValueType  # 24
+YamlLzma: Coding.ValueType  # 25
+YamlBz2: Coding.ValueType  # 26
 global___Coding = Coding
 
 

@@ -16,16 +16,16 @@ from typing import (
 )
 
 from numpy import ndarray
+from type_serialize import ByteCoding
+from type_serialize import decode as byte_decode
+from type_serialize import encode as byte_encode
+from type_serialize.driver.numpy import ndarray_to_bytes
 
 from recc.conversion.to_boolean import string_to_boolean
 from recc.daemon.packet.content_helper import has_array, has_shared_memory
 from recc.inspect.type_origin import get_type_origin
 from recc.logging.logging import recc_daemon_logger as logger
 from recc.proto.daemon.daemon_api_pb2 import ArrayInfo, Content
-from recc.serialization.byte_coding import ByteCodingType
-from recc.serialization.byte_coding import decode as byte_decode
-from recc.serialization.byte_coding import encode as byte_encode
-from recc.serialization.numpy import ndarray_to_bytes
 
 
 def _is_path_class(obj) -> bool:
@@ -70,7 +70,7 @@ class ContentParameterMatcher:
         self,
         func,
         match_info: Dict[str, str],
-        coding: ByteCodingType,
+        coding: ByteCoding,
         encoding: str,
         compress_level: int,
         args: Iterable[Content],
@@ -174,19 +174,10 @@ class ContentParameterMatcher:
                 strides=content.array.strides,
             )
         else:
-            return byte_decode(
-                data=data,
-                coding=self._coding,
-                cls=cls,
-                encoding=self._encoding,
-            )
+            return byte_decode(data=data, cls=cls, coding=self._coding)
 
     def _object_to_content(self, obj: Any) -> Content:
-        buffer = byte_encode(
-            data=obj,
-            coding=self._coding,
-            level=self._compress_level,
-        )
+        buffer = byte_encode(data=obj, level=self._compress_level, coding=self._coding)
         size = len(buffer)
 
         if self._sm_names and buffer:
@@ -246,7 +237,7 @@ class ContentParameterMatcher:
 async def call_router(
     func,
     match_info: Dict[str, str],
-    coding: ByteCodingType,
+    coding: ByteCoding,
     encoding: str,
     compress_level: int,
     args: Iterable[Content],

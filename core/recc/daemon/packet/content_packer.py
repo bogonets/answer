@@ -3,12 +3,12 @@
 from typing import Any, Dict, Iterable, List, Mapping, NamedTuple, Optional, Set
 
 from numpy import ndarray
+from type_serialize import ByteCoding
+from type_serialize import encode as byte_encode
+from type_serialize.driver.numpy import ndarray_to_bytes
 
 from recc.memory.shared_memory_queue import SharedMemoryQueue
 from recc.proto.daemon.daemon_api_pb2 import ArrayInfo, Content
-from recc.serialization.byte_coding import ByteCodingType
-from recc.serialization.byte_coding import encode as byte_encode
-from recc.serialization.numpy import ndarray_to_bytes
 
 
 class PackedTuple(NamedTuple):
@@ -18,7 +18,7 @@ class PackedTuple(NamedTuple):
 
 class ContentPacker:
 
-    _coding: ByteCodingType
+    _coding: ByteCoding
     _compress_level: int
     _args: List[Any]
     _kwargs: Dict[str, Any]
@@ -27,7 +27,7 @@ class ContentPacker:
 
     def __init__(
         self,
-        coding: ByteCodingType,
+        coding: ByteCoding,
         compress_level: int,
         args: Optional[Iterable[Any]] = None,
         kwargs: Optional[Mapping[str, Any]] = None,
@@ -50,8 +50,8 @@ class ContentPacker:
     def object_to_content(self, obj: Any) -> Content:
         buffer = byte_encode(
             data=obj,
-            coding=self._coding,
             level=self._compress_level,
+            coding=self._coding,
         )
 
         if self._smq and buffer:

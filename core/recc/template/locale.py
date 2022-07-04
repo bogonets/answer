@@ -3,7 +3,7 @@
 from copy import deepcopy
 from typing import Any, Dict
 
-from recc.serialization.interface import Serializable
+from type_serialize import Serializable
 
 
 class Locale(Dict[str, str], Serializable):
