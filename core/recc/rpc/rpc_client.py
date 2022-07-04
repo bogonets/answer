@@ -5,6 +5,7 @@ from typing import Any, List, Optional
 
 import grpc
 from grpc.aio._channel import Channel  # noqa
+from type_serialize.json import dumps
 
 from recc.blueprint.blueprint import BpTask
 from recc.mime.mime_codec_register import MimeCodecRegister, get_global_mime_register
@@ -36,7 +37,6 @@ from recc.rpc.rpc_converter import (
     cvt_node_slot_data_requests,
     cvt_node_slot_datas,
 )
-from recc.serialization.json import serialize_json_text
 from recc.variables.rpc import DEFAULT_GRPC_OPTIONS, DEFAULT_HEARTBEAT_TIMEOUT
 from recc.vs.box import BoxData, BoxRequest
 
@@ -178,7 +178,7 @@ class RpcClient:
         assert isinstance(response.result, Result)
 
     async def set_task_blueprint(self, task: BpTask) -> None:
-        task_json = serialize_json_text(task)
+        task_json = str(dumps(task), encoding="utf-8")
         await self.set_task_blueprint_json(task_json)
 
     async def get_node_property(self, node: str, prop: str) -> Any:
