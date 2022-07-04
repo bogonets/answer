@@ -5,11 +5,10 @@ from typing import Any, Dict, List, Optional
 from recc.serialization.deserialize import deserialize
 from recc.serialization.interface import Serializable
 from recc.serialization.serialize import serialize
-from recc.serialization.utils import normalize_strings, update_dict
+from recc.serialization.utils import update_dict
 from recc.template.dependency import Dependency
 from recc.template.environment import Environment
 from recc.template.locale import Locale
-from recc.template.v1 import keys as v1k
 from recc.template.v2 import keys as v2k
 from recc.typing.optional import strip_optional
 
@@ -19,7 +18,6 @@ EDGE_END = "begin"
 
 
 class Information(Serializable):
-
     name: Optional[str] = None
     script_path: Optional[str] = None
     version: Optional[str] = None
@@ -115,86 +113,42 @@ class Information(Serializable):
         self.edge = None
         self.meta = None
 
-    def __serialize__(self, version: int) -> Any:
-        if version == 1:
-            return self.serialize_v1()
-        else:
-            return self.serialize_v2()
+    def __serialize__(self) -> Any:
+        result: Dict[str, Any] = dict()
+        update_dict(result, v2k.k_category, self.category)
+        update_dict(result, v2k.k_name, self.name)
+        update_dict(result, v2k.k_script_path, self.script_path)
+        update_dict(result, v2k.k_version, self.version)
+        update_dict(result, v2k.k_category, self.category)
+        update_dict(result, v2k.k_keywords, self.keywords)
+        update_dict(result, v2k.k_homepage, self.homepage)
+        update_dict(result, v2k.k_bugs, self.bugs)
+        update_dict(result, v2k.k_license_name, self.license_name)
+        update_dict(result, v2k.k_license_text, self.license_text)
+        update_dict(result, v2k.k_author, self.author)
 
-    def __deserialize__(self, version: int, data: Any) -> None:
+        if self.dependencies is not None:
+            result[v2k.k_dependencies] = serialize(self.dependencies)
+        update_dict(result, v2k.k_engines, self.engines)
+        if self.environment is not None:
+            result[v2k.k_environment] = serialize(self.environment)
+
+        if self.titles is not None:
+            result[v2k.k_titles] = serialize(self.titles)
+        if self.descriptions is not None:
+            result[v2k.k_descriptions] = serialize(self.descriptions)
+        update_dict(result, v2k.k_documentation_mime, self.documentation_mime)
+        if self.documentations is not None:
+            result[v2k.k_documentations] = serialize(self.documentations)
+        update_dict(result, v2k.k_edge, self.edge)
+        update_dict(result, v2k.k_meta, self.meta)
+
+        return result
+
+    def __deserialize__(self, data: Any) -> None:
         self.clear()
         if data is None:
             return
-        if version == 1:
-            self.deserialize_v1(data)
-        else:
-            self.deserialize_v2(data)
-
-    def deserialize_v1(self, data: Any) -> None:
-        if not isinstance(data, dict):
-            raise TypeError
-        self.name = data.get(v1k.k_name)
-        self.script_path = data.get(v1k.k_script_path)
-        self.version = data.get(v1k.k_version)
-        self.category = data.get(v1k.k_category)
-        self.keywords = normalize_strings(data.get(v1k.k_keywords))
-        self.homepage = data.get(v1k.k_homepage)
-        self.bugs = data.get(v1k.k_bugs)
-        self.license_name = None
-        self.license_text = data.get(v1k.k_license)
-        self.author = data.get(v1k.k_author)
-
-        dependency_val = data.get(v1k.k_dependencies)
-        dependency_hint = Optional[List[Dependency]]
-        self.dependencies = deserialize(1, dependency_val, list, dependency_hint)
-
-        self.engines = normalize_strings(data.get(v1k.k_engines))
-
-        self.environment = Environment()
-        self.environment.__deserialize__(1, data.get(v1k.k_environment))
-
-        locale_hint = Optional[Locale]
-        titles_val = data.get(v1k.k_titles)
-        descriptions_val = data.get(v1k.k_descriptions)
-        documentations_val = data.get(v1k.k_documentations)
-        self.titles = deserialize(1, titles_val, Locale, locale_hint)
-        self.descriptions = deserialize(1, descriptions_val, Locale, locale_hint)
-        self.documentation_mime = data.get(v1k.k_documentation_mime)
-        self.documentations = deserialize(1, documentations_val, Locale, locale_hint)
-
-        self.meta = data.get(v1k.k_meta)
-
-    def serialize_v1(self) -> Dict[str, Any]:
-        result: Dict[str, Any] = dict()
-        update_dict(result, v1k.k_category, self.category)
-        update_dict(result, v1k.k_name, self.name)
-        update_dict(result, v1k.k_script_path, self.script_path)
-        update_dict(result, v1k.k_version, self.version)
-        update_dict(result, v1k.k_category, self.category)
-        update_dict(result, v1k.k_keywords, self.keywords)
-        update_dict(result, v1k.k_homepage, self.homepage)
-        update_dict(result, v1k.k_bugs, self.bugs)
-        update_dict(result, v1k.k_license, self.license_text)
-        update_dict(result, v1k.k_author, self.author)
-
-        if self.dependencies is not None:
-            result[v1k.k_dependencies] = serialize(1, self.dependencies)
-        update_dict(result, v1k.k_engines, self.engines)
-        if self.environment is not None:
-            result[v1k.k_environment] = serialize(1, self.environment)
-
-        if self.titles is not None:
-            result[v1k.k_titles] = serialize(1, self.titles)
-        if self.descriptions is not None:
-            result[v1k.k_descriptions] = serialize(1, self.descriptions)
-        update_dict(result, v1k.k_documentation_mime, self.documentation_mime)
-        if self.documentations is not None:
-            result[v1k.k_documentations] = serialize(1, self.documentations)
-
-        update_dict(result, v1k.k_meta, self.meta)
-        return result
-
-    def deserialize_v2(self, data: Any) -> None:
         if not isinstance(data, dict):
             raise TypeError
         self.name = data.get(v2k.k_name)
@@ -210,52 +164,20 @@ class Information(Serializable):
 
         dependency_val = data.get(v2k.k_dependencies)
         dependency_hint = Optional[List[Dependency]]
-        self.dependencies = deserialize(2, dependency_val, list, dependency_hint)
+        self.dependencies = deserialize(dependency_val, list, dependency_hint)
 
         self.engines = data.get(v2k.k_engines)
 
         self.environment = Environment()
-        self.environment.__deserialize__(2, data.get(v2k.k_environment))
+        self.environment.__deserialize__(data.get(v2k.k_environment))
 
         locale_hint = Optional[Locale]
         titles_val = data.get(v2k.k_titles)
         descriptions_val = data.get(v2k.k_descriptions)
         documentations_val = data.get(v2k.k_documentations)
-        self.titles = deserialize(2, titles_val, Locale, locale_hint)
-        self.descriptions = deserialize(2, descriptions_val, Locale, locale_hint)
+        self.titles = deserialize(titles_val, Locale, locale_hint)
+        self.descriptions = deserialize(descriptions_val, Locale, locale_hint)
         self.documentation_mime = data.get(v2k.k_documentation_mime)
-        self.documentations = deserialize(2, documentations_val, Locale, locale_hint)
+        self.documentations = deserialize(documentations_val, Locale, locale_hint)
         self.edge = data.get(v2k.k_edge)
         self.meta = data.get(v2k.k_meta)
-
-    def serialize_v2(self) -> Dict[str, Any]:
-        result: Dict[str, Any] = dict()
-        update_dict(result, v2k.k_category, self.category)
-        update_dict(result, v2k.k_name, self.name)
-        update_dict(result, v2k.k_script_path, self.script_path)
-        update_dict(result, v2k.k_version, self.version)
-        update_dict(result, v2k.k_category, self.category)
-        update_dict(result, v2k.k_keywords, self.keywords)
-        update_dict(result, v2k.k_homepage, self.homepage)
-        update_dict(result, v2k.k_bugs, self.bugs)
-        update_dict(result, v2k.k_license_name, self.license_name)
-        update_dict(result, v2k.k_license_text, self.license_text)
-        update_dict(result, v2k.k_author, self.author)
-
-        if self.dependencies is not None:
-            result[v2k.k_dependencies] = serialize(2, self.dependencies)
-        update_dict(result, v2k.k_engines, self.engines)
-        if self.environment is not None:
-            result[v2k.k_environment] = serialize(2, self.environment)
-
-        if self.titles is not None:
-            result[v2k.k_titles] = serialize(2, self.titles)
-        if self.descriptions is not None:
-            result[v2k.k_descriptions] = serialize(2, self.descriptions)
-        update_dict(result, v2k.k_documentation_mime, self.documentation_mime)
-        if self.documentations is not None:
-            result[v2k.k_documentations] = serialize(2, self.documentations)
-        update_dict(result, v2k.k_edge, self.edge)
-        update_dict(result, v2k.k_meta, self.meta)
-
-        return result

@@ -10,7 +10,6 @@ from recc.template.controller import Controller
 from recc.template.information import EDGE_BEGIN, EDGE_END, EDGE_MIDDLE, Information
 from recc.template.property import Property
 from recc.template.runtime_information import RuntimeInformation
-from recc.template.v1 import keys as v1k
 from recc.template.v2 import keys as v2k
 
 DEFAULT_VERSION_TUPLE = (1, 0)
@@ -18,7 +17,6 @@ DEFAULT_SERIALIZABLE_VERSION = DEFAULT_VERSION_TUPLE[0]
 
 
 class LamdaTemplate(Serializable):
-
     version: Optional[str] = None
     """Template version.
     """
@@ -143,70 +141,31 @@ class LamdaTemplate(Serializable):
         self.controller = None
         self.properties = None
 
-    def __serialize__(self, version: int) -> Any:
-        if version == 1:
-            return self.serialize_v1()
-        else:
-            return self.serialize_v2()
+    def __serialize__(self) -> Any:
+        result: Dict[str, Any] = dict()
+        update_dict(result, v2k.k_version, self.version)
+        if self.information is not None:
+            result[v2k.k_information] = serialize(self.information)
+        if self.controller is not None:
+            result[v2k.k_controller] = serialize(self.controller)
+        if self.properties is not None:
+            result[v2k.k_properties] = serialize(self.properties)
+        return result
 
-    def __deserialize__(self, version: int, data: Any) -> None:
+    def __deserialize__(self, data: Any) -> None:
         self.clear()
         if data is None:
             return
-        if version == 1:
-            self.deserialize_v1(data)
-        else:
-            self.deserialize_v2(data)
-
-    def deserialize_v1(self, data: Any) -> None:
-        if not isinstance(data, dict):
-            raise TypeError
-        self.version = "1.0"
-
-        self.information = Information()
-        self.information.__deserialize__(1, data.get(v1k.k_info))
-
-        self.controller = Controller()
-        self.controller.__deserialize__(1, data.get(v1k.k_controls))
-
-        properties_val = data.get(v1k.k_props)
-        properties_hint = Optional[List[Property]]
-        self.properties = deserialize(1, properties_val, list, properties_hint)
-
-    def serialize_v1(self) -> Dict[str, Any]:
-        result: Dict[str, Any] = dict()
-        if self.information is not None:
-            result[v1k.k_info] = serialize(1, self.information)
-        if self.controller is not None:
-            result[v1k.k_controls] = serialize(1, self.controller)
-        if self.properties is not None:
-            result[v1k.k_props] = serialize(1, self.properties)
-        else:
-            result[v1k.k_props] = list()
-        return result
-
-    def deserialize_v2(self, data: Any) -> None:
         if not isinstance(data, dict):
             raise TypeError
         self.version = data.get(v2k.k_version)
 
         self.information = Information()
-        self.information.__deserialize__(2, data.get(v2k.k_information))
+        self.information.__deserialize__(data.get(v2k.k_information))
 
         self.controller = Controller()
-        self.controller.__deserialize__(2, data.get(v2k.k_controller))
+        self.controller.__deserialize__(data.get(v2k.k_controller))
 
         properties_val = data.get(v2k.k_properties)
         properties_hint = Optional[List[Property]]
-        self.properties = deserialize(2, properties_val, list, properties_hint)
-
-    def serialize_v2(self) -> Dict[str, Any]:
-        result: Dict[str, Any] = dict()
-        update_dict(result, v2k.k_version, self.version)
-        if self.information is not None:
-            result[v2k.k_information] = serialize(2, self.information)
-        if self.controller is not None:
-            result[v2k.k_controller] = serialize(2, self.controller)
-        if self.properties is not None:
-            result[v2k.k_properties] = serialize(2, self.properties)
-        return result
+        self.properties = deserialize(properties_val, list, properties_hint)

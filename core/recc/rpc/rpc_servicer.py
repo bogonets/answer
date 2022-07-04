@@ -148,7 +148,7 @@ class RpcServicer(RpcApiServicer):
         json_text = request.json
         logger.info(f"SetTaskBlueprint(json={json_text})")
         self._task.clear()
-        self._task.set_blueprint_json(json_text, 1, self._workspace.template_manager)
+        self._task.set_blueprint_json(json_text, self._workspace.template_manager)
         return SetTaskBlueprintA(result=Result(code=0))
 
     async def GetNodeProperty(

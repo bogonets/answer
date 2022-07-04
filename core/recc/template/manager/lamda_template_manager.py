@@ -59,7 +59,7 @@ def create_template(
     template_directory: Optional[str] = None,
     venv_directory: Optional[str] = None,
 ) -> LamdaTemplate:
-    template = deserialize_json_file(1, template_path, LamdaTemplate)
+    template = deserialize_json_file(template_path, LamdaTemplate)
     if not template.information:
         raise ValueError(f"Empty template information section: {template_path}")
 

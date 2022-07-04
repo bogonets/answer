@@ -10,14 +10,13 @@ from tester.samples.read_samples import DEFAULT_ENCODING, read_sample_json  # no
 def create_sample_task(
     filename: str,
     encoding=DEFAULT_ENCODING,
-    version=1,
 ) -> TaskGraph:
     json = read_sample_json(filename, encoding)
     graph = bp_converter(json)
     assert graph.tasks is not None
     task = next(iter(graph.tasks.values()))
-    task_json = serialize_json_text(version, task)
+    task_json = serialize_json_text(task)
 
     result = TaskGraph()
-    result.set_blueprint_json(task_json, version, LamdaTemplateManager())
+    result.set_blueprint_json(task_json, LamdaTemplateManager())
     return result

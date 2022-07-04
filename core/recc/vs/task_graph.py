@@ -462,10 +462,8 @@ class TaskGraph:
                 front_slot = Slot.create_key(bp_arc.front.node, bp_arc.front.slot)
                 self.add_arc(self.get_slot(back_slot), self.get_slot(front_slot))
 
-    def set_blueprint_json(
-        self, json_text: str, version: int, tm: LamdaTemplateManager
-    ) -> None:
-        blueprint = deserialize_json_text(version, json_text, BpTask)
+    def set_blueprint_json(self, json_text: str, tm: LamdaTemplateManager) -> None:
+        blueprint = deserialize_json_text(json_text, BpTask)
         self.set_blueprint(blueprint, tm)
 
     # Signal

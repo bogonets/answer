@@ -177,8 +177,8 @@ class RpcClient:
         assert isinstance(response, SetTaskBlueprintA)
         assert isinstance(response.result, Result)
 
-    async def set_task_blueprint(self, task: BpTask, version=1) -> None:
-        task_json = serialize_json_text(version, task)
+    async def set_task_blueprint(self, task: BpTask) -> None:
+        task_json = serialize_json_text(task)
         await self.set_task_blueprint_json(task_json)
 
     async def get_node_property(self, node: str, prop: str) -> Any:

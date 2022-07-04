@@ -36,7 +36,6 @@ from recc.serialization.utils import (
     is_none,
     is_serializable_pod_cls,
 )
-from recc.util.version import version_tuple
 
 _T = TypeVar("_T")
 _K = TypeVar("_K")
@@ -73,16 +72,15 @@ def _is_bytearray(obj: Any) -> bool:
         return isinstance(obj, bytearray)
 
 
-def _deserialize_interface(version: int, data: Any, cls: Type[_T]) -> _T:
+def _deserialize_interface(data: Any, cls: Type[_T]) -> _T:
     result = cls()
     func = getattr(result, DESERIALIZE_METHOD_NAME)
     assert func is not None
-    func(version, data)
+    func(data)
     return result
 
 
 def _deserialize_mapping_by_keys(
-    version: int,
     data: Any,
     cls: Type[_MM],
     keys: Iterable[str],
@@ -93,13 +91,12 @@ def _deserialize_mapping_by_keys(
     for key in keys:
         serialize_value = getattr(data, key, None)
         attr_cls = elem_hint if elem_hint else type(serialize_value)
-        attr_value = _deserialize_any(version, serialize_value, attr_cls, key)
+        attr_value = _deserialize_any(serialize_value, attr_cls, key)
         setattr(result, key, attr_value)
     return result
 
 
 def _deserialize_mapping_by_items(
-    version: int,
     cls: Type[_MM],
     items: Iterable[Tuple[str, _V]],
     elem_hint: Optional[Any] = None,
@@ -108,13 +105,12 @@ def _deserialize_mapping_by_items(
     result = cls()
     for key, serialize_value in items:
         attr_cls = elem_hint if elem_hint else type(serialize_value)
-        attr_value = _deserialize_any(version, serialize_value, attr_cls, key)
+        attr_value = _deserialize_any(serialize_value, attr_cls, key)
         result.setdefault(key, attr_value)
     return result
 
 
 def _deserialize_mapping(
-    version: int,
     data: Mapping,
     cls: Type[_MM],
     elem_hint: Optional[Any] = None,
@@ -123,35 +119,33 @@ def _deserialize_mapping(
     if hasattr(data, MAPPING_METHOD_ITEMS):
         items_func = getattr(data, MAPPING_METHOD_ITEMS)
         items = items_func()
-        return _deserialize_mapping_by_items(version, cls, items, elem_hint)
+        return _deserialize_mapping_by_items(cls, items, elem_hint)
     elif hasattr(data, MAPPING_METHOD_KEYS):
         keys_func = getattr(data, MAPPING_METHOD_KEYS)
         keys = keys_func()
-        return _deserialize_mapping_by_keys(version, data, cls, keys, elem_hint)
+        return _deserialize_mapping_by_keys(data, cls, keys, elem_hint)
     else:
         members = get_public_attributes(data)
-        return _deserialize_mapping_by_items(version, cls, members, elem_hint)
+        return _deserialize_mapping_by_items(cls, members, elem_hint)
 
 
 def _deserialize_mapping_any(
-    version: int,
     data: Mapping,
     cls: Type[_MM],
     elem_hint: Optional[Any] = None,
 ) -> _MM:
     assert issubclass(cls, MutableMapping)
     if isinstance(data, Mapping):
-        return _deserialize_mapping(version, data, cls, elem_hint)
+        return _deserialize_mapping(data, cls, elem_hint)
     elif _iterable_compatibility(data):
         mapping = {str(i): v for i, v in enumerate(data)}
-        return _deserialize_mapping(version, mapping, cls, elem_hint)
+        return _deserialize_mapping(mapping, cls, elem_hint)
     else:
         mapping = {_FIRST_INDEX_KEY_STR: data}
-        return _deserialize_mapping(version, mapping, cls, elem_hint)
+        return _deserialize_mapping(mapping, cls, elem_hint)
 
 
 def _deserialize_iterable(
-    version: int,
     data: Iterable,
     cls: Type[_MS],
     elem_hint: Optional[Any] = None,
@@ -163,25 +157,24 @@ def _deserialize_iterable(
 
     for i, serialize_value in enumerate(data):
         attr_cls = elem_hint if elem_hint else type(serialize_value)
-        attr_value = _deserialize_any(version, serialize_value, attr_cls, f"[{i}]")
+        attr_value = _deserialize_any(serialize_value, attr_cls, f"[{i}]")
         result.insert(len(result), attr_value)
     return result
 
 
 def _deserialize_iterable_any(
-    version: int,
     data: Any,
     cls: Type[_MS],
     elem_hint: Optional[Any] = None,
 ) -> _MS:
     assert issubclass(cls, MutableSequence)
     if _iterable_compatibility(data):
-        return _deserialize_iterable(version, data, cls, elem_hint)
+        return _deserialize_iterable(data, cls, elem_hint)
     else:
-        return _deserialize_iterable(version, [data], cls, elem_hint)
+        return _deserialize_iterable([data], cls, elem_hint)
 
 
-def _deserialize_data_to_dict(version: int, data: Any, cls: Type[_T]) -> Dict[str, Any]:
+def _deserialize_data_to_dict(data: Any, cls: Type[_T]) -> Dict[str, Any]:
     result: Dict[str, Any] = dict()
     result_hints = get_type_hints(cls)
     for key, serialize_value in get_public_attributes(data):
@@ -198,24 +191,23 @@ def _deserialize_data_to_dict(version: int, data: Any, cls: Type[_T]) -> Dict[st
             assert hint is None
             attr_cls = type(serialize_value)
 
-        result[key] = _deserialize_any(version, serialize_value, attr_cls, key, hint)
+        result[key] = _deserialize_any(serialize_value, attr_cls, key, hint)
     return result
 
 
-def _deserialize_dataclass(version: int, data: Any, cls: Type[_T]) -> _T:
-    deserialize_datas = _deserialize_data_to_dict(version, data, cls)
+def _deserialize_dataclass(data: Any, cls: Type[_T]) -> _T:
+    deserialize_datas = _deserialize_data_to_dict(data, cls)
     return cls(**deserialize_datas)  # type: ignore[call-arg]
 
 
-def _deserialize_object(version: int, data: Any, cls: Type[_T]) -> _T:
+def _deserialize_object(data: Any, cls: Type[_T]) -> _T:
     result = cls()
-    for key, value in _deserialize_data_to_dict(version, data, cls).items():
+    for key, value in _deserialize_data_to_dict(data, cls).items():
         setattr(result, key, value)
     return result
 
 
 def _deserialize_any(
-    version: int,
     data: Any,
     cls: Type[_T],
     key: Optional[str] = None,
@@ -240,25 +232,25 @@ def _deserialize_any(
             if len(union_types) >= 2:
                 raise DeserializeError("Two or more UNION types can not be deduced.")
             assert len(union_types) == 1
-            return _deserialize_any(version, data, union_types[0], None, union_types[0])
+            return _deserialize_any(data, union_types[0], None, union_types[0])
         elif issubclass(type_origin, bytes):
             return bytes(data)
         elif issubclass(type_origin, bytearray):
             return bytearray(data)
         elif is_deserialize_cls(type_origin):
-            return _deserialize_interface(version, data, type_origin)
+            return _deserialize_interface(data, type_origin)
         elif is_serializable_pod_cls(type_origin):
             return type_origin(data)
         elif issubclass(type_origin, MutableMapping):
             elem_type = None
             if len(type_args) == 2:
                 elem_type = type_args[1]
-            return _deserialize_mapping_any(version, data, type_origin, elem_type)
+            return _deserialize_mapping_any(data, type_origin, elem_type)
         elif issubclass(type_origin, MutableSequence):
             elem_type = None
             if len(type_args) == 1:
                 elem_type = type_args[0]
-            return _deserialize_iterable_any(version, data, type_origin, elem_type)
+            return _deserialize_iterable_any(data, type_origin, elem_type)
 
         # Deduced by class.
 
@@ -322,29 +314,29 @@ def _deserialize_any(
             elif issubclass(cls, tuple):
                 return cls(*data)
             elif is_deserialize_cls(cls):
-                return _deserialize_interface(version, data, cls)
+                return _deserialize_interface(data, cls)
             elif issubclass(cls, MutableMapping):
-                return _deserialize_mapping_any(version, data, cls)
+                return _deserialize_mapping_any(data, cls)
             elif issubclass(cls, MutableSequence):
-                return _deserialize_iterable_any(version, data, cls)
+                return _deserialize_iterable_any(data, cls)
             elif is_dataclass(cls):
-                return _deserialize_dataclass(version, data, cls)
+                return _deserialize_dataclass(data, cls)
             elif isclass(cls):
                 if required_init_parameters(cls):
-                    return _deserialize_dataclass(version, data, cls)
+                    return _deserialize_dataclass(data, cls)
                 else:
-                    return _deserialize_object(version, data, cls)
+                    return _deserialize_object(data, cls)
 
         # Deduced by data.
 
         if isinstance(data, (bytes, bytearray, bool, int, float, str)):
             return data
         elif isinstance(data, Mapping):
-            return _deserialize_mapping(version, data, dict)
+            return _deserialize_mapping(data, dict)
         elif isinstance(data, Iterable):
-            return _deserialize_iterable(version, data, list)
+            return _deserialize_iterable(data, list)
         elif isclass(type(data)):
-            return _deserialize_object(version, data, dict)
+            return _deserialize_object(data, dict)
 
         raise DeserializeError(
             f"The data(`{type(data)}`) and class(`{cls}`) are not compatible."
@@ -357,27 +349,25 @@ def _deserialize_any(
 
 
 def deserialize(
-    version: int,
     data: Any,
     cls: Type[_T],
     hint: Optional[Any] = None,
 ) -> _T:
     try:
-        return _deserialize_any(version, data, cls, _ROOT_KEY, hint)
+        return _deserialize_any(data, cls, _ROOT_KEY, hint)
     except DeserializeError as e:
         raise KeyError(f"Key(`{e.key}`) error: {e.msg}")
 
 
 def deserialize_default(data: Any, cls_or_hint: Any) -> Any:
-    major = version_tuple[0]
     origin = get_origin(cls_or_hint)
     if origin is None:
-        return deserialize(major, data, cls_or_hint, None)
+        return deserialize(data, cls_or_hint, None)
     elif issubclass(origin, list):
         # maybe typing.List[_V]
-        return deserialize(major, data, list, cls_or_hint)
+        return deserialize(data, list, cls_or_hint)
     elif issubclass(origin, dict):
         # maybe typing.Dict[_K, _V]
-        return deserialize(major, data, dict, cls_or_hint)
+        return deserialize(data, dict, cls_or_hint)
     else:
         raise TypeError(f"Unsupported origin: {origin.__name__}")

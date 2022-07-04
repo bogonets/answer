@@ -12,32 +12,17 @@ class TemplateLocaleTestCase(TestCase):
         self.assertTrue(issubclass(Locale, Mapping))
         self.assertTrue(issubclass(Locale, MutableMapping))
 
-    def test_default_v1(self):
+    def test_default(self):
         obj = Locale()
         obj["en"] = "Hah"
         obj["ko"] = "Eng"
-        data = obj.__serialize__(1)
+        data = obj.__serialize__()
         self.assertEqual(2, len(data))
         self.assertEqual("Hah", data["en"])
         self.assertEqual("Eng", data["ko"])
 
         obj2 = Locale()
-        obj2.__deserialize__(1, data)
-        self.assertEqual(2, len(obj2))
-        self.assertEqual("Hah", obj2["en"])
-        self.assertEqual("Eng", obj2["ko"])
-
-    def test_default_v2(self):
-        obj = Locale()
-        obj["en"] = "Hah"
-        obj["ko"] = "Eng"
-        data = obj.__serialize__(2)
-        self.assertEqual(2, len(data))
-        self.assertEqual("Hah", data["en"])
-        self.assertEqual("Eng", data["ko"])
-
-        obj2 = Locale()
-        obj2.__deserialize__(2, data)
+        obj2.__deserialize__(data)
         self.assertEqual(2, len(obj2))
         self.assertEqual("Hah", obj2["en"])
         self.assertEqual("Eng", obj2["ko"])

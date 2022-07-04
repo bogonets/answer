@@ -11,13 +11,13 @@ from recc.serialization.errors import (
 
 class SerializeInterface(metaclass=ABCMeta):
     @abstractmethod
-    def __serialize__(self, version: int) -> Any:
+    def __serialize__(self) -> Any:
         raise NotImplementedError
 
 
 class DeserializeInterface(metaclass=ABCMeta):
     @abstractmethod
-    def __deserialize__(self, version: int, data: Any) -> None:
+    def __deserialize__(self, data: Any) -> None:
         raise NotImplementedError
 
 
@@ -26,8 +26,8 @@ DESERIALIZE_METHOD_NAME = DeserializeInterface.__deserialize__.__name__
 
 
 class Serializable(SerializeInterface, DeserializeInterface):
-    def __serialize__(self, version: int) -> Any:
+    def __serialize__(self) -> Any:
         raise NotImplementedSerializeError()
 
-    def __deserialize__(self, version: int, data: Any) -> None:
+    def __deserialize__(self, data: Any) -> None:
         raise NotImplementedDeserializeError()

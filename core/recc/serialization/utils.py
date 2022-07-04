@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, Final, Iterable, List, Optional
+from typing import Any, Dict, Final
 
 from recc.serialization.interface import (
     DESERIALIZE_METHOD_NAME,
@@ -76,19 +76,3 @@ def update_dict(
             result[key] = default
     else:
         result[key] = value
-
-
-def normalize_strings(value: Any) -> Optional[List[str]]:
-    if value is None:
-        return None
-    if isinstance(value, str):
-        return [value]
-    if isinstance(value, Iterable):
-        result = []
-        for elem in iter(value):
-            if isinstance(elem, str):
-                result.append(elem)
-            else:
-                result.append(str(elem))
-        return result
-    return [str(value)]

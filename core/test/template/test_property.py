@@ -7,38 +7,7 @@ from recc.template.property import Property
 
 
 class TemplatePropertyTestCase(TestCase):
-    def test_default_v1(self):
-        data = {
-            "rule": "initialize_only",
-            "name": "options",
-            "default_value": "rtsp,tcp",
-            "type": "csv",
-            "required": False,
-            "valid": {
-                "advance": True,
-                "hint": "rtsp_transport=tcp;rtsp_transport=udp",
-                "list": "bgr24;rgb24",
-            },
-            "title": {"en": "options", "ko": "options"},
-            "help": {"en": "en.options", "ko": "ko.options"},
-        }
-        obj = Property()
-        obj.__deserialize__(1, data)
-        self.assertEqual("initialize_only", obj.rule)
-        self.assertEqual("options", obj.name)
-        self.assertEqual("rtsp,tcp", obj.value_default)
-        self.assertEqual("csv", obj.value_type)
-        self.assertFalse(obj.required)
-        self.assertTrue(obj.advance)
-        self.assertEqual(["bgr24", "rgb24"], obj.choice)
-        self.assertEqual(["rtsp_transport=tcp", "rtsp_transport=udp"], obj.hint)
-        self.assertEqual({"en": "options", "ko": "options"}, obj.titles)
-        self.assertEqual({"en": "en.options", "ko": "ko.options"}, obj.helps)
-
-        serialize_data = obj.__serialize__(1)
-        self.assertEqual(data, serialize_data)
-
-    def test_default_v2(self):
+    def test_default(self):
         obj = Property()
         obj.titles = Locale()
         obj.choice = ["a", "b"]
@@ -48,7 +17,7 @@ class TemplatePropertyTestCase(TestCase):
         obj.helps = Locale()
         obj.helps["jp"] = "japanese"
 
-        data = obj.__serialize__(2)
+        data = obj.__serialize__()
         self.assertIsInstance(data, dict)
         self.assertEqual(["a", "b"], data["choice"])
         self.assertEqual(["c", "d"], data["hint"])
@@ -59,7 +28,7 @@ class TemplatePropertyTestCase(TestCase):
         self.assertEqual("japanese", data["helps"]["jp"])
 
         data2 = Property()
-        data2.__deserialize__(2, data)
+        data2.__deserialize__(data)
         self.assertEqual(["a", "b"], data2.choice)
         self.assertEqual(["c", "d"], data2.hint)
         self.assertEqual(2, len(data2.titles))

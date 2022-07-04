@@ -22,31 +22,28 @@ def _decode_json_text(json_text: str) -> Any:
     return global_json_decoder(json_text)
 
 
-def serialize_json_text(version: int, obj: Any) -> str:
-    return _encode_json_text(serialize(version, obj))
+def serialize_json_text(obj: Any) -> str:
+    return _encode_json_text(serialize(obj))
 
 
 def deserialize_json_text(
-    version: int,
     json_text: str,
     cls: Type[_T],
     hint: Optional[Type[_ET]] = None,
 ) -> Any:
-    return deserialize(version, _decode_json_text(json_text), cls, hint)
+    return deserialize(_decode_json_text(json_text), cls, hint)
 
 
 def serialize_json_file(
-    version: int,
     obj: Any,
     path: str,
     encoding=DEFAULT_ENCODING,
 ) -> None:
     with open(path, mode="w", encoding=encoding) as f:
-        f.write(serialize_json_text(version, obj))
+        f.write(serialize_json_text(obj))
 
 
 def deserialize_json_file(
-    version: int,
     json_file: str,
     cls: Type[_T],
     hint: Optional[Type[_ET]] = None,
@@ -54,7 +51,7 @@ def deserialize_json_file(
 ) -> Any:
     try:
         with codecs.open(filename=json_file, encoding=encoding) as f:
-            return deserialize_json_text(version, f.read(), cls, hint)
+            return deserialize_json_text(f.read(), cls, hint)
     except JSONDecodeError as e:
         msg = f"{json_file} file, {e.msg}"
         doc = e.doc
