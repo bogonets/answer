@@ -8,6 +8,7 @@ from aiohttp.hdrs import CONTENT_ENCODING, CONTENT_LENGTH, CONTENT_TYPE
 from aiohttp.web_exceptions import HTTPBadRequest, HTTPLengthRequired
 from aiohttp.web_request import Request
 from multidict import CIMultiDictProxy
+from type_serialize import deserialize
 
 from recc.driver.json import global_json_decoder
 from recc.driver.xml import global_xml_decoder
@@ -20,7 +21,6 @@ from recc.mime.mime_type import (
     MIME_TEXT_PLAIN,
     MimeType,
 )
-from recc.serialization.deserialize import deserialize_default
 
 _T = TypeVar("_T")
 
@@ -66,7 +66,7 @@ def payload_to_object(headers: CIMultiDictProxy[str], payload: str) -> Any:
 
 def payload_to_class(headers: CIMultiDictProxy[str], payload: str, cls: Type[_T]) -> _T:
     data = payload_to_object(headers, payload)
-    return deserialize_default(data, cls)
+    return deserialize(data, cls)
 
 
 def assert_required_arguments(obj: Any) -> None:

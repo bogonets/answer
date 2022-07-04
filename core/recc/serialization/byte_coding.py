@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import Any, Optional
 
+from type_serialize import deserialize, serialize
+
 from recc.serialization.byte import (
     COMPRESS_LEVEL_TRADEOFF,
     DEFAULT_PICKLE_ENCODING,
@@ -27,8 +29,6 @@ from recc.serialization.byte import (
     pickling5,
     unpickling,
 )
-from recc.serialization.deserialize import deserialize_default
-from recc.serialization.serialize import serialize
 
 
 class ByteCodingType(Enum):
@@ -135,4 +135,4 @@ def decode(
     encoding=DEFAULT_PICKLE_ENCODING,
 ) -> Any:
     obj = bytes_to_object(data=data, coding=coding, encoding=encoding)
-    return deserialize_default(obj, cls) if cls is not None else obj
+    return deserialize(obj, cls) if cls is not None else obj

@@ -3,7 +3,7 @@
 from functools import reduce
 from typing import Any, Dict, List, Type, TypeVar, Union
 
-from recc.serialization.deserialize import deserialize_default
+from type_serialize import deserialize
 
 _T = TypeVar("_T")
 
@@ -79,8 +79,8 @@ class DaemonAnswer:
 
     def cast(self, key: Union[int, str], cls: Type[_T]) -> _T:
         if isinstance(key, int):
-            return deserialize_default(self.args[key], cls)
+            return deserialize(self.args[key], cls)
         elif isinstance(key, str):
-            return deserialize_default(self.kwargs[key], cls)
+            return deserialize(self.kwargs[key], cls)
         else:
             raise KeyError(f"Unsupported key type: {type(key).__name__}")
