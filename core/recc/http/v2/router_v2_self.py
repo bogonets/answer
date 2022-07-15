@@ -47,6 +47,7 @@ class RouterV2Self:
             # User extra
             web.get(u.extra, self.get_extra),
             web.patch(u.extra, self.patch_extra),
+            web.get(u.extra_pkey, self.get_extra_pkey),
 
             # Password
             web.patch(u.password, self.patch_password),
@@ -105,6 +106,11 @@ class RouterV2Self:
     @parameter_matcher
     async def patch_extra(self, session: SessionEx, body: Dict[str, Any]) -> None:
         await self.context.update_user_extra(session.audience, body)
+
+    @parameter_matcher
+    async def get_extra_pkey(self, session: SessionEx, key: str) -> Any:
+        db_user = await self.context.get_user(session.uid)
+        return db_user.extra
 
     # --------
     # Password

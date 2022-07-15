@@ -103,6 +103,9 @@ class DaemonManager(DaemonManagerEvents):
     def __len__(self) -> int:
         return len(self._daemons)
 
+    def __contains__(self, slug: str) -> bool:
+        return slug in self._daemons
+
     @property
     def zombies(self):
         return self._zombies

@@ -120,6 +120,7 @@ daemons_pdaemon = daemons + pdaemon
 daemons_pdaemon_environment = daemons_pdaemon + environment
 daemons_pdaemon_start = daemons_pdaemon + start
 daemons_pdaemon_stop = daemons_pdaemon + stop
+extra_pkey = extra + pkey
 groups_pgroup = groups + pgroup
 groups_pgroup_members = groups_pgroup + members
 groups_pgroup_members_pmember = groups_pgroup_members + pmember

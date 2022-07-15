@@ -78,8 +78,12 @@ class ContextDaemon(ContextBase):
         return self._daemons.get_state(slug)
 
     async def start_daemon(self, slug: str) -> None:
-        address = await self.get_daemon_address_by_slug(slug)
-        await self._daemons.start(slug, address)
+        daemon = await self.get_daemon_by_slug(slug)
+        if slug not in self._daemons:
+            self._daemons.create(slug, daemon.plugin)
+
+        assert slug in self._daemons
+        await self._daemons.start(slug, daemon.address)
 
     def kill_daemon(self, slug: str) -> None:
         self._daemons.kill(slug)
