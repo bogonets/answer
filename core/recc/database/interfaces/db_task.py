@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from recc.database.struct.task import Task
+from recc.packet.task import Task
 
 
 class DbTask(metaclass=ABCMeta):

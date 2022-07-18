@@ -3,7 +3,7 @@
 from typing import List
 from unittest import main
 
-from recc.database.struct.permission import Permission
+from recc.packet.permission import Permission
 from recc.variables.database import (
     ROLE_SLUG_DEVELOPER,
     ROLE_SLUG_GUEST,

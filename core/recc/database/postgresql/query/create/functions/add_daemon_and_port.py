@@ -4,7 +4,7 @@ from datetime import datetime
 from functools import reduce
 from typing import List
 
-from recc.database.struct.port import SockType
+from recc.packet.port import SockType
 from recc.variables.database import (
     DAEMON_NAME_STR_SIZE,
     DAEMON_PLUGIN_STR_SIZE,

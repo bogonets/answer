@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from typing import List, Optional
 
-from recc.database.struct.permission import Permission
+from recc.packet.permission import Permission
 
 
 class DbPermission(metaclass=ABCMeta):

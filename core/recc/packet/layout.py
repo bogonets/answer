@@ -2,17 +2,22 @@
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, List, Optional
+from enum import Enum, unique
+from typing import Any, Optional
+
+
+@unique
+class LayoutState(Enum):
+    DISABLE = 0
+    ENABLE = 1
 
 
 @dataclass
-class Group:
+class Layout:
     uid: Optional[int] = None
-    slug: Optional[str] = None
+    project_uid: Optional[int] = None
     name: Optional[str] = None
     description: Optional[str] = None
-    features: Optional[List[str]] = None
-    visibility: Optional[int] = None
     extra: Optional[Any] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

@@ -15,7 +15,7 @@ from recc.database.postgresql.query.role_permission import (
     delete_role_permission_by_role_uid,
     safe_insert_role_permission_by_slug,
 )
-from recc.database.struct.role_permission import RolePermission
+from recc.packet.role_permission import RolePermission
 
 
 class PgRolePermission(DbRolePermission, PgBase):

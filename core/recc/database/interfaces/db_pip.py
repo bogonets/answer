@@ -3,7 +3,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import List
 
-from recc.database.struct.pip import Pip
+from recc.packet.pip import Pip
 
 
 class DbPip(metaclass=ABCMeta):

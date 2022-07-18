@@ -3,7 +3,7 @@
 from typing import List
 
 from recc.core.mixin.context_base import ContextBase
-from recc.database.struct.port import Port
+from recc.packet.port import Port
 
 
 class ContextPort(ContextBase):

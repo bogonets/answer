@@ -12,7 +12,7 @@ from recc.database.postgresql.query.pip import (
     SELECT_PIP_ALL,
     SELECT_PIP_BY_DOMAIN_AND_NAME,
 )
-from recc.database.struct.pip import Pip
+from recc.packet.pip import Pip
 
 
 class PgPip(DbPip, PgBase):

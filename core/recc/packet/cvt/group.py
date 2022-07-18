@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from recc.database.struct.group import Group
-from recc.packet.group import GroupA
+from recc.packet.group import Group, GroupA
 
 
 def group_to_answer(group: Group) -> GroupA:

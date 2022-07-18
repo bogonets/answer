@@ -26,7 +26,7 @@ from recc.database.postgresql.query.user import (
     UPDATE_USER_PASSWORD_AND_SALT_BY_UID,
     get_update_user_query_by_uid,
 )
-from recc.database.struct.user import PassInfo, User
+from recc.packet.user import PassInfo, User
 
 
 class PgUser(DbUser, PgBase):

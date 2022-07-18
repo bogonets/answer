@@ -3,7 +3,7 @@
 from datetime import datetime, timedelta
 from unittest import main
 
-from recc.database.struct.port import SockType
+from recc.packet.port import SockType
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 

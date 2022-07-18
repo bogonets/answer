@@ -18,11 +18,8 @@ from recc.database.postgresql.query.group_member import (
     SELECT_GROUP_MEMBER_JOIN_PROJECT_BY_USER_UID,
     UPDATE_GROUP_MEMBER_ROLE,
 )
-from recc.database.struct.group_join_member import (
-    GroupJoinGroupMember,
-    ProjectJoinGroupMember,
-)
-from recc.database.struct.group_member import GroupMember
+from recc.packet.group_join_member import GroupJoinGroupMember, ProjectJoinGroupMember
+from recc.packet.group_member import GroupMember
 
 
 class PgGroupMember(DbGroupMember, PgBase):

@@ -17,7 +17,7 @@ from recc.database.postgresql.query.port import (
     SELECT_PORT_NUMBER_ALL,
     get_update_port_query_by_number,
 )
-from recc.database.struct.port import Port, SockType
+from recc.packet.port import Port, SockType
 
 
 class PgPort(DbPort, PgBase):

@@ -15,7 +15,7 @@ from recc.database.postgresql.query.project_member import (
     SELECT_PROJECT_MEMBER_BY_USER_UID,
     UPDATE_PROJECT_MEMBER_ROLE,
 )
-from recc.database.struct.project_member import ProjectMember
+from recc.packet.project_member import ProjectMember
 
 
 class PgProjectMember(DbProjectMember, PgBase):

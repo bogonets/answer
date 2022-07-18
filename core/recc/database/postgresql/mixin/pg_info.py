@@ -20,7 +20,7 @@ from recc.database.postgresql.query.info import (
     UPDATE_INFO_VALUE_BY_KEY,
     UPSERT_INFO,
 )
-from recc.database.struct.info import Info
+from recc.packet.info import Info
 
 
 class PgInfo(DbInfo, PgBase):

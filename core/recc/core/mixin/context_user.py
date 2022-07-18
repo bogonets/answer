@@ -8,7 +8,7 @@ from recc.chrono.datetime import tznow
 from recc.chrono.duration import duration_to_timedelta
 from recc.core.mixin.context_base import ContextBase
 from recc.crypto.password import encrypt_password
-from recc.database.struct.user import PassInfo, User
+from recc.packet.user import PassInfo, User
 from recc.session.session import Session
 from recc.variables.database import PASSWORD_HEX_STR_SIZE, SALT_BYTE, SALT_HEX_STR_SIZE
 

@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from typing import List, Optional
 
-from recc.database.struct.info import Info
+from recc.packet.info import Info
 
 
 class DbInfo(metaclass=ABCMeta):

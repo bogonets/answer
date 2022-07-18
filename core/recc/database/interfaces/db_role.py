@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from typing import Any, List, Optional
 
-from recc.database.struct.role import Role
+from recc.packet.role import Role
 
 
 class DbRole(metaclass=ABCMeta):

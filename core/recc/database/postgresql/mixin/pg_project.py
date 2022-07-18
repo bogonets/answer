@@ -20,7 +20,7 @@ from recc.database.postgresql.query.project import (
     SELECT_PROJECT_UID_BY_GROUP_UID_AND_SLUG,
     get_update_project_query_by_uid,
 )
-from recc.database.struct.project import Project
+from recc.packet.project import Project
 from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 
 

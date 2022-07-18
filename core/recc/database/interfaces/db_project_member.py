@@ -3,7 +3,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import List
 
-from recc.database.struct.project_member import ProjectMember
+from recc.packet.project_member import ProjectMember
 
 
 class DbProjectMember(metaclass=ABCMeta):

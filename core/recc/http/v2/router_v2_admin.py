@@ -9,7 +9,6 @@ from aiohttp.web_request import Request
 from aiohttp.web_routedef import AbstractRouteDef
 
 from recc.core.context import Context
-from recc.database.struct.group import Group
 from recc.http import http_urls as u
 from recc.http.http_parameter import parameter_matcher
 from recc.packet.config import ConfigA, UpdateConfigValueQ
@@ -19,7 +18,7 @@ from recc.packet.cvt.daemon import daemon_to_answer
 from recc.packet.cvt.project import project_to_answer
 from recc.packet.cvt.role import role_to_answer
 from recc.packet.daemon import CreateDaemonQ, DaemonA, UpdateDaemonQ
-from recc.packet.group import CreateGroupQ, GroupA, UpdateGroupQ
+from recc.packet.group import CreateGroupQ, Group, GroupA, UpdateGroupQ
 from recc.packet.plugin import PluginNameA
 from recc.packet.port import PortA, PortRangeA
 from recc.packet.project import CreateProjectQ, ProjectA, UpdateProjectQ
@@ -554,4 +553,5 @@ class RouterV2Admin:
 
     @parameter_matcher
     async def get_ports(self) -> List[PortA]:
-        return await self.context.get_ports()
+        ports = await self.context.get_ports()
+        return [PortA(**vars(port)) for port in ports]

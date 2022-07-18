@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from typing import List, Optional
 
-from recc.database.struct.port import Port, SockType
+from recc.packet.port import Port, SockType
 
 
 class DbPort(metaclass=ABCMeta):

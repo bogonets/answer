@@ -20,7 +20,7 @@ from recc.database.postgresql.query.layout import (
     UPDATE_LAYOUT_EXTRA_BY_PROJECT_UID_AND_NAME,
     UPDATE_LAYOUT_EXTRA_BY_UID,
 )
-from recc.database.struct.layout import Layout
+from recc.packet.layout import Layout
 
 
 class PgLayout(DbLayout, PgBase):

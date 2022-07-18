@@ -20,7 +20,7 @@ from recc.database.postgresql.query.widget import (
     UPDATE_WIDGET_EXTRA_BY_LAYOUT_UID_AND_NAME,
     UPDATE_WIDGET_EXTRA_BY_UID,
 )
-from recc.database.struct.widget import Widget
+from recc.packet.widget import Widget
 
 
 class PgWidget(DbWidget, PgBase):

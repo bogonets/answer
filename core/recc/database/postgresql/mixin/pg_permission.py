@@ -22,7 +22,7 @@ from recc.database.postgresql.query.permission import (
     SELECT_PERMISSION_SLUG_BY_UID,
     SELECT_PERMISSION_UID_BY_SLUG,
 )
-from recc.database.struct.permission import Permission
+from recc.packet.permission import Permission
 
 
 class PgPermission(DbPermission, PgBase):

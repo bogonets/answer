@@ -2,8 +2,7 @@
 
 from typing import List, Optional
 
-from recc.database.struct.role import Role
-from recc.packet.role import RoleA
+from recc.packet.role import Role, RoleA
 
 
 def role_to_answer(role: Role, permissions: Optional[List[str]] = None) -> RoleA:

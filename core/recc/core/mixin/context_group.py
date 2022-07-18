@@ -3,9 +3,9 @@
 from typing import Any, List, Optional
 
 from recc.core.mixin.context_base import ContextBase
-from recc.database.struct.group import Group
-from recc.database.struct.group_join_member import GroupJoinGroupMember
-from recc.database.struct.group_member import GroupMember
+from recc.packet.group import Group
+from recc.packet.group_join_member import GroupJoinGroupMember
+from recc.packet.group_member import GroupMember
 from recc.variables.database import (
     ROLE_UID_OWNER,
     VISIBILITY_LEVEL_INTERNAL,

@@ -26,7 +26,7 @@ from recc.database.postgresql.query.task import (
     UPDATE_TASK_KEYS_BY_UID,
     get_update_task_query_by_uid,
 )
-from recc.database.struct.task import Task
+from recc.packet.task import Task
 
 
 class PgTask(DbTask, PgBase):

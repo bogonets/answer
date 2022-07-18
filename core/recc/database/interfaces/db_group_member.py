@@ -3,11 +3,8 @@
 from abc import ABCMeta, abstractmethod
 from typing import List
 
-from recc.database.struct.group_join_member import (
-    GroupJoinGroupMember,
-    ProjectJoinGroupMember,
-)
-from recc.database.struct.group_member import GroupMember
+from recc.packet.group_join_member import GroupJoinGroupMember, ProjectJoinGroupMember
+from recc.packet.group_member import GroupMember
 
 
 class DbGroupMember(metaclass=ABCMeta):

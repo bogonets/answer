@@ -2,9 +2,9 @@
 
 from dataclasses import dataclass
 
-from recc.database.struct.group import Group
-from recc.database.struct.group_member import GroupMember
-from recc.database.struct.project import Project
+from recc.packet.group import Group
+from recc.packet.group_member import GroupMember
+from recc.packet.project import Project
 
 
 @dataclass

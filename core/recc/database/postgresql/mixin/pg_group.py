@@ -19,7 +19,7 @@ from recc.database.postgresql.query.group import (
     SELECT_GROUP_UID_BY_SLUG,
     get_update_group_query_by_uid,
 )
-from recc.database.struct.group import Group
+from recc.packet.group import Group
 from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 
 

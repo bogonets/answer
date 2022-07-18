@@ -8,7 +8,7 @@ from typing import Optional
 
 @dataclass
 class Daemon:
-    """It is mapped to the daemon table in the database."""
+    """It is mapped to the `daemon` table in the database."""
 
     uid: int
     plugin: str

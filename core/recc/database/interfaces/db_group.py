@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from typing import Any, List, Optional
 
-from recc.database.struct.group import Group
+from recc.packet.group import Group
 from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 
 

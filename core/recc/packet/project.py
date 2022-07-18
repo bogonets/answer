@@ -8,6 +8,22 @@ from recc.variables.database import VISIBILITY_LEVEL_PRIVATE
 
 
 @dataclass
+class Project:
+    """It is mapped to the `project` table in the database."""
+
+    uid: Optional[int] = None
+    group_uid: Optional[int] = None
+    slug: Optional[str] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
+    features: Optional[List[str]] = None
+    visibility: Optional[int] = None
+    extra: Optional[Any] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+
+@dataclass
 class ProjectA:
     group_slug: str
     project_slug: str

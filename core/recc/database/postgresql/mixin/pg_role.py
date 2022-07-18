@@ -20,7 +20,7 @@ from recc.database.postgresql.query.role import (
     SELECT_ROLE_UID_BY_SLUG,
     get_update_role_query_by_uid,
 )
-from recc.database.struct.role import Role
+from recc.packet.role import Role
 
 
 class PgRole(DbRole, PgBase):

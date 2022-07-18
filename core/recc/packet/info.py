@@ -6,6 +6,16 @@ from typing import Optional
 
 
 @dataclass
+class Info:
+    """It is mapped to the `info` table in the database."""
+
+    key: str
+    value: str
+    created_at: datetime
+    updated_at: datetime
+
+
+@dataclass
 class InfoA:
     key: str
     value: Optional[str] = None

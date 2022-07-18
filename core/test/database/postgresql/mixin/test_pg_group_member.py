@@ -2,7 +2,7 @@
 
 from unittest import main
 
-from recc.database.struct.group_join_member import GroupJoinGroupMember
+from recc.packet.group_join_member import GroupJoinGroupMember
 from tester.unittest.postgresql_test_case import PostgresqlTestCase
 
 

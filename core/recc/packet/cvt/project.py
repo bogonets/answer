@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from recc.database.struct.project import Project
-from recc.packet.project import ProjectA
+from recc.packet.project import Project, ProjectA
 
 
 def project_to_answer(project: Project, group_slug: str) -> ProjectA:

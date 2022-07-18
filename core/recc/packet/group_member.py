@@ -5,7 +5,9 @@ from typing import Optional
 
 
 @dataclass
-class ProjectMember:
-    project_uid: Optional[int] = None
+class GroupMember:
+    """It is mapped to the `group_member` table in the database."""
+
+    group_uid: Optional[int] = None
     user_uid: Optional[int] = None
     role_uid: Optional[int] = None
