@@ -25,8 +25,8 @@ from recc.argparse.config.daemon_config import (
     ARG_DAEMON_PACKAGES_DIR,
 )
 from recc.argparse.config.global_config import ARG_LOG_SIMPLY
-from recc.daemon.daemon_state import DaemonState
 from recc.filesystem.permission import is_writable_dir
+from recc.packet.daemon import DaemonState
 from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
 from recc.subprocess.async_subprocess import AsyncSubprocess
 

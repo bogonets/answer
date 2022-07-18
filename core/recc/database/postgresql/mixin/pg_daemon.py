@@ -21,7 +21,7 @@ from recc.database.postgresql.query.daemon import (
     SELECT_DAEMON_UID_BY_SLUG,
     get_update_daemon_query_by_uid,
 )
-from recc.database.struct.daemon import Daemon
+from recc.packet.daemon import Daemon
 from recc.uri.rpc_uri import parse_rpc_address_as_class
 
 

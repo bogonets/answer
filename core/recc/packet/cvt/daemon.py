@@ -2,9 +2,7 @@
 
 from typing import Optional
 
-from recc.daemon.daemon_state import DaemonState
-from recc.database.struct.daemon import Daemon
-from recc.packet.daemon import DaemonA
+from recc.packet.daemon import Daemon, DaemonA, DaemonState
 
 
 def daemon_to_answer(

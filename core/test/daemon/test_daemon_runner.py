@@ -7,7 +7,7 @@ from unittest import main
 from recc.daemon.daemon_client import create_daemon_client
 from recc.daemon.daemon_runner import DaemonRunner, StandardDaemonRunnerCallbacks
 from recc.daemon.daemon_servicer import wait_connectable
-from recc.daemon.daemon_state import DaemonState
+from recc.packet.daemon import DaemonState
 from recc.variables.rpc import DEFAULT_DAEMON_ADDRESS, DEFAULT_DAEMON_PORT
 from tester.unittest.plugin_test_case import PluginTestCase
 

@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from typing import List, Optional
 
-from recc.database.struct.daemon import Daemon
+from recc.packet.daemon import Daemon
 
 
 class DbDaemon(metaclass=ABCMeta):

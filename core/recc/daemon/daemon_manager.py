@@ -11,7 +11,6 @@ from overrides import overrides
 
 from recc.daemon.daemon_runner import DaemonRunner, DaemonRunnerCallbacks
 from recc.daemon.daemon_servicer import wait_connectable
-from recc.daemon.daemon_state import DaemonState
 from recc.filesystem.permission import (
     prepare_writable_directory,
     test_writable_directory,
@@ -19,6 +18,7 @@ from recc.filesystem.permission import (
 from recc.logging.logging import LOGGER_NAME_RECC_DAEMON
 from recc.logging.logging import recc_daemon_logger as logger
 from recc.package.package_utils import filter_module_names
+from recc.packet.daemon import DaemonState
 
 
 class _RunnerCallback(DaemonRunnerCallbacks):

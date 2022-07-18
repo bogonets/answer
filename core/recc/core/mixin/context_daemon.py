@@ -3,9 +3,8 @@
 from typing import List, Optional
 
 from recc.core.mixin.context_base import ContextBase
-from recc.daemon.daemon_state import DaemonState
-from recc.database.struct.daemon import Daemon
 from recc.package.package_utils import filter_module_names
+from recc.packet.daemon import Daemon, DaemonState
 
 
 class ContextDaemon(ContextBase):
