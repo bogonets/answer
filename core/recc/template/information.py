@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Type, TypeVar
 
 from type_serialize import Serializable, deserialize, serialize
 
@@ -9,11 +9,19 @@ from recc.template.dependency import Dependency
 from recc.template.environment import Environment
 from recc.template.locale import Locale
 from recc.template.v2 import keys as v2k
-from recc.typing.optional import strip_optional
 
 EDGE_BEGIN = "begin"
 EDGE_MIDDLE = "middle"
 EDGE_END = "begin"
+
+_T = TypeVar("_T")
+
+
+def strip_optional(obj: Any, cls: Type[_T]) -> _T:
+    if obj is None:
+        return cls()
+    else:
+        return obj
 
 
 class Information(Serializable):
