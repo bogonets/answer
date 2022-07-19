@@ -2,8 +2,6 @@
 
 from enum import Enum
 
-from recc.enumerate.string_to_enum import string_to_enum_map
-
 
 class LamdaTemplatePosition(Enum):
     Builtin = 0
@@ -11,7 +9,11 @@ class LamdaTemplatePosition(Enum):
     Storage = 2
 
 
-LAMDA_TEMPLATE_POSITION_MAP = string_to_enum_map(LamdaTemplatePosition)
+LAMDA_TEMPLATE_POSITION_MAP = {
+    "Builtin": LamdaTemplatePosition.Builtin,
+    "Package": LamdaTemplatePosition.Package,
+    "Storage": LamdaTemplatePosition.Storage,
+}
 LAMDA_TEMPLATE_POSITION_NAME_MAP = {
     v: k for k, v in LAMDA_TEMPLATE_POSITION_MAP.items()
 }
