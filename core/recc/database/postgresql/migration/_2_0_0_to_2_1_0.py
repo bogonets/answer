@@ -69,6 +69,25 @@ CREATE TABLE recc_pip (
     hash_value VARCHAR(256) NOT NULL DEFAULT ''
 );
 
+-- ALTER TABLE recc_user DROP COLUMN extra;
+-- ALTER TABLE recc_user ADD COLUMN dark BOOLEAN;
+-- ALTER TABLE recc_user ADD COLUMN lang CHAR(4);
+-- ALTER TABLE recc_user ADD COLUMN timezone CHAR(32);
+
+-- Create table: `recc_user_info`
+CREATE TABLE recc_user_info (
+    user_uid INTEGER NOT NULL
+        REFERENCES recc_user (uid)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    key VARCHAR(256),
+    value VARCHAR(2048) NOT NULL DEFAULT '',
+
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL
+);
+
 -- Update version: `2.0.0` -> `2.1.0`
 UPDATE recc_info
 SET value='2.1.0', updated_at=NOW()

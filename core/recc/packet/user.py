@@ -27,6 +27,17 @@ class User:
     last_login: Optional[datetime] = None
 
 
+@dataclass
+class UserInfo:
+    """It is mapped to the `user_info` table in the database."""
+
+    user_uid: int
+    key: str
+    value: str
+    created_at: datetime
+    updated_at: datetime
+
+
 class PassInfo:
 
     password: str
