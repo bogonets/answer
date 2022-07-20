@@ -22,12 +22,7 @@ from recc.variables.container import (
     CONTAINER_TYPE_SWARM,
     DOCKER_SOCK_LOCAL_BASE_URL,
 )
-from recc.variables.database import (
-    DATABASE_COMMAND_TIMEOUT_SECONDS,
-    DB_TYPE_NAME_MYSQL,
-    DB_TYPE_NAME_POSTGRES,
-    DB_TYPE_NAME_SQLITE,
-)
+from recc.variables.database import DATABASE_COMMAND_TIMEOUT_SECONDS
 from recc.variables.storage import STORAGE_REQUEST_TIMEOUT, STORAGE_SERVICE_TYPE_MINIO
 
 _DEFAULT_PROGRAM: Final[str] = "recc"
@@ -184,13 +179,6 @@ ARG_DATABASE_PW = Argument(
     cls=str,
     metavar="pw",
     help="Database user's password.",
-)
-ARG_DATABASE_TYPE = Argument(
-    key="--database-type",
-    last_injection_value=DB_TYPE_NAME_POSTGRES,
-    cls=str,
-    choices=(DB_TYPE_NAME_POSTGRES, DB_TYPE_NAME_MYSQL, DB_TYPE_NAME_SQLITE),
-    help="Database type.",
 )
 ARG_DATABASE_NAME = Argument(
     key="--database-name",
@@ -389,7 +377,6 @@ GLOBAL_ARGS = (
     ARG_DATABASE_PORT,
     ARG_DATABASE_USER,
     ARG_DATABASE_PW,
-    ARG_DATABASE_TYPE,
     ARG_DATABASE_NAME,
     ARG_DATABASE_TIMEOUT,
     ARG_CACHE_HOST,
@@ -439,7 +426,6 @@ class GlobalConfig(Namespace):
     database_port: int
     database_user: str
     database_pw: str
-    database_type: str
     database_name: str
     database_timeout: float
 

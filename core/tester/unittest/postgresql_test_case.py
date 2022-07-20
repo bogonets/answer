@@ -3,7 +3,7 @@
 from unittest import IsolatedAsyncioTestCase
 
 from recc.argparse.default_parser import parse_arguments_to_core_config
-from recc.database.postgresql.pg_db import PgDb
+from recc.database.pg_db import PgDb
 
 
 class PostgresqlTestCase(IsolatedAsyncioTestCase):

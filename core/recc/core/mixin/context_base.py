@@ -6,7 +6,7 @@ from recc.argparse.config.core_config import CoreConfig
 from recc.cache.cache import Cache
 from recc.container.interfaces.container_interface import ContainerInterface
 from recc.daemon.daemon_manager import DaemonManager
-from recc.database.interfaces.db_interface import DbInterface
+from recc.database.pg_db import PgDb
 from recc.plugin.core_plugin_manager import CorePluginManager
 from recc.session.session import SessionPairFactory
 from recc.storage.local_storage import LocalStorage
@@ -23,7 +23,7 @@ class ContextBase:
     _container: ContainerInterface
     _container_key: str
     _cache: Cache
-    _database: DbInterface
+    _database: PgDb
     _tasks: TaskConnectionPool
     _plugins: CorePluginManager
     _daemons: DaemonManager

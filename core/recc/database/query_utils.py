@@ -2,7 +2,7 @@
 
 from functools import reduce
 
-from recc.variables.database import SQL_SEQUENCE_POINT
+SQL_SEQUENCE_POINT = ";"
 
 
 def _merge_query_lambda(prev_reduced: str, next_elem: str) -> str:

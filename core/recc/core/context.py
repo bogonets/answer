@@ -28,7 +28,7 @@ from recc.core.mixin.context_task import ContextTask
 from recc.core.mixin.context_user import ContextUser
 from recc.crypto.signature import generate_signature
 from recc.daemon.daemon_manager import DaemonManager
-from recc.database.database import create_database
+from recc.database.pg_db import PgDb
 from recc.init.default import (
     init_json_driver,
     init_logger,
@@ -219,8 +219,7 @@ class Context(
         logger.info(f"Created cache-store: {self._config.cache_type}")
 
     def _init_database(self) -> None:
-        self._database = create_database(
-            self._config.database_type,
+        self._database = PgDb(
             self._config.database_host,
             self._config.database_port,
             self._config.database_user,
@@ -228,7 +227,7 @@ class Context(
             self._config.database_name,
             self._config.database_timeout,
         )
-        logger.info(f"Created database: {self._config.database_type}")
+        logger.info("Created database")
 
     def _init_task_manager(self) -> None:
         self._tasks = create_task_connection_pool()
