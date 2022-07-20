@@ -24,6 +24,7 @@ from recc.database.postgresql.mixin.pg_role import PgRole
 from recc.database.postgresql.mixin.pg_role_permission import PgRolePermission
 from recc.database.postgresql.mixin.pg_task import PgTask
 from recc.database.postgresql.mixin.pg_user import PgUser
+from recc.database.postgresql.mixin.pg_user_info import PgUserInfo
 from recc.database.postgresql.mixin.pg_widget import PgWidget
 from recc.database.postgresql.query.create.functions import (
     CREATE_FUNCTIONS,
@@ -67,6 +68,7 @@ class PgDb(
     PgRolePermission,
     PgTask,
     PgUser,
+    PgUserInfo,
     PgWidget,
 ):
     def __init__(

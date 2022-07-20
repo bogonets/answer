@@ -27,8 +27,8 @@ INSERT INTO {TABLE_USER_INFO} (
     user_uid,
     key
 ) DO UPDATE SET
-    value=$2,
-    updated_at=$3;
+    value=$3,
+    updated_at=$4;
 """
 
 UPDATE_USER_INFO_VALUE_BY_KEY = f"""
@@ -65,7 +65,7 @@ WHERE user_uid=$1 AND key=$2;
 SELECT_USER_INFO_BY_KEY_LIKE = f"""
 SELECT *
 FROM {TABLE_USER_INFO}
-WHERE user_uid=$1 AND key LIKE $1;
+WHERE user_uid=$1 AND key LIKE $2;
 """
 
 SELECT_USER_INFO_ALL = f"""
