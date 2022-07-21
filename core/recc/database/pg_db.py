@@ -11,7 +11,6 @@ from recc.database.mixin.pg_daemon import PgDaemon
 from recc.database.mixin.pg_group import PgGroup
 from recc.database.mixin.pg_group_member import PgGroupMember
 from recc.database.mixin.pg_info import PgInfo
-from recc.database.mixin.pg_layout import PgLayout
 from recc.database.mixin.pg_permission import PgPermission
 from recc.database.mixin.pg_pip import PgPip
 from recc.database.mixin.pg_port import PgPort
@@ -48,7 +47,6 @@ class PgDb(
     PgGroup,
     PgGroupMember,
     PgInfo,
-    PgLayout,
     PgPermission,
     PgPip,
     PgPort,
