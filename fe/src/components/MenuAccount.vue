@@ -107,7 +107,7 @@ export default class MenuAccount extends VueBase {
   private readonly menuZIndex = 100;
 
   get hasAdminPermission(): boolean {
-    return this.$localStore.user.is_admin || false;
+    return this.$localStore.user.admin || false;
   }
 
   get isDeveloperMode(): boolean {

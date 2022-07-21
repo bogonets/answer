@@ -65,9 +65,7 @@ export default class ListLanguages extends VueI18n {
     } else if (this.initLocalStore) {
       return this.$localStore.lang;
     } else if (this.initUserExtra) {
-      if (this.$localStore.user.extra && this.$localStore.user.extra.lang) {
-        return this.$localStore.user.extra.lang;
-      }
+      return this.$localStore.user.lang;
     }
 
     // Default settings.

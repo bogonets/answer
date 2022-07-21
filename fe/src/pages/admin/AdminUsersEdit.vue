@@ -185,22 +185,20 @@ export default class AdminUsersEdit extends VueBase {
   }
 
   updateUser(user: UserA) {
-    const nickname = user.nickname || '';
+    const nickname = user.nickname;
     const email = user.email || '';
-    const phone1 = user.phone1 || '';
-    const phone2 = user.phone2 || '';
-    const isAdmin = !!user.is_admin;
-    const createdAt = user.created_at || '';
-    const updatedAt = user.updated_at || '';
+    const phone = user.phone || '';
+    const admin = user.admin;
+    const createdAt = user.created_at;
+    const updatedAt = user.updated_at;
     const lastLogin = user.last_login || '';
 
     this.current.username = user.username;
     this.current.password = '';
     this.current.nickname = nickname;
     this.current.email = email;
-    this.current.phone1 = phone1;
-    this.current.phone2 = phone2;
-    this.current.is_admin = isAdmin;
+    this.current.phone = phone;
+    this.current.admin = admin;
     this.original.fromObject(this.current);
     this.modified = !this.original.isEqual(this.current);
     console.log(`updateUser: ${this.modified}`);
@@ -230,9 +228,8 @@ export default class AdminUsersEdit extends VueBase {
     const body = {
       nickname: event.nickname,
       email: event.email,
-      phone1: event.phone1,
-      phone2: event.phone2,
-      is_admin: event.is_admin,
+      phone: event.phone,
+      admin: event.admin,
     } as UpdateUserQ;
 
     const username = this.$route.params.username;

@@ -33,6 +33,7 @@ class RouterV2AdminTestCase(IsolatedAsyncioTestCase):
             await self.tester.signup_and_in_default_admin()
         except:  # noqa
             await self.tester.teardown()
+            raise
 
     async def asyncTearDown(self):
         await self.tester.teardown()

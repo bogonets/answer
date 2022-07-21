@@ -71,8 +71,10 @@ class RouterV2Public:
             hashed_password=body.password,
             nickname=body.nickname,
             email=body.email,
-            phone1=body.phone1,
-            phone2=body.phone2,
+            phone=body.phone,
+            dark=body.dark,
+            lang=body.lang,
+            timezone=body.timezone,
         )
 
     @parameter_matcher
@@ -99,19 +101,7 @@ class RouterV2Public:
         user_uid = await self._context.get_user_uid(username)
         db_user = await self._context.get_user(user_uid)
         oem = await self._context.opt_info_oem_value()
-        assert db_user.username is not None
-        user = UserA(
-            username=db_user.username,
-            nickname=db_user.nickname,
-            email=db_user.email,
-            phone1=db_user.phone1,
-            phone2=db_user.phone2,
-            is_admin=db_user.is_admin if db_user.is_admin else False,
-            extra=db_user.extra,
-            created_at=db_user.created_at,
-            updated_at=db_user.updated_at,
-            last_login=db_user.last_login,
-        )
+        user = UserA.from_database(db_user)
         preference = PreferenceA(oem=oem, plugins=self._context.get_plugins())
         return SigninA(access, refresh, user, preference)
 

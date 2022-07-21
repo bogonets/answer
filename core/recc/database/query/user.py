@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from typing import Any, Optional
+from typing import Optional
 
 from recc.chrono.datetime import tznow
 from recc.database.query_builder import BuildResult, UpdateBuilder
@@ -19,10 +19,11 @@ INSERT INTO {TABLE_USER} (
     salt,
     nickname,
     email,
-    phone1,
-    phone2,
-    is_admin,
-    extra,
+    phone,
+    admin,
+    dark,
+    lang,
+    timezone,
     created_at,
     updated_at
 ) VALUES (
@@ -36,7 +37,8 @@ INSERT INTO {TABLE_USER} (
     $8,
     $9,
     $10,
-    $10
+    $11,
+    $11
 ) RETURNING uid;
 """
 
@@ -56,16 +58,6 @@ SET
     password=$2,
     salt=$3,
     updated_at=$4
-WHERE
-    uid=$1;
-"""
-
-UPDATE_USER_EXTRA_BY_UID = f"""
-UPDATE
-    {TABLE_USER}
-SET
-    extra=$2,
-    updated_at=$3
 WHERE
     uid=$1;
 """
@@ -116,12 +108,6 @@ FROM {TABLE_USER}
 WHERE uid=$1;
 """
 
-SELECT_USER_EXTRA_BY_UID = f"""
-SELECT extra
-FROM {TABLE_USER}
-WHERE uid=$1;
-"""
-
 SELECT_USER_BY_UID = f"""
 SELECT *
 FROM {TABLE_USER}
@@ -154,10 +140,11 @@ def get_update_user_query_by_uid(
     username: Optional[str] = None,
     nickname: Optional[str] = None,
     email: Optional[str] = None,
-    phone1: Optional[str] = None,
-    phone2: Optional[str] = None,
-    is_admin: Optional[bool] = None,
-    extra: Optional[Any] = None,
+    phone: Optional[str] = None,
+    admin: Optional[bool] = None,
+    dark: Optional[int] = None,
+    lang: Optional[str] = None,
+    timezone: Optional[str] = None,
     updated_at: Optional[datetime] = None,
 ) -> BuildResult:
     updated = updated_at if updated_at else tznow()
@@ -166,10 +153,11 @@ def get_update_user_query_by_uid(
         username=username,
         nickname=nickname,
         email=email,
-        phone1=phone1,
-        phone2=phone2,
-        is_admin=is_admin,
-        extra=extra,
+        phone=phone,
+        admin=admin,
+        dark=dark,
+        lang=lang,
+        timezone=timezone,
         updated_at=updated,
     )
     builder.where().eq(uid=uid)

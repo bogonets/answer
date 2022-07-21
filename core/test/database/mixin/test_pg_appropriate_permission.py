@@ -80,7 +80,7 @@ class PgAppropriatePermissionTestCase(PostgresqlTestCase):
         await self.db.insert_project_member(self.project2, self.user2, owner)
 
     async def test_admin(self):
-        user0 = await self.db.insert_user("user0", "p", "s", is_admin=True)
+        user0 = await self.db.insert_user("user0", "p", "s", admin=True)
         perms1 = await self._group_perms(user0, self.group1)
         perms2 = await self._project_perms(user0, self.group1, self.project1)
         perms3 = await self._group_perms(user0, self.group2)

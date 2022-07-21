@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from typing import Any
 
 from recc.session.session import Session
 
 
 class SessionEx:
-    def __init__(self, session: Session, uid: int, is_admin: bool, extra: Any):
+    def __init__(self, session: Session, uid: int, admin: bool):
         self.session = session
         self.uid = uid
-        self.is_admin = is_admin
-        self.extra = extra
+        self.admin = admin
 
     @property
     def issuer(self) -> str:

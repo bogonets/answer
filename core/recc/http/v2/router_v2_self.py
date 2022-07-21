@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, List
+from typing import List
 
 from aiohttp import web
 from aiohttp.web_exceptions import HTTPUnauthorized
@@ -10,7 +10,7 @@ from recc.core.context import Context
 from recc.http import http_urls as u
 from recc.http.http_decorator import domain_group, domain_project
 from recc.http.http_parameter import parameter_matcher
-from recc.packet.user import UpdatePasswordQ, UpdateUserQ, UserA
+from recc.packet.user import UpdatePasswordQ, UpdateUserQ, UserA, UserInfoA
 from recc.session.session_ex import SessionEx
 
 
@@ -44,10 +44,10 @@ class RouterV2Self:
             web.patch(u.root, self.patch_root),
             web.delete(u.root, self.delete_root),
 
-            # User extra
+            # User extra information
             web.get(u.extra, self.get_extra),
-            web.patch(u.extra, self.patch_extra),
             web.get(u.extra_pkey, self.get_extra_pkey),
+            web.patch(u.extra_pkey, self.patch_extra_pkey),
 
             # Password
             web.patch(u.password, self.patch_password),
@@ -65,52 +65,39 @@ class RouterV2Self:
     @parameter_matcher
     async def get_root(self, session: SessionEx) -> UserA:
         db_user = await self.context.get_user(session.uid)
-        assert db_user.username is not None
-        return UserA(
-            username=db_user.username,
-            nickname=db_user.nickname,
-            email=db_user.email,
-            phone1=db_user.phone1,
-            phone2=db_user.phone2,
-            is_admin=db_user.is_admin,
-            extra=db_user.extra,
-            created_at=db_user.created_at,
-            updated_at=db_user.updated_at,
-            last_login=db_user.last_login,
-        )
+        return UserA.from_database(db_user)
 
     @parameter_matcher
     async def patch_root(self, session: SessionEx, body: UpdateUserQ) -> None:
         await self.context.update_user(
             uid=session.uid,
             email=body.email,
-            phone1=body.phone1,
-            phone2=body.phone2,
-            is_admin=None,
-            extra=body.extra,
+            phone=body.phone,
+            admin=None,
+            dark=body.dark,
+            lang=body.lang,
+            timezone=body.timezone,
         )
 
     @parameter_matcher
     async def delete_root(self, session: SessionEx) -> None:
         await self.context.remove_user_by_uid(session.uid)
 
-    # ----------
-    # User Extra
-    # ----------
+    # ----------------------
+    # User extra information
+    # ----------------------
 
     @parameter_matcher
-    async def get_extra(self, session: SessionEx) -> Any:
-        db_user = await self.context.get_user(session.uid)
-        return db_user.extra
+    async def get_extra(self, session: SessionEx) -> List[UserInfoA]:
+        return await self.context.get_user_infos(session.uid)
 
     @parameter_matcher
-    async def patch_extra(self, session: SessionEx, body: Dict[str, Any]) -> None:
-        await self.context.update_user_extra(session.audience, body)
+    async def get_extra_pkey(self, session: SessionEx, key: str) -> UserInfoA:
+        return await self.context.get_user_info(session.uid, key)
 
     @parameter_matcher
-    async def get_extra_pkey(self, session: SessionEx, key: str) -> Any:
-        db_user = await self.context.get_user(session.uid)
-        return db_user.extra
+    async def patch_extra_pkey(self, session: SessionEx, key: str, body: str) -> None:
+        await self.context.set_user_info(session.uid, key, body)
 
     # --------
     # Password

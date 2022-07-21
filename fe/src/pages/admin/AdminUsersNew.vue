@@ -68,9 +68,8 @@ export default class AdminUsersNew extends VueBase {
       password: this.$api2.encryptPassword(event.password),
       nickname: event.nickname,
       email: event.email,
-      phone1: event.phone1,
-      phone2: event.phone1,
-      is_admin: event.is_admin,
+      phone: event.phone,
+      admin: event.admin,
     } as SignupQ;
 
     this.submitLoading = true;

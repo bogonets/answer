@@ -101,7 +101,7 @@ class RouterV2:
         assert c.session in request
         session = request[c.session]
         assert isinstance(session, SessionEx)
-        return session.is_admin
+        return session.admin
 
     async def test_admin_privileges(self, request: Request) -> None:
         if not self.has_admin_privileges(request):

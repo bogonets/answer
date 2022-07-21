@@ -19,6 +19,5 @@ async def assign_session(context: Context, request: Request) -> None:
     request[c.session] = SessionEx(
         session,
         audience_uid,
-        True if db_user.is_admin else False,
-        db_user.extra,
+        True if db_user.admin else False,
     )

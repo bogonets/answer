@@ -19,19 +19,5 @@ export default class VueBase extends mixins(
   RouterRoot,
   RouterSelf,
 ) {
-  getOem() {
-    return this.$localStore.preference.oem;
-  }
-
-  hasAdmin() {
-    return this.$localStore.user.is_admin || false;
-  }
-
-  moveToMainGroups() {}
-
-  moveToMainProjects() {}
-
-  moveToMainProjectsNew() {}
-
-  moveToMainProject(group?: string, project?: string) {}
+  // EMPTY.
 }

@@ -19,26 +19,14 @@ export default {
     user: state => {
       return state.user;
     },
-    userExtra: state => {
-      return state.user.extra || {};
+    userDark: state => {
+      return state.user.dark || false;
     },
-    userExtraDark: state => {
-      if (state.user.extra !== undefined) {
-        return state.user.extra.dark || false;
-      }
-      return false;
+    userLang: state => {
+      return state.user.lang || '';
     },
-    userExtraLang: state => {
-      if (state.user.extra !== undefined) {
-        return state.user.extra.lang || '';
-      }
-      return '';
-    },
-    userExtraTimezone: state => {
-      if (state.user.extra !== undefined) {
-        return state.user.extra.timezone || '';
-      }
-      return '';
+    userTimezone: state => {
+      return state.user.timezone || '';
     },
     preference: state => {
       return state.preference;
@@ -54,26 +42,14 @@ export default {
     user(state, val) {
       state.user = val;
     },
-    userExtra(state, val) {
-      state.user.extra = val;
+    userDark(state, val) {
+      state.user.dark = val;
     },
-    userExtraDark(state, val) {
-      if (state.user.extra === undefined) {
-        state.user.extra = {};
-      }
-      state.user.extra.dark = val;
+    userLang(state, val) {
+      state.user.lang = val;
     },
-    userExtraLang(state, val) {
-      if (state.user.extra === undefined) {
-        state.user.extra = {};
-      }
-      state.user.extra.lang = val;
-    },
-    userExtraTimezone(state, val) {
-      if (state.user.extra === undefined) {
-        state.user.extra = {};
-      }
-      state.user.extra.timezone = val;
+    userTimezone(state, val) {
+      state.user.timezone = val;
     },
     preference(state, val) {
       state.preference = val;

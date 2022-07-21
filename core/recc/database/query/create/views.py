@@ -26,7 +26,7 @@ AS SELECT
 FROM
     {TABLE_USER}
 WHERE
-    is_admin=TRUE;
+    admin=TRUE;
 """
 
 CREATE_VIEW_USER_ADMIN_COUNT = f"""
@@ -36,7 +36,7 @@ AS SELECT
 FROM
     {TABLE_USER}
 WHERE
-    is_admin=TRUE;
+    admin=TRUE;
 """
 
 CREATE_VIEWS = (

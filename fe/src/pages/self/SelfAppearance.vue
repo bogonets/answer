@@ -115,8 +115,7 @@ import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import ListLanguages from '@/components/ListLanguages.vue';
-import type {UserExtraA} from '@recc/api/dist/packet/user';
-import {newUserExtraA} from '@recc/api/dist/packet/user';
+import type {UpdateUserQ} from '@recc/api/dist/packet/user';
 import momentTimezone from 'moment-timezone';
 import moment from 'moment-timezone';
 
@@ -143,48 +142,28 @@ export default class SelfAppearance extends VueBase {
   private readonly timezoneNames = momentTimezone.tz.names();
 
   loading = false;
-  extra = newUserExtraA();
+  dark = 0;
+  lang = '';
+  timezone = '';
 
   created() {
-    this.extra = this.getInitExtra();
-  }
-
-  getInitExtra(): UserExtraA {
-    const userExtra = this.$localStore.user.extra;
-    const result = {} as UserExtraA;
-
-    if (userExtra?.dark) {
-      result.dark = userExtra.dark;
-    } else {
-      result.dark = this.$vuetify.theme.dark;
-    }
-
-    if (userExtra?.lang) {
-      result.lang = userExtra.lang;
-    } else {
-      result.lang = this.$vuetify.lang.current;
-    }
-
-    if (userExtra?.timezone) {
-      result.timezone = userExtra.timezone;
-    } else {
-      result.timezone = '';
-    }
-    return result;
+    this.dark = this.$localStore.userDark;
+    this.lang = this.$localStore.userLang;
+    this.timezone = this.$localStore.userTimezone;
   }
 
   get currentLangName(): string {
-    const lang = this.extra.lang;
+    const lang = this.lang;
     if (!lang) {
       return '';
     }
     return this.$t('lang', lang).toString();
   }
 
-  saveUserExtra() {
+  saveUserExtra(data: UpdateUserQ) {
     this.loading = true;
     this.$api2
-      .patchSelfExtra(this.extra)
+      .patchSelf(data)
       .then(() => {
         this.loading = false;
         this.toastRequestSuccess();
@@ -196,42 +175,32 @@ export default class SelfAppearance extends VueBase {
   }
 
   onChangeDark() {
-    const dark = this.extra.dark;
-    if (dark === undefined) {
-      console.error('extra.dark is undefined error.');
-      return;
-    }
-
     // Local settings should not be changed.
-    this.$vuetify.theme.dark = dark;
-    this.$localStore.dark = dark;
-    this.$localStore.userExtraDark = dark;
+    this.$vuetify.theme.dark = !!this.dark;
+    this.$localStore.dark = !!this.dark;
+    this.$localStore.userDark = this.dark;
 
-    this.saveUserExtra();
+    this.saveUserExtra({dark: this.dark});
   }
 
   onChangeLang(lang: string) {
-    this.extra.lang = lang;
-
     // Local settings should not be changed.
-    this.$vuetify.lang.current = lang;
-    this.$i18n.locale = lang;
-    this.$localStore.lang = lang;
-    this.$localStore.userExtraLang = lang;
+    this.$vuetify.lang.current = this.lang;
+    this.$i18n.locale = this.lang;
+    this.$localStore.lang = this.lang;
+    this.$localStore.userLang = this.lang;
     moment.locale(lang);
 
-    this.saveUserExtra();
+    this.saveUserExtra({lang: this.lang});
   }
 
   onChangeTimezone(timezone: string) {
-    this.extra.timezone = timezone;
-
     // Local settings should not be changed.
-    momentTimezone.tz.setDefault(timezone);
-    this.$localStore.timezone = timezone;
-    this.$localStore.userExtraTimezone = timezone;
+    momentTimezone.tz.setDefault(this.timezone);
+    this.$localStore.timezone = this.timezone;
+    this.$localStore.userTimezone = this.timezone;
 
-    this.saveUserExtra();
+    this.saveUserExtra({timezone: this.timezone});
   }
 }
 </script>

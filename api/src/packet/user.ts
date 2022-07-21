@@ -1,40 +1,35 @@
 import type {PreferenceA} from './preference';
 import {newPreference} from './preference';
 
-export interface UserExtraA {
-  dark?: boolean;
-  lang?: string;
-  timezone?: string;
-}
-
-export interface VmsUserExtraA extends UserExtraA {
-  vmsRefreshInterval?: number;
-  vmsPopup?: boolean;
-  vmsBeep?: boolean;
-  vmsBeepInterval?: number;
-  vmsBeepDuration?: number;
-}
-
 export interface UserA {
   username: string;
-  nickname?: string;
-  email?: string;
-  phone1?: string;
-  phone2?: string;
-  is_admin?: boolean;
-  extra?: UserExtraA;
-  created_at?: string;
-  updated_at?: string;
+  nickname: string;
+  email: string;
+  phone: string;
+  admin: boolean;
+  dark: number;
+  lang: string;
+  timezone: string;
+  created_at: string;
+  updated_at: string;
   last_login?: string;
+}
+
+export interface UserInfoA {
+  key: string;
+  value: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface UpdateUserQ {
   nickname?: string;
   email?: string;
-  phone1?: string;
-  phone2?: string;
-  is_admin?: boolean;
-  extra?: UserExtraA;
+  phone?: string;
+  admin?: boolean;
+  dark?: number;
+  lang?: string;
+  timezone?: string;
 }
 
 export interface SigninA {
@@ -49,10 +44,11 @@ export interface SignupQ {
   password: string; // Perhaps the client encoded it with `SHA256 HEX string`.
   nickname?: string;
   email?: string;
-  phone1?: string;
-  phone2?: string;
-  is_admin?: boolean;
-  extra?: UserExtraA;
+  phone?: string;
+  admin?: boolean;
+  dark?: number;
+  lang?: string;
+  timezone?: string;
 }
 
 export interface UpdatePasswordQ {
@@ -68,10 +64,11 @@ export function newUserA(
   username?: string,
   nickname?: string,
   email?: string,
-  phone1?: string,
-  phone2?: string,
-  is_admin?: boolean,
-  extra?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  phone?: string,
+  admin?: boolean,
+  dark?: number,
+  lang?: string,
+  timezone?: string,
   created_at?: string,
   updated_at?: string,
   last_login?: string,
@@ -79,11 +76,12 @@ export function newUserA(
   return {
     username: username ?? '',
     nickname: nickname ?? '',
-    email: email ?? '',
-    phone1: phone1 ?? '',
-    phone2: phone2 ?? '',
-    is_admin: !!is_admin,
-    extra: extra ?? newUserExtraA(),
+    email: email,
+    phone: phone,
+    admin: !!admin,
+    dark: dark ?? 0,
+    lang: lang ?? '',
+    timezone: timezone ?? '',
     created_at: created_at ?? '',
     updated_at: updated_at ?? '',
     last_login: last_login ?? '',
@@ -104,27 +102,21 @@ export function newSignupQ(
   password?: string,
   nickname?: string,
   email?: string,
-  phone1?: string,
-  phone2?: string,
-  is_admin?: boolean,
-  extra?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  phone?: string,
+  admin?: boolean,
+  dark?: number,
+  lang?: string,
+  timezone?: string,
 ) {
   return {
     username: username ?? '',
     password: password ?? '',
     nickname: nickname ?? '',
-    email: email ?? '',
-    phone1: phone1 ?? '',
-    phone2: phone2 ?? '',
-    is_admin: !!is_admin,
-    extra: extra ?? newUserExtraA(),
-  } as SignupQ;
-}
-
-export function newUserExtraA(dark?: boolean, lang?: string, timezone?: string) {
-  return {
-    dark: !!dark,
+    email: email,
+    phone: phone,
+    admin: !!admin,
+    dark: dark ?? 0,
     lang: lang ?? '',
     timezone: timezone ?? '',
-  } as UserExtraA;
+  } as SignupQ;
 }

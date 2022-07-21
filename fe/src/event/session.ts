@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import moment from 'moment-timezone';
-import type {SigninA, UserExtraA} from '@recc/api/dist/packet/user';
+import type {SigninA} from '@recc/api/dist/packet/user';
 
 function loadApiOriginFromLocalStorage(vue: Vue) {
   const api = vue.$localStore.origin;
@@ -8,43 +8,43 @@ function loadApiOriginFromLocalStorage(vue: Vue) {
   vue.$api2.origin = api;
 }
 
-function loadAppearanceFromUserExtraA(vue: Vue, extra: UserExtraA) {
-  const dark = extra.dark;
-  const lang = extra.lang;
-  const timezone = extra.timezone;
-  console.debug(`Load appearance: dark=${dark}, lang=${lang}, timezone=${timezone}`);
-
-  if (typeof dark !== 'undefined') {
-    if (vue.$vuetify.theme.dark !== dark) {
-      vue.$vuetify.theme.dark = dark;
-    }
-  }
-
-  if (typeof lang !== 'undefined') {
-    if (vue.$vuetify.lang.current !== lang) {
-      vue.$vuetify.lang.current = lang;
-    }
-    if (vue.$i18n.locale !== lang) {
-      vue.$i18n.locale = lang;
-    }
-    if (moment.locale() !== lang) {
-      moment.locale(lang);
-    }
-  }
-
-  if (typeof timezone !== 'undefined') {
-    if (moment.tz.guess() !== timezone) {
-      moment.tz.setDefault(timezone);
-    }
-  }
+function getSystemDarkMode() {
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
 
-function getUserExtraFromLocalStorage(vue: Vue) {
-  return {
-    dark: vue.$localStore.dark,
-    lang: vue.$localStore.lang,
-    timezone: vue.$localStore.timezone,
-  } as UserExtraA;
+function loadAppearanceFromUserExtraA(
+  vue: Vue,
+  dark: number,
+  lang: string,
+  timezone: string,
+) {
+  console.debug(`Load appearance: dark=${dark}, lang=${lang}, timezone=${timezone}`);
+
+  if (dark) {
+    if (dark === 1) {
+      vue.$vuetify.theme.dark = true;
+    } else if (dark === 2) {
+      vue.$vuetify.theme.dark = getSystemDarkMode();
+    } else {
+      console.warn(`Unsupported dark mode: ${dark}`);
+    }
+  } else {
+    vue.$vuetify.theme.dark = false;
+  }
+
+  if (vue.$vuetify.lang.current !== lang) {
+    vue.$vuetify.lang.current = lang;
+  }
+  if (vue.$i18n.locale !== lang) {
+    vue.$i18n.locale = lang;
+  }
+  if (moment.locale() !== lang) {
+    moment.locale(lang);
+  }
+
+  if (moment.tz.guess() !== timezone) {
+    moment.tz.setDefault(timezone);
+  }
 }
 
 function initApiV2Session(vue: Vue, access: string, refresh: string) {
@@ -56,12 +56,18 @@ function initApiV2Session(vue: Vue, access: string, refresh: string) {
 // ------------
 
 function loadSessionFromLocalStorage(vue: Vue) {
-  const userExtra = getUserExtraFromLocalStorage(vue);
+  let dark = vue.$localStore.dark ? 1 : 0;
+  let lang = vue.$localStore.lang;
+  let timezone = vue.$localStore.timezone;
+
   if (vue.$localStore.alreadySession) {
     const access = vue.$localStore.access;
     const refresh = vue.$localStore.refresh;
     const user = vue.$localStore.user;
     const preference = vue.$localStore.preference;
+    dark = user.dark;
+    lang = user.lang;
+    timezone = user.timezone;
     console.assert(!!access);
     console.assert(!!refresh);
     console.assert(!!user);
@@ -70,26 +76,12 @@ function loadSessionFromLocalStorage(vue: Vue) {
     console.info(`Already session information: ${user.username}`);
 
     initApiV2Session(vue, access, refresh);
-
-    if (user.extra) {
-      if (user.extra.dark) {
-        userExtra.dark = user.extra.dark;
-      }
-      if (user.extra.lang) {
-        userExtra.lang = user.extra.lang;
-      }
-      if (user.extra.timezone) {
-        userExtra.timezone = user.extra.timezone;
-      }
-    } else {
-      console.debug("Not exists user's extra");
-    }
   } else {
     console.debug('Not exists session from LocalStorage');
   }
 
   loadApiOriginFromLocalStorage(vue);
-  loadAppearanceFromUserExtraA(vue, userExtra);
+  loadAppearanceFromUserExtraA(vue, dark, lang, timezone);
 }
 
 function saveSessionToLocalStorage(vue: Vue, signin: SigninA) {

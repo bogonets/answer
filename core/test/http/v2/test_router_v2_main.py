@@ -37,6 +37,7 @@ class RouterV2MainTestCase(IsolatedAsyncioTestCase):
             await self.tester.signin(self.username, self.password, save_session=True)
         except:  # noqa
             await self.tester.teardown()
+            raise
 
     async def asyncTearDown(self):
         await self.tester.teardown()

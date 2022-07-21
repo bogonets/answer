@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from hashlib import sha256
-from typing import Any, Optional
+from typing import Optional
 
 from recc.packet.preference import PreferenceA
 
@@ -12,19 +12,23 @@ from recc.packet.preference import PreferenceA
 class User:
     """It is mapped to the `user` table in the database."""
 
-    uid: Optional[int] = None
-    username: Optional[str] = None
-    password: Optional[str] = None
-    salt: Optional[str] = None
-    nickname: Optional[str] = None
-    email: Optional[str] = None
-    phone1: Optional[str] = None
-    phone2: Optional[str] = None
-    is_admin: Optional[bool] = None
-    extra: Optional[Any] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
-    last_login: Optional[datetime] = None
+    uid: int
+    username: str
+    password: str
+    salt: str
+
+    nickname: str
+    email: Optional[str]
+    phone: Optional[str]
+    admin: bool
+
+    dark: int
+    lang: str
+    timezone: str
+
+    created_at: datetime
+    updated_at: datetime
+    last_login: Optional[datetime]
 
 
 @dataclass
@@ -53,56 +57,77 @@ class PassInfo:
 
 
 @dataclass
-class UserExtraA:
-    dark: Optional[bool] = None
-    lang: Optional[str] = None
-    timezone: Optional[str] = None
+class UserA:
+    username: str
+
+    nickname: str
+    email: str
+    phone: str
+    admin: bool
+
+    dark: int
+    lang: str
+    timezone: str
+
+    created_at: datetime
+    updated_at: datetime
+    last_login: Optional[datetime] = None
+
+    @classmethod
+    def from_database(cls, user: User):
+        return cls(
+            username=user.username,
+            nickname=user.nickname,
+            email=user.email if user.email else str(),
+            phone=user.phone if user.phone else str(),
+            admin=user.admin,
+            dark=user.dark,
+            lang=user.lang,
+            timezone=user.timezone,
+            created_at=user.created_at,
+            updated_at=user.updated_at,
+            last_login=user.last_login,
+        )
 
 
 @dataclass
-class UserA:
-    username: str
-    nickname: Optional[str] = None
-    email: Optional[str] = None
-    phone1: Optional[str] = None
-    phone2: Optional[str] = None
-    is_admin: Optional[bool] = None
-    extra: Optional[UserExtraA] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
-    last_login: Optional[datetime] = None
+class UserInfoA:
+    key: str
+    value: str
+    created_at: datetime
+    updated_at: datetime
+
+    @classmethod
+    def from_database(cls, info: UserInfo):
+        return cls(
+            key=info.key,
+            value=info.value,
+            created_at=info.created_at,
+            updated_at=info.updated_at,
+        )
 
 
 @dataclass
 class UpdateUserQ:
     nickname: Optional[str] = None
     email: Optional[str] = None
-    phone1: Optional[str] = None
-    phone2: Optional[str] = None
-    is_admin: Optional[bool] = None
-    extra: Optional[UserExtraA] = None
+    phone: Optional[str] = None
+    admin: Optional[bool] = None
+    dark: Optional[int] = None
+    lang: Optional[str] = None
+    timezone: Optional[str] = None
 
     def strip(self):
         if self.nickname:
             self.nickname.strip()
         if self.email:
             self.email.strip()
-        if self.phone1:
-            self.phone1.strip()
-        if self.phone2:
-            self.phone2.strip()
-
-    def empty_is_none(self):
-        if not self.nickname:
-            self.nickname = None
-        if not self.email:
-            self.email = None
-        if not self.phone1:
-            self.phone1 = None
-        if not self.phone2:
-            self.phone2 = None
-        if not self.extra:
-            self.extra = None
+        if self.phone:
+            self.phone.strip()
+        if self.lang:
+            self.lang.strip()
+        if self.timezone:
+            self.timezone.strip()
 
 
 @dataclass
@@ -117,12 +142,14 @@ class SigninA:
 class SignupQ:
     username: str
     password: str  # Perhaps the client encoded it with SHA256.
+
     nickname: Optional[str] = None
     email: Optional[str] = None
-    phone1: Optional[str] = None
-    phone2: Optional[str] = None
-    is_admin: Optional[bool] = None
-    extra: Optional[UserExtraA] = None
+    phone: Optional[str] = None
+    admin: Optional[bool] = None
+    dark: Optional[int] = None
+    lang: Optional[str] = None
+    timezone: Optional[str] = None
 
     @staticmethod
     def encrypt_password(password: str, encoding="utf-8") -> str:
@@ -137,22 +164,12 @@ class SignupQ:
             self.nickname.strip()
         if self.email:
             self.email.strip()
-        if self.phone1:
-            self.phone1.strip()
-        if self.phone2:
-            self.phone2.strip()
-
-    def empty_is_none(self):
-        if not self.nickname:
-            self.nickname = None
-        if not self.email:
-            self.email = None
-        if not self.phone1:
-            self.phone1 = None
-        if not self.phone2:
-            self.phone2 = None
-        if not self.extra:
-            self.extra = None
+        if self.phone:
+            self.phone.strip()
+        if self.lang:
+            self.lang.strip()
+        if self.timezone:
+            self.timezone.strip()
 
 
 @dataclass

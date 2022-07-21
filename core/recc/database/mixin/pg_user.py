@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from recc.chrono.datetime import tznow
 from recc.database.mixin._pg_base import PgBase
@@ -13,12 +13,10 @@ from recc.database.query.user import (
     SELECT_USER_BY_UID,
     SELECT_USER_COUNT,
     SELECT_USER_EXISTS_BY_USERNAME,
-    SELECT_USER_EXTRA_BY_UID,
     SELECT_USER_PASSWORD_AND_SALT_BY_UID,
     SELECT_USER_UID_BY_USERNAME,
     SELECT_USER_USERNAME,
     SELECT_USER_USERNAME_BY_UID,
-    UPDATE_USER_EXTRA_BY_UID,
     UPDATE_USER_LAST_LOGIN_BY_UID,
     UPDATE_USER_PASSWORD_AND_SALT_BY_UID,
     get_update_user_query_by_uid,
@@ -27,13 +25,6 @@ from recc.packet.user import PassInfo, User
 
 
 class PgUser(PgBase):
-    @staticmethod
-    def signup_normalize_text(text: Optional[str]) -> Optional[str]:
-        if text is None:
-            return None
-        text = text.strip()
-        return text if text else None
-
     async def insert_user(
         self,
         username: str,
@@ -41,10 +32,11 @@ class PgUser(PgBase):
         salt: str,
         nickname: Optional[str] = None,
         email: Optional[str] = None,
-        phone1: Optional[str] = None,
-        phone2: Optional[str] = None,
-        is_admin=False,
-        extra: Optional[Any] = None,
+        phone: Optional[str] = None,
+        admin: Optional[bool] = None,
+        dark: Optional[int] = None,
+        lang: Optional[str] = None,
+        timezone: Optional[str] = None,
         created_at: Optional[datetime] = None,
     ) -> int:
         created = created_at if created_at else tznow()
@@ -54,12 +46,13 @@ class PgUser(PgBase):
             username,
             password,
             salt,
-            self.signup_normalize_text(nickname),
-            self.signup_normalize_text(email),
-            self.signup_normalize_text(phone1),
-            self.signup_normalize_text(phone2),
-            is_admin,
-            extra,
+            nickname if nickname else str(),
+            email if email else None,
+            phone if phone else None,
+            admin if admin else False,
+            dark if dark else 0,
+            lang if lang else str(),
+            timezone if timezone else str(),
             created,
         )
 
@@ -87,25 +80,17 @@ class PgUser(PgBase):
             updated,
         )
 
-    async def update_user_extra_by_uid(
-        self,
-        uid: int,
-        extra: Any,
-        updated_at: Optional[datetime] = None,
-    ) -> None:
-        updated = updated_at if updated_at else tznow()
-        await self.execute(UPDATE_USER_EXTRA_BY_UID, uid, extra, updated)
-
     async def update_user_by_uid(
         self,
         uid: int,
         username: Optional[str] = None,
         nickname: Optional[str] = None,
         email: Optional[str] = None,
-        phone1: Optional[str] = None,
-        phone2: Optional[str] = None,
-        is_admin: Optional[bool] = None,
-        extra: Optional[Any] = None,
+        phone: Optional[str] = None,
+        admin: Optional[bool] = None,
+        dark: Optional[int] = None,
+        lang: Optional[str] = None,
+        timezone: Optional[str] = None,
         updated_at: Optional[datetime] = None,
     ) -> None:
         updated = updated_at if updated_at else tznow()
@@ -114,10 +99,11 @@ class PgUser(PgBase):
             username=username,
             nickname=nickname,
             email=email,
-            phone1=phone1,
-            phone2=phone2,
-            is_admin=is_admin,
-            extra=extra,
+            phone=phone,
+            admin=admin,
+            dark=dark,
+            lang=lang,
+            timezone=timezone,
             updated_at=updated,
         )
         await self.execute(query, *args)
@@ -136,9 +122,6 @@ class PgUser(PgBase):
 
     async def select_user_password_and_salt_by_uid(self, uid: int) -> PassInfo:
         return await self.row(PassInfo, SELECT_USER_PASSWORD_AND_SALT_BY_UID, uid)
-
-    async def select_user_extra_by_uid(self, uid: int) -> Any:
-        return await self.fetch_first_row_column(SELECT_USER_EXTRA_BY_UID, uid)
 
     async def select_user_by_uid(self, uid: int) -> User:
         return await self.row(User, SELECT_USER_BY_UID, uid)

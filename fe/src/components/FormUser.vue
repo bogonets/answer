@@ -6,8 +6,7 @@ en:
     confirm_password: 'Confirm (Required)'
     nickname: 'Nickname'
     email: 'E-Mail'
-    phone1: 'Phone1'
-    phone2: 'Phone2'
+    phone: 'Phone'
     is_admin: 'Administrator'
   hint:
     username: 'Please enter the ID to be used when sign in.'
@@ -15,8 +14,7 @@ en:
     confirm_password: 'Please enter your password again.'
     nickname: 'Please enter your nickname that will be displayed on the screen.'
     email: 'Please enter the email address to be used in case of loss of ID and password.'
-    phone1: 'This is the representative phone number.'
-    phone2: 'Secondary phone number.'
+    phone: 'This is the representative phone number.'
     is_admin: 'Gain full control over the system.'
   msg:
     confirm_password: 'Please reconfirm your password.'
@@ -30,8 +28,7 @@ ko:
     confirm_password: '비밀번호 확인 (필수)'
     nickname: '별칭'
     email: '이메일'
-    phone1: '전화번호1'
-    phone2: '전화번호2'
+    phone: '전화번호'
     is_admin: '관리자'
   hint:
     username: '로그인시 사용할 아이디를 입력해 주세요.'
@@ -39,8 +36,7 @@ ko:
     confirm_password: '비밀번호를 한번 더 입력해 주세요.'
     nickname: '화면에 표시될 당신의 별명을 입력해 주세요.'
     email: '아이디 및 비밀번호 분실시 사용될 이메일 주소를 입력해 주세요.'
-    phone1: '대표 전화번호 입니다.'
-    phone2: '보조 전화번호 입니다.'
+    phone: '대표 전화번호 입니다.'
     is_admin: '시스템을 완전히 제어할 수 있는 권한을 획득합니다.'
   msg:
     confirm_password: '비밀번호를 재확인해주세요.'
@@ -113,24 +109,14 @@ ko:
         :hint="$t('hint.email')"
       ></v-text-field>
 
-      <p :class="subtitleClass">{{ $t('label.phone1') }}</p>
+      <p :class="subtitleClass">{{ $t('label.phone') }}</p>
       <v-text-field
         dense
         persistent-hint
-        :value="value.phone1"
-        @input="onInputPhone1"
+        :value="value.phone"
+        @input="onInputPhone"
         :rules="rules.phone"
-        :hint="$t('hint.phone1')"
-      ></v-text-field>
-
-      <p :class="subtitleClass">{{ $t('label.phone2') }}</p>
-      <v-text-field
-        dense
-        persistent-hint
-        :value="value.phone2"
-        @input="onInputPhone2"
-        :rules="rules.phone"
-        :hint="$t('hint.phone2')"
+        :hint="$t('hint.phone')"
       ></v-text-field>
     </div>
 
@@ -144,7 +130,7 @@ ko:
         <v-switch
           inset
           :disabled="disableAccess"
-          :value="value.is_admin"
+          :value="value.admin"
           @change="onChangeIsAdmin"
         ></v-switch>
       </div>
@@ -181,18 +167,16 @@ export class UserItem {
   password = '';
   nickname = '';
   email = '';
-  phone1 = '';
-  phone2 = '';
-  is_admin = false;
+  phone = '';
+  admin = false;
 
   fromObject(obj?: any) {
     this.username = obj?.username || '';
     this.password = obj?.password || '';
     this.nickname = obj?.nickname || '';
     this.email = obj?.email || '';
-    this.phone1 = obj?.phone1 || '';
-    this.phone2 = obj?.phone2 || '';
-    this.is_admin = obj?.is_admin || false;
+    this.phone = obj?.phone1 || '';
+    this.admin = obj?.admin || false;
   }
 
   isEqual(obj?: any) {
@@ -211,13 +195,10 @@ export class UserItem {
     if (this.email !== obj.email) {
       return false;
     }
-    if (this.phone1 !== obj.phone1) {
+    if (this.phone !== obj.phone) {
       return false;
     }
-    if (this.phone2 !== obj.phone2) {
-      return false;
-    }
-    return this.is_admin === obj.is_admin;
+    return this.admin === obj.admin;
   }
 }
 
@@ -304,18 +285,13 @@ export default class FormUser extends VueBase {
     this.input();
   }
 
-  onInputPhone1(event: string) {
-    this.value.phone1 = event;
-    this.input();
-  }
-
-  onInputPhone2(event: string) {
-    this.value.phone2 = event;
+  onInputPhone(event: string) {
+    this.value.phone = event;
     this.input();
   }
 
   onChangeIsAdmin(event: null | boolean) {
-    this.value.is_admin = !!event;
+    this.value.admin = !!event;
     this.input();
   }
 

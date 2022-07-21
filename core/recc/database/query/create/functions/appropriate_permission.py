@@ -22,7 +22,7 @@ DECLARE
     r_uid INTEGER := NULL;
     is_admin BOOLEAN := FALSE;
 BEGIN
-    SELECT u.is_admin
+    SELECT u.admin
     INTO is_admin
     FROM {TABLE_USER} u
     WHERE u.uid=u_uid;

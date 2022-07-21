@@ -14,22 +14,24 @@ class PgUserTestCase(PostgresqlTestCase):
         salt = "salt"
         nickname = "Unknown"
         email = "admin@localhost"
-        phone1 = "010-0000-0000"
-        phone2 = "010-0000-0001"
-        extra = {"key1": "value1", "key2": "value2"}
-        is_admin = False
+        phone = "010-0000-0000"
+        admin = True
+        dark = 2
+        lang = "ko"
+        timezone = "Asia/Seoul"
         created_at = datetime.now().astimezone()
 
         result_uid = await self.db.insert_user(
-            username,
-            password,
-            salt,
+            username=username,
+            password=password,
+            salt=salt,
             nickname=nickname,
             email=email,
-            phone1=phone1,
-            phone2=phone2,
-            is_admin=is_admin,
-            extra=extra,
+            phone=phone,
+            admin=admin,
+            dark=dark,
+            lang=lang,
+            timezone=timezone,
             created_at=created_at,
         )
         user_uid = await self.db.select_user_uid_by_username(username)
@@ -40,9 +42,11 @@ class PgUserTestCase(PostgresqlTestCase):
         self.assertEqual(username, user.username)
         self.assertEqual(nickname, user.nickname)
         self.assertEqual(email, user.email)
-        self.assertEqual(phone1, user.phone1)
-        self.assertEqual(phone2, user.phone2)
-        self.assertEqual(extra, user.extra)
+        self.assertEqual(phone, user.phone)
+        self.assertEqual(admin, user.admin)
+        self.assertEqual(dark, user.dark)
+        self.assertEqual(lang, user.lang)
+        self.assertEqual(timezone, user.timezone)
         self.assertEqual(created_at, user.created_at)
         self.assertEqual(created_at, user.updated_at)
         self.assertIsNone(user.last_login)
@@ -90,47 +94,6 @@ class PgUserTestCase(PostgresqlTestCase):
         self.assertEqual(password, pass_info.password)
         self.assertEqual(salt, pass_info.salt)
 
-    async def test_update_extra(self):
-        username = "admin"
-        password = "password"
-        salt = "salt"
-        await self.db.insert_user(username, password, salt)
-
-        extra = {"key1": 100, "key2": 200}
-        updated_at = datetime.now().astimezone() + timedelta(days=1)
-
-        user_uid = await self.db.select_user_uid_by_username(username)
-        await self.db.update_user_extra_by_uid(user_uid, extra, updated_at)
-        user_extra = await self.db.select_user_extra_by_uid(user_uid)
-        self.assertEqual(extra, user_extra)
-
-        user = await self.db.select_user_by_uid(user_uid)
-        self.assertEqual(extra, user.extra)
-        self.assertEqual(updated_at, user.updated_at)
-
-    async def test_update_user_info(self):
-        username = "admin"
-        password = "password"
-        salt = "salt"
-        await self.db.insert_user(username, password, salt)
-
-        update_phone2 = "010-0000-0001"
-        updated_at = datetime.now().astimezone() + timedelta(days=3)
-        user_uid = await self.db.select_user_uid_by_username(username)
-        await self.db.update_user_by_uid(
-            uid=user_uid, phone2=update_phone2, updated_at=updated_at
-        )
-
-        users = await self.db.select_users()
-        self.assertEqual(1, len(users))
-        user = users[0]
-
-        self.assertEqual(username, user.username)
-        self.assertIsNone(user.email)
-        self.assertIsNone(user.phone1)
-        self.assertEqual(update_phone2, user.phone2)
-        self.assertEqual(updated_at, user.updated_at)
-
     async def test_delete(self):
         username = "admin"
         password = "password"
@@ -149,7 +112,7 @@ class PgUserTestCase(PostgresqlTestCase):
         username = "admin"
         self.assertFalse(await self.db.select_user_exists_by_username(username))
         self.assertFalse(await self.db.select_exists_admin_user())
-        await self.db.insert_user(username, "1234", "__unknown_salt__", is_admin=True)
+        await self.db.insert_user(username, "1234", "__unknown_salt__", admin=True)
         self.assertTrue(await self.db.select_user_exists_by_username(username))
         self.assertTrue(await self.db.select_exists_admin_user())
         self.assertTrue(await self.db.select_exists_admin_user())

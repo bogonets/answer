@@ -176,23 +176,7 @@ class RouterV2Admin:
 
     @parameter_matcher
     async def get_users(self) -> List[UserA]:
-        result = list()
-        for user in await self.context.get_users():
-            assert user.username
-            item = UserA(
-                username=user.username,
-                nickname=user.nickname,
-                email=user.email,
-                phone1=user.phone1,
-                phone2=user.phone2,
-                is_admin=user.is_admin,
-                extra=user.extra,
-                created_at=user.created_at,
-                updated_at=user.updated_at,
-                last_login=user.last_login,
-            )
-            result.append(item)
-        return result
+        return [UserA.from_database(user) for user in await self.context.get_users()]
 
     @parameter_matcher
     async def post_users(self, body: SignupQ) -> None:
@@ -202,50 +186,38 @@ class RouterV2Admin:
             raise HTTPBadRequest(reason="Not exists `password` field")
 
         body.strip()
-        body.empty_is_none()
 
         await self.context.signup(
             username=body.username,
             hashed_password=body.password,
             nickname=body.nickname,
             email=body.email,
-            phone1=body.phone1,
-            phone2=body.phone2,
-            is_admin=body.is_admin if body.is_admin else False,
-            extra=body.extra,
+            phone=body.phone,
+            admin=body.admin,
+            dark=body.dark,
+            lang=body.lang,
+            timezone=body.timezone,
         )
 
     @parameter_matcher
     async def get_users_puser(self, user: str) -> UserA:
         user_uid = await self.context.get_user_uid(user)
         db_user = await self.context.get_user(user_uid)
-        assert db_user.username
-        return UserA(
-            username=db_user.username,
-            nickname=db_user.nickname,
-            email=db_user.email,
-            phone1=db_user.phone1,
-            phone2=db_user.phone2,
-            is_admin=db_user.is_admin,
-            extra=db_user.extra,
-            created_at=db_user.created_at,
-            updated_at=db_user.updated_at,
-            last_login=db_user.last_login,
-        )
+        return UserA.from_database(db_user)
 
     @parameter_matcher
     async def patch_users_puser(self, user: str, body: UpdateUserQ) -> None:
         body.strip()
-        body.empty_is_none()
         user_uid = await self.context.get_user_uid(user)
         await self.context.update_user(
             uid=user_uid,
             nickname=body.nickname,
-            email=body.email,
-            phone1=body.phone1,
-            phone2=body.phone2,
-            is_admin=body.is_admin,
-            extra=body.extra,
+            email=body.email if body.email else None,
+            phone=body.phone if body.phone else None,
+            admin=body.admin,
+            dark=body.dark,
+            lang=body.lang,
+            timezone=body.timezone,
         )
 
     @parameter_matcher

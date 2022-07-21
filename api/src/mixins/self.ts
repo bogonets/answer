@@ -1,5 +1,5 @@
 import {ReccApiBase} from '../reccApiBase';
-import type {UserA, UpdateUserQ, UpdatePasswordQ, UserExtraA} from '../packet/user';
+import type {UserA, UpdateUserQ, UpdatePasswordQ, UserInfoA} from '../packet/user';
 
 export class ReccApiSelf extends ReccApiBase {
   getSelf() {
@@ -15,11 +15,15 @@ export class ReccApiSelf extends ReccApiBase {
   }
 
   getSelfExtra() {
-    return this.get<UserExtraA>('/self/extra');
+    return this.get<Array<UserInfoA>>('/self/extra');
   }
 
-  patchSelfExtra(extra: UserExtraA) {
-    return this.patch('/self/extra', extra);
+  getSelfExtraPkey(key: string) {
+    return this.get<UserInfoA>(`/self/extra/${key}`);
+  }
+
+  patchSelfExtraPkey(key: string, value: string) {
+    return this.patch(`/self/extra/${key}`, value);
   }
 
   patchSelfPassword(body: UpdatePasswordQ) {
