@@ -32,6 +32,10 @@ export interface UpdateUserQ {
   timezone?: string;
 }
 
+export interface UpdateUserInfoQ {
+  value: string;
+}
+
 export interface SigninA {
   access: string;
   refresh: string;

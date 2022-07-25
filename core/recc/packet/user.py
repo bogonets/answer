@@ -131,6 +131,11 @@ class UpdateUserQ:
 
 
 @dataclass
+class UpdateUserInfoQ:
+    value: str
+
+
+@dataclass
 class SigninA:
     access: str
     refresh: str

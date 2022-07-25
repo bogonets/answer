@@ -23,7 +23,6 @@ ko:
               hide-profile
               dense-footer
               :loading="showSignupLoading"
-              @cancel="onClickCancel"
               @ok="onClickOk"
             ></form-user>
           </v-card>

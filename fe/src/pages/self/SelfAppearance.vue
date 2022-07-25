@@ -54,7 +54,7 @@ ko:
       :subheader="$t('theme.dark.subtitle')"
     >
       <div class="d-flex flex-row justify-end">
-        <v-switch inset v-model="extra.dark" @change="onChangeDark"></v-switch>
+        <v-switch inset v-model="dark" @change="onChangeDark"></v-switch>
       </div>
     </left-title>
 
@@ -79,7 +79,7 @@ ko:
             </v-btn>
           </template>
           <list-languages
-            :init-lang="extra.lang"
+            :init-lang="lang"
             @change-lang="onChangeLang"
           ></list-languages>
         </v-menu>
@@ -100,7 +100,7 @@ ko:
           dense
           outlined
           hide-details
-          v-model="extra.timezone"
+          v-model="timezone"
           :items="timezoneNames"
           @change="onChangeTimezone"
         ></v-combobox>

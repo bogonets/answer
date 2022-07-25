@@ -10,7 +10,13 @@ from recc.core.context import Context
 from recc.http import http_urls as u
 from recc.http.http_decorator import domain_group, domain_project
 from recc.http.http_parameter import parameter_matcher
-from recc.packet.user import UpdatePasswordQ, UpdateUserQ, UserA, UserInfoA
+from recc.packet.user import (
+    UpdatePasswordQ,
+    UpdateUserInfoQ,
+    UpdateUserQ,
+    UserA,
+    UserInfoA,
+)
 from recc.session.session_ex import SessionEx
 
 
@@ -96,8 +102,10 @@ class RouterV2Self:
         return await self.context.get_user_info(session.uid, key)
 
     @parameter_matcher
-    async def patch_extra_pkey(self, session: SessionEx, key: str, body: str) -> None:
-        await self.context.set_user_info(session.uid, key, body)
+    async def patch_extra_pkey(
+        self, session: SessionEx, key: str, body: UpdateUserInfoQ
+    ) -> None:
+        await self.context.set_user_info(session.uid, key, body.value)
 
     # --------
     # Password

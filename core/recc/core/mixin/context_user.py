@@ -10,7 +10,14 @@ from recc.core.mixin.context_base import ContextBase
 from recc.crypto.password import encrypt_password
 from recc.packet.user import PassInfo, User, UserInfoA
 from recc.session.session import Session
-from recc.variables.database import PASSWORD_HEX_STR_SIZE, SALT_BYTE, SALT_HEX_STR_SIZE
+from recc.variables.database import (
+    DEFAULT_USER_DARK,
+    DEFAULT_USER_LANG,
+    DEFAULT_USER_TIMEZONE,
+    PASSWORD_HEX_STR_SIZE,
+    SALT_BYTE,
+    SALT_HEX_STR_SIZE,
+)
 
 
 def salting_password(hashed_password: str) -> PassInfo:
@@ -67,10 +74,10 @@ class ContextUser(ContextBase):
             nickname=nickname,
             email=email,
             phone=phone,
-            admin=admin,
-            dark=dark,
-            lang=lang,
-            timezone=timezone,
+            admin=admin if admin is not None else False,
+            dark=dark if dark is not None else DEFAULT_USER_DARK,
+            lang=lang if lang is not None else DEFAULT_USER_LANG,
+            timezone=timezone if timezone is not None else DEFAULT_USER_TIMEZONE,
         )
         await self.cache.set_user(username, user_uid)
         return user_uid

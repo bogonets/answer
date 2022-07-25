@@ -57,8 +57,8 @@ function initApiV2Session(vue: Vue, access: string, refresh: string) {
 
 function loadSessionFromLocalStorage(vue: Vue) {
   let dark = vue.$localStore.dark ? 1 : 0;
-  let lang = vue.$localStore.lang;
-  let timezone = vue.$localStore.timezone;
+  let lang = vue.$localStore.lang || 'ko';
+  let timezone = vue.$localStore.timezone || 'Asia/Seoul';
 
   if (vue.$localStore.alreadySession) {
     const access = vue.$localStore.access;

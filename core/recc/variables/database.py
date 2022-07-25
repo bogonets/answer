@@ -81,6 +81,10 @@ PIP_FILE_STR_SIZE = 256
 PIP_HASH_METHOD_STR_SIZE = 32
 PIP_HASH_VALUE_STR_SIZE = 256
 
+DEFAULT_USER_DARK = 0
+DEFAULT_USER_LANG = "ko"
+DEFAULT_USER_TIMEZONE = "Asia/Seoul"
+
 # IPv6 addresses will consists of
 # - 8 sets of 4 characters -> `32` characters.
 # - each separated by a colon(':') -> `7` characters.
