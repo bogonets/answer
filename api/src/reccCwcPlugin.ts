@@ -237,6 +237,10 @@ export class ReccCwcPlugin {
     });
   }
 
+  getPluginPathPrefix(name: string) {
+    return `/plugins/${name}/${this._group}/${this._project}`;
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   toast(level: ToastLevel, message?: any, detail?: any) {
     let m: string | undefined;
