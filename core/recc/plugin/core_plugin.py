@@ -18,6 +18,5 @@ class CorePlugin(
     PluginSpec,
     PluginVersion,
 ):
-    def __init__(self, module_name: str):
-        self._module = self.import_module(module_name)
-        self._routes = list()
+    def __init__(self, module_name: str, isolate=False):
+        self._module = self.import_module(module_name, isolate=isolate)

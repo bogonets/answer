@@ -14,7 +14,12 @@ from recc.variables.plugin import NAME_ON_CLOSE, NAME_ON_OPEN
 
 class PluginOpen(PluginBase):
 
-    _opened = False
+    _opened: bool
+
+    def __new__(cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        instance._opened = False
+        return instance
 
     @property
     def opened(self) -> bool:

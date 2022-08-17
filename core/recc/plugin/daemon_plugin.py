@@ -12,4 +12,3 @@ class DaemonPlugin(
 ):
     def __init__(self, module_name: str):
         self._module = self.import_module(module_name)
-        self._routes = list()

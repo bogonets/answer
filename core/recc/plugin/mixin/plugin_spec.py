@@ -22,7 +22,12 @@ class ReccSpec:
 
 class PluginSpec(PluginBase):
 
-    _recc_spec: Optional[ReccSpec] = None
+    _recc_spec: Optional[ReccSpec]
+
+    def __new__(cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        instance._recc_spec = None
+        return instance
 
     @property
     def spec(self) -> ReccSpec:

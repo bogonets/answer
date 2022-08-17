@@ -46,6 +46,11 @@ class PluginRouter(PluginBase):
 
     _routes: List[Route]
 
+    def __new__(cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        instance._routes = list()
+        return instance
+
     @property
     def count_routes(self):
         return len(self._routes)

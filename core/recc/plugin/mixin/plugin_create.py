@@ -15,7 +15,12 @@ from recc.variables.plugin import NAME_ON_CREATE, NAME_ON_DESTROY
 
 class PluginCreate(PluginBase):
 
-    _created = False
+    _created: bool
+
+    def __new__(cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        instance._created = False
+        return instance
 
     @property
     def created(self) -> bool:

@@ -17,8 +17,13 @@ class PluginRegister(PluginBase):
 
     _registered = False
 
+    def __new__(cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        instance._registered = False
+        return instance
+
     @property
-    def opened(self) -> bool:
+    def registered(self) -> bool:
         assert isinstance(self._registered, bool)
         return self._registered
 
