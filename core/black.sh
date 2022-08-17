@@ -23,14 +23,16 @@ function cancel_black
     exit 1
 }
 
-print_message "Run black ..."
+ARGS=(
+    "--check"
+    "--diff"
+    "--color"
+    "--exclude=(.*_pb2(_grpc)?\.py(i)?$|/\.git|/\.venv|/ckps|/configs|/storage)"
+)
 
-"$RECC_DIR/python" -m black \
-    --check \
-    --diff \
-    --color \
-    --exclude '(.*_pb2(_grpc)?\.py(i)?$|/\.git|/\.venv|/ckps|/configs|/storage)' \
+print_message "black ${ARGS[*]}"
+
+"$RECC_DIR/python" -m black "${ARGS[@]}" \
     "$CORE_DIR/recc/" \
     "$CORE_DIR/test/" \
-    "$CORE_DIR/tester/" \
-    "$@"
+    "$CORE_DIR/tester/"

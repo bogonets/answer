@@ -23,13 +23,16 @@ function cancel_black
     exit 1
 }
 
-print_message "Run pytest ..."
+ARGS=(
+    "-v"
+    "--cov"
+    "--cov-report=term-missing"
+    "--cov-report=html"
+    "--cov-config=${CORE_DIR}/pytest.ini"
+)
 
-"$RECC_DIR/python" -m pytest \
-     -v \
-     --cov \
-     --cov-report=term-missing \
-     --cov-report=html \
-     --cov-config="${CORE_DIR}/pytest.ini" \
+print_message "pytest ${ARGS[*]} $*"
+
+"$RECC_DIR/python" -m pytest "${ARGS[@]}" \
      "$CORE_DIR/test/" \
      "$@"

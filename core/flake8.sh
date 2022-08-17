@@ -3,6 +3,8 @@
 CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
 
+ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
+
 function print_error
 {
     # shellcheck disable=SC2145
@@ -23,11 +25,11 @@ function cancel_black
     exit 1
 }
 
-print_message "Run flake8 ..."
+ARGS=("--config=${CORE_DIR}/flake8.ini")
 
-"$RECC_DIR/python" -m flake8 \
-    --config="${CORE_DIR}/flake8.ini" \
+print_message "flake8 ${ARGS[*]}"
+
+"$RECC_DIR/python" -m flake8 "${ARGS[@]}" \
     "$CORE_DIR/recc/" \
     "$CORE_DIR/test/" \
-    "$CORE_DIR/tester/" \
-    "$@"
+    "$CORE_DIR/tester/"

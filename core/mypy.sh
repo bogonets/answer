@@ -23,11 +23,11 @@ function cancel_black
     exit 1
 }
 
-print_message "Run mypy ..."
+ARGS=("--config-file=${CORE_DIR}/mypy.ini")
 
-"$RECC_DIR/python" -m mypy \
-    --config-file="${CORE_DIR}/mypy.ini" \
+print_message "mypy ${ARGS[*]}"
+
+"$RECC_DIR/python" -m mypy "${ARGS[@]}" \
     "$CORE_DIR/recc/" \
     "$CORE_DIR/test/" \
-    "$CORE_DIR/tester/" \
-    "$@"
+    "$CORE_DIR/tester/"

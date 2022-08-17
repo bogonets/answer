@@ -1,26 +1,44 @@
 #!/usr/bin/env bash
 
 RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
+PYTHON="$RECC_DIR/python"
+PROTOC_VERSION=$("$PYTHON" -m grpc_tools.protoc --version | sed "s/libprotoc //g")
 
-PROTOC_VERSION=$("$RECC_DIR/python" -m grpc_tools.protoc --version | sed 's/libprotoc //g')
+function print_error
+{
+    # shellcheck disable=SC2145
+    echo -e "\033[31m$@\033[0m" 1>&2
+}
 
-if [[ -z $PROTOC_VERSION ]]; then
-    "$RECC_DIR/python" -m pip install grpcio-tools
-fi
+function print_message
+{
+    # shellcheck disable=SC2145
+    echo -e "\033[32m$@\033[0m"
+}
+
+trap 'cancel_black' INT
+
+function cancel_black
+{
+    print_error "An interrupt signal was detected."
+    exit 1
+}
 
 function run_proto
 {
     local module=$1
     local name=$2
-
-    echo "Protocolizing module ${module}/${name} ..."
-
-    "$RECC_DIR/python" -m grpc_tools.protoc \
-        "-Irecc/proto/${module}" \
-        "--python_out=recc/proto/${module}" \
-        "--mypy_out=recc/proto/${module}" \
-        "--grpc_python_out=recc/proto/${module}" \
+    local args=(
+        "-Irecc/proto/${module}"
+        "--python_out=recc/proto/${module}"
+        "--mypy_out=recc/proto/${module}"
+        "--grpc_python_out=recc/proto/${module}"
         "recc/proto/${module}/${name}.proto"
+    )
+
+    print_message "grpc_tools.protoc ${args[*]}"
+
+    "$PYTHON" -m grpc_tools.protoc "${args[@]}"
 
     # Do not use this flag: `--mypy_grpc_out=recc/proto`
     # I need to generate an asynchronous function, but generating a normal function.
@@ -34,6 +52,10 @@ function run_proto
         "${grpc_python_out_path}"
     rm "${grpc_python_out_path}.tmp"
 }
+
+if [[ -z $PROTOC_VERSION ]]; then
+    "$PYTHON" -m pip install grpcio-tools
+fi
 
 run_proto rpc rpc_api
 run_proto daemon daemon_api
