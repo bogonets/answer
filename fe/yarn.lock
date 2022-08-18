@@ -1606,10 +1606,10 @@
   resolved "https://registry.yarnpkg.com/@polka/url/-/url-1.0.0-next.21.tgz#5de5a2385a35309427f6011992b544514d559aa1"
   integrity sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==
 
-"@recc/api@^2.0.0-dev9-2":
-  version "2.0.0-dev9-2"
-  resolved "https://registry.yarnpkg.com/@recc/api/-/api-2.0.0-dev9-2.tgz#b59b92d096e2f9caa522f95140245a780ddbf725"
-  integrity sha512-rxsyzBkYZ8H0uH/ClZ7M1MiC2iFKUwwD8yfgkXyXG7Jd76FNCWQUQkp56BO04T8UZ4dpvIv+9IqftgAbn3RiMw==
+"@recc/api@^2.0.0-dev10":
+  version "2.0.0-dev10"
+  resolved "https://registry.yarnpkg.com/@recc/api/-/api-2.0.0-dev10.tgz#21b8b029b1d1292eeac32d787d5fa79ae9729573"
+  integrity sha512-ceAlTlVOiyAbd5Cu8VX2Kjb5v/0OAHfZ61k40NyD/JsaRRvx1XpRh2a6tJ+B+tLwPtwLmkPBtb7D+jF72MNgUQ==
   dependencies:
     axios "^0.26.1"
     crypto-js "^4.1.1"
