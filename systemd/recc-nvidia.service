@@ -1,6 +1,6 @@
 [Unit]
 Description=The ANSWER, No-code development platform
-After=local-fs.target docker.service
+After=local-fs.target docker.service nvidia-persistenced.service
 
 [Service]
 Restart=always

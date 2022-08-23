@@ -5,6 +5,13 @@ NAMESPACE=recc
 SYSTEMCTL_OPT=()
 JOURNALCTL_OPT=()
 
+SERVICE_PATH="/etc/systemd/system/$SERVICE_NAME"
+JOURNAL_PATH="/etc/systemd/journald@$NAMESPACE.conf"
+
+if [[ $(lsb_release -sr | sed 's/\.//') -gt 1804 ]]; then
+    JOURNALCTL_OPT+=("--namespace=$NAMESPACE")
+fi
+
 USAGE_MESSAGE="
 systemctl for recc service.
 
@@ -29,6 +36,12 @@ Available commands:
   clean         Clean runtime, cache, state, logs or configuration of unit
   log           Query the systemd journal
 
+Configurations:
+  Service name: $SERVICE_NAME
+  Service file: $SERVICE_PATH
+  Journal namespace: $NAMESPACE
+  Journal file: $JOURNAL_PATH
+
 journalctl examples:
   journalctl -b
     Show current Boot
@@ -46,72 +59,76 @@ journalctl examples:
 
 COMMAND=$1
 shift 1
+
 if [[ -z $COMMAND ]]; then
-    echo "Empty argument"
+    echo "Empty argument" 1>&2
     echo "$USAGE_MESSAGE"
     exit 1
 fi
 
 case "$COMMAND" in
-help|--help|-h)
-    echo "$USAGE_MESSAGE"
-    exit 0
-    ;;
-edit)
-    "$EDITOR" "/etc/systemd/system/$SERVICE_NAME"
-    ;;
-list)
-    systemctl "${SYSTEMCTL_OPT[@]}" list-units
-    ;;
-files)
-    systemctl "${SYSTEMCTL_OPT[@]}" list-unit-files
-    ;;
-daemon-reload)
-    systemctl "${SYSTEMCTL_OPT[@]}" daemon-reload
-    ;;
-up)
-    systemctl "${SYSTEMCTL_OPT[@]}" daemon-reload
-    systemctl "${SYSTEMCTL_OPT[@]}" enable $SERVICE_NAME
-    systemctl "${SYSTEMCTL_OPT[@]}" start $SERVICE_NAME
-    ;;
-down)
-    systemctl "${SYSTEMCTL_OPT[@]}" stop $SERVICE_NAME
-    systemctl "${SYSTEMCTL_OPT[@]}" disable $SERVICE_NAME
-    systemctl "${SYSTEMCTL_OPT[@]}" daemon-reload
-    ;;
-enable)
-    systemctl "${SYSTEMCTL_OPT[@]}" enable $SERVICE_NAME "$@"
-    ;;
-disable)
-    systemctl "${SYSTEMCTL_OPT[@]}" disable $SERVICE_NAME "$@"
-    ;;
-reload)
-    systemctl "${SYSTEMCTL_OPT[@]}" reload $SERVICE_NAME "$@"
-    ;;
-status)
-    systemctl "${SYSTEMCTL_OPT[@]}" status $SERVICE_NAME "$@"
-    ;;
-start)
-    systemctl "${SYSTEMCTL_OPT[@]}" start $SERVICE_NAME "$@"
-    ;;
-stop)
-    systemctl "${SYSTEMCTL_OPT[@]}" stop $SERVICE_NAME "$@"
-    ;;
-restart)
-    systemctl "${SYSTEMCTL_OPT[@]}" restart $SERVICE_NAME "$@"
-    ;;
-kill)
-    systemctl "${SYSTEMCTL_OPT[@]}" kill $SERVICE_NAME "$@"
-    ;;
-clean)
-    systemctl "${SYSTEMCTL_OPT[@]}" clean $SERVICE_NAME "$@"
-    ;;
-log)
-    journalctl "${JOURNALCTL_OPT[@]}" --namespace=$NAMESPACE -u $SERVICE_NAME "$@"
-    ;;
-*)
-    echo "Unrecognized argument: $1"
-    echo "$USAGE_MESSAGE"
-    exit 1
-    ;;
+    help|--help|-h)
+        echo "$USAGE_MESSAGE"
+        exit 0
+        ;;
+    edit-service)
+        "$EDITOR" "$SERVICE_PATH"
+        ;;
+    edit-journal)
+        "$EDITOR" "$JOURNAL_PATH"
+        ;;
+    list)
+        systemctl "${SYSTEMCTL_OPT[@]}" list-units
+        ;;
+    files)
+        systemctl "${SYSTEMCTL_OPT[@]}" list-unit-files
+        ;;
+    daemon-reload)
+        systemctl "${SYSTEMCTL_OPT[@]}" daemon-reload
+        ;;
+    up)
+        systemctl "${SYSTEMCTL_OPT[@]}" daemon-reload
+        systemctl "${SYSTEMCTL_OPT[@]}" enable $SERVICE_NAME
+        systemctl "${SYSTEMCTL_OPT[@]}" start $SERVICE_NAME
+        ;;
+    down)
+        systemctl "${SYSTEMCTL_OPT[@]}" stop $SERVICE_NAME
+        systemctl "${SYSTEMCTL_OPT[@]}" disable $SERVICE_NAME
+        systemctl "${SYSTEMCTL_OPT[@]}" daemon-reload
+        ;;
+    enable)
+        systemctl "${SYSTEMCTL_OPT[@]}" enable $SERVICE_NAME "$@"
+        ;;
+    disable)
+        systemctl "${SYSTEMCTL_OPT[@]}" disable $SERVICE_NAME "$@"
+        ;;
+    reload)
+        systemctl "${SYSTEMCTL_OPT[@]}" reload $SERVICE_NAME "$@"
+        ;;
+    status)
+        systemctl "${SYSTEMCTL_OPT[@]}" status $SERVICE_NAME "$@"
+        ;;
+    start)
+        systemctl "${SYSTEMCTL_OPT[@]}" start $SERVICE_NAME "$@"
+        ;;
+    stop)
+        systemctl "${SYSTEMCTL_OPT[@]}" stop $SERVICE_NAME "$@"
+        ;;
+    restart)
+        systemctl "${SYSTEMCTL_OPT[@]}" restart $SERVICE_NAME "$@"
+        ;;
+    kill)
+        systemctl "${SYSTEMCTL_OPT[@]}" kill $SERVICE_NAME "$@"
+        ;;
+    clean)
+        systemctl "${SYSTEMCTL_OPT[@]}" clean $SERVICE_NAME "$@"
+        ;;
+    log|journal|journalctl)
+        journalctl "${JOURNALCTL_OPT[@]}" -u $SERVICE_NAME "$@"
+        ;;
+    *)
+        echo "Unrecognized argument: $1" 1>&2
+        echo "$USAGE_MESSAGE"
+        exit 1
+        ;;
 esac

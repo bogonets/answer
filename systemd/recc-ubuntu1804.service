@@ -1,23 +1,15 @@
 [Unit]
 Description=The ANSWER, No-code development platform
-After=\
-    syslog.target \
-    network.target \
-    local-fs.target \
-    docker.service \
-    docker.socket \
-    nvidia-persistenced.service
+After=local-fs.target docker.service
 
 [Service]
+Restart=always
 Environment=RECC_VERBOSE=0
 Environment=RECC_DEVELOPER=false
 Environment=RECC_LOG_LEVEL=INFO
-Environment=RECC_CONFIG=/usr/local/recc/config.yml
 Environment=RECC_LOCAL_STORAGE=/usr/local/recc/storage
-Restart=always
 WorkingDirectory=/usr/local/recc/working
 ExecStart=/usr/local/recc/python/bin/python3.9 -OO -m recc core
-LogNamespace=recc
 TimeoutSec=300
 
 [Install]
