@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
-RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
+ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 
 function print_error
 {
@@ -28,11 +27,11 @@ ARGS=(
     "--cov"
     "--cov-report=term-missing"
     "--cov-report=html"
-    "--cov-config=${CORE_DIR}/pytest.ini"
+    "--cov-config=${ROOT_DIR}/pytest.ini"
 )
 
 print_message "pytest ${ARGS[*]} $*"
 
-"$RECC_DIR/python" -m pytest "${ARGS[@]}" \
-     "$CORE_DIR/test/" \
+"$ROOT_DIR/python" -m pytest "${ARGS[@]}"
+     "$ROOT_DIR/tester/" \
      "$@"

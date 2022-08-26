@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 
-CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
-RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
+ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
+OUTPUT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/../docs" || exit; pwd)
 
-PYTHON_CMD="$RECC_DIR/python"
-OUTPUT_DIR="$RECC_DIR/docs"
-SOURCE_DIR="$CORE_DIR/doc"
+SOURCE_DIR="$ROOT_DIR/doc"
+LOCALE_DIR="$ROOT_DIR/.sphinx_locale"
+CACHED_DIR="$ROOT_DIR/.sphinx_cache"
 GETTEXT_DIR="$SOURCE_DIR/_gettext"
-LOCALE_DIR="$CORE_DIR/.sphinx_locale"
-CACHED_DIR="$CORE_DIR/.sphinx_cache"
 
 USAGE_MESSAGE="
 Usage: ${BASH_SOURCE[0]} [options] command
@@ -42,7 +40,7 @@ fi
 function run_sphinx_gettext_builder
 {
     local language=$1
-    "$PYTHON_CMD" -m sphinx \
+    "$ROOT_DIR/python" -m sphinx \
         -W \
         -b gettext \
         -d "$CACHED_DIR/gettext-$language" \
@@ -55,7 +53,7 @@ function run_sphinx_gettext_builder
 function run_sphinx_intl
 {
     local language=$1
-    "$PYTHON_CMD" -m sphinx_intl \
+    "$ROOT_DIR/python" -m sphinx_intl \
         update \
         -p "$GETTEXT_DIR/$language" \
         -d "$LOCALE_DIR" \
@@ -65,7 +63,7 @@ function run_sphinx_intl
 function run_sphinx_html_builder
 {
     local language=$1
-    "$PYTHON_CMD" -m sphinx \
+    "$ROOT_DIR/python" -m sphinx \
         -W \
         -b html \
         -d "$CACHED_DIR/$language" \

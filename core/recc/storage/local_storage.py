@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 from recc.filesystem.permission import prepare_directory
 from recc.template.lamda_template import LamdaTemplate

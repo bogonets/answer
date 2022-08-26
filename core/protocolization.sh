@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
-PYTHON="$RECC_DIR/python"
-PROTOC_VERSION=$("$PYTHON" -m grpc_tools.protoc --version | sed "s/libprotoc //g")
+ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
+PROTOC_VERSION=$("$ROOT_DIR/python" -m grpc_tools.protoc --version | sed "s/libprotoc //g")
 
 function print_error
 {
@@ -38,7 +37,7 @@ function run_proto
 
     print_message "grpc_tools.protoc ${args[*]}"
 
-    "$PYTHON" -m grpc_tools.protoc "${args[@]}"
+    "$ROOT_DIR/python" -m grpc_tools.protoc "${args[@]}"
 
     # Do not use this flag: `--mypy_grpc_out=recc/proto`
     # I need to generate an asynchronous function, but generating a normal function.
@@ -54,7 +53,7 @@ function run_proto
 }
 
 if [[ -z $PROTOC_VERSION ]]; then
-    "$PYTHON" -m pip install grpcio-tools
+    "$ROOT_DIR/python" -m pip install grpcio-tools
 fi
 
 run_proto rpc rpc_api

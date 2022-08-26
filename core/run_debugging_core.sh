@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 
-CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
-RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
+ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 
-LOCAL_STORAGE_DIR="$HOME/answer"
-SIGNATURE_KEY=aaa
+SIGNATURE=aaa
+LOCAL_STORAGE="$HOME/answer"
 
-"$RECC_DIR/python" "$CORE_DIR/main.py" -vv -d \
+"$ROOT_DIR/python" "$ROOT_DIR/main.py" -vv -d \
     core \
-    --signature "$SIGNATURE_KEY" \
-    --local-storage "$LOCAL_STORAGE_DIR" \
+    --signature "$SIGNATURE" \
+    --local-storage "$LOCAL_STORAGE" \
     "$@"

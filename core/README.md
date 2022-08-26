@@ -1,12 +1,33 @@
-# ANSWER (RECC CORE)
+# RECC
 
 Restructured Engine for the Cyclops Cloud - CORE
 
-## Upgrade and maintenance
+## Formatting
 
-## Debugging
-
-```bash
-./core -v -d -k public -p 20000
+```.shell
+bash black.sh
 ```
 
+## PEP8
+
+```.shell
+bash flake8.sh
+```
+
+## Import ordering
+
+```.shell
+bash isort.sh
+```
+
+## Type analysis
+
+```.shell
+bash mypy.sh
+```
+
+## Testing
+
+```.shell
+bash pytest.sh
+```

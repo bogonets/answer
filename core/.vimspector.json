@@ -6,7 +6,7 @@
             "default": true,
             "variables": {
                 "SIGNATURE": "aaa",
-                "LOCAL_STORAGE_DIR": "${workspaceRoot}/storage"
+                "LOCAL_STORAGE_DIR": "${HOME}/answer"
             },
             "configuration": {
                 "request": "launch",

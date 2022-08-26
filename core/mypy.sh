@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
-RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
+ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 
 function print_error
 {
@@ -23,11 +22,12 @@ function cancel_black
     exit 1
 }
 
-ARGS=("--config-file=${CORE_DIR}/mypy.ini")
+ARGS=("--config-file=${ROOT_DIR}/mypy.ini")
 
 print_message "mypy ${ARGS[*]}"
 
-"$RECC_DIR/python" -m mypy "${ARGS[@]}" \
-    "$CORE_DIR/recc/" \
-    "$CORE_DIR/test/" \
-    "$CORE_DIR/tester/"
+"$ROOT_DIR/python" -m mypy "${ARGS[@]}" \
+    "$ROOT_DIR/recc/" \
+    "$ROOT_DIR/tester/" \
+    "$ROOT_DIR/main.py" \
+    "$ROOT_DIR/setup.py"

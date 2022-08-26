@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
-RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
+ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 
 function print_error
 {
@@ -27,12 +26,13 @@ ARGS=(
     "--check"
     "--diff"
     "--color"
-    "--exclude=(.*_pb2(_grpc)?\.py(i)?$|/\.git|/\.venv|/ckps|/configs|/storage)"
+    "--exclude=(.*_pb2(_grpc)?\.py(i)?$|/\.git|/\.venv)"
 )
 
 print_message "black ${ARGS[*]}"
 
-"$RECC_DIR/python" -m black "${ARGS[@]}" \
-    "$CORE_DIR/recc/" \
-    "$CORE_DIR/test/" \
-    "$CORE_DIR/tester/"
+"$ROOT_DIR/python" -m black "${ARGS[@]}" \
+    "$ROOT_DIR/recc/" \
+    "$ROOT_DIR/tester/" \
+    "$ROOT_DIR/main.py" \
+    "$ROOT_DIR/setup.py"

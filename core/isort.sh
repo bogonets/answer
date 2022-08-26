@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
-RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
+ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 
 USAGE="
 Usage: ${BASH_SOURCE[0]} [options]
@@ -61,14 +60,15 @@ while [[ -n $1 ]]; do
     esac
 done
 
-ARGS=("--settings-path=$CORE_DIR/isort.cfg")
+ARGS=("--settings-path=$ROOT_DIR/isort.cfg")
 if [[ $FIX_FLAG -eq 0 ]]; then
     ARGS+=("--check" "--diff" "--color")
 fi
 
 print_message "isort ${ARGS[*]}"
 
-"$RECC_DIR/python" -m isort "${ARGS[@]}" \
-    "$CORE_DIR/recc" \
-    "$CORE_DIR/test" \
-    "$CORE_DIR/tester"
+"$ROOT_DIR/python" -m isort "${ARGS[@]}" \
+    "$ROOT_DIR/recc/" \
+    "$ROOT_DIR/tester/" \
+    "$ROOT_DIR/main.py" \
+    "$ROOT_DIR/setup.py"

@@ -1,0 +1,5 @@
+-r requirements.debug.txt
+-r requirements.docs.txt
+-r requirements.main.txt
+-r requirements.setup.txt
+-r requirements.test.txt

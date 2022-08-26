@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
+ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 
-"$RECC_DIR/python" -m pip uninstall recc
+"$ROOT_DIR/python" -m pip uninstall recc

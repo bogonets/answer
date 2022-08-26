@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-CORE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
-RECC_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit; pwd)
-
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 
 function print_error
@@ -25,11 +22,12 @@ function cancel_black
     exit 1
 }
 
-ARGS=("--config=${CORE_DIR}/flake8.ini")
+ARGS=("--config=${ROOT_DIR}/flake8.ini")
 
 print_message "flake8 ${ARGS[*]}"
 
-"$RECC_DIR/python" -m flake8 "${ARGS[@]}" \
-    "$CORE_DIR/recc/" \
-    "$CORE_DIR/test/" \
-    "$CORE_DIR/tester/"
+"$ROOT_DIR/python" -m flake8 "${ARGS[@]}" \
+    "$ROOT_DIR/recc/" \
+    "$ROOT_DIR/tester/" \
+    "$ROOT_DIR/main.py" \
+    "$ROOT_DIR/setup.py"
