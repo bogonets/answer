@@ -7,13 +7,11 @@ from typing import Optional
 from recc.chrono.datetime import tznow
 from recc.database.migration.migration import migration_step
 from recc.database.mixin._pg_base import PgBase  # noqa
-from recc.database.mixin.pg_daemon import PgDaemon
 from recc.database.mixin.pg_group import PgGroup
 from recc.database.mixin.pg_group_member import PgGroupMember
 from recc.database.mixin.pg_info import PgInfo
 from recc.database.mixin.pg_permission import PgPermission
 from recc.database.mixin.pg_pip import PgPip
-from recc.database.mixin.pg_port import PgPort
 from recc.database.mixin.pg_project import PgProject
 from recc.database.mixin.pg_project_member import PgProjectMember
 from recc.database.mixin.pg_role import PgRole
@@ -43,13 +41,11 @@ def _merge_queries(*args: str) -> str:
 
 
 class PgDb(
-    PgDaemon,
     PgGroup,
     PgGroupMember,
     PgInfo,
     PgPermission,
     PgPip,
-    PgPort,
     PgProject,
     PgProjectMember,
     PgRole,

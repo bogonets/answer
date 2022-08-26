@@ -16,35 +16,6 @@ export default class RouterAdmin extends Router {
     this.moveTo(adminNames.adminContainers);
   }
 
-  moveToAdminDaemons() {
-    this.moveTo(adminNames.adminDaemons);
-  }
-
-  moveToAdminDaemonsEditInfo(daemon?: string) {
-    const params = {
-      daemon: daemon || this.$route.params.daemon,
-    };
-    this.moveTo(adminNames.adminDaemonsEditInfo, params);
-  }
-
-  moveToAdminDaemonsEditEnv(daemon?: string) {
-    const params = {
-      daemon: daemon || this.$route.params.daemon,
-    };
-    this.moveTo(adminNames.adminDaemonsEditEnv, params);
-  }
-
-  moveToAdminDaemonsEditLog(daemon?: string) {
-    const params = {
-      daemon: daemon || this.$route.params.daemon,
-    };
-    this.moveTo(adminNames.adminDaemonsEditLog, params);
-  }
-
-  moveToAdminDaemonsNew() {
-    this.moveTo(adminNames.adminDaemonsNew);
-  }
-
   moveToAdminGroups() {
     this.moveTo(adminNames.adminGroups);
   }
@@ -71,10 +42,6 @@ export default class RouterAdmin extends Router {
 
   moveToAdminPermissionsNew() {
     this.moveTo(adminNames.adminPermissionsNew);
-  }
-
-  moveToAdminPorts() {
-    this.moveTo(adminNames.adminPorts);
   }
 
   moveToAdminProjects() {

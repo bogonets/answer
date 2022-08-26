@@ -11,11 +11,9 @@ from recc.core.context import Context
 from recc.http import http_urls as u
 from recc.http.http_parameter import parameter_matcher
 from recc.packet.config import ConfigA, UpdateConfigValueQ
-from recc.packet.environment import EnvironmentA
 from recc.packet.info import CreateInfoQ, InfoA, UpdateInfoQ
 from recc.packet.plugin import PluginA
 from recc.packet.system import VersionsA
-from recc.variables.environment import RECC_ENV_PREFIX
 
 
 class RouterV2Dev:
@@ -61,9 +59,6 @@ class RouterV2Dev:
 
             # plugins
             web.get(u.plugins, self.get_plugins),
-
-            # Environments
-            web.get(u.environments, self.get_environments),
         ]
         # fmt: on
 
@@ -164,10 +159,3 @@ class RouterV2Dev:
     # ------------
     # Environments
     # ------------
-
-    @parameter_matcher
-    async def get_environments(self) -> List[EnvironmentA]:
-        if self.context.config.developer:
-            return self.context.get_environments()
-        else:
-            return self.context.get_environments(RECC_ENV_PREFIX)

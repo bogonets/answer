@@ -13,12 +13,10 @@ from recc.argparse.injection_values import injection_core_default_values
 from recc.cache.cache import Cache
 from recc.container.container_manager import create_container_manager
 from recc.core.mixin.context_config import ContextConfig
-from recc.core.mixin.context_daemon import ContextDaemon
 from recc.core.mixin.context_group import ContextGroup
 from recc.core.mixin.context_info import ContextInfo
 from recc.core.mixin.context_lamda import ContextLamda
 from recc.core.mixin.context_plugin import ContextPlugin
-from recc.core.mixin.context_port import ContextPort
 from recc.core.mixin.context_project import ContextProject
 from recc.core.mixin.context_role import ContextRole
 from recc.core.mixin.context_storage import ContextStorage
@@ -26,7 +24,6 @@ from recc.core.mixin.context_system import ContextSystem
 from recc.core.mixin.context_task import ContextTask
 from recc.core.mixin.context_user import ContextUser
 from recc.crypto.signature import generate_signature
-from recc.daemon.daemon_manager import DaemonManager
 from recc.database.pg_db import PgDb
 from recc.init.default import (
     init_json_driver,
@@ -64,12 +61,10 @@ from recc.variables.logging import VERBOSE_LOGGING_LEVEL_1
 
 class Context(
     ContextConfig,
-    ContextDaemon,
     ContextGroup,
     ContextInfo,
     ContextLamda,
     ContextPlugin,
-    ContextPort,
     ContextProject,
     ContextRole,
     ContextStorage,
@@ -106,7 +101,6 @@ class Context(
         self._init_database()
         self._init_task_manager()
         self._init_plugin_manager()
-        self._init_daemons()
 
         if skip_assertion:
             return
@@ -239,16 +233,6 @@ class Context(
             allows=self._config.core_plugin_allow,
         )
         logger.info("Created plugin-manager")
-
-    def _init_daemons(self) -> None:
-        assert self._local_storage
-        self._daemons = DaemonManager(
-            prefix=self._config.daemon_plugin_prefix,
-            working_root_dir=self._local_storage.daemon_work,
-            denies=self._config.daemon_plugin_deny,
-            allows=self._config.daemon_plugin_allow,
-        )
-        logger.info("Created daemon-manager")
 
     @classmethod
     def version_text(cls) -> str:
@@ -434,21 +418,6 @@ class Context(
                     await self.add_permission(permission)
                     logger.info(f"Add `{key}` core-plugin permission: {permission}")
 
-    async def open_enabled_daemons(self) -> None:
-        daemons = await self._database.select_daemons()
-        for daemon in daemons:
-            if not daemon.enable:
-                logger.debug(f"Daemon<{daemon.slug}> Skipped opening")
-                continue
-
-            logger.debug(f"Daemon<{daemon.slug}> Opening ...")
-            try:
-                await self._daemons.run(daemon.slug, daemon.plugin, daemon.address)
-            except BaseException as e:
-                logger.error(f"Daemon<{daemon.slug}> Open failed: {e}")
-            else:
-                logger.info(f"Daemon<{daemon.slug}> Opened")
-
     async def open(self) -> None:
         await self._test_recc_subprocess()
 
@@ -507,13 +476,7 @@ class Context(
         await self._plugins.open()
         logger.info("Opened core-plugins")
 
-        await self.open_enabled_daemons()
-        logger.info("Opened daemon-manager")
-
     async def _before_close(self) -> None:
-        await self._daemons.close()
-        logger.info("Closed daemon-manager")
-
         if self.container.is_open() and self.is_guest_mode():
             await self.disconnect_global_network()
             logger.info("Disconnect global network")

@@ -9,8 +9,6 @@ en:
   containers: 'Containers'
   lambdas: 'Lambdas'
   configs: 'Configs'
-  ports: 'Ports'
-  daemons: 'Daemons'
   external:
     airjoy:
       devices: 'AIRJOY Devices'
@@ -25,8 +23,6 @@ ko:
   containers: '컨테이너'
   lambdas: '람다'
   configs: '구성'
-  ports: '포트'
-  daemons: '데몬'
   external:
     airjoy:
       devices: 'AIRJOY 장치 관리'
@@ -128,34 +124,6 @@ ko:
             {{ $t('configs') }}
           </v-list-item-title>
         </v-list-item>
-
-        <v-list-item link @click.stop="ports">
-          <v-list-item-icon>
-            <v-icon>mdi-connection</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('ports') }}
-          </v-list-item-title>
-        </v-list-item>
-
-        <v-list-item link @click.stop="daemons">
-          <v-list-item-icon>
-            <v-icon>mdi-ghost</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('daemons') }}
-          </v-list-item-title>
-        </v-list-item>
-
-        <v-divider v-show="false"></v-divider>
-        <v-list-item v-show="false" link @click.stop="externalAirjoyDevices">
-          <v-list-item-icon>
-            <v-icon>mdi-weather-windy</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('external.airjoy.devices') }}
-          </v-list-item-title>
-        </v-list-item>
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
@@ -165,7 +133,6 @@ ko:
 import {Component, Prop, Emit, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import adminNames from '@/router/names/admin';
-import devNames from '@/router/names/dev';
 
 @Component
 export default class NaviAdmin extends VueBase {
@@ -214,14 +181,6 @@ export default class NaviAdmin extends VueBase {
       this.index = 6;
     } else if (name === adminNames.adminConfigs) {
       this.index = 7;
-    } else if (name === adminNames.adminPorts) {
-      this.index = 8;
-    } else if (name === adminNames.adminDaemons) {
-      this.index = 9;
-    } else if (name === adminNames.adminDaemonsEdit) {
-      this.index = 9;
-    } else if (name === adminNames.adminDaemonsNew) {
-      this.index = 9;
     } else {
       this.index = -1;
     }
@@ -286,20 +245,6 @@ export default class NaviAdmin extends VueBase {
   configs() {
     if (!this.noDefault) {
       this.moveToAdminConfigs();
-    }
-  }
-
-  @Emit('click:ports')
-  ports() {
-    if (!this.noDefault) {
-      this.moveToAdminPorts();
-    }
-  }
-
-  @Emit('click:daemons')
-  daemons() {
-    if (!this.noDefault) {
-      this.moveToAdminDaemons();
     }
   }
 }

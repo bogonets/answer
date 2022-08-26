@@ -2,7 +2,6 @@
 en:
   title: 'DevTools'
   overview: 'Overview'
-  envs: 'Environment'
   infos: 'Preferences'
   plugins: 'Plugins'
   configs: 'Configs'
@@ -10,7 +9,6 @@ en:
 ko:
   title: '개발 도구'
   overview: '개요'
-  envs: '환경 변수'
   infos: '기본 설정'
   plugins: '플러그인'
   configs: '구성'
@@ -47,15 +45,6 @@ ko:
           </v-list-item-icon>
           <v-list-item-title>
             {{ $t('overview') }}
-          </v-list-item-title>
-        </v-list-item>
-
-        <v-list-item link @click.stop="envs">
-          <v-list-item-icon>
-            <v-icon>mdi-variable</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('envs') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -112,14 +101,12 @@ export default class NaviDev extends VueBase {
     const name = this.$route.name;
     if (name === devNames.devOverview) {
       this.index = 0;
-    } else if (name === devNames.devEnvs) {
-      this.index = 1;
     } else if (name === devNames.devInfos) {
-      this.index = 2;
+      this.index = 1;
     } else if (name === devNames.devPlugins) {
-      this.index = 3;
+      this.index = 2;
     } else if (name === devNames.devConfigs) {
-      this.index = 4;
+      this.index = 3;
     } else {
       this.index = -1;
     }
@@ -135,13 +122,6 @@ export default class NaviDev extends VueBase {
   overview() {
     if (!this.noDefault) {
       this.moveToDev();
-    }
-  }
-
-  @Emit('click:envs')
-  envs() {
-    if (!this.noDefault) {
-      this.moveToDevEnvs();
     }
   }
 

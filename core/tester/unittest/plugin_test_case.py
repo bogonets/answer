@@ -33,27 +33,12 @@ class PluginTestCase(IsolatedAsyncioTestCase):
         return name
 
     @property
-    def recc_daemon_test_performance(self):
-        return self._assert_plugin_name("recc_daemon_test_performance")
-
-    @property
-    def recc_daemon_test_router(self):
-        return self._assert_plugin_name("recc_daemon_test_router")
-
-    @property
     def recc_plugin_test_http_server(self):
         return self._assert_plugin_name("recc_plugin_test_http_server")
 
     @property
     def recc_plugin_test_simple(self):
         return self._assert_plugin_name("recc_plugin_test_simple")
-
-    @property
-    def test_daemon_plugin_names(self):
-        return [
-            self.recc_daemon_test_performance,
-            self.recc_daemon_test_router,
-        ]
 
     @property
     def test_core_plugin_names(self):
@@ -64,4 +49,4 @@ class PluginTestCase(IsolatedAsyncioTestCase):
 
     @property
     def test_plugin_names(self):
-        return self.test_daemon_plugin_names + self.test_core_plugin_names
+        return self.test_core_plugin_names

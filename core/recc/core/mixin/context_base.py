@@ -5,7 +5,6 @@ from asyncio import AbstractEventLoop
 from recc.argparse.config.core_config import CoreConfig
 from recc.cache.cache import Cache
 from recc.container.interfaces.container_interface import ContainerInterface
-from recc.daemon.daemon_manager import DaemonManager
 from recc.database.pg_db import PgDb
 from recc.plugin.core_plugin_manager import CorePluginManager
 from recc.session.session import SessionPairFactory
@@ -26,7 +25,6 @@ class ContextBase:
     _database: PgDb
     _tasks: TaskConnectionPool
     _plugins: CorePluginManager
-    _daemons: DaemonManager
 
     @property
     def config(self) -> CoreConfig:

@@ -12,10 +12,6 @@ export default class RouterDev extends Router {
     this.moveTo(devNames.devConfigs);
   }
 
-  moveToDevEnvs() {
-    this.moveTo(devNames.devEnvs);
-  }
-
   moveToDevInfos() {
     this.moveTo(devNames.devInfos);
   }

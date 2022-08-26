@@ -1,12 +1,6 @@
 import adminNames from '@/router/names/admin';
 import AdminConfigs from '@/pages/admin/AdminConfigs.vue';
 import AdminContainers from '@/pages/admin/AdminContainers.vue';
-import AdminDaemons from '@/pages/admin/AdminDaemons.vue';
-import AdminDaemonsEdit from '@/pages/admin/AdminDaemonsEdit.vue';
-import AdminDaemonsEditInfo from '@/pages/admin/AdminDaemonsEditInfo.vue';
-import AdminDaemonsEditEnv from '@/pages/admin/AdminDaemonsEditEnv.vue';
-import AdminDaemonsEditLog from '@/pages/admin/AdminDaemonsEditLog.vue';
-import AdminDaemonsNew from '@/pages/admin/AdminDaemonsNew.vue';
 import AdminGroups from '@/pages/admin/AdminGroups.vue';
 import AdminGroupsEdit from '@/pages/admin/AdminGroupsEdit.vue';
 import AdminGroupsNew from '@/pages/admin/AdminGroupsNew.vue';
@@ -14,7 +8,6 @@ import AdminOverview from '@/pages/admin/AdminOverview.vue';
 import AdminPermissions from '@/pages/admin/AdminPermissions.vue';
 import AdminPermissionsEdit from '@/pages/admin/AdminPermissionsEdit.vue';
 import AdminPermissionsNew from '@/pages/admin/AdminPermissionsNew.vue';
-import AdminPorts from '@/pages/admin/AdminPorts.vue';
 import AdminProjects from '@/pages/admin/AdminProjects.vue';
 import AdminProjectsEdit from '@/pages/admin/AdminProjectsEdit.vue';
 import AdminProjectsNew from '@/pages/admin/AdminProjectsNew.vue';
@@ -65,11 +58,6 @@ export const adminChildren = [
     name: adminNames.adminPermissionsNew,
   },
   {
-    path: 'ports',
-    component: AdminPorts,
-    name: adminNames.adminPorts,
-  },
-  {
     path: 'projects',
     component: AdminProjects,
     name: adminNames.adminProjects,
@@ -108,37 +96,6 @@ export const adminChildren = [
     path: 'users/new',
     component: AdminUsersNew,
     name: adminNames.adminUsersNew,
-  },
-  {
-    path: 'daemons',
-    component: AdminDaemons,
-    name: adminNames.adminDaemons,
-  },
-  {
-    path: 'daemons/edit/:daemon',
-    component: AdminDaemonsEdit,
-    children: [
-      {
-        path: 'info',
-        component: AdminDaemonsEditInfo,
-        name: adminNames.adminDaemonsEditInfo,
-      },
-      {
-        path: 'env',
-        component: AdminDaemonsEditEnv,
-        name: adminNames.adminDaemonsEditEnv,
-      },
-      {
-        path: 'log',
-        component: AdminDaemonsEditLog,
-        name: adminNames.adminDaemonsEditLog,
-      },
-    ],
-  },
-  {
-    path: 'daemons/new',
-    component: AdminDaemonsNew,
-    name: adminNames.adminDaemonsNew,
   },
 ];
 

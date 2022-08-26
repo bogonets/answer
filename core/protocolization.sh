@@ -58,4 +58,3 @@ if [[ -z $PROTOC_VERSION ]]; then
 fi
 
 run_proto rpc rpc_api
-run_proto daemon daemon_api
