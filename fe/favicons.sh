@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-FE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)
+FE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 
 SRC=$FE_DIR/src/assets/answer-logo-notext.svg
 PUBLIC_DIR=$FE_DIR/public
@@ -27,7 +27,7 @@ function run_convert_png
     local output_options=("-gravity" "center" "-resize" "${size}" "-extent" "${size}x${size}" "-format" "png")
 
     echo -n "convert(png) '$dest' ..."
-    convert ${input_options[@]} "$SRC" ${output_options[@]} "$dest"
+    convert "${input_options[@]}" "$SRC" "${output_options[@]}" "$dest"
     exit_if_error
 }
 
@@ -40,7 +40,7 @@ function run_convert_ico
     local output_options=("-gravity" "center" "-resize" "${size}" "-extent" "${size}x${size}" "-format" "ico")
 
     echo -n "convert(ico) '$dest' ..."
-    convert ${input_options[@]} "$SRC" ${output_options[@]} "$dest"
+    convert "${input_options[@]}" "$SRC" "${output_options[@]}" "$dest"
     exit_if_error
 }
 
@@ -69,4 +69,3 @@ run_convert_png "$ICONS_DIR/msapplication-icon-144x144.png" 144
 run_convert_png "$ICONS_DIR/mstile-150x150.png" 150
 run_convert_ico "$PUBLIC_DIR/favicon.ico" 32
 run_copy "$ICONS_DIR/safari-pinned-tab.svg"
-

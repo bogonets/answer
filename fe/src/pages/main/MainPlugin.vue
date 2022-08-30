@@ -17,6 +17,7 @@ import {
   ReccCwcDataFullscreen,
   ReccCwcDataRenewalAccessToken,
 } from '@recc/api/dist/reccCwc';
+import moment from 'moment-timezone';
 
 @Component({
   components: {
@@ -156,8 +157,9 @@ export default class MainPlugin extends VueBase {
     }
 
     const apiOptions = this.$api2.asPortableOptions();
-    const dark = this.$vuetify.theme.dark;
+    const dark = this.$vuetify.theme.dark ? 1 : 0;
     const lang = this.$vuetify.lang.current;
+    const timezone = moment.tz.guess();
     const group = this.$route.params.group;
     const project = this.$route.params.project;
 
@@ -167,6 +169,7 @@ export default class MainPlugin extends VueBase {
         apiOptions,
         dark,
         lang,
+        timezone,
         group,
         project,
       } as ReccCwcDataInit,
