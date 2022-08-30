@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "style": "prettier --check .",
+    "style": "prettier --check src tests",
     "lint": "eslint . --ext .jsx,.js,.tsx,.ts",
     "test": "jest"
   },

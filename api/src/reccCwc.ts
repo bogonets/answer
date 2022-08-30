@@ -12,8 +12,10 @@ export const MESSAGE_DATA_TYPE_UNINITIALIZED_SERVICE = 'recc/uninitializedServic
 
 export interface ReccCwcDataInit {
   apiOptions: ReccApiOptions;
-  dark: boolean;
+
+  dark: number;
   lang: string;
+  timezone: string;
 
   group?: string;
   project?: string;

@@ -3,9 +3,10 @@ import ReccApi from './reccApi';
 import type {ReccApiOptions} from './reccApiBase';
 import type {ReccCwcDataInit, ReccCwcMessage} from './reccCwc';
 import {
+  IllegalArgumentError,
   ReccCwcOriginMismatchError,
+  TimeoutError,
   UninitializedError,
-  UnsupportedOperationError,
 } from './error';
 import {
   MESSAGE_EVENT_TYPE,
@@ -19,38 +20,58 @@ import {
   postUninitializedService,
 } from './reccCwc';
 
-export interface ReccCwcPluginOptions {
+export interface ReccCwcClientOptions {
   origin?: string;
   onInit?: (data: ReccCwcDataInit) => void;
 }
 
-function isDebuggingMode() {
-  return process.env.NODE_ENV !== 'production';
+export interface ReccCwcClientInit {
+  origin: string;
+  username: string;
+  password: string;
+  dark: number;
+  lang: string;
+  timezone: string;
+  group: string;
+  project: string;
 }
 
-function debugEnvs() {
+function debugEnvs(): ReccCwcClientInit {
+  const origin = process.env.RECC_CWC_CLIENT_ORIGIN || 'http://localhost:20000';
+  const username = process.env.RECC_CWC_CLIENT_USERNAME || 'admin';
+  const password = process.env.RECC_CWC_CLIENT_PASSWORD || '0000';
+  const darkText = process.env.RECC_CWC_CLIENT_DARK;
+  const dark = darkText ? Number.parseInt(darkText) : 0;
+  const lang = process.env.RECC_CWC_CLIENT_LANG || 'ko';
+  const timezone = process.env.RECC_CWC_CLIENT_TIMEZONE || 'Asia/Seoul';
+  const group = process.env.RECC_CWC_CLIENT_GROUP || 'group';
+  const project = process.env.RECC_CWC_CLIENT_PROJECT || 'project';
+
   return {
-    apiOrigin: process.env.RECC_CWC_PLUGIN_DEBUG_API_ORIGIN || 'http://localhost:20000',
-    username: process.env.RECC_CWC_PLUGIN_DEBUG_USERNAME || 'admin',
-    password: process.env.RECC_CWC_PLUGIN_DEBUG_PASSWORD || '0000',
-    dark: process.env.RECC_CWC_PLUGIN_DEBUG_DARK === 'true',
-    lang: process.env.RECC_CWC_PLUGIN_DEBUG_LANG || 'ko',
-    group: process.env.RECC_CWC_PLUGIN_DEBUG_GROUP || 'group',
-    project: process.env.RECC_CWC_PLUGIN_DEBUG_PROJECT || 'project',
-  };
+    origin,
+    username,
+    password,
+    dark,
+    lang,
+    timezone,
+    group,
+    project,
+  } as ReccCwcClientInit;
 }
 
 /**
  * Cross-window communication for RECC Plugin.
  */
-export class ReccCwcPlugin {
+export class ReccCwcClient {
   _messageHandler: (event: MessageEvent<ReccCwcMessage>) => void;
-  _options: ReccCwcPluginOptions;
+
+  _options: ReccCwcClientOptions;
   _window: Window;
 
   _api?: ReccApi = undefined;
-  _dark = false;
+  _dark = 0;
   _lang = 'en';
+  _timezone = '';
   _group = '';
   _project = '';
 
@@ -58,7 +79,7 @@ export class ReccCwcPlugin {
   _initPromiseResolve: (value: boolean) => void;
   _initPromiseReject: (reason: string) => void;
 
-  constructor(window: Window, options?: ReccCwcPluginOptions) {
+  constructor(window: Window, options?: ReccCwcClientOptions) {
     this._messageHandler = (event: MessageEvent<ReccCwcMessage>) => {
       this.onMessage(event);
     };
@@ -72,14 +93,10 @@ export class ReccCwcPlugin {
     });
   }
 
-  get debuggingMode() {
-    return isDebuggingMode();
-  }
-
   asParamsText() {
     let result = '';
-    if (this.apiOrigin) {
-      result = `api='${this.apiOrigin}',`;
+    if (this.origin) {
+      result = `api='${this.origin}',`;
     }
     if (this.group) {
       result += `group='${this.group}',`;
@@ -90,36 +107,33 @@ export class ReccCwcPlugin {
     if (this.lang) {
       result += `lang='${this.lang}',`;
     }
+    if (this.timezone) {
+      result += `timezone='${this.timezone}',`;
+    }
     return result + `dark=${this.dark}`;
   }
 
   toString() {
-    return `ReccCwcPlugin(${this.asParamsText()})`;
+    return `ReccCwcClient(${this.asParamsText()})`;
   }
 
   unregister() {
     this._window.removeEventListener(MESSAGE_EVENT_TYPE, this._messageHandler);
   }
 
-  async debug() {
-    if (!this.debuggingMode) {
-      throw new UnsupportedOperationError(
-        'Debug operations are not supported in production mode',
-      );
-    }
-
-    const envs = debugEnvs();
-    const api = new ReccApi({origin: envs.apiOrigin});
-    await api.postSignin(envs.username, envs.password);
+  async init(options = debugEnvs()) {
+    const api = new ReccApi({origin: options.origin});
+    await api.postSignin(options.username, options.password);
 
     // `onInit()` is a message received from the parent window.
     // Debugging mode forces this message to occur.
     this.onInit({
       apiOptions: api.asPortableOptions(),
-      dark: envs.dark,
-      lang: envs.lang,
-      group: envs.group,
-      project: envs.project,
+      dark: options.dark,
+      lang: options.lang,
+      timezone: options.timezone,
+      group: options.group,
+      project: options.project,
     });
   }
 
@@ -143,6 +157,8 @@ export class ReccCwcPlugin {
 
       this._dark = data.dark;
       this._lang = data.lang;
+      this._timezone = data.timezone;
+
       this._group = data.group || '';
       this._project = data.project || '';
 
@@ -170,13 +186,25 @@ export class ReccCwcPlugin {
     }
   }
 
-  waitInitialized() {
-    return this._initPromise.then((value: boolean) => {
+  waitInitialized(timeout?: number) {
+    const initPromise = this._initPromise.then((value: boolean) => {
       if (!value) {
         throw new Error();
       }
       return this.api;
     });
+
+    if (typeof timeout !== 'undefined') {
+      return initPromise;
+    }
+
+    const timeoutPromise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject(new TimeoutError('An initialization timeout occurred'));
+      }, timeout);
+    });
+
+    return Promise.race([initPromise, timeoutPromise]);
   }
 
   get initialized(): boolean {
@@ -190,7 +218,7 @@ export class ReccCwcPlugin {
     return this._api;
   }
 
-  get apiOrigin() {
+  get origin() {
     return this.api.origin;
   }
 
@@ -198,8 +226,20 @@ export class ReccCwcPlugin {
     return this._dark;
   }
 
+  get isLight() {
+    return this._dark === 0;
+  }
+
+  get isDark() {
+    return this._dark === 1;
+  }
+
   get lang() {
     return this._lang;
+  }
+
+  get timezone() {
+    return this._timezone;
   }
 
   get group() {
@@ -212,33 +252,35 @@ export class ReccCwcPlugin {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   get<T = any>(url: string, config?: AxiosRequestConfig) {
-    return this.waitInitialized().then(api => {
-      return api.get<T>(url, config);
-    });
+    return this.api.get<T>(url, config);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   post<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.waitInitialized().then(api => {
-      return api.post<T>(url, data, config);
-    });
+    return this.api.post<T>(url, data, config);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.waitInitialized().then(api => {
-      return api.patch<T>(url, data, config);
-    });
+    return this.api.patch<T>(url, data, config);
   }
 
   delete(url: string, config?: AxiosRequestConfig) {
-    return this.waitInitialized().then(api => {
-      return api.delete(url, config);
-    });
+    return this.api.delete(url, config);
   }
 
-  getPluginPathPrefix(name: string) {
-    return `/plugins/${name}/${this._group}/${this._project}`;
+  getPluginPrefix(name: string, withGroup = true, withProject = true) {
+    if (withGroup && withProject) {
+      return `/plugins/${name}/${this._group}/${this._project}`;
+    } else if (withGroup && !withProject) {
+      return `/plugins/${name}/${this._group}`;
+    } else if (!withGroup && withProject) {
+      throw new IllegalArgumentError('A project cannot be assigned without a group');
+    } else {
+      console.assert(!withGroup);
+      console.assert(!withProject);
+      return `/plugins/${name}`;
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -322,4 +364,4 @@ export class ReccCwcPlugin {
   }
 }
 
-export default ReccCwcPlugin;
+export default ReccCwcClient;

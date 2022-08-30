@@ -18,7 +18,7 @@ import {
   postInit,
 } from './reccCwc';
 
-export interface ReccCwcCoreOptions {
+export interface ReccCwcServerOptions {
   origin?: string;
   initData?: ReccCwcDataInit;
 
@@ -34,12 +34,12 @@ export interface ReccCwcCoreOptions {
 /**
  * Cross-window communication for RECC Core.
  */
-export class ReccCwcCore {
+export class ReccCwcServer {
   _messageHandler: (event: MessageEvent<ReccCwcMessage>) => void;
-  _options: ReccCwcCoreOptions;
+  _options: ReccCwcServerOptions;
   _window: Window;
 
-  constructor(frame: HTMLIFrameElement, options?: ReccCwcCoreOptions) {
+  constructor(frame: HTMLIFrameElement, options?: ReccCwcServerOptions) {
     this._messageHandler = (event: MessageEvent<ReccCwcMessage>) => {
       this.onMessage(event);
     };
@@ -110,4 +110,4 @@ export class ReccCwcCore {
   }
 }
 
-export default ReccCwcCore;
+export default ReccCwcServer;

@@ -6,7 +6,19 @@ export class ReccError extends Error {
 
 export class UnsupportedOperationError extends ReccError {
   constructor(message?: string) {
-    super(message || 'Unsupported operation Error');
+    super(message || 'Unsupported Operation Error');
+  }
+}
+
+export class IllegalArgumentError extends ReccError {
+  constructor(message?: string) {
+    super(message || 'Illegal Argument Error');
+  }
+}
+
+export class TimeoutError extends ReccError {
+  constructor(message?: string) {
+    super(message || 'Timeout Error');
   }
 }
 

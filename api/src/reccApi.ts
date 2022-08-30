@@ -2,17 +2,14 @@ import ReccApiBase from './reccApiBase';
 import {applyMixins} from './mixin';
 import {ReccApiAdminConfigs} from './mixins/admin/configs';
 import {ReccApiAdminContainers} from './mixins/admin/containers';
-import {ReccApiAdminDaemon} from './mixins/admin/daemon';
 import {ReccApiAdminGroups} from './mixins/admin/groups';
 import {ReccApiAdminPlugin} from './mixins/admin/plugin';
-import {ReccApiAdminPorts} from './mixins/admin/ports';
 import {ReccApiAdminProjects} from './mixins/admin/projects';
 import {ReccApiAdminRoles} from './mixins/admin/roles';
 import {ReccApiAdminSystem} from './mixins/admin/system';
 import {ReccApiAdminTemplates} from './mixins/admin/templates';
 import {ReccApiAdminUsers} from './mixins/admin/users';
 import {ReccApiDevConfigs} from './mixins/dev/configs';
-import {ReccApiDevEnvironments} from './mixins/dev/environments';
 import {ReccApiDevInfos} from './mixins/dev/infos';
 import {ReccApiDevPlugins} from './mixins/dev/plugins';
 import {ReccApiDevSystem} from './mixins/dev/system';
@@ -43,17 +40,14 @@ class ReccApi extends ReccApiBase {
 interface ReccApi
   extends ReccApiAdminConfigs,
     ReccApiAdminContainers,
-    ReccApiAdminDaemon,
     ReccApiAdminGroups,
     ReccApiAdminPlugin,
-    ReccApiAdminPorts,
     ReccApiAdminProjects,
     ReccApiAdminRoles,
     ReccApiAdminSystem,
     ReccApiAdminTemplates,
     ReccApiAdminUsers,
     ReccApiDevConfigs,
-    ReccApiDevEnvironments,
     ReccApiDevInfos,
     ReccApiDevPlugins,
     ReccApiDevSystem,
@@ -69,17 +63,14 @@ interface ReccApi
 applyMixins(ReccApi, [
   ReccApiAdminConfigs,
   ReccApiAdminContainers,
-  ReccApiAdminDaemon,
   ReccApiAdminGroups,
   ReccApiAdminPlugin,
-  ReccApiAdminPorts,
   ReccApiAdminProjects,
   ReccApiAdminRoles,
   ReccApiAdminSystem,
   ReccApiAdminTemplates,
   ReccApiAdminUsers,
   ReccApiDevConfigs,
-  ReccApiDevEnvironments,
   ReccApiDevInfos,
   ReccApiDevPlugins,
   ReccApiDevSystem,
