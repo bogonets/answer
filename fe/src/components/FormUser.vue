@@ -175,7 +175,7 @@ export class UserItem {
     this.password = obj?.password || '';
     this.nickname = obj?.nickname || '';
     this.email = obj?.email || '';
-    this.phone = obj?.phone1 || '';
+    this.phone = obj?.phone || '';
     this.admin = obj?.admin || false;
   }
 

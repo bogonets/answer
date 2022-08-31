@@ -10,12 +10,13 @@ en:
     created_at: 'Created At'
     updated_at: 'Updated At'
     last_login: 'Last signin'
-    secession: 'Secession User'
+    delete: 'Delete User'
   hint:
-    secession: 'Please be careful! It cannot be recovered.'
-  secession_confirm: 'Are you sure? Are you sure you want to secession?'
+    delete: 'Please be careful! It cannot be recovered.'
+  delete_confirm: 'Are you sure? Are you sure you want to secession?'
   cancel: 'Cancel'
-  secession: 'Secession'
+  submit: 'Submit'
+  delete: 'Delete'
 
 ko:
   header:
@@ -28,12 +29,13 @@ ko:
     created_at: '계정 생성일'
     updated_at: '계정 갱신일'
     last_login: '마지막 로그인'
-    secession: '사용자 탈퇴'
+    delete: '사용자 탈퇴'
   hint:
-    secession: '주의하세요! 이 명령은 되돌릴 수 없습니다!'
-  secession_confirm: '정말로 탈퇴합니까?'
+    delete: '주의하세요! 이 명령은 되돌릴 수 없습니다!'
+  delete_confirm: '정말로 탈퇴합니까?'
   cancel: '취소'
-  secession: '탈퇴'
+  submit: '제출'
+  delete: '탈퇴'
 </i18n>
 
 <template>
@@ -44,16 +46,22 @@ ko:
     <left-title :header="$t('header.basic')" :subheader="$t('subheader.basic')">
       <form-user
         disable-username
-        disable-access
+        disable-admin
         hide-password
-        hide-cancel-button
-        hide-access
-        :disable-submit-button="!modified"
-        :value="current"
-        @input="onInputCurrent"
-        :loading="showSubmitLoading"
-        @ok="onClickOk"
+        hide-admin
+        :username.sync="current.username"
+        :nickname.sync="current.nickname"
+        :email.sync="current.email"
+        :phone.sync="current.phone"
+        :admin.sync="current.admin"
       ></form-user>
+
+      <v-row class="mt-4 mb-2" no-gutters>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" :disabled="!modified" @click="onSubmit">
+          {{ $t('submit') }}
+        </v-btn>
+      </v-row>
     </left-title>
 
     <left-title :header="$t('header.detail')" :subheader="$t('subheader.detail')">
@@ -73,28 +81,28 @@ ko:
       <v-row align="center" class="pl-4">
         <v-col>
           <v-row>
-            <h6 class="text-h6">{{ $t('label.secession') }}</h6>
+            <h6 class="text-h6">{{ $t('label.delete') }}</h6>
           </v-row>
           <v-row>
-            <span class="text-body-2">{{ $t('hint.secession') }}</span>
+            <span class="text-body-2">{{ $t('hint.delete') }}</span>
           </v-row>
         </v-col>
         <v-col class="shrink">
           <v-btn color="error" @click.stop="onClickDelete">
-            {{ $t('secession') }}
+            {{ $t('delete') }}
           </v-btn>
         </v-col>
       </v-row>
     </v-alert>
 
-    <!-- Secession dialog. -->
-    <v-dialog v-model="showSecessionDialog" :max-width="dialogMaxWidth">
+    <!-- Delete User dialog. -->
+    <v-dialog v-model="showDeleteDialog" :max-width="dialogMaxWidth">
       <v-card>
         <v-card-title class="text-h5 error--text">
-          {{ $t('label.secession') }}
+          {{ $t('label.delete') }}
         </v-card-title>
         <v-card-text>
-          {{ $t('secession_confirm') }}
+          {{ $t('delete_confirm') }}
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
@@ -102,8 +110,8 @@ ko:
           <v-btn @click="onClickDeleteCancel">
             {{ $t('cancel') }}
           </v-btn>
-          <v-btn :loading="loadingSecession" color="error" @click="onClickDeleteOk">
-            {{ $t('secession') }}
+          <v-btn :loading="loadingDelete" color="error" @click="onClickDeleteOk">
+            {{ $t('delete') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -112,13 +120,22 @@ ko:
 </template>
 
 <script lang="ts">
-import {Component, Prop} from 'vue-property-decorator';
+import {Component, Prop, Watch} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
-import FormUser, {UserItem} from '@/components/FormUser.vue';
+import FormUser from '@/forms/FormUser.vue';
 import type {UpdateUserQ, UserA} from '@recc/api/dist/packet/user';
 import {iso8601ToLocal} from '@/chrono/iso8601';
+import _ from 'lodash';
+
+interface UserItem {
+  username: string;
+  nickname: string;
+  email: string;
+  phone: string;
+  admin: boolean;
+}
 
 @Component({
   components: {
@@ -128,11 +145,10 @@ import {iso8601ToLocal} from '@/chrono/iso8601';
   },
 })
 export default class SelfProfile extends VueBase {
-  private readonly navigationItems = [
+  readonly navigationItems = [
     {
       text: 'Self',
-      disabled: false,
-      href: () => this.moveToSelf(),
+      disabled: true,
     },
     {
       text: 'Profile',
@@ -140,7 +156,7 @@ export default class SelfProfile extends VueBase {
     },
   ];
 
-  private readonly detailHeaders = [
+  readonly detailHeaders = [
     {
       text: 'name',
       value: 'name',
@@ -149,20 +165,22 @@ export default class SelfProfile extends VueBase {
     {
       text: 'value',
       value: 'value',
+      align: 'left',
     },
   ];
 
   @Prop({type: Number, default: 320})
   readonly dialogMaxWidth!: number;
 
+  original = {} as UserItem;
+  current = {} as UserItem;
+
   detailItems = [] as Array<object>;
-  current = new UserItem();
-  original = new UserItem();
 
   modified = false;
   showSubmitLoading = false;
-  showSecessionDialog = false;
-  loadingSecession = false;
+  showDeleteDialog = false;
+  loadingDelete = false;
 
   created() {
     this.requestUser();
@@ -181,22 +199,25 @@ export default class SelfProfile extends VueBase {
   }
 
   updateUser(user: UserA) {
+    const username = user.username;
     const nickname = user.nickname;
-    const email = user.email || '';
-    const phone = user.phone || '';
+    const email = user.email;
+    const phone = user.phone;
     const admin = user.admin;
+
+    this.current = {
+      username,
+      nickname,
+      email,
+      phone,
+      admin,
+    };
+    this.original = _.clone(this.current);
+    this.modified = false;
+
     const createdAt = user.created_at;
     const updatedAt = user.updated_at;
     const lastLogin = user.last_login || '';
-
-    this.current.username = user.username;
-    this.current.password = '';
-    this.current.nickname = nickname;
-    this.current.email = email;
-    this.current.phone = phone;
-    this.current.admin = admin;
-    this.original.fromObject(this.current);
-    this.modified = !this.original.isEqual(this.current);
 
     this.detailItems = [
       {
@@ -214,17 +235,17 @@ export default class SelfProfile extends VueBase {
     ];
   }
 
-  onInputCurrent(value: UserItem) {
-    this.current = value;
-    this.modified = !this.original.isEqual(this.current);
+  @Watch('current', {deep: true})
+  onWatchCurrent(newValue) {
+    this.modified = !_.isEqual(this.original, newValue);
   }
 
-  onClickOk(event: UserItem) {
+  onSubmit() {
     const body = {
-      nickname: event.nickname,
-      email: event.email,
-      phone: event.phone,
-      admin: event.admin,
+      nickname: this.current.nickname,
+      email: this.current.email,
+      phone: this.current.phone,
+      admin: this.current.admin,
     } as UpdateUserQ;
 
     this.showSubmitLoading = true;
@@ -246,26 +267,26 @@ export default class SelfProfile extends VueBase {
   // ------
 
   onClickDelete() {
-    this.showSecessionDialog = true;
+    this.showDeleteDialog = true;
   }
 
   onClickDeleteCancel() {
-    this.showSecessionDialog = false;
+    this.showDeleteDialog = false;
   }
 
   onClickDeleteOk() {
-    this.loadingSecession = true;
+    this.loadingDelete = true;
     this.$api2
       .deleteSelf()
       .then(() => {
-        this.loadingSecession = false;
-        this.showSecessionDialog = false;
+        this.loadingDelete = false;
+        this.showDeleteDialog = false;
         this.toastRequestSuccess();
         this.$localStore.clearSession();
         this.moveToSignin();
       })
       .catch(error => {
-        this.loadingSecession = false;
+        this.loadingDelete = false;
         this.toastRequestFailure(error);
       });
   }

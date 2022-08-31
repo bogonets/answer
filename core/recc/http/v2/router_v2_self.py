@@ -77,6 +77,7 @@ class RouterV2Self:
     async def patch_root(self, session: SessionEx, body: UpdateUserQ) -> None:
         await self.context.update_user(
             uid=session.uid,
+            nickname=body.nickname,
             email=body.email,
             phone=body.phone,
             admin=None,
