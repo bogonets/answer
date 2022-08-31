@@ -3,7 +3,6 @@ en:
   headers:
     key: 'ID'
     name: 'Name'
-    image: 'Image'
     created: 'Created'
     status: 'Status'
     actions: 'Actions'
@@ -17,7 +16,6 @@ ko:
   headers:
     key: 'ID'
     name: '이름'
-    image: '이미지'
     created: '생성일'
     status: '상태'
     actions: '관리'
@@ -30,9 +28,6 @@ ko:
 
 <template>
   <v-container>
-    <breadcrumb-main name="Tasks"></breadcrumb-main>
-    <v-divider></v-divider>
-
     <v-data-table
       :value="selected"
       @input="onInputSelected"
@@ -68,13 +63,6 @@ ko:
             :disabled-pause="disabledPause"
             :disabled-resume="disabledResume"
             :disabled-remove="disabledRemove"
-            @click:start="onClickStart"
-            @click:stop="onClickStop"
-            @click:kill="onClickKill"
-            @click:restart="onClickRestart"
-            @click:pause="onClickPause"
-            @click:resume="onClickResume"
-            @click:remove="onClickRemove"
           ></container-control-group>
           <v-btn
             class="ml-2 rounded-xl"
@@ -93,10 +81,6 @@ ko:
 
       <template v-slot:item.key="{item}">
         {{ shortKey(item) }}
-      </template>
-
-      <template v-slot:item.image="{item}">
-        {{ shortImage(item) }}
       </template>
 
       <template v-slot:item.created="{item}">
@@ -125,9 +109,7 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import ContainerControlGroup from '@/components/ContainerControlGroup.vue';
-import type {ContainerA, ControlContainersQ} from '@recc/api/dist/packet/container';
 import {
   STATUS_CREATED,
   STATUS_RESTARTING,
@@ -136,13 +118,6 @@ import {
   STATUS_PAUSED,
   STATUS_EXITED,
   STATUS_DEAD,
-  CONTROL_OPERATOR_START,
-  CONTROL_OPERATOR_STOP,
-  CONTROL_OPERATOR_KILL,
-  CONTROL_OPERATOR_RESTART,
-  CONTROL_OPERATOR_PAUSE,
-  CONTROL_OPERATOR_RESUME,
-  CONTROL_OPERATOR_REMOVE,
 } from '@recc/api/dist/packet/container';
 import {iso8601ToLocalDate} from '@/chrono/iso8601';
 
@@ -150,7 +125,6 @@ const ITEMS_PER_PAGE = 15;
 
 @Component({
   components: {
-    BreadcrumbMain,
     ContainerControlGroup,
   },
 })
@@ -164,14 +138,6 @@ export default class MainTasks extends VueBase {
       sortable: true,
       width: '130px',
       value: 'key',
-    },
-    {
-      text: this.$t('headers.image').toString(),
-      align: 'center',
-      filterable: false,
-      sortable: true,
-      width: '130px',
-      value: 'image',
     },
     {
       text: this.$t('headers.name').toString(),
@@ -207,8 +173,22 @@ export default class MainTasks extends VueBase {
 
   loading = false;
   filter = '';
-  items = [] as Array<ContainerA>;
-  selected = [] as Array<ContainerA>;
+  items = [
+    {
+      key: '101',
+      name: 'JupyterLab Editor',
+      status: 'Running',
+      created: '2022-06-24',
+    },
+    {
+      key: '102',
+      name: 'PyTorch Training',
+      status: 'Paused',
+      created: '2022-06-23',
+    },
+  ];
+  selected = [];
+
   disabledStart = true;
   disabledStop = true;
   disabledKill = true;
@@ -217,41 +197,15 @@ export default class MainTasks extends VueBase {
   disabledResume = true;
   disabledRemove = true;
 
-  created() {
-    this.updateContainers();
-  }
-
-  updateContainers() {
-    this.loading = true;
-    this.$api2
-      .getAdminContainers()
-      .then(items => {
-        this.loading = false;
-        this.items = items;
-      })
-      .catch(error => {
-        this.loading = false;
-        this.toastRequestFailure(error);
-      });
-  }
-
-  shortKey(item: ContainerA) {
+  shortKey(item) {
     return item.key.substring(0, 12);
   }
 
-  shortImage(item: ContainerA) {
-    if (item.image.substring(0, 7) === 'sha256:') {
-      return item.image.substring(7, 19);
-    } else {
-      return item.image.substring(0, 12);
-    }
-  }
-
-  shortCreated(item: ContainerA) {
+  shortCreated(item) {
     return iso8601ToLocalDate(item.created);
   }
 
-  statusColor(item: ContainerA) {
+  statusColor(item) {
     if (item.status === STATUS_CREATED) {
       return 'blue';
     } else if (item.status === STATUS_RESTARTING) {
@@ -271,7 +225,7 @@ export default class MainTasks extends VueBase {
     }
   }
 
-  onClickContainerEdit(item: ContainerA) {}
+  onClickContainerEdit(item) {}
 
   onInputSelected(value) {
     this.selected = value;
@@ -292,64 +246,6 @@ export default class MainTasks extends VueBase {
       this.disabledResume = false;
       this.disabledRemove = false;
     }
-  }
-
-  onClickSync() {
-    this.updateContainers();
-  }
-
-  controlContainers(operator: string) {
-    const keys = this.selected.map(i => i.key);
-    if (keys.length === 0) {
-      this.toastError(this.$t('no_selected').toString());
-      return;
-    }
-
-    const body = {
-      keys: keys,
-      operator: operator,
-    } as ControlContainersQ;
-
-    this.$api2
-      .patchAdminContainers(body)
-      .then(() => {
-        this.selected = [];
-        this.updateContainers();
-        this.toastRequestSuccess();
-      })
-      .catch(error => {
-        this.selected = [];
-        this.updateContainers();
-        this.toastRequestFailure(error);
-      });
-  }
-
-  onClickStart() {
-    this.controlContainers(CONTROL_OPERATOR_START);
-  }
-
-  onClickStop() {
-    this.controlContainers(CONTROL_OPERATOR_STOP);
-  }
-
-  onClickKill() {
-    this.controlContainers(CONTROL_OPERATOR_KILL);
-  }
-
-  onClickRestart() {
-    this.controlContainers(CONTROL_OPERATOR_RESTART);
-  }
-
-  onClickPause() {
-    this.controlContainers(CONTROL_OPERATOR_PAUSE);
-  }
-
-  onClickResume() {
-    this.controlContainers(CONTROL_OPERATOR_RESUME);
-  }
-
-  onClickRemove() {
-    this.controlContainers(CONTROL_OPERATOR_REMOVE);
   }
 }
 </script>
