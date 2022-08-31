@@ -16,9 +16,6 @@ ko:
 
 <template>
   <v-container>
-    <breadcrumb-main name="Dashboard"></breadcrumb-main>
-    <v-divider></v-divider>
-
     <v-toolbar flat>
       <span class="text--secondary text-h6 font-weight-bold">
         {{ $t('dashboard') }}
@@ -33,41 +30,50 @@ ko:
     </v-toolbar>
     <v-divider></v-divider>
 
-    <v-row class="mt-2">
-      <v-col v-if="false" v-show="hasPermissionLayoutView()" cols="6" sm="3">
-        <card-button @click="onClickLayouts">
-          <v-icon large>mdi-view-dashboard</v-icon>
-          <span class="text--secondary text-subtitle-2 text-no-wrap">
-            {{ $t('layouts', [item.layouts || 0]) }}
-          </span>
-        </card-button>
+    <v-row class="mt-4">
+      <v-col cols="4">
+        <v-progress-circular
+          :rotate="360"
+          :size="240"
+          :width="40"
+          :value="80"
+          color="teal"
+        >
+          <div class="d-flex flex-column align-center">
+            <span class="text--secondary text-h6">CPU Usage</span>
+            <span class="text-h6 font-weight-bold">80%</span>
+          </div>
+        </v-progress-circular>
       </v-col>
 
-      <v-col v-if="false" v-show="hasPermissionTableView()" cols="6" sm="3">
-        <card-button @click="onClickTables">
-          <v-icon large>mdi-table-multiple</v-icon>
-          <span class="text--secondary text-subtitle-2 text-no-wrap">
-            {{ $t('tables', [item.tables || 0]) }}
-          </span>
-        </card-button>
+      <v-col cols="4">
+        <v-progress-circular
+          :rotate="360"
+          :size="240"
+          :width="40"
+          :value="35"
+          color="primary"
+        >
+          <div class="d-flex flex-column align-center">
+            <span class="text--secondary text-h6">Memory Usage</span>
+            <span class="text-h6 font-weight-bold">35%</span>
+          </div>
+        </v-progress-circular>
       </v-col>
 
-      <v-col v-if="false" v-show="hasPermissionTaskView()" cols="6" sm="3">
-        <card-button @click="onClickTasks">
-          <v-icon large>mdi-format-list-checks</v-icon>
-          <span class="text--secondary text-subtitle-2 text-no-wrap">
-            {{ $t('tasks', [item.tasks || 0]) }}
-          </span>
-        </card-button>
-      </v-col>
-
-      <v-col v-if="false" v-show="hasPermissionMemberView()" cols="6" sm="3">
-        <card-button @click="onClickMembers">
-          <v-icon large>mdi-account-group</v-icon>
-          <span class="text--secondary text-subtitle-2 text-no-wrap">
-            {{ $t('members', [item.members || 0]) }}
-          </span>
-        </card-button>
+      <v-col cols="4">
+        <v-progress-circular
+          :rotate="360"
+          :size="240"
+          :width="40"
+          :value="90"
+          color="pink"
+        >
+          <div class="d-flex flex-column align-center">
+            <span class="text--secondary text-h6">Disk Usage</span>
+            <span class="text-h6 font-weight-bold">90%</span>
+          </div>
+        </v-progress-circular>
       </v-col>
     </v-row>
   </v-container>
@@ -76,13 +82,11 @@ ko:
 <script lang="ts">
 import {Component} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
-import BreadcrumbMain from '@/pages/breadcrumb/BreadcrumbMain.vue';
 import CardButton from '@/components/CardButton.vue';
 import type {ProjectOverviewA} from '@recc/api/dist/packet/project';
 
 @Component({
   components: {
-    BreadcrumbMain,
     CardButton,
   },
 })
