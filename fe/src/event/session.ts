@@ -2,6 +2,10 @@ import Vue from 'vue';
 import moment from 'moment-timezone';
 import type {SigninA} from '@recc/api/dist/packet/user';
 
+const DEFAULT_DARK = 0;
+const DEFAULT_LANG = 'ko';
+const DEFAULT_TIMEZONE = 'Asia/Seoul';
+
 function loadApiOriginFromLocalStorage(vue: Vue) {
   const api = vue.$localStore.origin;
   console.debug(`Load api origin: ${api}`);
@@ -56,24 +60,25 @@ function initApiV2Session(vue: Vue, access: string, refresh: string) {
 // ------------
 
 function loadSessionFromLocalStorage(vue: Vue) {
-  let dark = vue.$localStore.dark ? 1 : 0;
-  let lang = vue.$localStore.lang || 'ko';
-  let timezone = vue.$localStore.timezone || 'Asia/Seoul';
+  let dark = vue.$localStore.userDark || DEFAULT_DARK;
+  let lang = vue.$localStore.userLang || DEFAULT_LANG;
+  let timezone = vue.$localStore.userTimezone || DEFAULT_TIMEZONE;
 
   if (vue.$localStore.alreadySession) {
     const access = vue.$localStore.access;
     const refresh = vue.$localStore.refresh;
-    const user = vue.$localStore.user;
+    const userName = vue.$localStore.userName;
+    const userDark = vue.$localStore.userDark;
+    const userLang = vue.$localStore.userLang;
+    const userTimezone = vue.$localStore.userTimezone;
     const preference = vue.$localStore.preference;
-    dark = user.dark;
-    lang = user.lang;
-    timezone = user.timezone;
+    dark = userDark;
+    lang = userLang;
+    timezone = userTimezone;
     console.assert(!!access);
     console.assert(!!refresh);
-    console.assert(!!user);
-    console.assert(!!user.username);
     console.assert(!!preference);
-    console.info(`Already session information: ${user.username}`);
+    console.info(`Already session information: ${userName}`);
 
     initApiV2Session(vue, access, refresh);
   } else {

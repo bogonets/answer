@@ -107,7 +107,7 @@ export default class MenuAccount extends VueBase {
   private readonly menuZIndex = 100;
 
   get hasAdminPermission(): boolean {
-    return this.$localStore.user.admin || false;
+    return this.$localStore.userAdmin || false;
   }
 
   get isDeveloperMode(): boolean {
@@ -115,7 +115,7 @@ export default class MenuAccount extends VueBase {
   }
 
   get usernameAvatar(): string {
-    const username = this.$localStore.user.username;
+    const username = this.$localStore.userName;
     if (username) {
       return username[0].toUpperCase();
     }
@@ -123,7 +123,7 @@ export default class MenuAccount extends VueBase {
   }
 
   get username(): string {
-    const username = this.$localStore.user.username;
+    const username = this.$localStore.userName;
     if (username) {
       return username;
     }

@@ -5,7 +5,7 @@ en:
   headers:
     username: 'Username'
     email: 'E-Mail'
-    is_admin: 'Admin'
+    admin: 'Admin'
     created_at: 'Created at'
     last_login: 'Last sign-in'
     actions: 'Actions'
@@ -18,7 +18,7 @@ ko:
   headers:
     username: '사용자명'
     email: '이메일'
-    is_admin: '관리자'
+    admin: '관리자'
     created_at: '생성일'
     last_login: '마지막 로그인'
     actions: '관리'
@@ -55,8 +55,8 @@ ko:
         </v-toolbar>
       </template>
 
-      <template v-slot:item.is_admin="{item}">
-        <v-icon dense v-if="!!item.is_admin">mdi-check</v-icon>
+      <template v-slot:item.admin="{item}">
+        <v-icon dense v-if="!!item.admin">mdi-check</v-icon>
       </template>
 
       <template v-slot:item.created_at="{item}">
@@ -119,10 +119,10 @@ export default class AdminUsers extends VueBase {
       value: 'email',
     },
     {
-      text: this.$t('headers.is_admin').toString(),
+      text: this.$t('headers.admin').toString(),
       align: 'center',
       filterable: false,
-      value: 'is_admin',
+      value: 'admin',
     },
     {
       text: this.$t('headers.created_at').toString(),

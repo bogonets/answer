@@ -322,15 +322,16 @@ export default class Signin extends VueBase {
   }
 
   onChangeDark(dark: boolean) {
+    console.debug('onChangeDark', dark);
     // Changes only public local settings.
-    this.$localStore.dark = dark;
+    this.$localStore.userDark = dark ? 1 : 0;
 
     this.$vuetify.theme.dark = dark;
   }
 
   onChangeLang(lang: string) {
     // Changes only public local settings.
-    this.$localStore.lang = lang;
+    this.$localStore.userLang = lang;
 
     this.$vuetify.lang.current = lang;
     this.$i18n.locale = lang;

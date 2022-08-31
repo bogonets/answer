@@ -9,7 +9,6 @@ import type {PreferenceA} from '@recc/api/dist/packet/preference';
 
 // Modules
 import api from '@/store/modules/api';
-import appearance from '@/store/modules/appearance';
 import bar from '@/store/modules/bar';
 import dev from '@/store/modules/dev';
 import navi from '@/store/modules/navi';
@@ -20,8 +19,6 @@ const DEFAULT_PERSIST_KEY = 'answer.store.local';
 const DEFAULT_STRICT = process.env.NODE_ENV !== 'production';
 
 const API_ORIGIN = 'api/origin';
-const APPEARANCE_DARK = 'appearance/dark';
-const APPEARANCE_TIMEZONE = 'appearance/timezone';
 const BAR_HIDE = 'bar/hide';
 const BAR_NAVI = 'bar/navi';
 const DEV_ENABLE = 'dev/enable';
@@ -30,6 +27,8 @@ const SESSION_ALREADY = 'session/already';
 const SESSION_ACCESS = 'session/access';
 const SESSION_REFRESH = 'session/refresh';
 const SESSION_USER = 'session/user';
+const SESSION_USER_NAME = 'session/userName';
+const SESSION_USER_ADMIN = 'session/userAdmin';
 const SESSION_USER_DARK = 'session/userDark';
 const SESSION_USER_LANG = 'session/userLang';
 const SESSION_USER_TIMEZONE = 'session/userTimezone';
@@ -59,7 +58,6 @@ export class LocalStore {
     this.store = new Store({
       modules: {
         api,
-        appearance,
         bar,
         dev,
         navi,
@@ -97,22 +95,6 @@ export class LocalStore {
 
   set origin(val: string) {
     this.setter(API_ORIGIN, val);
-  }
-
-  get dark() {
-    return this.getter(APPEARANCE_DARK) as boolean;
-  }
-
-  set dark(val: boolean) {
-    this.setter(APPEARANCE_DARK, val);
-  }
-
-  get timezone() {
-    return this.getter(APPEARANCE_TIMEZONE) as string;
-  }
-
-  set timezone(val: string) {
-    this.setter(APPEARANCE_TIMEZONE, val);
   }
 
   get barHide() {
@@ -181,6 +163,22 @@ export class LocalStore {
 
   set preference(val: PreferenceA) {
     this.setter(SESSION_PREFERENCE, val);
+  }
+
+  get userName() {
+    return this.getter(SESSION_USER_NAME) as string;
+  }
+
+  set userName(val: string) {
+    this.setter(SESSION_USER_NAME, val);
+  }
+
+  get userAdmin() {
+    return this.getter(SESSION_USER_ADMIN) as boolean;
+  }
+
+  set userAdmin(val: boolean) {
+    this.setter(SESSION_USER_ADMIN, val);
   }
 
   get userDark() {

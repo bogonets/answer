@@ -3,11 +3,7 @@
 from typing import List
 
 from aiohttp import web
-from aiohttp.web_exceptions import (
-    HTTPBadRequest,
-    HTTPServiceUnavailable,
-    HTTPUnauthorized,
-)
+from aiohttp.web_exceptions import HTTPBadRequest, HTTPServiceUnavailable
 from aiohttp.web_routedef import AbstractRouteDef
 
 from recc.core.context import Context
@@ -90,7 +86,9 @@ class RouterV2Public:
 
         try:
             if not await self._context.challenge_password(username, password):
-                raise HTTPUnauthorized(reason="The password is incorrect")
+                # Do not use the 'HTTPUnauthorized' error.
+                # This is used for access token expiration.
+                raise HTTPBadRequest(reason="The password is incorrect")
         except RuntimeError as e:
             # maybe `not found user`
             raise HTTPBadRequest(reason=str(e))

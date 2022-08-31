@@ -116,7 +116,6 @@ import ToolbarBreadcrumbs from '@/components/ToolbarBreadcrumbs.vue';
 import LeftTitle from '@/components/LeftTitle.vue';
 import ListLanguages from '@/components/ListLanguages.vue';
 import type {UpdateUserQ} from '@recc/api/dist/packet/user';
-import momentTimezone from 'moment-timezone';
 import moment from 'moment-timezone';
 
 @Component({
@@ -127,11 +126,10 @@ import moment from 'moment-timezone';
   },
 })
 export default class SelfAppearance extends VueBase {
-  private readonly navigationItems = [
+  readonly navigationItems = [
     {
       text: 'Self',
-      disabled: false,
-      href: () => this.moveToSelf(),
+      disabled: true,
     },
     {
       text: 'Appearance',
@@ -139,15 +137,15 @@ export default class SelfAppearance extends VueBase {
     },
   ];
 
-  private readonly timezoneNames = momentTimezone.tz.names();
+  readonly timezoneNames = moment.tz.names();
 
   loading = false;
-  dark = 0;
+  dark = false;
   lang = '';
   timezone = '';
 
   created() {
-    this.dark = this.$localStore.userDark;
+    this.dark = this.$localStore.userDark === 1;
     this.lang = this.$localStore.userLang;
     this.timezone = this.$localStore.userTimezone;
   }
@@ -176,28 +174,32 @@ export default class SelfAppearance extends VueBase {
 
   onChangeDark() {
     // Local settings should not be changed.
-    this.$vuetify.theme.dark = !!this.dark;
-    this.$localStore.dark = !!this.dark;
-    this.$localStore.userDark = this.dark;
+    this.$vuetify.theme.dark = this.dark;
 
-    this.saveUserExtra({dark: this.dark});
+    const dark = this.dark ? 1 : 0;
+    this.$localStore.userDark = dark;
+
+    this.saveUserExtra({dark});
   }
 
   onChangeLang(lang: string) {
+    this.lang = lang;
+
     // Local settings should not be changed.
     this.$vuetify.lang.current = this.lang;
     this.$i18n.locale = this.lang;
-    this.$localStore.lang = this.lang;
-    this.$localStore.userLang = this.lang;
     moment.locale(lang);
+
+    this.$localStore.userLang = this.lang;
 
     this.saveUserExtra({lang: this.lang});
   }
 
   onChangeTimezone(timezone: string) {
     // Local settings should not be changed.
-    momentTimezone.tz.setDefault(this.timezone);
-    this.$localStore.timezone = this.timezone;
+    console.assert(this.timezone === timezone);
+    moment.tz.setDefault(this.timezone);
+
     this.$localStore.userTimezone = this.timezone;
 
     this.saveUserExtra({timezone: this.timezone});

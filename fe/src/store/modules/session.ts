@@ -19,8 +19,14 @@ export default {
     user: state => {
       return state.user;
     },
+    userName: state => {
+      return state.user.username || '';
+    },
+    userAdmin: state => {
+      return !!state.user.admin;
+    },
     userDark: state => {
-      return state.user.dark || false;
+      return state.user.dark || 0;
     },
     userLang: state => {
       return state.user.lang || '';
@@ -41,6 +47,12 @@ export default {
     },
     user(state, val) {
       state.user = val;
+    },
+    userName(state, val) {
+      state.user.username = val;
+    },
+    userAdmin(state, val) {
+      state.user.admin = val;
     },
     userDark(state, val) {
       state.user.dark = val;
