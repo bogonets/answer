@@ -177,14 +177,14 @@ export default class AdminContainers extends VueBase {
       width: '130px',
       value: 'key',
     },
-    {
-      text: this.$t('headers.image').toString(),
-      align: 'center',
-      filterable: false,
-      sortable: true,
-      width: '130px',
-      value: 'image',
-    },
+    // {
+    //   text: this.$t('headers.image').toString(),
+    //   align: 'center',
+    //   filterable: false,
+    //   sortable: true,
+    //   width: '130px',
+    //   value: 'image',
+    // },
     {
       text: this.$t('headers.name').toString(),
       align: 'center',

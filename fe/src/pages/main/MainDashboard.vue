@@ -31,7 +31,7 @@ ko:
     <v-divider></v-divider>
 
     <v-row class="mt-4">
-      <v-col cols="4">
+      <v-col class="d-flex flex-row justify-center" cols="4">
         <v-progress-circular
           :rotate="360"
           :size="240"
@@ -46,7 +46,7 @@ ko:
         </v-progress-circular>
       </v-col>
 
-      <v-col cols="4">
+      <v-col class="d-flex flex-row justify-center" cols="4">
         <v-progress-circular
           :rotate="360"
           :size="240"
@@ -61,7 +61,7 @@ ko:
         </v-progress-circular>
       </v-col>
 
-      <v-col cols="4">
+      <v-col class="d-flex flex-row justify-center" cols="4">
         <v-progress-circular
           :rotate="360"
           :size="240"
