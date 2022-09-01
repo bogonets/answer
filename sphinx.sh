@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
-OUTPUT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/../docs" || exit; pwd)
 
 SOURCE_DIR="$ROOT_DIR/doc"
+CORE_DIR="$ROOT_DIR/core"
+OUTPUT_DIR="$ROOT_DIR/docs"
 LOCALE_DIR="$ROOT_DIR/.sphinx_locale"
 CACHED_DIR="$ROOT_DIR/.sphinx_cache"
 GETTEXT_DIR="$SOURCE_DIR/_gettext"
+PYTHON_EXE="$CORE_DIR/python"
 
 USAGE_MESSAGE="
 Usage: ${BASH_SOURCE[0]} [options] command
@@ -15,32 +17,29 @@ Available command are:
   gettext  Run gettext
   intl     Run translate
   html     Run html
+  help     Print help message
 
 Available options are:
   -h, --help Print this message.
 "
 
 if [[ ! -d "$SOURCE_DIR" ]]; then
-    echo "Not found source directory: $SOURCE_DIR"
+    echo "Not found source directory: $SOURCE_DIR" 1>&2
     exit 1
 fi
-if [[ ! -d "$CACHED_DIR" ]]; then
-    echo "Create cached directory: $CACHED_DIR"
-    mkdir -p "$CACHED_DIR"
-fi
-if [[ ! -d "$LOCALE_DIR" ]]; then
-    echo "Create locale directory: $LOCALE_DIR"
-    mkdir -p "$LOCALE_DIR"
-fi
-if [[ ! -d "$OUTPUT_DIR" ]]; then
-    echo "Create output directory: $OUTPUT_DIR"
-    mkdir -p "$OUTPUT_DIR"
-fi
+
+function make_directory
+{
+    local dir=$1
+    if [[ ! -d "$dir" ]]; then
+        mkdir -vp "$dir"
+    fi
+}
 
 function run_sphinx_gettext_builder
 {
     local language=$1
-    "$ROOT_DIR/python" -m sphinx \
+    "$PYTHON_EXE" -m sphinx \
         -W \
         -b gettext \
         -d "$CACHED_DIR/gettext-$language" \
@@ -53,7 +52,7 @@ function run_sphinx_gettext_builder
 function run_sphinx_intl
 {
     local language=$1
-    "$ROOT_DIR/python" -m sphinx_intl \
+    "$PYTHON_EXE" -m sphinx_intl \
         update \
         -p "$GETTEXT_DIR/$language" \
         -d "$LOCALE_DIR" \
@@ -63,7 +62,7 @@ function run_sphinx_intl
 function run_sphinx_html_builder
 {
     local language=$1
-    "$ROOT_DIR/python" -m sphinx \
+    "$PYTHON_EXE" -m sphinx \
         -W \
         -b html \
         -d "$CACHED_DIR/$language" \
@@ -72,12 +71,24 @@ function run_sphinx_html_builder
         "$OUTPUT_DIR/$language"
 }
 
-function recc_sphinx_main
+function print_usage
+{
+    echo "$USAGE_MESSAGE"
+}
+
+function prepare_directories
+{
+    make_directory "$LOCALE_DIR"
+    make_directory "$OUTPUT_DIR"
+    make_directory "$CACHED_DIR"
+}
+
+function sphinx_main
 {
     while [[ -n $1 ]]; do
         case $1 in
         -h|--help)
-            echo "$USAGE_MESSAGE"
+            print_usage
             return 0
             ;;
         *)
@@ -86,28 +97,35 @@ function recc_sphinx_main
         esac
     done
 
-    local command=${1:-html}
+    local command=$1
     if [[ -z $command ]]; then
-        echo "Empty command"
+        echo "Empty command" 1>&2
         return 1
     fi
 
     case $command in
     gettext)
+        prepare_directories
         run_sphinx_gettext_builder en
         ;;
     intl)
+        prepare_directories
         run_sphinx_intl en
         ;;
     html)
+        prepare_directories
         run_sphinx_html_builder en
         run_sphinx_html_builder ko
         ;;
+    help)
+        print_usage
+        return 0
+        ;;
     *)
-        echo "Unknown command: $command"
+        echo "Unknown command: $command" 1>&2
         return 1
         ;;
     esac
 }
 
-recc_sphinx_main "$@"
+sphinx_main "$@"
