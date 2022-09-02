@@ -2,7 +2,7 @@
 
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 
-SIGNATURE=aaa
+SIGNATURE=abcd1234
 LOCAL_STORAGE="$HOME/answer"
 
 "$ROOT_DIR/python" "$ROOT_DIR/main.py" -vv -d \

@@ -6,8 +6,6 @@
 import os
 import sys
 
-from recc.util.version import version_text
-
 SCRIPT_PATH = os.path.abspath(__file__)
 SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 STATIC_DIR = os.path.join(SCRIPT_DIR, "_static")
@@ -20,20 +18,18 @@ sys.path.insert(0, EXTENSIONS_DIR)
 
 # Project information
 
-project = "answer"
-copyright = "2021, BOGONET"  # noqa
-author = "zer0"
-version = version_text
+project = "ANSWER"
+copyright = "2021-2022, BOGONET"  # noqa
+author = "zer0 <osom8979@gmail.com>"
+version = "2.0.0"
 
 # General configuration
 
 extensions = [
-    "sphinx.ext.autodoc",
-    "recommonmark",
-    "furo",
+    "myst_parser",
     "google_analytics",
 ]
-source_suffix = [".rst", ".md"]
+source_suffix = [".md"]
 source_encoding = "utf-8"
 master_doc = "index"
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", ".tox"]
