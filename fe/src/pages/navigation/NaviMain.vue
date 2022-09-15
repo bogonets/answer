@@ -131,24 +131,6 @@ ko:
           </v-list-item>
         </div>
 
-        <div v-for="plugin in plugins" :key="plugin.name">
-          <v-divider></v-divider>
-
-          <v-list-item
-            v-for="menu in plugin.menus.project"
-            :key="`${plugin.name}-${menu.name}`"
-            link
-            @click.stop="onClickPluginMenu(plugin.name, menu)"
-          >
-            <v-list-item-icon v-if="menu.icon">
-              <v-icon>{{ menu.icon }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>
-              {{ pluginMenuTitle(menu) }}
-            </v-list-item-title>
-          </v-list-item>
-        </div>
-
         <div v-show="true">
           <v-divider></v-divider>
 
@@ -206,6 +188,24 @@ ko:
               <v-icon>mdi-toolbox</v-icon>
             </v-list-item-icon>
             <v-list-item-title>도구설정</v-list-item-title>
+          </v-list-item>
+        </div>
+
+        <div v-for="plugin in plugins" :key="plugin.name">
+          <v-divider></v-divider>
+
+          <v-list-item
+            v-for="menu in plugin.menus.project"
+            :key="`${plugin.name}-${menu.name}`"
+            link
+            @click.stop="onClickPluginMenu(plugin.name, menu)"
+          >
+            <v-list-item-icon v-if="menu.icon">
+              <v-icon>{{ menu.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ pluginMenuTitle(menu) }}
+            </v-list-item-title>
           </v-list-item>
         </div>
 
