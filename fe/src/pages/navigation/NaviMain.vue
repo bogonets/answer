@@ -416,30 +416,30 @@ export default class NaviMain extends VueBase {
       this.index = 5;
     } else if (name === mainNames.mainVisualProgramming) {
       this.index = 6;
+    } else if (name === mainNames.mainDatasets) {
+      this.index = 7;
+    } else if (name === mainNames.mainLabel) {
+      this.index = 8;
+    } else if (name === mainNames.mainCategory) {
+      this.index = 9;
+    } else if (name === mainNames.mainInstructions) {
+      this.index = 10;
+    } else if (name === mainNames.mainMachineLearning) {
+      this.index = 11;
+    } else if (name === mainNames.mainStorage) {
+      this.index = 12;
+    } else if (name === mainNames.mainHooks) {
+      this.index = 13;
+    } else if (name === mainNames.mainToolSettings) {
+      this.index = 14;
     } else if (name === mainNames.mainPlugin) {
       const plugin = this.$router.currentRoute.params.plugin;
       const menu = this.$router.currentRoute.params.menu;
-      this.index = 6 + findMenuIndex(plugin, menu, this.plugins) + 1;
-    } else if (name === mainNames.mainDatasets) {
-      this.index = 6 + this.pluginsMenusLength + 2;
-    } else if (name === mainNames.mainLabel) {
-      this.index = 6 + this.pluginsMenusLength + 3;
-    } else if (name === mainNames.mainCategory) {
-      this.index = 6 + this.pluginsMenusLength + 4;
-    } else if (name === mainNames.mainInstructions) {
-      this.index = 6 + this.pluginsMenusLength + 5;
-    } else if (name === mainNames.mainMachineLearning) {
-      this.index = 6 + this.pluginsMenusLength + 6;
-    } else if (name === mainNames.mainStorage) {
-      this.index = 6 + this.pluginsMenusLength + 7;
-    } else if (name === mainNames.mainHooks) {
-      this.index = 6 + this.pluginsMenusLength + 8;
-    } else if (name === mainNames.mainToolSettings) {
-      this.index = 6 + this.pluginsMenusLength + 9;
+      this.index = 14 + findMenuIndex(plugin, menu, this.plugins) + 1;
     } else if (name === mainNames.mainMembers) {
-      this.index = 6 + this.pluginsMenusLength + 10;
+      this.index = 14 + this.pluginsMenusLength + 10;
     } else if (name === mainNames.mainSettings) {
-      this.index = 6 + this.pluginsMenusLength + 11;
+      this.index = 14 + this.pluginsMenusLength + 11;
     } else {
       this.index = -1;
     }
