@@ -69,4 +69,38 @@ export default class RouterMain extends Router {
   moveToMainVisualProgramming(group?: string, project?: string) {
     this._moveToMainSubpage(mainNames.mainVisualProgramming, group, project);
   }
+
+  // REMOVE
+
+  moveToMainDatasets(group?: string, project?: string) {
+    this._moveToMainSubpage(mainNames.mainDatasets, group, project);
+  }
+
+  moveToMainLabel(group?: string, project?: string) {
+    this._moveToMainSubpage(mainNames.mainLabel, group, project);
+  }
+
+  moveToMainCategory(group?: string, project?: string) {
+    this._moveToMainSubpage(mainNames.mainCategory, group, project);
+  }
+
+  moveToMainInstructions(group?: string, project?: string) {
+    this._moveToMainSubpage(mainNames.mainInstructions, group, project);
+  }
+
+  moveToMainMachineLearning(group?: string, project?: string) {
+    this._moveToMainSubpage(mainNames.mainMachineLearning, group, project);
+  }
+
+  moveToMainStorage(group?: string, project?: string) {
+    this._moveToMainSubpage(mainNames.mainStorage, group, project);
+  }
+
+  moveToMainHooks(group?: string, project?: string) {
+    this._moveToMainSubpage(mainNames.mainHooks, group, project);
+  }
+
+  moveToMainToolSettings(group?: string, project?: string) {
+    this._moveToMainSubpage(mainNames.mainToolSettings, group, project);
+  }
 }

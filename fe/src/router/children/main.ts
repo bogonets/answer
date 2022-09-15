@@ -10,6 +10,16 @@ import MainTables from '@/pages/main/MainTables.vue';
 import MainTasks from '@/pages/main/MainTasks.vue';
 import MainVisualProgramming from '@/pages/main/MainVisualProgramming.vue';
 
+// REMOVE
+import MainDatasets from '@/pages/main/MainDatasets.vue';
+import MainLabel from '@/pages/main/MainLabel.vue';
+import MainCategory from '@/pages/main/MainCategory.vue';
+import MainInstructions from '@/pages/main/MainInstructions.vue';
+import MainMachineLearning from '@/pages/main/MainMachineLearning.vue';
+import MainStorage from '@/pages/main/MainStorage.vue';
+import MainHooks from '@/pages/main/MainHooks.vue';
+import MainToolSettings from '@/pages/main/MainToolSettings.vue';
+
 // External
 import RootGroups from '@/pages/RootGroups.vue';
 import rootNames from '@/router/names/root';
@@ -64,6 +74,48 @@ export const mainChildren = [
     path: ':group/:project/vp',
     component: MainVisualProgramming,
     name: mainNames.mainVisualProgramming,
+  },
+
+  // REMOVE
+  {
+    path: ':group/:project/datasets',
+    component: MainDatasets,
+    name: mainNames.mainDatasets,
+  },
+  {
+    path: ':group/:project/label',
+    component: MainLabel,
+    name: mainNames.mainLabel,
+  },
+  {
+    path: ':group/:project/category',
+    component: MainCategory,
+    name: mainNames.mainCategory,
+  },
+  {
+    path: ':group/:project/instructions',
+    component: MainInstructions,
+    name: mainNames.mainInstructions,
+  },
+  {
+    path: ':group/:project/ml',
+    component: MainMachineLearning,
+    name: mainNames.mainMachineLearning,
+  },
+  {
+    path: ':group/:project/storage',
+    component: MainStorage,
+    name: mainNames.mainStorage,
+  },
+  {
+    path: ':group/:project/hooks',
+    component: MainHooks,
+    name: mainNames.mainHooks,
+  },
+  {
+    path: ':group/:project/tools',
+    component: MainToolSettings,
+    name: mainNames.mainToolSettings,
   },
 ];
 

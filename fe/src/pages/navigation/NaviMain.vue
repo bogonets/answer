@@ -149,6 +149,66 @@ ko:
           </v-list-item>
         </div>
 
+        <div v-show="true">
+          <v-divider></v-divider>
+
+          <v-list-item link @click.stop="onClickDatasets">
+            <v-list-item-icon>
+              <v-icon>mdi-inbox-multiple</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>데이터셋</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click.stop="onClickLabel">
+            <v-list-item-icon>
+              <v-icon>mdi-vector-polyline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>라벨링</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click.stop="onClickCategory">
+            <v-list-item-icon>
+              <v-icon>mdi-label-multiple</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>범주</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click.stop="onClickInstructions">
+            <v-list-item-icon>
+              <v-icon>mdi-alert-circle</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>지침서</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click.stop="onClickMachineLearning">
+            <v-list-item-icon>
+              <v-icon>mdi-brain</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>머신러닝</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click.stop="onClickStorage">
+            <v-list-item-icon>
+              <v-icon>mdi-database</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>저장소</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click.stop="onClickHooks">
+            <v-list-item-icon>
+              <v-icon>mdi-hook</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>웹훅</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click.stop="onClickToolSettings">
+            <v-list-item-icon>
+              <v-icon>mdi-toolbox</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>도구설정</v-list-item-title>
+          </v-list-item>
+        </div>
+
         <div v-if="showMembers || showSettings">
           <v-divider></v-divider>
 
@@ -360,10 +420,26 @@ export default class NaviMain extends VueBase {
       const plugin = this.$router.currentRoute.params.plugin;
       const menu = this.$router.currentRoute.params.menu;
       this.index = 6 + findMenuIndex(plugin, menu, this.plugins) + 1;
-    } else if (name === mainNames.mainMembers) {
-      this.index = 6 + this.pluginsMenusLength + 1;
-    } else if (name === mainNames.mainSettings) {
+    } else if (name === mainNames.mainDatasets) {
       this.index = 6 + this.pluginsMenusLength + 2;
+    } else if (name === mainNames.mainLabel) {
+      this.index = 6 + this.pluginsMenusLength + 3;
+    } else if (name === mainNames.mainCategory) {
+      this.index = 6 + this.pluginsMenusLength + 4;
+    } else if (name === mainNames.mainInstructions) {
+      this.index = 6 + this.pluginsMenusLength + 5;
+    } else if (name === mainNames.mainMachineLearning) {
+      this.index = 6 + this.pluginsMenusLength + 6;
+    } else if (name === mainNames.mainStorage) {
+      this.index = 6 + this.pluginsMenusLength + 7;
+    } else if (name === mainNames.mainHooks) {
+      this.index = 6 + this.pluginsMenusLength + 8;
+    } else if (name === mainNames.mainToolSettings) {
+      this.index = 6 + this.pluginsMenusLength + 9;
+    } else if (name === mainNames.mainMembers) {
+      this.index = 6 + this.pluginsMenusLength + 10;
+    } else if (name === mainNames.mainSettings) {
+      this.index = 6 + this.pluginsMenusLength + 11;
     } else {
       this.index = -1;
     }
@@ -424,6 +500,40 @@ export default class NaviMain extends VueBase {
     } else {
       return menu.name;
     }
+  }
+
+  // REMOVE
+
+  onClickDatasets() {
+    this.moveToMainDatasets();
+  }
+
+  onClickLabel() {
+    this.moveToMainLabel();
+  }
+
+  onClickCategory() {
+    this.moveToMainCategory();
+  }
+
+  onClickInstructions() {
+    this.moveToMainInstructions();
+  }
+
+  onClickMachineLearning() {
+    this.moveToMainMachineLearning();
+  }
+
+  onClickStorage() {
+    this.moveToMainStorage();
+  }
+
+  onClickHooks() {
+    this.moveToMainHooks();
+  }
+
+  onClickToolSettings() {
+    this.moveToMainToolSettings();
   }
 }
 </script>

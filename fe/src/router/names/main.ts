@@ -9,6 +9,16 @@ export const mainNames = {
   mainTables: 'mainTables',
   mainTasks: 'mainTasks',
   mainVisualProgramming: 'mainVisualProgramming',
+
+  // REMOVE
+  mainDatasets: 'mainDatasets',
+  mainLabel: 'mainLabel',
+  mainCategory: 'mainCategory',
+  mainInstructions: 'mainInstructions',
+  mainMachineLearning: 'mainMachineLearning',
+  mainStorage: 'mainStorage',
+  mainHooks: 'mainHooks',
+  mainToolSettings: 'mainToolSettings',
 };
 
 export default mainNames;
