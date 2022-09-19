@@ -17,6 +17,7 @@ pages/user/project.md
 pages/user/self.md
 pages/user/admin.md
 pages/user/about.md
+pages/user/annotation.md
 ```
 
 ## 소개
