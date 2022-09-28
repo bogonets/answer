@@ -36,29 +36,6 @@ export interface ReccCwcClientInit {
   project: string;
 }
 
-function debugEnvs(): ReccCwcClientInit {
-  const origin = process.env.RECC_CWC_CLIENT_ORIGIN || 'http://localhost:20000';
-  const username = process.env.RECC_CWC_CLIENT_USERNAME || 'admin';
-  const password = process.env.RECC_CWC_CLIENT_PASSWORD || '0000';
-  const darkText = process.env.RECC_CWC_CLIENT_DARK;
-  const dark = darkText ? Number.parseInt(darkText) : 0;
-  const lang = process.env.RECC_CWC_CLIENT_LANG || 'ko';
-  const timezone = process.env.RECC_CWC_CLIENT_TIMEZONE || 'Asia/Seoul';
-  const group = process.env.RECC_CWC_CLIENT_GROUP || 'group';
-  const project = process.env.RECC_CWC_CLIENT_PROJECT || 'project';
-
-  return {
-    origin,
-    username,
-    password,
-    dark,
-    lang,
-    timezone,
-    group,
-    project,
-  } as ReccCwcClientInit;
-}
-
 /**
  * Cross-window communication for RECC Plugin.
  */
@@ -93,6 +70,17 @@ export class ReccCwcClient {
     });
   }
 
+  asParams() {
+    return {
+      api: this.origin,
+      group: this.group,
+      project: this.project,
+      lang: this.lang,
+      timezone: this.timezone,
+      dark: this.dark,
+    };
+  }
+
   asParamsText() {
     let result = '';
     if (this.origin) {
@@ -121,7 +109,7 @@ export class ReccCwcClient {
     this._window.removeEventListener(MESSAGE_EVENT_TYPE, this._messageHandler);
   }
 
-  async init(options = debugEnvs()) {
+  async init(options: ReccCwcClientInit) {
     const api = new ReccApi({origin: options.origin});
     await api.postSignin(options.username, options.password);
 

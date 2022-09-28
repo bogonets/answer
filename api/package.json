@@ -8,7 +8,8 @@
   "private": false,
   "main": "dist/index.js",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "build": "tsc",
