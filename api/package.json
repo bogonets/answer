@@ -1,6 +1,6 @@
 {
   "name": "@recc/api",
-  "version": "2.0.2",
+  "version": "2.0.2-2",
   "description": "Frontend API for the recc core",
   "repository": "https://github.com/bogonets/answer",
   "author": "zer0",
