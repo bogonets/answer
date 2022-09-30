@@ -6,7 +6,7 @@ en:
   files: 'Files'
   tables: 'Tables'
   tasks: 'Tasks'
-  vp: 'Visual Programming'
+  visual_programming: 'Visual Programming'
   vms:
     live: 'Live'
     devices: 'Devices'
@@ -24,7 +24,7 @@ ko:
   files: '파일'
   tables: '테이블'
   tasks: '태스크'
-  vp: '시각 프로그래밍'
+  visual_programming: '시각 프로그래밍'
   vms:
     live: '실시간'
     devices: '장치 목록'
@@ -58,16 +58,11 @@ ko:
         </v-btn>
       </v-list-item>
 
-      <v-list-item-group
-        mandatory
-        color="primary"
-        :value="index"
-        @change="onChangeMenuIndex"
-      >
+      <v-list-item-group mandatory color="primary" v-model="selectItem">
         <div>
           <v-divider></v-divider>
 
-          <v-list-item link @click.stop="onClickDashboard">
+          <v-list-item :value="names.mainDashboard" link @click.stop="onClickDashboard">
             <v-list-item-icon>
               <v-icon>mdi-gauge</v-icon>
             </v-list-item-icon>
@@ -76,7 +71,12 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item :v-show="showKanban" link @click.stop="onClickKanban">
+          <v-list-item
+            v-show="showKanban"
+            :value="names.mainKanban"
+            link
+            @click.stop="onClickKanban"
+          >
             <v-list-item-icon>
               <v-icon>mdi-view-week-outline</v-icon>
             </v-list-item-icon>
@@ -85,7 +85,12 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item :v-show="showLayouts" link @click.stop="onClickLayouts">
+          <v-list-item
+            v-show="showLayouts"
+            :value="names.mainLayouts"
+            link
+            @click.stop="onClickLayouts"
+          >
             <v-list-item-icon>
               <v-icon>mdi-view-dashboard</v-icon>
             </v-list-item-icon>
@@ -94,7 +99,12 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item :v-show="showFiles" link @click.stop="onClickFiles">
+          <v-list-item
+            v-show="showFiles"
+            :value="names.mainFiles"
+            link
+            @click.stop="onClickFiles"
+          >
             <v-list-item-icon>
               <v-icon>mdi-folder</v-icon>
             </v-list-item-icon>
@@ -103,7 +113,12 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item :v-show="showTables" link @click.stop="onClickTables">
+          <v-list-item
+            v-show="showTables"
+            :value="names.mainTables"
+            link
+            @click.stop="onClickTables"
+          >
             <v-list-item-icon>
               <v-icon>mdi-table-multiple</v-icon>
             </v-list-item-icon>
@@ -112,7 +127,12 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="showTasks" link @click.stop="onClickTasks">
+          <v-list-item
+            v-show="showTasks"
+            :value="names.mainTasks"
+            link
+            @click.stop="onClickTasks"
+          >
             <v-list-item-icon>
               <v-icon>mdi-format-list-checks</v-icon>
             </v-list-item-icon>
@@ -121,17 +141,22 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-show="showVp" link @click.stop="onClickVisualProgramming">
+          <v-list-item
+            v-show="showVp"
+            :value="names.mainVisualProgramming"
+            link
+            @click.stop="onClickVisualProgramming"
+          >
             <v-list-item-icon>
               <v-icon>mdi-lambda</v-icon>
             </v-list-item-icon>
             <v-list-item-title>
-              {{ $t('vp') }}
+              {{ $t('visual_programming') }}
             </v-list-item-title>
           </v-list-item>
         </div>
 
-        <div v-show="true">
+        <div v-show="false">
           <v-divider></v-divider>
 
           <v-list-item link @click.stop="onClickDatasets">
@@ -197,6 +222,7 @@ ko:
           <v-list-item
             v-for="menu in plugin.menus.project"
             :key="`${plugin.name}-${menu.name}`"
+            :value="`${plugin.name}-${menu.name}`"
             link
             @click.stop="onClickPluginMenu(plugin.name, menu)"
           >
@@ -212,7 +238,12 @@ ko:
         <div v-if="showMembers || showSettings">
           <v-divider></v-divider>
 
-          <v-list-item v-if="showMembers" link @click.stop="onClickMembers">
+          <v-list-item
+            v-show="showMembers"
+            :value="names.mainMembers"
+            link
+            @click.stop="onClickMembers"
+          >
             <v-list-item-icon>
               <v-icon>mdi-account-group</v-icon>
             </v-list-item-icon>
@@ -221,7 +252,12 @@ ko:
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-if="showSettings" link @click.stop="onClickSettings">
+          <v-list-item
+            v-show="showSettings"
+            :value="names.mainSettings"
+            link
+            @click.stop="onClickSettings"
+          >
             <v-list-item-icon>
               <v-icon>mdi-cog-outline</v-icon>
             </v-list-item-icon>
@@ -316,8 +352,10 @@ function findMenuIndex(pluginName: string, menuName: string, plugins: Array<Plug
 
 @Component
 export default class NaviMain extends VueBase {
-  index = 0;
+  readonly names = mainNames;
+
   mini = false;
+  selectItem = mainNames.mainDashboard;
   permissions = [] as Array<string>;
   plugins = [] as Array<PluginA>;
 
@@ -402,55 +440,22 @@ export default class NaviMain extends VueBase {
   @Watch('$route')
   onChangeRoute() {
     const name = this.$route.name;
-    if (name === mainNames.mainDashboard) {
-      this.index = 0;
-    } else if (name === mainNames.mainKanban) {
-      this.index = 1;
-    } else if (name === mainNames.mainLayouts) {
-      this.index = 2;
-    } else if (name === mainNames.mainFiles) {
-      this.index = 3;
-    } else if (name === mainNames.mainTables) {
-      this.index = 4;
-    } else if (name === mainNames.mainTasks) {
-      this.index = 5;
-    } else if (name === mainNames.mainVisualProgramming) {
-      this.index = 6;
-    } else if (name === mainNames.mainDatasets) {
-      this.index = 7;
-    } else if (name === mainNames.mainLabel) {
-      this.index = 8;
-    } else if (name === mainNames.mainCategory) {
-      this.index = 9;
-    } else if (name === mainNames.mainInstructions) {
-      this.index = 10;
-    } else if (name === mainNames.mainMachineLearning) {
-      this.index = 11;
-    } else if (name === mainNames.mainStorage) {
-      this.index = 12;
-    } else if (name === mainNames.mainHooks) {
-      this.index = 13;
-    } else if (name === mainNames.mainToolSettings) {
-      this.index = 14;
-    } else if (name === mainNames.mainPlugin) {
+    if (typeof name !== 'string') {
+      this.selectItem = '';
+      return;
+    }
+
+    if (name === mainNames.mainPlugin) {
       const plugin = this.$router.currentRoute.params.plugin;
       const menu = this.$router.currentRoute.params.menu;
-      this.index = 14 + findMenuIndex(plugin, menu, this.plugins) + 1;
-    } else if (name === mainNames.mainMembers) {
-      this.index = 14 + this.pluginsMenusLength + 10;
-    } else if (name === mainNames.mainSettings) {
-      this.index = 14 + this.pluginsMenusLength + 11;
+      this.selectItem = `${plugin}-${menu}`;
     } else {
-      this.index = -1;
+      this.selectItem = name;
     }
   }
 
   onClickFoldNavigation() {
     this.mini = !this.mini;
-  }
-
-  onChangeMenuIndex(index: number) {
-    this.index = index;
   }
 
   onClickDashboard() {
