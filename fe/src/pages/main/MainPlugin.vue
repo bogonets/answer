@@ -8,7 +8,7 @@
 import {Component, Prop, Ref} from 'vue-property-decorator';
 import VueBase from '@/base/VueBase';
 import ViewPort from '@/components/ViewPort.vue';
-import {ReccCwcCore} from '@recc/api/dist/reccCwcCore';
+import {ReccCwcServer} from '@recc/api/dist/reccCwcServer';
 import {
   ReccCwcDataInit,
   ToastLevel,
@@ -31,7 +31,7 @@ export default class MainPlugin extends VueBase {
   @Ref('frame')
   frame!: HTMLIFrameElement;
 
-  cwc?: ReccCwcCore = undefined;
+  cwc?: ReccCwcServer = undefined;
 
   get src() {
     const plugin = this.$route.params.plugin;
@@ -163,7 +163,7 @@ export default class MainPlugin extends VueBase {
     const group = this.$route.params.group;
     const project = this.$route.params.project;
 
-    this.cwc = new ReccCwcCore(this.frame, {
+    this.cwc = new ReccCwcServer(this.frame, {
       origin: window.origin,
       initData: {
         apiOptions,
