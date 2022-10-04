@@ -182,7 +182,7 @@ export class ReccCwcClient {
       return this.api;
     });
 
-    if (typeof timeout !== 'undefined') {
+    if (typeof timeout === 'undefined' || timeout <= 0) {
       return initPromise;
     }
 
