@@ -4,7 +4,7 @@ import os
 from importlib import import_module
 from unittest import TestCase, main
 
-from recc import lamda_builtin
+from recc import package
 from recc.package.package_utils import (
     all_module_names,
     filter_module_names,
@@ -19,10 +19,10 @@ class PackageUtilsTestCase(TestCase):
         self.assertTrue(os.path.isdir(recc_module_directory))
 
     def test_get_module_directory(self):
-        self.assertTrue(os.path.isdir(get_module_directory(lamda_builtin)))
+        self.assertTrue(os.path.isdir(get_module_directory(package)))
 
     def test_list_submodule_names(self):
-        self.assertIn("numpy", list_submodule_names(lamda_builtin))
+        self.assertIn("package_utils", list_submodule_names(package))
 
     def test_all_module_names(self):
         self.assertIn("pip", all_module_names())
