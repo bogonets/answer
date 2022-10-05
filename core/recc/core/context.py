@@ -15,13 +15,10 @@ from recc.container.container_manager import create_container_manager
 from recc.core.mixin.context_config import ContextConfig
 from recc.core.mixin.context_group import ContextGroup
 from recc.core.mixin.context_info import ContextInfo
-from recc.core.mixin.context_lamda import ContextLamda
 from recc.core.mixin.context_plugin import ContextPlugin
 from recc.core.mixin.context_project import ContextProject
 from recc.core.mixin.context_role import ContextRole
-from recc.core.mixin.context_storage import ContextStorage
 from recc.core.mixin.context_system import ContextSystem
-from recc.core.mixin.context_task import ContextTask
 from recc.core.mixin.context_user import ContextUser
 from recc.crypto.signature import generate_signature
 from recc.database.pg_db import PgDb
@@ -46,7 +43,6 @@ from recc.session.session import (
 )
 from recc.storage.local_storage import LocalStorage
 from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
-from recc.task.task_connection_pool import create_task_connection_pool
 from recc.util.version import parse_semantic_version, version_text, version_tuple
 from recc.variables.crypto import SIGNATURE_SIZE
 from recc.variables.database import (
@@ -56,20 +52,16 @@ from recc.variables.database import (
     ROLE_SLUG_OWNER,
     ROLE_UID_OWNER,
 )
-from recc.variables.logging import VERBOSE_LOGGING_LEVEL_1
 
 
 class Context(
     ContextConfig,
     ContextGroup,
     ContextInfo,
-    ContextLamda,
     ContextPlugin,
     ContextProject,
     ContextRole,
-    ContextStorage,
     ContextSystem,
-    ContextTask,
     ContextUser,
 ):
     """
@@ -99,7 +91,6 @@ class Context(
         self._init_container_manager()
         self._init_cache_store()
         self._init_database()
-        self._init_task_manager()
         self._init_plugin_manager()
 
         if skip_assertion:
@@ -113,7 +104,6 @@ class Context(
         assert self._container_key is not None
         assert self._cache is not None
         assert self._database is not None
-        assert self._tasks is not None
         assert self._plugins is not None
 
     def _init_logger(self) -> None:
@@ -157,8 +147,6 @@ class Context(
     def _init_local_storage(self) -> None:
         self._local_storage = LocalStorage(self._config.local_storage)
         logger.info(f"Created storage-manager (root={self._local_storage.root})")
-        if self._config.verbose >= VERBOSE_LOGGING_LEVEL_1:
-            logger.info(self._local_storage.template_manager.to_details())
 
     def _init_session_factory(self) -> None:
         assert self._signature
@@ -220,10 +208,6 @@ class Context(
             self._config.database_timeout,
         )
         logger.info("Created database")
-
-    def _init_task_manager(self) -> None:
-        self._tasks = create_task_connection_pool()
-        logger.info("Created task-manager")
 
     def _init_plugin_manager(self) -> None:
         self._plugins = CorePluginManager(
@@ -456,17 +440,8 @@ class Context(
             else:
                 logger.info("Default-task-image successfully created")
 
-        if self.is_guest_mode():
-            await self.connect_global_network()
-            logger.info("Guest network mode: connect global network")
-        else:
-            logger.debug("Host network mode")
-
         await self._cache.open()
         logger.info("Opened cache-store")
-
-        await self._tasks.open()
-        logger.info("Opened task-manager")
 
         await self._after_open()
         logger.info("The context has been opened")
@@ -476,22 +451,13 @@ class Context(
         await self._plugins.open()
         logger.info("Opened core-plugins")
 
-    async def _before_close(self) -> None:
-        if self.container.is_open() and self.is_guest_mode():
-            await self.disconnect_global_network()
-            logger.info("Disconnect global network")
-
     async def close(self) -> None:
         logger.info("Closing the context")
-        await self._before_close()
 
         teardown = self._config.teardown
 
         await self._plugins.close()
         logger.info("Closed plugin-manager")
-
-        await self._tasks.close()
-        logger.info("Closed task-manager")
 
         if teardown:
             await self._cache.clear()

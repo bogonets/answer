@@ -3,13 +3,9 @@
 from typing import Callable, List, Optional
 
 from recc.app.core_main import core_main
-from recc.app.ctrl_main import ctrl_main
-from recc.app.task_main import task_main
 from recc.argparse.argument_parser import ArgumentMessage
 from recc.argparse.command import Command
 from recc.argparse.config.core_config import CoreConfig
-from recc.argparse.config.ctrl_config import CtrlConfig
-from recc.argparse.config.task_config import TaskConfig
 from recc.argparse.default_parser import get_command, parse_arguments_to_config
 from recc.http.http_app import HttpAppCallback
 
@@ -41,11 +37,9 @@ def main(
         assert isinstance(config, CoreConfig)
         return core_main(config, http_callback)
     elif cmd == Command.ctrl:
-        assert isinstance(config, CtrlConfig)
-        return ctrl_main(config)
+        raise NotImplementedError
     elif cmd == Command.task:
-        assert isinstance(config, TaskConfig)
-        return task_main(config)
+        raise NotImplementedError
     elif cmd == Command.daemon:
         raise NotImplementedError
 

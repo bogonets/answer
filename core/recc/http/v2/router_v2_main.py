@@ -306,13 +306,15 @@ class RouterV2Main:
 
         layouts = 0
         tables = 0
+        tasks = 0
+
         # TODO: Permission test ...
-        tasks = await self.context.get_container_infos(group, project)
+
         members = await self.context.get_project_members(project_uid)
         return ProjectOverviewA(
             layouts=layouts,
             tables=tables,
-            tasks=len(tasks),
+            tasks=tasks,
             members=len(members),
         )
 

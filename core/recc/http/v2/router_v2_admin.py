@@ -149,7 +149,7 @@ class RouterV2Admin:
 
     @parameter_matcher
     async def get_templates(self) -> List[TemplateA]:
-        return self.context.get_template_keys()
+        return []
 
     # -----
     # Users
@@ -387,40 +387,39 @@ class RouterV2Admin:
 
     @parameter_matcher
     async def get_containers(self) -> List[ContainerA]:
-        result = list()
-        for container in await self.context.get_containers():
-            result.append(container_to_answer(container))
-        return result
+        return []
 
     @parameter_matcher
     async def patch_containers(self, body: ControlContainersQ) -> None:
-        operator = ContainerOperator.from_str(body.operator)
-        if operator == ContainerOperator.Start:
-            for key in body.keys:
-                await self.context.start_container(key)
-        elif operator == ContainerOperator.Stop:
-            for key in body.keys:
-                await self.context.stop_container(key)
-        elif operator == ContainerOperator.Kill:
-            signal: Union[str, int] = body.signal if body.signal else SIGKILL
-            for key in body.keys:
-                await self.context.kill_container(key, signal)
-        elif operator == ContainerOperator.Restart:
-            for key in body.keys:
-                await self.context.restart_container(key)
-        elif operator == ContainerOperator.Pause:
-            for key in body.keys:
-                await self.context.pause_container(key)
-        elif operator == ContainerOperator.Resume:
-            for key in body.keys:
-                await self.context.unpause_container(key)
-        elif operator == ContainerOperator.Remove:
-            force = True if body.force else False
-            for key in body.keys:
-                await self.context.remove_container(key, force)
-        else:
-            assert False, "Not accessible section"
+        # operator = ContainerOperator.from_str(body.operator)
+        # if operator == ContainerOperator.Start:
+        #     for key in body.keys:
+        #         await self.context.start_container(key)
+        # elif operator == ContainerOperator.Stop:
+        #     for key in body.keys:
+        #         await self.context.stop_container(key)
+        # elif operator == ContainerOperator.Kill:
+        #     signal: Union[str, int] = body.signal if body.signal else SIGKILL
+        #     for key in body.keys:
+        #         await self.context.kill_container(key, signal)
+        # elif operator == ContainerOperator.Restart:
+        #     for key in body.keys:
+        #         await self.context.restart_container(key)
+        # elif operator == ContainerOperator.Pause:
+        #     for key in body.keys:
+        #         await self.context.pause_container(key)
+        # elif operator == ContainerOperator.Resume:
+        #     for key in body.keys:
+        #         await self.context.unpause_container(key)
+        # elif operator == ContainerOperator.Remove:
+        #     force = True if body.force else False
+        #     for key in body.keys:
+        #         await self.context.remove_container(key, force)
+        # else:
+        #     assert False, "Not accessible section"
+        pass
 
     @parameter_matcher
     async def get_containers_pcontainer(self, container: str) -> ContainerA:
-        return container_to_answer(await self.context.get_container(container))
+        # return container_to_answer(await self.context.get_container(container))
+        raise KeyError("Not found container")

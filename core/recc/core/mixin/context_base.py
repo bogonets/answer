@@ -9,7 +9,6 @@ from recc.database.pg_db import PgDb
 from recc.plugin.core_plugin_manager import CorePluginManager
 from recc.session.session import SessionPairFactory
 from recc.storage.local_storage import LocalStorage
-from recc.task.task_connection_pool import TaskConnectionPool
 
 
 class ContextBase:
@@ -23,7 +22,6 @@ class ContextBase:
     _container_key: str
     _cache: Cache
     _database: PgDb
-    _tasks: TaskConnectionPool
     _plugins: CorePluginManager
 
     @property
