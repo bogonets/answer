@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@juggle/resize-observer": "^3.3.1",
-    "@recc/api": "^2.0.0-dev10",
+    "@recc/api": "^2.0.3",
     "@toast-ui/vue-grid": "^4.21.0",
     "chart.js": "^3.5.1",
     "chartjs-adapter-moment": "^1.0.0",
