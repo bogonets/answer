@@ -32,6 +32,6 @@ ARGS=(
 
 print_message "pytest ${ARGS[*]} $*"
 
-"$ROOT_DIR/python" -m pytest "${ARGS[@]}"
+"$ROOT_DIR/python" -m pytest "${ARGS[@]}" \
      "$ROOT_DIR/tester/" \
      "$@"

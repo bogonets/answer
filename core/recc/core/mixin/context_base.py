@@ -2,8 +2,9 @@
 
 from asyncio import AbstractEventLoop
 
+from recc_mq import Cache
+
 from recc.argparse.config.core_config import CoreConfig
-from recc.cache.cache import Cache
 from recc.database.pg_db import PgDb
 from recc.plugin.core_plugin_manager import CorePluginManager
 from recc.session.session import SessionPairFactory

@@ -7,10 +7,11 @@ from hashlib import sha256
 from shutil import move
 from typing import Dict, Optional, Set
 
+from recc_mq import Cache
+
 from recc.argparse.config.core_config import CoreConfig
 from recc.argparse.default_config import get_default_core_config
 from recc.argparse.injection_values import injection_core_default_values
-from recc.cache.cache import Cache
 from recc.core.mixin.context_config import ContextConfig
 from recc.core.mixin.context_group import ContextGroup
 from recc.core.mixin.context_info import ContextInfo
