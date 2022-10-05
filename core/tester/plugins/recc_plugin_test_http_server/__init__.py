@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 from asyncio import Event, Task, create_task
 from functools import partial
 from logging import getLogger
@@ -14,10 +13,8 @@ from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 
 from recc.http.http_decorator import has_layout_view
-from recc.translations.translator import TranslatorLangMapper
 
 logger = getLogger("recc_plugin_test_http_server")
-t = TranslatorLangMapper.from_dir(os.path.join(os.path.dirname(__file__), "lang"))
 
 __version__ = "0.0.0"
 
@@ -32,7 +29,10 @@ __recc_spec__ = {
                 "name": "Labeling",
                 "path": "/",
                 "permission": "recc.plugin.test.http_server.view",
-                "translations": t("menu.labeling"),
+                "translations": {
+                    "en": "English",
+                    "ko": "Korean",
+                },
             }
         ]
     },
