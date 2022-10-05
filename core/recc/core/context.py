@@ -4,7 +4,6 @@ import os
 from asyncio import AbstractEventLoop, get_event_loop_policy, set_event_loop
 from copy import deepcopy
 from hashlib import sha256
-from shutil import move
 from typing import Dict, Optional, Set
 
 from recc_mq import Cache
@@ -30,7 +29,6 @@ from recc.init.default import (
     init_yaml_driver,
 )
 from recc.logging.logging import recc_core_logger as logger
-from recc.package.requirements_utils import RECC_REQUIREMENTS_MAIN
 from recc.plugin.core_plugin_manager import CorePluginManager
 from recc.session.session import (
     DEFAULT_ACCESS_MAX_AGE_SECONDS,
@@ -42,7 +40,6 @@ from recc.session.session import (
     SessionPairFactory,
 )
 from recc.storage.local_storage import LocalStorage
-from recc.subprocess.async_python_subprocess import AsyncPythonSubprocess
 from recc.util.version import parse_semantic_version, version_text, version_tuple
 from recc.variables.crypto import SIGNATURE_SIZE
 from recc.variables.database import (
@@ -198,19 +195,6 @@ class Context(
     def version_tuple(cls) -> tuple:
         return version_tuple
 
-    @staticmethod
-    async def _test_recc_subprocess() -> None:
-        try:
-            python = AsyncPythonSubprocess.create_system()
-            version = await python.recc_version()
-            logger.info(f"The `recc` module version is {version}.")
-        except BaseException as e:
-            logger.warning(
-                "Could not find module `recc`. "
-                "Some functions that run as subprocesses are not available. "
-                f"{e}"
-            )
-
     async def migrate_database(self) -> None:
         db_version: Optional[str]
         try:
@@ -281,77 +265,6 @@ class Context(
 
         return True
 
-    async def download_pip_packages(
-        self,
-        domain: str,
-        hash_method: str,
-        logging_encoding="utf-8",
-    ) -> None:
-        assert self._local_storage
-        assert self._database
-        assert self._database.is_open()
-
-        def _stdout_callback(data: bytes) -> None:
-            line = str(data, encoding=logging_encoding).rstrip()
-            if line:
-                logger.debug(line)
-
-        def _stderr_callback(data: bytes) -> None:
-            line = str(data, encoding=logging_encoding).rstrip()
-            if line:
-                logger.warning(line)
-
-        for package in RECC_REQUIREMENTS_MAIN:
-            if await self._exists_pip_package(domain, package):
-                logger.debug(f"Exists pip package '{package}'")
-                continue
-            else:
-                await self._database.delete_pip_by_domain_and_name(domain, package)
-
-            with self._local_storage.create_temporary_directory() as tmpdir:
-                logger.debug(f"Run pip download '{package}'")
-                code = await AsyncPythonSubprocess.create_system().download(
-                    package,
-                    tmpdir,
-                    _stdout_callback,
-                    _stderr_callback,
-                )
-
-                if code == 0:
-                    logger.debug(f"Subprocess is done: pip download '{package}'")
-                else:
-                    raise RuntimeError(f"Error({code}) pip download '{package}'")
-
-                for filename in os.listdir(tmpdir):
-                    filepath = os.path.abspath(os.path.join(tmpdir, filename))
-                    assert os.path.isfile(filepath)
-                    hash_value = self._read_hash(filepath, hash_method)
-
-                    dest = os.path.join(self._local_storage.pip_download, filename)
-                    if os.path.exists(dest):
-                        try:
-                            os.remove(dest)
-                            logger.debug(f"Remove the existing pip file: '{dest}'")
-                        except BaseException as e:
-                            logger.warning(f"Error remove existing pip file: {e}")
-                            continue
-
-                    try:
-                        move(filepath, dest)
-                    except BaseException as e:
-                        logger.warning(f"Error moving downloaded pip file: {e}")
-                        continue
-
-                    try:
-                        await self._database.insert_pip(
-                            domain, package, filename, hash_method, hash_value
-                        )
-                    except BaseException as e:
-                        logger.warning(f"Database insert error: {e}")
-                        continue
-
-                logger.debug(f"Done pip download '{package}'")
-
     async def get_database_configs(self) -> Dict[str, str]:
         """
         Configurations stored in the database.
@@ -375,8 +288,6 @@ class Context(
                     logger.info(f"Add `{key}` core-plugin permission: {permission}")
 
     async def open(self) -> None:
-        await self._test_recc_subprocess()
-
         self.setup_context_config()
         logger.info("Setup context configurations")
 
@@ -390,13 +301,6 @@ class Context(
         database_configs = await self.get_database_configs()
         await self.restore_configs(database_configs)
         logger.info("Restores the configuration from the database")
-
-        if self._config.skip_pip_download:
-            logger.debug("Skip downloading the pip requirements")
-        else:
-            logger.debug("Download pip requirements ...")
-            await self.download_pip_packages(PIP_DOMAIN_RECC, PIP_HASH_METHOD_SHA256)
-            logger.info("Complete downloading all pip requirements")
 
         await self._cache.open()
         logger.info("Opened cache-store")
