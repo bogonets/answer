@@ -2,20 +2,25 @@
 
 from typing import Optional, Tuple
 
-from recc.cache.cache_store import create_cache_store
-from recc.cache.cache_store_interface import CacheStoreInterface
-from recc.variables.cache import (
-    CACHE_FORMAT_GROUP_SLUG_TO_UID,
-    CACHE_FORMAT_GROUP_UID_TO_SLUG,
-    CACHE_FORMAT_PROJECT_KEY_TO_UID,
-    CACHE_FORMAT_PROJECT_UID_TO_KEY,
-    CACHE_FORMAT_ROLE_SLUG_TO_UID,
-    CACHE_FORMAT_ROLE_UID_TO_SLUG,
-    CACHE_FORMAT_USER_NAME_TO_UID,
-    CACHE_FORMAT_USER_UID_TO_NAME,
-    PROJECT_KEY_FORMAT,
-    PROJECT_KEY_SEPARATOR,
-)
+from recc.cache.redis_cache_store import RedisCacheStore
+
+CACHE_PREFIX_ROOT = "recc:"
+CACHE_PREFIX_USER = "user"
+CACHE_PREFIX_GROUP = "group"
+CACHE_PREFIX_PROJECT = "project"
+CACHE_PREFIX_ROLE = "role"
+
+CACHE_FORMAT_USER_NAME_TO_UID = CACHE_PREFIX_USER + "/name_to_uid/{name}"
+CACHE_FORMAT_USER_UID_TO_NAME = CACHE_PREFIX_USER + "/uid_to_name/{uid}"
+CACHE_FORMAT_GROUP_SLUG_TO_UID = CACHE_PREFIX_GROUP + "/slug_to_uid/{slug}"
+CACHE_FORMAT_GROUP_UID_TO_SLUG = CACHE_PREFIX_GROUP + "/uid_to_slug/{uid}"
+CACHE_FORMAT_PROJECT_KEY_TO_UID = CACHE_PREFIX_PROJECT + "/key_to_uid/{key}"
+CACHE_FORMAT_PROJECT_UID_TO_KEY = CACHE_PREFIX_PROJECT + "/uid_to_key/{uid}"
+CACHE_FORMAT_ROLE_SLUG_TO_UID = CACHE_PREFIX_ROLE + "/slug_to_uid/{slug}"
+CACHE_FORMAT_ROLE_UID_TO_SLUG = CACHE_PREFIX_ROLE + "/uid_to_slug/{uid}"
+
+PROJECT_KEY_SEPARATOR = "/"
+PROJECT_KEY_FORMAT = "{group_uid}" + PROJECT_KEY_SEPARATOR + "{project_slug}"
 
 
 def key_user_name_to_uid(name: str) -> str:
@@ -57,14 +62,13 @@ def key_role_uid_to_slug(uid: int) -> str:
 class Cache:
     def __init__(
         self,
-        cs_type: str,
         host: str,
         port: int,
         pw: Optional[str] = None,
         prefix: Optional[str] = None,
         **kwargs,
     ):
-        self._store = create_cache_store(cs_type, host, port, pw, prefix, **kwargs)
+        self._store = RedisCacheStore(host, port, pw, prefix, **kwargs)
 
     def is_open(self) -> bool:
         return self._store.is_open()
@@ -76,7 +80,7 @@ class Cache:
         await self._store.close()
 
     @property
-    def store(self) -> CacheStoreInterface:
+    def store(self) -> RedisCacheStore:
         assert self._store is not None
         assert self._store.is_open()
         return self._store

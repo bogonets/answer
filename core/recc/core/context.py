@@ -162,7 +162,6 @@ class Context(
 
     def _init_cache_store(self) -> None:
         self._cache = Cache(
-            self._config.cache_type,
             self._config.cache_host,
             self._config.cache_port,
             self._config.cache_pw,

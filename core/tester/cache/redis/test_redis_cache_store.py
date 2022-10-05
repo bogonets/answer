@@ -5,7 +5,7 @@ from datetime import datetime
 from unittest import IsolatedAsyncioTestCase, main, skipIf
 
 from recc.argparse.default_parser import parse_arguments_to_core_config
-from recc.cache.redis.redis_cache_store import EXPIRE_ACCURACY_SECONDS, RedisCacheStore
+from recc.cache.redis_cache_store import EXPIRE_ACCURACY_SECONDS, RedisCacheStore
 from tester.variables import UID_PERFORMANCE_ITERATION, UID_PERFORMANCE_TEST_SKIP
 
 

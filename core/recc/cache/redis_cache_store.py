@@ -7,11 +7,8 @@ from typing import Any, Awaitable, Callable, Dict, List, Optional, Set, Union
 from aioredis import ConnectionPool, Redis
 from aioredis.client import PubSub
 from async_timeout import timeout as async_timeout_timeout
-from overrides import overrides
 
-from recc.cache.cache_store_interface import CacheStoreInterface, ValueType
-from recc.variables.cache import DEFAULT_MAX_CONNECTIONS
-
+DEFAULT_MAX_CONNECTIONS = 10
 EX_KEY_MAX_CONNECTIONS = "max_connections"
 
 SubscribeAsyncCallable = Callable[[Any], Awaitable[None]]
@@ -23,8 +20,10 @@ EXPIRE_ACCURACY_SECONDS = 1
 
 CLEAR_SCAN_STEP = 1024
 
+ValueType = Union[bytes, memoryview, str, int, float]
 
-class RedisCacheStore(CacheStoreInterface):
+
+class RedisCacheStore:
     """
     Redis cache store class.
     """
@@ -57,11 +56,9 @@ class RedisCacheStore(CacheStoreInterface):
         except ValueError:
             return default_value
 
-    @overrides
     def is_open(self) -> bool:
         return self._redis is not None
 
-    @overrides
     async def open(self) -> None:
         pool = ConnectionPool.from_url(
             f"redis://{self._host}:{self._port}",
@@ -84,7 +81,6 @@ class RedisCacheStore(CacheStoreInterface):
             self._subscribes.clear()
             self._subscribes_exit.clear()
 
-    @overrides
     async def close(self) -> None:
         assert self._redis
         await self.close_subscribes()
@@ -97,37 +93,29 @@ class RedisCacheStore(CacheStoreInterface):
         assert self._redis is not None
         return self._redis
 
-    @overrides
     async def set(self, key: str, val: ValueType) -> None:
         await self.redis.set(self._prefix + key, val)
 
-    @overrides
     async def mset(self, pairs: Dict[str, ValueType]) -> None:
         await self.redis.mset({self._prefix + k: v for k, v in pairs.items()})
 
-    @overrides
     async def get(self, key: str) -> Optional[bytes]:
         return await self.redis.get(self._prefix + key)
 
-    @overrides
     async def append(self, key: str, val: ValueType) -> None:
         await self.redis.append(self._prefix + key, val)
 
-    @overrides
     async def expire(self, key: str, seconds: int) -> None:
         await self.redis.expire(self._prefix + key, seconds)
 
-    @overrides
     async def delete(self, *keys: str) -> None:
         real_keys = (self._prefix + k for k in keys)
         await self.redis.delete(*real_keys)
 
-    @overrides
     async def exists(self, *keys: str) -> int:
         real_keys = (self._prefix + k for k in keys)
         return await self.redis.exists(*real_keys)
 
-    @overrides
     async def clear(self) -> None:
         while True:
             cursor, keys = await self.redis.scan(
