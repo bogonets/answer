@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from signal import SIGKILL
-from typing import List, Union
+from typing import List
 
 from aiohttp import web
 from aiohttp.web_exceptions import HTTPBadRequest
@@ -12,8 +11,7 @@ from recc.core.context import Context
 from recc.http import http_urls as u
 from recc.http.http_parameter import parameter_matcher
 from recc.packet.config import ConfigA, UpdateConfigValueQ
-from recc.packet.container import ContainerA, ContainerOperator, ControlContainersQ
-from recc.packet.cvt.container import container_to_answer
+from recc.packet.container import ContainerA, ControlContainersQ
 from recc.packet.cvt.project import project_to_answer
 from recc.packet.cvt.role import role_to_answer
 from recc.packet.group import CreateGroupQ, Group, GroupA, UpdateGroupQ

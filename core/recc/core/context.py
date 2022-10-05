@@ -11,7 +11,6 @@ from recc.argparse.config.core_config import CoreConfig
 from recc.argparse.default_config import get_default_core_config
 from recc.argparse.injection_values import injection_core_default_values
 from recc.cache.cache import Cache
-from recc.container.container_manager import create_container_manager
 from recc.core.mixin.context_config import ContextConfig
 from recc.core.mixin.context_group import ContextGroup
 from recc.core.mixin.context_info import ContextInfo
@@ -88,7 +87,6 @@ class Context(
         self._init_signature()
         self._init_local_storage()
         self._init_session_factory()
-        self._init_container_manager()
         self._init_cache_store()
         self._init_database()
         self._init_plugin_manager()
@@ -100,8 +98,6 @@ class Context(
         assert self._signature is not None
         assert self._local_storage is not None
         assert self._session_factory is not None
-        assert self._container is not None
-        assert self._container_key is not None
         assert self._cache is not None
         assert self._database is not None
         assert self._plugins is not None
@@ -163,30 +159,6 @@ class Context(
             refresh_leeway_seconds=DEFAULT_LEEWAY_SECONDS,
         )
         logger.info("Using the default session factory.")
-
-    def _init_container_manager(self) -> None:
-        self._container = create_container_manager(
-            self._config.container_type,
-            self._config.container_host,
-            self._config.container_port,
-        )
-        logger.info(f"Created container-manager: {self._config.container_type}")
-
-        # GitLab CI Runner:
-        # "label=com.gitlab.gitlab-runner.job.id=$CI_JOB_ID"
-        # "label=com.gitlab.gitlab-runner.type=build"
-
-        if self._config.container_id:
-            self._container_key = self._config.container_id
-        else:
-            if self._container.inside_container():
-                self._container_key = self._container.get_current_container_key()
-            else:
-                self._container_key = str()
-            if self._container_key:
-                logger.info(f"Containers operate in guests: {self._container_key}")
-            else:
-                logger.info("Containers operate on the host.")
 
     def _init_cache_store(self) -> None:
         self._cache = Cache(
@@ -426,20 +398,6 @@ class Context(
             await self.download_pip_packages(PIP_DOMAIN_RECC, PIP_HASH_METHOD_SHA256)
             logger.info("Complete downloading all pip requirements")
 
-        await self._container.open()
-        logger.info("Opened container-manager")
-
-        assert self._container.is_open()
-        image_validate = self._config.container_image_validate
-        if not await self._container.exist_default_task_images(image_validate):
-            logger.info("Create default-task-image ...")
-            try:
-                await self._container.create_default_task_images()
-            except Exception as e:
-                logger.exception(e)
-            else:
-                logger.info("Default-task-image successfully created")
-
         await self._cache.open()
         logger.info("Opened cache-store")
 
@@ -465,9 +423,6 @@ class Context(
 
         await self._cache.close()
         logger.info("Closed cache-store")
-
-        await self._container.close()
-        logger.info("Closed container-manager")
 
         if teardown:
             await self._database.drop_tables()

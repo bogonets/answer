@@ -4,7 +4,6 @@ from asyncio import AbstractEventLoop
 
 from recc.argparse.config.core_config import CoreConfig
 from recc.cache.cache import Cache
-from recc.container.interfaces.container_interface import ContainerInterface
 from recc.database.pg_db import PgDb
 from recc.plugin.core_plugin_manager import CorePluginManager
 from recc.session.session import SessionPairFactory
@@ -18,8 +17,6 @@ class ContextBase:
     _signature: str
     _local_storage: LocalStorage
     _session_factory: SessionPairFactory
-    _container: ContainerInterface
-    _container_key: str
     _cache: Cache
     _database: PgDb
     _plugins: CorePluginManager
@@ -44,30 +41,6 @@ class ContextBase:
         Local Storage property.
         """
         return self._local_storage
-
-    @property
-    def container(self):
-        """
-        Container Manager property.
-        """
-        assert self._container is not None
-        if not self._container.is_open():
-            raise ValueError("The container-manager is not open")
-        return self._container
-
-    def is_container_open(self) -> bool:
-        assert self._container is not None
-        return self._container.is_open()
-
-    def is_host_mode(self) -> bool:
-        return len(self._container_key) == 0
-
-    def is_guest_mode(self) -> bool:
-        return not self.is_host_mode()
-
-    @property
-    def container_key(self) -> str:
-        return self._container_key
 
     @property
     def cache(self):
