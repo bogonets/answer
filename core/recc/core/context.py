@@ -44,7 +44,6 @@ from recc.util.version import parse_semantic_version, version_text, version_tupl
 from recc.variables.crypto import SIGNATURE_SIZE
 from recc.variables.database import (
     CONFIG_PREFIX_RECC_ARGPARSE_CONFIG,
-    PIP_DOMAIN_RECC,
     PIP_HASH_METHOD_SHA256,
     ROLE_SLUG_OWNER,
     ROLE_UID_OWNER,
