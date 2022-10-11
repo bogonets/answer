@@ -6,7 +6,7 @@ from copy import deepcopy
 from hashlib import sha256
 from typing import Dict, Optional, Set
 
-from recc_mq import Cache
+from recc_cache import Cache
 
 from recc.argparse.config.core_config import CoreConfig
 from recc.argparse.default_config import get_default_core_config

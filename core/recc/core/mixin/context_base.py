@@ -2,7 +2,7 @@
 
 from asyncio import AbstractEventLoop
 
-from recc_mq import Cache
+from recc_cache import Cache
 
 from recc.argparse.config.core_config import CoreConfig
 from recc.database.pg_db import PgDb
