@@ -45,7 +45,7 @@ def normalize_version(ver: str) -> str:
     return ver.replace("-", ".")
 
 
-version_text: Final[str] = "2.0.3"
+version_text: Final[str] = "2.0.4"
 version_tuple: Final[SemanticVersion] = parse_semantic_version(version_text)
 
 assert len(version_tuple) == 3
