@@ -37,13 +37,3 @@ def init_logger(
         logger.info(f"Initialize log config: {config_path}")
     if log_level:
         logger.info(f"Change root log level: {convert_printable_level(log_level)}")
-
-
-def init_simple_logger(log_level: Optional[str] = None) -> None:
-    set_simple_logging_config()
-    if log_level:
-        set_root_level(log_level)
-
-    # The resulting output should be after the logger setup is done.
-    if log_level:
-        logger.info(f"Change root log level: {convert_printable_level(log_level)}")
