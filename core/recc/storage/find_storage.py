@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
+from pathlib import Path
 from tempfile import mkdtemp
 from typing import List, Optional, Union
 
-from recc.filesystem.path_utils import HOME_DIR
 from recc.filesystem.permission import (
     is_readable_dir,
     is_writable_dir,
@@ -76,7 +76,7 @@ def find_available_storage(
         elif isinstance(directories, list):
             candidates += directories
     candidates += [
-        os.path.join(HOME_DIR, DEFAULT_STORAGE_HOME_NAME),
+        os.path.join(Path.home(), DEFAULT_STORAGE_HOME_NAME),
         DEFAULT_STORAGE_GLOBAL_DIR,
     ]
 

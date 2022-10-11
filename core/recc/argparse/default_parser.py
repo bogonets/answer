@@ -4,6 +4,7 @@ import os
 import sys
 from argparse import Namespace
 from functools import lru_cache
+from pathlib import Path
 from typing import Any, List, Optional, Union
 
 from recc.argparse.argument_parser import ArgumentMessage, create_argument_parser
@@ -26,7 +27,6 @@ from recc.argparse.parser.env_parse import (
     get_namespace_by_os_env_files,
     get_namespace_by_os_envs,
 )
-from recc.filesystem.path_utils import get_home_dir
 from recc.util.version import version_text
 from recc.variables.argparse import (
     DEFAULT_CONFIG_FILENAME,
@@ -54,7 +54,7 @@ def get_working_config_path() -> str:
 
 @lru_cache
 def get_home_config_path() -> str:
-    return os.path.join(get_home_dir(), "." + DEFAULT_CONFIG_FILENAME)
+    return os.path.join(Path.home(), "." + DEFAULT_CONFIG_FILENAME)
 
 
 def left_join(left: Namespace, *namespaces: Optional[Namespace]) -> Namespace:
