@@ -1,14 +1,12 @@
 version: '3.8'
 
 services:
-  postgres:
-    container_name: dev-answer-pg
+  community_postgres:
+    container_name: community-answer-pg
     image: timescale/timescaledb:2.1.0-pg13
     restart: always
     volumes:
-      - dev_postgres_data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
+      - community_postgres_data:/var/lib/postgresql/data
     labels:
       - com.bogonets.answer.cluster=true
       - com.bogonets.answer.cluster.category=db
@@ -22,14 +20,12 @@ services:
       timeout: 5s
       retries: 5
 
-  minio:
-    container_name: dev-answer-minio
+  community_minio:
+    container_name: community-answer-minio
     image: minio/minio:RELEASE.2020-12-18T03-27-42Z
     restart: always
     volumes:
-      - dev_minio_data:/data
-    ports:
-      - 9000:9000
+      - community_minio_data:/data
     labels:
       - com.bogonets.answer.cluster=true
       - com.bogonets.answer.cluster.category=s3
@@ -44,14 +40,12 @@ services:
       timeout: 5s
       retries: 5
 
-  redis:
-    container_name: dev-answer-redis
+  community_redis:
+    container_name: community-answer-redis
     image: redis:6
     restart: always
     volumes:
-      - dev_redis_data:/data
-    ports:
-      - 6379:6379
+      - community_redis_data:/data
     labels:
       - com.bogonets.answer.cluster=true
       - com.bogonets.answer.cluster.category=cache
@@ -64,25 +58,37 @@ services:
       timeout: 5s
       retries: 5
 
-  coturn:
-    container_name: dev-answer-coturn
-    image: coturn/coturn:4.5
+  community_recc:
+    container_name: community-answer-recc
+    image: bogonets/recc:latest
     restart: always
     volumes:
-      - dev_coturn_data:/var/lib/coturn/
+      - community_recc_data:/recc
     ports:
-      - 3478:3478/tcp
-      - 3478:3478/udp
-      - 49160-49200:49160-49200/udp
+      - 20000:20000
     labels:
       - com.bogonets.answer.cluster=true
-      - com.bogonets.answer.cluster.category=turn
-    command: ["turnserver", "-n", "--min-port=49160", "--max-port=49200"]
+      - com.bogonets.answer.cluster.category=server
     environment:
       - TZ=Asia/Seoul
+      - RECC_DATABASE_HOST=community_postgres
+      - RECC_DATABASE_PORT=5432
+      - RECC_DATABASE_USER=${POSTGRES_USER:-recc}
+      - RECC_DATABASE_PW=${POSTGRES_PASSWORD:-recc1234}
+      - RECC_CACHE_HOST=community_redis
+      - RECC_CACHE_PORT=6379
+      - RECC_STORAGE_HOST=community_minio
+      - RECC_STORAGE_PORT=9000
+      - RECC_STORAGE_USER=${MINIO_ACCESS_KEY:-recc}
+      - RECC_STORAGE_PW=${MINIO_SECRET_KEY:-recc1234}
+    healthcheck:
+      test: ["CMD", "curl", "-XGET", "-f", "http://localhost:20000/api/heartbeat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  dev_postgres_data:
-  dev_minio_data:
-  dev_redis_data:
-  dev_coturn_data:
+  community_postgres_data:
+  community_minio_data:
+  community_redis_data:
+  community_recc_data:
