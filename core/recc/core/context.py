@@ -21,13 +21,7 @@ from recc.core.mixin.context_system import ContextSystem
 from recc.core.mixin.context_user import ContextUser
 from recc.crypto.signature import generate_signature
 from recc.database.pg_db import PgDb
-from recc.init.default import (
-    init_json_driver,
-    init_logger,
-    init_loop_driver,
-    init_xml_driver,
-    init_yaml_driver,
-)
+from recc.init.default import init_logger
 from recc.logging.logging import recc_core_logger as logger
 from recc.plugin.core_plugin_manager import CorePluginManager
 from recc.session.session import (
@@ -76,10 +70,6 @@ class Context(
         self._config = cloned_config
 
         self._init_logger()
-        self._init_json_driver()
-        self._init_xml_driver()
-        self._init_yaml_driver()
-        self._init_loop_driver()
         self._init_loop(loop)
         self._init_signature()
         self._init_local_storage()
@@ -105,18 +95,6 @@ class Context(
             self._config.log_level,
             self._config.log_simply,
         )
-
-    def _init_json_driver(self) -> None:
-        init_json_driver(self._config.json_driver)
-
-    def _init_xml_driver(self) -> None:
-        init_xml_driver(self._config.xml_driver)
-
-    def _init_yaml_driver(self) -> None:
-        init_yaml_driver(self._config.yaml_driver)
-
-    def _init_loop_driver(self) -> None:
-        init_loop_driver(self._config.loop_driver)
 
     def _init_loop(
         self,

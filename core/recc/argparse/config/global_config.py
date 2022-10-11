@@ -56,20 +56,6 @@ GLOBAL_EPILOG = f"""List of Subcommands:
 Run '{GLOBAL_PROGRAM} subcommand --help' for more information on a command
 """
 
-LOOP_DRIVER_AIO = "aio"
-LOOP_DRIVER_UV = "uv"
-LOOP_DRIVERS = (LOOP_DRIVER_AIO, LOOP_DRIVER_UV)
-
-JSON_DRIVER_JSON = "json"
-JSON_DRIVER_ORJSON = "orjson"
-JSON_DRIVERS = (JSON_DRIVER_JSON, JSON_DRIVER_ORJSON)
-
-XML_DRIVER_XMLTODICT = "xmltodict"
-XML_DRIVERS = (XML_DRIVER_XMLTODICT,)
-
-YAML_DRIVER_PYYAML = "pyyaml"
-YAML_DRIVERS = (YAML_DRIVER_PYYAML,)
-
 LOG_LEVELS = (
     SEVERITY_NAME_CRITICAL,
     SEVERITY_NAME_ERROR,
@@ -121,35 +107,6 @@ ARG_LOG_SIMPLY = Argument(
     cls=bool,
     action="store_true",
     help="Simply logging.",
-)
-
-ARG_LOOP_DRIVER = Argument(
-    key="--loop-driver",
-    last_injection_value=LOOP_DRIVER_AIO,
-    cls=str,
-    choices=LOOP_DRIVERS,
-    help="Async loop driver.",
-)
-ARG_JSON_DRIVER = Argument(
-    key="--json-driver",
-    last_injection_value=JSON_DRIVER_ORJSON,
-    cls=str,
-    choices=JSON_DRIVERS,
-    help="JSON encoder/decoder driver.",
-)
-ARG_XML_DRIVER = Argument(
-    key="--xml-driver",
-    last_injection_value=XML_DRIVER_XMLTODICT,
-    cls=str,
-    choices=(XML_DRIVER_XMLTODICT,),
-    help="XML encoder/decoder driver.",
-)
-ARG_YAML_DRIVER = Argument(
-    key="--yaml-driver",
-    last_injection_value=YAML_DRIVER_PYYAML,
-    cls=str,
-    choices=YAML_DRIVERS,
-    help="YAML encoder/decoder driver.",
 )
 
 ARG_DATABASE_HOST = Argument(
@@ -369,10 +326,6 @@ GLOBAL_ARGS = (
     ARG_LOG_CONFIG,
     ARG_LOG_LEVEL,
     ARG_LOG_SIMPLY,
-    ARG_LOOP_DRIVER,
-    ARG_JSON_DRIVER,
-    ARG_XML_DRIVER,
-    ARG_YAML_DRIVER,
     ARG_DATABASE_HOST,
     ARG_DATABASE_PORT,
     ARG_DATABASE_USER,
@@ -418,9 +371,6 @@ class GlobalConfig(Namespace):
     log_simply: bool
 
     loop_driver: str
-    json_driver: str
-    xml_driver: str
-    yaml_driver: str
 
     database_host: str
     database_port: int

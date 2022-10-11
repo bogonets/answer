@@ -20,17 +20,12 @@ from mime_parser.favorite import (
     MIME_APPLICATION_JSON,
     MIME_APPLICATION_JSON_UTF8,
     MIME_APPLICATION_XML,
-    MIME_APPLICATION_XML_UTF8,
     MIME_APPLICATION_YAML,
-    MIME_APPLICATION_YAML_UTF8,
     MIME_TEXT_PLAIN,
 )
 from mime_parser.mime.mime_type import ANY_WILDCARD, MimeType
 from multidict import CIMultiDict
-
-from recc.driver.json import global_json_encoder
-from recc.driver.xml import global_xml_encoder
-from recc.driver.yaml import global_yaml_encoder
+from orjson import dumps as orjson_dumps
 
 APPLICATION = MIME_APPLICATION_JSON.family
 JSON = MIME_APPLICATION_JSON.subtype
@@ -218,14 +213,8 @@ def create_response(accept: AcceptType, encoding: Encoding, data: Any) -> Respon
     text: str
     content_type: str
     if accept == AcceptType.Json:
-        text = global_json_encoder(data)
+        text = str(orjson_dumps(data), "utf-8")
         content_type = str(MIME_APPLICATION_JSON_UTF8)
-    elif accept == AcceptType.Yaml:
-        text = global_yaml_encoder(data)
-        content_type = str(MIME_APPLICATION_YAML_UTF8)
-    elif accept == AcceptType.Xml:
-        text = global_xml_encoder(data)
-        content_type = str(MIME_APPLICATION_XML_UTF8)
     else:
         assert False, "Not accessible block."
 
