@@ -7,22 +7,23 @@ from urllib.parse import parse_qs
 from aiohttp.hdrs import CONTENT_ENCODING, CONTENT_LENGTH, CONTENT_TYPE
 from aiohttp.web_exceptions import HTTPBadRequest, HTTPLengthRequired
 from aiohttp.web_request import Request
+from mime_parser.favorite import (
+    MIME_APPLICATION_JSON,
+    MIME_APPLICATION_XML,
+    MIME_APPLICATION_YAML,
+    MIME_TEXT_PLAIN,
+)
+from mime_parser.mime.mime_type import MimeType
 from multidict import CIMultiDictProxy
 from type_serialize import deserialize
 
 from recc.driver.json import global_json_decoder
 from recc.driver.xml import global_xml_decoder
 from recc.driver.yaml import global_yaml_decoder
-from recc.mime.mime_type import (
-    MIME_APPLICATION_FORM,
-    MIME_APPLICATION_JSON,
-    MIME_APPLICATION_XML,
-    MIME_APPLICATION_YAML,
-    MIME_TEXT_PLAIN,
-    MimeType,
-)
 
 _T = TypeVar("_T")
+
+MIME_APPLICATION_FORM = MimeType.parse("application/x-www-form-urlencoded")
 
 
 def header_logging_message(headers: CIMultiDictProxy[str]) -> str:
@@ -53,13 +54,13 @@ def payload_to_object(headers: CIMultiDictProxy[str], payload: str) -> Any:
 
     content_mime = MimeType.parse(content_type)
     data: Any
-    if content_mime.test_from_accepts([MIME_APPLICATION_JSON, MIME_TEXT_PLAIN]):
+    if content_mime.accepts([MIME_APPLICATION_JSON, MIME_TEXT_PLAIN]):
         return global_json_decoder(payload)
-    elif content_mime.test_from_accept(MIME_APPLICATION_YAML):
+    elif content_mime.accept(MIME_APPLICATION_YAML):
         return global_yaml_decoder(payload)
-    elif content_mime.test_from_accept(MIME_APPLICATION_XML):
+    elif content_mime.accept(MIME_APPLICATION_XML):
         return global_xml_decoder(payload)
-    elif content_mime.test_from_accept(MIME_APPLICATION_FORM):
+    elif content_mime.accept(MIME_APPLICATION_FORM):
         return {k: v[-1] for k, v in parse_qs(payload).items()}
     raise HTTPBadRequest(reason=f"Unsupported content-type: {content_type}")
 

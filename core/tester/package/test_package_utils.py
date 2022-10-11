@@ -29,15 +29,14 @@ class PackageUtilsTestCase(TestCase):
         self.assertIn("setuptools", all_module_names())
 
     def test_filter_module_names(self):
-        self.assertIn("setuptools", filter_module_names("setup"))
-        self.assertNotIn(
-            "setuptools",
-            filter_module_names("setup", denies=[r".*tool.*"]),
-        )
-        self.assertNotIn(
-            "setuptools",
-            filter_module_names("setup", allows=[r"NO_ANY"]),
-        )
+        names1 = filter_module_names(prefix="setup")
+        self.assertIn("setuptools", names1)
+
+        names2 = filter_module_names("setup", denies=[r".*tool.*"])
+        self.assertNotIn("setuptools", names2)
+
+        names3 = filter_module_names("setup", allows=[r"NO_ANY"])
+        self.assertNotIn("setuptools", names3)
 
 
 if __name__ == "__main__":

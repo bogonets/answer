@@ -19,6 +19,7 @@ from aiohttp.hdrs import (
     METH_POST,
     METH_PUT,
 )
+from mime_parser.favorite import APPLICATION_JSON, MIME_APPLICATION_JSON_UTF8
 from multidict import CIMultiDict
 from type_serialize import serialize
 
@@ -29,7 +30,6 @@ from recc.http.header.bearer_auth import BearerAuth
 from recc.http.http_packet import HttpResponse
 from recc.http.http_payload import payload_to_class
 from recc.http.http_utils import join_urls, v2_public_path
-from recc.mime.mime_type import APPLICATION_JSON, MIME_APPLICATION_JSON_UTF8
 from recc.packet.user import SigninA, SignupQ
 from recc.variables.http import (
     DEFAULT_REQUEST_TIMEOUT_SECONDS,

@@ -16,13 +16,7 @@ from aiohttp.hdrs import (
 from aiohttp.web_exceptions import HTTPNotAcceptable
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
-from multidict import CIMultiDict
-
-from recc.driver.json import global_json_encoder
-from recc.driver.xml import global_xml_encoder
-from recc.driver.yaml import global_yaml_encoder
-from recc.mime.mime_type import (
-    ANY_WILDCARD,
+from mime_parser.favorite import (
     MIME_APPLICATION_JSON,
     MIME_APPLICATION_JSON_UTF8,
     MIME_APPLICATION_XML,
@@ -30,8 +24,13 @@ from recc.mime.mime_type import (
     MIME_APPLICATION_YAML,
     MIME_APPLICATION_YAML_UTF8,
     MIME_TEXT_PLAIN,
-    MimeType,
 )
+from mime_parser.mime.mime_type import ANY_WILDCARD, MimeType
+from multidict import CIMultiDict
+
+from recc.driver.json import global_json_encoder
+from recc.driver.xml import global_xml_encoder
+from recc.driver.yaml import global_yaml_encoder
 
 APPLICATION = MIME_APPLICATION_JSON.family
 JSON = MIME_APPLICATION_JSON.subtype

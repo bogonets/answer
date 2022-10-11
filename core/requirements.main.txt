@@ -28,3 +28,4 @@ shapely>=1.8.2
 type-serialize>=1.1.1
 uvloop>=0.16.0
 xmltodict>=0.13.0
+mime-parser>=1.2.0
