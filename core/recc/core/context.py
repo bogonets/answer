@@ -7,6 +7,7 @@ from hashlib import sha256
 from typing import Dict, Optional, Set
 
 from recc_cache import Cache
+from recc_database.database.pg_db import PgDb
 
 from recc.argparse.config.core_config import CoreConfig
 from recc.argparse.default_config import get_default_core_config
@@ -20,7 +21,6 @@ from recc.core.mixin.context_role import ContextRole
 from recc.core.mixin.context_system import ContextSystem
 from recc.core.mixin.context_user import ContextUser
 from recc.crypto.signature import generate_signature
-from recc.database.pg_db import PgDb
 from recc.init.default import init_logger
 from recc.logging.logging import recc_core_logger as logger
 from recc.plugin.core_plugin_manager import CorePluginManager
