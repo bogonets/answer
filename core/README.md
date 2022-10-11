@@ -1,6 +1,6 @@
 # RECC
 
-Restructured Engine for the Cyclops Cloud - CORE
+Restructured Engine for the Cyclops Cloud
 
 ## Formatting
 

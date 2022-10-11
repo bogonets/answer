@@ -30,4 +30,3 @@ RUN mkdir /pysrc /pybin && \
 
 WORKDIR /
 ENTRYPOINT [ "python", "-m", "recc" ]
-
