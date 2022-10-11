@@ -1,6 +1,3 @@
 include requirements.*.txt
 include README.md
-include doc/*
-recursive-include recc/lamda_builtin *
-recursive-include recc/lamda *
 recursive-include recc/www *
