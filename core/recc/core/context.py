@@ -188,7 +188,7 @@ class Context(
                 logger.error(message)
                 raise RuntimeError(message)
             elif db_version_tuple < version_tuple:
-                await self._database.migration(db_version_tuple, version_tuple)
+                # await self._database.migration(db_version_tuple, version_tuple)
                 logger.info("Created database tables")
             else:
                 assert db_version_tuple == version_tuple
