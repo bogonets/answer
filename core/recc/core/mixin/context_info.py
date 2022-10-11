@@ -1,15 +1,26 @@
 # -*- coding: utf-8 -*-
 
+from re import compile as re_compile
 from typing import Dict, List
 
 from recc.core.mixin.context_base import ContextBase
 from recc.packet.info import Info
-from recc.rule.database_info import (
-    valid_user_creatable,
-    valid_user_modifiable,
-    valid_user_removable,
-)
 from recc.variables.database import INFO_KEY_OEM
+
+_RECC_KEY_PATTERN = r"^recc\..*"
+_RECC_KEY_REGEX = re_compile(_RECC_KEY_PATTERN)
+
+
+def valid_user_creatable(key: str) -> bool:
+    return _RECC_KEY_REGEX.match(key) is None
+
+
+def valid_user_modifiable(key: str) -> bool:
+    return _RECC_KEY_REGEX.match(key) is None
+
+
+def valid_user_removable(key: str) -> bool:
+    return _RECC_KEY_REGEX.match(key) is None
 
 
 class ContextInfo(ContextBase):

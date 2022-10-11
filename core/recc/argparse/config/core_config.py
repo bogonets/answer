@@ -22,11 +22,11 @@ from recc.variables.session import (
     SESSION_ACCESS_TOKEN_DURATION,
     SESSION_REFRESH_TOKEN_DURATION,
 )
-from recc.variables.user import ENABLE_PUBLIC_SIGNUP
 
 CORE_USAGE = create_usage(Command.core)
 CORE_DESCRIPTION = "Core server"
 CORE_EPILOG = ""
+ENABLE_PUBLIC_SIGNUP = False
 
 ARG_EXTERNAL_HOST = Argument(
     key="--external-host",
