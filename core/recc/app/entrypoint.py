@@ -36,13 +36,6 @@ def main(
     if cmd == Command.core:
         assert isinstance(config, CoreConfig)
         return core_main(config, http_callback)
-    elif cmd == Command.ctrl:
-        raise NotImplementedError
-    elif cmd == Command.task:
-        raise NotImplementedError
-    elif cmd == Command.daemon:
-        raise NotImplementedError
-
     assert False, "Inaccessible section"
 
 

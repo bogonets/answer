@@ -18,30 +18,12 @@ from recc.argparse.config.core_config import (
     CORE_EPILOG,
     CORE_USAGE,
 )
-from recc.argparse.config.ctrl_config import (
-    CTRL_ARGS,
-    CTRL_DESCRIPTION,
-    CTRL_EPILOG,
-    CTRL_USAGE,
-)
-from recc.argparse.config.daemon_config import (
-    DAEMON_ARGS,
-    DAEMON_DESCRIPTION,
-    DAEMON_EPILOG,
-    DAEMON_USAGE,
-)
 from recc.argparse.config.global_config import (
     GLOBAL_ARGS,
     GLOBAL_DESCRIPTION,
     GLOBAL_EPILOG,
     GLOBAL_PROGRAM,
     GLOBAL_USAGE,
-)
-from recc.argparse.config.task_config import (
-    TASK_ARGS,
-    TASK_DESCRIPTION,
-    TASK_EPILOG,
-    TASK_USAGE,
 )
 
 CmdToHelp = Dict[Command, str]
@@ -121,55 +103,16 @@ def create_argument_parser() -> Tuple[ArgumentParser, CmdToHelp, CmdToUsage]:
     for arg in CORE_ARGS:
         core_parser.add_argument(*arg.keys, **arg.kwargs)
 
-    task_parser = subparsers.add_parser(
-        name=Command.task.name,
-        usage=TASK_USAGE,
-        description=TASK_DESCRIPTION,
-        epilog=TASK_EPILOG,
-        add_help=False,
-    )
-    for arg in TASK_ARGS:
-        task_parser.add_argument(*arg.keys, **arg.kwargs)
-
-    ctrl_parser = subparsers.add_parser(
-        name=Command.ctrl.name,
-        usage=CTRL_USAGE,
-        description=CTRL_DESCRIPTION,
-        epilog=CTRL_EPILOG,
-        add_help=False,
-    )
-    for arg in CTRL_ARGS:
-        ctrl_parser.add_argument(*arg.keys, **arg.kwargs)
-
-    daemon_parser = subparsers.add_parser(
-        name=Command.daemon.name,
-        usage=DAEMON_USAGE,
-        description=DAEMON_DESCRIPTION,
-        epilog=DAEMON_EPILOG,
-        add_help=False,
-    )
-    for arg in DAEMON_ARGS:
-        daemon_parser.add_argument(*arg.keys, **arg.kwargs)
-
     _add_subcommand_help(core_parser)
-    _add_subcommand_help(task_parser)
-    _add_subcommand_help(ctrl_parser)
-    _add_subcommand_help(daemon_parser)
 
     helps = {
         Command.unknown: parser.format_help(),
         Command.core: core_parser.format_help(),
-        Command.task: task_parser.format_help(),
-        Command.ctrl: ctrl_parser.format_help(),
-        Command.daemon: daemon_parser.format_help(),
     }
 
     usages = {
         Command.unknown: parser.format_usage(),
         Command.core: core_parser.format_usage(),
-        Command.task: task_parser.format_usage(),
-        Command.ctrl: ctrl_parser.format_usage(),
-        Command.daemon: daemon_parser.format_usage(),
     }
 
     return parser, helps, usages

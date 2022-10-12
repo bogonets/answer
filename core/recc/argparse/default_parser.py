@@ -17,10 +17,7 @@ from recc.argparse.command import (
     get_available_commands,
 )
 from recc.argparse.config.core_config import CoreConfig
-from recc.argparse.config.ctrl_config import CtrlConfig
-from recc.argparse.config.daemon_config import DaemonConfig
 from recc.argparse.config.global_config import GlobalConfig
-from recc.argparse.config.task_config import TaskConfig
 from recc.argparse.config_file import read_config_file_if_readable
 from recc.argparse.injection_values import injection_default_values
 from recc.argparse.parser.env_parse import (
@@ -41,9 +38,6 @@ ConfigType = Union[
     Namespace,
     GlobalConfig,
     CoreConfig,
-    CtrlConfig,
-    TaskConfig,
-    DaemonConfig,
 ]
 
 
@@ -81,22 +75,6 @@ def get_command(obj: Namespace) -> Optional[Command]:
         return Command[value]
     except:  # noqa
         return Command.unknown
-
-
-def cast_config_type(namespace: Namespace) -> ConfigType:
-    cmd = get_command(namespace)
-
-    if cmd == Command.core:
-        return CoreConfig(**vars(namespace))
-    elif cmd == Command.ctrl:
-        return CtrlConfig(**vars(namespace))
-    elif cmd == Command.task:
-        return TaskConfig(**vars(namespace))
-    elif cmd == Command.daemon:
-        return DaemonConfig(**vars(namespace))
-    else:
-        assert cmd == Command.unknown
-        return GlobalConfig(**vars(namespace))
 
 
 def parse_arguments_to_namespace(
@@ -228,7 +206,7 @@ def parse_arguments_to_config(
         ignore_environment=ignore_environment,
         ignore_default_paths=ignore_default_paths,
     )
-    return cast_config_type(result)
+    return CoreConfig(**vars(result))
 
 
 def _none_optional_args(*args_list: Optional[List[Any]]) -> List[str]:
@@ -253,39 +231,6 @@ def parse_arguments_to_core_config(
     args = _none_optional_args(global_options, [Command.core.name], core_options)
     result = parse_arguments_to_config(*args, **kwargs)
     assert isinstance(result, CoreConfig)
-    return result
-
-
-def parse_arguments_to_ctrl_config(
-    global_options: Optional[List[Any]] = None,
-    ctrl_options: Optional[List[Any]] = None,
-    **kwargs,
-) -> CtrlConfig:
-    args = _none_optional_args(global_options, [Command.ctrl.name], ctrl_options)
-    result = parse_arguments_to_config(*args, **kwargs)
-    assert isinstance(result, CtrlConfig)
-    return result
-
-
-def parse_arguments_to_task_config(
-    global_options: Optional[List[Any]] = None,
-    task_options: Optional[List[Any]] = None,
-    **kwargs,
-) -> TaskConfig:
-    args = _none_optional_args(global_options, [Command.task.name], task_options)
-    result = parse_arguments_to_config(*args, **kwargs)
-    assert isinstance(result, TaskConfig)
-    return result
-
-
-def parse_arguments_to_daemon_config(
-    global_options: Optional[List[Any]] = None,
-    daemon_options: Optional[List[Any]] = None,
-    **kwargs,
-) -> DaemonConfig:
-    args = _none_optional_args(global_options, [Command.daemon.name], daemon_options)
-    result = parse_arguments_to_config(*args, **kwargs)
-    assert isinstance(result, DaemonConfig)
     return result
 
 

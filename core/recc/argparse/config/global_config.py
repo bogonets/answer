@@ -49,9 +49,6 @@ GLOBAL_USAGE = create_usage(_DEFAULT_SUBCOMMAND)
 GLOBAL_DESCRIPTION = "Restructured Engine for the Cyclops Cloud"
 GLOBAL_EPILOG = f"""List of Subcommands:
   {Command.core.name}                  Core server
-  {Command.ctrl.name}                  Core client
-  {Command.task.name}                  Task process
-  {Command.daemon.name}                Daemon process
 
 Run '{GLOBAL_PROGRAM} subcommand --help' for more information on a command
 """
