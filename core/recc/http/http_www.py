@@ -9,14 +9,11 @@ from aiohttp.web_request import Request
 from aiohttp.web_response import StreamResponse
 from aiohttp.web_routedef import AbstractRouteDef
 
-from recc.argparse.config.core_config import ARG_HTTP_ROOT
 from recc.core.context import Context
 from recc.filesystem.permission import is_readable_dir, is_writable_dir
 from recc.http import http_path_keys as p
 from recc.http import http_urls as u
 from recc.logging.logging import recc_http_logger as logger
-
-DEFAULT_HTTP_ROOT = ARG_HTTP_ROOT.last_injection_value
 
 
 class HttpWWW:

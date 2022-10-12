@@ -5,25 +5,23 @@ from asyncio import AbstractEventLoop
 from recc_cache import Cache
 from recc_database.database.pg_db import PgDb
 
-from recc.argparse.config.core_config import CoreConfig
+from recc.config import Config
 from recc.plugin.core_plugin_manager import CorePluginManager
 from recc.session.session import SessionPairFactory
-from recc.storage.local_storage import LocalStorage
 
 
 class ContextBase:
 
     _loop: AbstractEventLoop
-    _config: CoreConfig
+    _config: Config
     _signature: str
-    _local_storage: LocalStorage
     _session_factory: SessionPairFactory
     _cache: Cache
     _database: PgDb
     _plugins: CorePluginManager
 
     @property
-    def config(self) -> CoreConfig:
+    def config(self) -> Config:
         """
         Initialize parameters.
         """
@@ -35,13 +33,6 @@ class ContextBase:
         Default event loop.
         """
         return self._loop
-
-    @property
-    def local_storage(self):
-        """
-        Local Storage property.
-        """
-        return self._local_storage
 
     @property
     def cache(self):

@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from asyncio import AbstractEventLoop, CancelledError, Event, Task, wait_for
-from tempfile import TemporaryDirectory
+from asyncio import AbstractEventLoop, CancelledError, Event, wait_for
 from typing import Final, Optional
 
 from aiohttp.web import Application
 from overrides import overrides
 
-from recc.argparse.default_parser import (
-    parse_arguments_to_core_config,
-    update_test_config,
-)
+from recc.config import Config
 from recc.core.context import Context
 from recc.http.http_app import HttpApp
 from recc.http.http_client import HttpClient
@@ -24,31 +20,14 @@ DEFAULT_WAIT_STARTUP: Final[float] = 8.0
 
 
 class HttpAppTester(HttpClient, EmptyHttpAppCallback):
-
-    _app: HttpApp
-    _task: Task
-
-    def __init__(
-        self,
-        loop: Optional[AbstractEventLoop] = None,
-        storage_root: Optional[str] = None,
-    ):
-        config = update_test_config(parse_arguments_to_core_config())
-
-        if storage_root:
-            temp = None
-            config.local_storage = storage_root
-        else:
-            temp = TemporaryDirectory()
-            config.local_storage = temp.name
-
+    def __init__(self, loop: Optional[AbstractEventLoop] = None):
+        config = Config.test()
         scheme = DEFAULT_SCHEME
         bind = config.http_bind
         port = config.http_port
         timeout = config.http_timeout
         super().__init__(f"{bind}:{port}", timeout=timeout, scheme=scheme)
 
-        self._temp = temp
         self._context = Context(config, loop=loop)
         self._app = HttpApp(context=self._context, callback=self)
         self._startup = Event()
@@ -64,11 +43,6 @@ class HttpAppTester(HttpClient, EmptyHttpAppCallback):
     @overrides
     async def on_shutdown(self, app: Application):
         self._startup.clear()
-
-    @overrides
-    async def on_cleanup(self, app: Application):
-        if self._temp:
-            self._temp.cleanup()
 
     @overrides
     async def on_request_begin(self):

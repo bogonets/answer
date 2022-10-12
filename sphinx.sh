@@ -3,12 +3,11 @@
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)
 
 SOURCE_DIR="$ROOT_DIR/doc"
-CORE_DIR="$ROOT_DIR/core"
 OUTPUT_DIR="$ROOT_DIR/docs"
 LOCALE_DIR="$ROOT_DIR/.sphinx_locale"
 CACHED_DIR="$ROOT_DIR/.sphinx_cache"
 GETTEXT_DIR="$SOURCE_DIR/_gettext"
-PYTHON_EXE="$CORE_DIR/python"
+PYTHON_EXE="$ROOT_DIR/python"
 
 USAGE_MESSAGE="
 Usage: ${BASH_SOURCE[0]} [options] command

@@ -112,8 +112,8 @@ class HttpApp:
         ]
 
     def _print(self, *args, **kwargs) -> None:
-        if not self._context.config.suppress_print:
-            print(*args, **kwargs)
+        assert self
+        print(*args, **kwargs)
 
     def _graceful_exit(self):
         raise GracefulExit()

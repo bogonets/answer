@@ -1,17 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import os
 from asyncio import AbstractEventLoop, get_event_loop_policy, set_event_loop
-from copy import deepcopy
 from hashlib import sha256
 from typing import Dict, Optional, Set
 
 from recc_cache import Cache
 from recc_database.database.pg_db import PgDb
 
-from recc.argparse.config.core_config import CoreConfig
-from recc.argparse.default_config import get_default_core_config
-from recc.argparse.injection_values import injection_core_default_values
+from recc.config import Config
 from recc.core.mixin.context_config import ContextConfig
 from recc.core.mixin.context_group import ContextGroup
 from recc.core.mixin.context_info import ContextInfo
@@ -33,7 +29,6 @@ from recc.session.session import (
     DEFAULT_REFRESH_MAX_AGE_SECONDS,
     SessionPairFactory,
 )
-from recc.storage.local_storage import LocalStorage
 from recc.util.version import parse_semantic_version, version_text, version_tuple
 from recc.variables.crypto import SIGNATURE_SIZE
 from recc.variables.database import (
@@ -60,19 +55,15 @@ class Context(
 
     def __init__(
         self,
-        config: Optional[CoreConfig] = None,
+        config: Optional[Config] = None,
         *,
         loop: Optional[AbstractEventLoop] = None,
         skip_assertion=False,
     ):
-        cloned_config = deepcopy(config if config else get_default_core_config())
-        injection_core_default_values(cloned_config)
-        self._config = cloned_config
-
+        self._config = config if config else Config.default()
         self._init_logger()
         self._init_loop(loop)
         self._init_signature()
-        self._init_local_storage()
         self._init_session_factory()
         self._init_cache_store()
         self._init_database()
@@ -83,7 +74,6 @@ class Context(
 
         assert self._config is not None
         assert self._signature is not None
-        assert self._local_storage is not None
         assert self._session_factory is not None
         assert self._cache is not None
         assert self._database is not None
@@ -115,10 +105,6 @@ class Context(
             self._signature = generate_signature(SIGNATURE_SIZE)
         logger.info(f"Signature: {self._signature}")
 
-    def _init_local_storage(self) -> None:
-        self._local_storage = LocalStorage(self._config.local_storage)
-        logger.info(f"Created storage-manager (root={self._local_storage.root})")
-
     def _init_session_factory(self) -> None:
         assert self._signature
         self._session_factory = SessionPairFactory(
@@ -139,10 +125,10 @@ class Context(
         self._cache = Cache(
             self._config.cache_host,
             self._config.cache_port,
-            self._config.cache_pw,
+            self._config.cache_secret,
             self._config.cache_prefix,
         )
-        logger.info(f"Created cache-store: {self._config.cache_type}")
+        logger.info("Created cache-store")
 
     def _init_database(self) -> None:
         self._database = PgDb(
@@ -157,10 +143,10 @@ class Context(
 
     def _init_plugin_manager(self) -> None:
         self._plugins = CorePluginManager(
-            prefix=self._config.core_plugin_prefix,
+            prefix=self._config.plugin_prefix,
             context=self,
-            denies=self._config.core_plugin_deny,
-            allows=self._config.core_plugin_allow,
+            denies=self._config.plugin_deny,
+            allows=self._config.plugin_allow,
         )
         logger.info("Created plugin-manager")
 
@@ -213,34 +199,6 @@ class Context(
                 return sha256(content).hexdigest()
             else:
                 raise ValueError(f"Unsupported hash method: '{method}'")
-
-    async def _exists_pip_package(self, domain: str, package: str) -> bool:
-        assert self._local_storage
-        assert self._database
-        assert self._database.is_open()
-
-        pip_infos = await self._database.select_pip_by_domain_and_name(domain, package)
-        if not pip_infos:
-            return False
-
-        assert len(pip_infos) >= 1
-        pip_download_dir = self._local_storage.pip_download
-
-        for pip_info in pip_infos:
-            pip_path = os.path.join(pip_download_dir, pip_info.file)
-            if not os.path.isfile(pip_path):
-                logger.warning(f"File not found: {pip_path}")
-                return False
-
-            try:
-                hash_value = self._read_hash(pip_path, pip_info.hash_method)
-                if hash_value != pip_info.hash_value:
-                    logger.warning(f"Hash mismatch: {pip_path}")
-                    return False
-            except ValueError:
-                return False
-
-        return True
 
     async def get_database_configs(self) -> Dict[str, str]:
         """

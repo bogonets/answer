@@ -2,14 +2,15 @@
 
 from typing import Any, Dict, List, Optional, Set, get_origin, get_type_hints
 
-from recc.argparse.config.core_config import CoreConfig
-from recc.argparse.parser.env_parse import get_filtered_namespace
+from recc.config import Config
 from recc.core.mixin.context_base import ContextBase
 from recc.event.watcher_container import WatcherContainer
 from recc.logging.logging import recc_core_logger as logger
 from recc.logging.logging import set_root_level
 from recc.packet.config import ConfigA
 from recc.variables.database import CONFIG_PREFIX_RECC_ARGPARSE_CONFIG
+
+from generalize_config.parser.env_parse import filter_dict
 
 IGNORE_CONFIG_KEYS = {
     "command",
@@ -29,7 +30,7 @@ RELEASE_CONFIG_KEYS = {
     "access_token_duration",
     "refresh_token_duration",
 }
-CORE_CONFIG_TYPE_HINTS = get_type_hints(CoreConfig)
+CORE_CONFIG_TYPE_HINTS = get_type_hints(Config)
 
 
 class ContextConfig(ContextBase):
@@ -69,9 +70,9 @@ class ContextConfig(ContextBase):
         assert self._config is not None
 
         prefix = CONFIG_PREFIX_RECC_ARGPARSE_CONFIG
-        filtered_configs = get_filtered_namespace(configs, prefix)
+        filtered_configs = filter_dict(configs, prefix=prefix)
 
-        for key, val in vars(filtered_configs).items():
+        for key, val in filtered_configs.items():
             if key in CORE_CONFIG_TYPE_HINTS:
                 new_value = CORE_CONFIG_TYPE_HINTS[key](val)
             else:

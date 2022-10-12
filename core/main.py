@@ -10,7 +10,7 @@ SOURCE_DIR = os.path.dirname(SOURCE_PATH)
 os.chdir(SOURCE_DIR)
 sys.path.append(SOURCE_DIR)
 
-from recc.app.entrypoint import main  # noqa
+from recc.entrypoint import main  # noqa
 
 if __name__ == "__main__":
     exit(main())
