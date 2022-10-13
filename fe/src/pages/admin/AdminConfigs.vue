@@ -1,19 +1,16 @@
+<!-- noinspection SpellCheckingInspection -->
 <i18n lang="yaml">
 en:
   headers:
     account: 'Account'
     session: 'Session'
     http: 'HTTP'
-    task: 'Task'
     logging: 'Logging'
   titles:
     public_signup: 'Public sign-up enabled'
     access_token_duration: 'Access Token duration'
     refresh_token_duration: 'Refresh Token duration'
-    external_host: 'External Host'
     http_timeout: 'HTTP Timeout'
-    user: 'User'
-    group: 'Group'
     log_level: 'Log Level'
     verbose: 'Verbose Level'
   subtitles:
@@ -21,10 +18,7 @@ en:
       When enabled, any user visiting this site will be able to create an account.
     access_token_duration: 'Expiration period for the access token.'
     refresh_token_duration: 'Renewal period for expired access tokens.'
-    external_host: 'The external address of the site.'
     http_timeout: 'HTTP request/response timeout (seconds)'
-    user: 'Username to use when creating tasks'
-    group: 'Group name to use when creating the task'
     log_level: 'The importance of log messages to be output.'
     verbose: 'Prints more specific logs.'
 
@@ -33,27 +27,20 @@ ko:
     account: '계정'
     session: '세션'
     http: 'HTTP'
-    task: '태스크'
     logging: '로그'
   titles:
     public_signup: '공개 가입 활성화'
     access_token_duration: '액세스(Access) 토큰 기간'
     refresh_token_duration: '갱신(Refresh) 토큰 기간'
-    external_host: '외부 호스트'
     http_timeout: 'HTTP 시간 초과'
-    user: '사용자'
-    group: '그룹'
     log_level: '로그 레벨'
     verbose: '상세함 (Verbose) 정도'
   subtitles:
     public_signup: >
-      활성화하면 이 사이트를 방문하는 모든 사용자가 계정을 만들 수 있습니다.
+      활성화되면 이 사이트를 방문하는 모든 사용자가 계정을 만들 수 있습니다.
     access_token_duration: '액세스 토큰의 만료 기간.'
     refresh_token_duration: '만료된 액세스 토큰의 갱신 기간.'
-    external_host: '사이트의 외부 호스트 주소.'
     http_timeout: 'HTTP 요청/응답 시간 초과 (초)'
-    user: '태스크 생성시 사용할 사용자 이름'
-    group: '태스크 생성시 사용할 그룹 이름'
     log_level: '출력할 로그 메시지의 중요도.'
     verbose: '더욱 구체적인 로그를 출력합니다.'
 </i18n>
@@ -134,27 +121,6 @@ ko:
       no-gutter
       :left-ratio="8"
       :right-ratio="4"
-      :header="$t('titles.external_host')"
-      :subheader="$t('subtitles.external_host')"
-    >
-      <div class="d-flex flex-row justify-end">
-        <v-text-field
-          dense
-          outlined
-          hide-details
-          type="text"
-          autocomplete="off"
-          v-model="external_host"
-          @change="onChangeExternalHost"
-        ></v-text-field>
-      </div>
-    </left-title>
-
-    <left-title
-      x-small
-      no-gutter
-      :left-ratio="8"
-      :right-ratio="4"
       :header="$t('titles.http_timeout')"
       :subheader="$t('subtitles.http_timeout')"
     >
@@ -167,51 +133,6 @@ ko:
           autocomplete="off"
           v-model="http_timeout"
           @change="onChangeHttpTimeout"
-        ></v-text-field>
-      </div>
-    </left-title>
-
-    <v-divider></v-divider>
-    <v-subheader>{{ $t('headers.task') }}</v-subheader>
-
-    <left-title
-      x-small
-      no-gutter
-      :left-ratio="8"
-      :right-ratio="4"
-      :header="$t('titles.user')"
-      :subheader="$t('subtitles.user')"
-    >
-      <div class="d-flex flex-row justify-end">
-        <v-text-field
-          dense
-          outlined
-          hide-details
-          type="text"
-          autocomplete="off"
-          v-model="user"
-          @change="onChangeUser"
-        ></v-text-field>
-      </div>
-    </left-title>
-
-    <left-title
-      x-small
-      no-gutter
-      :left-ratio="8"
-      :right-ratio="4"
-      :header="$t('titles.group')"
-      :subheader="$t('subtitles.group')"
-    >
-      <div class="d-flex flex-row justify-end">
-        <v-text-field
-          dense
-          outlined
-          hide-details
-          type="text"
-          autocomplete="off"
-          v-model="group"
-          @change="onChangeGroup"
         ></v-text-field>
       </div>
     </left-title>
@@ -307,10 +228,7 @@ export function findString(items: Array<ConfigA>, key: string, defaultValue = ''
 const CONFIG_KEY_PUBLIC_SIGNUP = 'public_signup';
 const CONFIG_KEY_ACCESS_TOKEN_DURATION = 'access_token_duration';
 const CONFIG_KEY_REFRESH_TOKEN_DURATION = 'refresh_token_duration';
-const CONFIG_KEY_EXTERNAL_HOST = 'external_host';
 const CONFIG_KEY_HTTP_TIMEOUT = 'http_timeout';
-const CONFIG_KEY_USER = 'user';
-const CONFIG_KEY_GROUP = 'group';
 const CONFIG_KEY_LOG_LEVEL = 'log_level';
 const CONFIG_KEY_VERBOSE = 'verbose';
 
@@ -360,10 +278,7 @@ export default class AdminConfigs extends VueBase {
   public_signup = false;
   access_token_duration = '';
   refresh_token_duration = '';
-  external_host = '';
   http_timeout = 0.0;
-  user = '';
-  group = '';
   log_level = '';
   verbose = 0;
 
@@ -389,10 +304,7 @@ export default class AdminConfigs extends VueBase {
     this.public_signup = findBoolean(items, CONFIG_KEY_PUBLIC_SIGNUP);
     this.access_token_duration = findString(items, CONFIG_KEY_ACCESS_TOKEN_DURATION);
     this.refresh_token_duration = findString(items, CONFIG_KEY_REFRESH_TOKEN_DURATION);
-    this.external_host = findString(items, CONFIG_KEY_EXTERNAL_HOST);
     this.http_timeout = findFloat(items, CONFIG_KEY_HTTP_TIMEOUT);
-    this.user = findString(items, CONFIG_KEY_USER);
-    this.group = findString(items, CONFIG_KEY_GROUP);
     this.log_level = findString(items, CONFIG_KEY_LOG_LEVEL);
     this.verbose = findInteger(items, CONFIG_KEY_VERBOSE);
   }
@@ -426,20 +338,8 @@ export default class AdminConfigs extends VueBase {
     this.patchConfig(CONFIG_KEY_REFRESH_TOKEN_DURATION, value);
   }
 
-  onChangeExternalHost(value) {
-    this.patchConfig(CONFIG_KEY_EXTERNAL_HOST, value);
-  }
-
   onChangeHttpTimeout(value) {
     this.patchConfig(CONFIG_KEY_HTTP_TIMEOUT, value);
-  }
-
-  onChangeUser(value) {
-    this.patchConfig(CONFIG_KEY_USER, value);
-  }
-
-  onChangeGroup(value) {
-    this.patchConfig(CONFIG_KEY_GROUP, value);
   }
 
   onChangeLogLevel(value) {
