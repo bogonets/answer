@@ -4,7 +4,6 @@ from asyncio import get_event_loop
 from unittest import IsolatedAsyncioTestCase, main
 
 from recc.http import http_urls as u
-from recc.util.version import version_text
 from tester.http.http_app_tester import HttpAppTester
 
 
@@ -21,9 +20,11 @@ class HttpAppTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(200, result.status)
 
     async def test_version(self):
+        from recc import __version__ as version
+
         result = await self.tester.get(u.api_version)
         self.assertEqual(200, result.status)
-        self.assertEqual(version_text, result.data)
+        self.assertEqual(version, result.data)
 
 
 if __name__ == "__main__":

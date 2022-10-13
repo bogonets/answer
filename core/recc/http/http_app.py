@@ -2,6 +2,7 @@
 
 from asyncio import CancelledError, Task
 from socket import socket
+from sys import version_info
 from typing import List, Optional
 
 from aiohttp import web
@@ -23,8 +24,6 @@ from recc.http.http_www import HttpWWW
 from recc.http.v2.router_v2 import RouterV2
 from recc.logging.logging import recc_http_logger as logger
 from recc.network.socket import bind_socket
-from recc.util.python_version import PY_36
-from recc.util.version import version_text
 from recc.variables.http import DEFAULT_CLIENT_MAX_SIZE
 
 
@@ -133,9 +132,8 @@ class HttpApp:
         return Response()
 
     async def get_api_version(self, _: Request) -> Response:
-        assert self._context
-        logger.info(f"http_app.get_api_version() -> {version_text}")
-        return Response(text=version_text)
+        logger.info(f"http_app.get_api_version() -> {self._context.version}")
+        return Response(text=self._context.version)
 
     async def call_soon_graceful_exit(self):
         assert self._task
@@ -245,7 +243,7 @@ class HttpApp:
         finally:
             cancel_tasks(loop, self._task)
             cancel_tasks(loop, *all_tasks(loop))
-            if PY_36:  # don't use python3.6 to pass mypy
+            if version_info >= (3, 6):  # don't use python3.6 to pass mypy
                 loop.run_until_complete(loop.shutdown_asyncgens())
             if finally_clear:
                 loop.close()

@@ -54,6 +54,7 @@ class Config(Namespace):
     refresh_token_duration: str
 
     public_signup: bool
+    install_uvloop: bool
     teardown: bool
 
     verbose: int
@@ -107,6 +108,7 @@ class Config(Namespace):
             access_token_duration="10m",
             refresh_token_duration="1h",
             public_signup=False,
+            install_uvloop=False,
             teardown=False,
             verbose=0,
             developer=False,
@@ -167,6 +169,7 @@ class Config(Namespace):
         checker(self.refresh_token_duration, str)
 
         checker(self.public_signup, bool)
+        checker(self.install_uvloop, bool)
         checker(self.teardown, bool)
 
         checker(self.verbose, int)

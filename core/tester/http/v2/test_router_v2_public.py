@@ -9,7 +9,6 @@ from recc.http import http_urls as u
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.http_utils import v2_public_path
 from recc.packet.user import SignupQ
-from recc.util.version import version_text
 from tester.http.http_app_tester import HttpAppTester
 
 
@@ -27,9 +26,11 @@ class RouterV2PublicTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(200, response.status)
 
     async def test_version(self):
+        from recc import __version__ as version
+
         response = await self.tester.get(v2_public_path(u.version))
         self.assertEqual(200, response.status)
-        self.assertEqual(version_text, response.data)
+        self.assertEqual(version, response.data)
 
     async def test_state_already(self):
         response = await self.tester.get(v2_public_path(u.state_already))

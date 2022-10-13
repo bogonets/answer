@@ -50,6 +50,7 @@ class ArgumentsTestCase(TestCase):
         self.assertIsNone(args.access_token_duration)
         self.assertIsNone(args.refresh_token_duration)
         self.assertIsNone(args.public_signup)
+        self.assertIsNone(args.install_uvloop)
         self.assertIsNone(args.teardown)
         self.assertIsNone(args.verbose)
         self.assertIsNone(args.developer)

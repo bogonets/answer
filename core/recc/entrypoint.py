@@ -13,6 +13,7 @@ from type_serialize import deserialize
 from recc.arguments import default_argument_parser
 from recc.config import Config
 from recc.core.context import Context
+from recc.driver.uvloop import install_uvloop_driver
 from recc.http.http_app import HttpApp
 from recc.logging.logging import recc_logger as logger
 
@@ -43,6 +44,10 @@ def main() -> int:
 
     config = read_configs()
     logger.debug(f"Configuration: {config}")
+
+    if config.install_uvloop:
+        if install_uvloop_driver():
+            logger.info("Install the event loop policy as uvloop")
 
     context = Context(config)
     app = HttpApp(context)

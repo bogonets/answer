@@ -3,7 +3,7 @@
 from typing import Optional
 from unittest import TestCase, main
 
-from recc.event.watcher_container import WatcherContainer
+from recc.aio.watcher_container import WatcherContainer
 
 
 class WatcherContainerTestCase(TestCase):

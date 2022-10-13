@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from sys import version_info
+
 from recc.chrono.datetime import tznow
 from recc.core.mixin.context_base import ContextBase
 from recc.packet.system import SystemOverviewA
-from recc.util.python_version import get_python_version_simple
 
 
 class ContextSystem(ContextBase):
@@ -21,4 +22,4 @@ class ContextSystem(ContextBase):
 
     @staticmethod
     def get_python_version_info() -> str:
-        return get_python_version_simple()
+        return f"{version_info[0]}.{version_info[1]}.{version_info[2]}"

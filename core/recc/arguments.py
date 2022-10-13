@@ -261,6 +261,12 @@ def default_argument_parser() -> ArgumentParser:
         help="Anyone can sign up",
     )
     parser.add_argument(
+        "--install-uvloop",
+        default=None,
+        action="store_true",
+        help="Install the event loop policy as uvloop",
+    )
+    parser.add_argument(
         "--teardown",
         default=None,
         action="store_true",

@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import asyncio
-
-from recc.util.python_version import PY_37
+import sys
 
 
 def all_tasks(loop: asyncio.AbstractEventLoop):
-    if PY_37:
+    if sys.version_info >= (3, 7):
         return getattr(asyncio, "all_tasks")(loop)  # nocov
     else:
         tasks = asyncio.Task.all_tasks(loop)  # type: ignore[attr-defined]

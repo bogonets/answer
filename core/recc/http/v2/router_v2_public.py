@@ -13,7 +13,6 @@ from recc.http.header.bearer_auth import BearerAuth
 from recc.http.http_parameter import parameter_matcher
 from recc.packet.preference import PreferenceA
 from recc.packet.user import RefreshTokenA, SigninA, SignupQ, UserA
-from recc.util.version import version_text
 
 
 class RouterV2Public:
@@ -52,7 +51,7 @@ class RouterV2Public:
 
     @parameter_matcher
     async def get_version(self) -> str:
-        return version_text
+        return self._context.version
 
     @parameter_matcher
     async def get_state_already(self) -> bool:

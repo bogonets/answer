@@ -28,7 +28,6 @@ from recc.session.session import (
     DEFAULT_REFRESH_MAX_AGE_SECONDS,
     SessionPairFactory,
 )
-from recc.util.version import version_text, version_tuple
 from recc.variables.crypto import SIGNATURE_SIZE
 from recc.variables.database import CONFIG_PREFIX_RECC_ARGPARSE_CONFIG
 
@@ -144,13 +143,11 @@ class Context(
         )
         logger.info("Created plugin-manager")
 
-    @classmethod
-    def version_text(cls) -> str:
-        return version_text
+    @property
+    def version(self) -> str:
+        from recc import __version__ as version
 
-    @classmethod
-    def version_tuple(cls) -> tuple:
-        return version_tuple
+        return version
 
     async def get_database_configs(self) -> Dict[str, str]:
         """
