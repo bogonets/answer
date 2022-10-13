@@ -16,43 +16,18 @@ from logging import (
     StreamHandler,
 )
 from logging import config as logging_config
-from logging import getLogger, root
-from typing import Final, List, Literal, Optional, Union
+from logging import getLogger
+from typing import Final, Literal, Optional, Union
 
 LOGGER_NAME_RECC = "recc"
-LOGGER_NAME_RECC_CACHE = "recc.cache"
-LOGGER_NAME_RECC_COMMON = "recc.common"
-LOGGER_NAME_RECC_CONTAINER = "recc.container"
 LOGGER_NAME_RECC_CORE = "recc.core"
-LOGGER_NAME_RECC_DAEMON = "recc.daemon"
-LOGGER_NAME_RECC_DATABASE = "recc.database"
 LOGGER_NAME_RECC_HTTP = "recc.http"
-LOGGER_NAME_RECC_LAMDA = "recc.lamda"
-LOGGER_NAME_RECC_NETWORK = "recc.network"
-LOGGER_NAME_RECC_PACKAGE = "recc.package"
 LOGGER_NAME_RECC_PLUGIN = "recc.plugin"
-LOGGER_NAME_RECC_RPC = "recc.rpc"
-
-LOGGER_NAME_AIOHTTP = "aiohttp"
-LOGGER_NAME_ASYNCIO = "asyncio"
-LOGGER_NAME_DOCKER = "docker"
-LOGGER_NAME_ELASTICSEARCH = "elasticsearch"
-LOGGER_NAME_GRPC = "grpc"
-LOGGER_NAME_URLLIB3 = "urllib3"
 
 recc_logger = getLogger(LOGGER_NAME_RECC)
-recc_cache_logger = getLogger(LOGGER_NAME_RECC_CACHE)
-recc_common_logger = getLogger(LOGGER_NAME_RECC_COMMON)
-recc_container_logger = getLogger(LOGGER_NAME_RECC_CONTAINER)
 recc_core_logger = getLogger(LOGGER_NAME_RECC_CORE)
-recc_daemon_logger = getLogger(LOGGER_NAME_RECC_DAEMON)
-recc_database_logger = getLogger(LOGGER_NAME_RECC_DATABASE)
 recc_http_logger = getLogger(LOGGER_NAME_RECC_HTTP)
-recc_lamda_logger = getLogger(LOGGER_NAME_RECC_LAMDA)
-recc_network_logger = getLogger(LOGGER_NAME_RECC_NETWORK)
-recc_package_logger = getLogger(LOGGER_NAME_RECC_PACKAGE)
 recc_plugin_logger = getLogger(LOGGER_NAME_RECC_PLUGIN)
-recc_rpc_logger = getLogger(LOGGER_NAME_RECC_RPC)
 
 SEVERITY_NAME_CRITICAL = "critical"
 SEVERITY_NAME_FATAL = "fatal"
@@ -80,10 +55,6 @@ LoggingStyleLiteral = Literal["%", "{", "$"]
 
 DEFAULT_SIMPLE_LOGGING_FORMAT: Final[str] = "{levelname[0]} [{name}] {message}"
 DEFAULT_SIMPLE_LOGGING_STYLE: Final[LoggingStyleLiteral] = "{"
-
-
-def all_loggers() -> List[Logger]:
-    return [getLogger(name) for name in root.manager.loggerDict]
 
 
 def get_logger(logger: Optional[Union[str, Logger]] = None) -> Logger:
@@ -176,7 +147,7 @@ def set_basic_config(config_file: str) -> None:
 
         with open(config_file, "r") as f:
             logging_config.dictConfig(json.loads(f.read()))
-    elif ext == ".yml" or ext == ".yaml":
+    elif ext in (".yml", "yaml"):
         import yaml
 
         with open(config_file, "r") as f:
@@ -189,10 +160,10 @@ def get_root_level() -> int:
     return getLogger().level
 
 
-_FMT_TIME = "%(asctime)s.%(msecs)03d"
-_FMT_THREAD = "%(process)d/%(thread)s"
+FMT_TIME = "%(asctime)s.%(msecs)03d"
+FMT_THREAD = "%(process)d/%(thread)s"
 
-DEFAULT_FORMAT = f"{_FMT_TIME} {_FMT_THREAD} %(name)s %(levelname)s %(message)s"
+DEFAULT_FORMAT = f"{FMT_TIME} {FMT_THREAD} %(name)s %(levelname)s %(message)s"
 DEFAULT_DATEFMT = "%Y-%m-%d %H:%M:%S"
 DEFAULT_STYLE = "%"
 
@@ -200,7 +171,7 @@ SIMPLE_FORMAT = "{levelname[0]} {asctime} {name} {message}"
 SIMPLE_DATEFMT = "%Y%m%d %H%M%S"
 SIMPLE_STYLE = "{"
 
-_DEFAULT_LOGGING_CONFIG = {
+DEFAULT_LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
@@ -272,7 +243,7 @@ _DEFAULT_LOGGING_CONFIG = {
 
 
 def set_default_logging_config() -> None:
-    logging_config.dictConfig(_DEFAULT_LOGGING_CONFIG)
+    logging_config.dictConfig(DEFAULT_LOGGING_CONFIG)
 
 
 def set_simple_logging_config() -> None:

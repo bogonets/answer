@@ -40,13 +40,13 @@ def install_uvloop_driver() -> None:
         logger.info("Install the event loop policy as uvloop")
 
 
-def read_configs() -> Config:
+def read_configs(env_prefix="RECC_", env_suffix="_FILE", config_key="config") -> Config:
     cmds = default_argument_parser().parse_known_args()[0]
-    assert hasattr(cmds, "config")
+    assert hasattr(cmds, config_key)
     cmd_config = read_config_file(cmds.config) if cmds.config else None
-    envs = read_os_envs(prefix="RECC_")
-    envs_config = read_config_file(envs.config) if hasattr(envs, "config") else None
-    env_files_args = read_os_envs_file(prefix="RECC_", suffix="_FILE")
+    envs = read_os_envs(prefix=env_prefix)
+    envs_config = read_config_file(envs.config) if hasattr(envs, config_key) else None
+    env_files_args = read_os_envs_file(prefix=env_prefix, suffix=env_suffix)
     default_args = Config.default()
 
     nss = (cmds, cmd_config, envs, envs_config, env_files_args, default_args)
@@ -66,16 +66,26 @@ def main() -> int:
 
     config = read_configs()
 
+    if config.log_simply or config.log_config:
+        raise ValueError(
+            "Among the set variables, 'log_simply' and 'log_config' cannot coexist"
+        )
+
     if config.log_simply:
+        assert not config.log_config
         set_simple_logging_config()
+    elif config.log_config:
+        assert not config.log_simply
+        set_basic_config(config.log_config)
     else:
-        if config.log_config:
-            set_basic_config(config.log_config)
-        else:
-            set_default_logging_config()
+        assert not config.log_config
+        assert not config.log_simply
+        set_default_logging_config()
+
+    assert config.log_level
     set_root_level(config.log_level)
 
-    logger.debug(f"Configuration: {config}")
+    logger.debug(f"Configuration result: {config}")
 
     if config.install_uvloop:
         install_uvloop_driver()
