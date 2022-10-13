@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from argparse import Namespace
+from asyncio import set_event_loop_policy
 
 from generalize_config import (
     merge_left_first,
@@ -13,9 +14,30 @@ from type_serialize import deserialize
 from recc.arguments import default_argument_parser
 from recc.config import Config
 from recc.core.context import Context
-from recc.driver.uvloop import install_uvloop_driver
 from recc.http.http_app import HttpApp
 from recc.logging.logging import recc_logger as logger
+from recc.logging.logging import (
+    set_basic_config,
+    set_default_logging_config,
+    set_root_level,
+    set_simple_logging_config,
+)
+
+
+def install_uvloop_driver() -> None:
+    try:
+        import uvloop
+
+        # Setup uvloop policy, so that every
+        # asyncio.get_event_loop() will create an instance
+        # of uvloop event loop.
+        set_event_loop_policy(uvloop.EventLoopPolicy())
+    except ImportError:
+        logger.warning("Not found uvloop module")
+    except BaseException as e:
+        logger.warning(f"uvloop installation failed: {e}")
+    else:
+        logger.info("Install the event loop policy as uvloop")
 
 
 def read_configs() -> Config:
@@ -43,11 +65,20 @@ def main() -> int:
     """
 
     config = read_configs()
+
+    if config.log_simply:
+        set_simple_logging_config()
+    else:
+        if config.log_config:
+            set_basic_config(config.log_config)
+        else:
+            set_default_logging_config()
+    set_root_level(config.log_level)
+
     logger.debug(f"Configuration: {config}")
 
     if config.install_uvloop:
-        if install_uvloop_driver():
-            logger.info("Install the event loop policy as uvloop")
+        install_uvloop_driver()
 
     context = Context(config)
     app = HttpApp(context)

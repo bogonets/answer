@@ -16,7 +16,6 @@ from recc.core.mixin.context_role import ContextRole
 from recc.core.mixin.context_system import ContextSystem
 from recc.core.mixin.context_user import ContextUser
 from recc.crypto.signature import generate_signature
-from recc.init.default import init_logger
 from recc.logging.logging import recc_core_logger as logger
 from recc.plugin.core_plugin_manager import CorePluginManager
 from recc.session.session import (
@@ -54,7 +53,6 @@ class Context(
         skip_assertion=False,
     ):
         self._config = config if config else Config.default()
-        self._init_logger()
         self._init_loop(loop)
         self._init_signature()
         self._init_session_factory()
@@ -71,13 +69,6 @@ class Context(
         assert self._cache is not None
         assert self._database is not None
         assert self._plugins is not None
-
-    def _init_logger(self) -> None:
-        init_logger(
-            self._config.log_config,
-            self._config.log_level,
-            self._config.log_simply,
-        )
 
     def _init_loop(
         self,
