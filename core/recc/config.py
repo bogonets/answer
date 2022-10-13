@@ -59,6 +59,17 @@ class Config(Namespace):
     verbose: int
     developer: bool
 
+    @staticmethod
+    def release_keys() -> List[str]:
+        return [
+            "http_timeout",
+            "log_level",
+            "access_token_duration",
+            "refresh_token_duration",
+            "public_signup",
+            "verbose",
+        ]
+
     @classmethod
     def default(cls):
         return cls(

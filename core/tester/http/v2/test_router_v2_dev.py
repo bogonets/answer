@@ -78,8 +78,8 @@ class RouterV2DevTestCase(IsolatedAsyncioTestCase):
         self.assertFalse(self.tester.context.config.public_signup)
         self.assertEqual("False", public_signup.value)
 
-        self.assertEqual(0, self.tester.context.config.verbose)
-        self.assertEqual("0", verbose.value)
+        self.assertEqual(2, self.tester.context.config.verbose)
+        self.assertEqual("2", verbose.value)
 
         body2 = UpdateConfigValueQ("True")
         path2 = v2_dev_path(u.configs_pkey.format_map({p.key: public_signup_key}))

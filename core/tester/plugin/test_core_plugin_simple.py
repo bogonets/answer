@@ -9,7 +9,7 @@ from tester.unittest.plugin_test_case import PluginTestCase
 class CorePluginSimpleTestCase(PluginTestCase):
     async def test_default(self):
         module_name = self.recc_plugin_test_simple
-        self.assertIn(module_name, self.test_core_plugin_names)
+        self.assertIn(module_name, self.test_plugin_names)
 
         plugin = CorePlugin(module_name)
         self.assertEqual(module_name, plugin.module_name)

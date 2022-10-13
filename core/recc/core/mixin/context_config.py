@@ -19,17 +19,6 @@ IGNORE_CONFIG_KEYS = {
     "help_message",
     "unrecognized_arguments",
 }
-RELEASE_CONFIG_KEYS = {
-    "user",
-    "group",
-    "log_level",
-    "verbose",
-    "external_host",
-    "http_timeout",
-    "public_signup",
-    "access_token_duration",
-    "refresh_token_duration",
-}
 CORE_CONFIG_TYPE_HINTS = get_type_hints(Config)
 
 
@@ -91,7 +80,7 @@ class ContextConfig(ContextBase):
 
     @staticmethod
     def get_release_config_keys() -> Set[str]:
-        return RELEASE_CONFIG_KEYS
+        return set(Config.release_keys())
 
     def get_develop_config_keys(self) -> Set[str]:
         return set(

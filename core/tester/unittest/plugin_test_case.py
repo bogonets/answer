@@ -41,12 +41,8 @@ class PluginTestCase(IsolatedAsyncioTestCase):
         return self._assert_plugin_name("recc_plugin_test_simple")
 
     @property
-    def test_core_plugin_names(self):
+    def test_plugin_names(self):
         return [
             self.recc_plugin_test_http_server,
             self.recc_plugin_test_simple,
         ]
-
-    @property
-    def test_plugin_names(self):
-        return self.test_core_plugin_names
