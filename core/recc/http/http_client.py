@@ -21,9 +21,9 @@ from aiohttp.hdrs import (
 )
 from mime_parser.favorite import APPLICATION_JSON, MIME_APPLICATION_JSON_UTF8
 from multidict import CIMultiDict
+from orjson import dumps as orjson_dumps
 from type_serialize import serialize
 
-from recc.driver.json import global_json_encoder
 from recc.http import http_urls as u
 from recc.http.header.basic_auth import BasicAuth
 from recc.http.header.bearer_auth import BearerAuth
@@ -212,7 +212,7 @@ class HttpClient:
         elif text:
             request_body = text
         elif data:
-            request_body = global_json_encoder(serialize(data))
+            request_body = str(orjson_dumps(serialize(data)), "utf-8")
             if CONTENT_TYPE not in updated_headers:
                 updated_headers.add(CONTENT_TYPE, str(MIME_APPLICATION_JSON_UTF8))
         else:

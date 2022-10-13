@@ -2,6 +2,8 @@
 
 from typing import Any, Dict, List, Optional, Set, get_origin, get_type_hints
 
+from generalize_config.parser.env_parse import filter_dict
+
 from recc.config import Config
 from recc.core.mixin.context_base import ContextBase
 from recc.event.watcher_container import WatcherContainer
@@ -9,8 +11,6 @@ from recc.logging.logging import recc_core_logger as logger
 from recc.logging.logging import set_root_level
 from recc.packet.config import ConfigA
 from recc.variables.database import CONFIG_PREFIX_RECC_ARGPARSE_CONFIG
-
-from generalize_config.parser.env_parse import filter_dict
 
 IGNORE_CONFIG_KEYS = {
     "command",

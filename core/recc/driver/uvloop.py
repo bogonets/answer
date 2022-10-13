@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import asyncio
+import warnings
 
 
 def install_uvloop_driver() -> bool:
@@ -19,6 +20,11 @@ def install_uvloop_driver() -> bool:
         # asyncio.get_event_loop() will create an instance
         # of uvloop event loop.
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-        return True
     except ImportError:
+        warnings.warn("Not found uvloop module")
         return False
+    except BaseException as e:
+        warnings.warn(f"uvloop installation failed: {e}")
+        return False
+    else:
+        return True
