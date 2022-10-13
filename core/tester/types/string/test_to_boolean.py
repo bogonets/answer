@@ -2,7 +2,7 @@
 
 from unittest import TestCase, main
 
-from recc.conversion.to_boolean import string_to_boolean
+from recc.types.string.to_boolean import string_to_boolean
 
 
 class ToBooleanTestCase(TestCase):

@@ -14,7 +14,6 @@ from aiohttp.web_response import Response, StreamResponse
 from type_serialize import serialize
 
 from recc.chrono.datetime import tznow
-from recc.conversion.to_any import string_to_any
 from recc.core.context import Context
 from recc.http import http_cache_keys as c
 from recc.http import http_path_keys as p
@@ -33,6 +32,7 @@ from recc.inspect.type_origin import get_type_origin
 from recc.logging.logging import recc_http_logger as logger
 from recc.session.session import Session
 from recc.session.session_ex import SessionEx
+from recc.types.string.to_any import string_to_any
 from recc.variables.annotation import ANNOTATION_DOMAIN, ANNOTATION_PERMISSIONS, Domain
 from recc.variables.http import DEBUGGING_BODY_MSG_MAX_SIZE, VERY_VERBOSE_DEBUGGING
 

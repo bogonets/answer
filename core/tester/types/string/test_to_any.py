@@ -2,7 +2,7 @@
 
 from unittest import TestCase, main
 
-from recc.conversion.to_any import string_to_any
+from recc.types.string.to_any import string_to_any
 
 
 class ToAnyTestCase(TestCase):
