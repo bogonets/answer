@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from asyncio import AbstractEventLoop, get_event_loop_policy, set_event_loop
-from hashlib import sha256
 from typing import Dict, Optional, Set
 
 from recc_cache import Cache
@@ -29,14 +28,9 @@ from recc.session.session import (
     DEFAULT_REFRESH_MAX_AGE_SECONDS,
     SessionPairFactory,
 )
-from recc.util.version import parse_semantic_version, version_text, version_tuple
+from recc.util.version import version_text, version_tuple
 from recc.variables.crypto import SIGNATURE_SIZE
-from recc.variables.database import (
-    CONFIG_PREFIX_RECC_ARGPARSE_CONFIG,
-    PIP_HASH_METHOD_SHA256,
-    ROLE_SLUG_OWNER,
-    ROLE_UID_OWNER,
-)
+from recc.variables.database import CONFIG_PREFIX_RECC_ARGPARSE_CONFIG
 
 
 class Context(
@@ -158,48 +152,6 @@ class Context(
     def version_tuple(cls) -> tuple:
         return version_tuple
 
-    async def migrate_database(self) -> None:
-        db_version: Optional[str]
-        try:
-            db_version = await self._database.select_database_version()
-        except:  # noqa
-            db_version = None
-
-        if db_version:
-            db_version_tuple = parse_semantic_version(db_version)
-            if db_version_tuple > version_tuple:
-                prefix = "You cannot migrate to a smaller version"
-                suffix = f"db({db_version_tuple}) vs current({version_tuple})"
-                message = f"{prefix}: {suffix}"
-                logger.error(message)
-                raise RuntimeError(message)
-            elif db_version_tuple < version_tuple:
-                # await self._database.migration(db_version_tuple, version_tuple)
-                logger.info("Created database tables")
-            else:
-                assert db_version_tuple == version_tuple
-                pass
-        else:
-            await self._database.create_tables()
-            logger.info("Created database tables")
-
-        owner_uid = await self._database.select_role_uid_by_slug(ROLE_SLUG_OWNER)
-        if owner_uid != ROLE_UID_OWNER:
-            prefix = f"Owner role ID is not {ROLE_UID_OWNER}"
-            suffix = f"It's actually {owner_uid}"
-            message = f"{prefix}, {suffix}"
-            logger.error(message)
-            raise RuntimeError(message)
-
-    @staticmethod
-    def _read_hash(path: str, method: str) -> str:
-        with open(path, "rb") as f:
-            content = f.read()
-            if method == PIP_HASH_METHOD_SHA256:
-                return sha256(content).hexdigest()
-            else:
-                raise ValueError(f"Unsupported hash method: '{method}'")
-
     async def get_database_configs(self) -> Dict[str, str]:
         """
         Configurations stored in the database.
@@ -229,8 +181,8 @@ class Context(
         await self._database.open()
         logger.info("Opened database")
 
-        await self.migrate_database()
-        logger.info("Migrated database")
+        await self._database.create_tables()
+        logger.info("Create tables")
         assert self._database.is_open()
 
         database_configs = await self.get_database_configs()
