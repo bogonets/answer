@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from argparse import Namespace
 from asyncio import set_event_loop_policy
 
-from generalize_config import (
-    merge_left_first,
-    read_config_file,
-    read_os_envs,
-    read_os_envs_file,
-)
+from generalize_config import read_generalize_configs
 from type_serialize import deserialize
 
 from recc.arguments import default_argument_parser
@@ -40,31 +34,24 @@ def install_uvloop_driver() -> None:
         logger.info("Install the event loop policy as uvloop")
 
 
-def read_configs(env_prefix="RECC_", env_suffix="_FILE", config_key="config") -> Config:
-    cmds = default_argument_parser().parse_known_args()[0]
-    assert hasattr(cmds, config_key)
-    cmd_config = read_config_file(cmds.config) if cmds.config else None
-    envs = read_os_envs(prefix=env_prefix)
-    envs_config = read_config_file(envs.config) if hasattr(envs, config_key) else None
-    env_files_args = read_os_envs_file(prefix=env_prefix, suffix=env_suffix)
-    default_args = Config.default()
-
-    nss = (cmds, cmd_config, envs, envs_config, env_files_args, default_args)
-    result_args = merge_left_first(Namespace(), *nss)
-    config = deserialize(result_args, Config)
-
-    assert isinstance(config, Config)
-    config.assertion()
-
-    return config
-
-
 def main() -> int:
     """
     The entry point for the core project.
     """
 
-    config = read_configs()
+    args = read_generalize_configs(
+        parser=default_argument_parser(),
+        subsection="recc",
+        env_prefix="RECC_",
+        env_suffix="_FILE",
+        config_key="config",
+        force=None,
+        default=Config.default(),
+    )
+    config = deserialize(args, Config)
+
+    assert isinstance(config, Config)
+    config.assertion()
 
     if config.log_simply or config.log_config:
         raise ValueError(
